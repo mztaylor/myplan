@@ -1115,11 +1115,19 @@ function pollPendingAudit(programId, recentAuditId, auditType) {
     });
 }
 
-function buttonState(jqueryObj, buttonId) {
-    if (jqueryObj.val().length === 0) {
-        jQuery("button#" + buttonId).attr('disabled', true);
+function buttonState(parentId, buttonId) {
+    var disabled = false;
+    var button = jQuery("button#" + buttonId);
+    jQuery("#" + parentId + " .myplan-required").each(function () {
+        var value = jQuery(this).val().replace(/\n/g, '');
+        if (value == "" || value == "default") {
+            disabled = true;
+        }
+    });
+    if (disabled) {
+        button.addClass("disabled").attr("disabled", disabled);
     } else {
-        jQuery("button#" + buttonId).attr('disabled', false);
+        button.removeClass("disabled").attr("disabled", disabled);
     }
 }
 

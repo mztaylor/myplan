@@ -300,6 +300,9 @@
     </bean>
 
     <bean id="audit_section" parent="Uif-VerticalBoxSubSection">
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-audit-report</value>
@@ -380,7 +383,6 @@
         </property>
         <property name="onChangeScript" value="
             auditButtonState('degree_audit_run');
-            setUrlHash('modified', 'true');
         "/>
         <property name="control">
             <bean parent="Uif-HorizontalRadioControl"/>
@@ -395,8 +397,7 @@
             <null/>
         </property>
         <property name="onChangeScript" value="
-            auditButtonState('plan_audit_run');
-            setUrlHash('modified', 'true');
+            auditButtonState('plan_audit_validate');
         "/>
         <property name="control">
             <bean parent="Uif-HorizontalRadioControl"/>
@@ -476,7 +477,7 @@
                     </property>
                     <property name="control">
                         <bean parent="Uif-DropdownControl">
-                            <property name="onChangeScript" value="auditButtonState('plan_audit_run');"/>
+                            <property name="onChangeScript" value="auditButtonState('plan_audit_validate');"/>
                         </bean>
                     </property>
                     <property name="optionsFinder">
@@ -491,7 +492,7 @@
                     </property>
                     <property name="control">
                         <bean parent="Uif-DropdownControl">
-                            <property name="onChangeScript" value="auditButtonState('plan_audit_run');"/>
+                            <property name="onChangeScript" value="auditButtonState('plan_audit_validate');"/>
                         </bean>
                     </property>
                     <property name="optionsFinder">
@@ -506,22 +507,25 @@
                     </property>
                     <property name="control">
                         <bean parent="Uif-DropdownControl">
-                            <property name="onChangeScript" value="auditButtonState('plan_audit_run');"/>
+                            <property name="onChangeScript" value="auditButtonState('plan_audit_validate');"/>
                         </bean>
                     </property>
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.course.util.DegreeAuditTacomaPrograms"/>
                     </property>
                 </bean>
-                <ref bean="plan_audit_validate"/>
-                <ref bean="plan_audit_run"/>
-                <!--<bean id="plan_audit_review" parent="Uif-PrimaryActionButton-Small"
-                      p:actionLabel="Review Audit" p:style="margin:5px;">
-                    <property name="actionScript" value=""/>
-                    <property name="onDocumentReadyScript"
-                              value="myplanCreateLightBoxLink('plan_audit_review', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',
-                              href:'audit?methodToCall=reviewPlanAudit&amp;viewId=PlanAuditHandOff-FormView&amp;pageId=plan_audit_hand_off&amp;planAudit.campusParam=@{planAudit.campusParam}&amp;planAudit.programParamSeattle=@{planAudit.programParamSeattle}&amp;planAudit.programParamBothell=@{planAudit.programParamBothell}&amp;planAudit.programParamTacoma=@{planAudit.programParamTacoma}&amp;renderedInLightBox=true'});"/>
-                </bean>-->
+                <bean id="plan_audit_actions_container" parent="Uif-HorizontalBoxGroup"
+                      p:style="margin:0; width:200px;">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="plan_audit_validate"/>
+                            <ref bean="plan_audit_run"/>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
@@ -529,8 +533,10 @@
     <bean id="degree_audit_run" parent="Uif-PrimaryActionButton" p:methodToCall="runAudit" p:disabled="true"
           p:refreshId="audit_section" p:focusOnIdAfterSubmit="degree_audits_summary"
           p:actionLabel="Run Degree Audit">
-        <property name="onClickScript"
-                  value="setPendingAudit(jQuery(this), 5); setUrlHash('modified','true');"/>
+        <property name="onClickScript" value="
+            setPendingAudit(jQuery(this), 5);
+            setUrlHash('modified','true');
+        "/>
         <property name="onDocumentReadyScript" value="
             auditButtonState('degree_audit_run');
             jQuery('button#degree_audit_run').subscribe('AUDIT_COMPLETE', function () {
@@ -546,28 +552,30 @@
 
     <bean id="plan_audit_validate" parent="Uif-PrimaryActionButton" p:disabled="false"
           p:actionLabel="Review Plan">
-        <property name="actionScript"
-                  value="validatePlanAudit('plan_hand_off_container','plan_audit_hand_off','reviewPlanAudit','audit',{viewId:'PlanAuditHandOff-FormView',pageId:'plan_audit_hand_off'});"/>
-        <!--<property name="onDocumentReadyScript" value="
+        <property name="actionScript" value="
+            setUrlHash('modified','true');
+            validatePlanAudit('plan_hand_off_container','plan_audit_hand_off','reviewPlanAudit','audit',{viewId:'PlanAuditHandOff-FormView',pageId:'plan_audit_hand_off'});
+        "/>
+        <property name="onDocumentReadyScript" value="
             auditButtonState('plan_audit_validate');
             jQuery('button#plan_audit_validate').subscribe('AUDIT_COMPLETE', function () {
                 auditButtonState(jQuery(this).attr('id'));
             });
-        "/>-->
+        "/>
+        <property name="dataAttributes">
+            <map>
+                <entry key="audittype" value="plan"/>
+            </map>
+        </property>
     </bean>
 
 
     <bean id="plan_audit_run" parent="degree_audit_run" p:methodToCall="runPlanAudit" p:hidden="true" p:disabled="false"
           p:refreshId="plan_audit_section" p:focusOnIdAfterSubmit="plan_audits_summary"
           p:actionLabel="Review Plan">
-        <!--<property name="onClickScript"
-                  value="setPendingAudit(jQuery(this), 5); setUrlHash('modified','true');"/>
-        <property name="onDocumentReadyScript" value="
-            auditButtonState('plan_audit_run');
-            jQuery('button#plan_audit_run').subscribe('AUDIT_COMPLETE', function () {
-                auditButtonState(jQuery(this).attr('id'));
-            });
-        "/>-->
+        <property name="onClickScript" value="
+            setPendingAudit(jQuery(this), 5);
+        "/>
         <property name="dataAttributes">
             <map>
                 <entry key="audittype" value="plan"/>
@@ -915,7 +923,15 @@
                         <null/>
                     </property>
                     <property name="control">
-                        <bean parent="Uif-DropdownControl"/>
+                        <bean parent="Uif-DropdownControl">
+                            <property name="onChangeScript"
+                                      value="buttonState('plan_audit_messy_items', 'submit_plan_audit');"/>
+                            <property name="cssClasses">
+                                <list merge="true">
+                                    <value>myplan-required</value>
+                                </list>
+                            </property>
+                        </bean>
                     </property>
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.course.util.PlanAuditMessyItems"/>
@@ -987,7 +1003,7 @@
         <property name="entryPageId" value="plan_audit_hand_off"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="plan_audit_hand_off" p:hidden="false">
+                <bean parent="Uif-Page" p:id="plan_audit_hand_off" p:hidden="false" p:style="width:650px; margin:0;">
                     <property name="header">
                         <bean parent="Uif-HeaderTwo"/>
                     </property>
@@ -1043,14 +1059,18 @@
                                     <bean parent="Uif-HiddenControl"/>
                                 </property>
                             </bean>-->
-                            <bean parent="Uif-HorizontalBoxGroup">
+                            <bean parent="Uif-HorizontalBoxGroup" p:style="margin:0;">
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-PrimaryActionButton">
+                                        <bean id="submit_plan_audit" parent="Uif-PrimaryActionButton" p:disabled="true"
+                                              p:style="margin:0px 20px 0px 0px;">
                                             <property name="actionLabel" value="Submit"/>
                                             <property name="actionScript" value="runPlanAudit('plan_audit_run');"/>
                                         </bean>
-                                        <bean parent="Uif-ActionLink">
+                                        <bean parent="Uif-ActionLink" p:style="margin:0;">
                                             <property name="actionLabel" value="Cancel"/>
                                             <property name="actionScript" value="jQuery.fancybox.close(true);"/>
                                         </bean>

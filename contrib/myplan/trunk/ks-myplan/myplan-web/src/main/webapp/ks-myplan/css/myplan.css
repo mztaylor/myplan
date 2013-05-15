@@ -156,7 +156,7 @@ a, a:hover, a:active, a:visited, a:focus {
 
 #applicationHeading #applicationLogo {
     font: normal 38px/normal Helvetica, Arial, Verdana, sans-serif;
-    text-shadow: 0px 1px 2px #cfcabf;
+    text-shadow: 2px 2px 3px #cfcabf;
     color: #39275b;
     position: absolute;
     top: 40px;
@@ -2841,13 +2841,46 @@ label.scheduled {
 }
 
 /* Styles for Run Audit Panel ################################################################################## */
+.myplan-audit-tabs .ui-tabs,
+.myplan-audit-tabs .ui-tabs .ui-tabs-nav {
+    padding: 0;
+}
+
+.myplan-audit-tabs .ui-tabs .ui-tabs-nav li {
+    border: solid 1px #e1e1e0;
+    border-bottom: none;
+    top: 0px;
+    margin: 0 .2em 0px 0;
+}
+
+.myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-active {
+    background-color: #faa229;
+    background-image: -ms-linear-gradient(top, #fac157 0%, #faa229 100%);
+    background-image: -moz-linear-gradient(center top, #fac157 0%, #faa229 100%);
+    background-image: -o-linear-gradient(top, #fac157 0%, #faa229 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fac157), color-stop(1, #faa229));
+    background-image: -webkit-linear-gradient(top, #fac157 0%, #faa229 100%);
+    background-image: linear-gradient(to bottom, #fac157 0%, #faa229 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#fac157', endColorstr = '#faa229');
+}
+
+.myplan-audit-tabs .ui-tabs .ui-tabs-nav li a {
+    color: #131213;
+    font: 500 13px "museo-sans", Arial, Helvetica, Verdana, sans-serif;
+    padding: 5px 16px;
+}
+
+.myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-active a {
+    background: transparent;
+}
+
 .myplan-run-audit-panel {
     background: #fcf9f0;
     border: solid 1px #e1e1e0;
     padding: 20px 10px 10px 20px;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
+    border-radius: 0px 0px 5px 5px;
+    -webkit-border-radius: 0px 0px 5px 5px;
+    -moz-border-radius: 0px 0px 5px 5px;
     overflow: hidden;
 }
 

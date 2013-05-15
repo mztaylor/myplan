@@ -27,6 +27,7 @@
     border-radius: 0px;
     -moz-border-radius: 0px;
     -webkit-border-radius: 0px;
+    text-shadow: 1px 1px 4px #FBF2DB;
 }
 
 .myplan-audit-report a {

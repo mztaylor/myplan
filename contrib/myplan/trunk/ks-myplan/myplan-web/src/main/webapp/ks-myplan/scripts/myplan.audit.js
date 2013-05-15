@@ -97,51 +97,71 @@ function initAuditActions() {
 }
 
 function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
-    var tempForm = '<form id="' + id + '_form" action="' + action + '" method="post" style="display:none;">'; //jQuery('<form />').attr("id", id + "_form").attr("action", action).attr("method", "post").hide();
+    auditButtonState('plan_audit_validate');
+
+    var tempForm = '<form id="' + id + '_form" action="' + action + '" method="post" style="display:none;">';
     jQuery.each(retrieveOptions, function (name, value) {
         tempForm += '<input type="hidden" name="' + name + '" value="' + value + '" />';
     });
     tempForm += '</form>';
     jQuery("body").append(tempForm);
 
-    var elementToBlock = jQuery("#" + id);
+    var blockOptions = {
+        message:'<img src="../ks-myplan/images/btnLoader.gif" style="vertical-align:middle; margin-right:10px;"/> Validating your plan',
+        css:{
+            width:'100%',
+            border:'none',
+            backgroundColor:'transparent',
+            font:'bold 14px museo-sans, Arial, Helvetica, Verdana, sans-serif',
+            padding:'5px'
+        },
+        overlayCSS:{
+            backgroundColor:'#fcf9f0',
+            opacity:1,
+            border:'solid 1px #fcf9f0'
+        },
+        fadeIn:50,
+        fadeOut:50
+    };
+
+    var elementToBlock = jQuery("#plan_audit_actions_container");
 
     var updateRefreshableComponentCallback = function (htmlContent) {
         var inputRequired = (jQuery("input#hidden_messy_items_flag_control", htmlContent).val() == "true");
 
         if (inputRequired) {
             var component = jQuery("#" + getId, htmlContent);
-            elementToBlock.unblock({onUnblock:function () {
-                if (jQuery("#" + id).length) {
-                    if (jQuery("#" + getId).length == 0) {
-                        jQuery("#" + id).append(component);
-                    } else {
-                        jQuery("#" + getId).replaceWith(component);
-                    }
+            if (jQuery("#" + id).length) {
+                if (jQuery("#" + getId).length == 0) {
+                    jQuery("#" + id).append(component);
+                } else {
+                    jQuery("#" + getId).replaceWith(component);
                 }
+            }
 
-                runHiddenScripts(getId);
+            runHiddenScripts(getId);
 
-                if (jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).length > 0) {
-                    eval(jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).val());
-                }
+            if (jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).length > 0) {
+                eval(jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).val());
+            }
 
-                jQuery.fancybox({
-                    helpers:{
-                        overlay:null
-                    },
-                    parent:"form:first",
-                    href:'#' + getId
-                });
-
-            }});
+            jQuery.fancybox({
+                helpers:{
+                    overlay:null
+                },
+                autoSize:true,
+                parent:"form:first",
+                href:'#' + getId
+            });
+            elementToBlock.unblock();
         } else {
+            elementToBlock.unblock();
             jQuery("button#plan_audit_run").click();
         }
 
     };
 
-    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:"false"}, elementToBlock, id);
+    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:"false"}, elementToBlock, id, blockOptions);
     jQuery("form#" + id + "_form").remove();
 }
 

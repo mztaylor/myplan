@@ -113,9 +113,9 @@
 
     <!-- Lookup View -->
     <bean id="DegreeAuditsSummary-LookupView" parent="MyPlanBaseLookupView">
-        <property name="theme">
+        <!--<property name="theme">
             <bean parent="MyPlanRetrievedTheme"/>
-        </property>
+        </property>-->
         <property name="onLoadScript" value=""/>
         <property name="headerText" value="Recent Audit Reports"/>
         <property name="page.header.render" value="false"/>
