@@ -1005,7 +1005,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
         String num = list[3];
         CourseOfferingInfo info = new CourseOfferingInfo();
         info.setSubjectArea(subject);
-        info.setCourseCode(num);
+        info.setCourseCode(subject + " " + num);
         info.setTermId(termId);
         info.setId(courseOfferingID);
         info.setCourseId(getCourseHelper().getCourseIdForTerm(subject, num, termId));
