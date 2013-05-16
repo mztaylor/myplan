@@ -573,11 +573,11 @@ public class PlannedTermsHelperBase {
                         }
                         if (courseOfferingInfo != null) {
                             if (courseSectionCreditsMap.containsKey(courseOfferingInfo.getCourseCode())) {
-                                courseSectionCreditsMap.get(courseOfferingInfo.getCourseCode()).add(courseOfferingInfo.getCreditOptionName());
+                                courseSectionCreditsMap.get(deconstructedCourseCode.getSubject() + ":" + deconstructedCourseCode.getNumber()).add(courseOfferingInfo.getCreditOptionName());
                             } else {
                                 List<String> credits = new ArrayList<String>();
                                 credits.add(courseOfferingInfo.getCreditOptionName());
-                                courseSectionCreditsMap.put(courseOfferingInfo.getCourseCode(), credits);
+                                courseSectionCreditsMap.put(deconstructedCourseCode.getSubject() + ":" + deconstructedCourseCode.getNumber(), credits);
                             }
                         }
                     } else if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(luType)) {
@@ -586,7 +586,7 @@ public class PlannedTermsHelperBase {
                 }
                 for (PlanItemInfo planItemInfo : plannedCourses) {
                     CourseInfo courseInfo = getCourseHelper().getCourseInfo(planItemInfo.getRefObjectId());
-                    List<String> sectionCreditRangeList = courseSectionCreditsMap.get(courseInfo.getCode());
+                    List<String> sectionCreditRangeList = courseSectionCreditsMap.get(courseInfo.getSubjectArea().trim() + ":" + courseInfo.getCourseNumberSuffix());
                     String credit = null;
                     if (sectionCreditRangeList != null && sectionCreditRangeList.size() > 0) {
                         credit = unionCreditList(sectionCreditRangeList);
