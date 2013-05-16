@@ -44,11 +44,11 @@ public class CourseLinkBuilder {
     Pattern levelPattern = Pattern.compile(levelRegex);
 
     // matches "ABC 100-200", "ABC 100 to 200", "ABC 100 TO 200"
-    String rangeRegex = "^([A-Z][A-Z &]{2,7}) [1-4][0-9][0-9](-| (to|TO) )[1-4][0-9][0-9]";
+    String rangeRegex = "^([A-Z][A-Z &]{2,7}) [1-4][0-9][0-9](-| (to|TO) )[1-4]?[0-9][0-9]";
     Pattern rangePattern = Pattern.compile(rangeRegex);
 
     // matches "ABC/XYZ 100-200", "ABC/XYZ 100 to 200", "ABC/XYZ 100 TO 200"
-    String jointRangeRegex = "^([A-Z][A-Z &]{2,7})/([A-Z][A-Z &]{2,7}) [1-4][0-9][0-9](-| (to|TO) )[1-4][0-9][0-9]";
+    String jointRangeRegex = "^([A-Z][A-Z &]{2,7})((/|\\\\)([A-Z][A-Z &]{2,7}))+ [1-4][0-9][0-9](-| (to|TO) )[1-4]?[0-9][0-9]";
     Pattern jointRangePattern = Pattern.compile(jointRangeRegex);
 
     // matches "ABC 100"
@@ -56,7 +56,7 @@ public class CourseLinkBuilder {
     Pattern coursePattern = Pattern.compile(courseRegex);
 
     // matches "ABC/XYZ 100"
-    String jointRegex = "^([A-Z][A-Z &]{2,7})/([A-Z][A-Z &]{2,7}) ([1-4][0-9][0-9])";
+    String jointRegex = "^([A-Z][A-Z &]{2,7})((/|\\\\)([A-Z][A-Z &]{2,7}))+ ([1-4][0-9][0-9])";
     Pattern jointPattern = Pattern.compile(jointRegex);
 
     // Matches "100" thru "499"
@@ -64,7 +64,7 @@ public class CourseLinkBuilder {
     Pattern numPattern = Pattern.compile(numRegex);
 
     // Matches "100-499"
-    String numRangeRegex = "^[1-4][0-9][0-9](-| (to|TO) )[1-4][0-9][0-9]";
+    String numRangeRegex = "^[1-4][0-9][0-9](-| (to|TO) )[1-4]?[0-9][0-9]";
     Pattern numRangePattern = Pattern.compile(numRangeRegex);
 
     public String makeLinks(String line) {
@@ -107,7 +107,7 @@ public class CourseLinkBuilder {
                 int end = nth + m.end();
                 String skipped = line.substring(start, end);
                 sb.append(skipped);
-                subject = m.group(2);
+                subject = m.group(4);
                 nth = start = end;
                 continue;
             }
@@ -134,8 +134,8 @@ public class CourseLinkBuilder {
                 String skipped = line.substring(start, nth);
                 sb.append(skipped);
                 String found = line.substring(nth, end);
-                subject = m.group(2);
-                String num = m.group(3);
+                subject = m.group(4);
+                String num = m.group(5);
                 String link = makeLink(subject, num, found);
                 sb.append(link);
                 nth = start = end;

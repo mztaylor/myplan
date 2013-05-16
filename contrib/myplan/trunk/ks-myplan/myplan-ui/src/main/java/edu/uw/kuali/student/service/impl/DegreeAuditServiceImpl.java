@@ -339,9 +339,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     attributeInfo.setValue(lastYT.toShortTermName());
                 } else if ("auditId".equalsIgnoreCase(key)) {
                     attributeInfo.setValue(auditId);
-                } else if ("requestedBy".equalsIgnoreCase(key)) {
-                    attributeInfo.setValue(auditId);
                 }
+//                else if ("requestedBy".equalsIgnoreCase(key)) {
+//                    attributeInfo.setValue(auditId);
+//                }
 
 
             }
@@ -596,11 +597,15 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
 
+    private CourseLinkBuilder courseLinkBuilder = new CourseLinkBuilder();
+
     public void findClassLinkifyTextAndConvertCoursesToLinks(Document doc) {
         List list = doc.selectNodes("//*[contains(@class,'linkify')]");
         for (Object o : list) {
             Element element = (Element) o;
             String original = element.getText();
+            original = scrubForHTML(original);
+            if( original.length() == 0 ) continue;
             String attribs = element.attributeValue("class");
             if (attribs.contains("flatten")) {
                 original = extractJustText(element);
@@ -608,7 +613,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 element.add(new DefaultText(original));
             }
             String linkified = urlify(original);
-            linkified = new CourseLinkBuilder().makeLinks(linkified);
+            linkified = courseLinkBuilder.makeLinks(linkified);
             if (!original.equals(linkified)) {
 
                 try {
@@ -633,14 +638,21 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             sb.append(' ');
         }
         String result = sb.toString();
+        result = scrubForHTML(result);
+        return result;
+    }
+
+    public String scrubForHTML(String result) {
+        if( result == null ) return "";
         result = result.replace('\n', ' ');
         result = result.replace('\t', ' ');
         result = result.replace("&", "&amp;");
         result = result.replace("<", "&lt;");
         result = result.replace(">", "&gt;");
-        result = result.trim().replaceAll(" ,", ",");
-        result = result.trim().replaceAll(",", ", ");
-        result = result.trim().replaceAll("\\s+", " ");
+        result = result.replaceAll(" ,", ",");
+        result = result.replaceAll(",", ", ");
+        result = result.replaceAll("\\s+", " ");
+        result = result.trim();
         return result;
     }
 
