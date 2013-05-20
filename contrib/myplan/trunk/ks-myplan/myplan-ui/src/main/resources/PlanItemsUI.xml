@@ -1572,7 +1572,13 @@
                     <property name="href"
                               value="/student/myplan/lookup?methodToCall=search&amp;viewId=FullPlannedCourses-LookupView"/>
                     <property name="lightBox">
-                        <bean parent="Uif-LightBox" p:width="90%"/>
+                        <bean parent="Uif-LightBox">
+                            <property name="templateOptions">
+                                <map merge="true">
+                                    <entry key="width" value="690"/>
+                                </map>
+                            </property>
+                        </bean>
                     </property>
                     <property name="cssClasses">
                         <list merge="true">
