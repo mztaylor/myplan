@@ -28,43 +28,49 @@ strong {
     z-index: 200 !important;
 }
 
-.myplan-view h1,
-.myplan-view h2,
-.myplan-view h3,
-.myplan-view h4,
-.myplan-view h5,
-.myplan-view h6 {
+.myplan-view h1, .fancybox-wrap h1,
+.myplan-view h2, .fancybox-wrap h2,
+.myplan-view h3, .fancybox-wrap h3,
+.myplan-view h4, .fancybox-wrap h4,
+.myplan-view h5, .fancybox-wrap h5,
+.myplan-view h6, .fancybox-wrap h6 {
     font-weight: 500;
     font-family: "museo-sans", Arial, Helvetica, Verdana, sans-serif;
     text-transform: none;
 }
 
-.myplan-view h1.uif-headerText {
+.myplan-view h1.uif-headerText,
+.fancybox-wrap h1.uif-headerText {
     font-size: 2.3077em;
     line-height: 1.3333em;
 }
 
-.myplan-view h2.uif-headerText {
+.myplan-view h2.uif-headerText,
+.fancybox-wrap h2.uif-headerText {
     font-size: 1.8462em;
     line-height: 1.6667em;
 }
 
-.myplan-view h3.uif-headerText {
+.myplan-view h3.uif-headerText,
+.fancybox-wrap h3.uif-headerText {
     font-size: 1.3846em;
     line-height: 1.1111em;
 }
 
-.myplan-view h4.uif-headerText {
+.myplan-view h4.uif-headerText,
+.fancybox-wrap h4.uif-headerText {
     font-size: 1.1538em;
     line-height: 1.3333em;
 }
 
-.myplan-view h5.uif-headerText {
+.myplan-view h5.uif-headerText,
+.fancybox-wrap h5.uif-headerText {
     font-size: 1em;
     line-height: 1.5385em;
 }
 
-.myplan-view h6.uif-headerText {
+.myplan-view h6.uif-headerText,
+.fancybox-wrap h6.uif-headerText {
     font-size: 0.9231em;
     line-height: 1.6667em;
 }
@@ -2846,37 +2852,62 @@ label.scheduled {
     padding: 0;
 }
 
+.myplan-audit-tabs .ui-tabs .ui-tabs-nav {
+    border-bottom: solid 4px #f9ac23;
+    border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+}
+
 .myplan-audit-tabs .ui-tabs .ui-tabs-nav li {
-    border: solid 1px #e1e1e0;
-    border-bottom: none;
+    border: solid 1px #e6e6e6;
     top: 0px;
-    margin: 0 .2em 0px 0;
+    margin: 0;
 }
 
 .myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-active {
     background-color: #faa229;
-    background-image: -ms-linear-gradient(top, #fac157 0%, #faa229 100%);
-    background-image: -moz-linear-gradient(center top, #fac157 0%, #faa229 100%);
-    background-image: -o-linear-gradient(top, #fac157 0%, #faa229 100%);
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fac157), color-stop(1, #faa229));
-    background-image: -webkit-linear-gradient(top, #fac157 0%, #faa229 100%);
-    background-image: linear-gradient(to bottom, #fac157 0%, #faa229 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#fac157', endColorstr = '#faa229');
+    background-image: -ms-linear-gradient(top, #f6ca77 0%, #f9ac23 100%);
+    background-image: -moz-linear-gradient(center top, #f6ca77 0%, #f9ac23 100%);
+    background-image: -o-linear-gradient(top, #f6ca77 0%, #f9ac23 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f6ca77), color-stop(1, #f9ac23));
+    background-image: -webkit-linear-gradient(top, #f6ca77 0%, #f9ac23 100%);
+    background-image: linear-gradient(to bottom, #f6ca77 0%, #f9ac23 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#f6ca77', endColorstr = '#f9ac23');
+    border: solid 1px #f6ca77;
+}
+
+.myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-hover,
+.myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-focus {
+    background-color: #f9ac23;
+    background-image: -ms-linear-gradient(top, #f9ac23 0%, #f6ca77 100%);
+    background-image: -moz-linear-gradient(center top, #f9ac23 0%, #f6ca77 100%);
+    background-image: -o-linear-gradient(top, #f9ac23 0%, #f6ca77 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f9ac23), color-stop(1, #f6ca77));
+    background-image: -webkit-linear-gradient(top, #f9ac23 0%, #f6ca77 100%);
+    background-image: linear-gradient(to bottom, #f9ac23 0%, #f6ca77 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#f9ac23', endColorstr = '#f6ca77');
+    border: solid 1px #f6ca77;
 }
 
 .myplan-audit-tabs .ui-tabs .ui-tabs-nav li a {
-    color: #131213;
+    color: #333;
     font: 500 13px "museo-sans", Arial, Helvetica, Verdana, sans-serif;
     padding: 5px 16px;
 }
 
+.myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-hover a,
+.myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-focus a,
 .myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-active a {
     background: transparent;
+    color: #000;
+    text-shadow: 1px 1px 2px #fae3b4;
 }
 
 .myplan-run-audit-panel {
     background: #fcf9f0;
     border: solid 1px #e1e1e0;
+    border-top: none;
     padding: 20px 10px 10px 20px;
     border-radius: 0px 0px 5px 5px;
     -webkit-border-radius: 0px 0px 5px 5px;

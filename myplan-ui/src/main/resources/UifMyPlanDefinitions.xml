@@ -839,9 +839,24 @@
         <property name="collectionLookup">
             <null/>
         </property>
-
-
     </bean>
 
+    <bean id="KSAP-VerticalBoxGroup" parent="Uif-VerticalBoxGroup">
+        <property name="validationMessages">
+            <null/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-HorizontalBoxGroup" parent="Uif-HorizontalBoxGroup">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="help">
+            <null/>
+        </property>
+        <property name="toolTip">
+            <null/>
+        </property>
+    </bean>
 
 </beans>

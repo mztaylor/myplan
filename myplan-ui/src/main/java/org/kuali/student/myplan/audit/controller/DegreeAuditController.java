@@ -50,6 +50,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
+import org.kuali.student.myplan.plan.service.PlanItemLookupableHelperBase;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -276,6 +277,19 @@ public class DegreeAuditController extends UifControllerBase {
 
 
             }
+            //Check to see if the stddent has any planItems from current to future atp
+            PlanItemLookupableHelperBase planHelper = new PlanItemLookupableHelperBase();
+            String startAtp = null;
+            for (String term : AtpHelper.getPublishedTerms()) {
+                if (AtpHelper.isAtpSetToPlanning(term)) {
+                    startAtp = term;
+                    break;
+                }
+            }
+            List<PlannedCourseDataObject> planItems = planHelper.getPlannedCoursesFromAtp(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, UserSessionHelper.getStudentRegId(), startAtp);
+            if (planItems != null && !planItems.isEmpty()) {
+                auditForm.setPlanExists(true);
+            }
         } catch (DataRetrievalFailureException e) {
             logger.error("audit failed", e);
 //            systemKeyExists = false;
@@ -285,6 +299,7 @@ public class DegreeAuditController extends UifControllerBase {
             String[] params = {};
             GlobalVariables.getMessageMap().putWarning("planAudit.programParamSeattle", DegreeAuditConstants.TECHNICAL_PROBLEM, params);
         }
+
 
         return getUIFModelAndView(auditForm);
     }
