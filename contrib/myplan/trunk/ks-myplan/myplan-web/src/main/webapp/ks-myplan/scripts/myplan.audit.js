@@ -97,7 +97,7 @@ function initAuditActions() {
 }
 
 function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
-    auditButtonState('plan_audit_validate');
+    jQuery("button#plan_audit_validate").addClass("disabled").attr("disabled", true);
 
     var tempForm = '<form id="' + id + '_form" action="' + action + '" method="post" style="display:none;">';
     jQuery.each(retrieveOptions, function (name, value) {
@@ -107,7 +107,7 @@ function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
     jQuery("body").append(tempForm);
 
     var blockOptions = {
-        message:'<img src="../ks-myplan/images/btnLoader.gif" style="vertical-align:middle; margin-right:10px;"/> Validating your plan',
+        message:'<img src="../ks-myplan/images/btnLoader.gif" style="vertical-align:middle; margin-right:10px;"/>Validating your plan',
         css:{
             width:'100%',
             border:'none',
@@ -151,12 +151,15 @@ function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
                 },
                 autoSize:true,
                 parent:"form:first",
-                href:'#' + getId
+                href:'#' + getId,
+                afterClose:function () {
+                    auditButtonState("plan_audit_validate");
+                }
             });
             elementToBlock.unblock();
         } else {
-            elementToBlock.unblock();
             jQuery("button#plan_audit_run").click();
+            elementToBlock.unblock();
         }
 
     };

@@ -6,9 +6,10 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
 
     public static final ContextInfo CONTEXT_INFO = new ContextInfo();
 
-    public static final String DEFAULT_KEY="default";
-    public static final String DEFAULT_SELECT = "Select";
-    public static final String DEFAULT_VALUE="Select a degree program or minor";
+    public static final String DEFAULT_KEY = "default";
+    public static final String DEFAULT_SELECT = "Select Credit amount";
+    public static final String DEFAULT_SELECT_AND_MORE = "Select Credit amount and more";
+    public static final String DEFAULT_VALUE = "Select a degree program or minor";
     public static final String AUDIT_PARAM_ID = "auditId";
     public static final String AUDIT_PARAM_TYPE = "auditType";
     public static final String AUDIT_EMPTY_PAGE = "degree_audit_empty_page";
@@ -31,22 +32,20 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
     public static final String WRITING_CREDIT = "Writing";
     public static final String SECTION_SELECTED = "Section";
 
-    public static final String APPLICATION_URL="application.url";
+    public static final String APPLICATION_URL = "application.url";
 
-    public static final String AUDIT_FAILED_HTML =  "<div class=\"uif-validationMessages uif-groupValidationMessages uif-pageValidationMessages " +
-                                                    "uif-pageValidationMessages-error\" style=\"\" data-messagesfor=\"degree_audit\"><h3 tabindex=\"0\" " +
-                                                    "class=\"uif-pageValidationHeader\" id=\"pageValidationHeader\">" +
-                                                    "<img class=\"uif-validationImage\" src=\"%s/krad/images/validation/error.png\" alt=\"Error\"> " +
-                                                    "This page has 1 error</h3>" +
-                                                    "<ul class=\"uif-validationMessagesList\" id=\"pageValidationList\" aria-labelledby=\"pageValidationHeader\">" +
-                                                    "<li data-messageitemfor=\"select_programParam_seattle\" class=\"uif-errorMessageItem\">" +
-                                                    "Audit processing failed due to '%s'" +
-                                                    "</li>" +
-                                                    "</ul>" +
-                                                    "<input name=\"script\" type=\"hidden\" data-role=\"script\" value=\"removeCookie();\"/></div>";
+    public static final String AUDIT_FAILED_HTML = "<div class=\"uif-validationMessages uif-groupValidationMessages uif-pageValidationMessages " +
+            "uif-pageValidationMessages-error\" style=\"\" data-messagesfor=\"degree_audit\"><h3 tabindex=\"0\" " +
+            "class=\"uif-pageValidationHeader\" id=\"pageValidationHeader\">" +
+            "<img class=\"uif-validationImage\" src=\"%s/krad/images/validation/error.png\" alt=\"Error\"> " +
+            "This page has 1 error</h3>" +
+            "<ul class=\"uif-validationMessagesList\" id=\"pageValidationList\" aria-labelledby=\"pageValidationHeader\">" +
+            "<li data-messageitemfor=\"select_programParam_seattle\" class=\"uif-errorMessageItem\">" +
+            "Audit processing failed due to '%s'" +
+            "</li>" +
+            "</ul>" +
+            "<input name=\"script\" type=\"hidden\" data-role=\"script\" value=\"removeCookie();\"/></div>";
     public static final String IS_AUDIT_SERVICE_UP = "isAuditServiceRunning";
-
-
 
 
 }

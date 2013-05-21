@@ -26,7 +26,6 @@ public class PlanAuditMessyItems extends KeyValuesBase {
     @Override
     public List<KeyValue> getKeyValues() {
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
-        keyValues.add(new ConcreteKeyValue(DegreeAuditConstants.DEFAULT_KEY, DegreeAuditConstants.DEFAULT_SELECT));
         List<KeyValue> normalCredits = new ArrayList<KeyValue>();
         List<KeyValue> honorCredits = new ArrayList<KeyValue>();
         List<KeyValue> writingCredits = new ArrayList<KeyValue>();
@@ -36,15 +35,21 @@ public class PlanAuditMessyItems extends KeyValuesBase {
         if (messyItem != null) {
             for (String credit : messyItem.getCredits()) {
                 String display = credit.split(":")[2];
-                if (display.contains(" -- " + DegreeAuditConstants.WRITING_CREDIT + " -- " + DegreeAuditConstants.HONORS_CREDIT)) {
+                if (display.contains(" - " + DegreeAuditConstants.WRITING_CREDIT + " - " + DegreeAuditConstants.HONORS_CREDIT)) {
                     bothHWCredits.add(new ConcreteKeyValue(credit, display));
-                } else if (display.contains(" -- " + DegreeAuditConstants.HONORS_CREDIT)) {
+                } else if (display.contains(" - " + DegreeAuditConstants.HONORS_CREDIT)) {
                     honorCredits.add(new ConcreteKeyValue(credit, display));
-                } else if (display.contains(" -- " + DegreeAuditConstants.WRITING_CREDIT)) {
+                } else if (display.contains(" - " + DegreeAuditConstants.WRITING_CREDIT)) {
                     writingCredits.add(new ConcreteKeyValue(credit, display));
                 } else {
                     normalCredits.add(new ConcreteKeyValue(credit, display));
                 }
+            }
+
+            if (!bothHWCredits.isEmpty() || !honorCredits.isEmpty() || !writingCredits.isEmpty()) {
+                keyValues.add(new ConcreteKeyValue(DegreeAuditConstants.DEFAULT_KEY, DegreeAuditConstants.DEFAULT_SELECT_AND_MORE));
+            } else {
+                keyValues.add(new ConcreteKeyValue(DegreeAuditConstants.DEFAULT_KEY, DegreeAuditConstants.DEFAULT_SELECT));
             }
             //Sorting and adding normal credits to keyValues
             Collections.sort(normalCredits, new Comparator<KeyValue>() {

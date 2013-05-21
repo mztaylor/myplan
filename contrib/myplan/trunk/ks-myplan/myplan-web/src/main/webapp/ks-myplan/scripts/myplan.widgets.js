@@ -925,11 +925,11 @@ function myplanLightBoxLink(href, options, e) {
     top.jQuery.fancybox(options);
 }
 
-function auditButtonState(buttonId) {
+function auditButtonState(buttonId, blockAudit) {
     var button = jQuery("button#" + buttonId);
     var type = button.data("audittype");
     var disabled;
-    if (jQuery.cookie("myplan_audit_running")) {
+    if (jQuery.cookie("myplan_audit_running") || blockAudit) {
         disabled = true;
     } else {
         var id = getAuditProgram("id", type);
