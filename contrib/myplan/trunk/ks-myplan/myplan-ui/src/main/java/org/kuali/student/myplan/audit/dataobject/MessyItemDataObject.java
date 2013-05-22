@@ -11,14 +11,14 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class MessyItemDataObject {
-    
+
     private List<MessyItem> messyItemList;
-    
+
     private String atpId;
 
     public List<MessyItem> getMessyItemList() {
-        if(messyItemList == null ) {
-             messyItemList = new ArrayList<MessyItem>();
+        if (messyItemList == null) {
+            messyItemList = new ArrayList<MessyItem>();
         }
         return messyItemList;
     }

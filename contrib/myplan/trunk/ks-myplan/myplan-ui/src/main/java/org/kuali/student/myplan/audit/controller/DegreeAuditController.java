@@ -176,8 +176,8 @@ public class DegreeAuditController extends UifControllerBase {
                             String auditId = report.getAuditId();
                             // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
                             AuditReportInfo degreeReport = degreeAuditService.getAuditReport(auditId, degreeAuditForm.getAuditType(), context);
-                            copyCampusToForm( degreeReport, campusMap, degreeAuditForm);
-                            copyReportToForm( degreeReport, degreeAuditForm);
+                            copyCampusToForm(degreeReport, campusMap, degreeAuditForm);
+                            copyReportToForm(degreeReport, degreeAuditForm);
                             break;
                         }
                     }
@@ -220,7 +220,7 @@ public class DegreeAuditController extends UifControllerBase {
         return getUIFModelAndView(auditForm);
     }
 
-    public void copyCampusToForm(AuditReportInfo report, Map<Character, String> campusMap, DegreeAuditForm form ) {
+    public void copyCampusToForm(AuditReportInfo report, Map<Character, String> campusMap, DegreeAuditForm form) {
         String programId = report.getProgramId();
         char prefix = programId.charAt(0);
         programId = programId.replace(' ', '$');
@@ -273,7 +273,7 @@ public class DegreeAuditController extends UifControllerBase {
                     String auditID = info.getAuditId();
                     // TODO: For now we are getting the auditType from the end user. This needs to be remvoed before going live and hard coded to audit type key html
                     AuditReportInfo report = degreeAuditService.getAuditReport(auditID, auditType, context);
-                    copyReportToForm(report, form );
+                    copyReportToForm(report, form);
                 } else {
                     String[] params = {};
                     GlobalVariables.getMessageMap().putError("degreeAudit.programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
@@ -468,7 +468,7 @@ public class DegreeAuditController extends UifControllerBase {
                     else if (planActivities.size() > 1) {
                         Set<String> choicesList = processSectionProfile(planActivities);
                         if (choicesList.size() > 1) {
-                            buildMessyItemAndAddToMap( course,  choicesList,  messyItemMap);
+                            buildMessyItemAndAddToMap(course, choicesList, messyItemMap);
                         } else if (choicesList.size() == 1) {
                             buildCourseItemAndAddToList(course, (String) choicesList.toArray()[0], null, courseItems);
                         }
@@ -479,7 +479,7 @@ public class DegreeAuditController extends UifControllerBase {
                         List<ActivityOfferingItem> activityOfferingItems = courseDetailsInquiryHelper.getActivityOfferingItemsById(course.getCourseDetails().getCourseId(), course.getPlanItemDataObject().getAtp());
                         Set<String> choicesList = processSectionProfile(activityOfferingItems);
                         if (choicesList.size() > 1) {
-                            buildMessyItemAndAddToMap( course, choicesList,  messyItemMap);
+                            buildMessyItemAndAddToMap(course, choicesList, messyItemMap);
                         } else if (choicesList.size() == 1) {
                             buildCourseItemAndAddToList(course, (String) choicesList.toArray()[0], null, courseItems);
                         } else {
@@ -509,7 +509,7 @@ public class DegreeAuditController extends UifControllerBase {
 //            messyItem.setSelectedCredit(planItemSnapShots.get(versionIndependentId));
 //        }
 
-        if (!messyItemMap.isEmpty() ) {
+        if (!messyItemMap.isEmpty()) {
             List<MessyItemDataObject> messyItemDataObjects = new ArrayList<MessyItemDataObject>(messyItemMap.values());
             Collections.sort(messyItemDataObjects, new Comparator<MessyItemDataObject>() {
                 @Override
@@ -524,23 +524,22 @@ public class DegreeAuditController extends UifControllerBase {
     }
 
     public void addCourseToAList(List<CourseItem> courseItems, Map<String, MessyItemDataObject> messyItemMap, PlannedCourseDataObject course, String section, String credit) {
-        switch(getCreditType(credit) ) {
-            case multiple:
-            {
+        switch (getCreditType(credit)) {
+            case multiple: {
                 String[] temp = credit.replace(" ", "").split(",");
                 List<String> credits = Arrays.asList(temp);
                 buildMessyItemAndAddToMap(course, section, credits, messyItemMap);
                 break;
             }
-            case range:        {
+            case range: {
                 List<String> credits = getCreditsForRange(credit);
 
                 buildMessyItemAndAddToMap(course, section, credits, messyItemMap);
-                break;     }
+                break;
+            }
 
             case normal:
-            default:
-            {
+            default: {
                 buildCourseItemAndAddToList(course, credit, section, courseItems);
                 break;
             }
@@ -676,7 +675,7 @@ public class DegreeAuditController extends UifControllerBase {
      * @param creditList
      * @param messyItemMap
      */
-    private void buildMessyItemAndAddToMap(PlannedCourseDataObject course, String section, List<String> creditList, Map<String, MessyItemDataObject> messyItemMap ) {
+    private void buildMessyItemAndAddToMap(PlannedCourseDataObject course, String section, List<String> creditList, Map<String, MessyItemDataObject> messyItemMap) {
 
         Set<String> credits = new HashSet<String>();
         for (String cr : creditList) {
@@ -710,7 +709,9 @@ public class DegreeAuditController extends UifControllerBase {
         }
     }
 
-    enum CreditType { range, multiple, normal };
+    enum CreditType {range, multiple, normal}
+
+    ;
 
     /**
      * returns type of credit
@@ -722,8 +723,8 @@ public class DegreeAuditController extends UifControllerBase {
      * @return
      */
     private CreditType getCreditType(String credit) {
-        System.out.println( "getCreditType: " + credit );
-        if( credit.contains( "-" )) return CreditType.range;
+        System.out.println("getCreditType: " + credit);
+        if (credit.contains("-")) return CreditType.range;
         if (credit.contains(",")) return CreditType.multiple;
         return CreditType.normal;
 
