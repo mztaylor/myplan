@@ -1039,7 +1039,9 @@ function setPendingAudit(obj, minutes) {
                     if (response.status == "PENDING") {
                         jQuery.cookie('myplan_audit_running', JSON.stringify(data), {expires:data.expires});
                         auditButtonState(obj.attr("id"));
-                        jQuery.publish('REFRESH_AUDITS');
+                        jQuery.publish('REFRESH_AUDITS', [
+                            {"type":data.auditType}
+                        ]);
                     }
                 },
                 statusCode:{ 500:function () {
@@ -1110,7 +1112,9 @@ function pollPendingAudit(programId, recentAuditId, auditType) {
                 if (growl) showGrowl(data.programName + " audit is ready to view.", "Degree Audit Completed", "infoGrowl");
             }
             jQuery.cookie("myplan_audit_running", null, {expires:new Date().setTime(0)});
-            jQuery.publish("AUDIT_COMPLETE");
+            jQuery.publish("AUDIT_COMPLETE", [
+                {"type":auditType}
+            ]);
         }
     });
 }
