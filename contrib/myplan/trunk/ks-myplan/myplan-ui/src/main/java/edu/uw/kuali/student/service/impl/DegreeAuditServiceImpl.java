@@ -19,7 +19,6 @@ import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
-import org.kuali.student.myplan.audit.dataobject.PlanAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
@@ -322,6 +321,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         }
 
         try {
+            if( academicPlanId != null ) {
             // getting the learning plan for given academicPlanId
             LearningPlanInfo learningPlanInfo = getAcademicPlanService().getLearningPlan(academicPlanId, context);
             YearTerm lastYT = AtpHelper.getLastPlannedTerm();
@@ -348,6 +348,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             }
             learningPlanInfo.setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
             getAcademicPlanService().updateLearningPlan(learningPlanInfo.getId(), learningPlanInfo, context);
+            }
         } catch (Exception e) {
             logger.error("Could not update the learningPlanInfo");
         }
@@ -479,10 +480,17 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         String answer = "Audit ID " + auditId + " not available";
         try {
             JobQueueRunHibernateDao dao = (JobQueueRunHibernateDao) getJobQueueRunDao();
-            String sql = "SELECT report.report, run.stuno FROM JobQueueRun run, JobQueueReport report  WHERE run.intSeqNo = report.jobqSeqNo AND run.jobid = ? AND run.reportType = 'HTM'";
+            String sql = "SELECT report.report, run.stuno, run.dprog, run.webtitle FROM JobQueueRun run, JobQueueReport report  WHERE run.intSeqNo = report.jobqSeqNo AND run.jobid = ? AND run.reportType = 'HTM'";
 
             List list = dao.find(sql, new Object[]{auditId});
             Object[] item = (Object[]) list.get(0);
+
+            String stunoX = (String) item[1];
+            String dprog = (String) item[2];
+            auditReportInfo.setProgramId( dprog );
+            String webtitle = (String) item[3];
+            auditReportInfo.setProgramTitle( webtitle );
+
             byte[] report = (byte[]) item[0];
             String garbage = new String(report);
             InputStream in = new ByteArrayInputStream(garbage.getBytes());
@@ -516,7 +524,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             String preparedBy = "";
             List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regId, LEARNING_PLAN_TYPE_PLAN_AUDIT, CONTEXT_INFO);
             for (LearningPlanInfo learningPlanInfo : learningPlanList) {
-                PlanAuditItem planAuditItem = new PlanAuditItem();
+//                PlanAuditItem planAuditItem = new PlanAuditItem();
                 for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
                     String key = attributeInfo.getKey();
                     String value = attributeInfo.getValue();

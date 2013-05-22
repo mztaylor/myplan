@@ -18,7 +18,6 @@ package org.kuali.student.myplan.audit.controller;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
@@ -71,6 +70,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -79,6 +79,10 @@ import java.util.*;
 import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
 import static org.kuali.student.myplan.audit.service.DegreeAuditConstants.*;
 import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
+
+//import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+//import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+//import org.kuali.student.r2.common.exceptions.OperationFailedException;
 
 
 // http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
@@ -141,141 +145,54 @@ public class DegreeAuditController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=audit")
     public ModelAndView audit(@ModelAttribute("KualiForm") AuditForm auditForm, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
-//        boolean systemKeyExists = true;
         DegreeAuditForm degreeAuditForm = auditForm.getDegreeAudit();
         PlanAuditForm planAuditForm = auditForm.getPlanAudit();
         try {
-            Map<String, String> campusMap = populateCampusMap();
             ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
-//            Person user = GlobalVariables.getUserSession().getPerson();
             String regId = UserSessionHelper.getStudentRegId();
             if (StringUtils.hasText(regId)) {
-                DegreeAuditService degreeAuditService = getDegreeAuditService();
-                String degreeAuditId = degreeAuditForm.getAuditId();
-                ContextInfo contextInfo = new ContextInfo();
-                degreeAuditForm.setCampusParam(campusMap.get("0"));
-                planAuditForm.setCampusParam(campusMap.get("0"));
                 logger.info("audit regId " + regId);
-                String planAuditId = planAuditForm.getAuditId();
+
+                DegreeAuditService degreeAuditService = getDegreeAuditService();
+
+                Map<Character, String> campusMap = populateCampusMap();
+                String campus = campusMap.get('0');
+                degreeAuditForm.setCampusParam(campus);
+                planAuditForm.setCampusParam(campus);
+
+
                 if (!servicesStatusDataObject.isDegreeAuditServiceUp()) {
                     AtpHelper.addServiceError("programParamSeattle");
                 } else {
                     Date startDate = new Date();
                     Date endDate = new Date();
-                    String degreeProgramParam = null;
-                    String degreeProgramId = null;
-                    String planProgramParam = null;
-                    String planProgramId = null;
-                    List<AuditReportInfo> auditReportInfoList = degreeAuditService.getAuditsForStudentInDateRange(regId, startDate, endDate, contextInfo);
-                    for (AuditReportInfo auditReportInfo : auditReportInfoList) {
-                        if (!auditReportInfo.isWhatIfAudit()) {
-                            degreeAuditId = auditReportInfo.getAuditId();
-                            degreeProgramParam = auditReportInfo.getProgramTitle();
+                    ContextInfo context = new ContextInfo();
+
+                    List<AuditReportInfo> reportList = degreeAuditService.getAuditsForStudentInDateRange(regId, startDate, endDate, context);
+
+                    // Grab first degree audit
+                    for (AuditReportInfo report : reportList) {
+                        if (!report.isWhatIfAudit()) {
+                            String auditId = report.getAuditId();
+                            // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
+                            AuditReportInfo degreeReport = degreeAuditService.getAuditReport(auditId, degreeAuditForm.getAuditType(), context);
+                            copyCampusToForm( degreeReport, campusMap, degreeAuditForm);
+                            copyReportToForm( degreeReport, degreeAuditForm);
                             break;
                         }
                     }
 
-                    if (planAuditId == null) {
-                        for (AuditReportInfo auditReportInfo : auditReportInfoList) {
-                            if (auditReportInfo.isWhatIfAudit()) {
-                                planAuditId = auditReportInfo.getAuditId();
-                                planProgramParam = auditReportInfo.getProgramTitle();
-                                break;
-                            }
-                        }
-
-                    }
-                    // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
-                    if (degreeAuditId != null) {
-                        AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(degreeAuditId, degreeAuditForm.getAuditType(), contextInfo);
-                        if (auditReportInfoList != null && auditReportInfoList.size() > 0) {
-                            for (AuditReportInfo report : auditReportInfoList) {
-                                if (report.getAuditId().equalsIgnoreCase(auditReportInfo.getAuditId())) {
-                                    degreeProgramParam = report.getProgramTitle();
-                                    degreeProgramId = report.getProgramId();
-                                }
-                            }
-                        }
-                        InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
-                        StringWriter sw = new StringWriter();
-
-                        int c = 0;
-                        while ((c = in.read()) != -1) {
-                            sw.append((char) c);
-                        }
-
-                        String html = sw.toString();
-
-                        degreeAuditForm.setAuditHtml(html);
-
-
-                        /*Impl to set the default values for campusParam and programParam properties*/
-                        if (degreeProgramId != null && degreeProgramParam != null) {
-                            int campusPrefix = Integer.parseInt(degreeProgramId.substring(0, 1));
-                            degreeProgramId = degreeProgramId.replaceAll(" ", "$");
-                            degreeAuditForm.setCampusParam(campusMap.get(String.valueOf(campusPrefix)));
-                            switch (campusPrefix) {
-                                case 0:
-                                    degreeAuditForm.setProgramParamSeattle(degreeProgramId);
-                                    break;
-                                case 1:
-                                    degreeAuditForm.setProgramParamBothell(degreeProgramId);
-                                    break;
-                                case 2:
-                                    degreeAuditForm.setProgramParamTacoma(degreeProgramId);
-                                    break;
-                                default:
-                                    break;
-                            }
+                    // Grab first plan audit
+                    for (AuditReportInfo report : reportList) {
+                        if (report.isWhatIfAudit()) {
+                            String auditId = report.getAuditId();
+                            AuditReportInfo planReport = degreeAuditService.getAuditReport(auditId, planAuditForm.getAuditType(), context);
+                            copyCampusToForm(planReport, campusMap, planAuditForm);
+                            copyReportToForm(planReport, planAuditForm);
+                            break;
                         }
                     }
-                    /*Plan Audit Report*/
-                    if (planAuditId != null) {
-                        AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(planAuditId, planAuditForm.getAuditType(), contextInfo);
-                        if (auditReportInfoList != null && auditReportInfoList.size() > 0) {
-                            for (AuditReportInfo report : auditReportInfoList) {
-                                if (report.getAuditId().equalsIgnoreCase(auditReportInfo.getAuditId())) {
-                                    planProgramParam = report.getProgramTitle();
-                                    planProgramId = report.getProgramId();
-                                }
-                            }
-                        }
-                        InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
-                        StringWriter sw = new StringWriter();
-
-                        int c = 0;
-                        while ((c = in.read()) != -1) {
-                            sw.append((char) c);
-                        }
-
-                        String html = sw.toString();
-                        planAuditForm.setAuditHtml(html);
-
-
-                        /*Impl to set the default values for campusParam and programParam properties*/
-                        if (planProgramId != null && planProgramParam != null) {
-                            int campusPrefix = Integer.parseInt(planProgramId.substring(0, 1));
-                            planProgramId = planProgramId.replaceAll(" ", "$");
-                            planAuditForm.setCampusParam(campusMap.get(String.valueOf(campusPrefix)));
-                            switch (campusPrefix) {
-                                case 0:
-                                    planAuditForm.setProgramParamSeattle(planProgramId);
-                                    break;
-                                case 1:
-                                    planAuditForm.setProgramParamBothell(planProgramId);
-                                    break;
-                                case 2:
-                                    planAuditForm.setProgramParamTacoma(planProgramId);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-
                 }
-
-
             }
             //Check to see if the stddent has any planItems from current to future atp
             PlanItemLookupableHelperBase planHelper = new PlanItemLookupableHelperBase();
@@ -292,7 +209,6 @@ public class DegreeAuditController extends UifControllerBase {
             }
         } catch (DataRetrievalFailureException e) {
             logger.error("audit failed", e);
-//            systemKeyExists = false;
             auditForm.setPageId(DegreeAuditConstants.AUDIT_NON_STUDENT_PAGE);
         } catch (Exception e) {
             logger.error("audit failed", e);
@@ -304,45 +220,60 @@ public class DegreeAuditController extends UifControllerBase {
         return getUIFModelAndView(auditForm);
     }
 
+    public void copyCampusToForm(AuditReportInfo report, Map<Character, String> campusMap, DegreeAuditForm form ) {
+        String programId = report.getProgramId();
+        char prefix = programId.charAt(0);
+        programId = programId.replace(' ', '$');
+
+        // Impl to set the default values for campusParam and programParam properties
+        String campus = campusMap.get(prefix);
+        form.setCampusParam(campus);
+        switch (prefix) {
+            case '0':
+                form.setProgramParamSeattle(programId);
+                break;
+            case '1':
+                form.setProgramParamBothell(programId);
+                break;
+            case '2':
+                form.setProgramParamTacoma(programId);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void copyReportToForm(AuditReportInfo report, DegreeAuditForm form) throws IOException {
+
+        InputStream in = report.getReport().getDataSource().getInputStream();
+        StringWriter sw = new StringWriter();
+
+        int c = 0;
+        while ((c = in.read()) != -1) {
+            sw.append((char) c);
+        }
+
+        String html = sw.toString();
+        form.setAuditHtml(html);
+    }
+
     @RequestMapping(params = "methodToCall=runAudit")
     public ModelAndView runAudit(@ModelAttribute("KualiForm") AuditForm auditForm, BindingResult result,
                                  HttpServletRequest request, HttpServletResponse response) {
         DegreeAuditForm form = auditForm.getDegreeAudit();
-        String auditID = null;
         try {
-//            Person user = GlobalVariables.getUserSession().getPerson();
             String regid = UserSessionHelper.getStudentRegId();
             if (StringUtils.hasText(regid)) {
-                DegreeAuditService degreeAuditService = getDegreeAuditService();
-                String programId = null;
-                if ("306".equals(form.getCampusParam())) {
-                    programId = form.getProgramParamSeattle();
-
-                } else if ("310".equals(form.getCampusParam())) {
-                    programId = form.getProgramParamBothell();
-
-                } else if ("323".equals(form.getCampusParam())) {
-                    programId = form.getProgramParamTacoma();
-
-                }
+                String programId = getFormProgramID(form);
                 if (!programId.equalsIgnoreCase(DegreeAuditConstants.DEFAULT_KEY)) {
+                    DegreeAuditService degreeAuditService = getDegreeAuditService();
                     ContextInfo context = new ContextInfo();
-                    AuditReportInfo report = degreeAuditService.runAudit(regid, programId, form.getAuditType(), context);
-                    auditID = report.getAuditId();
+                    String auditType = form.getAuditType();
+                    AuditReportInfo info = degreeAuditService.runAudit(regid, programId, auditType, context);
+                    String auditID = info.getAuditId();
                     // TODO: For now we are getting the auditType from the end user. This needs to be remvoed before going live and hard coded to audit type key html
-                    AuditReportInfo auditReportInfo = degreeAuditService.getAuditReport(auditID, form.getAuditType(), context);
-                    InputStream in = auditReportInfo.getReport().getDataSource().getInputStream();
-                    StringWriter sw = new StringWriter();
-
-                    int c = 0;
-                    while ((c = in.read()) != -1) {
-                        sw.append((char) c);
-                    }
-
-                    String html = sw.toString();
-//                    String preparedFor = user.getLastName() + ", " + user.getFirstName();
-//                    html = html.replace("$$PreparedFor$$", preparedFor);
-                    form.setAuditHtml(html);
+                    AuditReportInfo report = degreeAuditService.getAuditReport(auditID, auditType, context);
+                    copyReportToForm(report, form );
                 } else {
                     String[] params = {};
                     GlobalVariables.getMessageMap().putError("degreeAudit.programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
@@ -370,6 +301,23 @@ public class DegreeAuditController extends UifControllerBase {
             }
         }
         return getUIFModelAndView(auditForm);
+    }
+
+    public String getFormProgramID(DegreeAuditForm form) {
+        String programId = DegreeAuditConstants.DEFAULT_KEY;
+        String campusParam = form.getCampusParam();
+        if ("306".equals(campusParam)) {
+            programId = form.getProgramParamSeattle();
+
+        } else if ("310".equals(campusParam)) {
+            programId = form.getProgramParamBothell();
+
+        } else if ("323".equals(campusParam)) {
+            programId = form.getProgramParamTacoma();
+
+        }
+
+        return programId;
     }
 
     /**
@@ -431,24 +379,12 @@ public class DegreeAuditController extends UifControllerBase {
         /*TODO: uncomment once the hand-off screen is completed*/
 
 
-        /******Plan Audit Report Process*********/
+        // Plan Audit Report Process
         try {
             String regid = UserSessionHelper.getStudentRegId();
             if (StringUtils.hasText(regid)) {
-                String programId = null;
-                String campusParam = form.getCampusParam();
-                if ("306".equals(campusParam)) {
-                    programId = form.getProgramParamSeattle();
-
-                } else if ("310".equals(campusParam)) {
-                    programId = form.getProgramParamBothell();
-
-                } else if ("323".equals(campusParam)) {
-                    programId = form.getProgramParamTacoma();
-
-                }
-                if (!programId.equalsIgnoreCase(DegreeAuditConstants.DEFAULT_KEY)) {
-                    Person user = GlobalVariables.getUserSession().getPerson();
+                String programId = getFormProgramID(form);
+                if (!programId.equals(DegreeAuditConstants.DEFAULT_KEY)) {
                     ContextInfo context = new ContextInfo();
                     context.setPrincipalId(regid);
                     String learningPlanInfoId = null;
@@ -462,17 +398,7 @@ public class DegreeAuditController extends UifControllerBase {
                     DegreeAuditService degreeAuditService = getDegreeAuditService();
 
                     AuditReportInfo report = degreeAuditService.runWhatIfAudit(regid, programId, form.getAuditType(), learningPlanInfoId, context);
-                    InputStream in = report.getReport().getDataSource().getInputStream();
-                    StringWriter sw = new StringWriter();
-
-                    int c = 0;
-                    while ((c = in.read()) != -1) {
-                        sw.append((char) c);
-                    }
-
-                    String html = sw.toString();
-                    form.setAuditHtml(html);
-
+                    copyReportToForm(report, form);
                 } else {
                     String[] params = {};
                     GlobalVariables.getMessageMap().putError("planAudit.programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
@@ -507,137 +433,84 @@ public class DegreeAuditController extends UifControllerBase {
                                         HttpServletRequest request, HttpServletResponse response) {
 
         PlanAuditForm form = auditForm.getPlanAudit();
+
         List<CourseItem> courseItems = new ArrayList<CourseItem>();
+        Map<String, MessyItemDataObject> messyItemMap = new HashMap<String, MessyItemDataObject>();
+
+        CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
+
         PlannedTermsHelperBase plannedTermsHelperBase = new PlannedTermsHelperBase();
-        Map<String, String> planItemSnapShots = getPlanItemSnapShots();
-        List<PlannedTerm> plannedTermList = plannedTermsHelperBase.getPlannedTermsFromStartAtp();
+        List<PlannedTerm> termList = plannedTermsHelperBase.getPlannedTermsFromStartAtp();
         List<String> scheduledTerms = AtpHelper.getPublishedTerms();
-        Map<String, List<MessyItem>> messyItemMap = new HashMap<String, List<MessyItem>>();
-        for (PlannedTerm plannedTerm : plannedTermList) {
-            //TS PUBLISHED: YES
-            String atpId = plannedTerm.getAtpId();
-            if (!AtpHelper.isAtpCompletedTerm(atpId) && scheduledTerms.contains(atpId)) {
-                for (PlannedCourseDataObject plannedCourse : plannedTerm.getPlannedList()) {
-                    Set<String> credits = new HashSet<String>();
+
+
+        for (PlannedTerm term : termList) {
+            String atpId = term.getAtpId();
+
+            // Skip past terms
+            if (AtpHelper.isAtpCompletedTerm(atpId)) continue;
+
+
+            // TS PUBLISHED: YES
+            if (scheduledTerms.contains(atpId)) {
+
+                for (PlannedCourseDataObject course : term.getPlannedList()) {
                     // Planned Sections : YES ; Multiple planned sections : NO
-                    if (plannedCourse.getPlanActivities().size() == 1 && plannedCourse.getPlanActivities().get(0).isPrimary()) {
-                        String section = plannedCourse.getPlanActivities().get(0).getCode();
-                        String credit = plannedCourse.getPlanActivities().get(0).getCredits();
-                        String creditType = getCreditType(credit);
-                        // Is section Offered in Single value : NO
-                        if ("MULTIPLE".equalsIgnoreCase(creditType)) {
-                            String[] crs = credit.replace(" ", "").split(",");
-                            for (String cr : crs) {
-                                credits.add(String.format("%s:%s:%s", section, cr, cr));
-                            }
-                            buildMessyItemAndAddToMap(plannedCourse, credits, messyItemMap, planItemSnapShots);
-                        }
-                        // Is section Offered in Single value : NO
-                        else if ("RANGE".equalsIgnoreCase(creditType)) {
-                            List<String> crs = getCreditsForRange(credit);
-                            for (String cr : crs) {
-                                credits.add(String.format("%s:%s:%s", section, cr, cr));
-                            }
-                            buildMessyItemAndAddToMap(plannedCourse, credits, messyItemMap, planItemSnapShots);
-                        }
-                        // Is course Offered in Single value : YES
-                        else {
-                            buildCourseItemAndAddToList(plannedCourse, credit, section, courseItems);
-                        }
+                    List<ActivityOfferingItem> planActivities = course.getPlanActivities();
+                    if (planActivities.size() == 1 && planActivities.get(0).isPrimary()) {
+                        String section = planActivities.get(0).getCode();
+                        String credit = planActivities.get(0).getCredits();
+
+                        addCourseToAList(courseItems, messyItemMap, course, section, credit);
 
                     }
                     // Planned Sections : YES ; Multiple planned sections : YES
-                    else if (plannedCourse.getPlanActivities().size() > 1) {
-                        Set<String> choicesList = processSectionProfile(plannedCourse.getPlanActivities());
+                    else if (planActivities.size() > 1) {
+                        Set<String> choicesList = processSectionProfile(planActivities);
                         if (choicesList.size() > 1) {
-                            buildMessyItemAndAddToMap(plannedCourse, choicesList, messyItemMap, planItemSnapShots);
+                            buildMessyItemAndAddToMap( course,  choicesList,  messyItemMap);
                         } else if (choicesList.size() == 1) {
-                            buildCourseItemAndAddToList(plannedCourse, (String) choicesList.toArray()[0], null, courseItems);
+                            buildCourseItemAndAddToList(course, (String) choicesList.toArray()[0], null, courseItems);
                         }
 
                     }
                     // Planned Sections : NO
                     else {
-                        CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
-                        List<ActivityOfferingItem> activityOfferingItems = courseDetailsInquiryHelper.getActivityOfferingItemsById(plannedCourse.getCourseDetails().getCourseId(), plannedCourse.getPlanItemDataObject().getAtp());
+                        List<ActivityOfferingItem> activityOfferingItems = courseDetailsInquiryHelper.getActivityOfferingItemsById(course.getCourseDetails().getCourseId(), course.getPlanItemDataObject().getAtp());
                         Set<String> choicesList = processSectionProfile(activityOfferingItems);
                         if (choicesList.size() > 1) {
-                            buildMessyItemAndAddToMap(plannedCourse, choicesList, messyItemMap, planItemSnapShots);
+                            buildMessyItemAndAddToMap( course, choicesList,  messyItemMap);
                         } else if (choicesList.size() == 1) {
-                            buildCourseItemAndAddToList(plannedCourse, (String) choicesList.toArray()[0], null, courseItems);
+                            buildCourseItemAndAddToList(course, (String) choicesList.toArray()[0], null, courseItems);
                         } else {
-                            String credit = plannedCourse.getCourseDetails().getCredit();
-                            String creditType = getCreditType(credit);
-                            // Is course Offered in Single value : NO
-                            if ("MULTIPLE".equalsIgnoreCase(creditType)) {
-                                String[] crs = credit.replace(" ", "").split(",");
-                                for (String cr : crs) {
-                                    credits.add(String.format("%s:%s:%s", "", cr, cr));
-                                }
-                                buildMessyItemAndAddToMap(plannedCourse, credits, messyItemMap, planItemSnapShots);
-                            }
-                            // Is course Offered in Single value : NO
-                            else if ("RANGE".equalsIgnoreCase(creditType)) {
-                                List<String> crs = getCreditsForRange(credit);
-                                for (String cr : crs) {
-                                    credits.add(String.format("%s:%s:%s", "", cr, cr));
-                                }
-                                buildMessyItemAndAddToMap(plannedCourse, credits, messyItemMap, planItemSnapShots);
-                            }
-                            // Is course Offered in Single value : YES
-                            else {
-                                buildCourseItemAndAddToList(plannedCourse, String.format("%s:%s:%s", "", credit, credit), null, courseItems);
-
-                            }
+                            String credit = course.getCourseDetails().getCredit();
+                            String section = "";
+                            addCourseToAList(courseItems, messyItemMap, course, section, credit);
                         }
                     }
                 }
 
             }
             //TS PUBLISHED: NO
-            else if (!AtpHelper.isAtpCompletedTerm(atpId)) {
-                Set<String> credits = new HashSet<String>();
-                for (PlannedCourseDataObject plannedCourseDataObject : plannedTerm.getPlannedList()) {
-                    String credit = plannedCourseDataObject.getCourseDetails().getCredit();
-                    String creditType = getCreditType(credit);
-                    // Is course Offered in Single value : NO
-                    if ("MULTIPLE".equalsIgnoreCase(creditType)) {
-                        String[] crs = credit.replace(" ", "").split(",");
-                        for (String cr : crs) {
-                            credits.add(String.format("%s:%s:%s", "", cr, cr));
-                        }
-                        buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap, planItemSnapShots);
-                    }
-                    // Is course Offered in Single value : NO
-                    else if ("RANGE".equalsIgnoreCase(creditType)) {
-                        List<String> crs = getCreditsForRange(credit);
-                        for (String cr : crs) {
-                            credits.add(String.format("%s:%s:%s", "", cr, cr));
-                        }
-                        buildMessyItemAndAddToMap(plannedCourseDataObject, credits, messyItemMap, planItemSnapShots);
-                    }
-                    // Is course Offered in Single value : YES
-                    else {
-                        buildCourseItemAndAddToList(plannedCourseDataObject, credit, null, courseItems);
-
-                    }
-
+            else {
+                for (PlannedCourseDataObject course : term.getPlannedList()) {
+                    String credit = course.getCourseDetails().getCredit();
+                    String section = "";
+                    addCourseToAList(courseItems, messyItemMap, course, section, credit);
                 }
-
-
             }
         }
         if (courseItems.size() > 0) {
             form.setCleanList(courseItems);
         }
-        if (messyItemMap.size() > 0) {
-            List<MessyItemDataObject> messyItemDataObjects = new ArrayList<MessyItemDataObject>();
-            for (Map.Entry<String, List<MessyItem>> entry : messyItemMap.entrySet()) {
-                MessyItemDataObject messyItemDataObject = new MessyItemDataObject();
-                messyItemDataObject.setAtpId(entry.getKey());
-                messyItemDataObject.setMessyItemList(entry.getValue());
-                messyItemDataObjects.add(messyItemDataObject);
-            }
+
+//        Map<String, String> planItemSnapShots = getPlanItemSnapShots();
+//        if (planItemSnapShots != null && planItemSnapShots.containsKey(versionIndependentId) && StringUtils.hasText(planItemSnapShots.get(versionIndependentId))) {
+//            messyItem.setSelectedCredit(planItemSnapShots.get(versionIndependentId));
+//        }
+
+        if (!messyItemMap.isEmpty() ) {
+            List<MessyItemDataObject> messyItemDataObjects = new ArrayList<MessyItemDataObject>(messyItemMap.values());
             Collections.sort(messyItemDataObjects, new Comparator<MessyItemDataObject>() {
                 @Override
                 public int compare(MessyItemDataObject val1, MessyItemDataObject val2) {
@@ -648,6 +521,30 @@ public class DegreeAuditController extends UifControllerBase {
             form.setMessyItems(messyItemDataObjects);
         }
         return getUIFModelAndView(auditForm);
+    }
+
+    public void addCourseToAList(List<CourseItem> courseItems, Map<String, MessyItemDataObject> messyItemMap, PlannedCourseDataObject course, String section, String credit) {
+        switch(getCreditType(credit) ) {
+            case multiple:
+            {
+                String[] temp = credit.replace(" ", "").split(",");
+                List<String> credits = Arrays.asList(temp);
+                buildMessyItemAndAddToMap(course, section, credits, messyItemMap);
+                break;
+            }
+            case range:        {
+                List<String> credits = getCreditsForRange(credit);
+
+                buildMessyItemAndAddToMap(course, section, credits, messyItemMap);
+                break;     }
+
+            case normal:
+            default:
+            {
+                buildCourseItemAndAddToList(course, credit, section, courseItems);
+                break;
+            }
+        }
     }
 
     /**
@@ -711,49 +608,46 @@ public class DegreeAuditController extends UifControllerBase {
      * @return
      */
     private Set<String> processSectionProfile(List<ActivityOfferingItem> activityOfferingItems) {
-        Set<String> stringSet = new HashSet<String>();
-        Set<String> choicesList = new HashSet<String>();
-        for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
-            if (activityOfferingItem.isPrimary()) {
+        Set<String> choices = new HashSet<String>();
+        for (ActivityOfferingItem activity : activityOfferingItems) {
+            if (activity.isPrimary()) {
 
-                String section = activityOfferingItem.getCode();
-                boolean isHonorSection = activityOfferingItem.isHonorsSection();
-                boolean isWritingSection = activityOfferingItem.isWritingSection();
-                String credit = activityOfferingItem.getCredits();
-                String creditType = getCreditType(credit);
-                // Is section Offered in Single value : NO
-                if ("MULTIPLE".equalsIgnoreCase(creditType)) {
-                    String[] crs = credit.replace(" ", "").split(",");
-                    for (String cr : crs) {
-                        String display = cr + (isWritingSection ? " -- " + WRITING_CREDIT : "") + (isHonorSection ? " -- " + HONORS_CREDIT : "");
-                        if (!stringSet.contains(display)) {
-                            stringSet.add(display);
-                            choicesList.add(String.format("%s:%s:%s", section, cr, display));
+                String section = activity.getCode();
+                boolean isHonorSection = activity.isHonorsSection();
+                boolean isWritingSection = activity.isWritingSection();
+                String credit = activity.getCredits();
+                switch (getCreditType(credit)) {
+                    case multiple: {
+                        String[] crs = credit.replace(" ", "").split(",");
+                        for (String cr : crs) {
+                            String display = getCreditOption(cr, isWritingSection, isHonorSection);
+                            choices.add(String.format("%s:%s:%s", section, cr, display));
                         }
+                        break;
+                    }
+                    case range: {
+                        List<String> crs = getCreditsForRange(credit);
+                        for (String cr : crs) {
+                            String display = getCreditOption(cr, isWritingSection, isHonorSection);
+                            choices.add(String.format("%s:%s:%s", section, cr, display));
+                        }
+                        break;
                     }
 
-                }
-                // Is section Offered in Single value : NO
-                else if ("RANGE".equalsIgnoreCase(creditType)) {
-                    List<String> crs = getCreditsForRange(credit);
-                    for (String cr : crs) {
-                        String display = cr + (isWritingSection ? " -- " + WRITING_CREDIT : "") + (isHonorSection ? " -- " + HONORS_CREDIT : "");
-                        if (!stringSet.contains(display)) {
-                            stringSet.add(display);
-                            choicesList.add(String.format("%s:%s:%s", section, cr, display));
-                        }
-                    }
-                } else {
-                    String display = credit + (isWritingSection ? " -- " + WRITING_CREDIT : "") + (isHonorSection ? " -- " + HONORS_CREDIT : "");
-                    if (!stringSet.contains(display)) {
-                        stringSet.add(display);
-                        choicesList.add(String.format("%s:%s:%s", section, credit, display));
+                    case normal:
+                    default: {
+                        String display = getCreditOption(credit, isWritingSection, isHonorSection);
+                        choices.add(String.format("%s:%s:%s", section, credit, display));
+                        break;
                     }
                 }
-
             }
         }
-        return choicesList;
+        return choices;
+    }
+
+    private String getCreditOption(String credit, boolean writingSection, boolean honorSection) {
+        return credit + (writingSection ? " -- " + WRITING_CREDIT : "") + (honorSection ? " -- " + HONORS_CREDIT : "");
     }
 
     /**
@@ -778,12 +672,22 @@ public class DegreeAuditController extends UifControllerBase {
     /**
      * Builds the messy item and adds to the Map
      *
-     * @param plannedCourseDataObject
-     * @param credits
+     * @param course
+     * @param creditList
      * @param messyItemMap
      */
-    private void buildMessyItemAndAddToMap(PlannedCourseDataObject plannedCourseDataObject, Set<String> credits, Map<String, List<MessyItem>> messyItemMap, Map<String, String> planItemSnapShots) {
-        CourseSummaryDetails courseDetails = plannedCourseDataObject.getCourseDetails();
+    private void buildMessyItemAndAddToMap(PlannedCourseDataObject course, String section, List<String> creditList, Map<String, MessyItemDataObject> messyItemMap ) {
+
+        Set<String> credits = new HashSet<String>();
+        for (String cr : creditList) {
+            credits.add(String.format("%s:%s:%s", section, cr, cr));
+        }
+
+        buildMessyItemAndAddToMap(course, credits, messyItemMap);
+    }
+
+    private void buildMessyItemAndAddToMap(PlannedCourseDataObject course, Set<String> credits, Map<String, MessyItemDataObject> messyItemMap) {
+        CourseSummaryDetails courseDetails = course.getCourseDetails();
         String versionIndependentId = courseDetails.getVersionIndependentId();
 
         MessyItem messyItem = new MessyItem();
@@ -793,20 +697,20 @@ public class DegreeAuditController extends UifControllerBase {
         messyItem.setVersionIndependentId(versionIndependentId);
         messyItem.setCredits(credits);
 
-        if (planItemSnapShots != null && planItemSnapShots.containsKey(versionIndependentId) && StringUtils.hasText(planItemSnapShots.get(versionIndependentId))) {
-            messyItem.setSelectedCredit(planItemSnapShots.get(versionIndependentId));
-        }
-        String atp = plannedCourseDataObject.getPlanItemDataObject().getAtp();
+
+        String atp = course.getPlanItemDataObject().getAtp();
         messyItem.setAtpId(atp);
 
         if (messyItemMap.containsKey(atp)) {
-            messyItemMap.get(atp).add(messyItem);
+            messyItemMap.get(atp).getMessyItemList().add(messyItem);
         } else {
-            List<MessyItem> items = new ArrayList<MessyItem>();
-            items.add(messyItem);
-            messyItemMap.put(atp, items);
+            MessyItemDataObject data = new MessyItemDataObject();
+            data.getMessyItemList().add(messyItem);
+            messyItemMap.put(atp, data);
         }
     }
+
+    enum CreditType { range, multiple, normal };
 
     /**
      * returns type of credit
@@ -817,14 +721,19 @@ public class DegreeAuditController extends UifControllerBase {
      * @param credit
      * @return
      */
-    private String getCreditType(String credit) {
-        if (credit.matches("^\\d*.\\d*-\\d*.\\d*$")) {
-            return "RANGE";
-        } else if (credit.matches("^\\d*.\\d*,\\d*.\\d*$")) {
-            return "MULTIPLE";
-        } else {
-            return "NORMAL";
-        }
+    private CreditType getCreditType(String credit) {
+        System.out.println( "getCreditType: " + credit );
+        if( credit.contains( "-" )) return CreditType.range;
+        if (credit.contains(",")) return CreditType.multiple;
+        return CreditType.normal;
+
+//        if (credit.matches("^\\d*.\\d*-\\d*.\\d*$")) {
+//            return "RANGE";
+//        } else if (credit.matches("^\\d*.\\d*,\\d*.\\d*$")) {
+//            return "MULTIPLE";
+//        } else {
+//            return "NORMAL";
+//        }
     }
 
     /**
@@ -887,22 +796,21 @@ public class DegreeAuditController extends UifControllerBase {
     }
 
 
-    public Map<String, String> populateCampusMap() {
-        Map<String, String> orgCampusTypes = new HashMap<String, String>();
+    public Map<Character, String> populateCampusMap() {
+        Map<Character, String> orgCampusTypes = new HashMap<Character, String>();
         try {
-            SearchRequest searchRequest = new SearchRequest(CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST);
-            searchRequest.addParam(ORG_QUERY_PARAM, CAMPUS_LOCATION);
-            SearchResult searchResult = new SearchResult();
-            searchResult = getOrganizationService().search(searchRequest);
-            for (SearchResultRow row : searchResult.getRows()) {
+            SearchRequest request = new SearchRequest(CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST);
+            request.addParam(ORG_QUERY_PARAM, CAMPUS_LOCATION);
+            SearchResult result = getOrganizationService().search(request);
+            for (SearchResultRow row : result.getRows()) {
 
                 String name = getCellValue(row, "org.resultColumn.orgShortName");
                 // Default campus is Seattle = 0
-                String code = "0";
+                Character code = '0';
                 if ("bothell".equalsIgnoreCase(name)) {
-                    code = "1";
+                    code = '1';
                 } else if ("tacoma".equalsIgnoreCase(name)) {
-                    code = "2";
+                    code = '2';
                 }
                 String cellValue = getCellValue(row, "org.resultColumn.orgId");
                 orgCampusTypes.put(code, cellValue);
