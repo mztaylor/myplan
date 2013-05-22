@@ -1575,7 +1575,8 @@
                         <bean parent="Uif-LightBox">
                             <property name="templateOptions">
                                 <map merge="true">
-                                    <entry key="width" value="690"/>
+                                    <entry key="width" value="700"/>
+                                    <entry key="fitToView" value="false"/>
                                 </map>
                             </property>
                         </bean>

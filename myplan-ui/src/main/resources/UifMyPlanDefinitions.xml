@@ -535,9 +535,9 @@
         <property name="onDocumentReadyScript" value="
             myplanRetrieveComponent('degree_audits_list','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
             jQuery('#degree_audits_summary').subscribe('REFRESH_AUDITS', function(data){
-                myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+                if (data.type == 'degree') myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
             }).subscribe('AUDIT_COMPLETE', function(data){
-                myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+                if (data.type == 'degree') myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
             });
         "/>
     </bean>
@@ -557,10 +557,10 @@
         </property>
         <property name="onDocumentReadyScript" value="
             myplanRetrieveComponent('plan_audits_list','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
-            jQuery('#plan_audits_summary').subscribe('REFRESH_AUDITS', function(data){
-                myplanRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
-            }).subscribe('AUDIT_COMPLETE', function(data){
-                myplanRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
+            jQuery('#plan_audits_summary').subscribe('REFRESH_AUDITS', function(data) {
+                if (data.type == 'plan') myplanRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
+            }).subscribe('AUDIT_COMPLETE', function(data) {
+                if (data.type == 'plan') myplanRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
             });
         "/>
     </bean>

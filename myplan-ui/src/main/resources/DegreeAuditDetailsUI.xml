@@ -52,12 +52,11 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean id="degree_audit_tab_group" parent="Uif-TabSection"
+                            <bean id="degree_audit_tab_group" parent="Uif-TabGroup"
                                   p:style="width: 700px; margin-right: 10px;">
                                 <property name="validationMessages">
                                     <null/>
                                 </property>
-                                <property name="header.render" value="false"/>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-audit-tabs</value>
@@ -68,6 +67,15 @@
                                         <ref bean="plan_audit_block"/>
                                         <ref bean="degree_audit_block"/>
                                     </list>
+                                </property>
+                                <property name="tabsWidget">
+                                    <bean parent="Uif-Tabs">
+                                        <property name="templateOptions">
+                                            <map merge="true">
+                                                <entry key="active" value="@{#form.planExists ? '0':'1'}"/>
+                                            </map>
+                                        </property>
+                                    </bean>
                                 </property>
                             </bean>
                             <bean parent="Uif-VerticalBoxSection" p:style="width: 230px; margin: 0;">
@@ -243,7 +251,8 @@
     <bean id="plan_audit_block" parent="degree_audit_block" p:headerText="Plan Review">
         <property name="items">
             <list>
-                <ref bean="run_plan_audits"/>
+                <bean parent="run_plan_audits"/>
+                <bean parent="plan_items_empty_message"/>
                 <bean id="plan_audit_section" parent="audit_section">
                     <property name="items">
                         <list>
@@ -285,7 +294,7 @@
                 <ref bean="plan_param_campus"/>
                 <ref bean="plan_param_program"/>
                 <ref bean="plan_audit_instruction"/>
-                <bean parent="Uif-InputField" p:propertyName="planAudit.lastPlannedTerm">
+                <bean parent="Uif-InputField" p:propertyName="planAudit.lastPlannedTerm" p:hidden="true">
                     <property name="validationMessages">
                         <null/>
                     </property>
@@ -550,7 +559,7 @@
         </property>
     </bean>
 
-    <bean id="plan_audit_validate" parent="Uif-PrimaryActionButton" p:disabled="false" p:actionLabel="Review Plan">
+    <bean id="plan_audit_validate" parent="Uif-PrimaryActionButton" p:disabled="false" p:actionLabel="Run Plan Review">
         <property name="actionScript" value="
             setUrlHash('modified','true');
             validatePlanAudit('plan_hand_off_container','plan_audit_hand_off','reviewPlanAudit','audit',{viewId:'PlanAuditHandOff-FormView',pageId:'plan_audit_hand_off'});
@@ -737,6 +746,51 @@
                       p:cssClasses="fl-font-size-100 ">
                     <property name="messageText"
                               value="Select your program from the menu above and run a plan review to see your academic progress now."/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="plan_items_empty_message" parent="Uif-VerticalBoxGroup" p:render="@{!#form.planExists}">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-status</value>
+                <value>info</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalFieldGroup" p:style="margin:0px;">
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="group.validationMessages">
+                        <null/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="MyPlanMessagingIcon"/>
+                            <bean parent="Uif-Message"
+                                  p:messageText="Hmm... No courses were found in your plan. [0] and start building [1] before running Plan Review.">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>message</value>
+                                    </list>
+                                </property>
+                                <property name="inlineComponents">
+                                    <list>
+                                        <bean parent="Uif-Link"
+                                              p:href="course?methodToCall=start&amp;viewId=CourseSearch-FormView"
+                                              p:linkText="Find courses"/>
+                                        <bean parent="Uif-Link"
+                                              p:href="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView"
+                                              p:linkText="your plan"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
                 </bean>
             </list>
         </property>
