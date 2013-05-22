@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.audit.dataobject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,6 +17,9 @@ public class MessyItemDataObject {
     private String atpId;
 
     public List<MessyItem> getMessyItemList() {
+        if(messyItemList == null ) {
+             messyItemList = new ArrayList<MessyItem>();
+        }
         return messyItemList;
     }
 
