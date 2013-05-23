@@ -232,7 +232,7 @@ public class QuickAddController extends UifControllerBase {
         return getUIFModelAndView(searchForm);
     }
 
-    @RequestMapping(value = "autoSuggestions")
+    /*@RequestMapping(value = "autoSuggestions")
     public void autoSuggestions(HttpServletResponse response, HttpServletRequest request) {
         String queryText = request.getParameter("courseCd");
         String atpId = request.getParameter("atpId");
@@ -241,11 +241,11 @@ public class QuickAddController extends UifControllerBase {
             if (hasText(queryText)) {
                 SearchRequest searchRequest = null;
                 HashMap<String, String> divisionMap = searchController.fetchCourseDivisions();
-                /*Params from the Url*/
+                *//*Params from the Url*//*
                 String subject = null;
                 String number = null;
                 String searchText = upperCase(queryText);
-                DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(searchText);
+                DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(searchText);
                 if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
                     number = courseCode.getNumber();
                     ArrayList<String> divisions = new ArrayList<String>();
@@ -299,7 +299,7 @@ public class QuickAddController extends UifControllerBase {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-    }
+    }*/
 
 
     @RequestMapping(params = "methodToCall=quickAddCourse")
@@ -317,7 +317,7 @@ public class QuickAddController extends UifControllerBase {
 
         String courseId = null;
         HashMap<String, String> divisionMap = searchController.fetchCourseDivisions();
-        DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(form.getCourseCd());
+        DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(form.getCourseCd());
         if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
             String subject = courseCode.getSubject();
             String number = courseCode.getNumber();
@@ -328,7 +328,7 @@ public class QuickAddController extends UifControllerBase {
             searchController.extractDivisions(divisionMap, subject, divisions, false);
             if (divisions.size() > 0) {
                 subject = divisions.get(0);
-                form.setCourseId(courseHelper.getCourseId(subject, number));
+                form.setCourseId(getCourseHelper().getCourseId(subject, number));
                 courseId = form.getCourseId();
             } else {
                 return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
@@ -1018,26 +1018,26 @@ public class QuickAddController extends UifControllerBase {
         return getUIFModelAndView(form, QuickAddConstants.QUICK_ADD_RESPONSE_PAGE_ID);
     }
 
-    public List<String> additionalFiltering(List<String> results, String atpId) {
+   /* public List<String> additionalFiltering(List<String> results, String atpId) {
         int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
         int resultsSize = results.size();
         if (isCourseOfferingServiceUp()) {
             for (int i = 0; i < resultsSize; i++) {
-                DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(results.get(i));
+                DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(results.get(i));
+                String courseId = getCourseHelper().getCourseId(courseCode.getSubject(), courseCode.getNumber());
                 List<CourseOfferingInfo> courseOfferingInfo = null;
                 boolean removed = false;
 
                 try {
 
-                    /*Filtering courses that are not offered in the given term*/
-                    List<String> offerings = getCourseOfferingService()
-                            .getCourseOfferingIdsByTermAndSubjectArea(atpId, courseCode.getSubject(), CourseSearchConstants.CONTEXT_INFO);
-                    if (!offerings.contains(results.get(i))) {
+                    *//*Filtering courses that are not offered in the given term*//*
+                    List<CourseOfferingInfo> offerings = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(courseId, atpId, CourseSearchConstants.CONTEXT_INFO);
+                    if (offerings == null || offerings.size() == 0) {
                         results.remove(results.get(i));
                         resultsSize--;
                         removed = true;
                     }
-                    /*Filtering courses that are not offered for more than 10 years*/
+                    *//*Filtering courses that are not offered for more than 10 years*//*
                     if (!removed) {
                         String values = String.format("%s, %s, %s", year, courseCode.getSubject(), courseCode.getNumber());
                         courseOfferingInfo = getCourseOfferingService()
@@ -1066,7 +1066,7 @@ public class QuickAddController extends UifControllerBase {
             results.addAll(trimmedList);
         }
         return results;
-    }
+    }*/
 
 
 }
