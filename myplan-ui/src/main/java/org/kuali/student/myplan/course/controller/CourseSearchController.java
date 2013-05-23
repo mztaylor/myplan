@@ -30,6 +30,7 @@ import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.lum.lu.service.LuService;
@@ -477,16 +478,8 @@ public class CourseSearchController extends UifControllerBase {
           Use the course offering service to see if the course is being offered in the selected term.
           Note: In the UW implementation of the Course Offering service, course id is actually course code.
         */
-        CourseOfferingService service = getCourseOfferingService();
-
-        String subject = course.getSubject();
-        List<String> codes = service
-                .getCourseOfferingIdsByTermAndSubjectArea(term, subject, CourseSearchConstants.CONTEXT_INFO);
-
-        //  The course code is not in the list, so move on to the next item.
-        String code = course.getCode();
-        boolean result = codes.contains(code);
-        return result;
+        List<CourseOfferingInfo> cos = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(course.getCourseId(), term, CourseSearchConstants.CONTEXT_INFO);
+        return cos != null && !cos.isEmpty();
     }
 
     //  Load scheduled terms.
@@ -504,13 +497,8 @@ public class CourseSearchController extends UifControllerBase {
             String code = course.getCode();
 
             for (TermInfo term : terms) {
-
-                String key = term.getId();
-                String subject = course.getSubject();
-
-                List<String> offerings = offeringService
-                        .getCourseOfferingIdsByTermAndSubjectArea(key, subject, CourseSearchConstants.CONTEXT_INFO);
-                if (offerings.contains(code)) {
+                List<CourseOfferingInfo> offerings = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(course.getCourseId(), term.getId(), CourseSearchConstants.CONTEXT_INFO);
+                if (offerings != null && !offerings.isEmpty()) {
                     course.addScheduledTerm(term.getName());
                 }
             }

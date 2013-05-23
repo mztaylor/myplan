@@ -17,18 +17,15 @@ import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -186,58 +183,58 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             String termId = !planPeriods.isEmpty() ? planPeriods.get(0) : null;
             if (null != termId && !AtpHelper.isAtpCompletedTerm(termId)) {
                 List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
-                YearTerm yearTerm = AtpHelper.atpToYearTerm(termId);
-                DeconstructedCourseCode deconstructedCourseCode = getCourseHelper().getCourseDivisionAndNumber(planItemInfo.getRefObjectId());
-                String key = generateKey(deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), termId);
-                String activityOfferingId = getCourseHelper().joinStringsByDelimiter('=', yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), deconstructedCourseCode.getSection());
+
+                String activityOfferingId = planItemInfo.getRefObjectId();
                 ActivityOfferingDisplayInfo activityDisplayInfo = null;
                 try {
                     activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityOfferingId, PlanConstants.CONTEXT_INFO);
                 } catch (Exception e) {
                     logger.error("Could not retrieve ActivityOffering data for" + activityOfferingId, e);
                 }
-                /*TODO: move this to Coursehelper to make it institution neutral*/
-                String primarySectionCode = null;
-                for (AttributeInfo attributeInfo : activityDisplayInfo.getAttributes()) {
-                    if ("PrimaryActivityOfferingCode".equalsIgnoreCase(attributeInfo.getKey())) {
-                        primarySectionCode = attributeInfo.getValue();
-                        break;
+                if (activityDisplayInfo != null) {
+                    /*TODO: move this to Coursehelper to make it institution neutral*/
+                    String courseOfferingId = null;
+                    for (AttributeInfo attributeInfo : activityDisplayInfo.getAttributes()) {
+                        if ("PrimaryActivityOfferingId".equalsIgnoreCase(attributeInfo.getKey())) {
+                            courseOfferingId = attributeInfo.getValue();
+                            break;
+                        }
                     }
-                }
-                String courseOfferingId = getCourseHelper().joinStringsByDelimiter('=', yearTerm.getYearAsString(), yearTerm.getTermAsID(), deconstructedCourseCode.getSubject(), deconstructedCourseCode.getNumber(), primarySectionCode);
-                CourseOfferingInfo courseOfferingInfo = null;
-                try {
-                    courseOfferingInfo = getCourseOfferingService().getCourseOffering(courseOfferingId, CourseSearchConstants.CONTEXT_INFO);
-                } catch (Exception e) {
-                    logger.error("Could not retrieve CourseOffering data for" + courseOfferingId, e);
-                }
+                    CourseOfferingInfo courseOfferingInfo = null;
+                    try {
+                        courseOfferingInfo = getCourseOfferingService().getCourseOffering(courseOfferingId, CourseSearchConstants.CONTEXT_INFO);
+                    } catch (Exception e) {
+                        logger.error("Could not retrieve CourseOffering data for" + courseOfferingId, e);
+                    }
 
-                ActivityOfferingItem activityOfferingItem = getCourseDetailsInquiryHelper().getActivityItem(activityDisplayInfo, courseOfferingInfo, !AtpHelper.isAtpSetToPlanning(termId), termId, planItemInfo.getId());
-                activityOfferingItems.add(activityOfferingItem);
-                if (plannedSections.containsKey(key)) {
-                    plannedSections.get(key).add(activityOfferingItem);
-                } else {
-                    plannedSections.put(key, activityOfferingItems);
-                }
-
-                if (PlanConstants.SUSPENDED_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
-                    if (sectionsSuspended.containsKey(key)) {
-                        sectionsSuspended.get(key).add(activityOfferingItem.getCode());
+                    ActivityOfferingItem activityOfferingItem = getCourseDetailsInquiryHelper().getActivityItem(activityDisplayInfo, courseOfferingInfo, !AtpHelper.isAtpSetToPlanning(termId), termId, planItemInfo.getId());
+                    activityOfferingItems.add(activityOfferingItem);
+                    String key = generateKey(courseOfferingInfo.getSubjectArea(), courseOfferingInfo.getCourseNumberSuffix(), termId);
+                    if (plannedSections.containsKey(key)) {
+                        plannedSections.get(key).add(activityOfferingItem);
                     } else {
-                        List<String> suspendedSections = new ArrayList<String>();
-                        suspendedSections.add(activityOfferingItem.getCode());
-                        sectionsSuspended.put(key, suspendedSections);
+                        plannedSections.put(key, activityOfferingItems);
                     }
-                } else if (PlanConstants.WITHDRAWN_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
-                    if (sectionsWithdrawn.containsKey(key)) {
-                        sectionsWithdrawn.get(key).add(activityOfferingItem.getCode());
-                    } else {
-                        List<String> withdrawnSections = new ArrayList<String>();
-                        withdrawnSections.add(activityOfferingItem.getCode());
-                        sectionsWithdrawn.put(key, withdrawnSections);
-                    }
-                }
 
+                    if (PlanConstants.SUSPENDED_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
+                        if (sectionsSuspended.containsKey(key)) {
+                            sectionsSuspended.get(key).add(activityOfferingItem.getCode());
+                        } else {
+                            List<String> suspendedSections = new ArrayList<String>();
+                            suspendedSections.add(activityOfferingItem.getCode());
+                            sectionsSuspended.put(key, suspendedSections);
+                        }
+                    } else if (PlanConstants.WITHDRAWN_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
+                        if (sectionsWithdrawn.containsKey(key)) {
+                            sectionsWithdrawn.get(key).add(activityOfferingItem.getCode());
+                        } else {
+                            List<String> withdrawnSections = new ArrayList<String>();
+                            withdrawnSections.add(activityOfferingItem.getCode());
+                            sectionsWithdrawn.put(key, withdrawnSections);
+                        }
+                    }
+
+                }
             }
 
 

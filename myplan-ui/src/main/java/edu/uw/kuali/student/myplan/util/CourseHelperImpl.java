@@ -15,6 +15,9 @@ import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.common.search.dto.SearchResult;
 import org.kuali.student.common.search.dto.SearchResultCell;
 import org.kuali.student.common.search.dto.SearchResultRow;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
+import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
+import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
@@ -22,19 +25,31 @@ import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 
 import javax.xml.namespace.QName;
 import java.io.StringReader;
 import java.util.*;
 
 public class CourseHelperImpl implements CourseHelper {
-    private final Logger logger = Logger.getLogger(CourseHelperImpl.class);
 
+    private final Logger logger = Logger.getLogger(CourseHelperImpl.class);
     private StudentServiceClient studentServiceClient;
-    
+
     private CourseService courseService;
+
+    private CourseOfferingService courseOfferingService;
+
+    protected CourseOfferingService getCourseOfferingService() {
+        if (this.courseOfferingService == null) {
+            //   TODO: Use constants for namespace.
+            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+        }
+        return this.courseOfferingService;
+    }
 
     protected synchronized CourseService getCourseService() {
         if (this.courseService == null) {
@@ -119,13 +134,13 @@ public class CourseHelperImpl implements CourseHelper {
     public DeconstructedCourseCode getCourseDivisionAndNumber(String courseCode) {
         String subject = null;
         String number = null;
-        String section = null;
+        String activityCd = null;
         if (courseCode.matches(CourseSearchConstants.FORMATTED_COURSE_CODE_REGEX)) {
             String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
             subject = splitStr[0].trim();
             number = splitStr[1].trim();
         } else if (courseCode.matches(CourseSearchConstants.COURSE_CODE_WITH_SECTION_REGEX)) {
-            section = courseCode.substring(courseCode.lastIndexOf(" "), courseCode.length()).trim();
+            activityCd = courseCode.substring(courseCode.lastIndexOf(" "), courseCode.length()).trim();
             courseCode = courseCode.substring(0, courseCode.lastIndexOf(" ")).trim();
             String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
             subject = splitStr[0].trim();
@@ -135,7 +150,7 @@ public class CourseHelperImpl implements CourseHelper {
             subject = splitStr[0].trim();
             number = splitStr[1].trim();
         }
-        return new DeconstructedCourseCode(subject, number, section);
+        return new DeconstructedCourseCode(subject, number, activityCd);
     }
 
     /**
@@ -190,8 +205,7 @@ public class CourseHelperImpl implements CourseHelper {
 
         CourseInfo courseInfo = null;
         try {
-            String latestCourseId = getVerifiedCourseId(courseId);
-            courseInfo = getCourseService().getCourse(latestCourseId);
+            courseInfo = getCourseService().getCourse(getVerifiedCourseId(courseId));
         } catch (DoesNotExistException e) {
             throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
         } catch (Exception e) {
@@ -278,5 +292,113 @@ public class CourseHelperImpl implements CourseHelper {
             logger.error("version verified Id retrieval failed", e);
         }
         return verifiedCourseId;
+    }
+
+
+    /**
+     * retuns a SLN for given params
+     *
+     * @param year
+     * @param term
+     * @param subject
+     * @param number
+     * @param activityCd
+     * @return
+     */
+    public String getSLN(String year, String term, String subject, String number, String activityCd) {
+        String sln = null;
+        String activityId = joinStringsByDelimiter(':', year, term, subject, number, activityCd);
+        ActivityOfferingDisplayInfo activityOfferingInfo = null;
+        try {
+            activityOfferingInfo = getCourseOfferingService().getActivityOfferingDisplay(activityId, CourseSearchConstants.CONTEXT_INFO);
+            if (activityOfferingInfo != null) {
+                for (AttributeInfo attributeInfo : activityOfferingInfo.getAttributes()) {
+                    if (attributeInfo.getKey().equalsIgnoreCase("SLN")) {
+                        sln = attributeInfo.getValue();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("could not load the ActivityOfferinInfo from SWS", e);
+        }
+
+        return sln;
+    }
+
+    /**
+     * builds the refObjId for activity PlanItems (eg: '2013:2:CHEM:152:A')
+     *
+     * @param atpId
+     * @param subject
+     * @param number
+     * @param activityCd
+     * @return
+     */
+    public String buildActivityRefObjId(String atpId, String subject, String number, String activityCd) {
+        AtpHelper.YearTerm yearTerm = AtpHelper.atpToYearTerm(atpId);
+        return joinStringsByDelimiter(':', yearTerm.getYearAsString(), yearTerm.getTermAsString(), subject, number, activityCd);
+    }
+
+    /**
+     * returns the course code from given activityId
+     * <p/>
+     * eg: for activityId '2013:2:CHEM:152:A' course code CHEM  152 is returned
+     *
+     * @param activityId
+     * @return
+     */
+    public String getCourseCdFromActivityId(String activityId) {
+        ActivityOfferingDisplayInfo activityDisplayInfo = null;
+        try {
+            activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityId, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Could not retrieve ActivityOffering data for" + activityId, e);
+        }
+        if (activityDisplayInfo != null) {
+            /*TODO: move this to Coursehelper to make it institution neutral*/
+            String courseOfferingId = null;
+            for (AttributeInfo attributeInfo : activityDisplayInfo.getAttributes()) {
+                if ("PrimaryActivityOfferingId".equalsIgnoreCase(attributeInfo.getKey())) {
+                    courseOfferingId = attributeInfo.getValue();
+                    break;
+                }
+            }
+            CourseOfferingInfo courseOfferingInfo = null;
+            try {
+                courseOfferingInfo = getCourseOfferingService().getCourseOffering(courseOfferingId, CourseSearchConstants.CONTEXT_INFO);
+            } catch (Exception e) {
+                logger.error("Could not retrieve CourseOffering data for" + courseOfferingId, e);
+            }
+
+            if (courseOfferingInfo != null) {
+                return courseOfferingInfo.getCourseCode();
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     *  returns the section code from given activityId
+     *
+     *  eg: for activityId '2013:2:CHEM:152:A' section code A is returned
+     * @param activityId
+     * @return
+     */
+    public String getCodeFromActivityId(String activityId) {
+        ActivityOfferingDisplayInfo activityDisplayInfo = null;
+        try {
+            activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityId, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Could not retrieve ActivityOffering data for" + activityId, e);
+        }
+        if (activityDisplayInfo != null) {
+            return activityDisplayInfo.getActivityOfferingCode();
+        } else {
+            return null;
+        }
     }
 }

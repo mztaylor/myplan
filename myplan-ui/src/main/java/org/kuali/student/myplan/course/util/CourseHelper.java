@@ -20,10 +20,17 @@ public interface CourseHelper {
 
     public String getCourseIdForTerm(String subjectArea, String number, String termId);
 
-    public String joinStringsByDelimiter(char delimiter, String... list);
+    public String buildActivityRefObjId(String atpId, String subject, String number, String activityCd);
 
-    public String getVerifiedCourseId(String courseId);
+    public String getSLN(String year, String term, String subject, String number, String activityCd);
+
+    public String joinStringsByDelimiter(char delimiter, String... list);
 
     public CourseInfo getCourseInfo(String courseId);
 
+    public String getVerifiedCourseId(String courseId);
+
+    public String getCourseCdFromActivityId(String activityId);
+
+    public String getCodeFromActivityId(String activityId);
 }

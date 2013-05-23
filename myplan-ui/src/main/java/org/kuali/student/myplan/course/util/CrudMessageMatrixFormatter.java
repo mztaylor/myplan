@@ -1,8 +1,10 @@
 package org.kuali.student.myplan.course.util;
 
+import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
@@ -17,6 +19,7 @@ import org.kuali.student.myplan.plan.util.DateFormatHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
 import java.beans.PropertyEditorSupport;
@@ -33,6 +36,20 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
     private final static Logger logger = Logger.getLogger(CrudMessageMatrixFormatter.class);
 
     private transient CourseOfferingService courseOfferingService;
+
+    private CourseHelper courseHelper;
+
+
+    public CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = new CourseHelperImpl();
+        }
+        return courseHelper;
+    }
+
+    public void setCourseHelper(CourseHelper courseHelper) {
+        this.courseHelper = courseHelper;
+    }
 
     protected CourseOfferingService getCourseOfferingService() {
         if (this.courseOfferingService == null) {
@@ -286,12 +303,12 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         List<String> sections = new ArrayList<String>();
         List<String> sectionAndSln = new ArrayList<String>();
         for (AcademicRecordDataObject acr : courseDetails.getPlannedCourseSummary().getAcadRecList()) {
-            if (acr.getAtpId().equalsIgnoreCase(AtpHelper.getAtpIdFromTermYear(term))) {
+            if (acr.getAtpId().equalsIgnoreCase(AtpHelper.getAtpIdFromTermYear(term)) && StringUtils.hasText(acr.getActivityCode())) {
                 sections.add(acr.getActivityCode());
             }
         }
         for (String section : sections) {
-            String sln = getSLN(String.valueOf(yearTerm.getYear()), String.valueOf(yearTerm.getTerm()), courseDetails.getCourseSummaryDetails().getSubjectArea(), courseDetails.getCourseSummaryDetails().getCourseNumber(), section);
+            String sln = getCourseHelper().getSLN(yearTerm.getYearAsString(), yearTerm.getTermAsString(), courseDetails.getCourseSummaryDetails().getSubjectArea(), courseDetails.getCourseSummaryDetails().getCourseNumber(), section);
             String sectionSln = String.format("Section %s (%s)", section, sln);
             String sec = null;
             CourseDetailsInquiryHelperImpl courseHelper = new CourseDetailsInquiryHelperImpl();
@@ -309,30 +326,4 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         return sectionAndSln;
     }
 
-    /**
-     * returns the SLN for the given params
-     *
-     * @param year
-     * @param term
-     * @param curriculum
-     * @param number
-     * @param section
-     * @return
-     */
-    private String getSLN(String year, String term, String curriculum, String number, String section) {
-        String sln = null;
-        ActivityOfferingInfo activityOfferingInfo = new ActivityOfferingInfo();
-        try {
-            activityOfferingInfo = getCourseOfferingService().getActivityOffering(year + "," + term + "," + curriculum + "," + number + "," + section, CourseSearchConstants.CONTEXT_INFO);
-        } catch (Exception e) {
-            logger.error("could not load the ActivityOfferinInfo from SWS", e);
-        }
-        for (AttributeInfo attributeInfo : activityOfferingInfo.getAttributes()) {
-            if (attributeInfo.getKey().equalsIgnoreCase("SLN")) {
-                sln = attributeInfo.getValue();
-                break;
-            }
-        }
-        return sln;
-    }
 }

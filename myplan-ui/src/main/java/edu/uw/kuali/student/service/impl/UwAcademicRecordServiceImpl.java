@@ -43,7 +43,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
 
     private transient LuService luService;
 
-    private static transient AcademicCalendarService academicCalendarService;    
+    private static transient AcademicCalendarService academicCalendarService;
 
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
         this.studentServiceClient = studentServiceClient;
@@ -113,7 +113,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
     @Override
     public List<StudentCourseRecordInfo> getCompletedCourseRecords(@WebParam(name = "personId") String personId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         String enrollmentResponseText = null;
-        Set<String> termsEnrolled=new HashSet<String>();
+        Set<String> termsEnrolled = new HashSet<String>();
         Map<String, String> courseIds = new HashMap<String, String>();
         List<StudentCourseRecordInfo> studentCourseRecordInfoList = new ArrayList<StudentCourseRecordInfo>();
         List<TermInfo> planningTermInfo = null;
@@ -229,7 +229,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
         {
             List<String> registrationResponseTexts = null;
             try {
-                registrationResponseTexts = getRegistrationResponseText(personId,termsEnrolled);
+                registrationResponseTexts = getRegistrationResponseText(personId, termsEnrolled);
             } catch (OperationFailedException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
@@ -359,7 +359,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
         throw new RuntimeException("Not implemented");
     }
 
-    private List<String> getRegistrationResponseText(String personId,Set<String> termsEnrolled) throws OperationFailedException {
+    private List<String> getRegistrationResponseText(String personId, Set<String> termsEnrolled) throws OperationFailedException {
         List<String> responseTexts = new ArrayList<String>();
         String[] currentTerm = AtpHelper.atpIdToTermAndYear(AtpHelper.getCurrentAtpId());
 
@@ -368,25 +368,29 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
             if (currentTerm[0].equalsIgnoreCase("4")) {
                 currentTerm[0] = "1";
                 currentTerm[1] = String.valueOf(Integer.parseInt(currentTerm[1]) + 1);
+                AtpHelper.YearTerm yearTerm = new AtpHelper.YearTerm(Integer.parseInt(currentTerm[1].trim()), Integer.parseInt(currentTerm[0].trim()));
+                String atpId = yearTerm.toATP();
                 /*If the terms already are covered up in enrollment section then we skip this part */
-                if (!termsEnrolled.contains(AtpHelper.getAtpFromNumTermAndYear(currentTerm[0], currentTerm[1]))) {
+                if (!termsEnrolled.contains(atpId)) {
                     try {
-                        registrationResponseText = studentServiceClient.getAcademicRecords(personId, currentTerm[1].trim(), currentTerm[0].trim(), null);
+                        registrationResponseText = studentServiceClient.getAcademicRecords(personId, yearTerm.getYearAsString(), yearTerm.getTermAsID(), null);
                     } catch (ServiceException e) {
                         throw new OperationFailedException("SWS query failed.", e);
                     }
-                    termsEnrolled.add(AtpHelper.getAtpFromNumTermAndYear(currentTerm[0], currentTerm[1]));
+                    termsEnrolled.add(atpId);
                 }
             } else {
                 currentTerm[0] = String.valueOf(Integer.parseInt(currentTerm[0]) + 1);
+                AtpHelper.YearTerm yearTerm = new AtpHelper.YearTerm(Integer.parseInt(currentTerm[1].trim()), Integer.parseInt(currentTerm[0].trim()));
+                String atpId = yearTerm.toATP();
                 /*If the terms already are covered up in enrollment section then we skip this part */
-                if (!termsEnrolled.contains(AtpHelper.getAtpFromNumTermAndYear(currentTerm[0], currentTerm[1]))) {
+                if (!termsEnrolled.contains(atpId)) {
                     try {
-                        registrationResponseText = studentServiceClient.getAcademicRecords(personId, currentTerm[1].trim(), currentTerm[0].trim(), null);
+                        registrationResponseText = studentServiceClient.getAcademicRecords(personId, yearTerm.getYearAsString(), yearTerm.getTermAsID(), null);
                     } catch (ServiceException e) {
                         throw new OperationFailedException("SWS query failed.", e);
                     }
-                    termsEnrolled.add(AtpHelper.getAtpFromNumTermAndYear(currentTerm[0], currentTerm[1]));
+                    termsEnrolled.add(atpId);
                 }
             }
             if (StringUtils.hasText(registrationResponseText)) {

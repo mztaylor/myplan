@@ -59,7 +59,9 @@ public class ActivityOfferingItem {
     private boolean primary = false;
     private boolean openForPlanning = false;
     /*This is used for the add hover text in UI*/
-    private String primarySectionCode;
+    private String primaryActivityOfferingCode;
+
+    private String primaryActivityOfferingId;
 
     private String instituteCode;
     private String instituteName;
@@ -359,12 +361,12 @@ public class ActivityOfferingItem {
         this.summerTerm = summerTerm;
     }
 
-    public String getPrimarySectionCode() {
-        return primarySectionCode;
+    public String getPrimaryActivityOfferingCode() {
+        return primaryActivityOfferingCode;
     }
 
-    public void setPrimarySectionCode(String primarySectionCode) {
-        this.primarySectionCode = primarySectionCode;
+    public void setPrimaryActivityOfferingCode(String primaryActivityOfferingCode) {
+        this.primaryActivityOfferingCode = primaryActivityOfferingCode;
     }
 
     public boolean isOpenForPlanning() {
@@ -385,8 +387,15 @@ public class ActivityOfferingItem {
         return AtpHelper.atpIdToTermName(this.getAtpId());
     }
 
-    public ActivityOfferingItem getActivityItem(){
+    public ActivityOfferingItem getActivityItem() {
         return this;
     }
 
+    public String getPrimaryActivityOfferingId() {
+        return primaryActivityOfferingId;
+    }
+
+    public void setPrimaryActivityOfferingId(String primaryActivityOfferingId) {
+        this.primaryActivityOfferingId = primaryActivityOfferingId;
+    }
 }

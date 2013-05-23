@@ -1471,7 +1471,7 @@
                 <entry key="planned" value="@{#line.planItemId ne null}"/>
                 <entry key="primary" value="@{#line.primary}"/>
                 <entry key="coursesection" value="@{#line.code}"/>
-                <entry key="primarysection" value="@{#line.primarySectionCode}"/>
+                <entry key="primarysection" value="@{#line.primaryActivityOfferingCode}"/>
             </map>
         </property>
     </bean>
