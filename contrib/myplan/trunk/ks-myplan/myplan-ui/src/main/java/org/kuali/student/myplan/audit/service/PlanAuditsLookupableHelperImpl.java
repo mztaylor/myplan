@@ -3,6 +3,7 @@ package org.kuali.student.myplan.audit.service;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
+import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.audit.dataobject.PlanAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
@@ -10,12 +11,13 @@ import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static org.kuali.student.myplan.plan.PlanConstants.CONTEXT_INFO;
+import static org.kuali.student.myplan.plan.PlanConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT;
 
 public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
@@ -34,30 +36,30 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
             Date begin = new Date();
             Date end = new Date();
 
-//            Map<String, PlanAuditItem> auditsInLearningPlan = new HashMap<String, PlanAuditItem>();
-//            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regId, LEARNING_PLAN_TYPE_PLAN_AUDIT, CONTEXT_INFO);
-//            for (LearningPlanInfo learningPlanInfo : learningPlanList) {
-//                PlanAuditItem planAuditItem = new PlanAuditItem();
-//                String auditId = null;
-//                for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
-//                    String key = attributeInfo.getKey();
-//                    String value = attributeInfo.getValue();
-//                    if ("forCourses".equalsIgnoreCase(key)) {
-//                        planAuditItem.setAuditedCoursesCount(value);
-//                    } else if ("forCredits".equalsIgnoreCase(key)) {
-//                        planAuditItem.setTotalAuditedCredit(value);
-//                    } else if ("forQuarter".equalsIgnoreCase(key)) {
-//                        planAuditItem.setAuditedQuarterUpTo(value);
-//                    } else if ("auditId".equalsIgnoreCase(key)) {
-//                        auditId = value;
-//                    }
-//                }
-//
-//
-//                if (auditId != null) {
-//                    auditsInLearningPlan.put(auditId, planAuditItem);
-//                }
-//            }
+            Map<String, PlanAuditItem> auditsInLearningPlan = new HashMap<String, PlanAuditItem>();
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regId, LEARNING_PLAN_TYPE_PLAN_AUDIT, CONTEXT_INFO);
+            for (LearningPlanInfo learningPlanInfo : learningPlanList) {
+                PlanAuditItem planAuditItem = new PlanAuditItem();
+                String auditId = null;
+                for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
+                    String key = attributeInfo.getKey();
+                    String value = attributeInfo.getValue();
+                    if ("forCourses".equalsIgnoreCase(key)) {
+                        planAuditItem.setAuditedCoursesCount(value);
+                    } else if ("forCredits".equalsIgnoreCase(key)) {
+                        planAuditItem.setTotalAuditedCredit(value);
+                    } else if ("forQuarter".equalsIgnoreCase(key)) {
+                        planAuditItem.setAuditedQuarterUpTo(value);
+                    } else if ("auditId".equalsIgnoreCase(key)) {
+                        auditId = value;
+                    }
+                }
+
+
+                if (auditId != null) {
+                    auditsInLearningPlan.put(auditId, planAuditItem);
+                }
+            }
 
             DegreeAuditService degreeAuditService = getDegreeAuditService();
             List<AuditReportInfo> audits = degreeAuditService.getAuditsForStudentInDateRange(regId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
