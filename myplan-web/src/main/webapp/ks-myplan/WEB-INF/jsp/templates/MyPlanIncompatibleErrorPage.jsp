@@ -20,7 +20,7 @@
     <h1>UH-OH...</h1>
 
     <div id="content">
-        <h2>SOME OLD DOGS CAN'T LEARN A NEW TRICK.</h2>
+        <h2>WE ARE UNABLE TO FETCH WHAT YOU'RE LOOKING FOR.</h2>
 
         <p>It appears that your browser needs to be updated in order to view MyPlan.</p>
 
