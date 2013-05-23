@@ -607,6 +607,7 @@ public class DegreeAuditController extends UifControllerBase {
      * @return
      */
     private Set<String> processSectionProfile(List<ActivityOfferingItem> activityOfferingItems) {
+        Set<String> unique = new HashSet<String>();
         Set<String> choices = new HashSet<String>();
         for (ActivityOfferingItem activity : activityOfferingItems) {
             if (activity.isPrimary()) {
@@ -614,29 +615,26 @@ public class DegreeAuditController extends UifControllerBase {
                 String section = activity.getCode();
                 boolean isHonorSection = activity.isHonorsSection();
                 boolean isWritingSection = activity.isWritingSection();
-                String credit = activity.getCredits();
-                switch (getCreditType(credit)) {
+                String creditText = activity.getCredits().replace(" ", "");
+                switch (getCreditType(creditText)) {
                     case multiple: {
-                        String[] crs = credit.replace(" ", "").split(",");
-                        for (String cr : crs) {
-                            String display = getCreditOption(cr, isWritingSection, isHonorSection);
-                            choices.add(String.format("%s:%s:%s", section, cr, display));
+                        String[] creditList = creditText.split(",");
+                        for (String credit : creditList) {
+                            addCreditChoice(unique, choices, credit, isHonorSection, isWritingSection, section);
                         }
                         break;
                     }
                     case range: {
-                        List<String> crs = getCreditsForRange(credit);
-                        for (String cr : crs) {
-                            String display = getCreditOption(cr, isWritingSection, isHonorSection);
-                            choices.add(String.format("%s:%s:%s", section, cr, display));
+                        List<String> creditList = getCreditsForRange(creditText);
+                        for (String credit : creditList) {
+                            addCreditChoice(unique, choices, credit, isHonorSection, isWritingSection, section);
                         }
                         break;
                     }
 
                     case normal:
                     default: {
-                        String display = getCreditOption(credit, isWritingSection, isHonorSection);
-                        choices.add(String.format("%s:%s:%s", section, credit, display));
+                        addCreditChoice(unique, choices, creditText, isHonorSection, isWritingSection, section);
                         break;
                     }
                 }
@@ -645,8 +643,12 @@ public class DegreeAuditController extends UifControllerBase {
         return choices;
     }
 
-    private String getCreditOption(String credit, boolean writingSection, boolean honorSection) {
-        return credit + (writingSection ? " -- " + WRITING_CREDIT : "") + (honorSection ? " -- " + HONORS_CREDIT : "");
+    private void addCreditChoice(Set<String> unique, Set<String> choices, String credit, boolean honorSection, boolean writingSection, String section) {
+        if( !unique.contains(credit)) {
+            unique.add(credit);
+            String display = credit + (writingSection ? " -- " + WRITING_CREDIT : "") + (honorSection ? " -- " + HONORS_CREDIT : "");
+            choices.add(String.format("%s:%s:%s", section, credit, display));
+        }
     }
 
     /**
@@ -704,6 +706,7 @@ public class DegreeAuditController extends UifControllerBase {
             messyItemMap.get(atp).getMessyItemList().add(messyItem);
         } else {
             MessyItemDataObject data = new MessyItemDataObject();
+            data.setAtpId( atp );
             data.getMessyItemList().add(messyItem);
             messyItemMap.put(atp, data);
         }
