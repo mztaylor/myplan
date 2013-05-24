@@ -352,7 +352,10 @@ public class DegreeAuditController extends UifControllerBase {
                         String learningPlanInfoId = learningPlanInfo.getId();
 
                         saveMessySelectionsToLearningPlan(form, learningPlanInfoId);
-                        AuditReportInfo report = degreeAuditService.runWhatIfAudit(regid, programId, form.getAuditType(), learningPlanInfoId, context);
+                        String auditId = degreeAuditService.runWhatIfAuditAsync(regid, programId, form.getAuditType(), learningPlanInfoId, context);
+                        AuditReportInfo report = degreeAuditService.getAuditReport(auditId, form.getAuditType(), context);
+
+
                         copyReportToForm(report, form);
                         break;
                     }
