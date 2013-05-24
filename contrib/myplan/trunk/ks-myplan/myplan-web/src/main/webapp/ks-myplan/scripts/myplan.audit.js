@@ -169,6 +169,9 @@ function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
 }
 
 function runPlanAudit(id) {
+    if(jQuery("button#" + id).hasClass('disabled')){
+        jQuery("button#" + id).removeClass('disabled');
+    }
     jQuery("button#" + id).click();
     jQuery.fancybox.close(true);
 }
