@@ -267,6 +267,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
         String auditId = null;
         DegreeAuditRequest req = new DegreeAuditRequest(studentId, programId);
+        int credits = 0;
         try {
 
             List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlan(academicPlanId, context);
@@ -306,7 +307,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         course.quarter = yt.getTermAsID();
                         course.year = yt.getYearAsString();
                         req.courses.add(course);
-
+                        credits = credits + Integer.parseInt(course.credit);
                     } catch (Exception e) {
                         logger.warn("whatever", e);
                     }
@@ -321,33 +322,31 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         }
 
         try {
-            if( academicPlanId != null ) {
-            // getting the learning plan for given academicPlanId
-            LearningPlanInfo learningPlanInfo = getAcademicPlanService().getLearningPlan(academicPlanId, context);
-            YearTerm lastYT = AtpHelper.getLastPlannedTerm();
-            int credits = 99;
+            if (academicPlanId != null) {
+                // getting the learning plan for given academicPlanId
+                LearningPlanInfo learningPlanInfo = getAcademicPlanService().getLearningPlan(academicPlanId, context);
+                YearTerm lastYT = AtpHelper.getLastPlannedTerm();
 
-
-            //updating the learning plan with new attribute values.
-            for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
-                String key = attributeInfo.getKey();
-                if ("forCourses".equalsIgnoreCase(key)) {
-                    attributeInfo.setValue(String.valueOf(req.courses.size()));
-                } else if ("forCredits".equalsIgnoreCase(key)) {
-                    attributeInfo.setValue(String.valueOf(credits));
-                } else if ("forQuarter".equalsIgnoreCase(key)) {
-                    attributeInfo.setValue(lastYT.toShortTermName());
-                } else if ("auditId".equalsIgnoreCase(key)) {
-                    attributeInfo.setValue(auditId);
-                }
+                //updating the learning plan with new attribute values.
+                for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
+                    String key = attributeInfo.getKey();
+                    if ("forCourses".equalsIgnoreCase(key)) {
+                        attributeInfo.setValue(String.valueOf(req.courses.size()));
+                    } else if ("forCredits".equalsIgnoreCase(key)) {
+                        attributeInfo.setValue(String.valueOf(credits));
+                    } else if ("forQuarter".equalsIgnoreCase(key)) {
+                        attributeInfo.setValue(lastYT.toShortTermName());
+                    } else if ("auditId".equalsIgnoreCase(key)) {
+                        attributeInfo.setValue(auditId);
+                    }
 //                else if ("requestedBy".equalsIgnoreCase(key)) {
 //                    attributeInfo.setValue(auditId);
 //                }
 
 
-            }
-            learningPlanInfo.setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
-            getAcademicPlanService().updateLearningPlan(learningPlanInfo.getId(), learningPlanInfo, context);
+                }
+                learningPlanInfo.setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
+                getAcademicPlanService().updateLearningPlan(learningPlanInfo.getId(), learningPlanInfo, context);
             }
         } catch (Exception e) {
             logger.error("Could not update the learningPlanInfo");
@@ -487,9 +486,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             String stunoX = (String) item[1];
             String dprog = (String) item[2];
-            auditReportInfo.setProgramId( dprog );
+            auditReportInfo.setProgramId(dprog);
             String webtitle = (String) item[3];
-            auditReportInfo.setProgramTitle( webtitle );
+            auditReportInfo.setProgramTitle(webtitle);
 
             byte[] report = (byte[]) item[0];
             String garbage = new String(report);
@@ -613,7 +612,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             Element element = (Element) o;
             String original = element.getText();
             original = scrubForHTML(original);
-            if( original.length() == 0 ) continue;
+            if (original.length() == 0) continue;
             String attribs = element.attributeValue("class");
             if (attribs.contains("flatten")) {
                 original = extractJustText(element);
@@ -651,7 +650,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
     public String scrubForHTML(String result) {
-        if( result == null ) return "";
+        if (result == null) return "";
         result = result.replace('\n', ' ');
         result = result.replace('\t', ' ');
         result = result.replace("&", "&amp;");
