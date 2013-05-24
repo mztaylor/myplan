@@ -28,9 +28,14 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
     public static final String TECHNICAL_PROBLEM = "myplan.text.error.technicalProblems";
     public static final String NO_SYSTEM_KEY = "myplan.text.error.noSystemKey";
     public static final String CREDIT = "Credit";
+    public static final String CHOICE = "Choice";
     public static final String HONORS_CREDIT = "Honors";
     public static final String WRITING_CREDIT = "Writing";
-    public static final String SECTION_SELECTED = "Section";
+    public static final String SECTION = "Section";
+    public static final String BUCKET = "BUCKET";
+    public static final String BUCKET_CLEAN = "BUCKET_CLEAN";
+    public static final String BUCKET_MESSY = "BUCKET_MESSY";
+    public static final String BUCKET_IGNORE = "BUCKET_IGNORE";
 
     public static final String APPLICATION_URL = "application.url";
 

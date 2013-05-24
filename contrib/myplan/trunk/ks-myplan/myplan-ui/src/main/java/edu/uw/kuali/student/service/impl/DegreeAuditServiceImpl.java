@@ -70,6 +70,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT;
+import static org.kuali.student.myplan.audit.service.DegreeAuditConstants.*;
 
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -105,7 +106,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     private StudentServiceClient studentServiceClient;
 
-    public transient AcademicPlanService academicPlanService;
+    private transient AcademicPlanService academicPlanService;
 
     private CourseService courseService;
 
@@ -267,7 +268,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
         String auditId = null;
         DegreeAuditRequest req = new DegreeAuditRequest(studentId, programId);
-        int credits = 0;
+        int totalCredits = 0;
         try {
 
             List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlan(academicPlanId, context);
@@ -276,6 +277,24 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 boolean isCourse = PlanConstants.COURSE_TYPE.equalsIgnoreCase(planItem.getRefObjectType());
                 boolean isPlanned = AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equalsIgnoreCase(planItem.getTypeKey());
                 if (isCourse && isPlanned) {
+
+                    String bucketType = BUCKET_IGNORE;
+                    String credit = null;
+                    String section = null;
+                    for( AttributeInfo attrib : planItem.getAttributes() ) {
+                        String key = attrib.getKey();
+                        String value = attrib.getValue();
+                        if( BUCKET.equals( key )) {
+                            bucketType = value;
+                        } else if (CREDIT.equals(key)) {
+                            credit = value;
+                        } else if (SECTION.equals(key)) {
+                            section = value;
+                        }
+                    }
+
+                    if( BUCKET_IGNORE.equals( bucketType )) continue;
+
                     String versionIndependentId = planItem.getRefObjectId();
 
                     try {
@@ -285,7 +304,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         DegreeAuditCourseRequest course = new DegreeAuditCourseRequest();
                         course.curric = courseInfo.getSubjectArea().trim();
                         course.number = courseInfo.getCourseNumberSuffix().trim();
-                        course.credit = "5";
+                        course.credit = credit;
                         {
                             course.campus = "Seattle";
                             List<OrgInfo> campusList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
@@ -307,7 +326,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         course.quarter = yt.getTermAsID();
                         course.year = yt.getYearAsString();
                         req.courses.add(course);
-                        credits = credits + Integer.parseInt(course.credit);
+                        totalCredits = totalCredits + Integer.parseInt(course.credit);
                     } catch (Exception e) {
                         logger.warn("whatever", e);
                     }
@@ -333,17 +352,12 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     if ("forCourses".equalsIgnoreCase(key)) {
                         attributeInfo.setValue(String.valueOf(req.courses.size()));
                     } else if ("forCredits".equalsIgnoreCase(key)) {
-                        attributeInfo.setValue(String.valueOf(credits));
+                        attributeInfo.setValue(String.valueOf(totalCredits));
                     } else if ("forQuarter".equalsIgnoreCase(key)) {
                         attributeInfo.setValue(lastYT.toShortTermName());
                     } else if ("auditId".equalsIgnoreCase(key)) {
                         attributeInfo.setValue(auditId);
                     }
-//                else if ("requestedBy".equalsIgnoreCase(key)) {
-//                    attributeInfo.setValue(auditId);
-//                }
-
-
                 }
                 learningPlanInfo.setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
                 getAcademicPlanService().updateLearningPlan(learningPlanInfo.getId(), learningPlanInfo, context);
@@ -355,7 +369,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return auditId;
     }
 
-    public String requestAudit(DegreeAuditRequest req) throws OperationFailedException {
+    private String requestAudit(DegreeAuditRequest req) throws OperationFailedException {
         try {
 
             String payload = req.toString();
@@ -472,7 +486,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         }
     }
 
-    public AuditReportInfo getHTMLReport(String auditId, String auditTypeKey) throws OperationFailedException {
+    private AuditReportInfo getHTMLReport(String auditId, String auditTypeKey) throws OperationFailedException {
 
         AuditReportInfo auditReportInfo = new AuditReportInfo();
         auditReportInfo.setAuditId(auditId);
@@ -606,7 +620,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     private CourseLinkBuilder courseLinkBuilder = new CourseLinkBuilder();
 
-    public void findClassLinkifyTextAndConvertCoursesToLinks(Document doc) {
+    private void findClassLinkifyTextAndConvertCoursesToLinks(Document doc) {
         List list = doc.selectNodes("//*[contains(@class,'linkify')]");
         for (Object o : list) {
             Element element = (Element) o;
@@ -636,7 +650,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         }
     }
 
-    public String extractJustText(Element parent) {
+    private String extractJustText(Element parent) {
         ArrayList<String> list = new ArrayList<String>();
         extractJustText(parent, list);
         StringBuilder sb = new StringBuilder();
@@ -649,7 +663,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return result;
     }
 
-    public String scrubForHTML(String result) {
+    private String scrubForHTML(String result) {
         if (result == null) return "";
         result = result.replace('\n', ' ');
         result = result.replace('\t', ' ');
@@ -663,7 +677,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return result;
     }
 
-    public void extractJustText(Element parent, List<String> list) {
+    private void extractJustText(Element parent, List<String> list) {
         for (Object child : parent.content()) {
             if (child instanceof Element) {
                 extractJustText((Element) child, list);
@@ -676,7 +690,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
 
-    public static String urlify(String initialText) {
+    private static String urlify(String initialText) {
         StringBuffer result = new StringBuffer(initialText.length());
         Pattern p = Pattern.compile("([a-zA-Z_0-9\\-]+@)?(http://)?[a-zA-Z_0-9\\-]+(\\.\\w[a-zA-Z_0-9\\-]+)+(/[#&\\-=?\\+\\%/\\.\\w]+)?");
 
@@ -701,7 +715,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return result.toString();
     }
 
-    public boolean equals(Object victim, Object... list) {
+    private boolean equals(Object victim, Object... list) {
         if (victim == null) return false;
         if (list == null) return false;
         if (list.length == 0) return false;
@@ -715,7 +729,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     // Convert systemKey to myplan stuno
     // eg "1000723033" becomes "000723033" (note the "1" prefix)
-    public String convertSDBSyskeyToMyPlanStuno(String syskey) {
+    private String convertSDBSyskeyToMyPlanStuno(String syskey) {
         if (syskey.length() < 9 || !syskey.startsWith("1")) {
             while (syskey.startsWith("0")) {
                 syskey = syskey.substring(1);
@@ -729,7 +743,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     // Convert  myplan stuno systemKey to
     // eg "000723033" becomes "1000723033" (note the "1" prefix)
-    public String convertMyPlanStunoToSDBSyskey(String stuno) {
+    private String convertMyPlanStunoToSDBSyskey(String stuno) {
         if (stuno.length() == 9 && stuno.startsWith("1")) {
             stuno = stuno.substring(1);
         }
@@ -821,6 +835,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         return auditProgramInfoList;
     }
 
+    @Override
     public String getAuditStatus(String studentId, String programId, String recentAuditId) {
         String syskey = UserSessionHelper.getStudentSystemKey();
         String stuno = convertSDBSyskeyToMyPlanStuno(syskey);
