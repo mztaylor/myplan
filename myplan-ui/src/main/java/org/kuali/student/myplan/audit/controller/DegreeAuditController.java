@@ -396,7 +396,6 @@ public class DegreeAuditController extends UifControllerBase {
                     }
 
                     DegreeAuditService degreeAuditService = getDegreeAuditService();
-
                     AuditReportInfo report = degreeAuditService.runWhatIfAudit(regid, programId, form.getAuditType(), learningPlanInfoId, context);
                     copyReportToForm(report, form);
                 } else {

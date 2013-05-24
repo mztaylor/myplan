@@ -35,7 +35,6 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
             //  TODO: Calculate dates that make sense.
             Date begin = new Date();
             Date end = new Date();
-
             Map<String, PlanAuditItem> auditsInLearningPlan = new HashMap<String, PlanAuditItem>();
             List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regId, LEARNING_PLAN_TYPE_PLAN_AUDIT, CONTEXT_INFO);
             for (LearningPlanInfo learningPlanInfo : learningPlanList) {
@@ -70,17 +69,14 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 //            HashSet<String> programSet = new HashSet<String>();
             for (AuditReportInfo audit : audits) {
                 if (audit.isWhatIfAudit()) {
-                    String programId = audit.getProgramId();
-                    PlanAuditItem planAuditItem = new PlanAuditItem();
-//                    PlanAuditItem planAuditItem = auditsInLearningPlan.get(audit.getAuditId());
-//                    if (!programSet.contains(programId) && planAuditItem != null)
-//                    {
-//                        programSet.add(programId);
-                        planAuditItem.setReport(audit);
-                        planAuditItem.setProgramTitle(audit.getProgramTitle());
-                        planAuditItem.setProgramType("ProgramType");
-                        planAuditItems.add(planAuditItem);
-//                    }
+                    PlanAuditItem planAuditItem = auditsInLearningPlan.get(audit.getAuditId());
+                    if (planAuditItem == null) {
+                        planAuditItem = new PlanAuditItem();
+                    }
+                    planAuditItem.setReport(audit);
+                    planAuditItem.setProgramTitle(audit.getProgramTitle());
+                    planAuditItem.setProgramType("ProgramType");
+                    planAuditItems.add(planAuditItem);
                 }
             }
             if (planAuditItems.size() > 0) {
