@@ -1140,7 +1140,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-ActionLink" p:actionLabel="View more" p:style="margin:0;"
-                      p:render="@{!#line.primary}">
+                      p:render="@{!#line.primary AND #line.stateKey eq 'active'}">
                     <property name="dataAttributes">
                         <map>
                             <entry key="collapsed" value="true"/>
