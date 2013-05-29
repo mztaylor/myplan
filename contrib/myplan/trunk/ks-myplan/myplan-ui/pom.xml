@@ -188,6 +188,11 @@
             <artifactId>jackson-core-asl</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-core</artifactId>
+            <version>4.3.0</version>
+        </dependency>
 
     </dependencies>
     <build>

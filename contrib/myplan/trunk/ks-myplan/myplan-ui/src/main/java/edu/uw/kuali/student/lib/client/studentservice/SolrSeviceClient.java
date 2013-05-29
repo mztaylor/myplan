@@ -1,5 +1,7 @@
 package edu.uw.kuali.student.lib.client.studentservice;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: hemanthg
@@ -11,10 +13,10 @@ public interface SolrSeviceClient {
 
     public String getSectionById(String id) throws ServiceException;
 
-    public String getPrimarySections(String year, String term, String curriculumAbbreviation, String courseNumber) throws ServiceException;
+    public List<String> getPrimarySections(String year, String term, String curriculumAbbreviation, String courseNumber) throws ServiceException;
 
-    public String getSecondarySections(String primarySectionId) throws ServiceException;
+    public List<String> getSecondarySections(String primarySectionId) throws ServiceException;
 
-    public String getPrimaryAndSecondarySections(String primarySectionId) throws ServiceException;
+    public List<String> getPrimaryAndSecondarySections(String primarySectionId) throws ServiceException;
 
 }
