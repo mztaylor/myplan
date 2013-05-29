@@ -38,22 +38,23 @@
         <property name="items">
             <list>
                 <bean parent="Uif-Page" p:id="plan-page">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-plan-loader</value>
-                        </list>
-                    </property>
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>
                     <property name="items">
                         <list>
                             <ref bean="planned_mock_detail"/>
-                            <bean parent="myplan_section" p:style="width: 300px; margin: 0;">
+                            <bean parent="KSAP-RightPane" p:width="310px">
                                 <property name="items">
                                     <list>
-                                        <ref bean="messages_widget"/>
-                                        <ref bean="your_stuff_widget"/>
+                                        <bean parent="KSAP-ModuleContainer" p:headerText="Messages">
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="KSAP-MessagesList"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="KSAP-YourStuff"/>
                                     </list>
                                 </property>
                             </bean>
@@ -340,6 +341,7 @@
                     start: iStart,
                     afterEnd: function(a) {
                         fnBuildTitle(a);
+                        console.log(jQuery(a[0]).index());
                         setUrlHash('planView', jQuery(a[0]).index());
                     },
                     initCallback: function(a) { fnBuildTitle(a); jQuery.unblockUI(); }

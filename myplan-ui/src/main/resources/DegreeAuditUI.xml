@@ -58,14 +58,6 @@
                     <property name="items">
                         <list>
                             <ref bean="degree_audit_details_section"/>
-                            <bean parent="myplan_section" p:headerText="AUDIT">
-                                <property name="items">
-                                    <list>
-                                        <ref bean="degree_audits_list"/>
-                                        <ref bean="watch_list"/>
-                                    </list>
-                                </property>
-                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -146,18 +138,14 @@
         </property>
     </bean>
 
-    <bean id="degree_audits_summary_list" parent="Uif-ListCollectionSection" p:headerText="Recent Audit Reports">
-        <property name="validationMessages">
-            <null/>
-        </property>
+    <bean id="degree_audits_summary_list" parent="KSAP-StackedCollectionGroup" p:headerText="Recent Audit Reports">
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
+        <property name="propertyName" value="lookupResults"/>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="header.rightGroup">
-            <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
-                </property>
+            <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">
                     <list>
                         <ref bean="recent_audits_help_icon"/>
@@ -167,102 +155,78 @@
         </property>
         <property name="cssClasses">
             <list merge="true">
-                <value>myplan-recent-audit</value>
+                <value>ksap-module</value>
+                <value>ksap-noMargin</value>
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
             getPendingAudit('degree_audits_summary', 'degree');
-            truncateAuditTitle('degree_audits_summary','degreeAudit');
+            if (readUrlParam('viewId') == 'DegreeAudit-FormView') {
+                indicateViewingAudit('degree_audits_summary','degreeAudit');
+                jQuery('#degree_audits_summary').subscribe('AUDIT_VIEW_CHANGE', function () {
+                    indicateViewingAudit('degree_audits_summary', 'degreeAudit');
+                });
+            }
         "/>
-        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages">
-            <null/>
-        </property>
-        <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
-        <property name="propertyName" value="lookupResults"/>
+        <property name="layoutManager.lineGroupPrototype.id" value="@{#line.report.auditId}"/>
+        <property name="layoutManager.lineGroupPrototype.title" value="@{#line.programTitle}"/>
+        <property name="layoutManager.lineGroupPrototype.onClickScript" value="
+            window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;degreeAudit.auditId=@{#line.report.auditId}#degree_audit_block_tab';
+        "/>
         <property name="filters">
             <list>
                 <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 7"/>
             </list>
         </property>
+        <property name="instructionalMessage">
+            <bean parent="Uif-Message" p:messageText="No recent degree audits found.">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>ksap-emptyCollection</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="instructionalMessage.render" value="@{lookupResults EQ null OR lookupResults.size() EQ 0}"/>
         <property name="items">
             <list>
-                <bean parent="Uif-VerticalFieldGroup" p:id="@{#line.report.auditId}" p:title="@{#line.programTitle}">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
+                <bean parent="KSAP-VerticalFieldGroup">
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>myplan-click</value>
-                            <value>myplan-audit-item</value>
+                            <value>ksap-noMargin</value>
                         </list>
                     </property>
                     <property name="onDocumentReadyScript" value="
                         if (@{#line.recentAudit}) jQuery('button#degree_audit_run').data('recentauditid', '@{#line.report.auditId}');
                     "/>
-                    <property name="onClickScript"
-                              value="window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;degreeAudit.auditId=@{#line.report.auditId}#degree_audit_block_tab';"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:propertyName="programTitle" p:label="View">
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="programTitle" p:label="View">
                                 <property name="fieldLabel.render" value="true"/>
-                                <property name="fieldLabel.renderColon" value="false"/>
+                                <property name="fieldLabel.cssClasses">
+                                    <list merge="true">
+                                        <value>uif-label</value>
+                                        <value>ksap-text-normal</value>
+                                        <value>ksap-text-gray</value>
+                                    </list>
+                                </property>
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>myplan-audit-title</value>
+                                        <value>ksap-noMargin</value>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="report.runDate" p:label=""
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="report.runDate"
                                   p:escapeHtmlInPropertyValue="false">
-                                <property name="fieldLabel.render" value="true"/>
-                                <property name="fieldLabel.renderColon" value="false"/>
-                                <property name="fieldLabel.cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-text-normal</value>
-                                    </list>
-                                </property>
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>myplan-text-gray</value>
+                                        <value>ksap-noMargin</value>
+                                        <value>ksap-text-gray</value>
                                         <value>fl-font-size-90</value>
                                     </list>
                                 </property>
                             </bean>
-                        </list>
-                    </property>
-                </bean>
-
-            </list>
-        </property>
-        <property name="footer">
-            <bean parent="degree_audit_summary_footer"/>
-        </property>
-    </bean>
-
-    <bean id="degree_audit_summary_footer" parent="Uif-VerticalBoxSection" p:style="padding: 6px 10px">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="header.render" value="false"/>
-        <property name="render"
-                  value="@{lookupResults eq null or lookupResults.size() eq 0 ? true : false}"/>
-        <property name="items">
-            <list>
-                <bean parent="Uif-HorizontalBoxGroup" p:style="padding: 1em 0px;">
-
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-text-align-center</value>
-                        </list>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-Message"
-                                  p:messageText="No recent audits found."/>
                         </list>
                     </property>
                 </bean>

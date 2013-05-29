@@ -52,7 +52,7 @@ function setUrlHash(key, value) {
     }
     aHash = [];
     for (var key in oHash) {
-        if (key != "" && oHash[key] != "") aHash.push(encodeURIComponent(key) + "=" + encodeURIComponent(oHash[key]));
+        if (key !== "" && oHash[key] !== "") aHash.push(encodeURIComponent(key) + "=" + encodeURIComponent(oHash[key]));
     }
     window.location.replace("#" + aHash.join("&"));
 }
@@ -760,18 +760,26 @@ function truncateField(id, margin, floated) {
         }
     });
 }
-function truncateAuditTitle(id, auditName) {
+function indicateViewingAudit(id, type) {
     var open = false;
-    jQuery("#" + id + " .myplan-audit-item .myplan-audit-title").each(function (index) {
-        if (readUrlParam("viewId") == "DegreeAudit-FormView") {
-            if (jQuery("." + auditName + ".auditHtml .myplan-audit-report").attr("auditid") == jQuery(this).parents(".myplan-audit-item").attr("id")) {
-                if (auditName == 'degreeAudit') {
-                    jQuery(this).find(".uif-label label").html("Viewing");
-                }
-                if (auditName == 'planAudit') {
-                    if (index > 1) open = true;
-                    jQuery(this).parents(".myplan-audit-item").addClass("viewing").find(".view-title").show();
-                }
+    var currentAudit = jQuery("." + type + ".auditHtml .myplan-audit-report");
+    var currentAuditId = currentAudit.attr("auditid");
+
+    jQuery("#" + id + " .uif-collectionItem").each(function (index) {
+        if (jQuery(this).attr("id") == currentAuditId && currentAudit.is(":visible")) {
+            if (type == 'degreeAudit') {
+                jQuery(this).find(".uif-label label").html("Viewing");
+            }
+            if (type == 'planAudit') {
+                if (index > 1) open = true;
+                jQuery(this).addClass("viewing");
+            }
+        } else {
+            if (type == 'degreeAudit') {
+                jQuery(this).find(".uif-label label").html("View");
+            }
+            if (type == 'planAudit') {
+                jQuery(this).removeClass("viewing");
             }
         }
     });
@@ -1058,14 +1066,14 @@ function getPendingAudit(id, type) {
     if (jQuery.cookie('myplan_audit_running')) {
         var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running')));
         if (type == data.auditType) {
-            var component = jQuery("#" + id + " ul");
+            var component = jQuery("#" + id + " .uif-stackedCollectionLayout");
             if (data) {
-                var item = jQuery("<li />").addClass("pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span class="title">Running <span class="program">' + data.programName + '</span></span>');
+                var item = jQuery("<div />").addClass("uif-collectionItem pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span class="title">Running <span class="program">' + data.programName + '</span></span>');
                 component.prepend(item);
                 pollPendingAudit(data.programId, data.recentAuditId, data.auditType);
             }
-            if (component.find("li").size() > 0 && component.next("div.uif-boxGroup").length > 0) {
-                component.next("div.uif-boxGroup").remove();
+            if (component.prev(".ksap-emptyCollection").length > 0) {
+                component.prev(".ksap-emptyCollection").remove();
             }
         }
     }

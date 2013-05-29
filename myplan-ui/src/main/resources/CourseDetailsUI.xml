@@ -45,7 +45,7 @@
                     <property name="items">
                         <list>
                             <ref bean="course_details_section"/>
-                            <ref bean="myplan_section"/>
+                            <bean parent="KSAP-RightPane"/>
                         </list>
                     </property>
                 </bean>

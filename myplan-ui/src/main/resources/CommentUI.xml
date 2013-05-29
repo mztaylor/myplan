@@ -527,9 +527,9 @@
 
     <!--  Messages Summary (Gutter) Lookup -->
     <bean id="MessagesSummary-LookupView" parent="MyPlanBaseLookupView">
-        <property name="theme">
+        <!-- <property name="theme">
             <bean parent="MyPlanRetrievedTheme"/>
-        </property>
+        </property>-->
         <property name="onLoadScript" value=""/>
         <property name="headerText" value="Messages Summary"/>
         <property name="page.header.render" value="false"/>
@@ -541,7 +541,7 @@
         <property name="singlePageView" value="true"/>
         <property name="cssClasses">
             <list merge="true">
-                <value>myplan-section</value>
+                <value>ksap-module</value>
             </list>
         </property>
         <property name="criteriaFields">
@@ -553,51 +553,39 @@
 
         <!-- Not Displaying any criteria -->
         <property name="criteriaGroup">
-            <bean parent="Uif-VerticalBoxGroup"/>
+            <bean parent="KSAP-VerticalBoxGroup"/>
         </property>
         <property name="resultsGroup">
             <bean id="messages_summary" parent="messages_summary_list"/>
         </property>
     </bean>
 
-    <bean id="messages_summary_list" parent="Uif-ListCollectionSection" p:style="margin-bottom:10px;">
+    <bean id="messages_summary_list" parent="KSAP-StackedCollectionGroup">
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
+        <property name="propertyName" value="lookupResults"/>
         <property name="header">
-            <bean id="messsage_header" parent="Uif-HeaderBase" p:style="padding:0;" p:cssClasses="">
-                <property name="upperGroup">
-                    <bean parent="Uif-VerticalBoxSubSection" p:headerText="MESSAGES"
-                          p:style="float:none; border-bottom:solid 1px #ddd;">
-                        <property name="validationMessages">
-                            <null/>
-                        </property>
-                        <property name="header">
-                            <bean parent="Uif-HeaderFive">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>primary</value>
-                                    </list>
-                                </property>
-                            </bean>
+            <bean parent="Uif-HeaderBase" p:cssClasses="" p:headerText="">
+                <property name="lowerGroup">
+                    <bean parent="KSAP-VerticalBoxGroup">
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>ksap-defaultPadding</value>
+                            </list>
                         </property>
                         <property name="items">
                             <list>
-                                <bean parent="Uif-Message" p:messageText=""/>
-                            </list>
-                        </property>
-                        <property name="propertyReplacers">
-                            <list>
-                                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
-                                    <property name="replacement">
-                                        <list>
-                                            <bean id="leave_message_button" parent="Uif-PrimaryActionButton-Small"
-                                                  p:actionLabel="Leave a Message" p:style="margin:5px;">
-                                                <property name="actionScript" value=""/>
-                                                <property name="onDocumentReadyScript" value="
-                                                    myplanCreateLightBoxLink('leave_message_button', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page&amp;renderedInLightBox=true'});
-                                                "/>
-                                            </bean>
+                                <bean id="leave_message_button" parent="Uif-PrimaryActionButton-Small"
+                                      p:actionLabel="Leave a Message">
+                                    <property name="cssClasses">
+                                        <list merge="true">
+                                            <value>ksap-noMargin</value>
                                         </list>
                                     </property>
+                                    <property name="actionScript" value=""/>
+                                    <property name="onDocumentReadyScript" value="
+                                        myplanCreateLightBoxLink('leave_message_button', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page&amp;renderedInLightBox=true'});
+                                    "/>
                                 </bean>
                             </list>
                         </property>
@@ -605,83 +593,85 @@
                 </property>
             </bean>
         </property>
-
+        <property name="header.render" value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
         <property name="cssClasses">
             <list merge="true">
-                <value>myplan-widget</value>
-                <value>myplan-messages-summary</value>
-                <value>myplan-stacked-list</value>
+                <value>ksap-module</value>
+                <value>ksap-noMargin</value>
             </list>
         </property>
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
-        <property name="propertyName" value="lookupResults"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
-        <property name="disclosure.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="filters">
             <list>
                 <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 3"/>
             </list>
         </property>
+        <property name="layoutManager.lineGroupPrototype.id" value="@{#line.messageId}"/>
+        <property name="layoutManager.lineGroupPrototype.onClickScript" value="
+            myplanLightBoxLink('comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);
+        "/>
+        <property name="instructionalMessage">
+            <bean parent="Uif-Message" p:messageText="You don't have any messages.">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>ksap-emptyCollection</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="instructionalMessage.render" value="@{lookupResults EQ null OR lookupResults.size() EQ 0}"/>
         <property name="items">
             <list>
-                <bean p:id="@{#line.messageId}" parent="Uif-HorizontalFieldGroup" p:style="cursor:pointer;">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
-                    <!--
-                    <property name="onDocumentReadyScript" value="myplanCreateLightBoxLink('@{#line.messageId}', {autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
-                    -->
+                <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>myplan-click</value>
+                            <value>ksap-noMargin</value>
                         </list>
                     </property>
-                    <property name="onClickScript"
-                              value="myplanLightBoxLink('comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-VerticalFieldGroup" p:style="width:170px;">
-                                <property name="group.validationMessages">
-                                    <null/>
-                                </property>
+                            <bean parent="KSAP-VerticalFieldGroup" p:width="175px">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-MessageField" p:messageText="@{#line.subject}"
-                                              p:style="width:170px;">
+                                        <bean parent="KSAP-MessageField" p:messageText="@{#line.subject}"
+                                              p:width="170px">
                                             <property name="cssClasses">
                                                 <list merge="true">
-                                                    <value>fl-text-bold</value>
+                                                    <value>ksap-text-bold</value>
                                                     <value>myplan-text-ellipsis</value>
+                                                    <value>ksap-noMargin</value>
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-HorizontalFieldGroup">
-                                            <property name="group.validationMessages">
-                                                <null/>
+                                        <bean parent="KSAP-HorizontalFieldGroup">
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>ksap-noMargin</value>
+                                                </list>
                                             </property>
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="Uif-MessageField" p:messageText="@{#line.from}"
-                                                          p:label="from"
-                                                          p:fieldLabel.renderColon="false"
-                                                          p:fieldLabel.cssClasses="myplan-text-normal fl-text-gray"
-                                                          p:style="line-height:22px;">
+                                                    <bean parent="KSAP-MessageField" p:messageText="@{#line.from}">
+                                                        <property name="label" value="From"/>
+                                                        <property name="fieldLabel.render" value="true"/>
+                                                        <property name="fieldLabel.cssClasses">
+                                                            <list merge="true">
+                                                                <value>ksap-text-normal</value>
+                                                                <value>ksap-text-gray</value>
+                                                            </list>
+                                                        </property>
                                                         <property name="cssClasses">
                                                             <list merge="true">
-                                                                <value>fl-text-gray</value>
+                                                                <value>ksap-text-gray</value>
                                                             </list>
                                                         </property>
                                                     </bean>
-                                                    <bean parent="Uif-MessageField"
-                                                          p:messageText="@{#line.comments.size()}"
-                                                          p:render="@{#line.comments.size() gt 0}"
-                                                          p:style="margin-left:0.5em;">
+                                                    <bean parent="KSAP-MessageField"
+                                                          p:messageText="@{#line.comments.size()}">
+                                                        <property name="render" value="@{#line.comments.size() gt 0}"/>
                                                         <property name="cssClasses">
                                                             <list merge="true">
                                                                 <value>myplan-comment-bubble</value>
+                                                                <value>ksap-noMargin</value>
                                                             </list>
                                                         </property>
                                                     </bean>
@@ -691,118 +681,79 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="createDate"
-                                  p:label="Posted" p:labelPlacement="TOP"
-                                  p:fieldLabel.renderColon="false"
-                                  p:fieldLabel.cssClasses="myplan-text-normal fl-font-size-90"
-                                  p:render="@{#line.comments.size() eq 0}" p:escapeHtmlInPropertyValue="false">
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="createDate">
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
+                                <property name="escapeHtmlInPropertyValue" value="false"/>
+                                <property name="render" value="@{#line.comments.size() EQ 0}"/>
+                                <property name="label" value="Posted"/>
+                                <property name="labelPlacement" value="TOP"/>
+                                <property name="fieldLabel.render" value="true"/>
+                                <property name="fieldLabel.cssClasses">
+                                    <list merge="true">
+                                        <value>ksap-text-normal</value>
+                                    </list>
+                                </property>
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>fl-text-gray</value>
-                                        <value>fl-font-size-90</value>
+                                        <value>ksap-noMargin</value>
+                                        <value>ksap-text-gray</value>
+                                        <value>fl-font-size-80</value>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="lastCommentDate"
-                                  p:label="Last Comment" p:labelPlacement="TOP"
-                                  p:fieldLabel.renderColon="false"
-                                  p:fieldLabel.cssClasses="myplan-text-normal fl-font-size-90"
-                                  p:render="@{#line.comments.size() gt 0}" p:escapeHtmlInPropertyValue="false">
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="lastCommentDate">
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
+                                <property name="escapeHtmlInPropertyValue" value="false"/>
+                                <property name="render" value="@{#line.comments.size() GT 0}"/>
+                                <property name="label" value="Last Comment"/>
+                                <property name="labelPlacement" value="TOP"/>
+                                <property name="fieldLabel.render" value="true"/>
+                                <property name="fieldLabel.cssClasses">
+                                    <list merge="true">
+                                        <value>ksap-text-normal</value>
+                                    </list>
+                                </property>
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>fl-text-gray</value>
-                                        <value>fl-font-size-90</value>
+                                        <value>ksap-noMargin</value>
+                                        <value>ksap-text-gray</value>
+                                        <value>fl-font-size-80</value>
                                     </list>
                                 </property>
                             </bean>
-                            <!--<bean parent="Uif-VerticalBoxSubSection" p:style="width:100px; margin:0;">
-                                <property name="header.render" value="false"/>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="Uif-DataField" p:propertyName="createDate"
-                                              p:label="Posted" p:labelPlacement="TOP"
-                                              p:fieldLabel.renderColon="false"
-                                              p:fieldLabel.cssClasses="myplan-text-normal fl-font-size-90"
-                                              p:render="@{#line.comments.size() eq 0}" p:escapeHtmlInPropertyValue="false">
-                                            <property name="propertyEditor" ref="timestamp_formatter"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>fl-text-gray</value>
-                                                    <value>fl-font-size-90</value>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                        <bean parent="Uif-DataField" p:propertyName="lastCommentDate"
-                                              p:label="Last Comment" p:labelPlacement="TOP"
-                                              p:fieldLabel.renderColon="false"
-                                              p:fieldLabel.cssClasses="myplan-text-normal fl-font-size-90"
-                                              p:render="@{#line.comments.size() gt 0}" p:escapeHtmlInPropertyValue="false">
-                                            <property name="propertyEditor" ref="timestamp_formatter"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>fl-text-gray</value>
-                                                    <value>fl-font-size-90</value>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>-->
                         </list>
                     </property>
                 </bean>
             </list>
         </property>
         <property name="footer">
-            <bean parent="messages_summary_footer"/>
+            <bean parent="KSAP-VerticalBoxGroup">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>uif-footer</value>
+                    </list>
+                </property>
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-Link">
+                            <property name="cssClasses">
+                                <list merge="true">
+                                    <value>fl-text-align-right</value>
+                                    <value>ksap-noMargin</value>
+                                </list>
+                            </property>
+                            <property name="linkText"
+                                      value="View @{(lookupResults eq null or lookupResults.size() lt 2) ? 'message' : 'all '+lookupResults.size()+' messages'}"/>
+                            <property name="title"
+                                      value="View @{(lookupResults eq null or lookupResults.size() lt 2) ? 'message' : 'all '+lookupResults.size()+' messages'}"/>
+                            <property name="href"
+                                      value="lookup?methodToCall=search&amp;viewId=MessagesDetail-LookupView"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
         </property>
-    </bean>
-
-    <bean id="messages_summary_footer" parent="Uif-VerticalBoxGroup"
-          p:style="padding: 6px 10px;">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-Link">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-text-align-right</value>
-                        </list>
-                    </property>
-                    <property name="linkText"
-                              value="View @{(lookupResults eq null or lookupResults.size() lt 2) ? 'message' : 'all '+lookupResults.size()+' messages'}"/>
-                    <property name="title"
-                              value="View @{(lookupResults eq null or lookupResults.size() lt 2) ? 'message' : 'all '+lookupResults.size()+' messages'}"/>
-                    <property name="href"
-                              value="lookup?methodToCall=search&amp;viewId=MessagesDetail-LookupView"/>
-                    <property name="render"
-                              value="@{lookupResults ne null and lookupResults.size() gt 0 ? true : false}"/>
-                    <property name="target" value=""/>
-                </bean>
-                <bean parent="Uif-HorizontalBoxGroup">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="render"
-                              value="@{lookupResults ne null and lookupResults.size() gt 0 ? false : true}"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-text-align-center</value>
-                        </list>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-Message"
-                                  p:messageText="You don't have any messages."/>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
+        <property name="footer.render" value="@{lookupResults NE null AND lookupResults.size() GT 0}"/>
     </bean>
 
     <bean id="MessagesDetail-LookupView" parent="MyPlanLookupView">
@@ -842,14 +793,8 @@
                     </property>
                     <property name="items">
                         <list>
-                            <ref bean="messages_detail"/>
-                            <bean parent="myplan_section">
-                                <property name="items">
-                                    <list>
-                                        <ref bean="your_stuff_widget"/>
-                                    </list>
-                                </property>
-                            </bean>
+                            <bean parent="messages_detail"/>
+                            <bean parent="KSAP-RightPane"/>
                         </list>
                     </property>
                 </bean>

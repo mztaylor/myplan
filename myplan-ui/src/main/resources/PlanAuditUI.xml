@@ -55,20 +55,14 @@
         </property>
     </bean>
 
-    <bean id="plan_audits_summary_list" parent="Uif-ListCollectionSection" p:headerText="Recent Plan Audit Reports">
+    <bean id="plan_audits_summary_list" parent="KSAP-StackedCollectionGroup" p:headerText="Recent Plan Reviews">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.PlanAuditItem"/>
         <property name="propertyName" value="lookupResults"/>
-        <property name="validationMessages">
-            <null/>
-        </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="header.rightGroup">
-            <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
-                </property>
+            <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">
                     <list>
                         <ref bean="recent_audits_help_icon"/>
@@ -78,106 +72,104 @@
         </property>
         <property name="cssClasses">
             <list merge="true">
-                <value>myplan-recent-audit</value>
+                <value>ksap-module</value>
+                <value>ksap-noMargin</value>
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
             getPendingAudit('plan_audits_summary', 'plan');
-            truncateAuditTitle('plan_audits_summary', 'planAudit');
-
+            if (readUrlParam('viewId') == 'DegreeAudit-FormView') {
+                indicateViewingAudit('plan_audits_summary', 'planAudit');
+                jQuery('#plan_audits_summary').subscribe('AUDIT_VIEW_CHANGE', function () {
+                    indicateViewingAudit('plan_audits_summary', 'planAudit');
+                });
+            }
         "/>
-        <property name="layoutManager">
-            <bean parent="Uif-StackedCollectionLayout-List">
-                <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem" p:hidden="@{#index gt 2}">
-                        <property name="id" value="@{#line.report.auditId}"/>
-                        <property name="validationMessages">
-                            <null/>
-                        </property>
-                        <property name="cssClasses">
-                            <list merge="true">
-                                <value>myplan-audit-item</value>
-                                <value>@{#index gt 1 ? 'collapsible':'default'}</value>
-                            </list>
-                        </property>
-                    </bean>
-                </property>
-            </bean>
-        </property>
         <property name="filters">
             <list>
                 <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 7"/>
             </list>
         </property>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionVerticalBoxItem">
+                        <property name="id" value="@{#line.report.auditId}"/>
+                        <property name="title" value="@{#line.programTitle}"/>
+                        <property name="hidden" value="@{#index gt 1}"/>
+                        <property name="onClickScript" value="
+                            window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;planAudit.auditId=@{#line.report.auditId}#plan_audit_block_tab';
+                        "/>
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>@{#index gt 1 ? 'collapsible':''}</value>
+                            </list>
+                        </property>
+                        <property name="footer.render" value="false"/>
+                        <property name="validationMessages">
+                            <null/>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+        <property name="instructionalMessage">
+            <bean parent="Uif-Message" p:messageText="No recent plan reviews found.">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>ksap-emptyCollection</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="instructionalMessage.render" value="@{lookupResults EQ null OR lookupResults.size() EQ 0}"/>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
-                    <property name="group.instructionalMessage">
-                        <bean parent="Uif-Message" p:messageText="You are viewing"/>
-                    </property>
-                    <property name="group.instructionalMessage.cssClasses">
-                        <list merge="true">
-                            <value>uif-instructionalMessage</value>
-                            <value>view-title</value>
-                        </list>
-                    </property>
-                    <property name="group.instructionalMessage.style" value="display:none;"/>
-                    <property name="title" value="@{#line.programTitle}"/>
-                    <property name="fieldLabel.render" value="false"/>
+                <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>myplan-click</value>
+                            <value>ksap-noMargin</value>
                         </list>
                     </property>
                     <property name="onDocumentReadyScript"
-                              value="if (@{#line.recentAudit}) jQuery('button#plan_audit_run').data('recentauditid', '@{#line.report.auditId}');"/>
-                    <property name="onClickScript"
-                              value="window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;planAudit.auditId=@{#line.report.auditId}#plan_audit_block_tab';"/>
+                              value="if (@{#line.recentAudit}) jQuery('button#plan_audit_validate').data('recentauditid', '@{#line.report.auditId}');"/>
+                    <property name="group.instructionalMessage">
+                        <bean parent="Uif-Message">
+                            <property name="messageText" value="You are viewing"/>
+                            <property name="cssClasses">
+                                <list merge="true">
+                                    <value>uif-instructionalMessage</value>
+                                    <value>view</value>
+                                    <value>ksap-noMargin</value>
+                                    <value>ksap-text-gray</value>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:propertyName="report.runDate">
-                                <property name="fieldLabel.render" value="false"/>
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="report.runDate">
                                 <property name="escapeHtmlInPropertyValue" value="false"/>
                                 <property name="propertyEditor" ref="plan_audit_timestamp_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>myplan-plan-audit-timestamp</value>
+                                        <value>ksap-timestampBadge</value>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-HorizontalBoxGroup" p:width="147px">
-                                <property name="validationMessages">
-                                    <null/>
-                                </property>
-                                <property name="instructionalText" value="Plan Includes"/>
+                            <bean parent="KSAP-HorizontalBoxGroup" p:width="164px">
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>myplan-plan-audit-data-group</value>
+                                        <value>ksap-noMargin</value>
+                                        <value>ksap-auditDataGroup</value>
                                     </list>
                                 </property>
-                                <property name="footer">
-                                    <bean parent="Uif-VerticalBoxGroup">
-                                        <property name="validationMessages">
-                                            <null/>
-                                        </property>
-                                        <property name="items">
-                                            <list>
-                                                <bean parent="Uif-DataField" p:propertyName="programTitle"
-                                                      p:width="147px">
-                                                    <property name="fieldLabel.render" value="false"/>
-                                                    <property name="escapeHtmlInPropertyValue" value="false"/>
-                                                    <property name="cssClasses">
-                                                        <list merge="true">
-                                                            <value>fl-text-bold</value>
-                                                            <value>myplan-audit-title</value>
-                                                            <value>fl-font-size-90</value>
-                                                            <value>myplan-text-ellipsis</value>
-                                                        </list>
-                                                    </property>
-                                                </bean>
+                                <property name="instructionalMessage">
+                                    <bean parent="Uif-Message">
+                                        <property name="messageText" value="Plan Includes"/>
+                                        <property name="cssClasses">
+                                            <list merge="true">
+                                                <value>uif-instructionalMessage</value>
                                             </list>
                                         </property>
                                     </bean>
@@ -192,6 +184,26 @@
                                               p:propertyName="auditedQuarterUpTo"/>
                                     </list>
                                 </property>
+                                <property name="footer">
+                                    <bean parent="KSAP-VerticalBoxGroup">
+                                        <property name="items">
+                                            <list>
+                                                <bean parent="KSAP-SimpleDataField" p:propertyName="programTitle"
+                                                      p:width="100%">
+                                                    <property name="escapeHtmlInPropertyValue" value="false"/>
+                                                    <property name="cssClasses">
+                                                        <list merge="true">
+                                                            <value>ksap-text-bold</value>
+                                                            <value>fl-font-size-90</value>
+                                                            <value>myplan-text-ellipsis</value>
+                                                            <value>ksap-noMargin</value>
+                                                        </list>
+                                                    </property>
+                                                </bean>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                </property>
                             </bean>
                         </list>
                     </property>
@@ -199,66 +211,44 @@
             </list>
         </property>
         <property name="footer">
-            <bean parent="plan_audit_summary_footer"/>
+            <bean parent="KSAP-VerticalBoxGroup">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>uif-footer</value>
+                    </list>
+                </property>
+                <property name="items">
+                    <list>
+                        <bean id="plan_audit_toggle_link" parent="Uif-ActionLink"
+                              p:actionLabel="Show @{lookupResults.size() GT 7 ? '5' : (lookupResults.size() - 2)} more plan reviews">
+                            <property name="cssClasses">
+                                <list merge="true">
+                                    <value>fl-text-align-right</value>
+                                    <value>ksap-noMargin</value>
+                                </list>
+                            </property>
+                            <property name="actionScript"
+                                      value="toggleComponentContent(this, 'plan_audits_summary', '.collapsible', 'Show @{lookupResults.size() GT 7 ? '5' : (lookupResults.size() - 2)} more plan reviews', 'Hide @{lookupResults.size() GT 7 ? '5' : (lookupResults.size() - 2)} old plan reviews');"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
         </property>
+        <property name="footer.render" value="@{lookupResults NE null AND lookupResults.size() GT 2}"/>
     </bean>
 
-    <bean id="planAuditData" parent="Uif-DataField" p:width="49px">
+    <bean id="planAuditData" parent="KSAP-SimpleDataField" p:width="33%">
         <property name="labelPlacement" value="RIGHT"/>
-        <property name="fieldLabel.renderColon" value="false"/>
+        <property name="fieldLabel.render" value="true"/>
         <property name="fieldLabel.cssClasses">
             <list merge="true">
-                <value>myplan-plan-audit-label</value>
+                <value>ksap-bottomLabel</value>
             </list>
         </property>
         <property name="cssClasses">
             <list merge="true">
-                <value>myplan-plan-audit-data</value>
-            </list>
-        </property>
-        <property name="style" value="margin: 0;"/>
-    </bean>
-
-    <bean id="plan_audit_summary_footer" parent="Uif-HorizontalBoxGroup"
-          p:style="padding: 6px 10px">
-        <property name="render"
-                  value="@{lookupResults EQ null OR lookupResults.size() EQ 0 OR lookupResults.size() GT 2}"/>
-        <property name="items">
-            <list>
-                <bean parent="Uif-HorizontalBoxGroup" p:style="padding: 1em 0px;">
-                    <property name="render"
-                              value="@{lookupResults EQ null OR lookupResults.size() EQ 0}"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-text-align-center</value>
-                        </list>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-Message"
-                                  p:messageText="No recent audits found."/>
-                        </list>
-                    </property>
-                </bean>
-                <bean parent="Uif-HorizontalBoxGroup" p:style="">
-                    <property name="render"
-                              value="@{lookupResults NE null AND lookupResults.size() GT 2}"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-text-align-center</value>
-                        </list>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean id="plan_audit_toggle_link" parent="Uif-ActionLink"
-                                  p:actionLabel="Show @{lookupResults.size()-2} more Plan audit reports"
-                                  p:style="float:left; padding-left: 10px;">
-                                <property name="actionScript"
-                                          value="toggleComponentContent(this, 'plan_audits_summary', '.collapsible', 'Show @{lookupResults.size()-2} more Plan audit reports', 'Hide @{lookupResults.size()-2} old Plan audit reports');"/>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
+                <value>ksap-auditData</value>
+                <value>ksap-noMargin</value>
             </list>
         </property>
     </bean>

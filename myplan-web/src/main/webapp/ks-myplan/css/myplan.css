@@ -378,29 +378,24 @@ a, a:hover, a:active, a:visited, a:focus {
     clear: both;
 }
 
-.myplan-view .uif-boxLayoutVerticalItem,
-.base-view .uif-boxLayoutVerticalItem,
-.jquerypopover .uif-boxLayoutVerticalItem,
-.jquerybubblepopup .uif-boxLayoutVerticalItem {
+.uif-boxLayoutVerticalItem,
+.uif-inputField.uif-boxLayoutVerticalItem {
     margin: 0 0 10px 0;
 }
 
-.myplan-view .uif-boxLayoutHorizontalItem,
-.base-view .uif-boxLayoutHorizontalItem,
-.jquerypopover .uif-boxLayoutHorizontalItem,
-.jquerybubblepopup .uif-boxLayoutHorizontalItem {
+.uif-boxLayoutHorizontalItem,
+.uif-inputField.uif-boxLayoutHorizontalItem {
     margin: 0 10px 0 0;
 }
 
 .myplan-view .uif-instructionalMessage {
     max-width: none;
-    font-size: 1em;
 }
 
-.myplan-view .uif-collectionGroup > div:nth-child(2) {
+/*.myplan-view .uif-collectionGroup > div:nth-child(2) {
     padding: 0;
     margin: 0;
-}
+}*/
 
 .myplan-view .uif-stackedCollectionLayout,
 .myplan-view .uif-stackedCollectionLayout > .uif-collectionItem {
