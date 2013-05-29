@@ -1,15 +1,15 @@
 package edu.uw.kuali.student.lib.client.studentservice;
 
-import org.kuali.rice.core.api.config.property.ConfigContext;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.params.ModifiableSolrParams;
 import org.restlet.Client;
-import org.restlet.Request;
-import org.restlet.Response;
-import org.restlet.data.Method;
 import org.restlet.data.Protocol;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,8 +51,16 @@ public class SolrServiceClientImpl implements SolrSeviceClient {
      * @return
      */
     public String getSectionById(String id) throws ServiceException {
-        String url = getSolrBaseUrl() + "select?q=section.id:\"" + id + "\"&sort=section.id%20asc&fl=section.data&wt=xml&indent=true&rows=9999";
-        return sendQuery(url);
+        ModifiableSolrParams params = new ModifiableSolrParams();
+        params.set("q", "section.id:\"" + id + "\"");
+        params.set("fl", "section.data");
+        params.set("sort", "section.id asc");
+        params.set("rows", "9999");
+        List<SolrDocument> documents = sendQuery(params);
+        if (documents != null && !documents.isEmpty()) {
+            return documents.get(0).getFieldValue("section.data").toString();
+        }
+        return null;
     }
 
     /**
@@ -65,9 +73,18 @@ public class SolrServiceClientImpl implements SolrSeviceClient {
      * @param courseNumber
      * @return
      */
-    public String getPrimarySections(String year, String term, String curriculumAbbreviation, String courseNumber) throws ServiceException {
-        String url = getSolrBaseUrl() + "select?q=section.year:" + year + "%20AND%20section.term:" + term + "%20AND%20section.curriculum.abbreviation:" + curriculumAbbreviation + "%20AND%20section.course.number:" + courseNumber + "%20AND%20section.primary:true&sort=section.id%20asc&fl=section.data&rows=9999";
-        return sendQuery(url);
+    public List<String> getPrimarySections(String year, String term, String curriculumAbbreviation, String courseNumber) throws ServiceException {
+        ModifiableSolrParams params = new ModifiableSolrParams();
+        params.set("q", "section.year:" + year + " AND section.term:" + term + " AND section.curriculum.abbreviation:" + curriculumAbbreviation + " AND section.course.number:" + courseNumber + " AND section.primary:true");
+        params.set("fl", "section.data");
+        params.set("sort", "section.id asc");
+        params.set("rows", "9999");
+        List<SolrDocument> documents = sendQuery(params);
+        List<String> sectionDataList = new ArrayList<String>();
+        for (SolrDocument document : documents) {
+            sectionDataList.add(document.getFieldValue("section.data").toString());
+        }
+        return sectionDataList;
     }
 
     /**
@@ -77,9 +94,18 @@ public class SolrServiceClientImpl implements SolrSeviceClient {
      * @return
      * @throws ServiceException
      */
-    public String getSecondarySections(String primarySectionId) throws ServiceException {
-        String url = getSolrBaseUrl() + "select?q=section.primary.id:\"" + primarySectionId + "\"%20AND%20section.primary:false&sort=section.id%20asc&fl=section.data&rows=9999";
-        return sendQuery(url);
+    public List<String> getSecondarySections(String primarySectionId) throws ServiceException {
+        ModifiableSolrParams params = new ModifiableSolrParams();
+        params.set("q", "section.primary.id:\"" + primarySectionId + "\" AND section.primary:false");
+        params.set("fl", "section.data");
+        params.set("sort", "section.id asc");
+        params.set("rows", "9999");
+        List<SolrDocument> documents = sendQuery(params);
+        List<String> sectionDataList = new ArrayList<String>();
+        for (SolrDocument document : documents) {
+            sectionDataList.add(document.getFieldValue("section.data").toString());
+        }
+        return sectionDataList;
 
     }
 
@@ -90,34 +116,33 @@ public class SolrServiceClientImpl implements SolrSeviceClient {
      * @return
      * @throws ServiceException
      */
-    public String getPrimaryAndSecondarySections(String primarySectionId) throws ServiceException {
+    public List<String> getPrimaryAndSecondarySections(String primarySectionId) throws ServiceException {
         /*TODO: Add a check to get only suspended and active sections*/
-        String url = getSolrBaseUrl() + "select?q=section.id:\"" + primarySectionId + "\"%20OR%20section.primary.id:\"" + primarySectionId + "\"&sort=section.id%20asc&fl=section.data&rows=9999";
-        return sendQuery(url);
+        ModifiableSolrParams params = new ModifiableSolrParams();
+        params.set("q", "section.id:\"" + primarySectionId + "\" OR section.primary.id:\"" + primarySectionId + "\"");
+        params.set("fl", "section.data");
+        params.set("sort", "section.id asc");
+        params.set("rows", "9999");
+        List<SolrDocument> documents = sendQuery(params);
+        List<String> sectionDataList = new ArrayList<String>();
+        for (SolrDocument document : documents) {
+            sectionDataList.add(document.getFieldValue("section.data").toString());
+        }
+        return sectionDataList;
 
     }
 
-    public String sendQuery(String url) throws ServiceException {
-        System.out.println(url);
-        Request request = new Request(Method.GET, url);
-
-        //  Send the request and parse the result.
-        Response response = client.handle(request);
-        Status status = response.getStatus();
-
-        if (!(status.equals(Status.SUCCESS_OK))) {
-            throw new ServiceException(String.format("Query failed to URL [%s] - %s (%s): %s",
-                    url, status.getName(), status.getCode(), status.getDescription()));
-        }
-
-        //  !!! getEntity() can only be called once.
-        Representation representation = response.getEntity();
+    public List<SolrDocument> sendQuery(ModifiableSolrParams params) throws ServiceException {
+        List<SolrDocument> documents = new ArrayList<SolrDocument>();
         try {
-            String responseText = representation.getText();
-            return responseText;
-        } catch (IOException e) {
-            throw new ServiceException("Could not read response.", e);
+            SolrServer server = new HttpSolrServer(solrBaseUrl);
+            QueryResponse queryResponse = server.query(params);
+            documents = queryResponse.getResults();
+
+        } catch (Exception e) {
+            throw new ServiceException("Could not read solr response.", e);
         }
+        return documents;
     }
 
 

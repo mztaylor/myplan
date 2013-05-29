@@ -177,12 +177,7 @@ public class UwSolrCourseOfferingServiceImpl extends CourseOfferingServiceDecora
         try {
             String xml = solrSeviceClient.getSectionById(courseOfferingId);
             if (StringUtils.hasText(xml)) {
-                String responseXml = offeringServiceUtils.getSectionDataFromSolrXML(xml);
-                if (responseXml != null) {
-                    secondaryDoc = offeringServiceUtils.newDocument(responseXml);
-                } else {
-                    failOver = true;
-                }
+                secondaryDoc = offeringServiceUtils.newDocument(xml);
             } else {
                 failOver = true;
             }
@@ -325,12 +320,7 @@ public class UwSolrCourseOfferingServiceImpl extends CourseOfferingServiceDecora
             // Skips section ID if it fails
             String xml = solrSeviceClient.getSectionById(activityOfferingId);
             if (StringUtils.hasText(xml)) {
-                String responseXml = offeringServiceUtils.getSectionDataFromSolrXML(xml);
-                if (responseXml != null) {
-                    doc = offeringServiceUtils.newDocument(responseXml);
-                } else {
-                    failOver = true;
-                }
+                doc = offeringServiceUtils.newDocument(xml);
             } else {
                 failOver = true;
             }
@@ -608,18 +598,12 @@ public class UwSolrCourseOfferingServiceImpl extends CourseOfferingServiceDecora
             String curriculumAbbreviation = courseInfo.getSubjectArea().trim();
             String number = courseInfo.getCourseNumberSuffix();
 
-            String xml = solrSeviceClient.getPrimarySections(year, quarter, curriculumAbbreviation, number);
-            if (StringUtils.hasText(xml)) {
-                List<String> sectionXMLs = offeringServiceUtils.getSectionsFromSolrXML(xml);
-                for (String sectionData : sectionXMLs) {
-                    Document sectionDoc;
-                    sectionDoc = offeringServiceUtils.newDocument(sectionData);
-                    CourseOfferingInfo info = offeringServiceUtils.buildCourseOfferingInfo(sectionDoc);
-                    list.add(info);
-                }
-
-            } else {
-                failOver = true;
+            List<String> sectionXMLs = solrSeviceClient.getPrimarySections(year, quarter, curriculumAbbreviation, number);
+            for (String sectionData : sectionXMLs) {
+                Document sectionDoc;
+                sectionDoc = offeringServiceUtils.newDocument(sectionData);
+                CourseOfferingInfo info = offeringServiceUtils.buildCourseOfferingInfo(sectionDoc);
+                list.add(info);
             }
 
         } catch (Exception e) {
@@ -641,12 +625,7 @@ public class UwSolrCourseOfferingServiceImpl extends CourseOfferingServiceDecora
         try {
             List<String> sectionList = new ArrayList<String>();
             try {
-                String xml = solrSeviceClient.getPrimaryAndSecondarySections(courseOfferingID);
-                if (StringUtils.hasText(xml)) {
-                    sectionList = offeringServiceUtils.getSectionsFromSolrXML(xml);
-                } else {
-                    failOver = true;
-                }
+                sectionList = solrSeviceClient.getPrimaryAndSecondarySections(courseOfferingID);
             } catch (ServiceException e) {
                 logger.warn(e);
             }
