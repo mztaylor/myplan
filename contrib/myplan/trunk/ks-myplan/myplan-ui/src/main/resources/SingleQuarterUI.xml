@@ -206,11 +206,17 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="myplan_section" p:style="width:300px; margin:0;">
+                            <bean parent="KSAP-RightPane" p:width="310px">
                                 <property name="items">
                                     <list>
-                                        <ref bean="messages_widget"/>
-                                        <ref bean="your_stuff_widget"/>
+                                        <bean parent="KSAP-ModuleContainer" p:headerText="Messages">
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="KSAP-MessagesList"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="KSAP-YourStuff"/>
                                     </list>
                                 </property>
                             </bean>

@@ -164,6 +164,7 @@
                 <value>ks-myplan/jquery-popover/jquery.popover.css</value>
                 <value>ks-myplan/jquery-ui/jquery-ui.css</value>
                 <value>ks-myplan/css/myplan.css</value>
+                <value>ks-myplan/css/ksap.css</value>
             </list>
         </property>
         <property name="scriptFiles">
@@ -395,88 +396,57 @@
 
     </bean>
 
-    <bean id="myplan_section" parent="Uif-VerticalBoxSubSection" p:style="width: 220px; margin: 0;">
-        <property name="validationMessages">
-            <null/>
+
+    <bean id="KSAP-RightPane" parent="KSAP-VerticalBoxGroup">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>ksap-noMargin</value>
+            </list>
         </property>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-YourStuff"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-ModuleContainer" parent="KSAP-VerticalBoxGroup">
+        <property name="header">
+            <bean parent="Uif-HeaderFive"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>ksap-moduleContainer</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-Module" parent="KSAP-VerticalBoxGroup">
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>ksap-module</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-YourStuff" parent="KSAP-ModuleContainer" p:headerText="Your Stuff">
+        <property name="items">
+            <list>
+                <bean parent="KSAP-BookmarkList"/>
+                <bean parent="KSAP-PlanAuditList"/>
+                <bean parent="KSAP-DegreeAuditList"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-MessagesList" parent="KSAP-Module" p:headerText="Messages" p:id="KSAP-MessagesList">
         <property name="header.render" value="false"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-section</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <!--<ref bean="messages_widget"/>-->
-                <ref bean="your_stuff_widget"/>
-            </list>
-        </property>
-    </bean>
-
-
-    <bean id="your_stuff_widget" parent="Uif-VerticalBoxSubSection" p:headerText="YOUR STUFF"
-          p:style="margin-bottom:10px;">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="header">
-            <bean parent="Uif-HeaderFive">
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>primary</value>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-widget</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <ref bean="watch_list"/>
-                <ref bean="plan_audits_list"/>
-                <ref bean="degree_audits_list"/>
-            </list>
-        </property>
-        <property name="propertyReplacers">
-            <list>
-                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                      p:condition="!T(org.kuali.student.myplan.utils.UserSessionHelper).isStudent()">
-                    <property name="replacement">
-                        <list>
-                            <ref bean="watch_list"/>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="messages_widget" parent="Uif-VerticalBoxGroup" p:headerText="MESSAGES" p:style="margin-bottom: 10px;">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-widget</value>
-                <value>myplan-messages-summary</value>
-                <value>myplan-stacked-list</value>
-            </list>
-        </property>
-        <property name="header">
-            <bean parent="Uif-HeaderFive">
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>primary</value>
-                    </list>
-                </property>
-            </bean>
-        </property>
         <property name="onDocumentReadyScript" value="
-            myplanRetrieveComponent('messages_widget','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
-            jQuery('#messages_widget')
+            myplanRetrieveComponent('KSAP-MessagesList','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
+            jQuery('#KSAP-MessagesList')
                 .subscribe('MESSAGE_SENT', function(){
                     myplanRetrieveComponent('messages_summary','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
                 })
@@ -487,85 +457,56 @@
     </bean>
 
 
-    <bean id="watch_list" parent="Uif-VerticalBoxGroup" p:headerText="Bookmarked Courses">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-saved-courses-summary</value>
-                <value>myplan-stacked-list</value>
-            </list>
-        </property>
-        <property name="header">
-            <bean parent="Uif-HeaderSix"/>
-        </property>
+    <bean id="KSAP-BookmarkList" parent="KSAP-Module" p:headerText="Bookmarked Courses" p:id="KSAP-BookmarkList">
         <property name="onDocumentReadyScript" value="
-            myplanRetrieveComponent('watch_list','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
-            jQuery('#watch_list')
-                .subscribe('PLAN_ITEM_DELETED', function(data){
-                    if (data.planItemType === 'wishlist') {
+            myplanRetrieveComponent('KSAP-BookmarkList','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
+            jQuery('#KSAP-BookmarkList')
+                .subscribe('PLAN_ITEM_DELETED', function( data ){
+                    if( data.planItemType === 'wishlist' ) {
                         myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
                         jQuery('div.jquerypopover.jquerypopover-myplan .jquerypopover-tail').fadeOut(250, function() {
                             jQuery(this).remove();
                         });
                     }
                 })
-                .subscribe('PLAN_ITEM_ADDED', function(data){
-                    if (data.planItemType === 'wishlist') {
+                .subscribe('PLAN_ITEM_ADDED', function( data ){
+                    if( data.planItemType === 'wishlist' ) {
                         myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'},data.planItemId);
                     }
                 });
         "/>
     </bean>
 
-    <bean id="degree_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Audit Reports">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-recent-audit</value>
-                <value>myplan-stacked-list</value>
-            </list>
-        </property>
-        <property name="header">
-            <bean parent="Uif-HeaderSix"/>
-        </property>
+    <bean id="KSAP-DegreeAuditList" parent="KSAP-Module" p:headerText="Recent Audit Reports"
+          p:id="KSAP-DegreeAuditList">
         <property name="onDocumentReadyScript" value="
-            myplanRetrieveComponent('degree_audits_list','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
-            jQuery('#degree_audits_summary').subscribe('REFRESH_AUDITS', function(data){
-                if (data.type == 'degree') myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
-            }).subscribe('AUDIT_COMPLETE', function(data){
-                if (data.type == 'degree') myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
-            });
+            myplanRetrieveComponent('KSAP-DegreeAuditList','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+            jQuery('#KSAP-DegreeAuditList')
+                .subscribe('REFRESH_AUDITS', function( data ){
+                    if( data.type == 'degree' ) myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+                })
+                .subscribe('AUDIT_COMPLETE', function(data){
+                    if( data.type == 'degree' ) myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+                });
         "/>
     </bean>
 
-    <bean id="plan_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Plan Reviews">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-recent-audit</value>
-                <value>myplan-stacked-list</value>
-            </list>
-        </property>
-        <property name="header">
-            <bean parent="Uif-HeaderSix"/>
-        </property>
+    <bean id="KSAP-PlanAuditList" parent="KSAP-Module" p:headerText="Recent Plan Reviews" p:id="KSAP-PlanAuditList">
         <property name="onDocumentReadyScript" value="
-            myplanRetrieveComponent('plan_audits_list','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
-            jQuery('#plan_audits_summary').subscribe('REFRESH_AUDITS', function(data) {
-                if (data.type == 'plan') myplanRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
-            }).subscribe('AUDIT_COMPLETE', function(data) {
-                if (data.type == 'plan') myplanRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
-            });
+            myplanRetrieveComponent('KSAP-PlanAuditList','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
+            jQuery('#KSAP-PlanAuditList')
+                .subscribe('REFRESH_AUDITS', function( data ) {
+                    if( data.type == 'plan' ) myplanRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
+                })
+                .subscribe('AUDIT_COMPLETE', function( data ) {
+                    if( data.type == 'plan' ) myplanRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
+                });
         "/>
     </bean>
 
-    <bean id="non_student_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Audit Reports">
+
+    <!-- Possibly no longer needed since advisers can view and run audits -->
+    <!--<bean id="non_student_audits_list" parent="Uif-VerticalBoxGroup" p:headerText="Recent Audit Reports">
         <property name="validationMessages">
             <null/>
         </property>
@@ -579,7 +520,7 @@
             <bean parent="Uif-HeaderSix"/>
         </property>
         <property name="instructionalText" value="No recent audits found."/>
-    </bean>
+    </bean>-->
 
     <bean id="crud_message_matrix_formatter" class="org.kuali.student.myplan.course.util.CrudMessageMatrixFormatter"/>
 
@@ -750,14 +691,19 @@
             </list>
         </property>
     </bean>
-
+    <bean parent="Uif-DataField"/>
 
     <!-- Light weight fields -->
     <bean id="KSAP-SimpleDataField" parent="KSAP-SimpleDataField-parentBean"/>
     <bean id="KSAP-SimpleDataField-parentBean" abstract="true" parent="Uif-DataField" scope="prototype">
-        <property name="fieldLabel.render" value="false"/>
         <property name="template" value="/ks-myplan/WEB-INF/ftl/components/KSAPSimpleDataField.ftl"/>
         <property name="templateName" value="ksap_simpleDataField"/>
+        <property name="fieldLabel">
+            <bean parent="Uif-Label">
+                <property name="render" value="false"/>
+                <property name="renderColon" value="false"/>
+            </bean>
+        </property>
         <property name="inquiry">
             <null/>
         </property>
@@ -804,7 +750,31 @@
     <bean id="KSAP-StackedCollectionGroup-parentBean" parent="Uif-StackedCollectionGroup-parentBean">
         <property name="template" value="/ks-myplan/WEB-INF/ftl/components/KSAPcollectionGroup.ftl"/>
         <property name="templateName" value="ksap_collectionGroup"/>
-
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="subCollectionFieldGroupPrototype">
+                    <bean parent="Uif-VerticalFieldGroup">
+                        <property name="group.validationMessages">
+                            <null/>
+                        </property>
+                        <property name="fieldLabel.render" value="false"/>
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-subCollection</value>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionVerticalBoxItem">
+                        <property name="footer.render" value="false"/>
+                        <property name="validationMessages">
+                            <null/>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
 
         <property name="highlightNewItems" value="false"/>
         <property name="newItemsCssClass" value="uif-newCollectionItem"/>
@@ -839,10 +809,19 @@
         <property name="collectionLookup">
             <null/>
         </property>
+        <property name="validationMessages">
+            <null/>
+        </property>
     </bean>
 
     <bean id="KSAP-VerticalBoxGroup" parent="Uif-VerticalBoxGroup">
         <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="help">
+            <null/>
+        </property>
+        <property name="toolTip">
             <null/>
         </property>
     </bean>
@@ -856,6 +835,20 @@
         </property>
         <property name="toolTip">
             <null/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-VerticalFieldGroup" parent="Uif-VerticalFieldGroup">
+        <property name="fieldLabel.render" value="false"/>
+        <property name="group">
+            <bean parent="KSAP-VerticalBoxGroup"/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-HorizontalFieldGroup" parent="Uif-HorizontalFieldGroup">
+        <property name="fieldLabel.render" value="false"/>
+        <property name="group">
+            <bean parent="KSAP-HorizontalBoxGroup"/>
         </property>
     </bean>
 

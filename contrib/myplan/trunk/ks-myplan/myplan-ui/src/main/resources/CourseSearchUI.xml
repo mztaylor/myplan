@@ -47,8 +47,8 @@
                     </property>
                     <property name="items">
                         <list>
-                            <ref bean="course_search_result_section"/>
-                            <ref bean="myplan_section"/>
+                            <bean parent="course_search_result_section" p:width="710px"/>
+                            <bean parent="KSAP-RightPane" p:width="230px"/>
                         </list>
                     </property>
                 </bean>
@@ -72,8 +72,7 @@
     </bean>
 
     <!-- Layout for Course Search Result Page -->
-    <bean id="course_search_result_section" parent="Uif-VerticalBoxSubSection"
-          p:style="width: 710px; margin-right: 10px;">
+    <bean id="course_search_result_section" parent="Uif-VerticalBoxSubSection">
         <property name="validationMessages">
             <null/>
         </property>

@@ -1,0 +1,275 @@
+/*
+
+gray border = #e1e1e0
+blue block item hover = #e3f0fe;
+
+*/
+.ksap-defaultPadding {
+    padding: 10px;
+}
+
+.ksap-defaultMargin {
+    margin: 10px;
+}
+
+.ksap-solidBorder {
+    border: solid 1px #e1e1e0;
+}
+
+.ksap-dottedBorder {
+    border: dotted 1px #e1e1e0;
+}
+
+.ksap-dashedBorder {
+    border: dashed 1px #e1e1e0;
+}
+
+.ksap-noMargin,
+.uif-page {
+    margin: 0;
+}
+
+.ksap-noPadding {
+    padding: 0;
+}
+
+.ksap-noRadius {
+    border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+}
+
+.ksap-noBorder {
+    border: none;
+}
+
+.ksap-noTopBorder {
+    border-top: none;
+}
+
+.ksap-noBottomBorder {
+    border-bottom: none;
+}
+
+.ksap-noLeftBorder {
+    border-left: none;
+}
+
+.ksap-noRightBorder {
+    border-right: none;
+}
+
+.ksap-minHeight {
+    min-height: 18px;
+}
+
+/* TEXT STYLES */
+.ksap-text-normal {
+    font-weight: 500 !important;
+}
+
+.ksap-text-bold {
+    font-weight: 700 !important;
+}
+
+.ksap-text-gray {
+    color: #777777 !important;
+}
+
+.ksap-text-uppercase {
+    text-transform: uppercase !important;
+}
+
+.ksap-moduleContainer {
+    border: solid 1px #e1e1e0;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+.ksap-moduleContainer .blockElement {
+    left: auto !important;
+    top: 1px !important;
+    right: 0px !important;
+    border: none;
+    width: 16px;
+    background: transparent;
+}
+
+.ksap-moduleContainer > .uif-header {
+    padding: 8px 10px;
+    border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+    background-color: #efefef;
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#efefef), to(#d5d5d5));
+    background-image: -webkit-linear-gradient(top, #efefef, #d5d5d5);
+    background-image: -moz-linear-gradient(top, #efefef, #d5d5d5);
+    background-image: -ms-linear-gradient(top, #efefef, #d5d5d5);
+    background-image: -o-linear-gradient(top, #efefef, #d5d5d5);
+    background-image: linear-gradient(top, #efefef, #d5d5d5);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#efefef', endColorstr='#d5d5d5')";
+}
+
+.ksap-moduleContainer > .uif-header > .uif-headerText {
+    text-transform: uppercase;
+    vertical-align: middle;
+    color: #000;
+    font-size: 1.15em;
+    text-shadow: 0px 1px 0px #efefef;
+}
+
+.ksap-module {
+    margin: 0;
+    min-height: 18px;
+}
+
+.ksap-module > .uif-header {
+    border-top: solid 1px #e1e1e0;
+    border-bottom: solid 1px #e1e1e0;
+    padding: 3px 10px;
+
+    background-color: #efefef;
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f7f7f7), to(#efefef));
+    background-image: -webkit-linear-gradient(top, #f7f7f7, #efefef);
+    background-image: -moz-linear-gradient(top, #f7f7f7, #efefef);
+    background-image: -ms-linear-gradient(top, #f7f7f7, #efefef);
+    background-image: -o-linear-gradient(top, #f7f7f7, #efefef);
+    background-image: linear-gradient(top, #f7f7f7, #efefef);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#f7f7f7', endColorstr='#efefef')";
+}
+
+.ksap-module > .uif-header > .uif-headerText {
+    display: inline;
+    vertical-align: middle;
+}
+
+.ksap-module .uif-header-rightGroup {
+    position: relative;
+    right: auto;
+    top: auto;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 0 0 5px;
+}
+
+.ksap-module .uif-header-lowerGroup {
+    border-bottom: solid 1px #e1e1e0;
+}
+
+.ksap-module .uif-instructionalMessage {
+    margin: 0;
+}
+
+.ksap-module .ksap-emptyCollection {
+    display: block;
+    text-align: center;
+    padding: 1em;
+}
+
+.ksap-module .uif-stackedCollectionLayout .uif-collectionItem {
+    cursor: pointer;
+    padding: 5px;
+    border-top: dotted 1px #e1e1e0;
+}
+
+.ksap-module .uif-stackedCollectionLayout .uif-collectionItem:first-child {
+    border-top: none;
+}
+
+.ksap-module .uif-stackedCollectionLayout .uif-collectionItem:hover {
+    background-color: #e3f0fe;
+}
+
+.ksap-module .uif-stackedCollectionLayout .uif-collectionItem label {
+    font-weight: normal;
+}
+
+.ksap-module .uif-stackedCollectionLayout .uif-collectionItem .uif-instructionalMessage.view {
+    display: none;
+}
+
+.ksap-module .uif-stackedCollectionLayout .uif-collectionItem.viewing .uif-instructionalMessage.view {
+    display: block;
+}
+
+.ksap-module .uif-stackedCollectionLayout .uif-collectionItem.pending:hover {
+    background-color: transparent;
+    cursor: default;
+}
+
+.ksap-module .uif-stackedCollectionLayout .uif-collectionItem.pending .icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.ksap-module .uif-stackedCollectionLayout .uif-collectionItem.pending .title {
+    vertical-align: middle;
+    color: #777;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    width: 177px;
+}
+
+.ksap-module .uif-stackedCollectionLayout .uif-collectionItem.pending .program {
+    color: #333;
+}
+
+.ksap-module .uif-footer {
+    border-top: dotted 1px #e1e1e0;
+    padding: 3px 10px 10px 10px;
+    margin: 0;
+}
+
+.ksap-timestampBadge {
+    text-align: center;
+    background-color: #efefef;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 0 5px 0 0;
+}
+
+.uif-collectionItem.viewing .ksap-timestampBadge {
+    background-color: #fbf1cd;
+}
+
+.ksap-timestampBadge .month,
+.ksap-timestampBadge .time,
+.ksap-auditData .ksap-bottomLabel,
+.ksap-auditDataGroup .uif-instructionalMessage {
+    font-size: 0.7em;
+}
+
+.ksap-timestampBadge .month {
+    text-transform: uppercase;
+}
+
+.ksap-timestampBadge .date {
+    font-size: 1.8em;
+}
+
+.ksap-auditData {
+    text-align: center;
+}
+
+.ksap-auditData .uif-readOnlyContent,
+.ksap-auditData .ksap-bottomLabel {
+    display: block;
+    clear: both;
+}
+
+.ksap-auditData .uif-readOnlyContent {
+    font-size: 1.3em;
+}
+
+.ksap-auditDataGroup .uif-instructionalMessage {
+    text-transform: uppercase;
+}
+
+.ksap-auditData .ksap-bottomLabel {
+    text-transform: uppercase;
+}
