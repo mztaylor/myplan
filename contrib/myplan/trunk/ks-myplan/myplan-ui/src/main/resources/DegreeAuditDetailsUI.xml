@@ -167,7 +167,14 @@
         <property name="layoutManager">
             <bean parent="Uif-VerticalBoxLayout"/>
         </property>
-        <property name="onDocumentReadyScript" value="blockPendingAudit('audit_section');"/>
+        <property name="onDocumentReadyScript" value="
+        if (jQuery.cookie('myplan_audit_running')) {
+            if (readUrlParam('degreeAudit.auditId') == false &amp;&amp; readUrlParam('planAudit.auditId') == false) {
+                var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running')));
+                blockPendingAudit(data);
+            }
+        }
+        "/>
         <property name="items">
             <list>
                 <ref bean="run_degree_audits"/>
@@ -275,6 +282,7 @@
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
+        <property name="header.render" value="@{#form.planAudit.auditHtml NE null}"/>
         <property name="items">
             <list>
                 <bean p:id="@{planAudit.auditId}" parent="Uif-Message" p:messageText="@{planAudit.auditHtml}"
