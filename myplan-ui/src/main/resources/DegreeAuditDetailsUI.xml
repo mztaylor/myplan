@@ -731,7 +731,8 @@
         <property name="items" value=""/>
     </bean>
 
-    <bean id="plan_audit_messy_items" parent="Uif-StackedCollectionGroup" p:style="margin:0;">
+    <bean id="plan_audit_messy_items" parent="Uif-StackedCollectionGroup" p:style="margin:0;"
+          p:id="plan_audit_messy_items">
         <property name="validationMessages">
             <null/>
         </property>
@@ -1054,6 +1055,8 @@
                                               p:style="margin:0px 20px 0px 0px;">
                                             <property name="actionLabel" value="Submit"/>
                                             <property name="actionScript" value="runPlanAudit('plan_audit_run');"/>
+                                            <property name="onDocumentReadyScript"
+                                                      value="buttonState('plan_audit_messy_items', 'submit_plan_audit');"/>
                                         </bean>
                                         <bean parent="Uif-ActionLink" p:style="margin:0; line-height: 30px;">
                                             <property name="actionLabel" value="Cancel"/>
