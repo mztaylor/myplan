@@ -203,8 +203,8 @@
                     </property>
                     <property name="items">
                         <list>
-                            <ref bean="saved_courses_detail"/>
-                            <bean parent="KSAP-RightPane">
+                            <bean parent="saved_courses_detail" p:width="710px"/>
+                            <bean parent="KSAP-RightPane" p:width="230px">
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-YourStuff">
@@ -234,7 +234,7 @@
         <property name="footer.render" value="false"/>
     </bean>
 
-    <bean id="saved_courses_detail" parent="Uif-VerticalBoxSubSection" p:style="width: 700px; margin-right: 10px;">
+    <bean id="saved_courses_detail" parent="Uif-VerticalBoxSubSection">
         <property name="validationMessages">
             <null/>
         </property>
