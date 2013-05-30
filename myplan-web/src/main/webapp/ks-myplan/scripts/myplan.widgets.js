@@ -978,8 +978,8 @@ function getAuditProgram(param, type) {
 
 var blockPendingAuditStyle = {
     message:'<img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="" class="icon"/><div class="heading">We are currently running your degree audit for \'<span class="programName"></span>\'.</div><div class="content">Audits may take 1-5 minutes to load. Feel free to leave this page to explore MyPlan further while your audit is running. You will receive a browser notification when your report is complete.</div>',
-    fadeIn:400,
-    fadeOut:800,
+    fadeIn:250,
+    fadeOut:250,
     css:{
         padding:'30px 30px 30px 82px',
         margin:'30px',
@@ -999,10 +999,10 @@ var blockPendingAuditStyle = {
     }
 };
 
-var blockPendingAudit;
+var replaceBlockPendingAudit;
 
 function changeLoadingMessage(selector, programName) {
-    blockPendingAudit = setInterval(function () {
+    replaceBlockPendingAudit = setInterval(function () {
         setLoadingMessage(selector, programName)
     }, 100);
 }
@@ -1014,7 +1014,7 @@ function setLoadingMessage(selector, programName) {
 }
 
 function fnAddLoadingText(selector, programName) {
-    clearInterval(blockPendingAudit);
+    clearInterval(replaceBlockPendingAudit);
     jQuery(selector + " div.blockUI.blockOverlay").css(blockPendingAuditStyle.overlayCSS);
     jQuery(selector + " div.blockUI.blockMsg.blockElement").html(blockPendingAuditStyle.message).css(blockPendingAuditStyle.css).data("growl", "false");
     jQuery(selector + " div.blockUI.blockMsg.blockElement .programName").text(programName);
@@ -1079,17 +1079,17 @@ function getPendingAudit(id, type) {
     }
 }
 
-function blockPendingAudit(id) {
-    if (readUrlParam("auditId") == false && jQuery.cookie('myplan_audit_running')) {
-        var elementToBlock = jQuery("#" + id);
-        var audit = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running')));
-        elementToBlock.block(blockPendingAuditStyle);
-        jQuery("#" + id + " div.blockUI.blockMsg.blockElement").data("growl", "true");
-        jQuery("#" + id + " div.blockUI.blockMsg.blockElement .programName").text(audit.programName);
-        jQuery("#" + id).subscribe('AUDIT_COMPLETE', function () {
-            window.location.assign(window.location.href.split("#")[0]);
-        });
-    }
+function blockPendingAudit(data) {
+    var id = "audit_section";
+    if (data.auditType == "plan") id = "plan_audit_section";
+    var elementToBlock = jQuery("#" + id);
+    elementToBlock.block(blockPendingAuditStyle);
+    jQuery("#" + id + " div.blockUI.blockMsg.blockElement").data("growl", "true");
+    jQuery("#" + id + " div.blockUI.blockMsg.blockElement .programName").text(data.programName);
+    jQuery("#" + id).subscribe('AUDIT_COMPLETE', function () {
+        window.location.assign(window.location.href.split("#")[0] + "#" + data.auditType + "_audit_block_tab");
+        window.location.reload(true);
+    });
 }
 
 function pollPendingAudit(programId, recentAuditId, auditType) {
