@@ -24,7 +24,7 @@
 ">-":"The course has exceeded the repeatable limit and has had its credit reduced.",
 "DP":"This course has been retaken.",
 ">D":"Credit has been removed from this retaken course. For the purpose of a given requirement, credit may be restored--as when a minimum grade is required. This course is used in your UW GPA.",
-">P":"Planned Course"
+">PL":"Planned Course"
 }>
 
 <#assign subreqStatusMap = {
@@ -265,9 +265,10 @@ ${headerLine?xml}
                                     </td>
                                     <td class="credit"> ${takenCourse.credit?string?replace(".0","")?xml} </td>
                                     <td class="grade"> ${takenCourse.grade?xml} </td>
-                                    <#if toolTipsMap[takenCourse.condCode]?exists >
-                                        <td class="ccode" title="${toolTipsMap[takenCourse.condCode]}">
-                                        ${takenCourse.condCode?xml}
+                                    <#assign condCode = takenCourse.condCode?trim >
+                                    <#if toolTipsMap[condCode]?exists >
+                                        <td class="ccode" title="${toolTipsMap[condCode]}">
+                                        ${condCode?xml}
                                         </td>
                                     <#else>
                                         <td class="ccode"> </td>
@@ -376,7 +377,7 @@ ${headerLine?xml}
             </select>
         </div>
         </#if>
-    <div class="requirement ${rname} ${satisfied} ${req.summary?xml}">
+    <div class="requirement ${rname} ${satisfied} ${req.summaryGroupName?xml}">
     <div class="header">
         <div class="toggle"> </div>
         <div class="status ${satisfied}"> ${satisfiedMap[satisfied]} </div>
@@ -520,7 +521,7 @@ ${headerLine?xml}
                     <#assign takenRow = takenRow + [takenDesc] >
                     <#assign takenRow = takenRow + [takenCourse.credit] >
                     <#assign takenRow = takenRow + [takenCourse.grade] >
-                    <#assign takenRow = takenRow + [takenCourse.condCode] >
+                    <#assign takenRow = takenRow + [takenCourse.condCode?trim] >
                     <#assign takenList = takenList + [takenRow] >
                 </#list>
             </#if>
@@ -729,7 +730,7 @@ ${headerLine?xml}
                         <#assign lines = takenRow[3] >
                         <#assign credit = takenRow[4] >
                         <#assign grade = takenRow[5] >
-                        <#assign condCode = takenRow[6] >
+                        <#assign condCode = takenRow[6]?trim >
                     <#--
                         courseType: courseType?xml
                         yt: yt?xml
