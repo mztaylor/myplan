@@ -376,24 +376,26 @@ public class QuickAddController extends UifControllerBase {
         String studentId = UserSessionHelper.getStudentRegId();
 
         LearningPlan plan = null;
-        try {
-            //  If something goes wrong with the query then a RuntimeException will be thrown. Otherwise, the method
-            //  will return the default plan or null. Having multiple plans will also produce a RuntimeException.
-            plan = getLearningPlan(studentId);
-        } catch (RuntimeException e) {
-            return doOperationFailedError(form, "Query for default learning plan failed.", ERROR_KEY_OPERATION_FAILED, e, new String[]{});
-        }
-
-        /*
-        *  Create a default learning plan if there isn't one already and skip querying for plan items.
-        */
-        // TODO: There is a potential (small) for multiple plan's created in this model coz of multi threading. There should be a check
-        // at the db level to restrict a single plan of a given type to a student
-        if (plan == null) {
+        synchronized (studentId) {
             try {
-                plan = createDefaultLearningPlan(studentId);
-            } catch (Exception e) {
-                return doOperationFailedError(form, "Unable to create learning plan.", ERROR_KEY_OPERATION_FAILED, e, new String[]{});
+                //  If something goes wrong with the query then a RuntimeException will be thrown. Otherwise, the method
+                //  will return the default plan or null. Having multiple plans will also produce a RuntimeException.
+                plan = getLearningPlan(studentId);
+            } catch (RuntimeException e) {
+                return doOperationFailedError(form, "Query for default learning plan failed.", ERROR_KEY_OPERATION_FAILED, e, new String[]{});
+            }
+
+            /*
+            *  Create a default learning plan if there isn't one already and skip querying for plan items.
+            */
+            // TODO: There is a potential (small) for multiple plan's created in this model coz of multi threading. There should be a check
+            // at the db level to restrict a single plan of a given type to a student
+            if (plan == null) {
+                try {
+                    plan = createDefaultLearningPlan(studentId);
+                } catch (Exception e) {
+                    return doOperationFailedError(form, "Unable to create learning plan.", ERROR_KEY_OPERATION_FAILED, e, new String[]{});
+                }
             }
         }
         //  Lookup course details as well need them in case there is an error below.
@@ -1018,19 +1020,19 @@ public class QuickAddController extends UifControllerBase {
         return getUIFModelAndView(form, QuickAddConstants.QUICK_ADD_RESPONSE_PAGE_ID);
     }
 
-   /* public List<String> additionalFiltering(List<String> results, String atpId) {
-        int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
-        int resultsSize = results.size();
-        if (isCourseOfferingServiceUp()) {
-            for (int i = 0; i < resultsSize; i++) {
-                DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(results.get(i));
-                String courseId = getCourseHelper().getCourseId(courseCode.getSubject(), courseCode.getNumber());
-                List<CourseOfferingInfo> courseOfferingInfo = null;
-                boolean removed = false;
+    /* public List<String> additionalFiltering(List<String> results, String atpId) {
+int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
+int resultsSize = results.size();
+if (isCourseOfferingServiceUp()) {
+for (int i = 0; i < resultsSize; i++) {
+DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(results.get(i));
+String courseId = getCourseHelper().getCourseId(courseCode.getSubject(), courseCode.getNumber());
+List<CourseOfferingInfo> courseOfferingInfo = null;
+boolean removed = false;
 
-                try {
+try {
 
-                    *//*Filtering courses that are not offered in the given term*//*
+    *//*Filtering courses that are not offered in the given term*//*
                     List<CourseOfferingInfo> offerings = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(courseId, atpId, CourseSearchConstants.CONTEXT_INFO);
                     if (offerings == null || offerings.size() == 0) {
                         results.remove(results.get(i));

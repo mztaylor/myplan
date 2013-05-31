@@ -833,27 +833,28 @@ public class PlanController extends UifControllerBase {
         String studentId = UserSessionHelper.getStudentRegId();
 
         LearningPlan plan = null;
-        try {
-            //  If something goes wrong with the query then a RuntimeException will be thrown. Otherwise, the method
-            //  will return the default plan or null. Having multiple plans will also produce a RuntimeException.
-            plan = getLearningPlan(studentId);
-        } catch (RuntimeException e) {
-            return doOperationFailedError(form, "Query for default learning plan failed.", e);
-        }
-
-        /*
-         *  Create a default learning plan if there isn't one already and skip querying for plan items.
-         */
-        // TODO: There is a potential (small) for multiple plan's created in this model coz of multi threading. There should be a check
-        // at the db level to restrict a single plan of a given type to a student
-        if (plan == null) {
+        synchronized (studentId) {
             try {
-                plan = createDefaultLearningPlan(studentId);
-            } catch (Exception e) {
-                return doOperationFailedError(form, "Unable to create learning plan.", e);
+                //  If something goes wrong with the query then a RuntimeException will be thrown. Otherwise, the method
+                //  will return the default plan or null. Having multiple plans will also produce a RuntimeException.
+                plan = getLearningPlan(studentId);
+            } catch (RuntimeException e) {
+                return doOperationFailedError(form, "Query for default learning plan failed.", e);
+            }
+
+            /*
+            *  Create a default learning plan if there isn't one already and skip querying for plan items.
+            */
+            // TODO: There is a potential (small) for multiple plan's created in this model coz of multi threading. There should be a check
+            // at the db level to restrict a single plan of a given type to a student
+            if (plan == null) {
+                try {
+                    plan = createDefaultLearningPlan(studentId);
+                } catch (Exception e) {
+                    return doOperationFailedError(form, "Unable to create learning plan.", e);
+                }
             }
         }
-
         /*Retrieve course activity offerings for the term to be planned*/
         /*Adding Section related courses logic */
         boolean addCourse = true;
@@ -1047,36 +1048,38 @@ public class PlanController extends UifControllerBase {
         List<LearningPlanInfo> plan = new ArrayList<LearningPlanInfo>();
         try {
             String studentId = UserSessionHelper.getStudentRegId();
-            plan = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
-            if (plan.size() > 0) {
-                if (!plan.get(0).getShared().toString().equalsIgnoreCase(form.getEnableAdviserView())) {
-                    if (form.getEnableAdviserView().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY)) {
-                        plan.get(0).setShared(true);
-                    } else {
-                        plan.get(0).setShared(false);
+            synchronized (studentId) {
+                plan = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
+                if (plan.size() > 0) {
+                    if (!plan.get(0).getShared().toString().equalsIgnoreCase(form.getEnableAdviserView())) {
+                        if (form.getEnableAdviserView().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY)) {
+                            plan.get(0).setShared(true);
+                        } else {
+                            plan.get(0).setShared(false);
+                        }
+                        plan.get(0).setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
+                        getAcademicPlanService().updateLearningPlan(plan.get(0).getId(), plan.get(0), PlanConstants.CONTEXT_INFO);
                     }
-                    plan.get(0).setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
-                    getAcademicPlanService().updateLearningPlan(plan.get(0).getId(), plan.get(0), PlanConstants.CONTEXT_INFO);
-                }
-            } else {
-                LearningPlanInfo planInfo = new LearningPlanInfo();
-                planInfo.setTypeKey(PlanConstants.LEARNING_PLAN_TYPE_PLAN);
-                RichTextInfo rti = new RichTextInfo();
-                rti.setFormatted("");
-                rti.setPlain("");
-                if (form.getEnableAdviserView().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY)) {
-                    planInfo.setShared(true);
                 } else {
-                    planInfo.setShared(false);
-                }
-                planInfo.setDescr(rti);
-                planInfo.setStudentId(studentId);
-                planInfo.setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
-                planInfo.setMeta(new MetaInfo());
+                    LearningPlanInfo planInfo = new LearningPlanInfo();
+                    planInfo.setTypeKey(PlanConstants.LEARNING_PLAN_TYPE_PLAN);
+                    RichTextInfo rti = new RichTextInfo();
+                    rti.setFormatted("");
+                    rti.setPlain("");
+                    if (form.getEnableAdviserView().equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY)) {
+                        planInfo.setShared(true);
+                    } else {
+                        planInfo.setShared(false);
+                    }
+                    planInfo.setDescr(rti);
+                    planInfo.setStudentId(studentId);
+                    planInfo.setStateKey(PlanConstants.LEARNING_PLAN_ACTIVE_STATE_KEY);
+                    planInfo.setMeta(new MetaInfo());
 
-                ContextInfo context = new ContextInfo();
-                context.setPrincipalId(studentId);
-                getAcademicPlanService().createLearningPlan(planInfo, context);
+                    ContextInfo context = new ContextInfo();
+                    context.setPrincipalId(studentId);
+                    getAcademicPlanService().createLearningPlan(planInfo, context);
+                }
             }
         } catch (Exception e) {
             return doOperationFailedError(form, "Query for default learning plan failed.", e);
@@ -1193,24 +1196,25 @@ public class PlanController extends UifControllerBase {
 
         String studentId = UserSessionHelper.getStudentRegId();
         LearningPlan plan = null;
-        try {
-            //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
-            plan = getLearningPlan(studentId);
-        } catch (RuntimeException e) {
-            return doOperationFailedError(form, "Query for default learning plan failed.", e);
-        }
-
-        /*
-         *  Create a default learning plan if there isn't one already and skip querying for plan items.
-         */
-        if (plan == null) {
+        synchronized (studentId) {
             try {
-                plan = createDefaultLearningPlan(studentId);
-            } catch (Exception e) {
-                return doOperationFailedError(form, "Unable to create learning plan.", e);
+                //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
+                plan = getLearningPlan(studentId);
+            } catch (RuntimeException e) {
+                return doOperationFailedError(form, "Query for default learning plan failed.", e);
+            }
+
+            /*
+            *  Create a default learning plan if there isn't one already and skip querying for plan items.
+            */
+            if (plan == null) {
+                try {
+                    plan = createDefaultLearningPlan(studentId);
+                } catch (Exception e) {
+                    return doOperationFailedError(form, "Unable to create learning plan.", e);
+                }
             }
         }
-
         // Retrieve courseDetails based on the passed in CourseId and then update courseDetails based on the version independent Id
         CourseSummaryDetails courseDetails = null;
         // Now switch to the details based on the version independent Id
