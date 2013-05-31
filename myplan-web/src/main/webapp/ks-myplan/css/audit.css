@@ -83,7 +83,7 @@
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-    background: #faf7ff;
+    background: #faf5ff;
     padding: 10px 15px 10px 85px;
     position: relative;
 }
@@ -92,7 +92,7 @@
     position: absolute;
     top: 0px;
     left: 0px;
-    background: #eee6fc;
+    background: #ebe1fe;
     padding: 10px 15px;
     border-radius: 5px 0 0 5px;
     -moz-border-radius: 5px 0 0 5px;
@@ -101,8 +101,8 @@
 
 .myplan-audit-report .control-toolbar {
     padding: 10px;
-    background: #fcf9f0;
-    border: solid 1px #e4e3e3;
+    background: #faf8ec;
+    border: solid 1px #dfdcdc;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -416,4 +416,40 @@
     -moz-border-radius: 0px 0px 5px 5px;
     -webkit-border-radius: 0px 0px 5px 5px;
     color: #fff;
+}
+
+.WIFCRSES.requirement.Status_NONE {
+    border: solid 1px #fac157;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    margin-bottom: 30px;
+    background: #fff;
+    padding: 0;
+}
+
+.WIFCRSES.requirement.Status_NONE > .header {
+    border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+    padding: 20px;
+    background: #faeac4;
+    font-weight: 700;
+    line-height: 1.5em;
+}
+
+.WIFCRSES.requirement.Status_NONE > .header .title {
+    width: auto;
+}
+
+.WIFCRSES.requirement.Status_NONE > .header .toggle {
+    display: none;
+}
+
+.WIFCRSES.requirement.Status_NONE > .body {
+    margin: 0 0 25px 0;
+}
+
+.WIFCRSES.requirement.Status_NONE > .body .subrequirement .taken {
+    margin-left: 75px;
 }

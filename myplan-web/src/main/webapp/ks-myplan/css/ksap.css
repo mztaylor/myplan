@@ -4,12 +4,40 @@ gray border = #e1e1e0
 blue block item hover = #e3f0fe;
 
 */
+
+/* OVERWRITE KRAD STYLES */
+.uif-stackedCollectionLayout {
+    background-image: none;
+    padding: 0;
+}
+
+.uif-stackedCollectionLayout .uif-stackedCollectionLayout {
+    background-image: none;
+}
+
+.uif-stackedCollectionLayout > .uif-collectionItem {
+    margin: 10px 0 0 0;
+    padding: 0;
+    background-color: transparent;
+}
+
+.uif-stackedCollectionLayout > .uif-collectionItem:first-child {
+    margin: 0;
+}
+
+/* KSAP CLASSES */
 .ksap-defaultPadding {
     padding: 10px;
 }
 
 .ksap-defaultMargin {
     margin: 10px;
+}
+
+.ksap-defaultRadius {
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
 }
 
 .ksap-solidBorder {
@@ -25,6 +53,7 @@ blue block item hover = #e3f0fe;
 }
 
 .ksap-noMargin,
+.uif-inputField.ksap-noMargin,
 .uif-page {
     margin: 0;
 }
@@ -80,6 +109,7 @@ blue block item hover = #e3f0fe;
     text-transform: uppercase !important;
 }
 
+/* KSAP RIGHT GUTTER MODULES */
 .ksap-moduleContainer {
     border: solid 1px #e1e1e0;
     border-radius: 5px;
@@ -272,4 +302,50 @@ blue block item hover = #e3f0fe;
 
 .ksap-auditData .ksap-bottomLabel {
     text-transform: uppercase;
+}
+
+/* KSAP AUDIT HAND OFF VIEW */
+.ksap-auditHandOff {
+    overflow: hidden;
+}
+
+.ksap-auditHandOff .uif-stackedCollectionLayout {
+    padding: 20px 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    border-top: solid 1px #ccc;
+    border-bottom: solid 1px #ccc;
+}
+
+.ksap-auditHandOff .uif-stackedCollectionLayout > .uif-collectionItem {
+    margin: 20px 0 0 0;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border: dotted 1px #e1e1e0;
+    padding: 10px;
+}
+
+.ksap-auditHandOff .uif-stackedCollectionLayout > .uif-collectionItem:first-child {
+    margin: 0;
+}
+
+.ksap-auditHandOff .uif-stackedCollectionLayout .uif-stackedCollectionLayout {
+    max-height: none;
+    border: none;
+    overflow: visible;
+    padding: 0;
+}
+
+.ksap-auditHandOff .uif-stackedCollectionLayout .uif-stackedCollectionLayout > .uif-collectionItem {
+    margin: 10px 0 0 0;
+    border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border: none;
+    padding: 0;
+}
+
+.ksap-auditHandOff .uif-subCollection.uif-boxLayoutVerticalItem {
+    margin: 0;
 }

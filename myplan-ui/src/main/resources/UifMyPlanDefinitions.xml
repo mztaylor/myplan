@@ -753,11 +753,7 @@
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="subCollectionFieldGroupPrototype">
-                    <bean parent="Uif-VerticalFieldGroup">
-                        <property name="group.validationMessages">
-                            <null/>
-                        </property>
-                        <property name="fieldLabel.render" value="false"/>
+                    <bean parent="KSAP-VerticalFieldGroup">
                         <property name="cssClasses">
                             <list merge="true">
                                 <value>uif-subCollection</value>

@@ -732,254 +732,9 @@
         </property>
     </bean>
 
-    <bean id="plan_hand_off_container" parent="Uif-VerticalBoxGroup" p:hidden="true">
-        <property name="validationMessages">
-            <null/>
-        </property>
+    <bean id="plan_hand_off_container" parent="KSAP-VerticalBoxGroup" p:hidden="true">
         <property name="items" value=""/>
     </bean>
-
-    <bean id="plan_audit_messy_items" parent="Uif-StackedCollectionGroup" p:style="margin:0;"
-          p:id="plan_audit_messy_items">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.audit.dataobject.MessyItemDataObject"/>
-        <property name="propertyName" value="planAudit.messyItems"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
-        <property name="bindingInfo.bindToForm" value="true"/>
-        <property name="disclosure.render" value="false"/>
-        <property name="layoutManager">
-            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
-                <property name="style"
-                          value="background:none; max-height:275px; overflow-y:auto; border-top:solid 1px #ccc; border-bottom:solid 1px #ccc;"/>
-                <property name="subCollectionFieldGroupPrototype">
-                    <bean parent="Uif-VerticalFieldGroup">
-                        <property name="fieldLabel.render" value="false"/>
-                        <property name="cssClasses">
-                            <list merge="true">
-                                <value>uif-subCollection</value>
-                            </list>
-                        </property>
-                    </bean>
-                </property>
-                <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem" p:style="padding:0;">
-                        <property name="validationMessages">
-                            <null/>
-                        </property>
-                        <property name="footer.render" value="false"/>
-                    </bean>
-                </property>
-            </bean>
-        </property>
-        <property name="items">
-            <list/>
-        </property>
-        <property name="subCollections">
-            <list>
-                <ref bean="plan_audit_messy_block"/>
-            </list>
-        </property>
-
-    </bean>
-
-    <bean id="plan_audit_clean_items" parent="Uif-StackedCollectionGroup" p:hidden="true">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.audit.dataobject.CourseItem"/>
-        <property name="propertyName" value="planAudit.cleanList"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
-        <property name="bindingInfo.bindToForm" value="true"/>
-        <property name="disclosure.render" value="false"/>
-        <property name="layoutManager">
-            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
-                <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem">
-                        <property name="validationMessages">
-                            <null/>
-                        </property>
-                        <property name="footer.render" value="false"/>
-                    </bean>
-                </property>
-            </bean>
-        </property>
-        <property name="items">
-            <list>
-                <bean p:id="hidden_courseItem_course_id" parent="Uif-InputField"
-                      p:propertyName="courseId">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
-                <bean p:id="hidden_courseItem_course_code" parent="Uif-InputField"
-                      p:propertyName="courseCode">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
-                <bean p:id="hidden_courseItem_section_code" parent="Uif-InputField"
-                      p:propertyName="sectionCode">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
-                <bean p:id="hidden_courseItem_atp_id" parent="Uif-InputField"
-                      p:propertyName="atpId">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
-                <bean p:id="hidden_courseItem_credit" parent="Uif-InputField"
-                      p:propertyName="credit">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-
-    <bean id="plan_audit_messy_block" parent="Uif-StackedCollectionGroup">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.audit.dataobject.MessyItem"/>
-        <property name="propertyName" value="messyItemList"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
-        <property name="bindingInfo.bindToForm" value="true"/>
-        <property name="disclosure.render" value="false"/>
-        <property name="layoutManager">
-            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
-                <property name="style"
-                          value="background:none; border:dashed 1px #ddd; border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px; padding:10px 10px 0px;"/>
-                <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem" p:style="padding:0;">
-                        <property name="validationMessages">
-                            <null/>
-                        </property>
-                        <property name="footer.render" value="false"/>
-                    </bean>
-                </property>
-            </bean>
-        </property>
-        <property name="header">
-            <bean parent="Uif-HeaderFour" p:render="true"/>
-        </property>
-        <property name="headerText"
-                  value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.atpId)}"/>
-        <property name="items">
-            <list>
-                <bean id="messy_quarter" parent="Uif-MessageField" p:hidden="true">
-                    <property name="messageText"
-                              value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.atpAndAddMessyItemToReq)}"/>
-                </bean>
-                <bean parent="Uif-LinkField" p:style="margin:0;">
-                    <property name="linkText" value="@{#line.courseCode} @{#line.courseTitle}"/>
-                    <property name="title" value="@{#line.courseCode} @{#line.courseTitle}"/>
-                    <property name="href"
-                              value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}"/>
-                </bean>
-                <bean id="messy_credits" parent="Uif-InputField" p:propertyName="selectedCredit" p:style="margin:0;"
-                      p:render="@{#line.credits.size() gt 0}">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="control">
-                        <bean parent="Uif-DropdownControl">
-                            <property name="onChangeScript"
-                                      value="buttonState('plan_audit_messy_items', 'submit_plan_audit');"/>
-                            <property name="cssClasses">
-                                <list merge="true">
-                                    <value>myplan-required</value>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.course.util.PlanAuditMessyItems"/>
-                    </property>
-                </bean>
-                <bean p:id="hidden_version_independent_id" parent="Uif-InputField" p:propertyName="versionIndependentId"
-                      p:hidden="true">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
-                <bean p:id="hidden_course_id" parent="Uif-InputField" p:propertyName="courseId" p:hidden="true">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
-                <bean p:id="hidden_course_code" parent="Uif-InputField" p:propertyName="courseCode" p:hidden="true">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
-                <bean p:id="hidden_atp_id" parent="Uif-InputField" p:propertyName="atpId" p:hidden="true">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
-                <bean p:id="hidden_course_title" parent="Uif-InputField" p:propertyName="courseTitle" p:hidden="true">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
-            </list>
-        </property>
-        <property name="collectionLookup.render" value="false"/>
-        <property name="collectionLookup.quickfinderAction.render" value="false"/>
-    </bean>
-
 
     <!-- Not used to view audit reports. -->
     <bean id="PlanAuditHandOff-FormView" parent="MyPlanBaseFormView">
@@ -994,8 +749,13 @@
         <property name="entryPageId" value="plan_audit_hand_off"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="plan_audit_hand_off" p:hidden="false"
-                      p:style="width:650px; margin:0; overflow:hidden;">
+                <bean parent="Uif-Page" p:id="plan_audit_hand_off" p:width="650px">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>ksap-auditHandOff</value>
+                            <value>ksap-noMargin</value>
+                        </list>
+                    </property>
                     <property name="header">
                         <bean parent="Uif-HeaderTwo"/>
                     </property>
@@ -1095,6 +855,191 @@
         </property>
         <property name="footer.render" value="false"/>
         <property name="formClass" value="org.kuali.student.myplan.audit.form.AuditForm"/>
+    </bean>
+
+    <bean id="plan_audit_clean_items" parent="KSAP-StackedCollectionGroup" p:hidden="true">
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.audit.dataobject.CourseItem"/>
+        <property name="propertyName" value="planAudit.cleanList"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="readOnly" value="false"/>
+        <property name="items">
+            <list>
+                <bean p:id="hidden_courseItem_course_id" parent="Uif-InputField"
+                      p:propertyName="courseId">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_courseItem_course_code" parent="Uif-InputField"
+                      p:propertyName="courseCode">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_courseItem_section_code" parent="Uif-InputField"
+                      p:propertyName="sectionCode">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_courseItem_atp_id" parent="Uif-InputField"
+                      p:propertyName="atpId">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_courseItem_credit" parent="Uif-InputField"
+                      p:propertyName="credit">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="plan_audit_messy_items" parent="KSAP-StackedCollectionGroup" p:id="plan_audit_messy_items">
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.audit.dataobject.MessyItemDataObject"/>
+        <property name="propertyName" value="planAudit.messyItems"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="readOnly" value="false"/>
+        <property name="items">
+            <list/>
+        </property>
+        <property name="subCollections">
+            <list>
+                <ref bean="plan_audit_messy_block"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="plan_audit_messy_block" parent="KSAP-StackedCollectionGroup">
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.MessyItem"/>
+        <property name="propertyName" value="messyItemList"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="readOnly" value="false"/>
+        <property name="header">
+            <bean parent="Uif-HeaderFour">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>uif-boxLayoutVerticalItem</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="headerText"
+                  value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.atpId)}"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-LinkField">
+                    <property name="linkText" value="@{#line.courseCode} @{#line.courseTitle}"/>
+                    <property name="title" value="@{#line.courseCode} @{#line.courseTitle}"/>
+                    <property name="href"
+                              value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>ksap-noMargin</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean id="messy_credits" parent="Uif-InputField" p:propertyName="selectedCredit">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl">
+                            <property name="onChangeScript"
+                                      value="buttonState('plan_audit_messy_items', 'submit_plan_audit');"/>
+                            <property name="cssClasses">
+                                <list merge="true">
+                                    <value>myplan-required</value>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.course.util.PlanAuditMessyItems"/>
+                    </property>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>ksap-noMargin</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean p:id="hidden_version_independent_id" parent="Uif-InputField" p:propertyName="versionIndependentId"
+                      p:hidden="true">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_course_id" parent="Uif-InputField" p:propertyName="courseId" p:hidden="true">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_course_code" parent="Uif-InputField" p:propertyName="courseCode" p:hidden="true">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_atp_id" parent="Uif-InputField" p:propertyName="atpId" p:hidden="true">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_course_title" parent="Uif-InputField" p:propertyName="courseTitle" p:hidden="true">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean id="messy_quarter" parent="Uif-MessageField" p:hidden="true">
+                    <property name="messageText"
+                              value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.atpAndAddMessyItemToReq)}"/>
+                </bean>
+            </list>
+        </property>
     </bean>
 
 </beans>
