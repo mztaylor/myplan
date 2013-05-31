@@ -279,12 +279,12 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 if (isCourse && isPlanned) {
 
                     String bucketType = BUCKET_IGNORE;
-                    String credit = null;
+                    String credit = "0";
                     String section = null;
-                    for( AttributeInfo attrib : planItem.getAttributes() ) {
+                    for (AttributeInfo attrib : planItem.getAttributes()) {
                         String key = attrib.getKey();
                         String value = attrib.getValue();
-                        if( BUCKET.equals( key )) {
+                        if (BUCKET.equals(key)) {
                             bucketType = value;
                         } else if (CREDIT.equals(key)) {
                             credit = value;
@@ -293,7 +293,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         }
                     }
 
-                    if( BUCKET_IGNORE.equals( bucketType )) continue;
+                    if (BUCKET_IGNORE.equals(bucketType)) continue;
+//                    if ("0".equals(credit)) {
+//                        continue;
+//                    }
 
                     String versionIndependentId = planItem.getRefObjectId();
 
@@ -337,7 +340,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             auditId = requestAudit(req);
 
         } catch (Exception e) {
-            logger.warn("error retrieving plan items", e);
+//            logger.warn("error retrieving plan items", e);
+            throw new OperationFailedException("error retrieving learning plan items", e);
+
         }
 
         try {
@@ -363,7 +368,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 getAcademicPlanService().updateLearningPlan(learningPlanInfo.getId(), learningPlanInfo, context);
             }
         } catch (Exception e) {
-            logger.error("Could not update the learningPlanInfo");
+//            logger.error("Could not update the learningPlanInfo", e );
+            throw new OperationFailedException("error updating learning plan items", e);
         }
 
         return auditId;
