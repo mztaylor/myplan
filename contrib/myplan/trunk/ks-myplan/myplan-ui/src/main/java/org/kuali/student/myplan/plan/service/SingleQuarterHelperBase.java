@@ -90,10 +90,10 @@ public class SingleQuarterHelperBase {
                     academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
                     if (!"X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue())) {
                         academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
-                    } else if ("X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue()) && AtpHelper.isAtpCompletedTerm(studentInfo.getTermName())) {
+                    } else if ("X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue()) && !AtpHelper.isAtpSetToPlanning(studentInfo.getTermName())) {
                         academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
                     }
-                    if (!AtpHelper.isAtpCompletedTerm(studentInfo.getTermName())) {
+                    if (AtpHelper.isAtpSetToPlanning(studentInfo.getTermName())) {
                         academicRecordDataObject.setActivityCode(studentInfo.getActivityCode());
                     }
                     academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());

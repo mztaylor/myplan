@@ -181,7 +181,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
         } else if (!planItemType.equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST) && planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
             List<String> planPeriods = planItemInfo.getPlanPeriods();
             String termId = !planPeriods.isEmpty() ? planPeriods.get(0) : null;
-            if (null != termId && !AtpHelper.isAtpCompletedTerm(termId)) {
+            if (null != termId && AtpHelper.isAtpSetToPlanning(termId)) {
                 List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
 
                 String activityOfferingId = planItemInfo.getRefObjectId();

@@ -210,7 +210,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                 } else if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
                     List<String> planPeriods = planItem.getPlanPeriods();
                     String term = !planPeriods.isEmpty() ? planPeriods.get(0) : null;
-                    if (null != term && !AtpHelper.isAtpCompletedTerm(term)) {
+                    if (null != term && AtpHelper.isAtpSetToPlanning(term)) {
                         List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
                         String activityOfferingId = planItem.getRefObjectId();
                         ActivityOfferingDisplayInfo activityDisplayInfo = null;
