@@ -315,7 +315,9 @@
                 <bean parent="single_AcademicRecord_Empty"/>
                 <!-- Past quarter academic record with at least one course -->
                 <bean parent="single_AcademicRecord_Collection_Completed"/>
-                <!-- Current and Future quarter academic record with at least one course -->
+                <!--Current quarter but closed for planning with atleast one course-->
+                <bean parent="single_AcademicRecord_Collection_current_closed"/>
+                <!-- Current and Future quarter academic record with at least one course and which are open for planning -->
                 <bean parent="single_AcademicRecord_Collection_Open"/>
 
                 <bean parent="plannedCoursesList"/>
@@ -485,6 +487,12 @@
         </property>
     </bean>
 
+    <bean id="single_AcademicRecord_Collection_current_closed" parent="single_AcademicRecord_Collection_Completed">
+        <property name="headerText" value="Registered Courses"/>
+        <property name="render" value="@{dataObject.academicRecord.size() gt 0 AND !dataObject.completedTerm AND !dataObject.openForPlanning}"/>
+
+    </bean>
+
     <bean id="single_AcademicRecord_Collection_Open" parent="course_details_activity_data" p:style="">
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
@@ -510,7 +518,7 @@
             ');
             jQuery('table#@{dataObject.atpId.replace('.','-')} tfoot').remove();
         "/>
-        <property name="render" value="@{dataObject.academicRecord.size() gt 0 AND !dataObject.completedTerm}"/>
+        <property name="render" value="@{dataObject.academicRecord.size() gt 0 AND !dataObject.completedTerm AND dataObject.openForPlanning}"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="layoutManager.numberOfColumns" value="5"/>
@@ -932,9 +940,9 @@
         </property>
 
         <property name="footer">
-            <bean parent="single_Quarter_Credit_Total"/>
+            <bean parent="single_Quarter_Credit_Total" />
         </property>
-        <property name="footer.render" value="@{!dataObject.completedTerm}"/>
+        <property name="footer.render" value="@{!dataObject.completedTerm AND dataObject.openForPlanning}"/>
     </bean>
 
     <bean id="single_Backup_Collection" parent="single_Planned_Collection" p:headerText="Backup Courses">

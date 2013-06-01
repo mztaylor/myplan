@@ -183,7 +183,7 @@ public class PlannedTermsHelperBase {
                         academicRecordDataObject.setCourseId(studentInfo.getId());
                         academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
                         academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
-                        if (!AtpHelper.isAtpCompletedTerm(studentInfo.getTermName())) {
+                        if (AtpHelper.isAtpSetToPlanning(studentInfo.getTermName())) {
                             academicRecordDataObject.setActivityCode(studentInfo.getActivityCode());
                         }
                         if (!"X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue())) {
