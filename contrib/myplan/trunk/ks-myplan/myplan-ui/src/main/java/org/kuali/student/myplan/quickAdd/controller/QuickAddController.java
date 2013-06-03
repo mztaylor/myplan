@@ -376,6 +376,7 @@ public class QuickAddController extends UifControllerBase {
         String studentId = UserSessionHelper.getStudentRegId();
 
         LearningPlan plan = null;
+        // Synchronized is used to ensure only one learning plan is created for a given student Id
         synchronized (studentId) {
             try {
                 //  If something goes wrong with the query then a RuntimeException will be thrown. Otherwise, the method
