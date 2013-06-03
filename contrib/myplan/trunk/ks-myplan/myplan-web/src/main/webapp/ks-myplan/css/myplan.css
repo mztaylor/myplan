@@ -2065,6 +2065,7 @@ table.myplan-course-search-results-datatable .blockUI {
     border-left: dotted 1px #ccc;
     border-top: dotted 1px #ccc;
     height: 32px;
+    padding: 8px 4px;
 }
 
 /* .myplan-course-sections table.uif-tableCollectionLayout td:first-child[rowspan='3'] */
@@ -2076,7 +2077,7 @@ table.myplan-course-search-results-datatable .blockUI {
     font-weight: normal;
     text-transform: uppercase;
     font-size: 10px;
-    color: #777;
+    color: #999;
     white-space: nowrap;
 }
 
@@ -2799,6 +2800,26 @@ label.scheduled {
     display: inline-block;
     vertical-align: middle;
     margin: 0 0 0 5px;
+}
+
+.myplan-quarter-detail .uif-header .uif-header-lowerGroup {
+    display: inline-block;
+    float: right;
+    margin: 4px 0 0 0;
+}
+
+.myplan-quarter-detail .uif-header .uif-header-lowerGroup .myplan-registration-status {
+    width: 9px;
+    height: 11px;
+    background: url('../images/myplan_icon_sprites.png') no-repeat -1000px -1000px;
+}
+
+.myplan-quarter-detail .uif-header .uif-header-lowerGroup .myplan-registration-status.unlocked {
+    background-position: -1px -134px;
+}
+
+.myplan-quarter-detail .uif-header .uif-header-lowerGroup .myplan-registration-status.locked {
+    background-position: -12px -134px;
 }
 
 .myplan-quarter-detail .activityInstitutionHeading {

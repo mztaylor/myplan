@@ -341,7 +341,6 @@
                     start: iStart,
                     afterEnd: function(a) {
                         fnBuildTitle(a);
-                        console.log(jQuery(a[0]).index());
                         setUrlHash('planView', jQuery(a[0]).index());
                     },
                     initCallback: function(a) { fnBuildTitle(a); jQuery.unblockUI(); }

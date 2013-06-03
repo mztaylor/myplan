@@ -378,11 +378,12 @@
         </property>
     </bean>
 
-    <bean id="single_AcademicRecord_Collection_Completed" parent="course_details_activity_data" p:style="">
+    <bean id="single_AcademicRecord_Collection_Completed" parent="course_details_activity_data">
         <property name="id" value="@{dataObject.atpId.replace('.','-')}_completed"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
         <property name="propertyName" value="academicRecord"/>
+        <property name="style" value=""/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-course-sections</value>
@@ -422,16 +423,22 @@
             </bean>
         </property>
         <property name="header.lowerGroup">
-            <bean parent="Uif-VerticalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
-                </property>
+            <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">
-                    <list></list>
+                    <list>
+                        <bean parent="Uif-Image"
+                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+                            <property name="cssClasses">
+                                <list merge="true">
+                                    <value>locked</value>
+                                    <value>myplan-registration-status</value>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
                 </property>
             </bean>
         </property>
-        <property name="header.lowerGroup.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalFieldGroup" p:style="width:490px;">
@@ -489,14 +496,15 @@
 
     <bean id="single_AcademicRecord_Collection_current_closed" parent="single_AcademicRecord_Collection_Completed">
         <property name="headerText" value="Registered Courses"/>
-        <property name="render" value="@{dataObject.academicRecord.size() gt 0 AND !dataObject.completedTerm AND !dataObject.openForPlanning}"/>
-
+        <property name="render"
+                  value="@{dataObject.academicRecord.size() gt 0 AND !dataObject.completedTerm AND !dataObject.openForPlanning}"/>
     </bean>
 
-    <bean id="single_AcademicRecord_Collection_Open" parent="course_details_activity_data" p:style="">
+    <bean id="single_AcademicRecord_Collection_Open" parent="course_details_activity_data">
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
         <property name="propertyName" value="academicRecord"/>
+        <property name="style" value=""/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-course-sections</value>
@@ -509,8 +517,8 @@
             tableHead.find('tr th').last().attr('colspan', '2').prev('th').attr('colspan', '2');
             tableHead.before('
                 &lt;col style=&quot;width: 24px;&quot;&gt;
-                &lt;col style=&quot;width: 137px;&quot;&gt;
-                &lt;col style=&quot;width: 69px;&quot;&gt;
+                &lt;col style=&quot;width: 146px;&quot;&gt;
+                &lt;col style=&quot;width: 60px;&quot;&gt;
                 &lt;col style=&quot;width: 170px;&quot;&gt;
                 &lt;col style=&quot;width: 93px;&quot;&gt;
                 &lt;col style=&quot;width: 56px;&quot;&gt;
@@ -518,7 +526,8 @@
             ');
             jQuery('table#@{dataObject.atpId.replace('.','-')} tfoot').remove();
         "/>
-        <property name="render" value="@{dataObject.academicRecord.size() gt 0 AND !dataObject.completedTerm AND dataObject.openForPlanning}"/>
+        <property name="render"
+                  value="@{dataObject.academicRecord.size() gt 0 AND !dataObject.completedTerm AND dataObject.openForPlanning}"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
         <property name="layoutManager.numberOfColumns" value="5"/>
@@ -541,16 +550,22 @@
             </bean>
         </property>
         <property name="header.lowerGroup">
-            <bean parent="Uif-VerticalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
-                </property>
+            <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">
-                    <list></list>
+                    <list>
+                        <bean parent="Uif-Image"
+                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+                            <property name="cssClasses">
+                                <list merge="true">
+                                    <value>unlocked</value>
+                                    <value>myplan-registration-status</value>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
                 </property>
             </bean>
         </property>
-        <property name="header.lowerGroup.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="Uif-ImageField" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
@@ -578,11 +593,9 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
+                <bean parent="KSAP-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
                       p:rowSpan="1">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
+                    <property name="fieldLabel.render" value="true"/>
                     <property name="label" value="Section"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -591,7 +604,15 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField" p:messageText="@{#line.courseCode} @{#line.activityCode}"/>
+                            <bean parent="KSAP-MessageField" p:messageText="@{#line.courseCode} @{#line.activityCode}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>ksap-text-bold</value>
+                                        <value>fl-font-size-140</value>
+                                        <value>ksap-text-darygray</value>
+                                    </list>
+                                </property>
+                            </bean>
                             <bean parent="Uif-Link" p:linkText="@{#line.courseTitle}">
                                 <property name="href"
                                           value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}"/>
@@ -605,11 +626,9 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
+                <bean parent="KSAP-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
                       p:rowSpan="1">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
+                    <property name="fieldLabel.render" value="true"/>
                     <property name="label" value="Type"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -619,13 +638,19 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:propertyName="activityOfferingItem.activityOfferingType"
+                            <bean parent="KSAP-SimpleDataField"
+                                  p:propertyName="activityOfferingItem.activityOfferingType"
                                   p:style="text-transform:capitalize; margin:0;">
-                                <property name="fieldLabel.render" value="false"/>
                             </bean>
-                            <bean parent="Uif-Message" p:messageText="(@{#line.activityOfferingItem.credits})"
-                                  p:render="@{#line.activityOfferingItem.primary}"
-                                  p:style="margin:0;"/>
+                            <bean parent="KSAP-MessageField" p:messageText="(@{#line.activityOfferingItem.credits})"
+                                  p:render="@{#line.activityOfferingItem.primary}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>ksap-noMargin</value>
+                                        <value>ksap-text-darygray</value>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -638,9 +663,10 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-DataField" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
+                <bean parent="KSAP-SimpleDataField" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
                       p:rowSpan="1">
                     <property name="propertyName" value="activityOfferingItem.instructor"/>
+                    <property name="fieldLabel.render" value="true"/>
                     <property name="label" value="Instructor"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -649,12 +675,9 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-HorizontalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
+                <bean parent="KSAP-HorizontalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
                       p:colSpan="1" p:rowSpan="1">
                     <property name="id" value="details_@{#line.uuid}"/>
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
                     <property name="onDocumentReadyScript" value="
                         var collapsibleRow = jQuery('#details_@{#line.uuid}').parents('tr');
                         collapsibleRow.addClass('collapsible').hide();
@@ -685,11 +708,8 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
+                <bean parent="KSAP-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
                       p:colSpan="1" p:rowSpan="1">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>activityOther</value>
@@ -739,11 +759,8 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-HorizontalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
+                <bean parent="KSAP-HorizontalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
                       p:colSpan="3" p:rowSpan="1">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>activityRegCode</value>
@@ -940,7 +957,7 @@
         </property>
 
         <property name="footer">
-            <bean parent="single_Quarter_Credit_Total" />
+            <bean parent="single_Quarter_Credit_Total"/>
         </property>
         <property name="footer.render" value="@{!dataObject.completedTerm AND dataObject.openForPlanning}"/>
     </bean>
@@ -1313,7 +1330,7 @@
         <property name="footer">
             <bean parent="single_Quarter_Credit_Total"/>
         </property>
-        <property name="footer.render" value="@{!dataObject.completedTerm}"/>
+        <property name="footer.render" value="@{!dataObject.completedTerm AND dataObject.openForPlanning}"/>
     </bean>
 
     <bean id="single_Backup_Collection_Empty" parent="single_Collection_Empty" p:headerText="Backup Courses">
@@ -1345,10 +1362,7 @@
         </property>
     </bean>
 
-    <bean id="single_Quarter_Credit_Total" parent="Uif-HorizontalBoxGroup">
-        <property name="validationMessages">
-            <null/>
-        </property>
+    <bean id="single_Quarter_Credit_Total" parent="KSAP-HorizontalBoxGroup">
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-credit-total</value>

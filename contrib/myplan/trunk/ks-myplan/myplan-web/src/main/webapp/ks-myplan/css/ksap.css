@@ -102,7 +102,11 @@ blue block item hover = #e3f0fe;
 }
 
 .ksap-text-gray {
-    color: #777777 !important;
+    color: #777 !important;
+}
+
+.ksap-text-darygray {
+    color: #666 !important;
 }
 
 .ksap-text-uppercase {
