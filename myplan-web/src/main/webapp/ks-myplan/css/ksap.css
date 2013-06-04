@@ -6,6 +6,18 @@ blue block item hover = #e3f0fe;
 */
 
 /* OVERWRITE KRAD STYLES */
+.uif-pageValidationMessages {
+    border: solid 1px transparent;
+    background: none;
+    line-height: 18px;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    text-shadow: 1px 1px 1px #ffffff;
+    padding: 8px;
+    margin: 0 0 10px 0;
+}
+
 .uif-pageValidationMessages h3 {
     display: none;
 }
@@ -16,13 +28,30 @@ blue block item hover = #e3f0fe;
     list-style: none;
 }
 
+.uif-pageValidationMessages ul li:before {
+    content: '';
+}
+
 .uif-pageValidationMessages ul {
-    padding: 0 0 0 32px;
+    padding: 0 0 0 24px;
     background-repeat: no-repeat;
+    margin: 0;
+}
+
+.uif-pageValidationMessages-warning {
+    color: #333;
+    border-color: #feea49;
+    background-color: #faf5ca;
 }
 
 .uif-pageValidationMessages-warning ul {
     background-image: url('../images/iconWarning16.png');
+}
+
+.uif-pageValidationMessages-error {
+    color: #cc0000;
+    border-color: #fcd5e4;
+    background-color: #fce9f1;
 }
 
 .uif-pageValidationMessages-error ul {
