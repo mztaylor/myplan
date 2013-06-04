@@ -46,23 +46,17 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean id="single_quarter_items" parent="Uif-VerticalBoxGroup"
-                                  p:style="margin:0; width:630px; margin-right: 10px;">
-                                <property name="validationMessages">
-                                    <null/>
-                                </property>
+                            <bean id="single_quarter_items" parent="KSAP-VerticalBoxGroup" p:width="630px">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                            <property name="validationMessages">
-                                                <null/>
-                                            </property>
+                                        <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="Uif-HorizontalBoxGroup"
-                                                          p:style="margin:0; width:72px;">
-                                                        <property name="validationMessages">
-                                                            <null/>
+                                                    <bean parent="KSAP-HorizontalBoxGroup" p:width="72px">
+                                                        <property name="cssClasses">
+                                                            <list merge="true">
+                                                                <value>ksap-noMargin</value>
+                                                            </list>
                                                         </property>
                                                         <property name="items">
                                                             <list>
@@ -122,18 +116,23 @@
                                                         </property>
                                                     </bean>
 
-                                                    <bean parent="Uif-MessageField" p:style="margin:0;width: 426px;"
-                                                          p:cssClasses="myplan-plan-header">
-                                                        <property name="message">
-                                                            <bean parent="Uif-Message"
-                                                                  p:messageText="@{dataObject.qtrYear}"/>
+                                                    <bean parent="KSAP-NoSpanMessage" p:width="426px">
+                                                        <property name="cssClasses">
+                                                            <list merge="true">
+                                                                <value>myplan-plan-header</value>
+                                                                <value>ksap-noMargin</value>
+                                                            </list>
                                                         </property>
+                                                        <property name="messageText" value="@{dataObject.qtrYear}"/>
+                                                        <property name="generateSpan" value="true"/>
                                                     </bean>
 
-                                                    <bean parent="Uif-HorizontalBoxGroup"
-                                                          p:style="margin:0; width: 132px;">
-                                                        <property name="validationMessages">
-                                                            <null/>
+                                                    <bean parent="KSAP-HorizontalBoxGroup"
+                                                          p:width="132px">
+                                                        <property name="cssClasses">
+                                                            <list merge="true">
+                                                                <value>ksap-noMargin</value>
+                                                            </list>
                                                         </property>
                                                         <property name="items">
                                                             <list>
@@ -191,16 +190,15 @@
                                             </property>
                                         </bean>
                                         <ref bean="overallPlanLink"/>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                            <property name="validationMessages">
-                                                <null/>
-                                            </property>
-                                            <property name="items">
+                                        <bean parent="KSAP-NoSpanMessage"
+                                              p:messageText="View your courses and add or delete scheduled sections for each course to your plan. Remember that MyPlan allows you to create an academic plan, but does not currently check your eligibility for planned courses or sections, and does not register you. Registration is available via the [0] page.">
+                                            <property name="inlineComponents">
                                                 <list>
-                                                    <bean parent="Uif-MessageField"
-                                                          p:messageText="View your courses and add or delete scheduled sections for each course to your plan. Remember that MyPlan allows you to create an academic plan, but does not currently check your eligibility for planned courses or sections, and does not register you. Registration is available via the &lt;a target=_blank href=&quot;https://sdb.admin.washington.edu/students/uwnetid/register.asp&quot;&gt;Registration&lt;/a&gt; page."/>
+                                                    <bean parent="Uif-Link" p:linkText="Registration" p:target="_blank"
+                                                          p:href="https://sdb.admin.washington.edu/students/uwnetid/register.asp"/>
                                                 </list>
                                             </property>
+                                            <property name="generateSpan" value="true"/>
                                         </bean>
                                         <ref bean="single_collection_data"/>
                                     </list>
@@ -228,8 +226,7 @@
         <property name="footer.render" value="false"/>
     </bean>
 
-    <bean id="single_collection_data" parent="Uif-VerticalBoxGroup"
-          p:style="margin:10px 0 0 0; width:630px;">
+    <bean id="single_collection_data" parent="KSAP-VerticalBoxGroup">
         <property name="onDocumentReadyScript" value="
             jQuery('body').subscribe('SECTION_ITEM_ADDED', function(data) {
                     fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'added', data);
@@ -287,16 +284,12 @@
 
         fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}', 'previous_quarter_button', 'single_quarter_items');
                         fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}', 'next_quarter_button', 'single_quarter_items');-->
-        <property name="validationMessages">
-            <null/>
-        </property>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-quarter-detail</value>
                 <value>myplan-remove-margin</value>
             </list>
         </property>
-        <property name="headerText" value="@{dataObject.qtrYear}"/>
         <property name="header">
             <bean parent="Uif-HeaderThree">
                 <property name="cssClasses">
@@ -309,6 +302,7 @@
                 </property>
             </bean>
         </property>
+        <property name="headerText" value="@{dataObject.qtrYear}"/>
         <property name="items">
             <list>
                 <!-- Past quarter academic record with no courses -->
@@ -326,11 +320,8 @@
         </property>
     </bean>
 
-    <bean id="plannedCoursesList" parent="Uif-VerticalBoxGroup">
+    <bean id="plannedCoursesList" parent="KSAP-VerticalBoxGroup">
         <property name="id" value="@{dataObject.atpId.replace('.','-')}_planned"/>
-        <property name="validationMessages">
-            <null/>
-        </property>
         <property name="items">
             <list>
                 <!-- Plan list NOT empty-->
@@ -352,11 +343,8 @@
         </property>
     </bean>
 
-    <bean id="backupCoursesList" parent="Uif-VerticalBoxGroup">
+    <bean id="backupCoursesList" parent="KSAP-VerticalBoxGroup">
         <property name="id" value="@{dataObject.atpId.replace('.','-')}_backup"/>
-        <property name="validationMessages">
-            <null/>
-        </property>
         <property name="items">
             <list>
                 <!-- Backup list NOT empty-->
@@ -411,10 +399,7 @@
             <bean parent="Uif-HeaderFour"/>
         </property>
         <property name="header.rightGroup">
-            <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
-                </property>
+            <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_completed_help_icon"/>
@@ -441,16 +426,13 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:style="width:490px;">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
+                <bean parent="KSAP-HorizontalFieldGroup" p:width="490px">
+                    <property name="fieldLabel.render" value="true"/>
                     <property name="label" value="Courses"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:propertyName="courseCode" p:style="margin:0 5px 0 0;">
-                                <property name="fieldLabel.render" value="false"/>
-                            </bean>
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="courseCode"
+                                  p:style="margin:0 5px 0 0;"/>
                             <bean parent="Uif-Link" p:linkText="@{#line.courseTitle}" p:style="white-space:nowrap;">
                                 <property name="href"
                                           value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}"/>
@@ -464,8 +446,9 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-DataField">
+                <bean parent="KSAP-SimpleDataField">
                     <property name="propertyName" value="credit"/>
+                    <property name="fieldLabel.render" value="true"/>
                     <property name="label" value="Credits"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -474,8 +457,9 @@
                     </property>
                 </bean>
 
-                <bean parent="Uif-DataField">
+                <bean parent="KSAP-SimpleDataField">
                     <property name="propertyName" value="grade"/>
+                    <property name="fieldLabel.render" value="true"/>
                     <property name="label" value="Grade"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -538,10 +522,7 @@
             <bean parent="Uif-HeaderFour"/>
         </property>
         <property name="header.rightGroup">
-            <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
-                </property>
+            <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_registered_help_icon"/>
@@ -692,15 +673,16 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message"
+                            <bean parent="KSAP-NoSpanMessage"
                                   p:messageText="@{#line.activityOfferingItem.summerTerm}&lt;br/&gt;"
-                                  p:style="display:inline; margin:0; float:none;"
+
                                   p:render="@{#line.activityOfferingItem.summerTerm ne null}"/>
-                            <bean parent="Uif-Message" p:messageText="@{#line.activityOfferingItem.sectionComments}"
-                                  p:style="display:inline; margin:0; float:none;"/>
+                            <bean parent="KSAP-NoSpanMessage"
+                                  p:messageText="@{#line.activityOfferingItem.sectionComments}"
+                                    />
                             <bean parent="current_section_status"
                                   p:actionLabel="@{#line.activityOfferingItem.details}"
-                                  p:style="display:inline; margin:0; float:none;">
+                                  p:style="display:inline; float:none;">
                                 <property name="actionScript"
                                           value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.activityOfferingItem.qtryr}&amp;SLN=@{#line.activityOfferingItem.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
                             </bean>
@@ -717,33 +699,30 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message"
+                            <bean parent="KSAP-NoSpanMessage"
                                   p:messageText="@{#line.activityOfferingItem.gradingOption}"
                                   p:render="@{#line.activityOfferingItem.gradingOption ne null}"/>
-                            <bean parent="Uif-Message"
-                                  p:messageText="Distance learning"
+                            <bean parent="KSAP-NoSpanMessage" p:messageText="Distance learning"
                                   p:render="@{#line.activityOfferingItem.distanceLearning}"/>
-                            <bean parent="Uif-Message" p:messageText="Honors"
+                            <bean parent="KSAP-NoSpanMessage" p:messageText="Honors"
                                   p:render="@{#line.activityOfferingItem.honorsSection}"/>
-                            <bean parent="Uif-Message"
-                                  p:messageText="Jointly offered"
+                            <bean parent="KSAP-NoSpanMessage" p:messageText="Jointly offered"
                                   p:render="@{#line.activityOfferingItem.jointOffering}"/>
-                            <bean parent="Uif-Message" p:messageText="Research"
+                            <bean parent="KSAP-NoSpanMessage" p:messageText="Research"
                                   p:render="@{#line.activityOfferingItem.research}"/>
-                            <bean parent="Uif-Message" p:messageText="Writing"
+                            <bean parent="KSAP-NoSpanMessage" p:messageText="Writing"
                                   p:render="@{#line.activityOfferingItem.writingSection}"/>
-                            <bean parent="Uif-Message"
-                                  p:messageText="Service learning"
+                            <bean parent="KSAP-NoSpanMessage" p:messageText="Service learning"
                                   p:render="@{#line.activityOfferingItem.serviceLearning}"/>
-                            <bean parent="Uif-Message" p:messageText="New course"
+                            <bean parent="KSAP-NoSpanMessage" p:messageText="New course"
                                   p:render="@{#line.activityOfferingItem.newThisYear}"/>
-                            <bean parent="Uif-Message"
+                            <bean parent="KSAP-NoSpanMessage"
                                   p:messageText="May not be eligible for Financial Aid"
                                   p:render="@{#line.activityOfferingItem.ineligibleForFinancialAid}"/>
-                            <bean parent="Uif-Message" p:style="margin:0;"
+                            <bean parent="KSAP-NoSpanMessage"
                                   p:messageText="Course Fee $@{#line.activityOfferingItem.feeAmount}"
                                   p:render="@{#line.activityOfferingItem.feeAmount ne null}"/>
-                            <bean parent="Uif-Message" p:messageText="--" p:style="margin:0;"
+                            <bean parent="KSAP-NoSpanMessage" p:messageText="--"
                                   p:render="@{#line.activityOfferingItem.gradingOption eq null AND
                                              !#line.activityOfferingItem.distanceLearning AND
                                              !#line.activityOfferingItem.honorsSection AND
@@ -828,10 +807,7 @@
             <bean parent="Uif-HeaderFour"/>
         </property>
         <property name="header.rightGroup">
-            <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
-                </property>
+            <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_planned_help_icon"/>
@@ -841,10 +817,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
+                <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="onDocumentReadyScript"
                               value=""/>
                     <property name="cssClasses">
@@ -852,20 +825,19 @@
                             <value>myplan-course-item-heading</value>
                         </list>
                     </property>
-                    <property name="style" value="width:618px;"/>
+                    <property name="width" value="618px"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:propertyName="courseDetails.code">
-                                <property name="fieldLabel.render" value="false"/>
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="courseDetails.code">
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>fl-text-bold</value>
+                                        <value>ksap-text-bold</value>
                                     </list>
                                 </property>
                                 <property name="style" value="margin:0 5px 0 0;"/>
                             </bean>
 
-                            <bean parent="Uif-LinkField">
+                            <bean parent="Uif-LinkField" p:width="350px">
                                 <property name="linkText" value="@{#line.courseDetails.courseTitle}"/>
                                 <property name="title" value="@{#line.courseDetails.courseTitle} "/>
                                 <property name="href"
@@ -878,9 +850,9 @@
                                 </property>
                             </bean>
 
-                            <bean parent="Uif-MessageField" p:messageText="(@{#line.courseDetails.credit})">
+                            <!--<bean parent="KSAP-MessageField" p:messageText="(@{#line.courseDetails.credit})">
                                 <property name="style" value="margin:0 25px 0 0;"/>
-                            </bean>
+                            </bean>-->
 
                             <!-- Past quarters -->
                             <bean parent="singleQuarterStudentActions">
@@ -967,10 +939,7 @@
         <property name="onDocumentReadyScript"
                   value="truncateField('@{dataObject.atpId.replace('.','-')}_backup', 35, true);"/>
         <property name="header.rightGroup">
-            <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
-                </property>
+            <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_backup_help_icon"/>
@@ -995,10 +964,7 @@
             <bean parent="Uif-HeaderFour"/>
         </property>
         <property name="header.lowerGroup">
-            <bean parent="Uif-VerticalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
-                </property>
+            <bean parent="KSAP-VerticalBoxGroup">
                 <property name="items">
                     <list></list>
                 </property>
@@ -1043,21 +1009,34 @@
                     "/>
                     <property name="items">
                         <list>
-                            <bean p:id="@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
-                                  parent="Uif-DataField" p:propertyName="code" p:label="Section"
+                            <bean parent="KSAP-SimpleDataField"
+                                  p:id="@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
+                                  p:propertyName="code" p:label="Section"
                                   p:style="margin:4px 0; font-size:@{#line.primary ? '24px':'22px'};">
-                                <property name="fieldLabel.render" value="false"/>
                             </bean>
-                            <bean parent="Uif-MessageField" p:messageText="PCE" p:style="margin:0; font-size:9px;"
-                                  p:title="UW Professional &amp; Continuing Education"
-                                  p:render="@{#line.instituteCode.startsWith('95')}">
+                            <bean parent="KSAP-MessageField">
+                                <property name="messageText" value="PCE"/>
+                                <property name="title" value="UW Professional &amp; Continuing Education"/>
+                                <property name="render" value="@{#line.instituteCode.startsWith('95')}"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>ksap-noMargin</value>
+                                        <value>fl-font-size-80</value>
+                                    </list>
+                                </property>
                             </bean>
-                            <bean parent="Uif-ActionLink" p:actionLabel="View more"
-                                  p:style="margin:0; font-size:9px;"
-                                  p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
-                                  p:render="@{#line.stateKey EQ 'active'}">
+                            <bean parent="Uif-ActionLink"
+                                  p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}">
+                                <property name="actionLabel" value="View more"/>
                                 <property name="actionScript"
                                           value="toggleSectionDetails(jQuery(this).parents('tr.row'), jQuery(this), 'View more', 'View less')"/>
+                                <property name="render" value="@{#line.stateKey EQ 'active'}"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>ksap-noMargin</value>
+                                        <value>fl-font-size-80</value>
+                                    </list>
+                                </property>
                             </bean>
                         </list>
                     </property>
@@ -1074,10 +1053,7 @@
                 <bean parent="activityEnrlData" p:render="@{#line.stateKey EQ 'active'}"/>
                 <bean parent="activityEnrlStatus" p:render="@{#line.stateKey NE 'active'}"/>
 
-                <bean parent="Uif-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="1">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
+                <bean parent="KSAP-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="1">
                     <property name="items">
                         <list>
                             <bean parent="activityActionDelete"/>
@@ -1124,21 +1100,32 @@
                                 <property name="items">
                                     <list>
                                         <bean p:id="@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
-                                              parent="Uif-DataField" p:propertyName="code" p:label="Section"
+                                              parent="KSAP-SimpleDataField" p:propertyName="code" p:label="Section"
                                               p:style="margin:4px 0; font-size:@{#line.primary ? '24px':'22px'};">
-                                            <property name="fieldLabel.render" value="false"/>
                                         </bean>
-                                        <bean parent="Uif-MessageField" p:messageText="PCE"
-                                              p:style="margin:0; font-size:9px;"
-                                              p:title="UW Professional &amp; Continuing Education"
-                                              p:render="@{#line.instituteCode.startsWith('95')}">
+                                        <bean parent="KSAP-MessageField">
+                                            <property name="messageText" value="PCE"/>
+                                            <property name="title" value="UW Professional &amp; Continuing Education"/>
+                                            <property name="render" value="@{#line.instituteCode.startsWith('95')}"/>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>ksap-noMargin</value>
+                                                    <value>fl-font-size-80</value>
+                                                </list>
+                                            </property>
                                         </bean>
-                                        <bean parent="Uif-ActionLink" p:actionLabel="View more"
-                                              p:style="margin:0; font-size:9px;"
-                                              p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
-                                              p:render="@{#line.stateKey EQ 'active'}">
+                                        <bean parent="Uif-ActionLink"
+                                              p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}">
+                                            <property name="actionLabel" value="View more"/>
                                             <property name="actionScript"
                                                       value="toggleSectionDetails(jQuery(this).parents('tr.row'), jQuery(this), 'View more', 'View less')"/>
+                                            <property name="render" value="@{#line.stateKey EQ 'active'}"/>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>ksap-noMargin</value>
+                                                    <value>fl-font-size-80</value>
+                                                </list>
+                                            </property>
                                         </bean>
                                     </list>
                                 </property>
@@ -1155,10 +1142,7 @@
                             <bean parent="activityEnrlData" p:render="@{#line.stateKey EQ 'active'}"/>
                             <bean parent="activityEnrlStatus" p:render="@{#line.stateKey NE 'active'}"/>
 
-                            <bean parent="Uif-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="1">
-                                <property name="group.validationMessages">
-                                    <null/>
-                                </property>
+                            <bean parent="KSAP-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="1">
                                 <property name="items">
                                     <list>
                                         <bean parent="emptyAction"/>
@@ -1254,10 +1238,7 @@
                   value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'middle',position:'left'});"/>
     </bean>
 
-    <bean id="single_Collection_Empty" parent="Uif-VerticalBoxSection">
-        <property name="validationMessages">
-            <null/>
-        </property>
+    <bean id="single_Collection_Empty" parent="KSAP-VerticalBoxGroup">
         <property name="header">
             <bean parent="Uif-HeaderFour"/>
         </property>
@@ -1271,10 +1252,7 @@
     <bean id="single_AcademicRecord_Empty" parent="single_Collection_Empty" p:headerText="Completed Courses">
         <property name="render" value="@{dataObject.academicRecord.size() EQ 0 AND dataObject.completedTerm}"/>
         <property name="header.rightGroup">
-            <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
-                </property>
+            <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_completed_help_icon"/>
@@ -1284,7 +1262,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Message" p:messageText="You have no completed courses for this quarter."
+                <bean parent="KSAP-MessageField" p:messageText="You have no completed courses for this quarter."
                       p:style="padding:12px; font-size:12px;">
                     <property name="cssClasses">
                         <list merge="true">
@@ -1303,10 +1281,7 @@
     <bean id="single_Planned_Collection_Empty" parent="single_Collection_Empty" p:headerText="Planned Courses">
         <property name="render" value="@{dataObject.plannedList.size() EQ 0}"/>
         <property name="header.rightGroup">
-            <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
-                </property>
+            <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_planned_help_icon"/>
@@ -1316,7 +1291,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Message" p:messageText="You have no planned courses for this quarter."
+                <bean parent="KSAP-MessageField" p:messageText="You have no planned courses for this quarter."
                       p:style="padding:12px; font-size:12px;">
                     <property name="cssClasses">
                         <list merge="true">
@@ -1336,10 +1311,7 @@
     <bean id="single_Backup_Collection_Empty" parent="single_Collection_Empty" p:headerText="Backup Courses">
         <property name="render" value="@{dataObject.backupList.size() EQ 0}"/>
         <property name="header.rightGroup">
-            <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
-                </property>
+            <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_backup_help_icon"/>
@@ -1349,7 +1321,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Message" p:messageText="You have no backup courses for this quarter."
+                <bean parent="KSAP-MessageField" p:messageText="You have no backup courses for this quarter."
                       p:style="padding:12px; font-size:12px;">
                     <property name="cssClasses">
                         <list merge="true">
@@ -1370,14 +1342,13 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Message" p:messageText="Credits" p:style="font-size:15px; color:#39275B;"/>
+                <bean parent="KSAP-MessageField" p:messageText="Credits" p:style="font-size:15px; color:#39275B;"/>
                 <bean parent="single_quarter_credits_help_icon" p:style="margin-right: 20px;"/>
-                <bean parent="Uif-MessageField" p:label="Credits" p:style="font-size:18px; color:#39275B;"
+                <bean parent="KSAP-MessageField" p:style="font-size:18px; color:#39275B;"
                       p:messageText="@{dataObject.credits ne null ? dataObject.credits : '0'}">
-                    <property name="fieldLabel.render" value="false"/>
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>fl-text-bold</value>
+                            <value>ksap-text-bold</value>
                             <value>myplan-credit-value</value>
                         </list>
                     </property>

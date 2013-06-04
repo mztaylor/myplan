@@ -6,6 +6,37 @@ blue block item hover = #e3f0fe;
 */
 
 /* OVERWRITE KRAD STYLES */
+.uif-pageValidationMessages h3 {
+    display: none;
+}
+
+.uif-pageValidationMessages ul,
+.uif-pageValidationMessages ul li {
+    display: block;
+    list-style: none;
+}
+
+.uif-pageValidationMessages ul {
+    padding: 0 0 0 32px;
+    background-repeat: no-repeat;
+}
+
+.uif-pageValidationMessages-warning ul {
+    background-image: url('../images/iconWarning16.png');
+}
+
+.uif-pageValidationMessages-error ul {
+    background-image: url('../images/iconError16.png');
+}
+
+.uif-pageValidationMessages ul li {
+    margin: 1em 0 0 0;
+}
+
+.uif-pageValidationMessages ul li:first-child {
+    margin: 0;
+}
+
 .uif-stackedCollectionLayout {
     background-image: none;
     padding: 0;
