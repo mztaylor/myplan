@@ -696,6 +696,7 @@
     <!-- Light weight fields -->
     <bean id="KSAP-SimpleDataField" parent="KSAP-SimpleDataField-parentBean"/>
     <bean id="KSAP-SimpleDataField-parentBean" abstract="true" parent="Uif-DataField" scope="prototype">
+        <property name="readOnly" value="true"/>
         <property name="template" value="/ks-myplan/WEB-INF/ftl/components/KSAPSimpleDataField.ftl"/>
         <property name="templateName" value="ksap_simpleDataField"/>
         <property name="fieldLabel">
@@ -708,6 +709,9 @@
             <null/>
         </property>
         <property name="help">
+            <null/>
+        </property>
+        <property name="toolTip">
             <null/>
         </property>
     </bean>
@@ -738,11 +742,13 @@
         <property name="message">
             <bean parent="KSAP-NoSpanMessage"/>
         </property>
+        <property name="readOnly" value="true"/>
     </bean>
 
     <bean id="KSAP-NoSpanMessage" parent="KSAP-NoSpanMessage-parentBean"/>
     <bean id="KSAP-NoSpanMessage-parentBean" abstract="true" parent="Uif-Message-parentBean" scope="prototype">
         <property name="generateSpan" value="false"/>
+        <property name="readOnly" value="true"/>
     </bean>
 
 
