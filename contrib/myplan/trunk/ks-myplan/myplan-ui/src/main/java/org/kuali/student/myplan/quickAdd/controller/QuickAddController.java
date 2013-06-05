@@ -3,16 +3,13 @@ package org.kuali.student.myplan.quickAdd.controller;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.datadictionary.exception.DuplicateEntryException;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
-import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
-import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
@@ -50,11 +47,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
-import java.io.IOException;
 import java.util.*;
 
-import static org.apache.commons.lang.StringUtils.*;
-import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
+import static org.apache.commons.lang.StringUtils.isEmpty;
 import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP;
 import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
 import static org.kuali.student.myplan.plan.PlanConstants.*;
@@ -305,45 +300,40 @@ public class QuickAddController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=quickAddCourse")
     public ModelAndView quickAddCourse(@ModelAttribute("KualiForm") QuickAddForm form, BindingResult result,
                                        HttpServletRequest request, HttpServletResponse response) {
-        String[] parameters = {};
         if (UserSessionHelper.isAdviser()) {
             return doAdviserAccessError(form, "Adviser Access Denied", QuickAddConstants.ACCESS_DENIED, null);
         }
-        if (!hasText(form.getCourseCd())) {
-            return doOperationFailedError(form, "Course is missing", QuickAddConstants.EMPTY_SEARCH, null, parameters);
-        } else if (form.getCourseCd().length() < 2) {
+        String courseCd = form.getCourseCd();
+        if (!hasText(courseCd) || courseCd.length() < 2) {
+            String[] parameters = {};
             return doOperationFailedError(form, "Course is missing", QuickAddConstants.EMPTY_SEARCH, null, parameters);
         }
 
         String courseId = null;
         HashMap<String, String> divisionMap = searchController.fetchCourseDivisions();
-        DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(form.getCourseCd());
+        DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(courseCd);
         if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
             String subject = courseCode.getSubject();
             String number = courseCode.getNumber();
             if (number.length() != 3) {
-                return doOperationFailedError(form, "Course number is wrong", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
+                return doOperationFailedError(form, "Course number is wrong", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{courseCd});
             }
             ArrayList<String> divisions = new ArrayList<String>();
             searchController.extractDivisions(divisionMap, subject, divisions, false);
             if (divisions.size() > 0) {
                 subject = divisions.get(0);
-                form.setCourseId(getCourseHelper().getCourseId(subject, number));
-                courseId = form.getCourseId();
-            } else {
-                return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
+                courseId = getCourseHelper().getCourseId(subject, number);
+                form.setCourseId(courseId);
             }
-        } else {
-            return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
         }
 
         if (!hasText(courseId)) {
-            return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
+            return doOperationFailedError(form, "Could not find course", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{courseCd});
         }
 
         //  Further validation of ATP IDs will happen in the service validation methods.
         if (isEmpty(form.getAtpId())) {
-            return doOperationFailedError(form, "Term Year value missing", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{form.getCourseCd()});
+            return doOperationFailedError(form, "Term Year value missing", QuickAddConstants.COURSE_NOT_FOUND, null, new String[]{courseCd});
         }
 
         //  Should the course be type 'planned' or 'backup'. Default to planned.

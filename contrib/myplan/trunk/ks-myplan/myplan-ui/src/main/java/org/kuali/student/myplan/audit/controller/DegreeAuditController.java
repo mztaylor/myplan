@@ -473,14 +473,51 @@ public class DegreeAuditController extends UifControllerBase {
         return map;
     }
 
+    public static class Choice {
+        String credit = "";
+        String section = null;
+        boolean writing = false;
+        boolean honors = false;
+
+        public int hashCode() {
+            return credit.hashCode();
+        }
+
+        public boolean equals(Object that) {
+            if (that == null) return false;
+            if (this == that) return true;
+            if (!(that instanceof Choice)) return false;
+            return credit.equals(((Choice) that).credit);
+        }
+
+        // section:credits:display, eg "A:5:5 -- Writing"
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append(section);
+            sb.append(':');
+            sb.append(credit);
+            sb.append(':');
+            sb.append(credit);
+            if (writing) {
+                sb.append(" -- ");
+                sb.append(WRITING_CREDIT);
+            }
+            if (honors) {
+                sb.append(" -- ");
+                sb.append(HONORS_CREDIT);
+            }
+            return sb.toString();
+        }
+    }
+
     @RequestMapping(params = "methodToCall=reviewPlanAudit")
     public ModelAndView reviewPlanAudit(@ModelAttribute("KualiForm") AuditForm auditForm, BindingResult result,
                                         HttpServletRequest request, HttpServletResponse response) {
 
         PlanAuditForm form = auditForm.getPlanAudit();
 
-        List<CourseItem> courseItems = new ArrayList<CourseItem>();
-        Map<String, MessyItemDataObject> messyItemMap = new HashMap<String, MessyItemDataObject>();
+        List<CourseItem> courseItems = form.getCleanList();
+        List<CourseItem> ignoreItems = form.getIgnoreList();
 
         CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
 
@@ -495,74 +532,127 @@ public class DegreeAuditController extends UifControllerBase {
             // Skip past terms
             if (AtpHelper.isAtpCompletedTerm(atpId)) continue;
 
+            MessyItemDataObject messyTerm = new MessyItemDataObject();
+            messyTerm.setAtpId(atpId);
 
-            // TS PUBLISHED: YES
-            if (scheduledTerms.contains(atpId)) {
 
-                for (PlannedCourseDataObject course : term.getPlannedList()) {
-                    // Planned Sections : YES ; Multiple planned sections : NO
-                    List<ActivityOfferingItem> planActivities = course.getPlanActivities();
-                    if (planActivities.size() == 1 && planActivities.get(0).isPrimary()) {
-                        String section = planActivities.get(0).getCode();
-                        String credit = planActivities.get(0).getCredits();
+            for (PlannedCourseDataObject course : term.getPlannedList()) {
 
-                        addCourseToAList(courseItems, messyItemMap, course, section, credit);
+                // No scheduled terms means IGNORE this one
+                if (course.getCourseDetails().getScheduledTerms().isEmpty()) {
+                    CourseItem item = new CourseItem();
+                    item.setAtpId(atpId);
+                    CourseSummaryDetails details = course.getCourseDetails();
+                    item.setCourseCode(details.getCode());
+                    item.setCourseId(details.getVersionIndependentId());
+                    item.setCredit(course.getCredit());
+                    item.setSectionCode("");
+                    ignoreItems.add(item);
+                    continue;
+                }
 
+                Set<Choice> choices = new HashSet<Choice>();
+
+                // If time schedule is published, divine credit choices from course's sections (primary activities)
+                if (scheduledTerms.contains(atpId)) {
+                    List<ActivityOfferingItem> activities = course.getPlanActivities();
+
+                    // If plan item activity list is empty, default to all sections
+                    if (activities.isEmpty()) {
+                        String courseId = course.getCourseDetails().getCourseId();
+                        activities = courseDetailsInquiryHelper.getActivityOfferingItemsById(courseId, atpId);
                     }
-                    // Planned Sections : YES ; Multiple planned sections : YES
-                    else if (planActivities.size() > 1) {
-                        Set<String> choicesList = processSectionProfile(planActivities);
-                        if (choicesList.size() > 1) {
-                            buildMessyItemAndAddToMap(course, choicesList, messyItemMap);
-                        } else if (choicesList.size() == 1) {
-                            buildCourseItemAndAddToList(course, (String) choicesList.toArray()[0], null, courseItems);
-                        }
 
-                    }
-                    // Planned Sections : NO
-                    else {
-                        List<ActivityOfferingItem> activityOfferingItems = courseDetailsInquiryHelper.getActivityOfferingItemsById(course.getCourseDetails().getCourseId(), course.getPlanItemDataObject().getAtp());
-                        Set<String> choicesList = processSectionProfile(activityOfferingItems);
-                        if (choicesList.size() > 1) {
-                            buildMessyItemAndAddToMap(course, choicesList, messyItemMap);
-                        } else if (choicesList.size() == 1) {
-                            buildCourseItemAndAddToList(course, (String) choicesList.toArray()[0], null, courseItems);
-                        } else {
-                            String credit = course.getCourseDetails().getCredit();
-                            String section = "";
-                            addCourseToAList(courseItems, messyItemMap, course, section, credit);
+
+                    for (ActivityOfferingItem activity : activities) {
+                        if (activity.isPrimary()) {
+
+                            String credits = activity.getCredits();
+                            String section = activity.getCode();
+                            boolean honors = activity.isHonorsSection();
+                            boolean writing = activity.isWritingSection();
+
+                            String[] list = creditToList(credits);
+                            for (String temp : list) {
+                                Choice choice = new Choice();
+                                choice.credit = temp;
+                                choice.section = section;
+                                choice.honors = honors;
+                                choice.writing = writing;
+                                choices.add(choice);
+                            }
                         }
                     }
                 }
 
-            }
-            //TS PUBLISHED: NO
-            else {
-                for (PlannedCourseDataObject course : term.getPlannedList()) {
-                    String credit = course.getCourseDetails().getCredit();
+                // Otherwise just use course's default credit choices
+                if (choices.isEmpty()) {
+                    String credits = course.getCourseDetails().getCredit();
                     String section = "";
-                    addCourseToAList(courseItems, messyItemMap, course, section, credit);
+                    String[] list = creditToList(credits);
+                    for (String temp : list) {
+                        Choice choice = new Choice();
+                        choice.credit = temp;
+                        choice.section = section;
+                        choices.add(choice);
+                    }
+                }
+
+                if (choices.size() == 1) {
+                    for (Choice choice : choices) {
+                        String credits = choice.credit;
+                        String section = choice.section;
+                        CourseItem item = new CourseItem();
+                        item.setAtpId(atpId);
+                        CourseSummaryDetails details = course.getCourseDetails();
+                        item.setCourseCode(details.getCode());
+                        item.setCourseId(details.getVersionIndependentId());
+                        item.setCredit(credits);
+                        item.setSectionCode(section);
+
+                        courseItems.add(item);
+                        break;
+                    }
+                } else {
+                    Set<String> credits = new HashSet<String>();
+                    for (Choice choice : choices) {
+                        String formatted = choice.toString();
+                        credits.add(formatted);
+                    }
+
+                    CourseSummaryDetails details = course.getCourseDetails();
+                    String versionIndependentId = details.getVersionIndependentId();
+
+                    MessyItem item = new MessyItem();
+                    item.setCourseCode(details.getCode());
+                    item.setCourseTitle(details.getCourseTitle());
+                    item.setCourseId(details.getCourseId());
+                    item.setVersionIndependentId(versionIndependentId);
+                    item.setCredits(credits);
+                    item.setAtpId(atpId);
+
+                    messyTerm.getMessyItemList().add(item);
                 }
             }
+            if (!messyTerm.getMessyItemList().isEmpty()) {
+                form.getMessyItems().add(messyTerm);
+            }
+
         }
-        if (courseItems.size() > 0) {
-            form.setCleanList(courseItems);
-        }
 
+        if (!form.getMessyItems().isEmpty()) {
 
-        if (!messyItemMap.isEmpty()) {
-
-            List<MessyItemDataObject> messyDataList = new ArrayList<MessyItemDataObject>(messyItemMap.values());
-            Collections.sort(messyDataList, new Comparator<MessyItemDataObject>() {
-                @Override
-                public int compare(MessyItemDataObject val1, MessyItemDataObject val2) {
-                    return val1.getAtpId().compareTo(val2.getAtpId());
-                }
-            });
+//            List<MessyItemDataObject> messyDataList = new ArrayList<MessyItemDataObject>(messyItemMap.values());
+//            Collections.sort(messyDataList, new Comparator<MessyItemDataObject>() {
+//                @Override
+//                public int compare(MessyItemDataObject val1, MessyItemDataObject val2) {
+//                    return val1.getAtpId().compareTo(val2.getAtpId());
+//                }
+//            });
 
             Map<String, String> prevChoices = getPlanItemSnapShots();
 
-            for (MessyItemDataObject messyData : messyDataList) {
+            for (MessyItemDataObject messyData : form.getMessyItems()) {
 
                 for (MessyItem messy : messyData.getMessyItemList()) {
                     String id = messy.getVersionIndependentId();
@@ -575,213 +665,29 @@ public class DegreeAuditController extends UifControllerBase {
             }
 
             form.setStudentChoiceRequired(true);
-            form.setMessyItems(messyDataList);
         }
         return getUIFModelAndView(auditForm);
     }
 
-    private void addCourseToAList(List<CourseItem> courseItems, Map<String, MessyItemDataObject> messyItemMap, PlannedCourseDataObject course, String section, String credit) {
-        switch (getCreditType(credit)) {
-            case multiple: {
-                String[] temp = credit.replace(" ", "").split(",");
-                List<String> credits = Arrays.asList(temp);
-                buildMessyItemAndAddToMap(course, section, credits, messyItemMap);
-                break;
+    private String[] creditToList(String credit) {
+        credit = credit.replace(" ", "");
+        String[] result = null;
+        if (credit.contains("-")) {
+            String[] temp = credit.split("-");
+            int min = Integer.valueOf(temp[0]);
+            int max = Integer.valueOf(temp[1]);
+            int len = max - min + 1;
+            result = new String[len];
+            for (int x = 0; x < len; x++) {
+                result[x] = Integer.toString(min + x);
             }
-            case range: {
-                List<String> credits = getCreditsForRange(credit);
-
-                buildMessyItemAndAddToMap(course, section, credits, messyItemMap);
-                break;
-            }
-
-            case normal:
-            default: {
-                buildCourseItemAndAddToList(course, credit, section, courseItems);
-                break;
-            }
-        }
-    }
-
-
-    /**
-     * processes the section profiling logic
-     *
-     * @param activityOfferingItems
-     * @return
-     */
-    private Set<String> processSectionProfile(List<ActivityOfferingItem> activityOfferingItems) {
-        Set<String> unique = new HashSet<String>();
-        Set<String> choices = new HashSet<String>();
-        for (ActivityOfferingItem activity : activityOfferingItems) {
-            if (activity.isPrimary()) {
-
-                String section = activity.getCode();
-                boolean isHonorSection = activity.isHonorsSection();
-                boolean isWritingSection = activity.isWritingSection();
-                String creditText = activity.getCredits().replace(" ", "");
-                switch (getCreditType(creditText)) {
-                    case multiple: {
-                        String[] creditList = creditText.split(",");
-                        for (String credit : creditList) {
-                            addCreditChoice(unique, choices, credit, isHonorSection, isWritingSection, section);
-                        }
-                        break;
-                    }
-                    case range: {
-                        List<String> creditList = getCreditsForRange(creditText);
-                        for (String credit : creditList) {
-                            addCreditChoice(unique, choices, credit, isHonorSection, isWritingSection, section);
-                        }
-                        break;
-                    }
-
-                    case normal:
-                    default: {
-                        addCreditChoice(unique, choices, creditText, isHonorSection, isWritingSection, section);
-                        break;
-                    }
-                }
-            }
-        }
-        return choices;
-    }
-
-    private void addCreditChoice(Set<String> unique, Set<String> choices, String credit, boolean honorSection, boolean writingSection, String section) {
-        if (!unique.contains(credit)) {
-            unique.add(credit);
-            String display = credit + (writingSection ? " -- " + WRITING_CREDIT : "") + (honorSection ? " -- " + HONORS_CREDIT : "");
-            choices.add(String.format("%s:%s:%s", section, credit, display));
-        }
-    }
-
-    /**
-     * Builds the course item and adds to the list
-     *
-     * @param course
-     * @param credit
-     * @param section
-     * @param courseItems
-     */
-
-    private void buildCourseItemAndAddToList(PlannedCourseDataObject course, String credit, String section, List<CourseItem> courseItems) {
-        CourseItem courseItem = new CourseItem();
-        courseItem.setAtpId(course.getPlanItemDataObject().getAtp());
-        CourseSummaryDetails details = course.getCourseDetails();
-        courseItem.setCourseCode(details.getCode());
-//        courseItem.setCourseId(details.getCourseId());
-        courseItem.setCourseId(details.getVersionIndependentId());
-        courseItem.setCredit(credit);
-        courseItem.setSectionCode(section);
-        courseItems.add(courseItem);
-    }
-
-    /**
-     * Builds the messy item and adds to the Map
-     *
-     * @param course
-     * @param creditList
-     * @param messyDataMap
-     */
-    private void buildMessyItemAndAddToMap(PlannedCourseDataObject course, String section, List<String> creditList, Map<String, MessyItemDataObject> messyDataMap) {
-
-        Set<String> credits = new HashSet<String>();
-        for (String cr : creditList) {
-            credits.add(String.format("%s:%s:%s", section, cr, cr));
-        }
-
-        buildMessyItemAndAddToMap(course, credits, messyDataMap);
-    }
-
-    private void buildMessyItemAndAddToMap(PlannedCourseDataObject course, Set<String> credits, Map<String, MessyItemDataObject> messyDataMap) {
-        CourseSummaryDetails courseDetails = course.getCourseDetails();
-        String versionIndependentId = courseDetails.getVersionIndependentId();
-
-        MessyItem messyItem = new MessyItem();
-        messyItem.setCourseCode(courseDetails.getCode());
-        messyItem.setCourseTitle(courseDetails.getCourseTitle());
-        messyItem.setCourseId(courseDetails.getCourseId());
-        messyItem.setVersionIndependentId(versionIndependentId);
-        messyItem.setCredits(credits);
-
-
-        String atp = course.getPlanItemDataObject().getAtp();
-        messyItem.setAtpId(atp);
-
-        if (messyDataMap.containsKey(atp)) {
-            messyDataMap.get(atp).getMessyItemList().add(messyItem);
+        } else if (credit.contains(",")) {
+            result = credit.split(",");
         } else {
-            MessyItemDataObject data = new MessyItemDataObject();
-            data.setAtpId(atp);
-            data.getMessyItemList().add(messyItem);
-            messyDataMap.put(atp, data);
+            result = new String[]{credit};
         }
+        return result;
     }
-
-    enum CreditType {range, multiple, normal}
-
-    ;
-
-    /**
-     * returns type of credit
-     * eg: credit 1-4 RANGE
-     * credit 1,4 MULTIPLE
-     * credit 1 NORMAL
-     *
-     * @param credit
-     * @return
-     */
-    private CreditType getCreditType(String credit) {
-        System.out.println("getCreditType: " + credit);
-        if (credit.contains("-")) return CreditType.range;
-        if (credit.contains(",")) return CreditType.multiple;
-        return CreditType.normal;
-    }
-
-    /**
-     * returns credits for given range (eg:for credit='1-4' gives 1,2,3,4)
-     *
-     * @param credit
-     * @return
-     */
-    private List<String> getCreditsForRange(String credit) {
-        String[] str = credit.split("-");
-        int min = 0;
-        int minDecimal = 0;
-        int max = 0;
-        int maxDecimal = 0;
-        List<String> credits = new ArrayList<String>();
-        if (str[0].contains(".")) {
-            String[] str2 = str[0].split(".");
-            min = Integer.valueOf(str2[0].trim());
-            minDecimal = Integer.valueOf(str2[1].trim());
-
-        } else {
-            min = Integer.valueOf(str[0]);
-        }
-        if (str[1].contains(".")) {
-            String[] str2 = str[1].split(".");
-            max = Integer.valueOf(str2[0].trim());
-            maxDecimal = Integer.valueOf(str2[1].trim());
-
-        } else {
-            max = Integer.parseInt(str[1].trim());
-        }
-        while (min <= max) {
-            credits.add(String.valueOf(min));
-            min++;
-        }
-        if (minDecimal != 0 && credits.size() > 0) {
-            String val = credits.get(0);
-            credits.add(0, val + String.valueOf(minDecimal));
-        }
-        if (maxDecimal != 0 && credits.size() > 0) {
-            String val = credits.get(credits.size() - 1);
-            credits.add(credits.size() - 1, val + String.valueOf(maxDecimal));
-        }
-        return credits;
-    }
-
 
     @RequestMapping(value = "/status")
     public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
