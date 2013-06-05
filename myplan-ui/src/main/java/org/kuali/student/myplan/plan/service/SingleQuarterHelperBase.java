@@ -31,18 +31,10 @@ public class SingleQuarterHelperBase {
     private static String atpTerm4 = "4";
 
 
-    public static PlannedTerm populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String termAtp, boolean isServiceUp) {
+    public static PlannedTerm populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String termAtp) {
 
 
-        String globalCurrentAtpId = null;
-        if (isServiceUp) {
-            globalCurrentAtpId = AtpHelper.getCurrentAtpId();
-        } else {
-//            globalCurrentAtpId = AtpHelper.populateAtpIdFromCalender().get(0).getId();
-            globalCurrentAtpId = AtpHelper.getCurrentAtpIdFromCalender();
-
-        }
-
+        String globalCurrentAtpId = AtpHelper.getCurrentAtpId();
         /*
         *  Populating the PlannedTerm List.
         */

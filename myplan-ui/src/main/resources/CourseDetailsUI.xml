@@ -39,6 +39,9 @@
             <list>
                 <bean parent="Uif-Page" p:id="course_details_page"
                       p:headerText="@{dataObject.courseSummaryDetails.code} @{dataObject.courseSummaryDetails.courseTitle} (@{dataObject.courseSummaryDetails.credit})">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>

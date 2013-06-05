@@ -159,13 +159,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
      * @return
      */
     public CourseSummaryDetails retrieveCourseSummaryById(String courseId) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
-        if (!servicesStatusDataObject.isCourseOfferingServiceUp() || !servicesStatusDataObject.isAcademicCalendarServiceUp() || !servicesStatusDataObject.isAcademicRecordServiceUp()) {
-            AtpHelper.addServiceError("curriculumTitle");
-        }
-
-
         /**
          * If version identpendent Id provided, retrieve the right course version Id based on current term/date
          * else get the same id as the provided course version specific Id
@@ -187,11 +180,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         if (null == course) {
             return null;
         }
-
-        // Check for status of the services
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
-
 
         String subject = course.getSubjectArea().trim();
 
@@ -287,21 +275,18 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
 
         //  Fetch the available terms from the Academic Calendar Service.
-        if (servicesStatusDataObject.isAcademicCalendarServiceUp() && servicesStatusDataObject.isCourseOfferingServiceUp()) {
-            try {
-                QueryByCriteria predicates = QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED));
-                List<TermInfo> termInfos = getAcademicCalendarService().searchForTerms(predicates, CourseSearchConstants.CONTEXT_INFO);
-                for (TermInfo term : termInfos) {
-                    List<CourseOfferingInfo> offerings = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(course.getId(), term.getId(), CourseSearchConstants.CONTEXT_INFO);
-                    if (offerings != null && !offerings.isEmpty()) {
-                        courseDetails.getScheduledTerms().add(term.getName());
-                    }
+
+        try {
+            QueryByCriteria predicates = QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED));
+            List<TermInfo> termInfos = getAcademicCalendarService().searchForTerms(predicates, CourseSearchConstants.CONTEXT_INFO);
+            for (TermInfo term : termInfos) {
+                List<CourseOfferingInfo> offerings = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(course.getId(), term.getId(), CourseSearchConstants.CONTEXT_INFO);
+                if (offerings != null && !offerings.isEmpty()) {
+                    courseDetails.getScheduledTerms().add(term.getName());
                 }
-            } catch (Exception e) {
-                logger.error("Web service call failed.", e);
             }
-        } else {
-            logger.info("Could not load scheduled terms. AcademicCalServiceStatus:" + servicesStatusDataObject.isAcademicCalendarServiceUp() + " CourseOfferingServiceStatus:" + servicesStatusDataObject.isCourseOfferingServiceUp());
+        } catch (Exception e) {
+            logger.error("Web service call failed.", e);
         }
 
         Collections.sort(courseDetails.getScheduledTerms(), new Comparator<String>() {
@@ -314,36 +299,35 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
         // Last Offered
         //  If course not scheduled for future terms, Check for the last term when course was offered
-        if (servicesStatusDataObject.isCourseOfferingServiceUp()) {
-            CourseOfferingService cos = getCourseOfferingService();
 
-            if (courseDetails.getScheduledTerms().isEmpty()) {
-                //TODO: The number 10 should really come from a property at the very least a static constant
-                int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
-                try {
-                    // The right strategy would be using the multiple equal predicates joined using an and
-                    String values = String.format("%s, %s, %s", year, subject, course.getCourseNumberSuffix());
-                    QueryByCriteria criteria = QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values));
-                    List<CourseOfferingInfo> courseOfferingInfo = cos.searchForCourseOfferings(criteria, CourseSearchConstants.CONTEXT_INFO);
+        CourseOfferingService cos = getCourseOfferingService();
 
-                    if (courseOfferingInfo != null && courseOfferingInfo.size() > 0) {
-                        String lastOffered = courseOfferingInfo.get(0).getTermId();
-                        // TODO: this needs to be moved into ATP helper
-                        lastOffered = lastOffered.substring(0, 1).toUpperCase().concat(lastOffered.substring(1, lastOffered.length()));
-                        String atpId = AtpHelper.getAtpIdFromTermYear(lastOffered);
-                        if (AtpHelper.isAtpCompletedTerm(atpId)) {
-                            courseDetails.setLastOffered(lastOffered);
-                        }
-                    } else {
-                        courseDetails.setLastOffered(NOT_OFFERED_IN_LAST_TEN_YEARS);
+        if (courseDetails.getScheduledTerms().isEmpty()) {
+            //TODO: The number 10 should really come from a property at the very least a static constant
+            int year = Calendar.getInstance().get(Calendar.YEAR) - 10;
+            try {
+                // The right strategy would be using the multiple equal predicates joined using an and
+                String values = String.format("%s, %s, %s", year, subject, course.getCourseNumberSuffix());
+                QueryByCriteria criteria = QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("values", values));
+                List<CourseOfferingInfo> courseOfferingInfo = cos.searchForCourseOfferings(criteria, CourseSearchConstants.CONTEXT_INFO);
+
+                if (courseOfferingInfo != null && courseOfferingInfo.size() > 0) {
+                    String lastOffered = courseOfferingInfo.get(0).getTermId();
+                    // TODO: this needs to be moved into ATP helper
+                    lastOffered = lastOffered.substring(0, 1).toUpperCase().concat(lastOffered.substring(1, lastOffered.length()));
+                    String atpId = AtpHelper.getAtpIdFromTermYear(lastOffered);
+                    if (AtpHelper.isAtpCompletedTerm(atpId)) {
+                        courseDetails.setLastOffered(lastOffered);
                     }
-                } catch (Exception e) {
-                    String[] params = {};
-                    GlobalVariables.getMessageMap().putWarningForSectionId(CourseSearchConstants.COURSE_SEARCH_PAGE, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
-                    logger.error("Could not load courseOfferingInfo list.", e);
+                } else {
+                    courseDetails.setLastOffered(NOT_OFFERED_IN_LAST_TEN_YEARS);
                 }
+            } catch (Exception e) {
+                String[] params = {};
+                logger.error("Could not load courseOfferingInfo list.", e);
             }
         }
+
 
         return courseDetails;
 

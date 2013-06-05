@@ -194,10 +194,12 @@
                 <value>myplan-view</value>
             </list>
         </property>
-
         <property name="items">
             <list>
                 <bean parent="Uif-LookupPage" p:id="saved_courses_detail_page" p:headerText="Bookmarked Courses">
+                    <property name="validationMessages">
+                        <null/>
+                    </property>
                     <property name="layoutManager">
                         <bean parent="Uif-HorizontalBoxLayout"/>
                     </property>

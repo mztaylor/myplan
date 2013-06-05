@@ -47,7 +47,6 @@ import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.*;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
-import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -170,10 +169,6 @@ public class CourseSearchController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=start")
     public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
-        ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
-        if (!servicesStatusDataObject.isAcademicCalendarServiceUp()) {
-            AtpHelper.addServiceError("searchTerm");
-        }
         super.start(form, result, request, response);
         return getUIFModelAndView(form);
     }
@@ -272,21 +267,19 @@ public class CourseSearchController extends UifControllerBase {
         return credit;
     }
 
-    public List<CourseSearchItem> courseSearch(CourseSearchForm form, String studentId, boolean isAcademicCalenderServiceUp) {
+    public List<CourseSearchItem> courseSearch(CourseSearchForm form, String studentId) {
 
         String maxCountProp = ConfigContext.getCurrentContextConfig().getProperty("myplan.search.results.max");
         int maxCount = (StringUtils.hasText(maxCountProp)) ? Integer.valueOf(maxCountProp) : MAX_HITS;
         try {
-            List<SearchRequest> requests = searcher.queryToRequests(form, isAcademicCalenderServiceUp);
+            List<SearchRequest> requests = searcher.queryToRequests(form);
             List<Hit> hits = processSearchRequests(requests);
             List<CourseSearchItem> courseList = new ArrayList<CourseSearchItem>();
             Map<String, CourseSearchItem.PlanState> courseStatusMap = getCourseStatusMap(studentId);
             for (Hit hit : hits) {
                 CourseSearchItem course = getCourseInfo(hit.courseID);
                 if (isCourseOffered(form, course)) {
-                    if (isAcademicCalenderServiceUp) {
-                        loadScheduledTerms(course);
-                    }
+                    loadScheduledTerms(course);
                     loadTermsOffered(course);
                     loadGenEduReqs(course);
                     if (courseStatusMap.containsKey(course.getCourseVersionIndependentId())) {
@@ -309,11 +302,6 @@ public class CourseSearchController extends UifControllerBase {
 
     @RequestMapping(value = "/course/search")
     public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
-        ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
-        if (!servicesStatusDataObject.isAcademicCalendarServiceUp()) {
-            AtpHelper.addServiceError("searchTerm");
-        }
-
         /*Params from the Url*/
         String queryText = request.getParameter("queryText");
         queryText = queryText.replace("%20", " ");
@@ -331,7 +319,7 @@ public class CourseSearchController extends UifControllerBase {
 
         /*populating the CourseSearchItem list*/
         String user = UserSessionHelper.getStudentRegId();
-        List<CourseSearchItem> courses = courseSearch(form, user, servicesStatusDataObject.isAcademicCalendarServiceUp());
+        List<CourseSearchItem> courses = courseSearch(form, user);
 
         /*Building the Json String*/
         StringBuilder jsonString = new StringBuilder();
