@@ -15,7 +15,6 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
 
 import javax.xml.namespace.QName;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -246,7 +245,7 @@ public class CourseSearchStrategy {
         }
     }
 
-    public List<SearchRequest> queryToRequests(CourseSearchForm form, boolean isAcademicCalenderServiceUp)
+    public List<SearchRequest> queryToRequests(CourseSearchForm form)
             throws Exception {
         logger.info("Start Of Method queryToRequests in CourseSearchStrategy:" + System.currentTimeMillis());
         String query = form.getSearchQuery().toUpperCase();
@@ -255,7 +254,7 @@ public class CourseSearchStrategy {
         Matcher m = p.matcher(query);
         while (m.find()) {
             fullTextQueries.add(m.group(1));
-            query = query.replace("\""+m.group(1)+"\"", "");
+            query = query.replace("\"" + m.group(1) + "\"", "");
         }
         List<String> levels = QueryTokenizer.extractCourseLevels(query);
         for (String level : levels) {
@@ -283,7 +282,7 @@ public class CourseSearchStrategy {
         addFullTextSearches(query, requests);
         addCampusParams(requests, form);
         ArrayList processedRequests = processRequests(requests, form);
-        addVersionDateParam(processedRequests, isAcademicCalenderServiceUp);
+        addVersionDateParam(processedRequests);
         return processedRequests;
     }
 
@@ -438,17 +437,13 @@ public class CourseSearchStrategy {
         return orderedRequests;
     }
 
-    private void addVersionDateParam(List<SearchRequest> searchRequests, boolean isAcademicCalenderServiceUp) {
+    private void addVersionDateParam(List<SearchRequest> searchRequests) {
 //        String currentTerm = null;
         String lastScheduledTerm = null;
 
-        if (isAcademicCalenderServiceUp) {
+
 //            currentTerm = AtpHelper.getCurrentAtpId();
-            lastScheduledTerm = AtpHelper.getLastScheduledAtpId();
-        } else {
-//            currentTerm = AtpHelper.populateAtpIdFromCalender().get(0).getId();
-            lastScheduledTerm = AtpHelper.getCurrentAtpIdFromCalender();
-        }
+        lastScheduledTerm = AtpHelper.getLastScheduledAtpId();
         for (SearchRequest searchRequest : searchRequests) {
             // TODO: Fix when version issue for course is addressed
 //            searchRequest.addParam("currentTerm", currentTerm);

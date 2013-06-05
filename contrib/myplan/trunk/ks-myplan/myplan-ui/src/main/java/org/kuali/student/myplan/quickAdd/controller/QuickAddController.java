@@ -22,10 +22,8 @@ import org.kuali.student.myplan.course.controller.CourseSearchController;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseHelper;
-import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
-import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.quickAdd.QuickAddConstants;
@@ -68,12 +66,6 @@ public class QuickAddController extends UifControllerBase {
     public final Logger logger = Logger.getLogger(QuickAddController.class);
 
     private CourseSearchController searchController = new CourseSearchController();
-
-    private transient boolean isAcademicCalendarServiceUp = true;
-
-    private transient boolean isAcademicRecordServiceUp = true;
-
-    private transient boolean isCourseOfferingServiceUp = true;
 
     private transient CourseOfferingService courseOfferingService;
 
@@ -138,30 +130,6 @@ public class QuickAddController extends UifControllerBase {
         return academicPlanService;
     }
 
-    public boolean isAcademicCalendarServiceUp() {
-        return isAcademicCalendarServiceUp;
-    }
-
-    public void setAcademicCalendarServiceUp(boolean academicCalendarServiceUp) {
-        isAcademicCalendarServiceUp = academicCalendarServiceUp;
-    }
-
-    public boolean isAcademicRecordServiceUp() {
-        return isAcademicRecordServiceUp;
-    }
-
-    public void setAcademicRecordServiceUp(boolean academicRecordServiceUp) {
-        isAcademicRecordServiceUp = academicRecordServiceUp;
-    }
-
-    public boolean isCourseOfferingServiceUp() {
-        return isCourseOfferingServiceUp;
-    }
-
-    public void setCourseOfferingServiceUp(boolean courseOfferingServiceUp) {
-        isCourseOfferingServiceUp = courseOfferingServiceUp;
-    }
-
     protected CourseOfferingService getCourseOfferingService() {
         if (this.courseOfferingService == null) {
             //   TODO: Use constants for namespace.
@@ -207,13 +175,6 @@ public class QuickAddController extends UifControllerBase {
     public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
         super.start(form, result, request, response);
-        ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
-        if (!servicesStatusDataObject.isCourseOfferingServiceUp() || !servicesStatusDataObject.isAcademicCalendarServiceUp() || !servicesStatusDataObject.isAcademicRecordServiceUp()) {
-            AtpHelper.addServiceError("courseCd");
-            setAcademicCalendarServiceUp(servicesStatusDataObject.isAcademicCalendarServiceUp());
-            setAcademicRecordServiceUp(servicesStatusDataObject.isAcademicRecordServiceUp());
-            setCourseOfferingServiceUp(servicesStatusDataObject.isCourseOfferingServiceUp());
-        }
         QuickAddForm searchForm = (QuickAddForm) form;
         if (hasText(searchForm.getAtpId()) && hasText(searchForm.getPlanType())) {
             String termYear = AtpHelper.atpIdToTermName(searchForm.getAtpId());

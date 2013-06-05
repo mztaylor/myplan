@@ -46,7 +46,6 @@ import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
@@ -177,20 +176,8 @@ public class PlanController extends UifControllerBase {
 
         PlanForm planForm = (PlanForm) form;
 
-        boolean isServiceStatusOK = true;
-        /*Setting the Warning message if isServiceStatusOK is false*/
-        ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
-        if (!servicesStatusDataObject.isAcademicCalendarServiceUp() || !servicesStatusDataObject.isAcademicRecordServiceUp()) {
-            isServiceStatusOK = false;
-            AtpHelper.addServiceError("planItemId");
-        }
         String[] params = {};
-        if (!isServiceStatusOK) {
-            GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_ITEM_RESPONSE_PAGE_ID, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
-        }
-        if (servicesStatusDataObject.isDegreeAuditServiceUp()) {
-            planForm.setNewUser(isNewUser());
-        }
+        planForm.setNewUser(isNewUser());
         return getUIFModelAndView(planForm);
     }
 

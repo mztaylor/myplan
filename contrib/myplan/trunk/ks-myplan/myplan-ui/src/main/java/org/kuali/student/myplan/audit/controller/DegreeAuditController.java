@@ -48,13 +48,13 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
-import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.service.PlanItemLookupableHelperBase;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.dto.StatusInfo;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -77,6 +77,7 @@ import java.io.StringWriter;
 import java.util.*;
 
 import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
+import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT;
 import static org.kuali.student.myplan.audit.service.DegreeAuditConstants.*;
 import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
 
@@ -148,7 +149,6 @@ public class DegreeAuditController extends UifControllerBase {
         DegreeAuditForm degreeAuditForm = auditForm.getDegreeAudit();
         PlanAuditForm planAuditForm = auditForm.getPlanAudit();
         try {
-            ServicesStatusDataObject servicesStatusDataObject = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
             String regId = UserSessionHelper.getStudentRegId();
             if (StringUtils.hasText(regId)) {
                 logger.info("audit regId " + regId);
@@ -161,38 +161,34 @@ public class DegreeAuditController extends UifControllerBase {
                 planAuditForm.setCampusParam(campus);
 
 
-                if (!servicesStatusDataObject.isDegreeAuditServiceUp()) {
-                    AtpHelper.addServiceError("programParamSeattle");
-                } else {
-                    Date startDate = new Date();
-                    Date endDate = new Date();
-                    ContextInfo context = new ContextInfo();
+                Date startDate = new Date();
+                Date endDate = new Date();
+                ContextInfo context = new ContextInfo();
 
-                    List<AuditReportInfo> reportList = degreeAuditService.getAuditsForStudentInDateRange(regId, startDate, endDate, context);
+                List<AuditReportInfo> reportList = degreeAuditService.getAuditsForStudentInDateRange(regId, startDate, endDate, context);
 
-                    // Grab first degree audit
-                    for (AuditReportInfo report : reportList) {
-                        if (!report.isWhatIfAudit()) {
-                            String auditId = report.getAuditId();
-                            // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
-                            AuditReportInfo degreeReport = degreeAuditService.getAuditReport(auditId, degreeAuditForm.getAuditType(), context);
-                            copyCampusToForm(degreeReport, campusMap, degreeAuditForm);
-                            copyReportToForm(degreeReport, degreeAuditForm);
-                            break;
-                        }
-                    }
-
-                    // Grab first plan audit
-                    for (AuditReportInfo report : reportList) {
-                        if (report.isWhatIfAudit()) {
-                            String auditId = report.getAuditId();
-                            AuditReportInfo planReport = degreeAuditService.getAuditReport(auditId, planAuditForm.getAuditType(), context);
-                            copyCampusToForm(planReport, campusMap, planAuditForm);
-                            copyReportToForm(planReport, planAuditForm);
-                            break;
-                        }
+                // Grab first degree audit
+                for (AuditReportInfo report : reportList) {
+                    if (!report.isWhatIfAudit()) {
+                        String auditId = report.getAuditId();
+                        // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
+                        AuditReportInfo degreeReport = degreeAuditService.getAuditReport(auditId, degreeAuditForm.getAuditType(), context);
+                        degreeAuditForm.setAuditId(auditId);
+                        copyCampusToForm(degreeReport, campusMap, degreeAuditForm);
+                        copyReportToForm(degreeReport, degreeAuditForm);
+                        break;
                     }
                 }
+
+                // Grab first plan audit Id
+                String planAuditId = getRecentPlanAudit(regId);
+                if (StringUtils.hasText(planAuditId)) {
+                    AuditReportInfo planReport = degreeAuditService.getAuditReport(planAuditId, planAuditForm.getAuditType(), context);
+                    planAuditForm.setAuditId(planAuditId);
+                    copyCampusToForm(planReport, campusMap, planAuditForm);
+                    copyReportToForm(planReport, planAuditForm);
+                }
+
             }
             //Check to see if the stddent has any planItems from current to future atp
             PlanItemLookupableHelperBase planHelper = new PlanItemLookupableHelperBase();
@@ -212,8 +208,6 @@ public class DegreeAuditController extends UifControllerBase {
             auditForm.setPageId(DegreeAuditConstants.AUDIT_NON_STUDENT_PAGE);
         } catch (Exception e) {
             logger.error("audit failed", e);
-            String[] params = {};
-            GlobalVariables.getMessageMap().putWarning("planAudit.programParamSeattle", DegreeAuditConstants.TECHNICAL_PROBLEM, params);
         }
 
 
@@ -755,21 +749,36 @@ public class DegreeAuditController extends UifControllerBase {
     }
 
     /**
-     * Initializes the error page.
+     * returns recently ran planAudit ID from Snapshots
+     *
+     * @return
      */
-    private ModelAndView doErrorPage(AuditForm form, String errorKey, String[] params, String page, String section) {
-        GlobalVariables.getMessageMap().putErrorForSectionId(section, errorKey, params);
-        return getUIFModelAndView(form, page);
+    private String getRecentPlanAudit(String studentId) {
+        String recentPlanAuditId = null;
+        try {
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentId, LEARNING_PLAN_TYPE_PLAN_AUDIT, PlanConstants.CONTEXT_INFO);
+            for (LearningPlanInfo learningPlanInfo : learningPlanList) {
+                for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
+                    String key = attributeInfo.getKey();
+                    String value = attributeInfo.getValue();
+                    if ("auditId".equalsIgnoreCase(key)) {
+                        /*TODO: cache this getAuditStatus method*/
+                        StatusInfo statusInfo = degreeAuditService.getAuditRunStatus(value, PlanConstants.CONTEXT_INFO);
+                        if (statusInfo.getIsSuccess()) {
+                            recentPlanAuditId = value;
+                        }
+                    }
+                }
+                if (recentPlanAuditId != null) {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Could not retrieve the latest Plan Audit Id", e);
+        }
+        return recentPlanAuditId;
     }
 
-    /**
-     * Initializes the warning page.
-     */
-    private ModelAndView doWarningPage(AuditForm form, String errorKey, String[] params, String page, String section) {
-        GlobalVariables.getMessageMap().clearErrorMessages();
-        GlobalVariables.getMessageMap().putWarningForSectionId(section, errorKey, params);
-        return getUIFModelAndView(form, page);
-    }
 }
 
 

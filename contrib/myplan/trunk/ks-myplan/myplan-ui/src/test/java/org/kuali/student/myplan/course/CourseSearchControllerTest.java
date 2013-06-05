@@ -224,7 +224,7 @@ public class CourseSearchControllerTest {
         List<SearchRequest> requests = null;
         ArrayList<CourseSearchController.Hit> hits = null;
         try {
-            requests = strategy.queryToRequests(form, true);
+            requests = strategy.queryToRequests(form);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -251,7 +251,7 @@ public class CourseSearchControllerTest {
         List<SearchRequest> requests = null;
         ArrayList<CourseSearchController.Hit> hits = null;
         try {
-            requests = strategy.queryToRequests(form, true);
+            requests = strategy.queryToRequests(form);
         } catch (Exception e) {
             e.printStackTrace();
         }

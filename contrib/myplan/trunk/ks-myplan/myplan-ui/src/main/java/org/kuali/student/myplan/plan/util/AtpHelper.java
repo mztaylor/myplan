@@ -548,11 +548,6 @@ public class AtpHelper {
         return atpId.matches(PlanConstants.TERM_ID_PREFIX + "[0-9]{4}\\.[1-4]{1}");
     }
 
-    public static void addServiceError(String propertyName) {
-        String[] params = {};
-        GlobalVariables.getMessageMap().putWarning(propertyName, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
-    }
-
 
     public static final Pattern ATP_REGEX = Pattern.compile("kuali\\.uw\\.atp\\.([0-9]{4})\\.([1-4])");
     public static final String ATP_FORMAT = "kuali.uw.atp.%d.%d";

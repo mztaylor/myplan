@@ -4,8 +4,7 @@ import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.krad.util.GlobalVariables;
-import org.kuali.student.myplan.course.util.CourseSearchConstants;
-import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
+import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.util.StringUtils;
@@ -14,11 +13,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,6 +35,9 @@ public class MyplanInterceptor implements HandlerInterceptor {
 
     private StudentServiceClient studentServiceClient;
 
+
+    private Map<String, List<String>> viewSwsResourceMapping;
+
     public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
         this.studentServiceClient = studentServiceClient;
     }
@@ -43,18 +48,6 @@ public class MyplanInterceptor implements HandlerInterceptor {
 
     private static final String MESSAGE_BANNER_PARAM = "ksap.application.banner.message";
 
-    private final String ACADEMIC_CALENDER_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM) + "/v4/public/term/current";
-
-    private final String COURSE_OFFERING_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM) + "/v4/public/section";
-
-    private final String ACADEMIC_RECORD_SERVICE_URL_1 = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM) + "/v4/enrollment";
-
-    private final String ACADEMIC_RECORD_SERVICE_URL_2 = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM) + "/v4/registration/";
-
-    private final String AUDIT_SERVICE_URL = ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM) + "/v5/degreeaudit";
-
-    private final String BANNER_MESSAGE_LOCATION = ConfigContext.getCurrentContextConfig().getProperty(MESSAGE_BANNER_PARAM);
-
     private final String BROWSER_INCOMPATIBLE = "/myplan/browserIncompatible";
 
     private final String USER_UNAUTHORIZED = "/myplan/unauthorized";
@@ -62,6 +55,8 @@ public class MyplanInterceptor implements HandlerInterceptor {
     private final String LAST_STATUS_CHECK_TIME = "LAST_STATUS_CHECK_TIME";
 
     private final String MESSAGE_BANNER_TEXT = "messageBannerText";
+
+    private final String BANNER_MESSAGE_LOCATION = ConfigContext.getCurrentContextConfig().getProperty(MESSAGE_BANNER_PARAM);
 
     private final String HOST_NAME = "hostName";
 
@@ -84,13 +79,6 @@ public class MyplanInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        ServicesStatusDataObject lastSwsServiceStatus = (ServicesStatusDataObject) request.getSession().getAttribute(CourseSearchConstants.SWS_SERVICES_STATUS);
-        Date currentTime = new Date(System.currentTimeMillis());
-        Long expiredTime = (Long) request.getSession().getAttribute(LAST_STATUS_CHECK_TIME);
-        if (lastSwsServiceStatus == null || (lastSwsServiceStatus != null && expiredTime != null && currentTime.after(new Date(expiredTime.longValue())))) {
-            request.getSession().setAttribute(CourseSearchConstants.SWS_SERVICES_STATUS, getServicesStatus());
-            request.getSession().setAttribute(LAST_STATUS_CHECK_TIME, System.currentTimeMillis() + STATUS_CHECK_INTERVAL_MILLIS);
-        }
 
         String userAgent = request.getHeader(USER_AGENT);
         if (userAgent.contains(IE6_AGENT) || userAgent.contains(IE7_AGENT)) {
@@ -107,6 +95,8 @@ public class MyplanInterceptor implements HandlerInterceptor {
         //Set Banner Message if exists
         setBannerMessage(request);
 
+        //Add page level warning based on services status
+        addServiceStatusForView(request);
 
         return true;
     }
@@ -139,31 +129,45 @@ public class MyplanInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * Used to populate the ServicedStatusDataObject with the statuses of all the services
+     * checks if all the services associated to the view are running
      *
+     * @param viewId
      * @return
      */
-    private ServicesStatusDataObject getServicesStatus() {
-        boolean isAcademicCalenderServiceRunning = studentServiceClient.connectionStatus(ACADEMIC_CALENDER_SERVICE_URL);
-        if (!isAcademicCalenderServiceRunning) {
-            logger.info("Academic Calender Service is Down");
+    private boolean getServicesStatus(String viewId) {
+        List<String> services = viewSwsResourceMapping.get(viewId);
+        for (String service : services) {
+            if (!studentServiceClient.connectionStatus(ConfigContext.getCurrentContextConfig().getProperty(SWS_URL_PARAM) + service)) {
+                return false;
+            }
         }
-        boolean isCourseOfferingServiceRunning = studentServiceClient.connectionStatus(COURSE_OFFERING_SERVICE_URL);
-        if (!isCourseOfferingServiceRunning) {
-            logger.info("Course Offering Service is Down");
+        return true;
+    }
+
+    /**
+     * Adds a service warning on to the view if one exists
+     *
+     * @param request
+     */
+    private void addServiceStatusForView(HttpServletRequest request) {
+        boolean serviceStatus = true;
+        String viewId = request.getParameter("viewId");
+        if (viewSwsResourceMapping.containsKey(viewId)) {
+            Object requestAttribute = request.getSession().getAttribute(viewId);
+            Date currentTime = new Date(System.currentTimeMillis());
+            Long expiredTime = (Long) request.getSession().getAttribute(LAST_STATUS_CHECK_TIME);
+            if (requestAttribute == null || (requestAttribute != null && expiredTime != null && currentTime.after(new Date(expiredTime.longValue())))) {
+                serviceStatus = getServicesStatus(viewId);
+                request.getSession().setAttribute(viewId, serviceStatus);
+                request.getSession().setAttribute(LAST_STATUS_CHECK_TIME, System.currentTimeMillis() + STATUS_CHECK_INTERVAL_MILLIS);
+            } else {
+                serviceStatus = (Boolean) requestAttribute;
+            }
         }
-        boolean isAcademicRecordServiceRunning = false;
-        if (studentServiceClient.connectionStatus(ACADEMIC_RECORD_SERVICE_URL_1) && studentServiceClient.connectionStatus(ACADEMIC_RECORD_SERVICE_URL_2)) {
-            isAcademicRecordServiceRunning = true;
+        if (!serviceStatus) {
+            String[] params = {};
+            GlobalVariables.getMessageMap().putWarningForSectionId(viewId, PlanConstants.ERROR_TECHNICAL_PROBLEMS, params);
         }
-        if (!isAcademicRecordServiceRunning) {
-            logger.info("Academic Record Service is Down");
-        }
-        boolean isAuditServiceRunning = studentServiceClient.connectionStatus(AUDIT_SERVICE_URL);
-        if (!isAuditServiceRunning) {
-            logger.info("Audit Service is Down");
-        }
-        return new ServicesStatusDataObject(isAcademicCalenderServiceRunning, isAcademicRecordServiceRunning, isCourseOfferingServiceRunning, isAuditServiceRunning);
     }
 
     /**
@@ -190,5 +194,13 @@ public class MyplanInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Map<String, List<String>> getViewSwsResourceMapping() {
+        return viewSwsResourceMapping;
+    }
+
+    public void setViewSwsResourceMapping(Map<String, List<String>> viewSwsResourceMapping) {
+        this.viewSwsResourceMapping = viewSwsResourceMapping;
     }
 }

@@ -68,7 +68,7 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
              */
 //            HashSet<String> programSet = new HashSet<String>();
             for (AuditReportInfo audit : audits) {
-                if (audit.isWhatIfAudit()) {
+                if (auditsInLearningPlan.containsKey(audit.getAuditId())) {
                     PlanAuditItem planAuditItem = auditsInLearningPlan.get(audit.getAuditId());
                     if (planAuditItem == null) {
                         planAuditItem = new PlanAuditItem();
