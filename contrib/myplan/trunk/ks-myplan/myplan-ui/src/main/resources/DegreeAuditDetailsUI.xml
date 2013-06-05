@@ -921,7 +921,7 @@
 
     <bean id="plan_audit_messy_items" parent="KSAP-StackedCollectionGroup" p:id="plan_audit_messy_items">
         <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.audit.dataobject.MessyItemDataObject"/>
+                  value="org.kuali.student.myplan.audit.dataobject.MessyTermDataObject"/>
         <property name="propertyName" value="planAudit.messyItems"/>
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="readOnly" value="false"/>

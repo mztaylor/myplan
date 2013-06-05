@@ -10,7 +10,7 @@ import java.util.List;
  * Time: 10:08 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MessyItemDataObject {
+public class MessyTermDataObject {
 
     private List<MessyItem> messyItemList;
 
