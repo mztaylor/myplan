@@ -7,6 +7,7 @@ import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 public interface CourseHelper {
 
@@ -33,4 +34,15 @@ public interface CourseHelper {
     public String getCourseCdFromActivityId(String activityId);
 
     public String getCodeFromActivityId(String activityId);
+
+    /**
+     * Check to see if the course subjectArea and number is offered from the list of course offering Id set
+     *
+     * @param subjectArea
+     * @param courseNumber
+     * @param courseOfferingIds
+     * @return
+     */
+    public boolean isCourseInOfferingIds(String subjectArea, String courseNumber, Set<String> courseOfferingIds);
+
 }
