@@ -115,21 +115,17 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             DefaultXPath xpath = offeringServiceUtils.newXPath("//s:Section");
             List sections = xpath.selectNodes(document);
 
-            Set<String> courseCodes = new HashSet<String>(sections.size());
+            Set<String> offeringIds = new HashSet<String>(sections.size());
             for (Object node : sections) {
                 Element section = (Element) node;
                 String number = section.elementText("CourseNumber");
                 String ca = section.elementText("CurriculumAbbreviation");
-
-                //  This needs to be 10 characters wide. Curriculum code is 4-6 chars, number is 3.
-                StringBuilder cc = new StringBuilder("          ");
-                cc.replace(0, ca.length() - 1, ca);
-                cc.replace(7, 9, number);
-
-                courseCodes.add(cc.toString().trim());
+                String sec = section.elementText("SectionID");
+                String offeringId = getCourseHelper().joinStringsByDelimiter(':', yt.getYearAsString(), yt.getTermAsString(), ca, number, sec);
+                offeringIds.add(offeringId);
             }
 
-            return new ArrayList<String>(courseCodes);
+            return new ArrayList<String>(offeringIds);
 
         } catch (Exception e) {
             throw new OperationFailedException("Call to the student service failed.", e);
