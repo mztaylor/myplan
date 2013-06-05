@@ -19,6 +19,8 @@ import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.config.property.ConfigContext;
+import org.kuali.rice.core.api.criteria.InPredicate;
+import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.KeyValue;
@@ -96,7 +98,7 @@ public class CourseSearchController extends UifControllerBase {
     @Autowired
     private CourseSearchStrategy searcher = new CourseSearchStrategy();
 
-    @Autowired
+
     private CourseHelper courseHelper;
 
     private CampusSearch campusSearch = new CampusSearch();
@@ -276,10 +278,14 @@ public class CourseSearchController extends UifControllerBase {
             List<Hit> hits = processSearchRequests(requests);
             List<CourseSearchItem> courseList = new ArrayList<CourseSearchItem>();
             Map<String, CourseSearchItem.PlanState> courseStatusMap = getCourseStatusMap(studentId);
+
+            Set<String> subjectArea = new HashSet<String>();
+
             for (Hit hit : hits) {
                 CourseSearchItem course = getCourseInfo(hit.courseID);
                 if (isCourseOffered(form, course)) {
-                    loadScheduledTerms(course);
+                    //       loadScheduledTerms(course);
+                    subjectArea.add(course.getSubject());
                     loadTermsOffered(course);
                     loadGenEduReqs(course);
                     if (courseStatusMap.containsKey(course.getCourseVersionIndependentId())) {
@@ -291,6 +297,9 @@ public class CourseSearchController extends UifControllerBase {
                     }
                 }
             }
+
+            loadScheduledTerms(courseList, subjectArea);
+
             populateFacets(form, courseList);
             logger.error(String.format("SEARCH: %s  : %s CAMPUS : %s : %s", form.getSearchQuery(), form.getSearchTerm(), form.getCampusSelect(), String.valueOf(hits.size())));
             return courseList;
@@ -472,8 +481,9 @@ public class CourseSearchController extends UifControllerBase {
 
     //  Load scheduled terms.
     //  Fetch the available terms from the Academic Calendar Service.
-    private void loadScheduledTerms(CourseSearchItem course) {
+    private void loadScheduledTerms(List<CourseSearchItem> courses, Set<String> subjectSet) {
         try {
+
             logger.info("Start of method loadScheduledTerms of CourseSearchController:" + System.currentTimeMillis());
             AcademicCalendarService atpService = getAcademicCalendarService();
 
@@ -481,14 +491,22 @@ public class CourseSearchController extends UifControllerBase {
 
             CourseOfferingService offeringService = getCourseOfferingService();
 
-            //  If the course is offered in the term then add the term info to the scheduled terms list.
-            String code = course.getCode();
-
+            // For each term load all course offerings by subjectArea
             for (TermInfo term : terms) {
-                List<CourseOfferingInfo> offerings = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(course.getCourseId(), term.getId(), CourseSearchConstants.CONTEXT_INFO);
-                if (offerings != null && !offerings.isEmpty()) {
-                    course.addScheduledTerm(term.getName());
+                Set<String> courseOfferingByTermSet = new HashSet<String>();
+
+                for(String subjectArea : subjectSet) {
+                    List<String> offeringIds = getCourseOfferingService().getCourseOfferingIdsByTermAndSubjectArea(term.getId(), subjectArea, CourseSearchConstants.CONTEXT_INFO);
+                    courseOfferingByTermSet.addAll( offeringIds );
                 }
+
+                // Check to see if the course is offered
+                for(CourseSearchItem item : courses) {
+                    if (getCourseHelper().isCourseInOfferingIds(item.getSubject(), item.getNumber(), courseOfferingByTermSet)) {
+                           item.addScheduledTerm(term.getName());
+            }
+                }
+
             }
             logger.info("End of method loadScheduledTerms of CourseSearchController:" + System.currentTimeMillis());
         } catch (Exception e) {

@@ -33,6 +33,7 @@ import org.kuali.student.r2.common.dto.AttributeInfo;
 import javax.xml.namespace.QName;
 import java.io.StringReader;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class CourseHelperImpl implements CourseHelper {
 
@@ -294,6 +295,79 @@ public class CourseHelperImpl implements CourseHelper {
         return verifiedCourseId;
     }
 
+    /**
+     * returns the course code from given activityId
+     * <p/>
+     * eg: for activityId '2013:2:CHEM:152:A' course code CHEM  152 is returned
+     *
+     * @param activityId
+     * @return
+     */
+    public String getCourseCdFromActivityId(String activityId) {
+        ActivityOfferingDisplayInfo activityDisplayInfo = null;
+        try {
+            activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityId, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Could not retrieve ActivityOffering data for" + activityId, e);
+        }
+        if (activityDisplayInfo != null) {
+            /*TODO: move this to Coursehelper to make it institution neutral*/
+            String courseOfferingId = null;
+            for (AttributeInfo attributeInfo : activityDisplayInfo.getAttributes()) {
+                if ("PrimaryActivityOfferingId".equalsIgnoreCase(attributeInfo.getKey())) {
+                    courseOfferingId = attributeInfo.getValue();
+                    break;
+                }
+            }
+            CourseOfferingInfo courseOfferingInfo = null;
+            try {
+                courseOfferingInfo = getCourseOfferingService().getCourseOffering(courseOfferingId, CourseSearchConstants.CONTEXT_INFO);
+            } catch (Exception e) {
+                logger.error("Could not retrieve CourseOffering data for" + courseOfferingId, e);
+            }
+
+            if (courseOfferingInfo != null) {
+                return courseOfferingInfo.getCourseCode();
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * returns the Activity code from given activityId
+     * <p/>
+     * eg: for activityId '2013:2:CHEM:152:A' activity code A is returned
+     *
+     * @param activityId
+     * @return
+     */
+    public String getCodeFromActivityId(String activityId) {
+        ActivityOfferingDisplayInfo activityDisplayInfo = null;
+        try {
+            activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityId, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Could not retrieve ActivityOffering data for" + activityId, e);
+        }
+        if (activityDisplayInfo != null) {
+            return activityDisplayInfo.getActivityOfferingCode();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean isCourseInOfferingIds(String subjectArea, String courseNumber, Set<String> courseOfferingIds) {
+        // UW Implementation checks by breaking down courseOfferingId. KSAP should use courseOffering service to accomplish the same
+        for(String offeringId : courseOfferingIds) {
+            if(offeringId.contains( subjectArea + ":" + courseNumber)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * retuns a SLN for given params
@@ -338,67 +412,5 @@ public class CourseHelperImpl implements CourseHelper {
     public String buildActivityRefObjId(String atpId, String subject, String number, String activityCd) {
         AtpHelper.YearTerm yearTerm = AtpHelper.atpToYearTerm(atpId);
         return joinStringsByDelimiter(':', yearTerm.getYearAsString(), yearTerm.getTermAsString(), subject, number, activityCd);
-    }
-
-    /**
-     * returns the course code from given activityId
-     * <p/>
-     * eg: for activityId '2013:2:CHEM:152:A' course code CHEM  152 is returned
-     *
-     * @param activityId
-     * @return
-     */
-    public String getCourseCdFromActivityId(String activityId) {
-        ActivityOfferingDisplayInfo activityDisplayInfo = null;
-        try {
-            activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityId, PlanConstants.CONTEXT_INFO);
-        } catch (Exception e) {
-            logger.error("Could not retrieve ActivityOffering data for" + activityId, e);
-        }
-        if (activityDisplayInfo != null) {
-            /*TODO: move this to Coursehelper to make it institution neutral*/
-            String courseOfferingId = null;
-            for (AttributeInfo attributeInfo : activityDisplayInfo.getAttributes()) {
-                if ("PrimaryActivityOfferingId".equalsIgnoreCase(attributeInfo.getKey())) {
-                    courseOfferingId = attributeInfo.getValue();
-                    break;
-                }
-            }
-            CourseOfferingInfo courseOfferingInfo = null;
-            try {
-                courseOfferingInfo = getCourseOfferingService().getCourseOffering(courseOfferingId, CourseSearchConstants.CONTEXT_INFO);
-            } catch (Exception e) {
-                logger.error("Could not retrieve CourseOffering data for" + courseOfferingId, e);
-            }
-
-            if (courseOfferingInfo != null) {
-                return courseOfferingInfo.getCourseCode();
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     *  returns the section code from given activityId
-     *
-     *  eg: for activityId '2013:2:CHEM:152:A' section code A is returned
-     * @param activityId
-     * @return
-     */
-    public String getCodeFromActivityId(String activityId) {
-        ActivityOfferingDisplayInfo activityDisplayInfo = null;
-        try {
-            activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityId, PlanConstants.CONTEXT_INFO);
-        } catch (Exception e) {
-            logger.error("Could not retrieve ActivityOffering data for" + activityId, e);
-        }
-        if (activityDisplayInfo != null) {
-            return activityDisplayInfo.getActivityOfferingCode();
-        } else {
-            return null;
-        }
     }
 }
