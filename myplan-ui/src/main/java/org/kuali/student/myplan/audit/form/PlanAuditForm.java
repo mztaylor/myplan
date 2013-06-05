@@ -1,7 +1,8 @@
 package org.kuali.student.myplan.audit.form;
 
 import org.kuali.student.myplan.audit.dataobject.CourseItem;
-import org.kuali.student.myplan.audit.dataobject.MessyItemDataObject;
+import org.kuali.student.myplan.audit.dataobject.IgnoreTermDataObject;
+import org.kuali.student.myplan.audit.dataobject.MessyTermDataObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +21,9 @@ public class PlanAuditForm extends DegreeAuditForm {
 
     private List<CourseItem> cleanList;
 
-    private List<CourseItem> ignoreList;
+    private List<IgnoreTermDataObject> ignoreList;
 
-    private List<MessyItemDataObject> messyItems;
+    private List<MessyTermDataObject> messyItems;
 
     public String getLastPlannedTerm() {
         return lastPlannedTerm;
@@ -43,25 +44,25 @@ public class PlanAuditForm extends DegreeAuditForm {
         this.cleanList = cleanList;
     }
 
-    public List<CourseItem> getIgnoreList() {
+    public List<IgnoreTermDataObject> getIgnoreList() {
         if (ignoreList == null) {
-            ignoreList = new ArrayList<CourseItem>();
+            ignoreList = new ArrayList<IgnoreTermDataObject>();
         }
         return ignoreList;
     }
 
-    public void setIgnoreList(List<CourseItem> ignoreList) {
+    public void setIgnoreList(List<IgnoreTermDataObject> ignoreList) {
         this.ignoreList = ignoreList;
     }
 
-    public List<MessyItemDataObject> getMessyItems() {
+    public List<MessyTermDataObject> getMessyItems() {
         if(messyItems == null) {
-            messyItems = new ArrayList<MessyItemDataObject>();
+            messyItems = new ArrayList<MessyTermDataObject>();
         }
         return messyItems;
     }
 
-    public void setMessyItems(List<MessyItemDataObject> messyItems) {
+    public void setMessyItems(List<MessyTermDataObject> messyItems) {
         this.messyItems = messyItems;
     }
 

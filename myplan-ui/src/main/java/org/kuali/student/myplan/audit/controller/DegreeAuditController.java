@@ -32,8 +32,9 @@ import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.audit.dataobject.CourseItem;
+import org.kuali.student.myplan.audit.dataobject.IgnoreTermDataObject;
 import org.kuali.student.myplan.audit.dataobject.MessyItem;
-import org.kuali.student.myplan.audit.dataobject.MessyItemDataObject;
+import org.kuali.student.myplan.audit.dataobject.MessyTermDataObject;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.form.AuditForm;
 import org.kuali.student.myplan.audit.form.DegreeAuditForm;
@@ -394,7 +395,7 @@ public class DegreeAuditController extends UifControllerBase {
                 }
             }
 
-            for (MessyItemDataObject messyTerm : form.getMessyItems()) {
+            for (MessyTermDataObject messyTerm : form.getMessyItems()) {
                 for (MessyItem item : messyTerm.getMessyItemList()) {
                     String key = item.getVersionIndependentId() + item.getAtpId();
                     PlanItemInfo planItem = planItemInfoMap.get(key);
@@ -509,7 +510,7 @@ public class DegreeAuditController extends UifControllerBase {
         PlanAuditForm form = auditForm.getPlanAudit();
 
         List<CourseItem> courseItems = form.getCleanList();
-        List<CourseItem> ignoreItems = form.getIgnoreList();
+//        List<CourseItem> ignoreItems = form.getIgnoreList();
 
         CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
 
@@ -524,9 +525,10 @@ public class DegreeAuditController extends UifControllerBase {
             // Skip past terms
             if (AtpHelper.isAtpCompletedTerm(atpId)) continue;
 
-            MessyItemDataObject messyTerm = new MessyItemDataObject();
+            MessyTermDataObject messyTerm = new MessyTermDataObject();
             messyTerm.setAtpId(atpId);
-
+            IgnoreTermDataObject ignoreTerm = new IgnoreTermDataObject();
+            ignoreTerm.setAtpId(atpId);
 
             for (PlannedCourseDataObject course : term.getPlannedList()) {
 
@@ -539,7 +541,7 @@ public class DegreeAuditController extends UifControllerBase {
                     item.setCourseId(details.getVersionIndependentId());
                     item.setCredit(course.getCredit());
                     item.setSectionCode("");
-                    ignoreItems.add(item);
+                    ignoreTerm.getCourseItemList().add(item);
                     continue;
                 }
 
@@ -629,13 +631,16 @@ public class DegreeAuditController extends UifControllerBase {
             if (!messyTerm.getMessyItemList().isEmpty()) {
                 form.getMessyItems().add(messyTerm);
             }
+            if( !ignoreTerm.getCourseItemList().isEmpty()) {
+                form.getIgnoreList().add(ignoreTerm);
+            }
 
         }
 
         if (!form.getMessyItems().isEmpty()) {
             Map<String, String> prevChoices = getPlanItemSnapShots();
 
-            for (MessyItemDataObject messyTerm : form.getMessyItems()) {
+            for (MessyTermDataObject messyTerm : form.getMessyItems()) {
 
                 for (MessyItem messy : messyTerm.getMessyItemList()) {
                     String key = messy.getVersionIndependentId() + messy.getAtpId();
