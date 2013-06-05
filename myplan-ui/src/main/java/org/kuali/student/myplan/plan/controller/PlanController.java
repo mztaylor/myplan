@@ -46,7 +46,6 @@ import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.dataobject.ServicesStatusDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
@@ -795,7 +794,6 @@ public class PlanController extends UifControllerBase {
         CourseSummaryDetails courseDetails = null;
         // Now switch to the details based on the version independent Id
         //  Lookup course details as well need them in case there is an error below.
-        List<ActivityOfferingItem> activityOfferings = new ArrayList<ActivityOfferingItem>();
         try {
             courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
             // Now switch the courseDetails based on the versionIndependent Id
@@ -863,7 +861,7 @@ public class PlanController extends UifControllerBase {
         String secondarySectionCode = null;
         String primaryRegistrationCode = null;
         if (form.getSectionCode() != null) {
-            activityOfferings = getCourseDetailsInquiryService().getActivityOfferingItemsById(courseId, form.getAtpId());
+            List<ActivityOfferingItem> activityOfferings = getCourseDetailsInquiryService().getActivityOfferingItemsById(courseId, form.getAtpId());
             /*Populate the primary and secondary flags*/
             for (ActivityOfferingItem activityOfferingItem : activityOfferings) {
                 if (activityOfferingItem.isPrimary() && !form.isPrimary() && form.getSectionCode().startsWith(activityOfferingItem.getCode())) {

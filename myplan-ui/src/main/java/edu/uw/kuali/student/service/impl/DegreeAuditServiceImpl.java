@@ -294,10 +294,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     }
 
                     if (BUCKET_IGNORE.equals(bucketType)) continue;
-//                    if ("0".equals(credit)) {
-//                        continue;
-//                    }
-
                     String versionIndependentId = planItem.getRefObjectId();
 
                     try {
@@ -340,7 +336,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             auditId = requestAudit(req);
 
         } catch (Exception e) {
-//            logger.warn("error retrieving plan items", e);
             throw new OperationFailedException("error retrieving learning plan items", e);
 
         }
@@ -368,7 +363,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 getAcademicPlanService().updateLearningPlan(learningPlanInfo.getId(), learningPlanInfo, context);
             }
         } catch (Exception e) {
-//            logger.error("Could not update the learningPlanInfo", e );
             throw new OperationFailedException("error updating learning plan items", e);
         }
 

@@ -20,6 +20,8 @@ public class PlanAuditForm extends DegreeAuditForm {
 
     private List<CourseItem> cleanList;
 
+    private List<CourseItem> ignoreList;
+
     private List<MessyItemDataObject> messyItems;
 
     public String getLastPlannedTerm() {
@@ -39,6 +41,17 @@ public class PlanAuditForm extends DegreeAuditForm {
 
     public void setCleanList(List<CourseItem> cleanList) {
         this.cleanList = cleanList;
+    }
+
+    public List<CourseItem> getIgnoreList() {
+        if (ignoreList == null) {
+            ignoreList = new ArrayList<CourseItem>();
+        }
+        return ignoreList;
+    }
+
+    public void setIgnoreList(List<CourseItem> ignoreList) {
+        this.ignoreList = ignoreList;
     }
 
     public List<MessyItemDataObject> getMessyItems() {
