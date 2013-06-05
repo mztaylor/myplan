@@ -81,11 +81,6 @@ import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceC
 import static org.kuali.student.myplan.audit.service.DegreeAuditConstants.*;
 import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
 
-//import org.kuali.student.r2.common.exceptions.DoesNotExistException;
-//import org.kuali.student.r2.common.exceptions.InvalidParameterException;
-//import org.kuali.student.r2.common.exceptions.OperationFailedException;
-
-
 // http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
 
 @Controller
@@ -393,13 +388,16 @@ public class DegreeAuditController extends UifControllerBase {
                 boolean isCourse = PlanConstants.COURSE_TYPE.equalsIgnoreCase(item.getRefObjectType());
                 boolean isPlanned = AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equalsIgnoreCase(item.getTypeKey());
                 if (isCourse && isPlanned) {
-                    planItemInfoMap.put(item.getRefObjectId(), item);
+                    // Version independent id + term = key
+                    String key = item.getRefObjectId() + item.getPlanPeriods().get(0);
+                    planItemInfoMap.put(key, item);
                 }
             }
 
-            for (MessyItemDataObject messyData : form.getMessyItems()) {
-                for (MessyItem item : messyData.getMessyItemList()) {
-                    PlanItemInfo planItem = planItemInfoMap.get(item.getVersionIndependentId());
+            for (MessyItemDataObject messyTerm : form.getMessyItems()) {
+                for (MessyItem item : messyTerm.getMessyItemList()) {
+                    String key = item.getVersionIndependentId() + item.getAtpId();
+                    PlanItemInfo planItem = planItemInfoMap.get(key);
                     if (planItem != null) {
                         String choice = item.getSelectedCredit();
                         String[] str = choice.split(":");
@@ -459,8 +457,8 @@ public class DegreeAuditController extends UifControllerBase {
                 }
             }
             if (BUCKET_MESSY.equals(bucketType) && choice != null) {
-                String versionIndependentId = item.getRefObjectId();
-                map.put(versionIndependentId, choice);
+                String key = item.getRefObjectId() + item.getPlanPeriods().get( 0 );
+                map.put(key, choice);
 
             }
         }
@@ -635,24 +633,14 @@ public class DegreeAuditController extends UifControllerBase {
         }
 
         if (!form.getMessyItems().isEmpty()) {
-
-//            List<MessyItemDataObject> messyDataList = new ArrayList<MessyItemDataObject>(messyItemMap.values());
-//            Collections.sort(messyDataList, new Comparator<MessyItemDataObject>() {
-//                @Override
-//                public int compare(MessyItemDataObject val1, MessyItemDataObject val2) {
-//                    return val1.getAtpId().compareTo(val2.getAtpId());
-//                }
-//            });
-
             Map<String, String> prevChoices = getPlanItemSnapShots();
 
-            for (MessyItemDataObject messyData : form.getMessyItems()) {
+            for (MessyItemDataObject messyTerm : form.getMessyItems()) {
 
-                for (MessyItem messy : messyData.getMessyItemList()) {
-                    String id = messy.getVersionIndependentId();
-                    if (prevChoices.containsKey(id)) {
-
-                        String choice = prevChoices.get(id);
+                for (MessyItem messy : messyTerm.getMessyItemList()) {
+                    String key = messy.getVersionIndependentId() + messy.getAtpId();
+                    if (prevChoices.containsKey(key)) {
+                        String choice = prevChoices.get(key);
                         messy.setSelectedCredit(choice);
                     }
                 }
