@@ -70,7 +70,7 @@ public interface StudentServiceClient {
      * @return
      * @throws ServiceException
      */
-    public abstract String getSections(String year, String abbrev, String num) throws ServiceException;
+    public abstract String getSections(String year, String abbrev, String num, int futureTerms) throws ServiceException;
 
     /**
      * @param year

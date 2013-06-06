@@ -592,9 +592,9 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             String year = strings[0].trim();
             String curriculum = strings[1].trim();
             String courseNumber = strings[2].trim();
-
+            //default future terms to look for is 40 i.e.(10 years * 4 terms)
             try {
-                String responseText = studentServiceClient.getSections(year, curriculum, courseNumber);
+                String responseText = studentServiceClient.getSections(year, curriculum, courseNumber, 40);
                 Document document = offeringServiceUtils.newDocument(responseText);
                 DefaultXPath sectionPath = offeringServiceUtils.newXPath("/s:SearchResults/s:Sections/s:Section");
                 List<YearTerm> yearTermList = new ArrayList<YearTerm>();
