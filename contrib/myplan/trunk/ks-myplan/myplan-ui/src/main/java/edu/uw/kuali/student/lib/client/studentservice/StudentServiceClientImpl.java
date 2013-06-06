@@ -227,7 +227,7 @@ public class StudentServiceClientImpl
                 .append("/").append("public/section.xml?")
                 .append("year=").append(year).append("&")
                 .append("quarter=").append(quarter).append("&")
-                .append("curriculum_abbreviation=").append(curriculum);
+                .append("curriculum_abbreviation=").append(curriculum).append("&delete_flag=suspended,active");
         return sendQuery(url.toString());
     }
 
@@ -275,7 +275,7 @@ public class StudentServiceClientImpl
                 .append("year=").append(year).append("&")
                 .append("quarter=").append("&")
                 .append("curriculum_abbreviation=").append(abbrev).append("&")
-                .append("course_number=").append(num);
+                .append("course_number=").append(num).append("&delete_flag=suspended,active&future_terms=40");
         return sendQuery(url.toString().trim());
 
     }
@@ -300,9 +300,7 @@ public class StudentServiceClientImpl
                 .append("year=").append(year).append("&")
                 .append("quarter=").append(quarter).append("&")
                 .append("curriculum_abbreviation=").append(abbrev).append("&")
-                .append("course_number=").append(num)
-//                .append("&include_secondaries=on")
-        ;
+                .append("course_number=").append(num).append("&delete_flag=suspended,active");
         return sendQuery(url.toString().trim());
     }
 
