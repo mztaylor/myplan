@@ -266,7 +266,7 @@ public class StudentServiceClientImpl
      * @return
      * @throws ServiceException
      */
-    public String getSections(String year, String abbrev, String num) throws ServiceException {
+    public String getSections(String year, String abbrev, String num, int futureTerms) throws ServiceException {
         abbrev = abbrev.replace(" ", "%20");
         abbrev = abbrev.replace("&", "%26");
         StringBuilder url = new StringBuilder(getBaseUrl());
@@ -275,7 +275,7 @@ public class StudentServiceClientImpl
                 .append("year=").append(year).append("&")
                 .append("quarter=").append("&")
                 .append("curriculum_abbreviation=").append(abbrev).append("&")
-                .append("course_number=").append(num).append("&delete_flag=suspended,active&future_terms=40");
+                .append("course_number=").append(num).append("&delete_flag=suspended,active&future_terms=").append(futureTerms);
         return sendQuery(url.toString().trim());
 
     }
