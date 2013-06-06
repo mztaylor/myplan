@@ -15,6 +15,7 @@
  */
 package org.kuali.student.myplan.course.controller;
 
+import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -283,22 +284,23 @@ public class CourseSearchController extends UifControllerBase {
 
             for (Hit hit : hits) {
                 CourseSearchItem course = getCourseInfo(hit.courseID);
-                if (isCourseOffered(form, course)) {
-                    //       loadScheduledTerms(course);
-                    subjectArea.add(course.getSubject());
-                    loadTermsOffered(course);
-                    loadGenEduReqs(course);
-                    if (courseStatusMap.containsKey(course.getCourseVersionIndependentId())) {
-                        course.setStatus(courseStatusMap.get(course.getCourseVersionIndependentId()));
-                    }
-                    courseList.add(course);
-                    if (courseList.size() >= maxCount) {
-                        break;
-                    }
+                //       loadScheduledTerms(course);
+                subjectArea.add(course.getSubject());
+                loadTermsOffered(course);
+                loadGenEduReqs(course);
+                if (courseStatusMap.containsKey(course.getCourseVersionIndependentId())) {
+                    course.setStatus(courseStatusMap.get(course.getCourseVersionIndependentId()));
+                }
+                courseList.add(course);
+                if (courseList.size() >= maxCount) {
+                    break;
                 }
             }
 
             loadScheduledTerms(courseList, subjectArea);
+            if (!CourseSearchForm.SEARCH_TERM_ANY_ITEM.equals(form.getSearchTerm())) {
+                filterCoursesByTerm(courseList, form.getSearchTerm());
+            }
 
             populateFacets(form, courseList);
             logger.error(String.format("SEARCH: %s  : %s CAMPUS : %s : %s", form.getSearchQuery(), form.getSearchTerm(), form.getCampusSelect(), String.valueOf(hits.size())));
@@ -461,26 +463,20 @@ public class CourseSearchController extends UifControllerBase {
         return hits;
     }
 
-    public boolean isCourseOffered(CourseSearchForm form, CourseSearchItem course) throws Exception {
-        /*
-         *  If the "any" item was chosen in the terms dop-down then continue processing.
-         *  Otherwise, determine if the CourseSearchItem should be filtered out of the
-         *  result set.
-         */
-        String term = form.getSearchTerm();
-
-        if (CourseSearchForm.SEARCH_TERM_ANY_ITEM.equals(term)) return true;
-
-        /*
-          Use the course offering service to see if the course is being offered in the selected term.
-          Note: In the UW implementation of the Course Offering service, course id is actually course code.
-        */
-        List<CourseOfferingInfo> cos = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(course.getCourseId(), term, CourseSearchConstants.CONTEXT_INFO);
-        return cos != null && !cos.isEmpty();
+    public void filterCoursesByTerm(List<CourseSearchItem> courses, String term) throws Exception {
+        AtpHelper.YearTerm yearTerm = AtpHelper.atpToYearTerm(term);
+        int size = courses.size();
+        for (int i = 0; i < size; i++) {
+            List<String> scheduledTerms = courses.get(i).getScheduledTermsList();
+            if (scheduledTerms == null || !scheduledTerms.contains(yearTerm.toLabel())) {
+                courses.remove(i);
+                size--;
+            }
+        }
     }
-
     //  Load scheduled terms.
     //  Fetch the available terms from the Academic Calendar Service.
+
     private void loadScheduledTerms(List<CourseSearchItem> courses, Set<String> subjectSet) {
         try {
 
@@ -495,16 +491,16 @@ public class CourseSearchController extends UifControllerBase {
             for (TermInfo term : terms) {
                 Set<String> courseOfferingByTermSet = new HashSet<String>();
 
-                for(String subjectArea : subjectSet) {
+                for (String subjectArea : subjectSet) {
                     List<String> offeringIds = getCourseOfferingService().getCourseOfferingIdsByTermAndSubjectArea(term.getId(), subjectArea, CourseSearchConstants.CONTEXT_INFO);
-                    courseOfferingByTermSet.addAll( offeringIds );
+                    courseOfferingByTermSet.addAll(offeringIds);
                 }
 
                 // Check to see if the course is offered
-                for(CourseSearchItem item : courses) {
+                for (CourseSearchItem item : courses) {
                     if (getCourseHelper().isCourseInOfferingIds(item.getSubject(), item.getNumber(), courseOfferingByTermSet)) {
-                           item.addScheduledTerm(term.getName());
-            }
+                        item.addScheduledTerm(term.getName());
+                    }
                 }
 
             }
@@ -831,6 +827,9 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     public CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = new CourseHelperImpl();
+        }
         return courseHelper;
     }
 
