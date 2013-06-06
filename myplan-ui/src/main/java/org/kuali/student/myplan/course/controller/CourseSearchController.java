@@ -125,7 +125,7 @@ public class CourseSearchController extends UifControllerBase {
             campus.append(k.getKey().toString());
             campus.append(",");
         }
-        DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(courseCd);
+        DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(courseCd);
         if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
             number = courseCode.getNumber();
             subject = courseCode.getSubject();
@@ -141,7 +141,7 @@ public class CourseSearchController extends UifControllerBase {
         if (divisions.size() > 0) {
             subject = divisions.get(0);
         }
-        courseId = courseHelper.getCourseId(subject.trim(), number);
+        courseId = getCourseHelper().getCourseId(subject.trim(), number);
         if (!StringUtils.hasText(courseId)) {
             response.sendRedirect("/student/myplan/course?searchQuery=" + courseCd + "&searchTerm=any&campusSelect=" + campus);
             return null;
