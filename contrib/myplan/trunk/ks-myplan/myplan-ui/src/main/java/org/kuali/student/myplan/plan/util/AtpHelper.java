@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.common.exceptions.OperationFailedException;
 import org.kuali.student.core.atp.dto.AtpInfo;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
@@ -150,12 +149,12 @@ public class AtpHelper {
         return currentAtpId;
     }
 
-//    public static YearTerm getCurrentYearTerm() {
-//        String atp = getCurrentAtpId();
-//        YearTerm yearTerm = atpToYearTerm(atp);
-//        return yearTerm;
-//
-//    }
+    public static YearTerm getCurrentYearTerm() {
+        String atp = getCurrentAtpId();
+        YearTerm yearTerm = atpToYearTerm(atp);
+        return yearTerm;
+
+    }
 
     /**
      * Query the Academic Calendar Service for terms that have offering's published, determine the last ATP, and return its ID.
@@ -380,6 +379,12 @@ public class AtpHelper {
         return isAtpCompletedTerm;
     }
 
+    public static boolean hasYearTermCompleted(YearTerm atp ) {
+        YearTerm currentYT = getCurrentYearTerm();
+        boolean completed = atp.getValue() < currentYT.getValue();
+        return completed;
+    }
+
     /**
      * Checks with the courseOffering service if the course is offered for the given term
      *
@@ -416,6 +421,20 @@ public class AtpHelper {
             List<TermInfo> termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
             for (TermInfo term : termInfos) {
                 publishedTerms.add(term.getId());
+            }
+        } catch (Exception e) {
+            logger.error("Web service call failed.", e);
+        }
+        return publishedTerms;
+    }
+
+    public static List<YearTerm> getPublishedYearTermList() {
+        List<YearTerm> publishedTerms = new ArrayList<YearTerm>();
+        try {
+            List<TermInfo> termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
+            for (TermInfo term : termInfos) {
+                YearTerm yt = atpToYearTerm(term.getId());
+                publishedTerms.add(yt);
             }
         } catch (Exception e) {
             logger.error("Web service call failed.", e);

@@ -510,20 +510,22 @@ public class DegreeAuditController extends UifControllerBase {
         PlanAuditForm form = auditForm.getPlanAudit();
 
         List<CourseItem> courseItems = form.getCleanList();
-//        List<CourseItem> ignoreItems = form.getIgnoreList();
 
         CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
 
         PlannedTermsHelperBase plannedTermsHelperBase = new PlannedTermsHelperBase();
         List<PlannedTerm> termList = plannedTermsHelperBase.getPlannedTermsFromStartAtp();
-        List<String> scheduledTerms = AtpHelper.getPublishedTerms();
+        List<AtpHelper.YearTerm> publishedTerms = AtpHelper.getPublishedYearTermList();
 
 
         for (PlannedTerm term : termList) {
             String atpId = term.getAtpId();
+            AtpHelper.YearTerm yt = AtpHelper.atpToYearTerm( atpId );
 
             // Skip past terms
-            if (AtpHelper.isAtpCompletedTerm(atpId)) continue;
+            if( AtpHelper.hasYearTermCompleted(yt)) continue;
+
+            boolean isTermPublished = publishedTerms.contains(yt);
 
             MessyTermDataObject messyTerm = new MessyTermDataObject();
             messyTerm.setAtpId(atpId);
@@ -532,11 +534,15 @@ public class DegreeAuditController extends UifControllerBase {
 
             for (PlannedCourseDataObject course : term.getPlannedList()) {
 
+                CourseSummaryDetails details = course.getCourseDetails();
+                List<String> courseTerms = details.getScheduledTerms();
+                boolean coursePublished = courseTerms.contains(yt.toLabel());
+                boolean ignore = isTermPublished ? !coursePublished : courseTerms.isEmpty();
+
                 // No scheduled terms means IGNORE this one
-                if (course.getCourseDetails().getScheduledTerms().isEmpty()) {
+                if (ignore) {
                     CourseItem item = new CourseItem();
                     item.setAtpId(atpId);
-                    CourseSummaryDetails details = course.getCourseDetails();
                     item.setCourseCode(details.getCode());
                     item.setCourseId(details.getVersionIndependentId());
                     item.setCredit(course.getCredit());
@@ -548,12 +554,12 @@ public class DegreeAuditController extends UifControllerBase {
                 Set<Choice> choices = new HashSet<Choice>();
 
                 // If time schedule is published, divine credit choices from course's sections (primary activities)
-                if (scheduledTerms.contains(atpId)) {
+                if (isTermPublished) {
                     List<ActivityOfferingItem> activities = course.getPlanActivities();
 
                     // If plan item activity list is empty, default to all sections
                     if (activities.isEmpty()) {
-                        String courseId = course.getCourseDetails().getCourseId();
+                        String courseId = details.getCourseId();
                         activities = courseDetailsInquiryHelper.getActivityOfferingItemsById(courseId, atpId);
                     }
 
@@ -581,7 +587,7 @@ public class DegreeAuditController extends UifControllerBase {
 
                 // Otherwise just use course's default credit choices
                 if (choices.isEmpty()) {
-                    String credits = course.getCourseDetails().getCredit();
+                    String credits = details.getCredit();
                     String section = "";
                     String[] list = creditToList(credits);
                     for (String temp : list) {
@@ -598,7 +604,6 @@ public class DegreeAuditController extends UifControllerBase {
                         String section = choice.section;
                         CourseItem item = new CourseItem();
                         item.setAtpId(atpId);
-                        CourseSummaryDetails details = course.getCourseDetails();
                         item.setCourseCode(details.getCode());
                         item.setCourseId(details.getVersionIndependentId());
                         item.setCredit(credits);
@@ -614,7 +619,6 @@ public class DegreeAuditController extends UifControllerBase {
                         credits.add(formatted);
                     }
 
-                    CourseSummaryDetails details = course.getCourseDetails();
                     String versionIndependentId = details.getVersionIndependentId();
 
                     MessyItem item = new MessyItem();
