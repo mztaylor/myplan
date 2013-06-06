@@ -13,6 +13,7 @@ public class CourseItem {
     private String sectionCode;
     private String atpId;
     private String credit;
+    private String title;
 
     public String getCourseCode() {
         return courseCode;
@@ -52,5 +53,13 @@ public class CourseItem {
 
     public void setCredit(String credit) {
         this.credit = credit;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
