@@ -43,6 +43,7 @@ public class CourseSearchControllerTest {
     public void setSearchController(CourseSearchController searchController) {
         this.searchController = searchController;
     }
+
     @Autowired
     private CourseSearchStrategy courseSearchStrategy = null;
 
@@ -53,6 +54,7 @@ public class CourseSearchControllerTest {
     public void setCourseSearchStrategy(CourseSearchStrategy strategy) {
         this.courseSearchStrategy = strategy;
     }
+
     @Autowired
     private AcademicPlanService academicPlanService;
 
@@ -104,8 +106,8 @@ public class CourseSearchControllerTest {
         try {
             controller.getCellValue(row, "fail");
             fail("should have throw exception");
+        } catch (Exception e) {
         }
-        catch( Exception e ) {}
     }
 
     @Test
@@ -188,29 +190,6 @@ public class CourseSearchControllerTest {
     }
 
     @Test
-    public void testIsCourseOffered() {
-
-        CourseSearchForm form = new CourseSearchForm();
-        CourseSearchItem course = new CourseSearchItem();
-        CourseSearchController controller = getSearchController();
-
-        try {
-            form.setSearchTerm(CourseSearchForm.SEARCH_TERM_ANY_ITEM);
-
-            assertTrue(controller.isCourseOffered(form, course));
-
-            form.setSearchTerm("fake");
-            course.setCode("CHEM");
-            assertTrue(controller.isCourseOffered(form, course));
-
-            course.setCode("FAKE");
-            assertFalse(controller.isCourseOffered(form, course));
-        } catch (Exception e) {
-            fail("failed!");
-        }
-    }
-
-    @Test
     public void testProcessSearchRequests() {
 
         CourseSearchForm form = new CourseSearchForm();
@@ -237,6 +216,7 @@ public class CourseSearchControllerTest {
         assertEquals("dd003c5a-d0e4-4cfe-a81c-cbb756383685", hits.get(0).courseID);
 
     }
+
     @Test
     public void testProcessSearchRequests2() {
 
@@ -262,6 +242,7 @@ public class CourseSearchControllerTest {
         }
         assertTrue(hits.size() > 0);
     }
+
     @Test
     public void testProcessSearchRequests3() {
 
@@ -321,6 +302,7 @@ public class CourseSearchControllerTest {
         assertTrue(form.getGenEduReqFacetItems().size()>0);
         assertTrue(form.getTermsFacetItems().size()>0);*/
     }
+
     @Test
     public void testPopulateFacets2() {
 
@@ -364,8 +346,6 @@ public class CourseSearchControllerTest {
         HashMap<String, String> divisionsMap = controller.fetchCourseDivisions();
         assertFalse(divisionsMap.isEmpty());
     }
-
-
 
 
 }
