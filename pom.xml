@@ -1134,16 +1134,16 @@
                 <artifactId>org.restlet</artifactId>
                 <version>${restlet.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.restlet.jee</groupId>
-                <artifactId>org.restlet.ext.servlet</artifactId>
-                <version>${restlet.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.restlet.jee</groupId>
-                <artifactId>org.restlet.ext.spring</artifactId>
-                <version>${restlet.version}</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.restlet.jee</groupId>-->
+                <!--<artifactId>org.restlet.ext.servlet</artifactId>-->
+                <!--<version>${restlet.version}</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.restlet.jee</groupId>-->
+                <!--<artifactId>org.restlet.ext.spring</artifactId>-->
+                <!--<version>${restlet.version}</version>-->
+            <!--</dependency>-->
             <!-- End restlet stuff -->
 
             <!-- Fixes for strange JAXB behavior with empty lists using SOAP -->
