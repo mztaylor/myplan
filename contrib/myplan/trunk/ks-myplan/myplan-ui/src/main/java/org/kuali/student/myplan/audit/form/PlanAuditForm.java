@@ -17,7 +17,7 @@ import java.util.List;
 public class PlanAuditForm extends DegreeAuditForm {
     private String lastPlannedTerm;
 
-    private boolean studentChoiceRequired;
+    private boolean showHandOffScreen;
 
     private List<CourseItem> cleanList;
 
@@ -56,7 +56,7 @@ public class PlanAuditForm extends DegreeAuditForm {
     }
 
     public List<MessyTermDataObject> getMessyItems() {
-        if(messyItems == null) {
+        if (messyItems == null) {
             messyItems = new ArrayList<MessyTermDataObject>();
         }
         return messyItems;
@@ -66,12 +66,12 @@ public class PlanAuditForm extends DegreeAuditForm {
         this.messyItems = messyItems;
     }
 
-    public boolean isStudentChoiceRequired() {
-        return studentChoiceRequired;
+    public boolean isShowHandOffScreen() {
+        return showHandOffScreen;
     }
 
-    public void setStudentChoiceRequired(boolean studentChoiceRequired) {
-        this.studentChoiceRequired = studentChoiceRequired;
+    public void setShowHandOffScreen(boolean showHandOffScreen) {
+        this.showHandOffScreen = showHandOffScreen;
     }
 
 }

@@ -458,7 +458,7 @@ public class DegreeAuditController extends UifControllerBase {
                 }
             }
             if (BUCKET_MESSY.equals(bucketType) && choice != null) {
-                String key = item.getRefObjectId() + item.getPlanPeriods().get( 0 );
+                String key = item.getRefObjectId() + item.getPlanPeriods().get(0);
                 map.put(key, choice);
 
             }
@@ -520,10 +520,10 @@ public class DegreeAuditController extends UifControllerBase {
 
         for (PlannedTerm term : termList) {
             String atpId = term.getAtpId();
-            AtpHelper.YearTerm yt = AtpHelper.atpToYearTerm( atpId );
+            AtpHelper.YearTerm yt = AtpHelper.atpToYearTerm(atpId);
 
             // Skip past terms
-            if( AtpHelper.hasYearTermCompleted(yt)) continue;
+            if (AtpHelper.hasYearTermCompleted(yt)) continue;
 
             boolean isTermPublished = publishedTerms.contains(yt);
 
@@ -544,6 +544,7 @@ public class DegreeAuditController extends UifControllerBase {
                     CourseItem item = new CourseItem();
                     item.setAtpId(atpId);
                     item.setCourseCode(details.getCode());
+                    item.setTitle(details.getCourseTitle());
                     item.setCourseId(details.getVersionIndependentId());
                     item.setCredit(course.getCredit());
                     item.setSectionCode("");
@@ -635,7 +636,7 @@ public class DegreeAuditController extends UifControllerBase {
             if (!messyTerm.getMessyItemList().isEmpty()) {
                 form.getMessyItems().add(messyTerm);
             }
-            if( !ignoreTerm.getCourseItemList().isEmpty()) {
+            if (!ignoreTerm.getCourseItemList().isEmpty()) {
                 form.getIgnoreList().add(ignoreTerm);
             }
 
@@ -655,8 +656,9 @@ public class DegreeAuditController extends UifControllerBase {
                 }
             }
 
-            form.setStudentChoiceRequired(true);
         }
+        boolean showHandOffScreen = !(form.getMessyItems().isEmpty() && form.getIgnoreList().isEmpty());
+        form.setShowHandOffScreen(showHandOffScreen);
         return getUIFModelAndView(auditForm);
     }
 
