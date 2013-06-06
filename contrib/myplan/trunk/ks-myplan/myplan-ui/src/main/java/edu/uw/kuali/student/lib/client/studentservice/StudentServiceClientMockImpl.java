@@ -109,7 +109,7 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
     }
 
     @Override
-    public String getSections(String year, String Curriculum, String courseNo) throws ServiceException {
+    public String getSections(String year, String Curriculum, String courseNo, int futureTerms) throws ServiceException {
         //  Read a response for ...
         //  https://ucswseval1.cac.washington.edu/student/v4/public/section?year=2002&quarter=&curriculum_abbreviation=ESS&course_number=101&reg_id=&search_by=Instructor
         //  ... from a text file.
