@@ -510,22 +510,6 @@ ${headerLine?xml}
 
             -->
 
-        <#-- Gather taken course list -->
-            <#if subreq.showTakenCourses>
-                <#list subreq.takenCourses as takenCourse>
-                    <#assign takenRow = [] >
-                    <#assign takenRow = takenRow + [takenCourse.courseType] >
-                    <#assign takenRow = takenRow + [takenCourse.yt] >
-                    <#assign takenRow = takenRow + [takenCourse.displayCourse] >
-                    <#assign takenDesc = takenCourse.descriptiveLines >
-                    <#assign takenRow = takenRow + [takenDesc] >
-                    <#assign takenRow = takenRow + [takenCourse.credit] >
-                    <#assign takenRow = takenRow + [takenCourse.grade] >
-                    <#assign takenRow = takenRow + [takenCourse.condCode?trim] >
-                    <#assign takenList = takenList + [takenRow] >
-                </#list>
-            </#if>
-
             <#assign showSubreqStatusX = showSubreqStatus && !( subreq.status == "Status_NONE" && subreq.seqErr?trim == "" ) >
             <#assign showExcLines = ( subreq.showExcLines && subreq.appliedExceptionText?size > 0 ) >
             <#assign showHeader = showSubreqStatusX || subreq.required || subreq.showSubreqNumber || subreq.showTitle || showExcLines >
@@ -632,6 +616,37 @@ ${headerLine?xml}
                     </div> <#-- end of totals -->
                 </#if>
 
+            <#if subreq.showTakenCourses>
+            <table class="taken">
+                <caption>Courses Used To Satisfy This Requirement</caption>
+                <thead>
+                <tr>
+                    <th>Qtr</th>
+                    <th colspan="2">Course Name</th>
+                    <th>Credits</th>
+                    <th>Grade</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                    <#list subreq.takenCourses as takenCourse>
+                    <tr class="${takenCourse.courseType}">
+                        <td class="term">${takenCourse.yt?xml}</td>
+                        <td class="course linkify">${takenCourse.displayCourse?substring(1,7)?trim?xml} ${takenCourse.displayCourse?substring(7,10)?trim?xml}</td>
+                        <td class="description"><#list takenCourse.descriptiveLines as descriptiveLine> ${descriptiveLine?xml} </#list></td>
+                        <td class="credit">${takenCourse.credit?string?replace(".0","")?xml}</td>
+                        <td class="grade">${takenCourse.grade?xml}</td>
+                        <#if toolTipsMap[takenCourse.condCode]?exists >
+                            <td class="ccode"
+                                title="${toolTipsMap[takenCourse.condCode]}">${takenCourse.condCode?xml}</td>
+                        <#else>
+                            <td class="ccode"></td>
+                        </#if>
+                    </tr>
+                    </#list>
+                </tbody>
+            </table>
+            </#if>
             <#--
 
             subreq.notText: ${subreq.notText?xml}
@@ -709,73 +724,7 @@ ${headerLine?xml}
             </div> <#-- end of subrequirement -->
             </#if>
         </#list>
-
-        <#if ( takenList?size > 0  )>
-        <div class="subrequirement ${justTitle}">
-            <table class="taken">
-                <thead>
-                <tr>
-                    <th> Qtr </th>
-                    <th colspan="2"> Course Name </th>
-                    <th> Credits </th>
-                    <th> Grade </th>
-                    <th> </th>
-                </tr>
-                </thead>
-                <tbody>
-                    <#list takenList as takenRow>
-                        <#assign courseType = takenRow[0] >
-                        <#assign yt = takenRow[1] >
-                        <#assign displayCourse = takenRow[2] >
-                        <#assign lines = takenRow[3] >
-                        <#assign credit = takenRow[4] >
-                        <#assign grade = takenRow[5] >
-                        <#assign condCode = takenRow[6]?trim >
-                    <#--
-                        courseType: courseType?xml
-                        yt: yt?xml
-                        displayCourse: displayCourse?xml
-                        desc: desc?xml
-                        credit: credit?xml
-                        grade: grade?xml
-                        condCode: condCode?xml
-                        exists: toolTipsMap[condCode]?exists?string
-                        toolTipsMap: toolTipsMap[condCode]
-                    -->
-
-                    <tr class="${courseType}">
-                        <td class="term"> ${yt?xml} </td>
-                        <td class="course linkify"> ${displayCourse?substring(1,7)?trim?xml} ${displayCourse?substring(7,10)?trim?xml} </td>
-                        <td class="description">
-                            <#list reflow(lines) as line>
-                            ${line?xml} <#if line_has_next > <br/> </#if>
-                            </#list>
-                        </td>
-                        <td class="credit"> ${credit?string?replace(".0","")?xml} </td>
-                        <td class="grade"> ${grade?xml} </td>
-                        <#if toolTipsMap[condCode]?exists >
-                            <td class="ccode"
-                                title="${toolTipsMap[condCode]}"> ${condCode?xml} </td>
-                        <#else>
-                            <td class="ccode"> </td>
-                        </#if>
-                    </tr>
-                    </#list>
-                </tbody>
-            </table>
         </div>
-        </#if>
-
-    <#--
-    <#list takenList as takenRow>
-        row: ${takenRow_index}
-        <#list takenRow as takenItem>
-            ${takenItem?html}
-        </#list>
-    </#list>
-    -->
-
-    </div>
     </div> <#-- end of requirement -->
 
     </#if>
