@@ -127,7 +127,7 @@ function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
     var elementToBlock = jQuery("#plan_audit_actions_container");
 
     var updateRefreshableComponentCallback = function (htmlContent) {
-        var inputRequired = (jQuery("input#hidden_messy_items_flag_control", htmlContent).val() == "true");
+        var inputRequired = (jQuery("input#showHandOffScreen_control", htmlContent).val() == "true");
 
         if (inputRequired) {
             var component = jQuery("#" + getId, htmlContent);
@@ -151,7 +151,13 @@ function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
                 },
                 autoSize:true,
                 parent:"form:first",
-                href:'#' + getId,
+                href:"#" + getId,
+                beforeLoad:function () {
+                    setFancyboxScrollableGroup(115);
+                },
+                onUpdate:function () {
+                    setFancyboxScrollableGroup(115);
+                },
                 afterClose:function () {
                     auditButtonState("plan_audit_validate");
                 }
@@ -168,8 +174,17 @@ function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
     jQuery("form#" + id + "_form").remove();
 }
 
+function setFancyboxScrollableGroup(addPadding) {
+    var innerHeight = 0;
+    jQuery(".fancybox-inner .ksap-getHeight").each(function () {
+        innerHeight = innerHeight + Math.round(parseFloat(jQuery(this).outerHeight(true))) + 1;
+    });
+    var maxHeight = jQuery(window).height() - (addPadding + innerHeight);
+    jQuery(".fancybox-inner .ksap-scrollableGroup").css("max-height", maxHeight + "px");
+}
+
 function runPlanAudit(id) {
-    if(jQuery("button#" + id).hasClass('disabled')){
+    if (jQuery("button#" + id).hasClass('disabled')) {
         jQuery("button#" + id).removeClass('disabled');
     }
     jQuery("button#" + id).click();

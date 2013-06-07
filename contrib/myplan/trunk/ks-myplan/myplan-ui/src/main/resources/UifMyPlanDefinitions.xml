@@ -691,7 +691,6 @@
             </list>
         </property>
     </bean>
-    <bean parent="Uif-DataField"/>
 
     <!-- Light weight fields -->
     <bean id="KSAP-SimpleDataField" parent="KSAP-SimpleDataField-parentBean"/>
@@ -719,7 +718,12 @@
 
     <bean id="KSAP-SimpleInputField" parent="KSAP-SimpleInputField-parentBean"/>
     <bean id="KSAP-SimpleInputField-parentBean" abstract="true" parent="Uif-InputField-parentBean" scope="prototype">
-        <property name="fieldLabel.render" value="false"/>
+        <property name="fieldLabel">
+            <bean parent="Uif-Label">
+                <property name="render" value="false"/>
+                <property name="renderColon" value="false"/>
+            </bean>
+        </property>
         <property name="template" value="/ks-myplan/WEB-INF/ftl/components/KSAPSimpleDataField.ftl"/>
         <property name="templateName" value="ksap_simpleDataField"/>
         <property name="inquiry">
@@ -826,6 +830,9 @@
         <property name="toolTip">
             <null/>
         </property>
+        <property name="scrollpane">
+            <null/>
+        </property>
     </bean>
 
     <bean id="KSAP-HorizontalBoxGroup" parent="Uif-HorizontalBoxGroup">
@@ -838,17 +845,30 @@
         <property name="toolTip">
             <null/>
         </property>
+        <property name="scrollpane">
+            <null/>
+        </property>
     </bean>
 
     <bean id="KSAP-VerticalFieldGroup" parent="Uif-VerticalFieldGroup">
-        <property name="fieldLabel.render" value="false"/>
+        <property name="fieldLabel">
+            <bean parent="Uif-Label">
+                <property name="render" value="false"/>
+                <property name="renderColon" value="false"/>
+            </bean>
+        </property>
         <property name="group">
             <bean parent="KSAP-VerticalBoxGroup"/>
         </property>
     </bean>
 
     <bean id="KSAP-HorizontalFieldGroup" parent="Uif-HorizontalFieldGroup">
-        <property name="fieldLabel.render" value="false"/>
+        <property name="fieldLabel">
+            <bean parent="Uif-Label">
+                <property name="render" value="false"/>
+                <property name="renderColon" value="false"/>
+            </bean>
+        </property>
         <property name="group">
             <bean parent="KSAP-HorizontalBoxGroup"/>
         </property>
