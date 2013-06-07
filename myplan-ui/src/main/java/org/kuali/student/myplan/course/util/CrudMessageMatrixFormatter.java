@@ -139,7 +139,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                         String message = "You are enrolled in ";
                         if (UserSessionHelper.isAdviser()) {
                             String user = UserSessionHelper.getStudentName();
-                            message = user + ". currently enrolled in this course for ";
+                            message = user + " is currently enrolled in this course for ";
                         }
                         StringBuffer sec = new StringBuffer();
                         int count = 0;
