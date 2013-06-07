@@ -164,9 +164,9 @@ function searchForCourses(id, parentId) {
         aoColumns:[
             {'sTitle':'Code', 'bSortable':true, 'bSearchable':false, 'sClass':'myplan-text-nowrap sortable', 'sWidth':'73px', 'sType':'string'},
             {'sTitle':'Course Name', 'bSortable':true, 'bSearchable':false, 'sClass':'sortable', 'sWidth':'170px'},
-            {'sTitle':'Credits', 'bSortable':false, 'bSearchable':false, 'sWidth':'34px'},
-            {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'myplan-data-list', 'sWidth':'76px'},
-            {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'66px'},
+            {'sTitle':'Credits', 'bSortable':false, 'bSearchable':false, 'sWidth':'36px'},
+            {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'myplan-data-list', 'sWidth':'80px'},
+            {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'69px'},
             {'sTitle':'', 'bSortable':false, 'bSearchable':false, 'sClass':'myplan-status-column', 'sWidth':'69px'},
             {'bVisible':false},
             {'bVisible':false},
@@ -203,7 +203,7 @@ function searchForCourses(id, parentId) {
             if (!readUrlHash("searchTerm")) setUrlHash('searchTerm', sTerm);
             if (!readUrlHash("campusSelect")) setUrlHash('campusSelect', aCampus);
             results.fadeIn("fast");
-            results.find("table#" + id).width(548);
+            results.find("table#" + id).width(533);
             jQuery(".myplan-facets-group .uif-disclosureContent .uif-boxLayout").each(function () {
                 jQuery(this).empty();
             });
