@@ -274,16 +274,6 @@
                     }
                 });
         "/>
-
-        <!--
-        .subscribe('UPDATE_NEW_TERM_TOTAL_CREDITS', function(data) {
-                            if (data.atpId == '@{dataObject.atpId.replaceAll('\.','-')}') {
-                                fnUpdateQuarterViewCredits(data.totalCredits);
-                            }
-                        })
-
-        fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}', 'previous_quarter_button', 'single_quarter_items');
-                        fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}', 'next_quarter_button', 'single_quarter_items');-->
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-quarter-detail</value>
@@ -309,7 +299,7 @@
                 <bean parent="single_AcademicRecord_Empty"/>
                 <!-- Past quarter academic record with at least one course -->
                 <bean parent="single_AcademicRecord_Collection_Completed"/>
-                <!--Current quarter but closed for planning with atleast one course-->
+                <!--Current quarter but closed for planning with at least one course-->
                 <bean parent="single_AcademicRecord_Collection_current_closed"/>
                 <!-- Current and Future quarter academic record with at least one course and which are open for planning -->
                 <bean parent="single_AcademicRecord_Collection_Open"/>
@@ -1263,7 +1253,7 @@
         <property name="items">
             <list>
                 <bean parent="KSAP-MessageField" p:messageText="You have no completed courses for this quarter."
-                      p:style="padding:12px; font-size:12px;">
+                      p:style="padding:15px; font-size:12px;">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-text-gray</value>
@@ -1292,7 +1282,7 @@
         <property name="items">
             <list>
                 <bean parent="KSAP-MessageField" p:messageText="You have no planned courses for this quarter."
-                      p:style="padding:12px; font-size:12px;">
+                      p:style="padding:15px; font-size:12px;">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-text-gray</value>
@@ -1322,7 +1312,7 @@
         <property name="items">
             <list>
                 <bean parent="KSAP-MessageField" p:messageText="You have no backup courses for this quarter."
-                      p:style="padding:12px; font-size:12px;">
+                      p:style="padding:15px; font-size:12px;">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-text-gray</value>

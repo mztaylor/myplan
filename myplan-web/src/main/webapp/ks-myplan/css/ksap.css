@@ -85,6 +85,11 @@ blue block item hover = #e3f0fe;
     margin: 0;
 }
 
+a.inlineBlock {
+    display: inline;
+    white-space: normal;
+}
+
 /* KSAP CLASSES */
 .ksap-defaultPadding {
     padding: 10px;
@@ -152,6 +157,11 @@ blue block item hover = #e3f0fe;
     min-height: 18px;
 }
 
+.ksap-scrollableGroup {
+    overflow: auto;
+    padding: 20px;
+}
+
 /* TEXT STYLES */
 .ksap-text-normal {
     font-weight: 500 !important;
@@ -171,6 +181,12 @@ blue block item hover = #e3f0fe;
 
 .ksap-text-uppercase {
     text-transform: uppercase !important;
+}
+
+.ksap-text-inline {
+    display: inline !important;
+    float: none !important;
+    margin: 0;
 }
 
 /* KSAP RIGHT GUTTER MODULES */
@@ -374,11 +390,7 @@ blue block item hover = #e3f0fe;
 }
 
 .ksap-auditHandOff .uif-stackedCollectionLayout {
-    padding: 20px 10px;
-    max-height: 300px;
-    overflow-y: auto;
-    border-top: solid 1px #ccc;
-    border-bottom: solid 1px #ccc;
+    padding: 10px;
 }
 
 .ksap-auditHandOff .uif-stackedCollectionLayout > .uif-collectionItem {
@@ -387,7 +399,8 @@ blue block item hover = #e3f0fe;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border: dotted 1px #e1e1e0;
-    padding: 10px;
+    padding: 10px 15px;
+    background-color: #fff;
 }
 
 .ksap-auditHandOff .uif-stackedCollectionLayout > .uif-collectionItem:first-child {
@@ -395,9 +408,6 @@ blue block item hover = #e3f0fe;
 }
 
 .ksap-auditHandOff .uif-stackedCollectionLayout .uif-stackedCollectionLayout {
-    max-height: none;
-    border: none;
-    overflow: visible;
     padding: 0;
 }
 
@@ -412,4 +422,43 @@ blue block item hover = #e3f0fe;
 
 .ksap-auditHandOff .uif-subCollection.uif-boxLayoutVerticalItem {
     margin: 0;
+}
+
+.ksap-messageGroup {
+    border: solid 1px transparent;
+    background: none;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    padding: 10px 36px;
+    margin: 0 0 10px 0;
+    background-repeat: no-repeat;
+    background-position: 10px 10px;
+}
+
+.ksap-messageGroup-warning {
+    color: #000;
+    border-color: #feea49;
+    background-color: #faf5ca;
+    background-image: url('../images/iconWarning16.png');
+}
+
+.ksap-messageGroup .uif-header .uif-headerText {
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.ksap-messageGroup .uif-stackedCollectionLayout .uif-header .uif-headerText {
+    font-weight: 500;
+}
+
+.ksap-messageGroup .uif-stackedCollectionLayout {
+    padding: 10px 0;
+    max-height: none;
+    overflow: inherit;
+    border: none;
+}
+
+.ksap-auditHandOff .uif-stackedCollectionLayout > .uif-collectionItem {
+    margin-top: 10px;
 }

@@ -1131,7 +1131,12 @@ function buttonState(parentId, buttonId) {
     var disabled = false;
     var button = jQuery("button#" + buttonId);
     jQuery("#" + parentId + " .myplan-required").each(function () {
-        var value = jQuery(this).val().replace(/\n/g, '');
+        var value;
+        if (jQuery(this).val()) {
+            value = jQuery(this).val().replace(/\n/g, '');
+        } else {
+            value = "";
+        }
         if (value == "" || value == "default") {
             disabled = true;
         }
