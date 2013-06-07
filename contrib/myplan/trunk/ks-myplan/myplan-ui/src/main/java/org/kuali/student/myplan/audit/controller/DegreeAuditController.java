@@ -142,8 +142,17 @@ public class DegreeAuditController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=audit")
     public ModelAndView audit(@ModelAttribute("KualiForm") AuditForm auditForm, BindingResult result,
                               HttpServletRequest request, HttpServletResponse response) {
+        String degreeAuditId = null;
+        String planAuditId = null;
         DegreeAuditForm degreeAuditForm = auditForm.getDegreeAudit();
         PlanAuditForm planAuditForm = auditForm.getPlanAudit();
+        if (degreeAuditForm != null) {
+            degreeAuditId = degreeAuditForm.getAuditId();
+        }
+        if (planAuditForm != null) {
+            planAuditId = planAuditForm.getAuditId();
+        }
+
         try {
             String regId = UserSessionHelper.getStudentRegId();
             if (StringUtils.hasText(regId)) {
@@ -163,27 +172,31 @@ public class DegreeAuditController extends UifControllerBase {
 
                 List<AuditReportInfo> reportList = degreeAuditService.getAuditsForStudentInDateRange(regId, startDate, endDate, context);
 
-                // Grab first degree audit
-                for (AuditReportInfo report : reportList) {
-                    if (!report.isWhatIfAudit()) {
-                        String auditId = report.getAuditId();
-                        // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
-                        AuditReportInfo degreeReport = degreeAuditService.getAuditReport(auditId, degreeAuditForm.getAuditType(), context);
-                        degreeAuditForm.setAuditId(auditId);
-                        copyCampusToForm(degreeReport, campusMap, degreeAuditForm);
-                        copyReportToForm(degreeReport, degreeAuditForm);
-                        break;
+                if (degreeAuditId == null) {
+                    // Grab first degree audit
+                    for (AuditReportInfo report : reportList) {
+                        if (!report.isWhatIfAudit()) {
+                            degreeAuditId = report.getAuditId();
+                            break;
+                        }
                     }
                 }
+                // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
+                AuditReportInfo degreeReport = degreeAuditService.getAuditReport(degreeAuditId, degreeAuditForm.getAuditType(), context);
+                degreeAuditForm.setAuditId(degreeAuditId);
+                copyCampusToForm(degreeReport, campusMap, degreeAuditForm);
+                copyReportToForm(degreeReport, degreeAuditForm);
 
-                // Grab first plan audit Id
-                String planAuditId = getRecentPlanAudit(regId);
-                if (StringUtils.hasText(planAuditId)) {
-                    AuditReportInfo planReport = degreeAuditService.getAuditReport(planAuditId, planAuditForm.getAuditType(), context);
-                    planAuditForm.setAuditId(planAuditId);
-                    copyCampusToForm(planReport, campusMap, planAuditForm);
-                    copyReportToForm(planReport, planAuditForm);
+                if (planAuditId == null) {
+                    // Grab first plan audit Id
+                    planAuditId = getRecentPlanAudit(regId);
+                    if (StringUtils.hasText(planAuditId)) {
+                    }
                 }
+                AuditReportInfo planReport = degreeAuditService.getAuditReport(planAuditId, planAuditForm.getAuditType(), context);
+                planAuditForm.setAuditId(planAuditId);
+                copyCampusToForm(planReport, campusMap, planAuditForm);
+                copyReportToForm(planReport, planAuditForm);
 
             }
             //Check to see if the stddent has any planItems from current to future atp
@@ -537,7 +550,7 @@ public class DegreeAuditController extends UifControllerBase {
                 CourseSummaryDetails details = course.getCourseDetails();
                 List<String> courseTerms = details.getScheduledTerms();
                 boolean coursePublished = courseTerms.contains(yt.toLabel());
-                boolean ignore = isTermPublished ? !coursePublished : courseTerms.isEmpty();
+                boolean ignore = isTermPublished && !coursePublished;
 
                 // No scheduled terms means IGNORE this one
                 if (ignore) {
