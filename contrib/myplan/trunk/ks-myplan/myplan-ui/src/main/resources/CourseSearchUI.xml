@@ -325,7 +325,7 @@
 
     <!-- Group for Search Facets -->
     <bean id="course_search_results_facets" parent="Uif-VerticalBoxGroup" p:headerText="Narrow Results"
-          p:style="width:136px; margin-right: 10px;">
+          p:width="160px">
         <property name="validationMessages">
             <null/>
         </property>
