@@ -503,6 +503,7 @@ public class CourseSearchController extends UifControllerBase {
                 // Check to see if the course is offered
                 for (CourseSearchItem item : courses) {
                     if (getCourseHelper().isCourseInOfferingIds(item.getSubject(), item.getNumber(), courseOfferingByTermSet)) {
+                        logger.error("For course" + item.getSubject() + ":" + item.getNumber() + "adding term" + term.getName());
                         item.addScheduledTerm(term.getName());
                     }
                 }
