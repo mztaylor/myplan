@@ -299,7 +299,11 @@ public class CourseSearchController extends UifControllerBase {
 
             loadScheduledTerms(courseList, subjectArea);
             if (!CourseSearchForm.SEARCH_TERM_ANY_ITEM.equals(form.getSearchTerm())) {
-                filterCoursesByTerm(courseList, form.getSearchTerm());
+                List<CourseSearchItem> filteredCourses = new ArrayList<CourseSearchItem>();
+                filteredCourses = filterCoursesByTerm(courseList, form.getSearchTerm());
+                populateFacets(form, filteredCourses);
+                logger.error(String.format("SEARCH: %s  : %s CAMPUS : %s : %s", form.getSearchQuery(), form.getSearchTerm(), form.getCampusSelect(), String.valueOf(hits.size())));
+                return filteredCourses;
             }
 
             populateFacets(form, courseList);
@@ -463,16 +467,16 @@ public class CourseSearchController extends UifControllerBase {
         return hits;
     }
 
-    public void filterCoursesByTerm(List<CourseSearchItem> courses, String term) throws Exception {
+    public List<CourseSearchItem> filterCoursesByTerm(List<CourseSearchItem> courses, String term) throws Exception {
+        List<CourseSearchItem> filteredCourses = new ArrayList<CourseSearchItem>();
         AtpHelper.YearTerm yearTerm = AtpHelper.atpToYearTerm(term);
-        int size = courses.size();
-        for (int i = 0; i < size; i++) {
-            List<String> scheduledTerms = courses.get(i).getScheduledTermsList();
-            if (scheduledTerms == null || !scheduledTerms.contains(yearTerm.toLabel())) {
-                courses.remove(i);
-                size--;
+        for (CourseSearchItem item : courses) {
+            List<String> scheduledTerms = item.getScheduledTermsList();
+            if (scheduledTerms != null && scheduledTerms.contains(yearTerm.toLabel())) {
+                filteredCourses.add(item);
             }
         }
+        return filteredCourses;
     }
     //  Load scheduled terms.
     //  Fetch the available terms from the Academic Calendar Service.
