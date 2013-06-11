@@ -1524,6 +1524,9 @@ div.activityAction div.blockElement {
     border-bottom: solid 1px #ddd;
     background: #efe8d3;
     padding: 10px;
+    border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
 }
 
 .myplan-facets-panel .uif-header .uif-header-rightGroup {

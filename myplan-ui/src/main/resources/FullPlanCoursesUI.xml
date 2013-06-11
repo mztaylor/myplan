@@ -332,8 +332,8 @@
         </property>
         <property name="subCollections">
             <list>
-                <ref bean="academicRecordDOCollection"/>
-                <ref bean="plannedCourseDOCollection"/>
+                <bean parent="academicRecordDOCollection"/>
+                <bean parent="plannedCourseDOCollection"/>
             </list>
         </property>
         <property name="collectionLookup.render" value="false"/>
@@ -341,13 +341,15 @@
     </bean>
 
     <bean id="academicRecordDOCollection" parent="Uif-StackedCollectionGroup" p:headerText="Registered">
+        <!--<property name="render" value="@{#line.academicRecord.size() GT 0}"/>-->
         <property name="validationMessages">
             <null/>
         </property>
         <property name="header">
             <bean parent="Uif-HeaderFour"/>
         </property>
-        <property name="header.render" value="@{#line.openForPlanning and #line.academicRecord.size() gt 0}"/>
+        <property name="header.render"
+                  value="@{(#line.openForPlanning and #line.academicRecord.size() GT 0) OR #line.currentTermForView}"/>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
@@ -388,13 +390,15 @@
     </bean>
 
     <bean id="plannedCourseDOCollection" parent="Uif-StackedCollectionGroup" p:headerText="Planned">
+        <!-- <property name="render" value="@{!#line.completedTerm OR !#line.openForPlanning}"/>-->
         <property name="validationMessages">
             <null/>
         </property>
         <property name="header">
             <bean parent="Uif-HeaderFour"/>
         </property>
-        <property name="header.render" value="@{#line.openForPlanning and #line.plannedList.size() gt 0}"/>
+        <property name="header.render"
+                  value="@{(#line.openForPlanning OR #line.currentTermForView) AND #line.plannedList.size() GT 0}"/>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
