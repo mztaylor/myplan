@@ -496,13 +496,13 @@ ${headerLine?xml}
                     <#list subreq.titleLines as titleLine>
                         <#if titleLine?trim == "." > just period </#if>
                         <#if titleLine?trim != "." > not period </#if>
-                    ${titleLine?xml}
+                    ${deASCII(titleLine)?xml}
                     </#list>
                 subreq reflow titleLines:
                     <#list reflow( subreq.titleLines ) as titleLine>
                         <#if titleLine?trim == "." > just period </#if>
                         <#if titleLine?trim != "." > not period </#if>
-                    ${titleLine?xml}
+                    ${deASCII(titleLine)?xml}
                     </#list>
                 justTitle: ${justTitle?xml}
 
