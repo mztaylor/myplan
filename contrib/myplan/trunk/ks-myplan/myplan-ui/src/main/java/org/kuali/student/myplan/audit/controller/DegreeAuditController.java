@@ -428,7 +428,7 @@ public class DegreeAuditController extends UifControllerBase {
             }
 
             for (CourseItem item : form.getCleanList()) {
-                PlanItemInfo planItem = planItemInfoMap.get(item.getCourseId());
+                PlanItemInfo planItem = planItemInfoMap.get(item.getCourseId() + item.getAtpId());
                 if (planItem != null) {
                     List<AttributeInfo> list = planItem.getAttributes();
 
