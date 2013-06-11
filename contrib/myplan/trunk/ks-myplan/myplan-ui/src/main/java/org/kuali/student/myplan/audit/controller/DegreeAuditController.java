@@ -769,7 +769,11 @@ public class DegreeAuditController extends UifControllerBase {
         String recentPlanAuditId = null;
         try {
             List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentId, LEARNING_PLAN_TYPE_PLAN_AUDIT, PlanConstants.CONTEXT_INFO);
+            Collections.reverse(learningPlanList);
             for (LearningPlanInfo learningPlanInfo : learningPlanList) {
+                if (recentPlanAuditId != null) {
+                    break;
+                }
                 for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
                     String key = attributeInfo.getKey();
                     String value = attributeInfo.getValue();
@@ -778,11 +782,9 @@ public class DegreeAuditController extends UifControllerBase {
                         StatusInfo statusInfo = degreeAuditService.getAuditRunStatus(value, PlanConstants.CONTEXT_INFO);
                         if (statusInfo.getIsSuccess()) {
                             recentPlanAuditId = value;
+                            break;
                         }
                     }
-                }
-                if (recentPlanAuditId != null) {
-                    break;
                 }
             }
         } catch (Exception e) {
