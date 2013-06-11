@@ -79,6 +79,10 @@ strong {
     cursor: default;
 }
 
+.myplan-view table.dataTable tfoot {
+    display: none;
+}
+
 .smtext {
     font: normal 0.8462/1.8182 Arial, Helvetica, Verdana, sans-serif;
 }
