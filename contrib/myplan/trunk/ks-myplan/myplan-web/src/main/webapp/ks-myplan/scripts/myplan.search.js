@@ -191,10 +191,6 @@ function searchForCourses(id, parentId) {
             } else {
                 jQuery(".dataTables_paginate .ui-button").hide();
             }
-            if (this.fnSettings()._iDisplayStart != 0 && jQuery("#" + parentId).height() > jQuery(window).height()) {
-                var targetOffset = jQuery("#" + parentId).offset().top;
-                jQuery('html,body').animate({scrollTop:targetOffset}, 250);
-            }
             fnSaveState(id);
         },
         fnInitComplete:function (oSettings, json) {
@@ -203,6 +199,12 @@ function searchForCourses(id, parentId) {
             if (!readUrlHash("searchTerm")) setUrlHash('searchTerm', sTerm);
             if (!readUrlHash("campusSelect")) setUrlHash('campusSelect', aCampus);
             results.fadeIn("fast");
+            jQuery("#" + parentId).bind('page', function () {
+                if (jQuery("#" + parentId).height() > jQuery(window).height()) {
+                    var targetOffset = jQuery("#" + parentId).offset().top;
+                    jQuery('html,body').animate({scrollTop:targetOffset}, 200);
+                }
+            });
             results.find("table#" + id).width(533);
             jQuery(".myplan-facets-group .uif-disclosureContent .uif-boxLayout").each(function () {
                 jQuery(this).empty();
