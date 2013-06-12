@@ -314,7 +314,6 @@
         <property name="items">
             <list>
                 <ref bean="plan_audit_info_1"/>
-                <ref bean="plan_audit_info_2"/>
             </list>
         </property>
     </bean>
@@ -636,52 +635,40 @@
         </property>
     </bean>
 
-    <bean id="plan_audit_info_1" parent="Uif-VerticalFieldGroup" p:style="padding: 10px;">
+    <bean id="plan_audit_info_1" parent="Uif-VerticalFieldGroup" p:style="padding: 10px; margin: 0;">
         <property name="group.validationMessages">
             <null/>
         </property>
         <property name="cssClasses">
             <list merge="true">
-                <value>fl-container-300</value>
                 <value>myplan-audit-info-panel</value>
             </list>
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Message" p:style="padding: 5px;"
+                <bean parent="Uif-Message"
                       p:cssClasses="fl-font-size-130 fl-text-gray fl-text-bold myplan-carousel-list">
-                    <property name="messageText" value="TBD"/>
+                    <property name="messageText" value="How to Use Plan Audit for Academic Planning"/>
                 </bean>
-                <bean parent="Uif-Message" p:style="padding: 5px;"
-                      p:cssClasses="fl-font-size-100 ">
+                <bean parent="Uif-Message"
+                      p:cssClasses="fl-font-size-100">
                     <property name="messageText"
-                              value="See how your plan stacks up against degree and program requirements. A plan review will compare your academic record and planned courses with program requirements so that you know what&#39;s needed to complete your degree."/>
+                              value="Wondering if your plan will meet your program requirements?"/>
                 </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="plan_audit_info_2" parent="Uif-VerticalFieldGroup" p:style="padding: 10px; height: 185px;">
-        <property name="group.validationMessages">
-            <null/>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>fl-container-300</value>
-                <value>myplan-audit-info-panel</value>
-                <value>myplan-carousel-list</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-Message" p:style="padding: 5px;"
-                      p:cssClasses="fl-font-size-130 fl-text-gray fl-text-bold ">
-                    <property name="messageText" value="TBD"/>
-                </bean>
-                <bean parent="Uif-Message" p:style="padding: 5px;"
-                      p:cssClasses="fl-font-size-100 ">
+                <bean parent="Uif-Message"
+                      p:cssClasses="fl-font-size-100">
                     <property name="messageText"
-                              value="Select your program from the menu above and run a plan review to see your academic progress now."/>
+                              value="This plan review compares your academic record and planned courses with program requirements to give you a general idea of what will be needed to complete your degree."/>
+                </bean>
+                <bean parent="Uif-Message"
+                      p:cssClasses="fl-font-size-100">
+                    <property name="messageText"
+                              value="Make sure that you have added courses to your plan for future quarters, then select your program from the menu above and run a Plan Audit to determine if you are on the right track with your plan."/>
+                </bean>
+                <bean parent="Uif-Message"
+                      p:cssClasses="fl-font-size-100">
+                    <property name="messageText"
+                              value="This review is meant as a planning tool, and is not an official evaluation of academic progress. Work with your adviser to ensure that your planned courses will meet your degree or program requirements. Final confirmation of degree requirements will be subject to department or college and university approval."/>
                 </bean>
             </list>
         </property>
