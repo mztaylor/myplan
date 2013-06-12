@@ -534,7 +534,7 @@
 
     <bean id="plan_select_instruction" parent="Uif-Message" p:cssClasses="myplan-text-normal">
         <property name="messageText"
-                  value="Select your campus, a degree program and hit 'Review Plan.' It may take few minutes to scrutinize your plan(TBD)."/>
+                  value="Select your campus and intended degree program from the dropdown menu below. Plan reviews may take 1-5 minutes to load. You must have at least one course in your plan to run a plan review."/>
     </bean>
 
     <bean id="degree_audit_instruction" parent="Uif-HorizontalBoxGroup">
@@ -777,12 +777,12 @@
                     <property name="instructionalMessage">
                         <bean parent="KSAP-NoSpanMessage">
                             <property name="messageText"
-                                      value="In order to run your plan audit, MyPlan needs more details for the following course(s)"/>
+                                      value="One or more of your planned courses requires additional information. In order to run this plan review, MyPlan needs more details for the following course(s):"/>
                             <property name="propertyReplacers">
                                 <list>
                                     <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="messageText"
                                           p:condition="#form.planAudit.cleanList.size() + #form.planAudit.messyItems.size() EQ 0"
-                                          p:replacement="We are unable to generate a plan review because the courses you have planned do not appear in the published Time Schedule for the upcoming quarter(s). Learn more"/>
+                                          p:replacement="We are unable to generate a plan review because the courses you have planned do not appear in the published Time Schedule(s)."/>
                                 </list>
                             </property>
                             <property name="cssClasses">

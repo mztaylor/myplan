@@ -68,7 +68,8 @@
     width: 39%;
 }
 
-.planAudit .myplan-audit-report .audit-summary .audit-summary-data span {
+.planAudit .myplan-audit-report .audit-summary .audit-summary-data > div,
+.planAudit .myplan-audit-report .audit-summary .audit-summary-data > span {
     display: inline-block;
     width: 59%;
 }
