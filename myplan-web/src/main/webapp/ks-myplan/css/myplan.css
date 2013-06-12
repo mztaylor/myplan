@@ -615,12 +615,12 @@ a.myplan-plan-nav.first {
     border-radius: 4px 0px 0px 4px;
 }
 
-button.myplan-plan-nav.first,
-a.myplan-plan-nav.first,
-button.myplan-plan-nav.first:hover,
-a.myplan-plan-nav.hover,
-button.myplan-plan-nav.first:focus,
-a.myplan-plan-nav.first:focus {
+button.uif-secondaryActionButton.myplan-plan-nav.first,
+a.uif-secondaryActionButton.myplan-plan-nav.first,
+button.uif-secondaryActionButton.myplan-plan-nav.first:hover,
+a.uif-secondaryActionButton.myplan-plan-nav.hover,
+button.uif-secondaryActionButton.myplan-plan-nav.first:focus,
+a.uif-secondaryActionButton.myplan-plan-nav.first:focus {
     border-right: none;
 }
 
