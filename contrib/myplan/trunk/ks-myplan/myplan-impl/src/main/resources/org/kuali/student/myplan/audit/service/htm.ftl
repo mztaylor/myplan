@@ -24,7 +24,10 @@
 ">-":"The course has exceeded the repeatable limit and has had its credit reduced.",
 "DP":"This course has been retaken.",
 ">D":"Credit has been removed from this retaken course. For the purpose of a given requirement, credit may be restored--as when a minimum grade is required. This course is used in your UW GPA.",
-">PL":"Planned Course"
+">PL":"Planned Course",
+"PL":"The course is planned.",
+"PL -":"A course is planned which partially satisfies the sub-requirement but does not complete it.",
+"PL +":"A course is planned which satisfies the sub-requirement."
 }>
 
 <#assign subreqStatusMap = {
