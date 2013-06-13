@@ -1023,13 +1023,13 @@
         <property name="headerText" value="Excluded Planned Courses"/>
         <property name="instructionalMessage">
             <bean parent="KSAP-NoSpanMessage"
-                  p:messageText="Following courses are NOT scheduled in your planned quarter. [0]">
+                  p:messageText="The following courses in your plan will not be included in your review because they are not listed in the current Time Schedule(s). [0]">
                 <property name="generateSpan" value="true"/>
                 <property name="inlineComponents">
                     <list>
                         <bean parent="Uif-Link"
-                              p:href="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView"
-                              p:linkText="Update your plan and review the plan again."/>
+                              p:href="course?methodToCall=start&amp;viewId=CourseSearch-FormView"
+                              p:linkText="Find additional courses."/>
                     </list>
                 </property>
             </bean>
