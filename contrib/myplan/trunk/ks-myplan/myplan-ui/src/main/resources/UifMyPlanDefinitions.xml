@@ -874,4 +874,8 @@
         </property>
     </bean>
 
+    <bean id="KSAP-Suggest" parent="Uif-Suggest-parentBean">
+        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/widget/suggest.ftl"/>
+    </bean>
+
 </beans>
