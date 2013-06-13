@@ -695,7 +695,7 @@
                         <list>
                             <bean parent="MyPlanMessagingIcon"/>
                             <bean parent="Uif-Message"
-                                  p:messageText="You have no planned courses available for review. [0] and add them to [1] before running Plan Review.">
+                                  p:messageText="You have no planned courses available for review. [0] and add them to your plan.">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>message</value>
@@ -706,9 +706,6 @@
                                         <bean parent="Uif-Link"
                                               p:href="course?methodToCall=start&amp;viewId=CourseSearch-FormView"
                                               p:linkText="Find courses"/>
-                                        <bean parent="Uif-Link"
-                                              p:href="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView"
-                                              p:linkText="your plan"/>
                                     </list>
                                 </property>
                             </bean>
