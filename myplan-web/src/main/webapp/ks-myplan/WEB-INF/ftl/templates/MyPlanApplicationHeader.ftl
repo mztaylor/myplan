@@ -80,8 +80,8 @@
                     <img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"/>
 
                     <div class="message">
-                        You&#39;re viewing <strong>${UserSession.objectMap["kuali.uw.authn.studentName"]}</strong>&#39;s
-                        MyPlan.
+                        You&#39;re viewing <strong>${UserSession.objectMap["kuali.uw.authn.studentName"]} (${UserSession.objectMap["kuali.uw.authn.studentNumber"]})</strong>&#39;s
+                         MyPlan.
                         Some features are restricted in Adviser View. <a
                             href="javascript:openHelpWindow('https://depts.washington.edu/myplan/?page_id=985#view');">Learn
                         more.</a>
