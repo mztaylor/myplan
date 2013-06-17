@@ -74,7 +74,7 @@ public class AdviserController extends UifControllerBase {
         if (permissionService == null) {
 
             ADVISE_NM_CODE = ConfigContext.getCurrentContextConfig().getProperty("myplan.advise.namespacecode");
-            advisePermNames =   Arrays.asList(ConfigContext.getCurrentContextConfig().getProperty("myplan.advise.permissionname").split(","));
+            advisePermNames = Arrays.asList(ConfigContext.getCurrentContextConfig().getProperty("myplan.advise.permissionname").split(","));
 
             permissionService = KimApiServiceLocator.getPermissionService();
         }
@@ -103,7 +103,7 @@ public class AdviserController extends UifControllerBase {
         return new UifFormBase();
     }
 
-     @RequestMapping(value = "/advise", method = RequestMethod.GET)
+    @RequestMapping(value = "/advise", method = RequestMethod.GET)
     public String doGet(@ModelAttribute("KualiForm") UifFormBase form) {
         UserSession session = GlobalVariables.getUserSession();
         clearSession(session);
@@ -154,13 +154,13 @@ public class AdviserController extends UifControllerBase {
         //Initialize the permission service and name space codes
         getPermissionService();
         boolean authorized = false;
-        for(String adviseNm : advisePermNames) {
+        for (String adviseNm : advisePermNames) {
             if (getPermissionService().hasPermission(session.getPrincipalId(), ADVISE_NM_CODE, adviseNm.trim())) {
                 authorized = true;
                 break;
             }
 
-            logger.info("Adviser authz failed for " + session.getPrincipalName() + " Data|" + session.getPrincipalId() + "|" + ADVISE_NM_CODE + "|" + adviseNm );
+            logger.info("Adviser authz failed for " + session.getPrincipalName() + " Data|" + session.getPrincipalId() + "|" + ADVISE_NM_CODE + "|" + adviseNm);
         }
 
         if (!authorized) {
@@ -190,6 +190,7 @@ public class AdviserController extends UifControllerBase {
         Person person = getPersonService().getPerson(studentId);
         if (person != null) {
             session.addObject(PlanConstants.SESSION_KEY_STUDENT_NAME, person.getFirstName().substring(0, 1).toUpperCase() + person.getFirstName().substring(1, person.getFirstName().length()) + " " + person.getLastName().substring(0, 1).toUpperCase() + person.getLastName().substring(1, person.getLastName().length()));
+            session.addObject(PlanConstants.SESSION_KEY_STUDENT_NUMBER, person.getExternalIdentifiers().get("studentID"));
             return "redirect:/myplan/plan?methodToCall=start&viewId=PlannedCourses-FormView";
 
         } else {
@@ -204,6 +205,8 @@ public class AdviserController extends UifControllerBase {
         session.addObject(PlanConstants.SESSION_KEY_STUDENT_ID, "");
         session.removeObject(PlanConstants.SESSION_KEY_STUDENT_NAME);
         session.addObject(PlanConstants.SESSION_KEY_STUDENT_NAME, "");
+        session.removeObject(PlanConstants.SESSION_KEY_STUDENT_NUMBER);
+        session.addObject(PlanConstants.SESSION_KEY_STUDENT_NUMBER, "");
     }
 }
 
