@@ -314,21 +314,23 @@
     width: 474px;
 }
 
-/*
 .myplan-audit-report .requirement .subrequirement.justtitle {
     padding: 10px 0px;
 }
+
 .myplan-audit-report .requirement .subrequirement.justtitle .subreqNumber.required {
     display: none;
 }
+
 .myplan-audit-report .requirement .subrequirement.justtitle .title {
-    margin-left: 80px;
+    margin-left: 40px;
     font-weight: bold;
-    border-top:dotted 1px #ccc;
-    border-bottom:dotted 1px #ccc;
+    border-top: dotted 1px #ccc;
+    border-bottom: dotted 1px #ccc;
     padding: 4px 0px;
+    line-height: 1.25em;
 }
-*/
+
 .myplan-audit-report table,
 .myplan-audit-report table th,
 .myplan-audit-report table td {
