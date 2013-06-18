@@ -220,7 +220,7 @@
                 <property name="items">
                     <list>
                         <bean id="plan_audit_toggle_link" parent="Uif-ActionLink"
-                              p:actionLabel="Show @{lookupResults.size() GT 7 ? '5' : (lookupResults.size() - 2)} more plan reviews">
+                              p:actionLabel="Show @{lookupResults.size() GT 7 ? '5' : (lookupResults.size() - 2)} additional plan review(s)">
                             <property name="cssClasses">
                                 <list merge="true">
                                     <value>fl-text-align-right</value>
@@ -228,7 +228,7 @@
                                 </list>
                             </property>
                             <property name="actionScript"
-                                      value="toggleComponentContent(this, 'plan_audits_summary', '.collapsible', 'Show @{lookupResults.size() GT 7 ? '5' : (lookupResults.size() - 2)} more plan reviews', 'Hide @{lookupResults.size() GT 7 ? '5' : (lookupResults.size() - 2)} old plan reviews');"/>
+                                      value="toggleComponentContent(this, 'plan_audits_summary', '.collapsible', 'Show @{lookupResults.size() GT 7 ? '5' : (lookupResults.size() - 2)} additional plan review(s)', 'Hide @{lookupResults.size() GT 7 ? '5' : (lookupResults.size() - 2)} additional plan review(s)');"/>
                         </bean>
                     </list>
                 </property>
