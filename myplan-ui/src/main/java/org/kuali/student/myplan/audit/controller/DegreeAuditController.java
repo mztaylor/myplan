@@ -495,6 +495,8 @@ public class DegreeAuditController extends UifControllerBase {
             if (that == null) return false;
             if (this == that) return true;
             if (!(that instanceof Choice)) return false;
+            if (!(writing == ((Choice) that).writing)) return false;
+            if (!(honors == ((Choice) that).honors)) return false;
             return credit.equals(((Choice) that).credit);
         }
 
