@@ -182,21 +182,23 @@ public class DegreeAuditController extends UifControllerBase {
                     }
                 }
                 // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
-                AuditReportInfo degreeReport = degreeAuditService.getAuditReport(degreeAuditId, degreeAuditForm.getAuditType(), context);
-                degreeAuditForm.setAuditId(degreeAuditId);
-                copyCampusToForm(degreeReport, campusMap, degreeAuditForm);
-                copyReportToForm(degreeReport, degreeAuditForm);
+                if (StringUtils.hasText(degreeAuditId)) {
+                    AuditReportInfo degreeReport = degreeAuditService.getAuditReport(degreeAuditId, degreeAuditForm.getAuditType(), context);
+                    degreeAuditForm.setAuditId(degreeAuditId);
+                    copyCampusToForm(degreeReport, campusMap, degreeAuditForm);
+                    copyReportToForm(degreeReport, degreeAuditForm);
+                }
 
                 if (planAuditId == null) {
                     // Grab first plan audit Id
                     planAuditId = getRecentPlanAudit(regId);
-                    if (StringUtils.hasText(planAuditId)) {
-                    }
                 }
-                AuditReportInfo planReport = degreeAuditService.getAuditReport(planAuditId, planAuditForm.getAuditType(), context);
-                planAuditForm.setAuditId(planAuditId);
-                copyCampusToForm(planReport, campusMap, planAuditForm);
-                copyReportToForm(planReport, planAuditForm);
+                if (StringUtils.hasText(planAuditId)) {
+                    AuditReportInfo planReport = degreeAuditService.getAuditReport(planAuditId, planAuditForm.getAuditType(), context);
+                    planAuditForm.setAuditId(planAuditId);
+                    copyCampusToForm(planReport, campusMap, planAuditForm);
+                    copyReportToForm(planReport, planAuditForm);
+                }
 
             }
             //Check to see if the stddent has any planItems from current to future atp
@@ -777,7 +779,7 @@ public class DegreeAuditController extends UifControllerBase {
                 for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
                     String key = attributeInfo.getKey();
                     String value = attributeInfo.getValue();
-                    if ("auditId".equalsIgnoreCase(key)) {
+                    if ("auditId".equalsIgnoreCase(key) && StringUtils.hasText(value)) {
                         /*TODO: cache this getAuditStatus method*/
                         StatusInfo statusInfo = degreeAuditService.getAuditRunStatus(value, PlanConstants.CONTEXT_INFO);
                         if (statusInfo.getIsSuccess()) {
