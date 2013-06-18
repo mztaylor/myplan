@@ -17,6 +17,7 @@ import org.restlet.data.Method;
 import org.restlet.data.Parameter;
 import org.restlet.data.Protocol;
 import org.restlet.data.Status;
+import org.restlet.ext.net.HttpClientHelper;
 import org.restlet.engine.security.DefaultSslContextFactory;
 import org.restlet.representation.Representation;
 import org.restlet.util.Series;
@@ -92,10 +93,10 @@ public class StudentServiceClientImpl
     private static final String SERVICE_VERSION = "v4";
 
     private String baseUrl;
-    private Client client;
+    private HttpClientHelper client;
 
     @Override
-    public Client getClient() {
+    public HttpClientHelper getClient() {
         return client;
     }
 
@@ -144,7 +145,7 @@ public class StudentServiceClientImpl
 
         context.getAttributes().put("sslContextFactory", contextFactory);
 
-        client = new Client(context, Protocol.HTTPS);
+        client = new HttpClientHelper(new Client(context, Protocol.HTTPS));
     }
 
     /**
@@ -176,8 +177,8 @@ public class StudentServiceClientImpl
         Request request = new Request(Method.GET, getBaseUrl() + "/");
 
         //  Send the request and parse the result.
-        Response response = client.handle(request);
-
+        Response response = new Response(request);
+        client.handle(request, response);
         Status status = response.getStatus();
         if (status.isError()) {
             throw new ServiceException("Unable to get available versions: " + status);
@@ -451,7 +452,8 @@ public class StudentServiceClientImpl
         Request request = new Request(Method.GET, url);
 
         //  Send the request and parse the result.
-        Response response = client.handle(request);
+        Response response = new Response(request);
+        client.handle(request, response);
         Status status = response.getStatus();
         if (status.isError()) {
             connectionEstablished = false;
@@ -468,7 +470,8 @@ public class StudentServiceClientImpl
         Request request = new Request(Method.GET, url);
 
         //  Send the request and parse the result.
-        Response response = client.handle(request);
+        Response response = new Response(request);
+        client.handle(request, response);
         Status status = response.getStatus();
 
         if (!(status.equals(Status.SUCCESS_OK))) {

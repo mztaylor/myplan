@@ -44,6 +44,7 @@ import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Method;
 import org.restlet.data.Status;
+import org.restlet.ext.net.HttpClientHelper;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -379,14 +380,15 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             logger.debug(postAuditRequestURL);
             logger.debug(payload);
 
-            Client client = getStudentServiceClient().getClient();
+            HttpClientHelper client = getStudentServiceClient().getClient();
 
             Request request = new Request(Method.POST, postAuditRequestURL);
 
             StringRepresentation entity = new StringRepresentation(payload);
             request.setEntity(entity);
 
-            Response response = client.handle(request);
+            Response response = new Response(request);
+            client.handle(request, response);
             Representation rep = response.getEntity();
 
             Status status = response.getStatus();

@@ -5,6 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.kuali.rice.kim.api.identity.Person;
 import org.restlet.Client;
+import org.restlet.ext.net.HttpClientHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +20,7 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
     private static final Log logger = LogFactory.getLog(StudentServiceClientImpl.class);
 
     @Override
-    public Client getClient() {
+    public HttpClientHelper getClient() {
         return null;
     }
 
