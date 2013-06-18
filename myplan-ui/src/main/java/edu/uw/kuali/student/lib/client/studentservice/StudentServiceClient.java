@@ -2,6 +2,7 @@ package edu.uw.kuali.student.lib.client.studentservice;
 
 import org.kuali.rice.kim.api.identity.Person;
 import org.restlet.Client;
+import org.restlet.ext.net.HttpClientHelper;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ public interface StudentServiceClient {
 
     public static final String SERVICE_NAME = "{MyPlan}StudentServiceClient";
 
-    public Client getClient();
+    public HttpClientHelper getClient();
 
     /**
      * Set the base URL for the service.
