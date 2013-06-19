@@ -801,8 +801,7 @@
                                 </property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="plan_audit_clean_items"
-                                              p:render="@{#form.planAudit.cleanList.size() GT 0}"/>
+                                        <bean parent="plan_audit_clean_items"/>
                                         <bean parent="plan_audit_messy_items"
                                               p:render="@{#form.planAudit.messyItems.size() GT 0}"/>
                                         <bean parent="plan_audit_ignore_items"
