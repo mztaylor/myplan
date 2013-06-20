@@ -1112,12 +1112,17 @@ function pollPendingAudit(programId, recentAuditId, auditType) {
                     setUrlParam(auditType + "Audit.auditId", "");
                 });
             }
-
+            var title = "Degree Audit";
+            var text = "audit";
+            if (auditType == "plan") {
+                title = "Plan Review";
+                text = "review";
+            }
             if (jQuery.cookie("myplan_audit_running") == null || response.status == 'FAILED') {
-                if (growl) showGrowl("Your audit was unable to complete.", "Degree Audit Error", "errorGrowl");
+                if (growl) showGrowl("Your " + text + " was unable to complete.", title + " Error", "errorGrowl");
             } else {
                 var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("myplan_audit_running")));
-                if (growl) showGrowl(data.programName + " audit is ready to view.", "Degree Audit Completed", "infoGrowl");
+                if (growl) showGrowl(data.programName + " " + text + " is ready to view.", title + " Completed", "infoGrowl");
             }
             jQuery.cookie("myplan_audit_running", null, {expires:new Date().setTime(0)});
             jQuery.publish("AUDIT_COMPLETE", [
@@ -1238,7 +1243,8 @@ function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents:false});
 
     var popupHtml = jQuery('<div />').attr("id", id + "_popup").css({
-        width:"353px",
+        width:"300px", //width:"350px",
+        // TODO: Keep at 300px until 1.4 tagged and trunk moves to MyPlan 1.5
         height:"16px"
     });
 
