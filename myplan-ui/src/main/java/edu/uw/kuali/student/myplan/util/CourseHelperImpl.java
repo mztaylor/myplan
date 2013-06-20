@@ -275,25 +275,38 @@ public class CourseHelperImpl implements CourseHelper {
      */
     @Override
     public String getVerifiedCourseId(String courseId) {
-        String verifiedCourseId = null;
+        return getCourseVersionIdByTerm(courseId, AtpHelper.getLastScheduledAtpId());
+    }
+
+    /**
+     * returns a course version Id for given term and courseId
+     *
+     * @param courseId
+     * @param termId
+     * @return
+     */
+    @Override
+    public String getCourseVersionIdByTerm(String courseId, String termId) {
+        String courseVersionId = null;
         try {
             SearchRequest req = new SearchRequest("myplan.course.version.id");
             req.addParam("courseId", courseId);
             req.addParam("courseId", courseId);
-            req.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
+            req.addParam("lastScheduledTerm", termId);
             SearchResult result = getLuService().search(req);
             for (SearchResultRow row : result.getRows()) {
                 for (SearchResultCell cell : row.getCells()) {
                     if ("lu.resultColumn.cluId".equals(cell.getKey())) {
-                        verifiedCourseId = cell.getValue();
+                        courseVersionId = cell.getValue();
                     }
                 }
             }
         } catch (Exception e) {
             logger.error("version verified Id retrieval failed", e);
         }
-        return verifiedCourseId;
+        return courseVersionId;
     }
+
 
     /**
      * returns the course code from given activityId

@@ -35,6 +35,9 @@ public interface CourseHelper {
 
     public String getCodeFromActivityId(String activityId);
 
+    public String getCourseVersionIdByTerm(String courseId, String termId);
+
+
     /**
      * Check to see if the course subjectArea and number is offered from the list of course offering Id set
      *
