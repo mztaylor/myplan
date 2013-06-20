@@ -258,8 +258,8 @@ ${headerLine?xml}
         <#list req.auditReportSubreqs as subreq>
             <div class="requirement">
                 <div class="header">
-                    <div class="toggle"></div>
-                    <div class="status Status_NONE"></div>
+                    <div class="toggle"> </div>
+                    <div class="status Status_NONE"> </div>
                     <#if subreq.showTitle >
                         <div class="title">
                             <#list reflow( subreq.titleLines ) as titleLine>
@@ -275,11 +275,11 @@ ${headerLine?xml}
                         <table class="taken">
                             <thead>
                             <tr>
-                                <th> Qtr</th>
-                                <th colspan="2"> Course Name</th>
-                                <th> Credits</th>
-                                <th> Grade</th>
-                                <th></th>
+                                <th> Qtr </th>
+                                <th colspan="2"> Course Name </th>
+                                <th> Credits </th>
+                                <th> Grade </th>
+                                <th> </th>
                             </tr>
                             </thead>
                             <tbody>
@@ -300,7 +300,7 @@ ${headerLine?xml}
                                         ${condCode?xml}
                                         </td>
                                     <#else>
-                                        <td class="ccode"></td>
+                                        <td class="ccode"> </td>
                                     </#if>
                                 </tr>
                                 </#list>
@@ -408,7 +408,7 @@ ${headerLine?xml}
         </#if>
     <div class="requirement ${rname} ${satisfied} ${req.summaryGroupName?xml}">
     <div class="header">
-        <div class="toggle"></div>
+        <div class="toggle"> </div>
         <div class="status ${satisfied}"> ${satisfiedMap[satisfied]} </div>
         <#if req.showNumber>
             <div class="reqNumber"> ${req.number?xml} </div></#if>
@@ -457,8 +457,8 @@ ${headerLine?xml}
         -->
             <#if req.showInProgressHours>
                 <span class="inprogress">
-		            	In-progress: 
-		            	<span class="value"> ${req.ipHours?replace(".0","")?xml} </span> ${req.ipHoursText?xml} 
+		            	In-progress:
+		            	<span class="value"> ${req.ipHours?replace(".0","")?xml} </span> ${req.ipHoursText?xml}
 		            </span>
             </#if>
 
@@ -500,6 +500,10 @@ ${headerLine?xml}
         <#list req.auditReportSubreqs as subreq>
         <#-- Have to grab flag -->
             <#assign showSubreqStatus = subreq.showSubreqStatus >
+            <#assign showSubreqNumber = subreq.showSubreqNumber >
+            <#assign subreqNumber = subreq.subreqNumber >
+            <#assign showParen = subreq.showParen >
+
             <#assign justTitle = "">
             <#if ( !subreq.showGotSummary && !subreq.showInProgressHours && !subreq.showNeedsSummary && !subreq.showTakenCourses && !subreq.showSubreqNumber && subreq.status == "Status_NONE" ) >
                 <#assign justTitle = "justtitle" >
@@ -545,135 +549,145 @@ ${headerLine?xml}
 
             <#if showHeader || showTotals || subreq.showSelectNotFrom >
             <div class="subrequirement ${justTitle}">
-            <div class="header">
-                <#if showSubreqStatus >
-                    <div class="status ${subreq.status?xml}"> ${subreq.seqErr?xml}${subreqStatusMap[subreq.status]} </div>
-                </#if>
+                <div class="header">
+                    <#if showSubreqStatus >
+                        <div class="status ${subreq.status?xml}"> ${subreq.seqErr?xml}${subreqStatusMap[subreq.status]} </div>
+                    </#if>
 
-                <div class="subreqNumber required">
-                    <#if subreq.required>${subreq.subreqRequired?xml}</#if>
-                    <#if subreq.showSubreqNumber>${subreq.subreqNumber?xml}
-                        <#if subreq.showParen>)</#if>
+                    <div class="subreqNumber required">
+                        <#if subreq.required>${subreq.subreqRequired?xml}</#if>
+                        <#if showSubreqNumber>${subreqNumber?xml}
+                            <#if showParen>)</#if>
+                        </#if>
+                    </div>
+
+                    <#if subreq.showTitle >
+                        <div class="title">
+                            <#list reflow( subreq.titleLines ) as titleLine>
+                                <#if titleLine?trim != "." >
+                                    <div class="text linkify">
+                                    ${deASCII(titleLine)}
+                                    </div>
+                                </#if>
+                            </#list>
+                        </div>
+                    </#if>
+
+                    <#if showExcLines >
+                        <#list subreq.appliedExceptionText as ex>
+                            <div class="subreqCline"> ${ex?xml} </div>
+                        </#list>
                     </#if>
                 </div>
-                <#if subreq.showTitle >
-                    <div class="title">
-                        <#list reflow( subreq.titleLines ) as titleLine>
-                            <#if titleLine?trim != "." >
-                                <div class="text linkify">
-                                ${deASCII(titleLine)}
-                                </div>
-                            </#if>
-                        </#list>
-                    </div>
-                </#if>
-
-                <#if showExcLines >
-                    <#list subreq.appliedExceptionText as ex>
-                        <div class="subreqCline"> ${ex?xml} </div>
-                    </#list>
-                </#if>
-            </div>
 
                 <#if showTotals >
-                <div class="totals">
-                    <#if subreq.showGotSummary>
-                        <span class="earned">
+                    <div class="totals">
+                        <#if subreq.showGotSummary>
+                            <span class="earned">
 			                Earned:
-                            <#if subreq.showGotHours>
-                            ${subreq.gotHoursOpenDecoration} <span
-                                    class="value"> ${subreq.gotHours?replace(".0","")?xml} </span> ${subreq.gotHoursText?xml}${subreq.gotHoursCloseDecoration}
-                            </#if>
-                            <#if subreq.showGotCount>
-                                <span class="value"> ${subreq.gotCount?xml} </span> ${subreq.gotCountText?xml}
-                            </#if>
-                            <#if subreq.showGotGpa>
-                                <span class="value"> ${subreq.gotGpa?xml} </span> GPA
-                            </#if>
+                                <#if subreq.showGotHours>
+                                ${subreq.gotHoursOpenDecoration} <span
+                                        class="value"> ${subreq.gotHours?replace(".0","")?xml} </span> ${subreq.gotHoursText?xml}${subreq.gotHoursCloseDecoration}
+                                </#if>
+                                <#if subreq.showGotCount>
+                                    <span class="value"> ${subreq.gotCount?xml} </span> ${subreq.gotCountText?xml}
+                                </#if>
+                                <#if subreq.showGotGpa>
+                                    <span class="value"> ${subreq.gotGpa?xml} </span> GPA
+                                </#if>
 			            </span>
+                        </#if>
+                    <#--
+                    <#if subreq.showDetailGpaLine>
+                    <span class="gpadetail">
+                        ${subreq.gotGpaHours?xml}
+                        ${subreq.gotGpaHoursText?xml}
+                        ${subreq.gotGpaPoints?xml}
+                        ${subreq.gotGpaPointsText?xml}
+                        ${subreq.gotGpa?xml} GPA
+                    </span>
                     </#if>
-                <#--
-                <#if subreq.showDetailGpaLine>
-                <span class="gpadetail">
-                    ${subreq.gotGpaHours?xml}
-                    ${subreq.gotGpaHoursText?xml}
-                    ${subreq.gotGpaPoints?xml}
-                    ${subreq.gotGpaPointsText?xml}
-                    ${subreq.gotGpa?xml} GPA
-                </span>
-                </#if>
-                -->
-                    <#if subreq.showInProgressHours >
-                        <span class="inprogress">
+                    -->
+                        <#if subreq.showInProgressHours >
+                            <span class="inprogress">
 		                	In-progress:
-                        ${subreq.ipSrStub?xml}
-                            <#if subreq.showInProgressHours >
-                                <span class="value"> ${subreq.ipHours?replace(".0","")?xml} </span> ${subreq.ipHoursText?xml}
-                            </#if>
-                            <#if subreq.showInProgressCount >
-                                <span class="value"> ${subreq.ipCount?xml} </span> ${subreq.ipCountText}
-                            </#if>
+                            ${subreq.ipSrStub?xml}
+                                <#if subreq.showInProgressHours >
+                                    <span class="value"> ${subreq.ipHours?replace(".0","")?xml} </span> ${subreq.ipHoursText?xml}
+                                </#if>
+                                <#if subreq.showInProgressCount >
+                                    <span class="value"> ${subreq.ipCount?xml} </span> ${subreq.ipCountText}
+                                </#if>
 		                </span>
-                    </#if>
+                        </#if>
 
-                    <#if subreq.showPlannedHours >
-                        <span class="subreqWhatIfDetail">
+                        <#if subreq.showPlannedHours >
+                            <span class="subreqWhatIfDetail">
 						Planned:
-                        <#--    ${subreq.wifSrStub?xml} -->
-                        ${subreq.plannedHours?xml}
-                        ${subreq.plannedHoursText?xml}
-                        ${subreq.plannedCount?xml}
-                        ${subreq.plannedCountText?xml}
+                            <#--    ${subreq.wifSrStub?xml} -->
+                            ${subreq.plannedHours?xml}
+                            ${subreq.plannedHoursText?xml}
+                            ${subreq.plannedCount?xml}
+                            ${subreq.plannedCountText?xml}
 		                </span>
-                    </#if>
+                        </#if>
 
-                    <#if subreq.showNeedsSummary >
-                        <span class="needs">
+                        <#if subreq.showNeedsSummary >
+                            <span class="needs">
 							Needs:
-                            <#if subreq.showNeedsHours >
-                                <span class="value"> ${subreq.needsHours?replace(".0","")?xml} </span> ${subreq.needsHoursText?xml}
-                            </#if>
-                            <#if subreq.showNeedsCount >
-                                <span class="value"> ${subreq.needsCount?xml} </span> ${subreq.needsCountText?xml}
-                            </#if>
-                            <#if subreq.showNeedsGpa >
-                                <span class="value"> ${subreq.needsGpa?xml} </span> GPA
-                            </#if>
+                                <#if subreq.showNeedsHours >
+                                    <span class="value"> ${subreq.needsHours?replace(".0","")?xml} </span> ${subreq.needsHoursText?xml}
+                                </#if>
+                                <#if subreq.showNeedsCount >
+                                    <span class="value"> ${subreq.needsCount?xml} </span> ${subreq.needsCountText?xml}
+                                </#if>
+                                <#if subreq.showNeedsGpa >
+                                    <span class="value"> ${subreq.needsGpa?xml} </span> GPA
+                                </#if>
 						</span>
-                    </#if>
-                </div> <#-- end of totals -->
+                        </#if>
+                    </div> <#-- end of totals -->
                 </#if>
 
-                <#if subreq.showTakenCourses>
-                <table class="taken">
-                    <thead>
-                    <tr>
-                        <th> Qtr</th>
-                        <th colspan="2"> Course Name</th>
-                        <th> Credits</th>
-                        <th> Grade</th>
-                        <th></th>
+            <#if subreq.showTakenCourses>
+            <table class="taken">
+                <thead>
+                <tr>
+                    <th> Qtr </th>
+                    <th colspan="2"> Course Name </th>
+                    <th> Credits </th>
+                    <th> Grade </th>
+                    <th> </th>
+                </tr>
+                </thead>
+                <tbody>
+                    <#list subreq.takenCourses as takenCourse>
+                    <tr class="${takenCourse.courseType}">
+                        <td class="term"> ${takenCourse.yt?xml} </td>
+                        <td class="course linkify"> ${takenCourse.displayCourse?substring(1,7)?trim?xml} ${takenCourse.displayCourse?substring(7,10)?trim?xml} </td>
+                        <td class="description"><#list takenCourse.descriptiveLines as descriptiveLine> ${descriptiveLine?xml} </#list></td>
+                        <td class="credit"> ${takenCourse.credit?string?replace(".0","")?xml} </td>
+                        <td class="grade"> ${takenCourse.grade?xml} </td>
+
+		<#--	<#if toolTipsMap[takenCourse.condCode]?exists >
+                            <td class="ccode"
+                                title="${toolTipsMap[takenCourse.condCode]}"> ${takenCourse.condCode?xml} </td>
+                        <#else>
+                            <td class="ccode"> </td>
+                        </#if>   -->
+			<#assign condCode = takenCourse.condCode?trim >
+                        <#if toolTipsMap[condCode]?exists >
+                            <td class="ccode" title="${toolTipsMap[condCode]}">
+                                 ${condCode?xml}
+                            </td>
+                        <#else>
+                            <td class="ccode"> </td>
+                        </#if>
                     </tr>
-                    </thead>
-                    <tbody>
-                        <#list subreq.takenCourses as takenCourse>
-                        <tr class="${takenCourse.courseType}">
-                            <td class="term"> ${takenCourse.yt?xml} </td>
-                            <td class="course linkify"> ${takenCourse.displayCourse?substring(1,7)?trim?xml} ${takenCourse.displayCourse?substring(7,10)?trim?xml} </td>
-                            <td class="description"><#list takenCourse.descriptiveLines as descriptiveLine> ${descriptiveLine?xml} </#list></td>
-                            <td class="credit"> ${takenCourse.credit?string?replace(".0","")?xml} </td>
-                            <td class="grade"> ${takenCourse.grade?xml} </td>
-                            <#if toolTipsMap[takenCourse.condCode]?exists >
-                                <td class="ccode"
-                                    title="${toolTipsMap[takenCourse.condCode]}"> ${takenCourse.condCode?xml} </td>
-                            <#else>
-                                <td class="ccode"></td>
-                            </#if>
-                        </tr>
-                        </#list>
-                    </tbody>
-                </table>
-                </#if>
+                    </#list>
+                </tbody>
+            </table>
+            </#if>
             <#--
 
             subreq.notText: ${subreq.notText?xml}
@@ -688,32 +702,32 @@ ${headerLine?xml}
 
             -->
                 <#if subreq.showSelectNotFrom>
-                <div class="fromcourses">
+                    <div class="fromcourses">
 
-                    <#if subreq.showReject>
-                        <div class="notfromcourses">
-                            <label class="fromlabel"> ${subreq.notText?xml} </label>
+                        <#if subreq.showReject>
+                            <div class="notfromcourses">
+                                <label class="fromlabel"> ${subreq.notText?xml} </label>
 
-                            <div class="fromcourselist linkify flatten">
-                                <#list subreq.notFromHtmlCourses as course>
+                                <div class="fromcourselist linkify flatten">
+                                    <#list subreq.notFromHtmlCourses as course>
                                     ${course?replace( "&", "&amp;")}
                                     </#list>
+                                </div>
                             </div>
-                        </div>
-                    </#if>
+                        </#if>
 
-                    <#if subreq.showAccept>
-                        <div class="selectfromcourses">
-                            <label class="fromlabel"> ${subreq.selectText?xml} </label>
+                        <#if subreq.showAccept>
+                            <div class="selectfromcourses">
+                                <label class="fromlabel"> ${subreq.selectText?xml} </label>
 
-                            <div class="fromcourselist linkify flatten">
-                                <#list subreq.selectFromHtmlCourses as course>
+                                <div class="fromcourselist linkify flatten">
+                                    <#list subreq.selectFromHtmlCourses as course>
                                     ${course?replace( "&", "&amp;")}
                                     </#list>
+                                </div>
                             </div>
-                        </div>
-                    </#if>
-                </div>
+                        </#if>
+                    </div>
                 <#--
                 <#if subreq.showAccept>
                     show accept:
@@ -751,7 +765,7 @@ ${headerLine?xml}
             </div> <#-- end of subrequirement -->
             </#if>
         </#list>
-    </div>
+        </div>
     </div> <#-- end of requirement -->
 
     </#if>
@@ -772,11 +786,11 @@ ${headerLine?xml}
 </#if>
 <input name="script" type="hidden" value="jQuery.publish('NEW_AUDIT');"/>
 
-<div> (audit template updated: ${svnDate?substring( 8, 27 )})</div>
+<div> (audit template updated: ${svnDate?substring( 8, 27 )}) </div>
 </div>
 </html>
 
-<#-- 
+<#--
 Input list of strings, output reflowed list of strings. Most strings are joined, some are broken up.
 
 The order of these tests are significant. Do not change lightly.
@@ -820,6 +834,19 @@ The order of these tests are significant. Do not change lightly.
             <#assign targets = addTarget( targets, target ) >
             <#assign target = trimmed?substring( nth )?trim >
 
+        <#elseif trimmed?contains( "Date:" ) >
+            <#assign nth = trimmed?index_of( "Date:" ) >
+            <#assign temp = trimmed?substring( 0, nth )?trim >
+            <#assign target = target + " " + temp >
+            <#assign targets = addTarget( targets, target ) >
+            <#assign target = " <span class=\"sigdateField\"> </span><span class=\"sigdateLabel\">" + trimmed?substring( nth )?trim + "</span>">
+
+		<#elseif trimmed?contains( "Signature:" ) >
+			<#assign targets = addTarget( targets, target ) >
+            <#assign target = " <span class=\"sigdateField\"> </span><span class=\"sigdateLabel\">" + trimmed?trim + "</span>">
+			<#assign targets = addTarget( targets, target ) >
+			<#assign target = "">
+
         <#elseif ( trimmed == "." ) >
         <#-- do nothing -->
 
@@ -846,8 +873,8 @@ The order of these tests are significant. Do not change lightly.
 </#function>
 
 
-<#-- 
-Removes ASCII art from text 
+<#--
+Removes ASCII art from text
 -->
 <#function deASCII text>
     <#return text?replace("*", " ")?replace("_[_]+"," ", "r")?replace("-&gt;","--")?replace("-[-]+", " ", "r")?trim >
