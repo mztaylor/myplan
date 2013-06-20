@@ -749,6 +749,12 @@
         <property name="readOnly" value="true"/>
     </bean>
 
+    <bean id="KSAP-Message" parent="KSAP-Message-parentBean"/>
+    <bean id="KSAP-Message-parentBean" abstract="true" parent="Uif-Message-parentBean" scope="prototype">
+        <property name="generateSpan" value="true"/>
+        <property name="readOnly" value="true"/>
+    </bean>
+
     <bean id="KSAP-NoSpanMessage" parent="KSAP-NoSpanMessage-parentBean"/>
     <bean id="KSAP-NoSpanMessage-parentBean" abstract="true" parent="Uif-Message-parentBean" scope="prototype">
         <property name="generateSpan" value="false"/>
@@ -788,6 +794,7 @@
         <property name="addItemCssClass" value="uif-collectionAddItem"/>
         <property name="renderAddBlankLineButton" value="false"/>
         <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
         <property name="readOnly" value="true"/>
         <property name="bindingInfo">
             <ref bean="Uif-BindingInfo"/>

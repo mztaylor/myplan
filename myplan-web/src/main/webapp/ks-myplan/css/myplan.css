@@ -392,8 +392,13 @@ a, a:hover, a:active, a:visited, a:focus {
     margin: 0 10px 0 0;
 }
 
-.myplan-view .uif-instructionalMessage {
+.uif-instructionalMessage {
     max-width: none;
+}
+
+.uif-constraintMessage {
+    max-width: none;
+    line-height: 1.3em;
 }
 
 /*.myplan-view .uif-collectionGroup > div:nth-child(2) {
@@ -2423,7 +2428,7 @@ table.myplan-course-search-results-datatable .blockUI {
     padding-bottom: 0.5em;
     border-bottom: 1px solid #bebebe;
     margin-bottom: 0.75em;
-    font-size: 110%;
+    font-size: 103%;
 }
 
 .jquerypopover-innerHtml div.blockElement,

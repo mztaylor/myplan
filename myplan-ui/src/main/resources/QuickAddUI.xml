@@ -22,41 +22,244 @@
             <list>
                 <bean parent="Uif-Page" p:id="quickAdd_dialog_page">
                     <property name="cssClasses">
-
                         <list merge="true">
-                            <value>fl-container-360</value>
+                            <value>fl-container-300</value>
+                            <!-- TODO: Keep at fl-container-300 until 1.4 tagged and trunk moves to MyPlan 1.5 -->
+                            <!--<value>fl-container-350</value>-->
                         </list>
-                    </property>
-                    <property name="layoutManager">
-                        <bean parent="Uif-VerticalBoxLayout"/>
                     </property>
                     <property name="items">
                         <list>
-                            <ref bean="quick_add_dialog"/>
+                            <bean parent="quick_add_dialog"/>
+                            <!--<bean parent="quick_add_placeholder_add_dialog"/>-->
                         </list>
                     </property>
                 </bean>
-                <ref bean="quick_add_action_response_page"/>
+                <bean id="quick_add_action_response_page" parent="Uif-Page" p:id="quick_add_action_response_page">
+                    <property name="validationMessages">
+                        <bean parent="Uif-GroupValidationMessages">
+                            <property name="displayMessages" value="true"/>
+                            <property name="displayFieldLabelWithMessages" value="false"/>
+                        </bean>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <ref bean="quick_add_actions_response"/>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
         <property name="footer.render" value="false"/>
         <property name="formClass" value="org.kuali.student.myplan.quickAdd.form.QuickAddForm"/>
     </bean>
 
-
-    <bean id="quick_add_action_response_page" parent="Uif-Page" p:id="quick_add_action_response_page">
-        <property name="validationMessages">
-            <bean parent="Uif-GroupValidationMessages">
-                <property name="displayMessages" value="true"/>
-                <property name="displayFieldLabelWithMessages" value="false"/>
+    <bean id="quick_add_dialog" parent="KSAP-VerticalBoxGroup" p:headerText="Add a course to @{termYear}">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>ksap-noMargin</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="instructionalMessage">
+            <bean parent="KSAP-NoSpanMessage">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>uif-boxLayoutVerticalItem</value>
+                    </list>
+                </property>
+                <property name="messageText" value="Enter the course code [css='ksap-text-gray']e.g. ENGL 220[/css]"/>
+                <property name="generateSpan" value="true"/>
             </bean>
         </property>
         <property name="items">
             <list>
-                <ref bean="quick_add_actions_response"/>
+                <bean parent="quick_add_text_box"/>
+                <bean parent="quick_add_atpId"/>
             </list>
         </property>
+        <property name="footer">
+            <bean parent="KSAP-HorizontalBoxGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="quickAddCourse"/>
+                        <bean parent="cancelQuickAddCourse"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
     </bean>
+
+    <bean id="quick_add_placeholder_add_dialog" parent="KSAP-VerticalBoxGroup"
+          p:headerText="Add a Course or a Placeholder to @{termYear}">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>ksap-noMargin</value>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="instructionalMessage">
+            <bean parent="KSAP-NoSpanMessage">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>uif-boxLayoutVerticalItem</value>
+                    </list>
+                </property>
+                <property name="messageText" value="Enter a course code or a placeholder and set credit amount"/>
+                <property name="generateSpan" value="true"/>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-HorizontalBoxGroup">
+                    <property name="instructionalMessage">
+                        <bean parent="KSAP-NoSpanMessage">
+                            <property name="cssClasses">
+                                <list merge="true">
+                                    <value>uif-boxLayoutVerticalItem</value>
+                                    <value>ksap-text-gray</value>
+                                    <value>fl-font-size-90</value>
+                                </list>
+                            </property>
+                            <property name="messageText"
+                                      value="e.g. MATH 124, ENGL 1xx, Elective, VLPA, Study Abroad, etc."/>
+                            <property name="generateSpan" value="true"/>
+                        </bean>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="quick_add_placeholder_suggest"/>
+                            <bean parent="quick_add_placeholder_credits"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="quick_add_placeholder_note"/>
+                <bean parent="quick_add_atpId"/>
+            </list>
+        </property>
+        <property name="footer">
+            <bean id="quick_Add_buttons" parent="KSAP-HorizontalBoxGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="quickAddCourse"/>
+                        <bean parent="cancelQuickAddCourse"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="quick_add_text_box" parent="KSAP-SimpleInputField" p:propertyName="courseCd">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-quick-add-text-box</value>
+            </list>
+        </property>
+        <property name="control">
+            <bean parent="Uif-TextControl">
+                <property name="onDocumentReadyScript"
+                          value="jQuery('.myplan-quick-add-text-box input.uif-control').focus();"/>
+                <property name="onKeyPressScript" value="
+                    var code = (e.keyCode ? e.keyCode : e.which);
+                    if (code == 13) { e.preventDefault(); jQuery('button#quickAddCourse').click(); }
+                "/>
+            </bean>
+        </property>
+        <property name="constraintText"
+                  value="Note: The course you selected MAY NOT be offered in your selected quarter. Check back when the Time Schedule is released."/>
+    </bean>
+    <!--TODO: add the persistFormToSession property value as true in this view and uncomment this once KRAD provides a way to pass in the atpId as a parameter-->
+
+    <bean id="quick_add_placeholder_suggest" parent="quick_add_text_box">
+        <property name="suggest">
+            <bean parent="Uif-Suggest" p:render="true" p:sourceQueryMethodResults="false">
+                <property name="suggestQuery">
+                    <bean parent="Uif-AttributeQueryConfig"
+                          p:queryMethodInvokerConfig.staticMethod="org.kuali.student.myplan.quickAdd.service.QuickAddSuggestHelperService.getSuggestions"/>
+                </property>
+            </bean>
+        </property>
+        <property name="control">
+            <bean parent="Uif-TextControl">
+                <property name="width" value="230px"/>
+                <property name="size" value="40"/>
+                <property name="watermarkText" value="e.g. MATH 124 ENGL 1xx, Elective, VLPA"/>
+            </bean>
+        </property>
+        <property name="constraintText" value=""/>
+    </bean>
+
+    <bean id="quick_add_placeholder_credits" parent="KSAP-SimpleInputField" p:propertyName="credit">
+        <property name="control">
+            <bean parent="Uif-DropdownControl">
+                <property name="options">
+                    <list>
+                        <bean parent="Uif-KeyLabelPair" p:key="" p:value="Credit"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="1" p:value="1"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="2" p:value="2"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="3" p:value="3"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="4" p:value="4"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="5" p:value="5"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="6" p:value="6"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="7" p:value="7"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="8" p:value="8"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="9" p:value="9"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="10" p:value="10"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="quick_add_placeholder_note" parent="KSAP-SimpleInputField" p:propertyName="note">
+        <property name="instructionalMessage">
+            <bean parent="KSAP-NoSpanMessage">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>uif-boxLayoutVerticalItem</value>
+                    </list>
+                </property>
+                <property name="messageText"
+                          value="Add a Note to this course or placeholder [css='ksap-text-gray'](optional)[/css]"/>
+                <property name="generateSpan" value="true"/>
+            </bean>
+        </property>
+        <property name="control">
+            <bean parent="Uif-TextControl" p:watermarkText="Enter a brief note (150 characters max)" p:maxLength="150"
+                  p:width="340px"/>
+        </property>
+    </bean>
+
+    <bean id="quick_add_atpId" p:id="hidden_temp" parent="KSAP-SimpleInputField" p:propertyName="atpId"
+          p:hidden="true" p:cssClasses="uif-boxLayoutVerticalItem">
+        <property name="control">
+            <bean parent="Uif-HiddenControl"/>
+        </property>
+    </bean>
+
+    <bean id="quickAddCourse" p:id="quickAddCourse" parent="Uif-PrimaryActionButton-Small" p:actionLabel="Add to Plan">
+        <property name="actionScript"
+                  value="myplanAjaxSubmitQuickAdd('quick_Add',{ atpId:'@{atpId}',planType:'@{planType}'},'quickAddCourse',e);"/>
+        <property name="onDocumentReadyScript" value="
+                    jQuery('#quickAddCourse')
+                        .subscribe('PLAN_ITEM_ADDED', function(data){
+                                fnCloseAllPopups();
+                        })
+                        .subscribe('ERROR', function(data){
+                            jQuery('#hidden_temp').hide().addClass(data.cssClass).html(data.message).fadeIn(250);
+
+                        });"/>
+    </bean>
+
+    <bean id="cancelQuickAddCourse" p:id="cancelQuickAddCourse" parent="Uif-SecondaryActionButton-Small"
+          p:actionLabel="Cancel">
+        <property name="actionScript" value="fnCloseAllPopups();"/>
+    </bean>
+
     <bean id="quick_add_actions_response" parent="Uif-VerticalBoxSection">
         <property name="items">
             <list>
@@ -65,129 +268,5 @@
             </list>
         </property>
     </bean>
-
-    <bean id="quick_add_title" parent="Uif-HorizontalBoxSubSection">
-        <property name="items">
-            <list>
-                <bean parent="Uif-Message"
-                      p:messageText="Enter the course code">
-                </bean>
-                <bean parent="Uif-Message"
-                      p:messageText="e.g. ENGL 220" p:style="font-size: .9em; font-style: italic;">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-text-gray</value>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="quick_add_dialog" parent="Uif-VerticalBoxSubSection" p:headerText="Add a course to @{termYear}">
-        <property name="items">
-            <list>
-                <ref bean="quick_add_title"/>
-                <ref bean="quick_add_items"/>
-                <bean id="hidden_temp" p:id="hidden_temp" parent="Uif-InputField" p:propertyName="atpId"
-                      p:style="width: 300px;">
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-    <bean id="quick_add_items" parent="Uif-HorizontalBoxSubSection">
-        <property name="items">
-            <list>
-                <ref bean="quick_add_text_box"/>
-                <ref bean="quick_add_note"/>
-
-            </list>
-        </property>
-    </bean>
-    <bean id="quick_add_note" parent="Uif-HorizontalBoxSubSection" p:style="margin: 0px;">
-        <property name="items">
-            <list>
-                <bean parent="Uif-Message" p:style="width:160px;"
-                      p:messageText="Note: The course you selected MAY NOT be offered in your selected quarter. Check back when the Time Schedule is released.">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-font-size-80</value>
-                            <value>fl-text-gray</value>
-
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-    <bean id="quick_add_text_box" parent="Uif-VerticalBoxSubSection" p:style="margin: 0px;">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-quick-add-text-box</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <bean id="search_text_box" parent="Uif-InputField" p:propertyName="courseCd">
-                    <property name="control">
-                        <bean parent="Uif-TextControl" p:size="22" p:maxLength="10">
-                            <property name="onDocumentReadyScript" value="jQuery('#search_text_box_control').focus();"/>
-                            <property name="onKeyPressScript" value="
-                                var code = (e.keyCode ? e.keyCode : e.which);
-                                if (code == 13) { e.preventDefault(); jQuery('button#quickAddCourse').click(); }
-                            "/>
-                        </bean>
-                    </property>
-                </bean>
-                <!--TODO: add the persistFormToSession property value as true in this view and uncomment this once KRAD provides a way to pass in the atpId as a parameter-->
-                <ref bean="quick_Add_actions"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="quick_Add_actions" parent="Uif-VerticalBoxGroup">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="items">
-            <list>
-                <bean id="quick_Add_buttons" parent="Uif-HorizontalFieldGroup">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="items">
-                        <list>
-                            <ref bean="quickAddCourse"/>
-                            <ref bean="cancelQuickAddCourse"/>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="quickAddCourse" p:id="quickAddCourse" parent="Uif-PrimaryActionButton-Small" p:actionLabel="Add to Plan">
-        <property name="actionScript"
-                  value="myplanAjaxSubmitQuickAdd('quick_Add',{ atpId:'@{atpId}',planType:'@{planType}'},'quickAddCourse',e);"/>
-        <property name="onDocumentReadyScript" value="
-                                    jQuery('#quickAddCourse')
-                                        .subscribe('PLAN_ITEM_ADDED', function(data){
-                                                fnCloseAllPopups();
-                                        })
-                                        .subscribe('ERROR', function(data){
-                                            jQuery('#hidden_temp').hide().addClass(data.cssClass).html(data.message).fadeIn(250);
-
-                                        });"/>
-    </bean>
-    <bean id="cancelQuickAddCourse" p:id="cancelQuickAddCourse" parent="Uif-SecondaryActionButton-Small"
-          p:actionLabel="Cancel">
-        <property name="actionScript" value="fnCloseAllPopups();"/>
-    </bean>
-
 
 </beans>
