@@ -12,12 +12,6 @@
 <#assign sectionHeadingOpen = false>
 
 <#assign toolTipsMap = {
-"OK":"Completed",
-"NO":"Not completed",
-"IP":"In progress",
-"RP":"Repeatable",
-"RT":"Retaken",
-"Opt":"This sub-requirement is optional.",
 "+":"The sub-requirement has been satisfied.",
 "-":"The sub-requirement has not been satisfied.",
 "IP -":"A course is in-progress which partially satisfies the sub-requirement but does not complete it.",
@@ -31,8 +25,7 @@
 "DP":"This course has been retaken.",
 ">D":"Credit has been removed from this retaken course. For the purpose of a given requirement, credit may be restored--as when a minimum grade is required. This course is used in your UW GPA.",
 ">PL":"Planned Course",
-"PL":"The requirement is satisfied when the planned course is completed.",
-"PL_grade":"The course is planned.",
+"PL":"The course is planned.",
 "PL -":"A course is planned which partially satisfies the sub-requirement but does not complete it.",
 "PL +":"A course is planned which satisfies the sub-requirement."
 }>
@@ -300,8 +293,7 @@ ${headerLine?xml}
                                         </#list>
                                     </td>
                                     <td class="credit"> ${takenCourse.credit?string?replace(".0","")?xml} </td>
-                                    <td class="grade"
-                                        title="${toolTipsMap[takenCourse.grade + "_grade"]}"> ${takenCourse.grade?xml} </td>
+                                    <td class="grade"> ${takenCourse.grade?xml} </td>
                                     <#assign condCode = takenCourse.condCode?trim >
                                     <#if toolTipsMap[condCode]?exists >
                                         <td class="ccode" title="${toolTipsMap[condCode]}">
@@ -417,8 +409,7 @@ ${headerLine?xml}
     <div class="requirement ${rname} ${satisfied} ${req.summaryGroupName?xml}">
     <div class="header">
         <div class="toggle"></div>
-        <div class="status ${satisfied}"
-             title="${toolTipsMap[satisfiedMap[satisfied]]}"> ${satisfiedMap[satisfied]} </div>
+        <div class="status ${satisfied}"> ${satisfiedMap[satisfied]} </div>
         <#if req.showNumber>
             <div class="reqNumber"> ${req.number?xml} </div></#if>
         <#if req.showGroups>
@@ -556,8 +547,7 @@ ${headerLine?xml}
             <div class="subrequirement ${justTitle}">
             <div class="header">
                 <#if showSubreqStatus >
-                    <div class="status ${subreq.status?xml}"
-                         title="${toolTipsMap[subreqStatusMap[subreq.status]]}"> ${subreq.seqErr?xml}${subreqStatusMap[subreq.status]} </div>
+                    <div class="status ${subreq.status?xml}"> ${subreq.seqErr?xml}${subreqStatusMap[subreq.status]} </div>
                 </#if>
 
                 <div class="subreqNumber required">
@@ -672,8 +662,7 @@ ${headerLine?xml}
                             <td class="course linkify"> ${takenCourse.displayCourse?substring(1,7)?trim?xml} ${takenCourse.displayCourse?substring(7,10)?trim?xml} </td>
                             <td class="description"><#list takenCourse.descriptiveLines as descriptiveLine> ${descriptiveLine?xml} </#list></td>
                             <td class="credit"> ${takenCourse.credit?string?replace(".0","")?xml} </td>
-                            <td class="grade"
-                                title="${toolTipsMap[takenCourse.grade + "_grade"]}"> ${takenCourse.grade?xml} </td>
+                            <td class="grade"> ${takenCourse.grade?xml} </td>
                             <#if toolTipsMap[takenCourse.condCode]?exists >
                                 <td class="ccode"
                                     title="${toolTipsMap[takenCourse.condCode]}"> ${takenCourse.condCode?xml} </td>
