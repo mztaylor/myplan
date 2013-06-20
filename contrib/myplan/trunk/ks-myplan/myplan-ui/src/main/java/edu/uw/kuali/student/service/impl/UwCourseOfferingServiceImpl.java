@@ -240,7 +240,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             throw new DoesNotExistException();
         }
         CourseOfferingInfo info = new CourseOfferingInfo();
-        info = offeringServiceUtils.buildCourseOfferingInfo(secondaryDoc);
+        info = offeringServiceUtils.buildCourseOfferingInfo(secondaryDoc, null);
         return info;
     }
 
@@ -698,7 +698,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 Element primarySectionElement = (Element) primarySectionPath.selectSingleNode(secondaryDoc);
                 String primaryID = primarySectionElement.elementText("SectionID");
                 if (primarySectionID.equals(primaryID)) {
-                    CourseOfferingInfo info = offeringServiceUtils.buildCourseOfferingInfo(secondaryDoc);
+                    CourseOfferingInfo info = offeringServiceUtils.buildCourseOfferingInfo(secondaryDoc, courseInfo);
                     list.add(info);
                 }
             }

@@ -15,6 +15,7 @@
  */
 package org.kuali.student.myplan.audit.controller;
 
+import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -27,6 +28,14 @@ import org.kuali.student.common.search.dto.SearchResult;
 import org.kuali.student.common.search.dto.SearchResultCell;
 import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.organization.service.OrganizationService;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
+import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
+import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
+import org.kuali.student.lum.course.dto.CourseInfo;
+import org.kuali.student.lum.course.service.CourseService;
+import org.kuali.student.lum.course.service.CourseServiceConstants;
+import org.kuali.student.lum.lu.service.LuService;
+import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
@@ -43,12 +52,11 @@ import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
-import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
-import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
+import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
-import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.service.PlanItemLookupableHelperBase;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
@@ -81,7 +89,6 @@ import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceC
 import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT;
 import static org.kuali.student.myplan.audit.service.DegreeAuditConstants.*;
 import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
-
 // http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
 
 @Controller
@@ -96,6 +103,41 @@ public class DegreeAuditController extends UifControllerBase {
 
     private transient AcademicPlanService academicPlanService;
 
+    private transient CourseService courseService;
+
+    private transient CourseOfferingService courseOfferingService;
+
+    private static transient LuService luService;
+
+    private static CourseHelper courseHelper;
+
+
+    protected CourseOfferingService getCourseOfferingService() {
+        if (this.courseOfferingService == null) {
+            //   TODO: Use constants for namespace.
+            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+        }
+        return this.courseOfferingService;
+    }
+
+    public static CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = new CourseHelperImpl();
+        }
+        return courseHelper;
+    }
+
+    public static void setCourseHelper(CourseHelper courseHelper) {
+        DegreeAuditController.courseHelper = courseHelper;
+    }
+
+    protected static LuService getLuService() {
+        if (luService == null) {
+            luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+        }
+        return luService;
+    }
+
     public DegreeAuditService getDegreeAuditService() {
         if (degreeAuditService == null) {
             degreeAuditService = (DegreeAuditService)
@@ -103,6 +145,14 @@ public class DegreeAuditController extends UifControllerBase {
                             DegreeAuditServiceConstants.SERVICE_NAME));
         }
         return degreeAuditService;
+    }
+
+    protected synchronized CourseService getCourseService() {
+        if (this.courseService == null) {
+            this.courseService = (CourseService) GlobalResourceLoader
+                    .getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
+        }
+        return this.courseService;
     }
 
     public void setDegreeAuditService(DegreeAuditService degreeAuditService) {
@@ -523,142 +573,189 @@ public class DegreeAuditController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=reviewPlanAudit")
     public ModelAndView reviewPlanAudit(@ModelAttribute("KualiForm") AuditForm auditForm, BindingResult result,
                                         HttpServletRequest request, HttpServletResponse response) {
-
+        logger.info("Started the hand off screen at" + System.currentTimeMillis());
         PlanAuditForm form = auditForm.getPlanAudit();
 
         List<CourseItem> courseItems = form.getCleanList();
 
-        CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
-
-        PlannedTermsHelperBase plannedTermsHelperBase = new PlannedTermsHelperBase();
-        List<PlannedTerm> termList = plannedTermsHelperBase.getPlannedTermsFromStartAtp();
         List<AtpHelper.YearTerm> publishedTerms = AtpHelper.getPublishedYearTermList();
 
-
-        for (PlannedTerm term : termList) {
-            String atpId = term.getAtpId();
-            AtpHelper.YearTerm yt = AtpHelper.atpToYearTerm(atpId);
-
-            // Skip past terms
-            if (AtpHelper.hasYearTermCompleted(yt)) continue;
-
-            boolean isTermPublished = publishedTerms.contains(yt);
-
-            MessyTermDataObject messyTerm = new MessyTermDataObject();
-            messyTerm.setAtpId(atpId);
-            IgnoreTermDataObject ignoreTerm = new IgnoreTermDataObject();
-            ignoreTerm.setAtpId(atpId);
-
-            for (PlannedCourseDataObject course : term.getPlannedList()) {
-
-                CourseSummaryDetails details = course.getCourseDetails();
-                List<String> courseTerms = details.getScheduledTerms();
-                boolean coursePublished = courseTerms.contains(yt.toLabel());
-                boolean ignore = isTermPublished && !coursePublished;
-
-                // No scheduled terms means IGNORE this one
-                if (ignore) {
-                    CourseItem item = new CourseItem();
-                    item.setAtpId(atpId);
-                    item.setCourseCode(details.getCode());
-                    item.setTitle(details.getCourseTitle());
-                    item.setCourseId(details.getVersionIndependentId());
-                    item.setCredit(course.getCredit());
-                    item.setSectionCode("");
-                    ignoreTerm.getCourseItemList().add(item);
-                    continue;
-                }
-
-                Set<Choice> choices = new HashSet<Choice>();
-
-                // If time schedule is published, divine credit choices from course's sections (primary activities)
-                if (isTermPublished) {
-                    List<ActivityOfferingItem> activities = course.getPlanActivities();
-
-                    // If plan item activity list is empty, default to all sections
-                    if (activities.isEmpty()) {
-                        String courseId = details.getCourseId();
-                        activities = courseDetailsInquiryHelper.getActivityOfferingItemsById(courseId, atpId);
-                    }
-
-
-                    for (ActivityOfferingItem activity : activities) {
-                        if (activity.isPrimary()) {
-
-                            String credits = activity.getCredits();
-                            String section = activity.getCode();
-                            boolean honors = activity.isHonorsSection();
-                            boolean writing = activity.isWritingSection();
-
-                            String[] list = creditToList(credits);
-                            for (String temp : list) {
-                                Choice choice = new Choice();
-                                choice.credit = temp;
-                                choice.section = section;
-                                choice.honors = honors;
-                                choice.writing = writing;
-                                choices.add(choice);
-                            }
-                        }
-                    }
-                }
-
-                // Otherwise just use course's default credit choices
-                if (choices.isEmpty()) {
-                    String credits = details.getCredit();
-                    String section = "";
-                    String[] list = creditToList(credits);
-                    for (String temp : list) {
-                        Choice choice = new Choice();
-                        choice.credit = temp;
-                        choice.section = section;
-                        choices.add(choice);
-                    }
-                }
-
-                if (choices.size() == 1) {
-                    for (Choice choice : choices) {
-                        String credits = choice.credit;
-                        String section = choice.section;
-                        CourseItem item = new CourseItem();
-                        item.setAtpId(atpId);
-                        item.setCourseCode(details.getCode());
-                        item.setCourseId(details.getVersionIndependentId());
-                        item.setCredit(credits);
-                        item.setSectionCode(section);
-
-                        courseItems.add(item);
-                        break;
-                    }
-                } else {
-                    Set<String> credits = new HashSet<String>();
-                    for (Choice choice : choices) {
-                        String formatted = choice.toString();
-                        credits.add(formatted);
-                    }
-
-                    String versionIndependentId = details.getVersionIndependentId();
-
-                    MessyItem item = new MessyItem();
-                    item.setCourseCode(details.getCode());
-                    item.setCourseTitle(details.getCourseTitle());
-                    item.setCourseId(details.getCourseId());
-                    item.setVersionIndependentId(versionIndependentId);
-                    item.setCredits(credits);
-                    item.setAtpId(atpId);
-
-                    messyTerm.getMessyItemList().add(item);
-                }
+        String startAtpId = null;
+        for (AtpHelper.YearTerm yt : AtpHelper.getPublishedYearTermList()) {
+            String atpId = yt.toATP();
+            if (AtpHelper.isAtpSetToPlanning(atpId)) {
+                startAtpId = atpId;
+                break;
             }
-            if (!messyTerm.getMessyItemList().isEmpty()) {
-                form.getMessyItems().add(messyTerm);
-            }
-            if (!ignoreTerm.getCourseItemList().isEmpty()) {
-                form.getIgnoreList().add(ignoreTerm);
-            }
-
         }
 
+        Map<String, List<PlanItemInfo>> planItemsMap = populatePlanItemsMap();
+        logger.info("Retrieved planned courses in " + System.currentTimeMillis());
+
+        //Get back future terms starting from the given atpId(currently open for planning)
+        List<AtpHelper.YearTerm> planTerms = AtpHelper.getFutureYearTerms(startAtpId, null);
+
+        try {
+
+            //Processing hand off logic for each term
+            for (AtpHelper.YearTerm yearTerm : planTerms) {
+                // Additional condition to skip past terms
+                if (AtpHelper.hasYearTermCompleted(yearTerm)) continue;
+
+                String atpId = yearTerm.toATP();
+
+                boolean isTermPublished = publishedTerms.contains(yearTerm);
+
+                MessyTermDataObject messyTerm = new MessyTermDataObject();
+                messyTerm.setAtpId(atpId);
+                IgnoreTermDataObject ignoreTerm = new IgnoreTermDataObject();
+                ignoreTerm.setAtpId(atpId);
+
+                List<PlanItemInfo> planItemInfos = planItemsMap.get(atpId);
+                if (planItemInfos == null) continue;
+                Map<String, List<ActivityOfferingItem>> plannedActivitiesMap = getPlannedActivities(planItemInfos);
+
+                for (PlanItemInfo planItem : planItemInfos) {
+                    if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
+                        String courseId = getCourseHelper().getCourseVersionIdByTerm(planItem.getRefObjectId(), atpId);
+                        boolean ignore = false;
+                        if (courseId != null) {
+                            CourseInfo courseInfo = null;
+                            courseInfo = getCourseService().getCourse(courseId);
+                            Set<Choice> choices = new HashSet<Choice>();
+                            if (isTermPublished) {
+                                List<ActivityOfferingItem> activities = new ArrayList<ActivityOfferingItem>();
+
+                                if (plannedActivitiesMap.containsKey(courseInfo.getId())) {
+                                    activities = plannedActivitiesMap.get(courseInfo.getId());
+                                }
+
+                                // If plan item activity list is empty, populate the activities offered for that course
+                                if (activities.isEmpty()) {
+                                    long start = System.currentTimeMillis();
+                                    List<CourseOfferingInfo> courseOfferings = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(courseId, atpId, CONTEXT_INFO);
+                                    if (courseOfferings != null && !courseOfferings.isEmpty()) {
+                                        for (CourseOfferingInfo courseOfferingInfo : courseOfferings) {
+                                            String courseOfferingID = courseOfferingInfo.getId();
+                                            List<ActivityOfferingDisplayInfo> aodiList = null;
+
+                                            try {
+                                                aodiList = getCourseOfferingService().getActivityOfferingDisplaysForCourseOffering(courseOfferingID, CourseSearchConstants.CONTEXT_INFO);
+                                            } catch (Exception e) {
+                                                logger.info("Not able to load activity offering for courseOffering: " + courseOfferingID + " Term:" + atpId);
+                                                continue;
+                                            }
+
+                                            for (ActivityOfferingDisplayInfo displayInfo : aodiList) {
+                                                activities.add(buildActivityOfferingItemSummary(displayInfo, courseOfferingInfo));
+                                            }
+
+                                        }
+
+                                    } else {
+                                        ignore = true;
+                                    }
+                                    logger.info("Planned Activities time  " + (System.currentTimeMillis() - start) + " for " + courseInfo.getCode());
+                                }
+
+
+                                for (ActivityOfferingItem activity : activities) {
+                                    if (activity.isPrimary()) {
+                                        String credits = activity.getCredits();
+                                        String section = activity.getCode();
+                                        boolean honors = activity.isHonorsSection();
+                                        boolean writing = activity.isWritingSection();
+
+                                        String[] list = creditToList(credits);
+                                        for (String temp : list) {
+                                            Choice choice = new Choice();
+                                            choice.credit = temp;
+                                            choice.section = section;
+                                            choice.honors = honors;
+                                            choice.writing = writing;
+                                            choices.add(choice);
+                                        }
+                                    }
+                                }
+                            }
+                            // Otherwise just use course's default credit choices
+                            if (choices.isEmpty()) {
+                                String credits = CreditsFormatter.formatCredits(courseInfo);
+                                String section = "";
+                                String[] list = creditToList(credits);
+                                for (String temp : list) {
+                                    Choice choice = new Choice();
+                                    choice.credit = temp;
+                                    choice.section = section;
+                                    choices.add(choice);
+                                }
+                            }
+
+                            if (choices.size() == 1) {
+                                for (Choice choice : choices) {
+                                    String credits = choice.credit;
+                                    String section = choice.section;
+                                    CourseItem item = new CourseItem();
+                                    item.setAtpId(atpId);
+                                    item.setCourseCode(courseInfo.getCode());
+                                    item.setCourseId(courseInfo.getVersionInfo().getVersionIndId());
+                                    item.setCredit(credits);
+                                    item.setSectionCode(section);
+                                    courseItems.add(item);
+                                }
+                            } else {
+                                Set<String> credits = new HashSet<String>();
+                                for (Choice choice : choices) {
+                                    String formatted = choice.toString();
+                                    credits.add(formatted);
+                                }
+
+                                String versionIndependentId = courseInfo.getVersionInfo().getVersionIndId();
+
+                                MessyItem item = new MessyItem();
+                                item.setCourseCode(courseInfo.getCode());
+                                item.setCourseTitle(courseInfo.getCourseTitle());
+                                item.setCourseId(courseInfo.getId());
+                                item.setVersionIndependentId(versionIndependentId);
+                                item.setCredits(credits);
+                                item.setAtpId(atpId);
+
+                                messyTerm.getMessyItemList().add(item);
+                            }
+                        } else {
+                            ignore = true;
+                        }
+                        //ignore if no version available or course not scheduled
+                        if (ignore) {
+                            String course = getCourseHelper().getCourseVersionIdByTerm(planItem.getRefObjectId(), atpId);
+                            if (course != null) {
+                                CourseInfo courseInfo = getCourseService().getCourse(course);
+                                //Adding course to ignore list if courseId not found
+                                CourseItem item = new CourseItem();
+                                item.setAtpId(atpId);
+                                item.setCourseCode(courseInfo.getCode());
+                                item.setTitle(courseInfo.getCourseTitle());
+                                item.setCourseId(courseInfo.getVersionInfo().getVersionIndId());
+                                item.setCredit(CreditsFormatter.formatCredits(courseInfo));
+                                item.setSectionCode("");
+                                ignoreTerm.getCourseItemList().add(item);
+                            }
+                        }
+
+                    }
+
+                }
+                logger.info("Retrieved planned activities in " + System.currentTimeMillis() + "for term " + atpId);
+                if (!messyTerm.getMessyItemList().isEmpty()) {
+                    form.getMessyItems().add(messyTerm);
+                }
+                if (!ignoreTerm.getCourseItemList().isEmpty()) {
+                    form.getIgnoreList().add(ignoreTerm);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Could not review the Plan ", e);
+        }
         if (!form.getMessyItems().isEmpty()) {
             Map<String, String> prevChoices = getPlanItemSnapShots();
 
@@ -676,8 +773,118 @@ public class DegreeAuditController extends UifControllerBase {
         }
         boolean showHandOffScreen = !(form.getMessyItems().isEmpty() && form.getIgnoreList().isEmpty());
         form.setShowHandOffScreen(showHandOffScreen);
+        logger.info("Ended the hand off screen at" + System.currentTimeMillis());
         return getUIFModelAndView(auditForm);
     }
+
+    /**
+     * populates the Map with courseId as key and listOf activites that are planned and assosoated to that course.
+     *
+     * @param planItemInfos
+     * @return
+     */
+    private Map<String, List<ActivityOfferingItem>> getPlannedActivities(List<PlanItemInfo> planItemInfos) {
+
+        Map<String, List<ActivityOfferingItem>> plannedActivitiesMap = new HashMap<String, List<ActivityOfferingItem>>();
+        for (PlanItemInfo planItemInfo : planItemInfos) {
+            if (planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
+                String activityOfferingId = planItemInfo.getRefObjectId();
+                ActivityOfferingDisplayInfo activityDisplayInfo = null;
+                try {
+                    activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityOfferingId, PlanConstants.CONTEXT_INFO);
+                } catch (Exception e) {
+                    logger.error("Could not retrieve ActivityOffering data for" + activityOfferingId, e);
+                }
+                if (activityDisplayInfo != null) {
+                    /*TODO: move this to Coursehelper to make it institution neutral*/
+                    String courseOfferingId = null;
+                    for (AttributeInfo attributeInfo : activityDisplayInfo.getAttributes()) {
+                        if ("PrimaryActivityOfferingId".equalsIgnoreCase(attributeInfo.getKey())) {
+                            courseOfferingId = attributeInfo.getValue();
+                            break;
+                        }
+                    }
+                    CourseOfferingInfo courseOfferingInfo = null;
+                    try {
+                        courseOfferingInfo = getCourseOfferingService().getCourseOffering(courseOfferingId, CourseSearchConstants.CONTEXT_INFO);
+                    } catch (Exception e) {
+                        logger.error("Could not retrieve CourseOffering data for" + courseOfferingId, e);
+                    }
+                    ActivityOfferingItem activityOfferingItem = buildActivityOfferingItemSummary(activityDisplayInfo, courseOfferingInfo);
+                    if (plannedActivitiesMap.containsKey(activityOfferingItem.getCourseId())) {
+                        plannedActivitiesMap.get(activityOfferingItem.getCourseId()).add(activityOfferingItem);
+
+                    } else {
+                        List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
+                        activityOfferingItems.add(activityOfferingItem);
+                        plannedActivitiesMap.put(activityOfferingItem.getCourseId(), activityOfferingItems);
+                    }
+
+                }
+
+            }
+        }
+        return plannedActivitiesMap;
+    }
+
+    /**
+     * Summary of activityOfferingItem is populated which are required for Hand Off screen
+     *
+     * @param displayInfo
+     * @param courseOfferingInfo
+     * @return
+     */
+    public ActivityOfferingItem buildActivityOfferingItemSummary(ActivityOfferingDisplayInfo displayInfo, CourseOfferingInfo courseOfferingInfo) {
+        ActivityOfferingItem activity = new ActivityOfferingItem();
+        /*Data from ActivityOfferingDisplayInfo*/
+        activity.setCourseId(courseOfferingInfo.getCourseId());
+        activity.setCode(displayInfo.getActivityOfferingCode());
+        activity.setStateKey(displayInfo.getStateKey());
+        activity.setActivityOfferingType(displayInfo.getTypeName());
+        activity.setCredits(courseOfferingInfo.getCreditOptionName());
+        for (AttributeInfo attrib : displayInfo.getAttributes()) {
+            String key = attrib.getKey();
+            String value = attrib.getValue();
+            if ("PrimaryActivityOfferingCode".equalsIgnoreCase(key)) {
+                activity.setPrimaryActivityOfferingCode(value);
+                activity.setPrimary(value.equalsIgnoreCase(activity.getCode()));
+                break;
+            }
+        }
+        return activity;
+    }
+
+    /**
+     * @return
+     */
+    private Map<String, List<PlanItemInfo>> populatePlanItemsMap() {
+        Map<String, List<PlanItemInfo>> planItemsMap = new HashMap<String, List<PlanItemInfo>>();
+        try {
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentRegId(), LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
+
+            for (LearningPlanInfo learningPlanInfo : learningPlanList) {
+                String learningPlanID = learningPlanInfo.getId();
+                List<PlanItemInfo> planItemInfoList = getAcademicPlanService().getPlanItemsInPlan(learningPlanID, CONTEXT_INFO);
+                for (PlanItemInfo planItem : planItemInfoList) {
+                    if (!planItem.getPlanPeriods().isEmpty()) {
+                        String atpId = planItem.getPlanPeriods().get(0);
+                        if (planItemsMap.containsKey(atpId)) {
+                            planItemsMap.get(atpId).add(planItem);
+                        } else {
+                            List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();
+                            planItemInfos.add(planItem);
+                            planItemsMap.put(atpId, planItemInfos);
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            logger.error("Error loading Plan items ", e);
+        }
+        return planItemsMap;
+    }
+
 
     private String[] creditToList(String credit) {
         credit = credit.replace(" ", "");

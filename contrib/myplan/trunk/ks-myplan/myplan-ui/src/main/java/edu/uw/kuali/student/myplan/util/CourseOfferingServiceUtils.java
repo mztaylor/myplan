@@ -265,7 +265,7 @@ public class CourseOfferingServiceUtils {
      * @param document
      * @return
      */
-    public static CourseOfferingInfo buildCourseOfferingInfo(Document document) {
+    public static CourseOfferingInfo buildCourseOfferingInfo(Document document, CourseInfo courseInfo) {
         StringBuffer courseComments = new StringBuffer();
         StringBuffer curriculumComments = new StringBuffer();
         DefaultXPath curriculumCommentsPath = newXPath("/s:Section/s:TimeScheduleComments/s:CurriculumComments/s:Lines");
@@ -310,8 +310,14 @@ public class CourseOfferingServiceUtils {
         info.setCourseNumberSuffix(number);
         info.setTermId(yearTerm.toATP());
         info.setId(buildId(year, yearTerm.getTermAsString(), subject, number, sectionId));
-        info.setCourseId(getCourseHelper().getCourseIdForTerm(subject, number, yearTerm.toATP()));
-        CourseInfo courseInfo = getCourseHelper().getCourseInfo(info.getCourseId());
+
+        // If course info not specified calculate the courseVersionId and courseInfo from courseHelper
+        if (courseInfo == null) {
+            info.setCourseId(getCourseHelper().getCourseIdForTerm(subject, number, yearTerm.toATP()));
+            courseInfo = getCourseHelper().getCourseInfo(info.getCourseId());
+        } else {
+            info.setCourseId(courseInfo.getId());
+        }
         info.setCourseCode(courseInfo.getCode());
         info.getAttributes().add(new AttributeInfo("CourseComments", courseComments.toString()));
         info.getAttributes().add(new AttributeInfo("CurriculumComments", curriculumComments.toString()));
