@@ -41,6 +41,8 @@ public class QuickAddForm extends UifFormBase {
     private String courseId;
     private String planType;
     private String termYear;
+    private List<String> credit;
+    private String note;
 
     /**
      * A list of javascript events as:
@@ -118,6 +120,22 @@ public class QuickAddForm extends UifFormBase {
 
     public void setTermYear(String termYear) {
         this.termYear = termYear;
+    }
+
+    public List<String> getCredit() {
+        return credit;
+    }
+
+    public void setCredit(List<String> credit) {
+        this.credit = credit;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     /**

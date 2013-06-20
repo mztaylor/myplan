@@ -5,7 +5,29 @@ blue block item hover = #e3f0fe;
 
 */
 
+::-webkit-input-placeholder {
+    color: #ccc;
+}
+
+:-moz-placeholder {
+    color: #ccc;
+}
+
+::-moz-placeholder {
+    color: #ccc;
+}
+
+:-ms-input-placeholder {
+    color: #ccc;
+}
+
 /* OVERWRITE KRAD STYLES */
+input[type="text"], input[type="password"], textarea, select {
+    padding: 3px;
+    border-color: #bebebe;
+    margin: 0;
+}
+
 .uif-pageValidationMessages {
     border: solid 1px transparent;
     background: none;

@@ -22,6 +22,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.datadictionary.exception.DuplicateEntryException;
+import org.kuali.rice.krad.service.KRADServiceLocatorWeb;
+import org.kuali.rice.krad.uif.UifParameters;
+import org.kuali.rice.krad.uif.field.AttributeQueryResult;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
@@ -60,6 +63,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -2157,5 +2162,44 @@ String term = t[0] + " " + t[1];*/
 
     public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
         this.courseOfferingService = courseOfferingService;
+    }
+
+
+    @Override
+    @RequestMapping(method = RequestMethod.GET, params = "methodToCall=performFieldSuggest")
+    public
+    @ResponseBody
+    AttributeQueryResult performFieldSuggest(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
+                                             HttpServletRequest request, HttpServletResponse response) {
+
+
+        // invoke attribute query service to perform the query
+        AttributeQueryResult queryResult = new AttributeQueryResult();
+
+        Object[] placeHolders = new Object[]{
+                "Capstone",
+                "Composition",
+                "Elective",
+                "Foreign Language",
+                "I&S (Individuals and Societies)",
+                "Independent Study",
+                "Internship",
+                "Job",
+                "NW (Natural World)",
+                "Other",
+                "Practicum",
+                "Project",
+                "Q/SR (Quantitative and Symbolic Reasoning)",
+                "Research",
+                "Seminar",
+                "Study Abroad",
+                "Thesis",
+                "VLPA (Visual, Literary, and Performing Arts)",
+                "W (Writing)"
+        };
+
+        queryResult.setResultData(Arrays.asList(placeHolders));
+
+        return queryResult;
     }
 }

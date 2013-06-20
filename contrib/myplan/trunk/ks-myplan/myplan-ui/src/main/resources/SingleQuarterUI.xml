@@ -189,7 +189,7 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <ref bean="overallPlanLink"/>
+                                        <bean parent="overallPlanLink"/>
                                         <bean parent="KSAP-NoSpanMessage"
                                               p:messageText="View your courses and add or delete scheduled sections for each course to your plan. Remember that MyPlan allows you to create an academic plan, but does not currently check your eligibility for planned courses or sections, and does not register you. Registration is available via the [0] page.">
                                             <property name="inlineComponents">

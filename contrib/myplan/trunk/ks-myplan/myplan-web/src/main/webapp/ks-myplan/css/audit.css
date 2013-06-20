@@ -347,7 +347,8 @@
 
 .myplan-audit-report .subrequirement .totals,
 .myplan-audit-report .subrequirement .taken,
-.myplan-audit-report .subrequirement .fromcourses {
+.myplan-audit-report .subrequirement .fromcourses,
+.myplan-audit-report .requirement .subrequirement .header .subreqCline {
     margin-left: 80px;
 }
 
@@ -419,6 +420,15 @@
     -moz-border-radius: 0px 0px 5px 5px;
     -webkit-border-radius: 0px 0px 5px 5px;
     color: #fff;
+}
+
+.sigdateLabel, .sigdateField {
+    display: block;
+}
+
+.sigdateField {
+    border-bottom: solid 1px #000;
+    margin-top: 3.5em;
 }
 
 .WIFCRSES.requirement.Status_NONE {
