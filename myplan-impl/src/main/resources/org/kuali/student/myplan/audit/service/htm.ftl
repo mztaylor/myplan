@@ -1,8 +1,8 @@
 <html>
 <#-- using svn's keyword substition -->
-<#assign svnRev    = "$Rev:: 50149                $:  Revision of last commit" >
-<#assign svnAuthor = "$Author:: hemanthg          $:  Author of last commit">
-<#assign svnDate   = "$Date:: 2013-06-20 10:08:53#$:  Date of last commit">
+<#assign svnRev    = "$Rev::                      $:  Revision of last commit" >
+<#assign svnAuthor = "$Author::                   $:  Author of last commit">
+<#assign svnDate   = "$Date::                     $:  Date of last commit">
 
 <#-- list of rnames to skip (not show) -->
 <#assign skipList = [
@@ -78,35 +78,61 @@
     <h1> ${dpTitle1?xml} </h1>
 
     <div class="audit-summary">
+        <div class="audit-summary-data plan-audit-data">
+            <label>Planned Through:</label>
+
+            <div>
+                <span class="for-quarter"> FOR-QUARTER </span>
+            </div>
+        </div>
         <div class="audit-summary-data ">
-            <label>Date Prepared:</label> <span class="date-prepared"> ${preparedDate} </span>
+            <label>Date Prepared:</label>
+
+            <div>
+                <span class="date-prepared"> ${preparedDate} </span>
+            </div>
+        </div>
+        <div class="audit-summary-data plan-audit-data">
+            <label>Planned Courses:</label>
+
+            <div>
+                <span class="for-courses"> FOR-COURSES </span> courses <span class="ksap-text-gray">(<span
+                    class="for-credits"> FOR-CREDITS </span> credits)</span>
+            </div>
+        </div>
+        <div class="audit-summary-data">
+            <label>Program Entry Qtr:</label>
+
+            <div>
+                <span class="program-entry-qtr"> ${termMap[catalogYearTerm?substring(4,5)]} ${catalogYearTerm?substring(0,4)} </span>
+            </div>
+        </div>
+        <div class="audit-summary-data plan-audit-data">
+            <label>Requested By:</label>
+
+            <div>
+                <span class="prepared-by"> PREPARED-BY </span>
+            </div>
         </div>
         <div class="audit-summary-data">
         <#assign stuno = "${studentNumber}">
         <#if ( stuno?starts_with( "1" ) && stuno?length == 9 )>
             <#assign stuno = stuno?substring(1)>
         </#if>
-            <label>Prepared For:</label> <span class="prepared-for-name" stuno="${stuno}"> ${stuno} </span>
+            <label>Prepared For:</label>
+
+            <div>
+                <span class="prepared-for-name" stuno="${stuno}"> ${stuno} </span>
+            </div>
         </div>
-        <div class="audit-summary-data plan-audit-data">
-            <label>Prepared By:</label> <span class="prepared-by"> PREPARED-BY </span>
-        </div>
-        <div class="audit-summary-data">
-            <label>Program Entry Qtr:</label> <span
-                class="program-entry-qtr"> ${termMap[catalogYearTerm?substring(4,5)]} ${catalogYearTerm?substring(0,4)} </span>
-        </div>
-        <div class="audit-summary-data plan-audit-data">
-            <label>Credits:</label> <span class="for-credits"> FOR-CREDITS </span>
-        </div>
-        <div class="audit-summary-data plan-audit-data">
-            <label>Courses:</label> <span class="for-courses"> FOR-COURSES </span>
-        </div>
-        <div class="audit-summary-data plan-audit-data">
-            <label>Quarter:</label> <span class="for-quarter"> FOR-QUARTER </span>
-        </div>
+
     <#if degreeDate?trim != "NotFound">
         <div class="audit-summary-data ">
-            <label>Graduation Date:</label> <span class="graduation-date"> ${degreeDate?replace("/", " ")} </span>
+            <label>Graduation Date:</label>
+
+            <div>
+                <span class="graduation-date"> ${degreeDate?replace("/", " ")} </span>
+            </div>
         </div>
     </#if>
     </div>
@@ -239,8 +265,8 @@ ${headerLine?xml}
         <#list req.auditReportSubreqs as subreq>
             <div class="requirement">
                 <div class="header">
-                    <div class="toggle"> </div>
-                    <div class="status Status_NONE"> </div>
+                    <div class="toggle"></div>
+                    <div class="status Status_NONE"></div>
                     <#if subreq.showTitle >
                         <div class="title">
                             <#list reflow( subreq.titleLines ) as titleLine>
@@ -256,11 +282,11 @@ ${headerLine?xml}
                         <table class="taken">
                             <thead>
                             <tr>
-                                <th> Qtr </th>
-                                <th colspan="2"> Course Name </th>
-                                <th> Credits </th>
-                                <th> Grade </th>
-                                <th> </th>
+                                <th> Qtr</th>
+                                <th colspan="2"> Course Name</th>
+                                <th> Credits</th>
+                                <th> Grade</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -274,14 +300,15 @@ ${headerLine?xml}
                                         </#list>
                                     </td>
                                     <td class="credit"> ${takenCourse.credit?string?replace(".0","")?xml} </td>
-                                    <td class="grade" title="${toolTipsMap[takenCourse.grade + "_grade"]}"> ${takenCourse.grade?xml} </td>
+                                    <td class="grade"
+                                        title="${toolTipsMap[takenCourse.grade + "_grade"]}"> ${takenCourse.grade?xml} </td>
                                     <#assign condCode = takenCourse.condCode?trim >
                                     <#if toolTipsMap[condCode]?exists >
                                         <td class="ccode" title="${toolTipsMap[condCode]}">
                                         ${condCode?xml}
                                         </td>
                                     <#else>
-                                        <td class="ccode"> </td>
+                                        <td class="ccode"></td>
                                     </#if>
                                 </tr>
                                 </#list>
@@ -389,8 +416,9 @@ ${headerLine?xml}
         </#if>
     <div class="requirement ${rname} ${satisfied} ${req.summaryGroupName?xml}">
     <div class="header">
-        <div class="toggle"> </div>
-        <div class="status ${satisfied}" title="${toolTipsMap[satisfiedMap[satisfied]]}"> ${satisfiedMap[satisfied]} </div>
+        <div class="toggle"></div>
+        <div class="status ${satisfied}"
+             title="${toolTipsMap[satisfiedMap[satisfied]]}"> ${satisfiedMap[satisfied]} </div>
         <#if req.showNumber>
             <div class="reqNumber"> ${req.number?xml} </div></#if>
         <#if req.showGroups>
@@ -481,10 +509,6 @@ ${headerLine?xml}
         <#list req.auditReportSubreqs as subreq>
         <#-- Have to grab flag -->
             <#assign showSubreqStatus = subreq.showSubreqStatus >
-            <#assign showSubreqNumber = subreq.showSubreqNumber >
-            <#assign subreqNumber = subreq.subreqNumber >
-            <#assign showParen = subreq.showParen >
-
             <#assign justTitle = "">
             <#if ( !subreq.showGotSummary && !subreq.showInProgressHours && !subreq.showNeedsSummary && !subreq.showTakenCourses && !subreq.showSubreqNumber && subreq.status == "Status_NONE" ) >
                 <#assign justTitle = "justtitle" >
@@ -532,13 +556,14 @@ ${headerLine?xml}
             <div class="subrequirement ${justTitle}">
             <div class="header">
                 <#if showSubreqStatus >
-                    <div class="status ${subreq.status?xml}" title="${toolTipsMap[subreqStatusMap[subreq.status]]}"> ${subreq.seqErr?xml}${subreqStatusMap[subreq.status]} </div>
+                    <div class="status ${subreq.status?xml}"
+                         title="${toolTipsMap[subreqStatusMap[subreq.status]]}"> ${subreq.seqErr?xml}${subreqStatusMap[subreq.status]} </div>
                 </#if>
 
                 <div class="subreqNumber required">
                     <#if subreq.required>${subreq.subreqRequired?xml}</#if>
-                    <#if showSubreqNumber>${subreqNumber?xml}
-                        <#if showParen>)</#if>
+                    <#if subreq.showSubreqNumber>${subreq.subreqNumber?xml}
+                        <#if subreq.showParen>)</#if>
                     </#if>
                 </div>
                 <#if subreq.showTitle >
@@ -633,11 +658,11 @@ ${headerLine?xml}
                 <table class="taken">
                     <thead>
                     <tr>
-                        <th> Qtr </th>
-                        <th colspan="2"> Course Name </th>
-                        <th> Credits </th>
-                        <th> Grade </th>
-                        <th> </th>
+                        <th> Qtr</th>
+                        <th colspan="2"> Course Name</th>
+                        <th> Credits</th>
+                        <th> Grade</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -647,21 +672,13 @@ ${headerLine?xml}
                             <td class="course linkify"> ${takenCourse.displayCourse?substring(1,7)?trim?xml} ${takenCourse.displayCourse?substring(7,10)?trim?xml} </td>
                             <td class="description"><#list takenCourse.descriptiveLines as descriptiveLine> ${descriptiveLine?xml} </#list></td>
                             <td class="credit"> ${takenCourse.credit?string?replace(".0","")?xml} </td>
-                            <td class="grade" title="${toolTipsMap[takenCourse.grade + "_grade"]}"> ${takenCourse.grade?xml} </td>
-
-                        <#--	<#if toolTipsMap[takenCourse.condCode]?exists >
-                         <td class="ccode"
-                             title="${toolTipsMap[takenCourse.condCode]}"> ${takenCourse.condCode?xml} </td>
-                     <#else>
-                         <td class="ccode"> </td>
-                     </#if>   -->
-                            <#assign condCode = takenCourse.condCode?trim >
-                            <#if toolTipsMap[condCode]?exists >
-                                <td class="ccode" title="${toolTipsMap[condCode]}">
-                                ${condCode?xml}
-                                </td>
+                            <td class="grade"
+                                title="${toolTipsMap[takenCourse.grade + "_grade"]}"> ${takenCourse.grade?xml} </td>
+                            <#if toolTipsMap[takenCourse.condCode]?exists >
+                                <td class="ccode"
+                                    title="${toolTipsMap[takenCourse.condCode]}"> ${takenCourse.condCode?xml} </td>
                             <#else>
-                                <td class="ccode"> </td>
+                                <td class="ccode"></td>
                             </#if>
                         </tr>
                         </#list>
@@ -766,7 +783,7 @@ ${headerLine?xml}
 </#if>
 <input name="script" type="hidden" value="jQuery.publish('NEW_AUDIT');"/>
 
-<div> (audit template updated: ${svnDate?substring( 8, 27 )}) </div>
+<div> (audit template updated: ${svnDate?substring( 8, 27 )})</div>
 </div>
 </html>
 
@@ -813,19 +830,6 @@ The order of these tests are significant. Do not change lightly.
             <#assign target = target + " " + temp >
             <#assign targets = addTarget( targets, target ) >
             <#assign target = trimmed?substring( nth )?trim >
-
-        <#elseif trimmed?contains( "Date:" ) >
-            <#assign nth = trimmed?index_of( "Date:" ) >
-            <#assign temp = trimmed?substring( 0, nth )?trim >
-            <#assign target = target + " " + temp >
-            <#assign targets = addTarget( targets, target ) >
-            <#assign target = " <span class=\"sigdateField\"> </span><span class=\"sigdateLabel\">" + trimmed?substring( nth )?trim + "</span>">
-
-        <#elseif trimmed?contains( "Signature:" ) >
-            <#assign targets = addTarget( targets, target ) >
-            <#assign target = " <span class=\"sigdateField\"> </span><span class=\"sigdateLabel\">" + trimmed?trim + "</span>">
-            <#assign targets = addTarget( targets, target ) >
-            <#assign target = "">
 
         <#elseif ( trimmed == "." ) >
         <#-- do nothing -->
