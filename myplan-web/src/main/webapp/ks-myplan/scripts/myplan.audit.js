@@ -127,24 +127,24 @@ function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
     var elementToBlock = jQuery("#plan_audit_actions_container");
 
     var updateRefreshableComponentCallback = function (htmlContent) {
-        var inputRequired = (jQuery("input#showHandOffScreen_control", htmlContent).val() == "true");
+        var showHandOffScreen = (jQuery("input#showHandOffScreen_control", htmlContent).val() == "true");
 
-        if (inputRequired) {
-            var component = jQuery("#" + getId, htmlContent);
-            if (jQuery("#" + id).length) {
-                if (jQuery("#" + getId).length == 0) {
-                    jQuery("#" + id).append(component);
-                } else {
-                    jQuery("#" + getId).replaceWith(component);
-                }
+        var component = jQuery("#" + getId, htmlContent);
+        if (jQuery("#" + id).length) {
+            if (jQuery("#" + getId).length == 0) {
+                jQuery("#" + id).append(component);
+            } else {
+                jQuery("#" + getId).replaceWith(component);
             }
+        }
 
-            runHiddenScripts(getId);
+        runHiddenScripts(getId);
 
-            if (jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).length > 0) {
-                eval(jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).val());
-            }
+        if (jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).length > 0) {
+            eval(jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).val());
+        }
 
+        if (showHandOffScreen) {
             jQuery.fancybox({
                 helpers:{
                     overlay:null
