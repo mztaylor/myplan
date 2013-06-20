@@ -86,7 +86,7 @@
                 <bean parent="Uif-Page" p:id="message_dialog_response_page"
                       p:headerText="Leave a Message for @{#form.studentName}">
                     <property name="onDocumentReadyScript" value="
-                        jQuery('form input, form textarea').bind('keyup paste cut', function(e) {
+                        jQuery('form input, form textarea').bind('keyup paste cut contextmenu mouseout', function(e) {
                             var empty = false;
                             var code = (e.keyCode ? e.keyCode : e.which);
                             jQuery('form .myplan-required').each(function() {
