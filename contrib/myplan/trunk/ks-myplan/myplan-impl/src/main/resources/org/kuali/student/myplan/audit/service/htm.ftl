@@ -12,6 +12,12 @@
 <#assign sectionHeadingOpen = false>
 
 <#assign toolTipsMap = {
+"OK":"Completed",
+"NO":"Not completed",
+"IP":"In progress",
+"RP":"Repeatable",
+"RT":"Retaken",
+"Opt":"This sub-requirement is optional.",
 "+":"The sub-requirement has been satisfied.",
 "-":"The sub-requirement has not been satisfied.",
 "IP -":"A course is in-progress which partially satisfies the sub-requirement but does not complete it.",
@@ -24,8 +30,8 @@
 ">-":"The course has exceeded the repeatable limit and has had its credit reduced.",
 "DP":"This course has been retaken.",
 ">D":"Credit has been removed from this retaken course. For the purpose of a given requirement, credit may be restored--as when a minimum grade is required. This course is used in your UW GPA.",
-">PL":"Planned Course",
-"PL":"The course is planned.",
+">PL":"The course is planned.",
+"PL":"The requirement is satisfied when the planned course is completed.",
 "PL -":"A course is planned which partially satisfies the sub-requirement but does not complete it.",
 "PL +":"A course is planned which satisfies the sub-requirement."
 }>
@@ -409,7 +415,13 @@ ${headerLine?xml}
     <div class="requirement ${rname} ${satisfied} ${req.summaryGroupName?xml}">
     <div class="header">
         <div class="toggle"> </div>
-        <div class="status ${satisfied}"> ${satisfiedMap[satisfied]} </div>
+        <#assign satisfiedToolTip = " "  >
+        <#if satisfiedMap[satisfied]?? >
+            <#if toolTipsMap[satisfiedMap[satisfied]]?? >
+                <#assign satisfiedToolTip = toolTipsMap[satisfiedMap[satisfied]]  >
+            </#if>
+        </#if>
+        <div class="status ${satisfied}" title="${satisfiedToolTip}"> ${satisfiedMap[satisfied]} </div>
         <#if req.showNumber>
             <div class="reqNumber"> ${req.number?xml} </div></#if>
         <#if req.showGroups>
@@ -551,7 +563,13 @@ ${headerLine?xml}
             <div class="subrequirement ${justTitle}">
                 <div class="header">
                     <#if showSubreqStatus >
-                        <div class="status ${subreq.status?xml}"> ${subreq.seqErr?xml}${subreqStatusMap[subreq.status]} </div>
+                        <#assign subreqToolTip = " "  >
+                        <#if subreqStatusMap[subreq.status]?? >
+                            <#if toolTipsMap[subreqStatusMap[subreq.status]]?? >
+                                <#assign subreqToolTip = toolTipsMap[subreqStatusMap[subreq.status]]  >
+                            </#if>
+                        </#if>
+                        <div class="status ${subreq.status?xml}" title="${subreqToolTip}"> ${subreq.seqErr?xml}${subreqStatusMap[subreq.status]} </div>
                     </#if>
 
                     <div class="subreqNumber required">
