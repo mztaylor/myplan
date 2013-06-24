@@ -531,9 +531,11 @@ public class DegreeAuditController extends UifControllerBase {
         return map;
     }
 
-    public static class Choice {
+    public static class Choice implements Cloneable {
         String credit = "";
         String section = null;
+        String secondaryActivity = null;
+        boolean crNcGradingOption = false;
         boolean writing = false;
         boolean honors = false;
 
@@ -547,7 +549,13 @@ public class DegreeAuditController extends UifControllerBase {
             if (!(that instanceof Choice)) return false;
             if (!(writing == ((Choice) that).writing)) return false;
             if (!(honors == ((Choice) that).honors)) return false;
+            if (!(secondaryActivity == ((Choice) that).secondaryActivity)) return false;
+            if (!(crNcGradingOption == ((Choice) that).crNcGradingOption)) return false;
             return credit.equals(((Choice) that).credit);
+        }
+
+        public Object clone() throws CloneNotSupportedException {
+            return super.clone();
         }
 
         // section:credits:display, eg "A:5:5 -- Writing"
@@ -565,6 +573,10 @@ public class DegreeAuditController extends UifControllerBase {
             if (honors) {
                 sb.append(" -- ");
                 sb.append(HONORS_CREDIT);
+            }
+            if (crNcGradingOption) {
+                sb.append(" -- ");
+                sb.append(DegreeAuditConstants.CR_NO_CR_GRADING_OPTION);
             }
             return sb.toString();
         }
@@ -627,18 +639,39 @@ public class DegreeAuditController extends UifControllerBase {
                                 List<ActivityOfferingItem> activities = new ArrayList<ActivityOfferingItem>();
 
                                 if (plannedActivitiesMap.containsKey(courseInfo.getId())) {
-                                    activities = plannedActivitiesMap.get(courseInfo.getId());
+
+                                    List<ActivityOfferingItem> withdrawnSections = new ArrayList<ActivityOfferingItem>();
+                                    List<ActivityOfferingItem> nonWithdrawnSections = new ArrayList<ActivityOfferingItem>();
+                                    for (ActivityOfferingItem activityOfferingItem : plannedActivitiesMap.get(courseInfo.getId())) {
+                                        if (PlanConstants.WITHDRAWN_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
+                                            withdrawnSections.add(activityOfferingItem);
+                                        } else {
+                                            nonWithdrawnSections.add(activityOfferingItem);
+                                        }
+                                    }
+
+                                    //If all sections are withdrawn then we add the course to ignored
+                                    if (withdrawnSections.size() > 0 && nonWithdrawnSections.isEmpty()) {
+                                        ignore = true;
+                                    } else {
+                                        activities = nonWithdrawnSections;
+                                    }
+
+
                                 }
 
                                 // If plan item activity list is empty, populate the activities offered for that course
-                                if (activities.isEmpty()) {
+                                if (activities.isEmpty() && !ignore) {
                                     long start = System.currentTimeMillis();
                                     List<CourseOfferingInfo> courseOfferings = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(courseId, atpId, CONTEXT_INFO);
+                                    List<ActivityOfferingItem> honorsCrNcActivities = new ArrayList<ActivityOfferingItem>();
                                     if (courseOfferings != null && !courseOfferings.isEmpty()) {
                                         for (CourseOfferingInfo courseOfferingInfo : courseOfferings) {
-                                            String courseOfferingID = courseOfferingInfo.getId();
-                                            List<ActivityOfferingDisplayInfo> aodiList = null;
 
+
+                                            String courseOfferingID = courseOfferingInfo.getId();
+
+                                            List<ActivityOfferingDisplayInfo> aodiList = null;
                                             try {
                                                 aodiList = getCourseOfferingService().getActivityOfferingDisplaysForCourseOffering(courseOfferingID, CourseSearchConstants.CONTEXT_INFO);
                                             } catch (Exception e) {
@@ -646,81 +679,159 @@ public class DegreeAuditController extends UifControllerBase {
                                                 continue;
                                             }
 
+                                            List<ActivityOfferingItem> coActivities = new ArrayList<ActivityOfferingItem>();
                                             for (ActivityOfferingDisplayInfo displayInfo : aodiList) {
-                                                activities.add(buildActivityOfferingItemSummary(displayInfo, courseOfferingInfo));
+                                                coActivities.add(buildActivityOfferingItemSummary(displayInfo, courseOfferingInfo));
                                             }
 
-                                        }
+                                            boolean isHonorsCrNcOffering = courseOfferingInfo.getGradingOptionId().equalsIgnoreCase(DegreeAuditConstants.CR_NO_CR_GRADING_OPTION_ID);
+                                            if (!isHonorsCrNcOffering) {
+                                                for (ActivityOfferingItem coActivity : coActivities) {
+                                                    if (coActivity.isHonorsSection()) {
+                                                        isHonorsCrNcOffering = true;
+                                                        break;
+                                                    }
 
+
+                                                }
+                                            }
+
+                                            if (isHonorsCrNcOffering) {
+                                                honorsCrNcActivities.addAll(coActivities);
+                                            } else {
+                                                activities.addAll(coActivities);
+                                            }
+
+
+                                        }
+                                        //All activities are honors activities
+                                        if (activities.isEmpty() && honorsCrNcActivities.size() > 0) {
+                                            activities.addAll(honorsCrNcActivities);
+                                        }
                                     } else {
                                         ignore = true;
                                     }
+
+
                                     logger.info("Planned Activities time  " + (System.currentTimeMillis() - start) + " for " + courseInfo.getCode());
                                 }
+                                List<ActivityOfferingItem> processedActivities = new ArrayList<ActivityOfferingItem>();
+                                Map<String, List<ActivityOfferingItem>> secondaryActivityMap = new HashMap<String, List<ActivityOfferingItem>>();
 
-
-                                for (ActivityOfferingItem activity : activities) {
-                                    if (activity.isPrimary()) {
-                                        String credits = activity.getCredits();
-                                        String section = activity.getCode();
-                                        boolean honors = activity.isHonorsSection();
-                                        boolean writing = activity.isWritingSection();
-
-                                        String[] list = creditToList(credits);
-                                        for (String temp : list) {
-                                            Choice choice = new Choice();
-                                            choice.credit = temp;
-                                            choice.section = section;
-                                            choice.honors = honors;
-                                            choice.writing = writing;
-                                            choices.add(choice);
+                                for (ActivityOfferingItem activityOfferingItem : activities) {
+                                    if (activityOfferingItem.isPrimary()) {
+                                        processedActivities.add(activityOfferingItem);
+                                    } else {
+                                        if (secondaryActivityMap.containsKey(activityOfferingItem.getPrimaryActivityOfferingId())) {
+                                            secondaryActivityMap.get(activityOfferingItem.getPrimaryActivityOfferingId()).add(activityOfferingItem);
+                                        } else {
+                                            List<ActivityOfferingItem> secondaryActivities = new ArrayList<ActivityOfferingItem>();
+                                            secondaryActivities.add(activityOfferingItem);
+                                            secondaryActivityMap.put(activityOfferingItem.getPrimaryActivityOfferingId(), secondaryActivities);
                                         }
                                     }
                                 }
-                            }
-                            // Otherwise just use course's default credit choices
-                            if (choices.isEmpty()) {
-                                String credits = CreditsFormatter.formatCredits(courseInfo);
-                                String section = "";
-                                String[] list = creditToList(credits);
-                                for (String temp : list) {
-                                    Choice choice = new Choice();
-                                    choice.credit = temp;
-                                    choice.section = section;
-                                    choices.add(choice);
+                                String honorsSecondaryActivity = null;
+                                String nonHonorsSecondaryActivity = null;
+                                for (ActivityOfferingItem activity : processedActivities) {
+                                    String credits = activity.getCredits();
+                                    String section = activity.getCode();
+                                    boolean honors = activity.isHonorsSection();
+                                    boolean writing = activity.isWritingSection();
+                                    boolean crNcGradingOption = activity.getGradingOption() != null && activity.getGradingOption().equalsIgnoreCase(DegreeAuditConstants.CR_NO_CR_GRADING_OPTION);
+
+                                    List<ActivityOfferingItem> secondaryActivities = secondaryActivityMap.get(activity.getPrimaryActivityOfferingId());
+                                    //If the primary activity is honors we don't need to check the secondary for honors we pick the primary activity
+                                    if (!honors && secondaryActivities != null && !secondaryActivities.isEmpty()) {
+
+                                        for (ActivityOfferingItem activityOfferingItem : secondaryActivities) {
+                                            if (activityOfferingItem.isHonorsSection()) {
+                                                honorsSecondaryActivity = activityOfferingItem.getCode();
+                                            } else {
+                                                nonHonorsSecondaryActivity = activityOfferingItem.getCode();
+                                            }
+                                            if (honorsSecondaryActivity != null && nonHonorsSecondaryActivity != null) {
+                                                break;
+                                            }
+                                        }
+
+
+                                    }
+                                    String[] list = creditToList(credits);
+
+                                    for (String temp : list) {
+                                        Choice choice = new Choice();
+                                        choice.credit = temp;
+                                        choice.section = section;
+                                        choice.honors = honors;
+                                        choice.writing = writing;
+                                        choice.secondaryActivity = nonHonorsSecondaryActivity;
+                                        choice.crNcGradingOption = crNcGradingOption;
+                                        if (nonHonorsSecondaryActivity != null || honorsSecondaryActivity == null) {
+                                            choices.add(choice);
+                                        }
+                                        if (honorsSecondaryActivity != null) {
+                                            Choice honorsChoice = (Choice) choice.clone();
+                                            honorsChoice.secondaryActivity = honorsSecondaryActivity;
+                                            honorsChoice.honors = true;
+                                            choices.add(honorsChoice);
+                                        }
+                                    }
+
+
                                 }
+
                             }
 
-                            if (choices.size() == 1) {
-                                for (Choice choice : choices) {
-                                    String credits = choice.credit;
-                                    String section = choice.section;
-                                    CourseItem item = new CourseItem();
-                                    item.setAtpId(atpId);
+                            if (!ignore) {
+                                // Otherwise just use course's default credit choices
+                                if (choices.isEmpty()) {
+                                    String credits = CreditsFormatter.formatCredits(courseInfo);
+                                    String section = "";
+                                    String secondaryActivity = "";
+                                    String[] list = creditToList(credits);
+                                    for (String temp : list) {
+                                        Choice choice = new Choice();
+                                        choice.credit = temp;
+                                        choice.section = section;
+                                        choice.secondaryActivity = secondaryActivity;
+                                        choices.add(choice);
+                                    }
+                                }
+
+                                if (choices.size() == 1) {
+                                    for (Choice choice : choices) {
+                                        String credits = choice.credit;
+                                        String section = choice.section;
+                                        String secondaryActivity = choice.secondaryActivity;
+                                        CourseItem item = new CourseItem();
+                                        item.setAtpId(atpId);
+                                        item.setCourseCode(courseInfo.getCode());
+                                        item.setCourseId(courseInfo.getVersionInfo().getVersionIndId());
+                                        item.setCredit(credits);
+                                        item.setSectionCode(section);
+                                        item.setSecondaryActivityCode(secondaryActivity);
+                                        courseItems.add(item);
+                                    }
+                                } else {
+                                    Set<String> credits = new HashSet<String>();
+                                    for (Choice choice : choices) {
+                                        String formatted = choice.toString();
+                                        credits.add(formatted);
+                                    }
+
+                                    String versionIndependentId = courseInfo.getVersionInfo().getVersionIndId();
+
+                                    MessyItem item = new MessyItem();
                                     item.setCourseCode(courseInfo.getCode());
-                                    item.setCourseId(courseInfo.getVersionInfo().getVersionIndId());
-                                    item.setCredit(credits);
-                                    item.setSectionCode(section);
-                                    courseItems.add(item);
+                                    item.setCourseTitle(courseInfo.getCourseTitle());
+                                    item.setCourseId(courseInfo.getId());
+                                    item.setVersionIndependentId(versionIndependentId);
+                                    item.setCredits(credits);
+                                    item.setAtpId(atpId);
+
+                                    messyTerm.getMessyItemList().add(item);
                                 }
-                            } else {
-                                Set<String> credits = new HashSet<String>();
-                                for (Choice choice : choices) {
-                                    String formatted = choice.toString();
-                                    credits.add(formatted);
-                                }
-
-                                String versionIndependentId = courseInfo.getVersionInfo().getVersionIndId();
-
-                                MessyItem item = new MessyItem();
-                                item.setCourseCode(courseInfo.getCode());
-                                item.setCourseTitle(courseInfo.getCourseTitle());
-                                item.setCourseId(courseInfo.getId());
-                                item.setVersionIndependentId(versionIndependentId);
-                                item.setCredits(credits);
-                                item.setAtpId(atpId);
-
-                                messyTerm.getMessyItemList().add(item);
                             }
                         } else {
                             ignore = true;
@@ -753,10 +864,21 @@ public class DegreeAuditController extends UifControllerBase {
                     form.getIgnoreList().add(ignoreTerm);
                 }
             }
-        } catch (Exception e) {
+        } catch (
+                Exception e
+                )
+
+        {
             logger.error("Could not review the Plan ", e);
         }
-        if (!form.getMessyItems().isEmpty()) {
+
+        if (!form.getMessyItems().
+
+                isEmpty()
+
+                )
+
+        {
             Map<String, String> prevChoices = getPlanItemSnapShots();
 
             for (MessyTermDataObject messyTerm : form.getMessyItems()) {
@@ -771,10 +893,14 @@ public class DegreeAuditController extends UifControllerBase {
             }
 
         }
+
         boolean showHandOffScreen = !(form.getMessyItems().isEmpty() && form.getIgnoreList().isEmpty());
         form.setShowHandOffScreen(showHandOffScreen);
         logger.info("Ended the hand off screen at" + System.currentTimeMillis());
-        return getUIFModelAndView(auditForm);
+        return
+
+                getUIFModelAndView(auditForm);
+
     }
 
     /**
@@ -848,9 +974,17 @@ public class DegreeAuditController extends UifControllerBase {
             if ("PrimaryActivityOfferingCode".equalsIgnoreCase(key)) {
                 activity.setPrimaryActivityOfferingCode(value);
                 activity.setPrimary(value.equalsIgnoreCase(activity.getCode()));
-                break;
+            }
+            if ("PrimaryActivityOfferingId".equalsIgnoreCase(key)) {
+                activity.setPrimaryActivityOfferingId(value);
+            }
+            Boolean flag = Boolean.valueOf(value);
+            if ("Writing".equalsIgnoreCase(key)) {
+                activity.setWritingSection(flag);
             }
         }
+        activity.setHonorsSection(displayInfo.getIsHonorsOffering());
+        activity.setGradingOption(courseOfferingInfo.getGradingOptionName());
         return activity;
     }
 

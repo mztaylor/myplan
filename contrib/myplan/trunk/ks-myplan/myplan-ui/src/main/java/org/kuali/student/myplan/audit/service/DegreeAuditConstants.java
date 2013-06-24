@@ -37,6 +37,9 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
     public static final String BUCKET_MESSY = "BUCKET_MESSY";
     public static final String BUCKET_IGNORE = "BUCKET_IGNORE";
 
+    public static final String CR_NO_CR_GRADING_OPTION_ID = "kuali.uw.resultcomponent.grade.crnc";
+    public static final String CR_NO_CR_GRADING_OPTION = "Credit/No-Credit grading";
+
     public static final String APPLICATION_URL = "application.url";
 
     public static final String AUDIT_FAILED_HTML = "<div class=\"uif-validationMessages uif-groupValidationMessages uif-pageValidationMessages " +

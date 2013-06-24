@@ -30,17 +30,20 @@ public class PlanAuditMessyItems extends KeyValuesBase {
         List<KeyValue> honorCredits = new ArrayList<KeyValue>();
         List<KeyValue> writingCredits = new ArrayList<KeyValue>();
         List<KeyValue> bothHWCredits = new ArrayList<KeyValue>();
+        List<KeyValue> crNcCredits = new ArrayList<KeyValue>();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         MessyItem messyItem = (MessyItem) request.getSession().getAttribute("studentMessyItem");
         if (messyItem != null) {
             for (String credit : messyItem.getCredits()) {
                 String display = credit.split(":")[2];
-                if (display.contains(" - " + DegreeAuditConstants.WRITING_CREDIT + " - " + DegreeAuditConstants.HONORS_CREDIT)) {
+                if (display.contains("-- " + DegreeAuditConstants.WRITING_CREDIT + "-- " + DegreeAuditConstants.HONORS_CREDIT)) {
                     bothHWCredits.add(new ConcreteKeyValue(credit, display));
-                } else if (display.contains(" - " + DegreeAuditConstants.HONORS_CREDIT)) {
+                } else if (display.contains("-- " + DegreeAuditConstants.HONORS_CREDIT)) {
                     honorCredits.add(new ConcreteKeyValue(credit, display));
-                } else if (display.contains(" - " + DegreeAuditConstants.WRITING_CREDIT)) {
+                } else if (display.contains("-- " + DegreeAuditConstants.WRITING_CREDIT)) {
                     writingCredits.add(new ConcreteKeyValue(credit, display));
+                } else if (display.contains("-- " + DegreeAuditConstants.CR_NO_CR_GRADING_OPTION)) {
+                    crNcCredits.add(new ConcreteKeyValue(credit, display));
                 } else {
                     normalCredits.add(new ConcreteKeyValue(credit, display));
                 }
@@ -91,6 +94,17 @@ public class PlanAuditMessyItems extends KeyValuesBase {
                 }
             });
             keyValues.addAll(bothHWCredits);
+
+            //Sorting and adding bothHW credits to keyValues
+            Collections.sort(crNcCredits, new Comparator<KeyValue>() {
+                @Override
+                public int compare(KeyValue val1, KeyValue val2) {
+                    String compVal1 = val1.getKey().split(":")[1].trim();
+                    String compVal2 = val2.getKey().split(":")[1].trim();
+                    return Double.valueOf(compVal1).compareTo(Double.valueOf(compVal2));
+                }
+            });
+            keyValues.addAll(crNcCredits);
         }
 
         return keyValues;
