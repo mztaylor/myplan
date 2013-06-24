@@ -11,6 +11,7 @@ public class CourseItem {
     private String courseId;
     private String courseCode;
     private String sectionCode;
+    private String secondaryActivityCode;
     private String atpId;
     private String credit;
     private String title;
@@ -61,5 +62,13 @@ public class CourseItem {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getSecondaryActivityCode() {
+        return secondaryActivityCode;
+    }
+
+    public void setSecondaryActivityCode(String secondaryActivityCode) {
+        this.secondaryActivityCode = secondaryActivityCode;
     }
 }
