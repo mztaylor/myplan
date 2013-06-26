@@ -409,9 +409,10 @@ public class DegreeAuditController extends UifControllerBase {
                         List<AttributeInfo> list = planItem.getAttributes();
 
                         list.add(new AttributeInfo(BUCKET, BUCKET_MESSY));
-                        list.add(new AttributeInfo(CREDIT, str[1]));
+                        list.add(new AttributeInfo(CREDIT, str[2]));
                         list.add(new AttributeInfo(CHOICE, choice));
-                        list.add(new AttributeInfo(SECTION, str[0].isEmpty() ? null : str[0]));
+                        list.add(new AttributeInfo(SECTION, StringUtils.hasText(str[0]) ? str[0] : null));
+                        list.add(new AttributeInfo(SECONDARY_ACTIVITY, StringUtils.hasText(str[1]) ? str[1] : null));
 
                         getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, CONTEXT_INFO);
                     }
@@ -426,6 +427,7 @@ public class DegreeAuditController extends UifControllerBase {
                     list.add(new AttributeInfo(BUCKET, BUCKET_CLEAN));
                     list.add(new AttributeInfo(CREDIT, item.getCredit()));
                     list.add(new AttributeInfo(SECTION, item.getSectionCode()));
+                    list.add(new AttributeInfo(SECONDARY_ACTIVITY, item.getSecondaryActivityCode()));
 
                     getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, CONTEXT_INFO);
                 }
@@ -498,9 +500,7 @@ public class DegreeAuditController extends UifControllerBase {
         boolean showHandOffScreen = !(form.getMessyItems().isEmpty() && form.getIgnoreList().isEmpty());
         form.setShowHandOffScreen(showHandOffScreen);
         logger.info("Ended the hand off screen at" + System.currentTimeMillis());
-        return
-
-                getUIFModelAndView(auditForm);
+        return getUIFModelAndView(auditForm);
 
     }
 
