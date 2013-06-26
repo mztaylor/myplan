@@ -207,13 +207,14 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         }
     }
 
-    static public class DegreeAuditCourseRequest {
+    static public class DegreeAuditCourseRequest implements Cloneable {
         String curric;
         String credit;
         String campus;
         String number;
         String quarter;
         String year;
+        String activity;
 
         public String toString() {
             return
@@ -223,8 +224,13 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                             "<CourseCampus>" + campus.replace("&", "&amp;") + "</CourseCampus>\n" +
                             "<CourseNumber>" + number.replace("&", "&amp;") + "</CourseNumber>\n" +
                             "<Quarter>" + quarter.replace("&", "&amp;") + "</Quarter>\n" +
+                            "<SectionID>" + activity + "</SectionID>\n" +
                             "<Year>" + year.replace("&", "&amp;") + "</Year>\n" +
                             "</Course>\n";
+        }
+
+        public Object clone() throws CloneNotSupportedException {
+            return super.clone();
         }
     }
 
@@ -282,6 +288,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     String bucketType = BUCKET_IGNORE;
                     String credit = "0";
                     String section = null;
+                    String secondaryActivity = null;
                     for (AttributeInfo attrib : planItem.getAttributes()) {
                         String key = attrib.getKey();
                         String value = attrib.getValue();
@@ -291,6 +298,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                             credit = value;
                         } else if (SECTION.equals(key)) {
                             section = value;
+                        } else if (SECONDARY_ACTIVITY.equals(key)) {
+                            secondaryActivity = value;
                         }
                     }
 
@@ -305,6 +314,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         course.curric = courseInfo.getSubjectArea().trim();
                         course.number = courseInfo.getCourseNumberSuffix().trim();
                         course.credit = credit;
+                        course.activity = section;
                         {
                             course.campus = "Seattle";
                             List<OrgInfo> campusList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
@@ -326,6 +336,14 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         course.quarter = yt.getTermAsID();
                         course.year = yt.getYearAsString();
                         req.courses.add(course);
+
+                        //Adding new course request if a secondary activity exists
+                        if (secondaryActivity != null) {
+                            DegreeAuditCourseRequest secondaryActivityCourse = (DegreeAuditCourseRequest) course.clone();
+                            secondaryActivityCourse.activity = secondaryActivity;
+                            req.courses.add(secondaryActivityCourse);
+                        }
+
                         totalCredits = totalCredits + Integer.parseInt(course.credit);
                     } catch (Exception e) {
                         logger.warn("whatever", e);

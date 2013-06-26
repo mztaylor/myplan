@@ -35,7 +35,7 @@ public class PlanAuditMessyItems extends KeyValuesBase {
         MessyItem messyItem = (MessyItem) request.getSession().getAttribute("studentMessyItem");
         if (messyItem != null) {
             for (String credit : messyItem.getCredits()) {
-                String display = credit.split(":")[2];
+                String display = credit.split(":")[3];
                 if (display.contains("-- " + DegreeAuditConstants.WRITING_CREDIT + "-- " + DegreeAuditConstants.HONORS_CREDIT)) {
                     bothHWCredits.add(new ConcreteKeyValue(credit, display));
                 } else if (display.contains("-- " + DegreeAuditConstants.HONORS_CREDIT)) {
@@ -58,8 +58,8 @@ public class PlanAuditMessyItems extends KeyValuesBase {
             Collections.sort(normalCredits, new Comparator<KeyValue>() {
                 @Override
                 public int compare(KeyValue val1, KeyValue val2) {
-                    String compVal1 = val1.getKey().split(":")[1].trim();
-                    String compVal2 = val2.getKey().split(":")[1].trim();
+                    String compVal1 = val1.getKey().split(":")[2].trim();
+                    String compVal2 = val2.getKey().split(":")[2].trim();
                     return Double.valueOf(compVal1).compareTo(Double.valueOf(compVal2));
                 }
             });
@@ -68,8 +68,8 @@ public class PlanAuditMessyItems extends KeyValuesBase {
             Collections.sort(writingCredits, new Comparator<KeyValue>() {
                 @Override
                 public int compare(KeyValue val1, KeyValue val2) {
-                    String compVal1 = val1.getKey().split(":")[1].trim();
-                    String compVal2 = val2.getKey().split(":")[1].trim();
+                    String compVal1 = val1.getKey().split(":")[2].trim();
+                    String compVal2 = val2.getKey().split(":")[2].trim();
                     return Double.valueOf(compVal1).compareTo(Double.valueOf(compVal2));
                 }
             });
@@ -78,8 +78,8 @@ public class PlanAuditMessyItems extends KeyValuesBase {
             Collections.sort(honorCredits, new Comparator<KeyValue>() {
                 @Override
                 public int compare(KeyValue val1, KeyValue val2) {
-                    String compVal1 = val1.getKey().split(":")[1].trim();
-                    String compVal2 = val2.getKey().split(":")[1].trim();
+                    String compVal1 = val1.getKey().split(":")[2].trim();
+                    String compVal2 = val2.getKey().split(":")[2].trim();
                     return Double.valueOf(compVal1).compareTo(Double.valueOf(compVal2));
                 }
             });
@@ -88,8 +88,8 @@ public class PlanAuditMessyItems extends KeyValuesBase {
             Collections.sort(bothHWCredits, new Comparator<KeyValue>() {
                 @Override
                 public int compare(KeyValue val1, KeyValue val2) {
-                    String compVal1 = val1.getKey().split(":")[1].trim();
-                    String compVal2 = val2.getKey().split(":")[1].trim();
+                    String compVal1 = val1.getKey().split(":")[2].trim();
+                    String compVal2 = val2.getKey().split(":")[2].trim();
                     return Double.valueOf(compVal1).compareTo(Double.valueOf(compVal2));
                 }
             });
@@ -99,8 +99,8 @@ public class PlanAuditMessyItems extends KeyValuesBase {
             Collections.sort(crNcCredits, new Comparator<KeyValue>() {
                 @Override
                 public int compare(KeyValue val1, KeyValue val2) {
-                    String compVal1 = val1.getKey().split(":")[1].trim();
-                    String compVal2 = val2.getKey().split(":")[1].trim();
+                    String compVal1 = val1.getKey().split(":")[2].trim();
+                    String compVal2 = val2.getKey().split(":")[2].trim();
                     return Double.valueOf(compVal1).compareTo(Double.valueOf(compVal2));
                 }
             });

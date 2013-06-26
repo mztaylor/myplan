@@ -32,6 +32,7 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
     public static final String HONORS_CREDIT = "Honors";
     public static final String WRITING_CREDIT = "Writing";
     public static final String SECTION = "Section";
+    public static final String SECONDARY_ACTIVITY = "SecondaryActivity";
     public static final String BUCKET = "BUCKET";
     public static final String BUCKET_CLEAN = "BUCKET_CLEAN";
     public static final String BUCKET_MESSY = "BUCKET_MESSY";

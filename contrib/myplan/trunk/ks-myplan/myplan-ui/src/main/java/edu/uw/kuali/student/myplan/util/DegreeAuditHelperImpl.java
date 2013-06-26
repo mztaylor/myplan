@@ -86,6 +86,8 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
             StringBuilder sb = new StringBuilder();
             sb.append(section);
             sb.append(':');
+            sb.append(secondaryActivity);
+            sb.append(':');
             sb.append(credit);
             sb.append(':');
             sb.append(credit);
@@ -256,9 +258,10 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
                                         }
                                     }
                                 }
-                                String honorsSecondaryActivity = null;
-                                String nonHonorsSecondaryActivity = null;
+
                                 for (ActivityOfferingItem activity : processedActivities) {
+                                    String honorsSecondaryActivity = null;
+                                    String nonHonorsSecondaryActivity = null;
                                     String credits = activity.getCredits();
                                     String section = activity.getCode();
                                     boolean honors = activity.isHonorsSection();
