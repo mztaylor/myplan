@@ -10,11 +10,9 @@
     text-align: center;
     background-color: transparent;
 }
-
 .jquerypopover a {
     color: #1d8fd9;
 }
-
 .jquerypopover table {
     width: auto;
     height: auto;
@@ -27,20 +25,17 @@
     empty-cells: show;
     background-color: transparent;
 }
-
 .jquerypopover tbody {
     display: table-row-group;
     vertical-align: middle;
     border: 0px;
     background-color: transparent;
 }
-
 .jquerypopover td {
     margin: 0px;
     padding: 0px;
     background-color: transparent;
 }
-
 .jquerypopover-top-left, .jquerypopover-top-right,
 .jquerypopover-bottom-left, .jquerypopover-bottom-right {
     /*width:21px;
@@ -50,36 +45,43 @@
     font-size: 1px;
     line-height: 1px;
 }
-
 .jquerypopover-top-middle, .jquerypopover-bottom-middle {
     overflow: hidden;
     background-repeat: repeat-x;
     height: 21px;
     line-height: 1px;
 }
-
 .jquerypopover-middle-left, .jquerypopover-middle-right {
     overflow: hidden;
     background-repeat: repeat-y;
     width: 21px;
 }
-
 .jquerypopover-tail {
     border: 0px;
     margin: 0px;
     padding: 0px;
     display: inline;
 }
-
 .jquerypopover-innerHtml {
     position: relative;
     display: block;
     min-height: 26px;
 }
-
-/*.jquerypopover-top-left img, .jquerypopover-top-right img,
-.jquerypopover-bottom-left img, .jquerypopover-bottom-right img
-{
+.jquerypopover-top-left, .jquerypopover-top-middle, .jquerypopover-top-right {
+    background-position: left bottom;
+}
+.jquerypopover-middle-left {
+    background-position: right top;
+}
+.jquerypopover-middle-right {
+    background-position: left top;
+}
+.jquerypopover-bottom-left, .jquerypopover-bottom-middle, .jquerypopover-bottom-right {
+    background-position: left top;
+}
+/*
+.jquerypopover-top-left img, .jquerypopover-top-right img,
+.jquerypopover-bottom-left img, .jquerypopover-bottom-right img {
     width:21px;
     height:21px;
     font-size:1px;
@@ -88,7 +90,8 @@
     min-height:21px;
     margin:0px;
     padding:0px;
-}*/
+}
+*/
 
 /*  
 	Themes:
@@ -112,7 +115,6 @@
     color: #000000;
     background-color: #FFFFFF;
 }
-
 .jquerypopover-all-azure  .jquerypopover-innerHtml,
 .jquerypopover-all-black  .jquerypopover-innerHtml,
 .jquerypopover-all-blue   .jquerypopover-innerHtml,
@@ -124,39 +126,30 @@
     font-weight: normal;
     color: #FFFFFF;
 }
-
 .jquerypopover-all-azure  .jquerypopover-innerHtml {
     background-color: #0099FF;
 }
-
 .jquerypopover-all-black  .jquerypopover-innerHtml {
     background-color: #000000;
 }
-
 .jquerypopover-all-blue   .jquerypopover-innerHtml {
     background-color: #0066CC;
 }
-
 .jquerypopover-all-green  .jquerypopover-innerHtml {
     background-color: #66FF00;
 }
-
 .jquerypopover-all-grey   .jquerypopover-innerHtml {
     background-color: #666666;
 }
-
 .jquerypopover-all-orange .jquerypopover-innerHtml {
     background-color: #FF9933;
 }
-
 .jquerypopover-all-violet .jquerypopover-innerHtml {
     background-color: #FF33FF;
 }
-
 .jquerypopover-all-yellow .jquerypopover-innerHtml {
     background-color: #FFCC00;
 }
-
 .jquerypopover-heading {
     font-size: 115%;
     font-weight: bold;
@@ -164,7 +157,6 @@
     height: 24px;
     margin-bottom: 1em;
 }
-
 .jquerypopover-myplan-help .jquerypopover-innerHtml,
 .jquerybubblepopup-myplan-help .jquerybubblepopup-innerHtml {
     color: #fff;
@@ -173,21 +165,18 @@
     padding: 5px;
     background: url('jquerypopover-theme/myplan-help/innerHtml.png') repeat;
 }
-
 .jquerypopover-myplan-help .jquerypopover-top-middle,
 .jquerypopover-myplan-help .jquerypopover-bottom-middle,
 .jquerybubblepopup-myplan-help .jquerybubblepopup-top-middle,
 .jquerybubblepopup-myplan-help .jquerybubblepopup-bottom-middle {
     height: 16px;
 }
-
 .jquerypopover-myplan-help .jquerypopover-middle-left,
 .jquerypopover-myplan-help .jquerypopover-middle-right,
 .jquerybubblepopup-myplan-help .jquerybubblepopup-middle-left,
 .jquerybubblepopup-myplan-help .jquerybubblepopup-middle-right {
     width: 16px;
 }
-
 .jquerypopover-myplan-help .jquerypopover-top-left,
 .jquerypopover-myplan-help .jquerypopover-top-right,
 .jquerypopover-myplan-help .jquerypopover-bottom-left,
@@ -199,7 +188,6 @@
     width: 16px;
     height: 16px;
 }
-
 .jquerypopover-myplan-help .jquerypopover-innerHtml a,
 .jquerybubblepopup-myplan-help .jquerybubblepopup-innerHtml a {
     color: #9be4f9;
