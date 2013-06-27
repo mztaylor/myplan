@@ -149,7 +149,6 @@ function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
                 helpers:{
                     overlay:null
                 },
-                autoSize:true,
                 parent:"form:first",
                 href:"#" + getId,
                 beforeLoad:function () {

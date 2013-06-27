@@ -133,6 +133,20 @@ function stopEvent(e) {
     return false;
 }
 
+function openDocument(url) {
+    var newUrl;
+    if (url.substring(0,4) == "http") {
+        newUrl = url;
+    } else {
+        newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/")) + "/" + url;
+    }
+    if (newUrl == window.location.href) {
+        window.location.reload(true);
+    } else {
+        window.location.assign(newUrl);
+    }
+}
+
 function openCourse(courseId, e) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;

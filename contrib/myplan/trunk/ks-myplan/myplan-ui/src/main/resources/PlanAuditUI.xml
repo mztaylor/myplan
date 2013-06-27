@@ -98,7 +98,7 @@
                         <property name="title" value="@{#line.programTitle}"/>
                         <property name="hidden" value="@{#index gt 1}"/>
                         <property name="onClickScript" value="
-                            window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;planAudit.auditId=@{#line.report.auditId}#plan_audit_block_tab';
+                            openDocument('audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;planAudit.auditId=@{#line.report.auditId}#plan_audit_block_tab');
                         "/>
                         <property name="cssClasses">
                             <list merge="true">
