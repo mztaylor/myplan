@@ -26,6 +26,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -293,7 +294,7 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
                                         choice.section = section;
                                         choice.honors = honors;
                                         choice.writing = writing;
-                                        choice.secondaryActivity = nonHonorsSecondaryActivity;
+                                        choice.secondaryActivity = StringUtils.hasText(nonHonorsSecondaryActivity) ? nonHonorsSecondaryActivity : "";
                                         choice.crNcGradingOption = crNcGradingOption;
                                         if (nonHonorsSecondaryActivity != null || honorsSecondaryActivity == null) {
                                             choices.add(choice);
