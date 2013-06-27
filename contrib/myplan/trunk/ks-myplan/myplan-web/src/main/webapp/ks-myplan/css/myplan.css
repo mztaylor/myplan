@@ -2906,8 +2906,7 @@ label.scheduled {
     border: solid 1px #f6ca77;
 }
 
-.myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-hover,
-.myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-focus {
+.myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-hover {
     background-color: #f9ac23;
     background-image: -ms-linear-gradient(top, #f9ac23 0%, #f6ca77 100%);
     background-image: -moz-linear-gradient(center top, #f9ac23 0%, #f6ca77 100%);
