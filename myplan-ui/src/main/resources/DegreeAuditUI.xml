@@ -171,7 +171,7 @@
         <property name="layoutManager.lineGroupPrototype.id" value="@{#line.report.auditId}"/>
         <property name="layoutManager.lineGroupPrototype.title" value="@{#line.programTitle}"/>
         <property name="layoutManager.lineGroupPrototype.onClickScript" value="
-            window.location.href = 'audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;degreeAudit.auditId=@{#line.report.auditId}#degree_audit_block_tab';
+            openDocument('audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView&amp;degreeAudit.auditId=@{#line.report.auditId}#degree_audit_block_tab');
         "/>
         <property name="filters">
             <list>
