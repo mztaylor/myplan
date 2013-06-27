@@ -65,7 +65,7 @@
             <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">
                     <list>
-                        <ref bean="recent_audits_help_icon"/>
+                        <ref bean="recent_reviews_help_icon"/>
                     </list>
                 </property>
             </bean>
