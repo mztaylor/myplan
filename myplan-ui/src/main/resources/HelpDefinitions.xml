@@ -42,6 +42,13 @@
         </property>
     </bean>
 
+    <bean id="recent_reviews_help_icon" parent="MyPlanHelpImage">
+        <property name="toolTip">
+            <bean parent="MyPlan-Tooltip-Right"
+                  p:tooltipContent="Displays the last seven reviews run through MyPlan. Reviews are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#822&quot;);&gt;Learn more&lt;/a&gt;"/>
+        </property>
+    </bean>
+
 
     <bean id="completed_help_icon" parent="MyPlanHelpImage"
           p:render="@{#parentLine.completedTerm and #parentLine.displayCompletedHelp ? true : false}">
