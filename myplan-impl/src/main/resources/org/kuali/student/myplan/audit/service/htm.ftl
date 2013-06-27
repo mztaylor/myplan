@@ -387,6 +387,10 @@ ${headerLine?xml}
         <#assign sectionHeadingOpen = true>
 
     <#else> <#-- REQUIREMENT -->
+        <#if inSection>
+        </div> <#-- close section -->
+            <#assign inSection = false>
+        </#if>
 
         <#if sectionHeadingOpen = true>
         </div>
