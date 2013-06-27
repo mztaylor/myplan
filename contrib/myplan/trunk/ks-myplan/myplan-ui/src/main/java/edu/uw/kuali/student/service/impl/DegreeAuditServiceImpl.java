@@ -220,7 +220,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             return
                     "<Course>\n" +
                             "<CurriculumAbbreviation>" + curric.replace("&", "&amp;") + "</CurriculumAbbreviation>\n" +
-                            "<MinimumTermCredit>" + credit.replace("&", "&amp;") + "</MinimumTermCredit>\n" +
+                            "<MinimumTermCredit>" + credit + "</MinimumTermCredit>\n" +
                             "<CourseCampus>" + campus.replace("&", "&amp;") + "</CourseCampus>\n" +
                             "<CourseNumber>" + number.replace("&", "&amp;") + "</CourseNumber>\n" +
                             "<Quarter>" + quarter.replace("&", "&amp;") + "</Quarter>\n" +
@@ -338,8 +338,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         req.courses.add(course);
 
                         //Adding new course request if a secondary activity exists
+                        //NOTE: secondary activity courses should no pass credit
                         if (secondaryActivity != null) {
                             DegreeAuditCourseRequest secondaryActivityCourse = (DegreeAuditCourseRequest) course.clone();
+                            secondaryActivityCourse.credit = "0";
                             secondaryActivityCourse.activity = secondaryActivity;
                             req.courses.add(secondaryActivityCourse);
                         }
