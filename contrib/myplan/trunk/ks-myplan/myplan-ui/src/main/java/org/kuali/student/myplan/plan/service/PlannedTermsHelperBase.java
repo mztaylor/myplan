@@ -425,13 +425,7 @@ public class PlannedTermsHelperBase {
     public static List<PlannedTerm> getPlannedTermsFromStartAtp() {
         PlanItemLookupableHelperBase planItemLookupableHelperBase = new PlanItemLookupableHelperBase();
         List<PlannedCourseDataObject> plannedCourseDataObjects = new ArrayList<PlannedCourseDataObject>();
-        String startAtp = null;
-        for (String term : AtpHelper.getPublishedTerms()) {
-            if (AtpHelper.isAtpSetToPlanning(term)) {
-                startAtp = term;
-                break;
-            }
-        }
+        String startAtp = AtpHelper.getFirstOpenForPlanTerm();
         try {
             plannedCourseDataObjects = planItemLookupableHelperBase.getPlannedCoursesFromAtp(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, UserSessionHelper.getStudentRegId(), startAtp);
         } catch (Exception e) {
