@@ -47,11 +47,12 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
     @Override
     protected List<FullPlanItemsDataObject> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
 
+
         String studentId = UserSessionHelper.getStudentRegId();
         /*************PlannedCourseList**************/
         List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
         try {
-            plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, studentId);
+            plannedCoursesList = getPlannedCoursesFromAtp(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, studentId, AtpHelper.getFirstOpenForPlanTerm());
         } catch (Exception e) {
             logger.error("Could not load plannedCourseslist", e);
 

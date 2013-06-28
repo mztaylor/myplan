@@ -379,7 +379,7 @@ public class AtpHelper {
         return isAtpCompletedTerm;
     }
 
-    public static boolean hasYearTermCompleted(YearTerm atp ) {
+    public static boolean hasYearTermCompleted(YearTerm atp) {
         YearTerm currentYT = getCurrentYearTerm();
         boolean completed = atp.getValue() < currentYT.getValue();
         return completed;
@@ -488,6 +488,23 @@ public class AtpHelper {
         }
 
         return publishedTerms;
+    }
+
+
+    /**
+     * returns the  starting atpId which is open for planning and a published term
+     *
+     * @return
+     */
+    public static String getFirstOpenForPlanTerm() {
+        String startAtp = null;
+        for (String term : getPublishedTerms()) {
+            if (isAtpSetToPlanning(term)) {
+                startAtp = term;
+                break;
+            }
+        }
+        return startAtp;
     }
 
     /**

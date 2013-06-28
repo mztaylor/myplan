@@ -172,13 +172,7 @@ public class DegreeAuditController extends UifControllerBase {
             }
             //Check to see if the stddent has any planItems from current to future atp
             PlanItemLookupableHelperBase planHelper = new PlanItemLookupableHelperBase();
-            String startAtp = null;
-            for (String term : AtpHelper.getPublishedTerms()) {
-                if (AtpHelper.isAtpSetToPlanning(term)) {
-                    startAtp = term;
-                    break;
-                }
-            }
+            String startAtp = AtpHelper.getFirstOpenForPlanTerm();
             List<PlannedCourseDataObject> planItems = planHelper.getPlannedCoursesFromAtp(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, UserSessionHelper.getStudentRegId(), startAtp);
             if (planItems != null && !planItems.isEmpty()) {
                 auditForm.setPlanExists(true);
