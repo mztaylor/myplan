@@ -363,7 +363,7 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
                         }
                         //ignore if no version available or course not scheduled
                         if (ignore) {
-                            String course = getCourseHelper().getCourseVersionIdByTerm(planItem.getRefObjectId(), atpId);
+                            String course = getCourseHelper().getVerifiedCourseId(planItem.getRefObjectId());
                             if (course != null) {
                                 CourseInfo courseInfo = getCourseService().getCourse(course);
                                 //Adding course to ignore list if courseId not found
