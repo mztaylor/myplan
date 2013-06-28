@@ -212,24 +212,20 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
                                                 coActivities.add(buildActivityOfferingItemSummary(displayInfo, courseOfferingInfo));
                                             }
 
-                                            boolean isHonorsCrNcOffering = courseOfferingInfo.getGradingOptionId().equalsIgnoreCase(DegreeAuditConstants.CR_NO_CR_GRADING_OPTION_ID);
-                                            if (!isHonorsCrNcOffering) {
+                                            if (courseOfferingInfo.getGradingOptionId().equalsIgnoreCase(DegreeAuditConstants.CR_NO_CR_GRADING_OPTION_ID)) {
+                                                honorsCrNcActivities.addAll(coActivities);
+                                            } else {
                                                 for (ActivityOfferingItem coActivity : coActivities) {
                                                     if (coActivity.isHonorsSection()) {
-                                                        isHonorsCrNcOffering = true;
-                                                        break;
+                                                        honorsCrNcActivities.add(coActivity);
+
+                                                    } else {
+                                                        activities.add(coActivity);
                                                     }
 
 
                                                 }
                                             }
-
-                                            if (isHonorsCrNcOffering) {
-                                                honorsCrNcActivities.addAll(coActivities);
-                                            } else {
-                                                activities.addAll(coActivities);
-                                            }
-
 
                                         }
                                         //All activities are honors activities
