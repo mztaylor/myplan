@@ -159,7 +159,7 @@
 
     <!--******************************Start of Plan Audit Report****************************************-->
 
-    <bean id="degree_audit_block" parent="Uif-VerticalBoxSection" p:headerText="Degree Audit Report">
+    <bean id="degree_audit_block" parent="Uif-VerticalBoxSection" p:headerText="Degree Audit Report (DARS)">
         <property name="header.render" value="false"/>
         <property name="validationMessages">
             <null/>
