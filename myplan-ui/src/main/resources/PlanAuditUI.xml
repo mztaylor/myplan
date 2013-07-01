@@ -94,7 +94,7 @@
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
                     <bean parent="Uif-CollectionVerticalBoxItem">
-                        <property name="id" value="@{#line.report.auditId}"/>
+                        <property name="id" value="link_@{#line.report.auditId}"/>
                         <property name="title" value="@{#line.programTitle}"/>
                         <property name="hidden" value="@{#index gt 1}"/>
                         <property name="onClickScript" value="
