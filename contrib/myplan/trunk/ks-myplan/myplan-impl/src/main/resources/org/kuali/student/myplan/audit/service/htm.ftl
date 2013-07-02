@@ -405,16 +405,17 @@ ${headerLine?xml}
         </#if>
 
         <#assign inSection = true>
-
-        <#if needsDropdown ><#-- cut and paste from above, sorry! -->
+        <#if !req.category?contains("what-if_courses" )>
+            <#if needsDropdown ><#-- cut and paste from above, sorry! -->
             <#assign needsDropdown = false>
-        <div class="control-toolbar">
-            <label for="requirement-status">Show</label>
-            <select id="requirement-status">
-                <option value="all">All Requirements</option>
-                <option value="unmet">Unmet Requirements Only</option>
-            </select>
-        </div>
+                <div class="control-toolbar">
+                    <label for="requirement-status">Show</label>
+                    <select id="requirement-status">
+                        <option value="all">All Requirements</option>
+                        <option value="unmet">Unmet Requirements Only</option>
+                    </select>
+                </div>
+            </#if>
         </#if>
     <div class="requirement ${rname} ${satisfied} ${req.summaryGroupName?xml}">
     <div class="header">
