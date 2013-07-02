@@ -33,6 +33,7 @@ import org.springframework.util.StringUtils;
 import javax.xml.namespace.QName;
 import java.util.*;
 
+import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
 import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
 import static org.kuali.student.myplan.audit.service.DegreeAuditConstants.*;
 import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
@@ -579,7 +580,7 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
 
             for (LearningPlanInfo learningPlanInfo : learningPlanList) {
                 String learningPlanID = learningPlanInfo.getId();
-                List<PlanItemInfo> planItemInfoList = getAcademicPlanService().getPlanItemsInPlan(learningPlanID, CONTEXT_INFO);
+                List<PlanItemInfo> planItemInfoList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, LEARNING_PLAN_ITEM_TYPE_PLANNED, CONTEXT_INFO);
                 for (PlanItemInfo planItem : planItemInfoList) {
                     if (!planItem.getPlanPeriods().isEmpty()) {
                         String atpId = planItem.getPlanPeriods().get(0);
