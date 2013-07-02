@@ -121,7 +121,6 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
             if (!(that instanceof Choice)) return false;
             if (!(writing == ((Choice) that).writing)) return false;
             if (!(honors == ((Choice) that).honors)) return false;
-            if (!(secondaryActivity == ((Choice) that).secondaryActivity)) return false;
             if (!(crNcGradingOption == ((Choice) that).crNcGradingOption)) return false;
             return credit.equals(((Choice) that).credit);
         }
