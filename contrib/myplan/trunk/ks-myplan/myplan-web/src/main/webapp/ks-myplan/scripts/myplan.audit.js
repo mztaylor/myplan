@@ -44,26 +44,27 @@ function expandReq(obj, onload) {
 }
 
 function initAuditActions() {
-
-    jQuery(".requirement").each(function () {
-        jQuery(this).data("height", jQuery(this).height());
-        if (jQuery(this).is(".Status_OK")) {
-            collapseReq(jQuery(this), true);
-        } else {
-            expandReq(jQuery(this), true);
-        }
-    });
-    jQuery(".requirement > .header > .toggle, .requirement > .header > .title").click(function (e) {
-        var target = (e.target) ? e.target.nodeName.toLowerCase() : e.srcElement.nodeName.toLowerCase();
-        if (target != "a") {
-            var jRequirement = jQuery(this).parents(".requirement");
-            if (jRequirement.hasClass("expanded") && !jRequirement.hasClass("collapsed")) {
-                collapseReq(jRequirement, false);
-            } else { // if (jRequirement.hasClass("collapsed")) {
-                expandReq(jRequirement, false);
-            }
-        }
-    });
+    /*
+     jQuery(".requirement").each(function () {
+     jQuery(this).data("height", jQuery(this).height());
+     if (jQuery(this).is(".Status_OK")) {
+     collapseReq(jQuery(this), true);
+     } else {
+     expandReq(jQuery(this), true);
+     }
+     });
+     jQuery(".requirement > .header > .toggle, .requirement > .header > .title").click(function (e) {
+     var target = (e.target) ? e.target.nodeName.toLowerCase() : e.srcElement.nodeName.toLowerCase();
+     if (target != "a") {
+     var jRequirement = jQuery(this).parents(".requirement");
+     if (jRequirement.hasClass("expanded") && !jRequirement.hasClass("collapsed")) {
+     collapseReq(jRequirement, false);
+     } else { // if (jRequirement.hasClass("collapsed")) {
+     expandReq(jRequirement, false);
+     }
+     }
+     });
+     */
     jQuery(".control-toolbar #requirement-status").change(function () {
         var data = jQuery(this).val();
 
