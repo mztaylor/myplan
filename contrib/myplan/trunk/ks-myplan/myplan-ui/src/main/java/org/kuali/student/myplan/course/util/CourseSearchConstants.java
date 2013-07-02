@@ -61,6 +61,10 @@ public class CourseSearchConstants {
 
     public static final String SEARCH_REQUEST_LAST_SCHEDULED_PARAM = "lastScheduledTerm";
 
+    public static final String COURSE_SEARCH_FORM_VIEW = "CourseSearch-FormView";
+
+    public static final String CAMPUS_PARAM_REGEX = "\\s*,\\s*";
+
     /*Regex to Split Digits and alphabets Eg: COM 348 --> COM  348*/
     public static final String SPLIT_DIGITS_ALPHABETS = "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)";
 
@@ -71,5 +75,33 @@ public class CourseSearchConstants {
     public static final String UNFORMATTED_COURSE_CODE_REGEX = "^[a-zA-Z]{1}[a-zA-Z &]{2,7}[0-9]{3}$";
 
     public static final String COURSE_CODE_WITH_SECTION_REGEX = "^[A-Z]{1}[A-Z &]{2,6}\\s[0-9]{3}\\s[A-Z]{1}[A-Z0-9]{0,1}$";
+
+
+    /*Activity Constants*/
+
+
+    public static final String COURSE_COMMENTS = "CourseComments";
+    public static final String CURRICULUM_COMMENTS = "CurriculumComments";
+    public static final String PRIMARY_ACTIVITY_OFFERING_ID = "PrimaryActivityOfferingId";
+    public static final String ACTIVITY_CAMPUS = "Campus";
+    public static final String FEE_AMOUNT = "FeeAmount";
+    public static final String SLN = "SLN";
+    public static final String INSTITUTE_CODE = "InstituteCode";
+    public static final String INSTITUTE_NAME = "InstituteName";
+    public static final String SECTION_COMMENTS = "SectionComments";
+    public static final String SUMMER_TERM = "SummerTerm";
+    public static final String PRIMARY_ACTIVITY_OFFERING_CODE = "PrimaryActivityOfferingCode";
+    public static final String SERVICE_LEARNING = "ServiceLearning";
+    public static final String RESEARCH_CREDIT = "ResearchCredit";
+    public static final String DISTANCE_LEARNING = "DistanceLearning";
+    public static final String JOINT_SECTIONS = "JointSections";
+    public static final String WRITING = "Writing";
+    public static final String FINANCIAL_AID_ELIGIBLE = "FinancialAidEligible";
+    public static final String ADD_CODE_REQUIRED = "AddCodeRequired";
+    public static final String INDEPENDENT_STUDY = "IndependentStudy";
+    public static final String ENROLLMENT_RESTRICTIONS = "EnrollmentRestrictions";
+
+    public static final String SEARCH_REQUEST_CREDITS_DETAILS = "myplan.course.info.credits.details";
+    public static final String MYPLAN_SEARCH_RESULTS_MAX = "myplan.search.results.max";
 
 }

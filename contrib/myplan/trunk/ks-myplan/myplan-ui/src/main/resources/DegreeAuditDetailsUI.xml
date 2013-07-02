@@ -318,7 +318,7 @@
         </property>
     </bean>
 
-    <bean id="degree_param_campus" parent="Uif-InputField" p:propertyName="degreeAudit.campusParam">
+    <bean id="degree_param_campus" parent="Uif-InputField" p:propertyName="degreeAudit.campusParam" p:defaultValue="306">
         <property name="validationMessages">
             <null/>
         </property>
@@ -333,7 +333,7 @@
         </property>
     </bean>
 
-    <bean id="plan_param_campus" parent="Uif-InputField" p:propertyName="planAudit.campusParam">
+    <bean id="plan_param_campus" parent="Uif-InputField" p:propertyName="planAudit.campusParam" p:defaultValue="306">
         <property name="validationMessages">
             <null/>
         </property>

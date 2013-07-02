@@ -15,6 +15,8 @@ import org.kuali.student.myplan.audit.dataobject.CourseItem;
 import org.kuali.student.myplan.audit.dataobject.IgnoreTermDataObject;
 import org.kuali.student.myplan.audit.dataobject.MessyItem;
 import org.kuali.student.myplan.audit.dataobject.MessyTermDataObject;
+import org.kuali.student.myplan.audit.dto.AuditReportInfo;
+import org.kuali.student.myplan.audit.form.DegreeAuditForm;
 import org.kuali.student.myplan.audit.form.PlanAuditForm;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
@@ -32,8 +34,7 @@ import javax.xml.namespace.QName;
 import java.util.*;
 
 import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
-import static org.kuali.student.myplan.audit.service.DegreeAuditConstants.HONORS_CREDIT;
-import static org.kuali.student.myplan.audit.service.DegreeAuditConstants.WRITING_CREDIT;
+import static org.kuali.student.myplan.audit.service.DegreeAuditConstants.*;
 import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
 
 /**
@@ -55,10 +56,56 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
 
     private static CourseHelper courseHelper;
 
+    public enum Campus {
+        CAMPUS_306("0"),
+        CAMPUS_310("1"),
+        CAMPUS_323("2");
+
+        private static final Map<String, Campus> lookup
+                = new HashMap<String, Campus>();
+
+        static {
+            for (Campus w : EnumSet.allOf(Campus.class))
+                lookup.put(w.getCode(), w);
+        }
+
+        private String code;
+
+        private Campus(String code) {
+            this.code = code;
+        }
+
+        //code is the prefix value of the audit programs  0-->seattle, 1-->bothell, 2-->tacoma
+        public String getCode() {
+            return code;
+        }
+
+        //Id is the org value for campuses 306-->seattle, 310-->bothell, 323-->tacoma
+        public String getId() {
+            return this.name().replace("CAMPUS_", "");
+        }
+
+        // Takes a code and passes out a Id  0-->306, 1-->310, 2-->323
+        public static Campus getId(String code) {
+            return lookup.get(code);
+        }
+
+        // Takes a Id and passes out a code 306-->0, 310-->1, 323-->2
+        public static Campus getCampusCode(String Id) {
+            for (Map.Entry<String, Campus> entry : lookup.entrySet()) {
+                if (entry.getValue().getId().equalsIgnoreCase(Id)) {
+                    return entry.getValue();
+                }
+            }
+            return null;
+        }
+
+    }
+
     public static class Choice implements Cloneable {
-        String credit = "";
-        String section = null;
-        String secondaryActivity = null;
+        public String credit = "";
+        public String section = null;
+        public String secondaryActivity = null;
         boolean crNcGradingOption = false;
         boolean writing = false;
         boolean honors = false;
@@ -106,6 +153,24 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
             }
             return sb.toString();
         }
+
+        /**
+         * Format for the key is same as value the toString method returns
+         *
+         * @param key
+         * @return
+         */
+        public Choice build(String key) {
+            Choice choice = new Choice();
+            String[] str = key.split(":");
+            choice.section = StringUtils.hasText(str[0]) ? str[0] : null;
+            choice.secondaryActivity = StringUtils.hasText(str[1]) ? str[1] : null;
+            choice.credit = StringUtils.hasText(str[2]) ? str[2] : null;
+            choice.writing = str[3].contains(WRITING_CREDIT);
+            choice.honors = str[3].contains(HONORS_CREDIT);
+            choice.crNcGradingOption = str[3].contains(CR_NO_CR_GRADING_OPTION);
+            return choice;
+        }
     }
 
     /**
@@ -120,14 +185,7 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
 
         List<AtpHelper.YearTerm> publishedTerms = AtpHelper.getPublishedYearTermList();
 
-        String startAtpId = null;
-        for (AtpHelper.YearTerm yt : AtpHelper.getPublishedYearTermList()) {
-            String atpId = yt.toATP();
-            if (AtpHelper.isAtpSetToPlanning(atpId)) {
-                startAtpId = atpId;
-                break;
-            }
-        }
+        String startAtpId = AtpHelper.getFirstOpenForPlanTerm();
 
         Map<String, List<PlanItemInfo>> planItemsMap = populatePlanItemsMap();
         logger.info("Retrieved planned courses in " + System.currentTimeMillis());
@@ -396,6 +454,69 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
     }
 
     /**
+     * Adds the degree audit programId to the associated campus
+     *
+     * @param report
+     * @param form
+     * @return
+     */
+    @Override
+    public DegreeAuditForm copyCampusToForm(AuditReportInfo report, DegreeAuditForm form) {
+        String programId = report.getProgramId();
+        String prefix = String.valueOf(programId.charAt(0));
+        programId = programId.replace(' ', '$');
+
+        // Impl to set the default values for campusParam and programParam properties
+        Campus campus = Campus.getId(prefix);
+        if (campus != null) {
+            form.setCampusParam(campus.getId());
+            switch (campus) {
+                case CAMPUS_306:
+                    form.setProgramParamSeattle(programId);
+                    break;
+                case CAMPUS_310:
+                    form.setProgramParamBothell(programId);
+                    break;
+                case CAMPUS_323:
+                    form.setProgramParamTacoma(programId);
+                    break;
+                default:
+                    break;
+            }
+        }
+        return form;
+    }
+
+    /**
+     * Gets the program id for the selected campus
+     *
+     * @param form
+     * @return
+     */
+    @Override
+    public String getFormProgramID(DegreeAuditForm form) {
+        String campusSelected = form.getCampusParam();
+        Campus campus = Campus.getCampusCode(campusSelected);
+        String programId = DegreeAuditConstants.DEFAULT_KEY;
+        if (campus != null) {
+            switch (campus) {
+                case CAMPUS_306:
+                    programId = form.getProgramParamSeattle();
+                    break;
+                case CAMPUS_310:
+                    programId = form.getProgramParamBothell();
+                    break;
+                case CAMPUS_323:
+                    programId = form.getProgramParamTacoma();
+                    break;
+                default:
+                    break;
+            }
+        }
+        return programId;
+    }
+
+    /**
      * populates the Map with courseId as key and list Of activities that are planned and associated to that course.
      *
      * @param planItemInfos
@@ -417,7 +538,7 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
                     /*TODO: move this to Coursehelper to make it institution neutral*/
                     String courseOfferingId = null;
                     for (AttributeInfo attributeInfo : activityDisplayInfo.getAttributes()) {
-                        if ("PrimaryActivityOfferingId".equalsIgnoreCase(attributeInfo.getKey())) {
+                        if (CourseSearchConstants.PRIMARY_ACTIVITY_OFFERING_ID.equalsIgnoreCase(attributeInfo.getKey())) {
                             courseOfferingId = attributeInfo.getValue();
                             break;
                         }
@@ -447,6 +568,8 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
 
 
     /**
+     * populates a planned planItems Map
+     *
      * @return
      */
     private Map<String, List<PlanItemInfo>> populatePlanItemsMap() {
@@ -477,6 +600,14 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
         return planItemsMap;
     }
 
+    /**
+     * if variable credit 1,2 ---> 1,2 are returned
+     * if variable credit 1-5 ---> 1,2,3,4,5 are returned
+     * if standard credit 1 ---> 1 is returned
+     *
+     * @param credit
+     * @return
+     */
     private String[] creditToList(String credit) {
         credit = credit.replace(" ", "");
         String[] result = null;
@@ -515,15 +646,15 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
         for (AttributeInfo attrib : displayInfo.getAttributes()) {
             String key = attrib.getKey();
             String value = attrib.getValue();
-            if ("PrimaryActivityOfferingCode".equalsIgnoreCase(key)) {
+            if (CourseSearchConstants.PRIMARY_ACTIVITY_OFFERING_CODE.equalsIgnoreCase(key)) {
                 activity.setPrimaryActivityOfferingCode(value);
                 activity.setPrimary(value.equalsIgnoreCase(activity.getCode()));
             }
-            if ("PrimaryActivityOfferingId".equalsIgnoreCase(key)) {
+            if (CourseSearchConstants.PRIMARY_ACTIVITY_OFFERING_ID.equalsIgnoreCase(key)) {
                 activity.setPrimaryActivityOfferingId(value);
             }
             Boolean flag = Boolean.valueOf(value);
-            if ("Writing".equalsIgnoreCase(key)) {
+            if (CourseSearchConstants.WRITING.equalsIgnoreCase(key)) {
                 activity.setWritingSection(flag);
             }
         }

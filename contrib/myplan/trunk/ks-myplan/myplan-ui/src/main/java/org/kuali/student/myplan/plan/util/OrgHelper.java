@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.plan.util;
 
+import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.exceptions.MissingParameterException;
@@ -9,6 +10,8 @@ import org.kuali.student.common.search.dto.SearchResultCell;
 import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.core.organization.service.OrganizationService;
+import org.kuali.student.myplan.course.util.CampusSearch;
+import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 
 import javax.xml.namespace.QName;
@@ -33,7 +36,6 @@ public class OrgHelper {
     public static OrganizationService organizationService;
 
     public static HashMap<String, List<OrgInfo>> orgTypeCache;
-
 
     public static HashMap<String, List<OrgInfo>> getOrgTypeCache() {
         if (OrgHelper.orgTypeCache == null) {
@@ -118,6 +120,31 @@ public class OrgHelper {
         return subjects;
     }
 
+
+    /**
+     * returns a list of orInfo's holding all the available campuses
+     *
+     * @return
+     */
+    public static List<OrgInfo> getAvailableCampuses() {
+        List<OrgInfo> orgInfoList = new ArrayList<OrgInfo>();
+        try {
+            orgInfoList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
+        } catch (Exception e) {
+            logger.error("No Values for campuses found", e);
+        }
+        return orgInfoList;
+
+    }
+
+
+    /**
+     * Returns the value for the SearchResultCell in the SearchResultRow comparing with given key
+     *
+     * @param row
+     * @param key
+     * @return
+     */
     public static String getCellValue(SearchResultRow row, String key) {
         for (SearchResultCell cell : row.getCells()) {
             if (key.equals(cell.getKey())) {
@@ -126,6 +153,5 @@ public class OrgHelper {
         }
         throw new RuntimeException("cell result '" + key + "' not found");
     }
-
 
 }

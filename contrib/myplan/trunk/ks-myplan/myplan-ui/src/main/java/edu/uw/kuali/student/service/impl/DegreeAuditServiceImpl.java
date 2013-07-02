@@ -9,6 +9,7 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.dom4j.tree.DefaultText;
 import org.dom4j.xpath.DefaultXPath;
+import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.student.core.organization.dto.OrgInfo;
@@ -39,7 +40,6 @@ import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
-import org.restlet.Client;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Method;
@@ -78,6 +78,8 @@ import static org.kuali.student.myplan.audit.service.DegreeAuditConstants.*;
 public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     private int TIMEOUT = 5 * 60 * 1000; // 5 minutes
+
+    private String postAuditRequestURL = ConfigContext.getCurrentContextConfig().getProperty(DEGREE_AUDIT_SERVICE_URL);
 
 
 //    public static void main(String[] args)
@@ -394,8 +396,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         try {
 
             String payload = req.toString();
-
-            String postAuditRequestURL = getStudentServiceClient().getBaseUrl() + "/v5/degreeaudit.xml";
             logger.debug("REST HTTP POST");
             logger.debug(postAuditRequestURL);
             logger.debug(payload);
@@ -836,10 +836,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         DprogHibernateDao dao = (DprogHibernateDao) getDprogDao();
         List<AuditProgramInfo> auditProgramInfoList = new ArrayList<AuditProgramInfo>();
         String hql = "SELECT DISTINCT dp.comp_id.dprog, dp.webtitle from Dprog dp WHERE (dp.comp_id.dprog LIKE '0%' or dp.comp_id.dprog LIKE '1%' or dp.comp_id.dprog LIKE '2%') AND dp.lyt>=? AND dp.webtitle IS NOT NULL AND dp.webtitle<>'' AND dp.dpstatus='W'";
-        String[] currentTermAndYear = this.getCurrentYearAndTerm();
-        int year = Integer.parseInt(currentTermAndYear[1]) - 10;
+        YearTerm currentTermAndYear = AtpHelper.getCurrentYearTerm();
+        int year = currentTermAndYear.getYear() - 10;
         StringBuffer termYear = new StringBuffer();
-        termYear = termYear.append(year).append(currentTermAndYear[0]);
+        termYear = termYear.append(year).append(currentTermAndYear.getTerm());
 //        YearTerm yt = AtpHelper.getCurrentYearTerm();
 //        yt = new AtpHelper.YearTerm( yt.getYear() - 10, yt.getTerm() );
 //        String whoof = yt.toUAchieveValue();
@@ -886,13 +886,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             // Ignores audit status "X"
         }
         return auditStatus;
-    }
-
-    /*Implemented to get the current year and the term value from the academic calender service.*/
-    private String[] getCurrentYearAndTerm() {
-        String currentAtp = AtpHelper.getCurrentAtpId();
-        String[] termYear = AtpHelper.atpIdToTermAndYear(currentAtp);
-        return new String[]{termYear[0].trim(), termYear[1].trim()};
     }
 
     public StudentServiceClient getStudentServiceClient() {

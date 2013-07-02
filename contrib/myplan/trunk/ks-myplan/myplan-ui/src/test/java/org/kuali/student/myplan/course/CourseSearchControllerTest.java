@@ -96,21 +96,6 @@ public class CourseSearchControllerTest {
     }
 
     @Test
-    public void testGetCellValue() {
-        CourseSearchController controller = getSearchController();
-        SearchResultRow row = new SearchResultRow();
-        row.addCell("key", "value");
-
-        assertEquals("value", controller.getCellValue(row, "key"));
-
-        try {
-            controller.getCellValue(row, "fail");
-            fail("should have throw exception");
-        } catch (Exception e) {
-        }
-    }
-
-    @Test
     public void testGetCreditMap() {
         CourseSearchController controller = getSearchController();
         HashMap<String, CourseSearchController.Credit> map = controller.getCreditMap();
@@ -346,6 +331,6 @@ public class CourseSearchControllerTest {
         HashMap<String, String> divisionsMap = controller.fetchCourseDivisions();
         assertFalse(divisionsMap.isEmpty());
     }
-
-
 }
+
+
