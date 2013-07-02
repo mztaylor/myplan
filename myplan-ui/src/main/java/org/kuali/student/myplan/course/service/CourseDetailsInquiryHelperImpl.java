@@ -72,6 +72,13 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     public static final String NOT_OFFERED_IN_LAST_TEN_YEARS = "Not offered for more than 10 years.";
 
+    public static final String YES = "Y";
+
+    public static final String SECTION_TERM = "section_term";
+
+    public static final String VIEW_MORE_DETAILS = "View more details";
+
+
     private transient CourseService courseService;
 
     private transient CourseOfferingService courseOfferingService;
@@ -250,7 +257,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
 
             // -- Gen Ed requirements
-            if ("Y".equals(value) && key.startsWith(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX)) {
+            if (YES.equals(value) && key.startsWith(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX)) {
 
                 // Get only the abbre_val of gen ed requirements
                 String abbrev = EnumerationHelper.getEnumAbbrValForCode(key);
@@ -357,8 +364,8 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             // Course offerings
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             List<String> termList = null;
-            if (request.getParameter("section_term") != null) {
-                String termId = AtpHelper.atpIdToTermName(request.getParameter("section_term"));
+            if (request.getParameter(SECTION_TERM) != null) {
+                String termId = AtpHelper.atpIdToTermName(request.getParameter(SECTION_TERM));
                 termList = new ArrayList<String>();
                 termList.add(termId);
             } else {
@@ -533,10 +540,10 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     for (AttributeInfo attributeInfo : courseInfo.getAttributes()) {
                         String key = attributeInfo.getKey();
                         String value = attributeInfo.getValue();
-                        if ("CourseComments".equalsIgnoreCase(key) && value.length() > 0) {
+                        if (CourseSearchConstants.COURSE_COMMENTS.equalsIgnoreCase(key) && value.length() > 0) {
                             courseComments = value;
                             if (null != curriculumComments) break;
-                        } else if ("CurriculumComments".equalsIgnoreCase(key) && value.length() > 0) {
+                        } else if (CourseSearchConstants.CURRICULUM_COMMENTS.equalsIgnoreCase(key) && value.length() > 0) {
                             curriculumComments = value;
                             if (null != courseComments) break;
                         }
@@ -683,7 +690,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 if (activityDisplayInfo != null) {
                     String courseOfferingId = null;
                     for (AttributeInfo attributeInfo : activityDisplayInfo.getAttributes()) {
-                        if ("PrimaryActivityOfferingId".equalsIgnoreCase(attributeInfo.getKey())) {
+                        if (CourseSearchConstants.PRIMARY_ACTIVITY_OFFERING_ID.equalsIgnoreCase(attributeInfo.getKey())) {
                             courseOfferingId = attributeInfo.getValue();
                             break;
                         }
@@ -786,67 +793,67 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         for (AttributeInfo attrib : displayInfo.getAttributes()) {
             String key = attrib.getKey();
             String value = attrib.getValue();
-            if ("Campus".equalsIgnoreCase(key) && !"".equals(value)) {
+            if (CourseSearchConstants.ACTIVITY_CAMPUS.equalsIgnoreCase(key) && !"".equals(value)) {
                 campus = value;
                 continue;
             }
-            if ("FeeAmount".equalsIgnoreCase(key) && !"".equals(value)) {
+            if (CourseSearchConstants.FEE_AMOUNT.equalsIgnoreCase(key) && !"".equals(value)) {
                 activity.setFeeAmount(value);
                 continue;
             }
-            if ("SLN".equalsIgnoreCase(key)) {
+            if (CourseSearchConstants.SLN.equalsIgnoreCase(key)) {
                 activity.setRegistrationCode(value);
                 continue;
             }
-            if ("InstituteCode".equals(key)) {
+            if (CourseSearchConstants.INSTITUTE_CODE.equals(key)) {
                 instituteCode = value;
                 continue;
             }
-            if ("InstituteName".equals(key) && !"".equals(value)) {
+            if (CourseSearchConstants.INSTITUTE_NAME.equals(key) && !"".equals(value)) {
                 instituteName = value;
                 continue;
             }
 
-            if ("SectionComments".equalsIgnoreCase(key)) {
+            if (CourseSearchConstants.SECTION_COMMENTS.equalsIgnoreCase(key)) {
                 activity.setSectionComments(value);
                 continue;
             }
 
-            if ("SummerTerm".equalsIgnoreCase(key) && StringUtils.hasText(value)) {
+            if (CourseSearchConstants.SUMMER_TERM.equalsIgnoreCase(key) && StringUtils.hasText(value)) {
                 activity.setSummerTerm(value);
                 continue;
             }
 
-            if ("PrimaryActivityOfferingId".equalsIgnoreCase(key)) {
+            if (CourseSearchConstants.PRIMARY_ACTIVITY_OFFERING_ID.equalsIgnoreCase(key)) {
                 activity.setPrimaryActivityOfferingId(value);
                 continue;
             }
 
             /*PrimarySectionCode is for the add button hover text in secondary sections
             * Which have primary section not planned eg: COM 320 AA:"Add Section AA and A to Plan"*/
-            if ("PrimaryActivityOfferingCode".equalsIgnoreCase(key)) {
+            if (CourseSearchConstants.PRIMARY_ACTIVITY_OFFERING_CODE.equalsIgnoreCase(key)) {
                 activity.setPrimaryActivityOfferingCode(value);
                 activity.setPrimary(value.equalsIgnoreCase(activity.getCode()));
             }
 
             Boolean flag = Boolean.valueOf(value);
-            if ("ServiceLearning".equalsIgnoreCase(key)) {
+            if (CourseSearchConstants.SERVICE_LEARNING.equalsIgnoreCase(key)) {
                 activity.setServiceLearning(flag);
-            } else if ("ResearchCredit".equalsIgnoreCase(key)) {
+            } else if (CourseSearchConstants.RESEARCH_CREDIT.equalsIgnoreCase(key)) {
                 activity.setResearch(flag);
-            } else if ("DistanceLearning".equalsIgnoreCase(key)) {
+            } else if (CourseSearchConstants.DISTANCE_LEARNING.equalsIgnoreCase(key)) {
                 activity.setDistanceLearning(flag);
-            } else if ("JointSections".equalsIgnoreCase(key)) {
+            } else if (CourseSearchConstants.JOINT_SECTIONS.equalsIgnoreCase(key)) {
                 activity.setJointOffering(flag);
-            } else if ("Writing".equalsIgnoreCase(key)) {
+            } else if (CourseSearchConstants.WRITING.equalsIgnoreCase(key)) {
                 activity.setWritingSection(flag);
-            } else if ("FinancialAidEligible".equalsIgnoreCase(key)) {
+            } else if (CourseSearchConstants.FINANCIAL_AID_ELIGIBLE.equalsIgnoreCase(key)) {
                 activity.setIneligibleForFinancialAid(flag);
-            } else if ("AddCodeRequired".equalsIgnoreCase(key)) {
+            } else if (CourseSearchConstants.ADD_CODE_REQUIRED.equalsIgnoreCase(key)) {
                 activity.setAddCodeRequired(flag);
-            } else if ("IndependentStudy".equalsIgnoreCase(key)) {
+            } else if (CourseSearchConstants.INDEPENDENT_STUDY.equalsIgnoreCase(key)) {
                 activity.setIndependentStudy(flag);
-            } else if ("EnrollmentRestrictions".equalsIgnoreCase(key)) {
+            } else if (CourseSearchConstants.ENROLLMENT_RESTRICTIONS.equalsIgnoreCase(key)) {
                 activity.setEnrollRestriction(flag);
             }
 
@@ -861,7 +868,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
         /*Data from other params*/
         activity.setNewThisYear(false);
-        activity.setDetails("View more details");
+        activity.setDetails(VIEW_MORE_DETAILS);
         activity.setPlanItemId(planItemId);
         activity.setAtpId(termId);
         activity.setOpenForPlanning(openForPlanning);

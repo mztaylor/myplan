@@ -22,6 +22,8 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
 
     public static final String CAMPUS_LOCATION = "kuali.uw.org.type.campus";
 
+    public static final String DEGREE_AUDIT_SERVICE_URL = "myplan.auditservice.url";
+
     public static final String AUDIT_RUN_FAILED = "myplan.text.error.message.auditIncomplete";
     public static final String AUDIT_RETRIEVAL_FAILED = "myplan.text.error.message.auditRetrievalFailed";
     public static final String AUDIT_SUMMARY_VIEW = "degree_audits_list";

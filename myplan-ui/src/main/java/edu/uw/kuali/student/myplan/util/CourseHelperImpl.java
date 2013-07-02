@@ -33,7 +33,6 @@ import org.kuali.student.r2.common.dto.AttributeInfo;
 import javax.xml.namespace.QName;
 import java.io.StringReader;
 import java.util.*;
-import java.util.regex.Pattern;
 
 public class CourseHelperImpl implements CourseHelper {
 

@@ -21,38 +21,16 @@ public class CampusSearch extends KeyValuesBase {
     private boolean blankOption;
 
 
-    private HashMap<String, List<OrgInfo>> hashMap;
-
-    public HashMap<String, List<OrgInfo>> getHashMap() {
-        if (this.hashMap == null) {
-            this.hashMap = new HashMap<String, List<OrgInfo>>();
-        }
-        return this.hashMap;
-    }
-
-    public void setHashMap(HashMap<String, List<OrgInfo>> hashMap) {
-        this.hashMap = hashMap;
-    }
-
-
     @Override
     public List<KeyValue> getKeyValues() {
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
         if (blankOption) {
             keyValues.add(new ConcreteKeyValue("", ""));
         }
-        List<OrgInfo> orgInfoList=new ArrayList<OrgInfo>();
-        try {
-            if (!this.getHashMap().containsKey(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE)) {
-                orgInfoList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
-                getHashMap().put(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, orgInfoList);
-            } else {
-                orgInfoList = getHashMap().get(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE);
-            }
-        } catch (Exception e) {
-            logger.error("No Values for campuses found", e);
-        }
-        if (orgInfoList != null && orgInfoList.size()>0) {
+
+        List<OrgInfo> orgInfoList = OrgHelper.getAvailableCampuses();
+
+        if (orgInfoList != null && orgInfoList.size() > 0) {
             for (OrgInfo entry : orgInfoList) {
                 keyValues.add(new ConcreteKeyValue(entry.getId(), entry.getLongName() + " campus"));
             }
