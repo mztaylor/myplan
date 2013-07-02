@@ -80,6 +80,9 @@ public class DegreeAuditController extends UifControllerBase {
 
     private final Logger logger = Logger.getLogger(DegreeAuditController.class);
 
+    //this is the Id of seattle campus
+    private final String DEFAULT_CAMPUS_ID = "306";
+
     private DegreeAuditService degreeAuditService;
 
     private OrganizationService organizationService;
@@ -129,6 +132,11 @@ public class DegreeAuditController extends UifControllerBase {
                 logger.info("audit regId " + regId);
 
                 DegreeAuditService degreeAuditService = getDegreeAuditService();
+
+                degreeAuditForm.setCampusParam(DEFAULT_CAMPUS_ID);
+                planAuditForm.setCampusParam(DEFAULT_CAMPUS_ID);
+
+
                 Date startDate = new Date();
                 Date endDate = new Date();
                 ContextInfo context = new ContextInfo();
