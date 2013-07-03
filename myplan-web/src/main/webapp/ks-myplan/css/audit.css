@@ -279,8 +279,10 @@
 .myplan-audit-report .requirement .body .totals .earned,
 .myplan-audit-report .requirement .body .totals .inprogress,
 .myplan-audit-report .requirement .body .totals .needs,
-.myplan-audit-report .requirement .body .totals .required {
+.myplan-audit-report .requirement .body .totals .required,
+.myplan-audit-report .requirement .body .totals .whatif {
     margin: 0 20px 0 0;
+    display: inline-block;
 }
 
 .myplan-audit-report .requirement .subrequirement .header .status {

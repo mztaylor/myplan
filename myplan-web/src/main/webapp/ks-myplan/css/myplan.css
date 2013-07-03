@@ -2876,26 +2876,33 @@ label.scheduled {
 }
 
 /* Styles for Run Audit Panel ################################################################################## */
-.myplan-audit-tabs .ui-tabs,
-.myplan-audit-tabs .ui-tabs .ui-tabs-nav {
-    padding: 0;
-}
-
-.myplan-audit-tabs .ui-tabs .ui-tabs-nav {
+.myplan-audit-tabs {
     border-bottom: solid 4px #f9ac23;
-    border-radius: 0px;
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
 }
 
-.myplan-audit-tabs .ui-tabs .ui-tabs-nav li {
-    border: solid 1px #e6e6e6;
-    top: 0px;
+.myplan-audit-tabs a.uif-boxLayoutHorizontalItem {
+    display: inline-block;
+    float: left;
+    border: solid 1px #e4e4e4;
+    border-bottom: none;
+    color: #333;
+    font: 500 13px "museo-sans", Arial, Helvetica, Verdana, sans-serif;
+    padding: 5px 16px;
     margin: 0;
+    text-decoration: none;
+    border-radius: 5px 5px 0px 0px;
+    -webkit-border-radius: 5px 5px 0px 0px;
+    -moz-border-radius: 5px 5px 0px 0px;
+    background: #e6e6e6 url('../jquery-ui/images/ui-bg_glass_75_e6e6e6_1x400.png') 50% 50% repeat-x;
 }
 
-.myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-active {
+.myplan-audit-tabs a.uif-boxLayoutHorizontalItem.ui-state-active {
+    color: #000;
+    text-decoration: none;
+    text-shadow: 1px 1px 2px #fae3b4;
     background-color: #faa229;
+    border: solid 1px #f6ca77;
+    border-bottom: none;
     background-image: -ms-linear-gradient(top, #f6ca77 0%, #f9ac23 100%);
     background-image: -moz-linear-gradient(center top, #f6ca77 0%, #f9ac23 100%);
     background-image: -o-linear-gradient(top, #f6ca77 0%, #f9ac23 100%);
@@ -2903,11 +2910,15 @@ label.scheduled {
     background-image: -webkit-linear-gradient(top, #f6ca77 0%, #f9ac23 100%);
     background-image: linear-gradient(to bottom, #f6ca77 0%, #f9ac23 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#f6ca77', endColorstr = '#f9ac23');
-    border: solid 1px #f6ca77;
 }
 
-.myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-hover {
+.myplan-audit-tabs a.uif-boxLayoutHorizontalItem:hover {
+    color: #000;
+    text-decoration: none;
+    text-shadow: 1px 1px 2px #fae3b4;
     background-color: #f9ac23;
+    border: solid 1px #f6ca77;
+    border-bottom: none;
     background-image: -ms-linear-gradient(top, #f9ac23 0%, #f6ca77 100%);
     background-image: -moz-linear-gradient(center top, #f9ac23 0%, #f6ca77 100%);
     background-image: -o-linear-gradient(top, #f9ac23 0%, #f6ca77 100%);
@@ -2915,21 +2926,6 @@ label.scheduled {
     background-image: -webkit-linear-gradient(top, #f9ac23 0%, #f6ca77 100%);
     background-image: linear-gradient(to bottom, #f9ac23 0%, #f6ca77 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#f9ac23', endColorstr = '#f6ca77');
-    border: solid 1px #f6ca77;
-}
-
-.myplan-audit-tabs .ui-tabs .ui-tabs-nav li a {
-    color: #333;
-    font: 500 13px "museo-sans", Arial, Helvetica, Verdana, sans-serif;
-    padding: 5px 16px;
-}
-
-.myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-hover a,
-.myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-focus a,
-.myplan-audit-tabs .ui-tabs .ui-tabs-nav li.ui-state-active a {
-    background: transparent;
-    color: #000;
-    text-shadow: 1px 1px 2px #fae3b4;
 }
 
 .myplan-run-audit-panel {

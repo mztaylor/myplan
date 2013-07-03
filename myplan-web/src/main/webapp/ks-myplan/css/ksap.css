@@ -185,6 +185,10 @@ a.inlineBlock {
 }
 
 /* TEXT STYLES */
+.uif-viewHeader .uif-headerText-span {
+    color: #39275b;
+}
+
 .ksap-text-normal {
     font-weight: 500 !important;
 }

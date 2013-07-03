@@ -128,6 +128,7 @@ function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
     var elementToBlock = jQuery("#plan_audit_actions_container");
 
     var updateRefreshableComponentCallback = function (htmlContent) {
+        setUrlHash('modified', 'true');
         var showHandOffScreen = (jQuery("input#showHandOffScreen_control", htmlContent).val() == "true");
 
         var component = jQuery("#" + getId, htmlContent);
