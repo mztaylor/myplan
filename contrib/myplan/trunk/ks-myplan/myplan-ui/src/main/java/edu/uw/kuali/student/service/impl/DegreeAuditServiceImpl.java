@@ -396,9 +396,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         try {
 
             String payload = req.toString();
-            logger.debug("REST HTTP POST");
-            logger.debug(postAuditRequestURL);
-            logger.debug(payload);
+            logger.info("REST HTTP POST");
+            logger.info(postAuditRequestURL);
+            logger.info(payload);
 
             HttpClientHelper client = getStudentServiceClient().getClient();
 
