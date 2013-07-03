@@ -411,6 +411,7 @@
         </property>
         <property name="items">
             <list>
+                <!--TODO: https://jira.kuali.org/browse/KULRICE-9846 progressiveRender expressions are evaluated before the defaultValue is set, workaround is to set the value on the backend -->
                 <bean parent="KSAP-SimpleInputField" p:propertyName="planAudit.campusParam" p:defaultValue="306">
                     <property name="control">
                         <bean parent="Uif-HorizontalRadioControl"/>
