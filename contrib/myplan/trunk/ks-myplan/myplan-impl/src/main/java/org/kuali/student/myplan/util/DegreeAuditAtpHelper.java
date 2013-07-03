@@ -28,7 +28,6 @@ import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 public class DegreeAuditAtpHelper {
 
     public static final String PRIORITY_ONE_REGISTRATION_START = "priority_one_registration_start";
-    public static final String LAST_DROP_DAY = "last_drop_day";
 
     private static String term1 = "winter";
     private static String term2 = "spring";
