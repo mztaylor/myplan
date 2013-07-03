@@ -338,7 +338,7 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
             throw new RuntimeException("Could not parse reply from the Student Term Service.", e);
         }
 
-        String lastDropDayDateString = termDocument.getRootElement().element("LastDropDay").getTextTrim();
+        String lastAddDayDateString = termDocument.getRootElement().element("LastAddDay").getTextTrim();
         String currentTerm = termDocument.getRootElement().element("Quarter").getTextTrim();
         String year = termDocument.getRootElement().element("Year").getTextTrim();
 
@@ -351,9 +351,9 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
             List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
 
-            AttributeInfo lastDropAttr = new AttributeInfo();
-            lastDropAttr.setKey(AtpHelper.LAST_DROP_DAY);
-            lastDropAttr.setValue(lastDropDayDateString);
+            AttributeInfo lastAddAttr = new AttributeInfo();
+            lastAddAttr.setKey(AtpHelper.LAST_ADD_DAY);
+            lastAddAttr.setValue(lastAddDayDateString);
 
             AttributeInfo priorityOneRegStAttr = new AttributeInfo();
             priorityOneRegStAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_START);
@@ -363,7 +363,7 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
             priorityOneRegEndAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_END);
             priorityOneRegEndAttr.setValue(getPriorityOneRegistrationEndDate(termDocument));
 
-            attributes.add(lastDropAttr);
+            attributes.add(lastAddAttr);
             attributes.add(priorityOneRegStAttr);
             attributes.add(priorityOneRegEndAttr);
             termInfo.setAttributes(attributes);
@@ -371,10 +371,10 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
         if (str.equalsIgnoreCase(PlanConstants.PUBLISHED) || str.equalsIgnoreCase(PlanConstants.PLANNING)) {
             CircularTermList ccl = new CircularTermList(currentTerm, Integer.valueOf(year));
 
-            DateTime lastDropDay = new DateTime(lastDropDayDateString);
+            DateTime lastDropDay = new DateTime(lastAddDayDateString);
 
-            logger.info(String.format("The Student Term Service reports [%s/%s] [%s] is the current term with last drop day [%s].",
-                    ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear(), lastDropDayDateString));
+            logger.info(String.format("The Student Term Service reports [%s/%s] [%s] is the current term with last add day [%s].",
+                    ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear(), lastAddDayDateString));
 
             /*
             *  If the last drop day has passed then increment to the next term.
@@ -424,7 +424,7 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
                     List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
                     AttributeInfo lastDropAttr = new AttributeInfo();
-                    lastDropAttr.setKey(AtpHelper.LAST_DROP_DAY);
+                    lastDropAttr.setKey(AtpHelper.LAST_ADD_DAY);
                     lastDropAttr.setValue(lastDropDayStr);
 
                     AttributeInfo priorityOneRegStAttr = new AttributeInfo();

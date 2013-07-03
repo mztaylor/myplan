@@ -43,7 +43,7 @@ public class AtpHelper {
 
     public static final String PRIORITY_ONE_REGISTRATION_START = "priority_one_registration_start";
     public static final String PRIORITY_ONE_REGISTRATION_END = "priority_one_registration_end";
-    public static final String LAST_DROP_DAY = "last_drop_day";
+    public static final String LAST_ADD_DAY = "last_add_day";
 
     private static transient AcademicCalendarService academicCalendarService;
 
