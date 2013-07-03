@@ -40,31 +40,31 @@ public class CourseLinkBuilder {
 //    String subjectRegex = "([A-Z][A-Z &]{2,7})";
 
     // matches "ABC 100 level"
-    String levelRegex = "^([A-Z][A-Z &]{2,7}) [1-4][0-9][0-9] level";
+    String levelRegex = "^([A-Z][A-Z &]{2,7}) [1-9]00";
     Pattern levelPattern = Pattern.compile(levelRegex);
 
     // matches "ABC 100-200", "ABC 100 to 200", "ABC 100 TO 200"
-    String rangeRegex = "^([A-Z][A-Z &]{2,7}) [1-4][0-9][0-9](-| (to|TO) )[1-4]?[0-9][0-9]";
+    String rangeRegex = "^([A-Z][A-Z &]{2,7}) [1-9][0-9][0-9](-| (to|TO) )[1-9]?[0-9][0-9]";
     Pattern rangePattern = Pattern.compile(rangeRegex);
 
     // matches "ABC/XYZ 100-200", "ABC/XYZ 100 to 200", "ABC/XYZ 100 TO 200"
-    String jointRangeRegex = "^([A-Z][A-Z &]{2,7})((/|\\\\)([A-Z][A-Z &]{2,7}))+ [1-4][0-9][0-9](-| (to|TO) )[1-4]?[0-9][0-9]";
+    String jointRangeRegex = "^([A-Z][A-Z &]{2,7})((/|\\\\)([A-Z][A-Z &]{2,7}))+ [1-9][0-9][0-9](-| (to|TO) )[1-9]?[0-9][0-9]";
     Pattern jointRangePattern = Pattern.compile(jointRangeRegex);
 
     // matches "ABC 100"
-    String courseRegex = "^([A-Z][A-Z &]{2,7}) ([1-4][0-9][0-9])";
+    String courseRegex = "^([A-Z][A-Z &]{2,7}) ([1-9][0-9][0-9])";
     Pattern coursePattern = Pattern.compile(courseRegex);
 
     // matches "ABC/XYZ 100"
-    String jointRegex = "^([A-Z][A-Z &]{2,7})((/|\\\\)([A-Z][A-Z &]{2,7}))+ ([1-4][0-9][0-9])";
+    String jointRegex = "^([A-Z][A-Z &]{2,7})((/|\\\\)([A-Z][A-Z &]{2,7}))+ ([1-9][0-9][0-9])";
     Pattern jointPattern = Pattern.compile(jointRegex);
 
-    // Matches "100" thru "499"
-    String numRegex = "^[1-4][0-9][0-9]";
+    // Matches "101" thru "899" and excludes 00 level numbers
+    String numRegex = "^[1-9][0-9][0-9]";
     Pattern numPattern = Pattern.compile(numRegex);
 
-    // Matches "100-499"
-    String numRangeRegex = "^[1-4][0-9][0-9](-| (to|TO) )[1-4]?[0-9][0-9]";
+    // Matches "100-899"
+    String numRangeRegex = "^[1-9][0-9][0-9](-| (to|TO) )[1-9]?[0-9][0-9]";
     Pattern numRangePattern = Pattern.compile(numRangeRegex);
 
     public String makeLinks(String line) {
@@ -179,26 +179,28 @@ public class CourseLinkBuilder {
     }
 
     public static String makeLink(String subject, String num, String text) {
-        try {
-            SearchRequest searchRequest = new SearchRequest("myplan.course.getCourseTitleAndId");
-            searchRequest.addParam("subject", subject);
-            searchRequest.addParam("number", num);
-            searchRequest.addParam("lastScheduledTerm", DegreeAuditAtpHelper.getLastScheduledAtpId());
+        // Do not link (skip) 100, 200, 300, 400, etc level courses
+        if (!num.endsWith("00")) {
+            try {
+                SearchRequest searchRequest = new SearchRequest("myplan.course.getCourseTitleAndId");
+                searchRequest.addParam("subject", subject);
+                searchRequest.addParam("number", num);
+                searchRequest.addParam("lastScheduledTerm", DegreeAuditAtpHelper.getLastScheduledAtpId());
 
 
-            SearchResult searchResult = getLuService().search(searchRequest);
-            for (SearchResultRow row : searchResult.getRows()) {
-                String courseId = getCellValue(row, "lu.resultColumn.cluId");
-                String title = getCellValue(row, "id.lngName");
-                String temp = String.format(link, courseId, title, text);
-                return temp;
+                SearchResult searchResult = getLuService().search(searchRequest);
+                for (SearchResultRow row : searchResult.getRows()) {
+                    String courseId = getCellValue(row, "lu.resultColumn.cluId");
+                    String title = getCellValue(row, "id.lngName");
+                    String temp = String.format(link, courseId, title, text);
+                    return temp;
+                }
+
+            } catch (Exception e) {
+                String msg = String.format("cannot linkify subject '%s' number '%s'", subject, num);
+                logger.error(msg, e);
             }
-
-        } catch (Exception e) {
-            String msg = String.format("cannot linkify subject '%s' number '%s'", subject, num);
-            logger.error(msg, e);
         }
-
         return text;
     }
 
