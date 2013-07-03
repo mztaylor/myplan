@@ -135,7 +135,7 @@ function stopEvent(e) {
 
 function openDocument(url) {
     var newUrl;
-    if (url.substring(0,4) == "http") {
+    if (url.substring(0, 4) == "http") {
         newUrl = url;
     } else {
         newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/")) + "/" + url;
@@ -779,8 +779,8 @@ function indicateViewingAudit(id, type) {
     var currentAudit = jQuery("." + type + ".auditHtml .myplan-audit-report");
     var currentAuditId = currentAudit.attr("auditid");
 
-    jQuery("#" + id + " .uif-collectionItem").each(function (index) {
-        if (jQuery(this).attr("id") == currentAuditId && currentAudit.is(":visible")) {
+    jQuery("#" + id + " .uif-collectionItem").not(".pending").each(function (index) {
+        if (jQuery(this).attr("id").replace("link_", "") == currentAuditId && currentAudit.is(":visible")) {
             if (type == 'degreeAudit') {
                 jQuery(this).find(".uif-label label").html("Viewing");
             }
@@ -947,51 +947,58 @@ function myplanLightBoxLink(href, options, e) {
     top.jQuery.fancybox(options);
 }
 
-function auditButtonState(buttonId, blockAudit) {
-    var button = jQuery("button#" + buttonId);
-    var type = button.data("audittype");
-    var disabled;
-    if (jQuery.cookie("myplan_audit_running") || blockAudit) {
-        disabled = true;
-    } else {
-        var id = getAuditProgram("id", type);
-        if (id) {
-            disabled = (id == "default");
-        } else {
-            disabled = true;
+function disabledCheck(disableCompId, disableCompType, condition) {
+    if (disableCompType == "radioGroup" || disableCompType == "checkboxGroup") {
+        if (condition()) {
+            jQuery("input[id^='" + disableCompId + "']").prop("disabled", true);
+        }
+        else {
+            jQuery("input[id^='" + disableCompId + "']").prop("disabled", false);
         }
     }
-    if (disabled) {
-        button.addClass("disabled").attr("disabled", true);
-    } else {
-        button.removeClass("disabled").attr("disabled", false);
+    else {
+        var disableControl = jQuery("#" + disableCompId);
+        if (condition()) {
+            disableControl.prop("disabled", true);
+            disableControl.addClass("disabled");
+            if (disableCompType === "actionLink" || disableCompType === "action") {
+                disableControl.attr("tabIndex", "-1");
+            }
+        }
+        else {
+            disableControl.prop("disabled", false);
+            disableControl.removeClass("disabled");
+            if (disableCompType === "actionLink" || disableCompType === "action") {
+                disableControl.attr("tabIndex", "0");
+            }
+        }
     }
 }
 
 function getAuditProgram(param, type) {
     var campus;
-    switch (parseFloat(jQuery("#" + type + "_param_campus input:checked").val())) {
+    switch (parseFloat(jQuery("input[name='" + type + "Audit.campusParam']:checked").val())) {
         case 306:
-            campus = "seattle";
+            campus = "Seattle";
             break;
         case 310:
-            campus = "bothell";
+            campus = "Bothell";
             break;
         case 323:
-            campus = "tacoma";
+            campus = "Tacoma";
             break;
         default:
             campus = null;
     }
     if (param == 'id') {
-        return jQuery("#" + type + "_param_program select#" + type + "_programs_" + campus + "_control").val();
+        return jQuery("select[name='" + type + "Audit.programParam" + campus + "']").val();
     } else {
-        return jQuery("#" + type + "_param_program select#" + type + "_programs_" + campus + "_control option:selected").text();
+        return jQuery("select[name='" + type + "Audit.programParam" + campus + "'] option:selected").text();
     }
 }
 
 var blockPendingAuditStyle = {
-    message:'<img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="" class="icon"/><div class="heading">We are currently running your degree audit for \'<span class="programName"></span>\'.</div><div class="content">Audits may take 1-5 minutes to load. Feel free to leave this page to explore MyPlan further while your audit is running. You will receive a browser notification when your report is complete.</div>',
+    message:'<img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="" class="icon"/><div class="heading">We are currently running your audit for \'<span class="programName"></span>\'.</div><div class="content">Audits may take 1-5 minutes to load. Feel free to leave this page to explore MyPlan further while your audit is running. You will receive a browser notification when your report is complete.</div>',
     fadeIn:250,
     fadeOut:250,
     css:{
@@ -1039,7 +1046,7 @@ function removeCookie() {
 }
 
 function setPendingAudit(obj, minutes) {
-    if (jQuery.cookie('myplan_audit_running') == null) {
+    if (jQuery.cookie("myplan_audit_running") == null) {
         var data = {};
 
         data.expires = new Date();
@@ -1060,10 +1067,13 @@ function setPendingAudit(obj, minutes) {
                 success:function (response) {
                     if (response.status == "PENDING") {
                         jQuery.cookie('myplan_audit_running', JSON.stringify(data), {expires:data.expires});
-                        auditButtonState(obj.attr("id"));
+                        disabledCheck(obj.attr("id"), 'action', function () {
+                            return true;
+                        });
                         jQuery.publish('REFRESH_AUDITS', [
                             {"type":data.auditType}
                         ]);
+                        setUrlHash('modified', 'true');
                     }
                 },
                 statusCode:{ 500:function () {
@@ -1101,8 +1111,7 @@ function blockPendingAudit(data) {
     jQuery("#" + id + " div.blockUI.blockMsg.blockElement").data("growl", "true");
     jQuery("#" + id + " div.blockUI.blockMsg.blockElement .programName").text(data.programName);
     jQuery("#" + id).subscribe('AUDIT_COMPLETE', function () {
-        window.location.assign(window.location.href.split("#")[0] + "#" + data.auditType + "_audit_block_tab");
-        window.location.reload(true);
+        window.location.assign(window.location.href.split("#")[0]);
     });
 }
 
@@ -1168,9 +1177,7 @@ function buttonState(parentId, buttonId) {
 }
 
 (function ($) {
-
     $.fn.characterCount = function (options) {
-
         var oDefaults = {
             maxLength:100,
             warningLength:20,
@@ -1238,9 +1245,7 @@ Array.max = function (array) {
     return Math.max.apply(Math, array);
 };
 
-
 /*Quick Add*/
-
 function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions, close) {
     stopEvent(e);
 
@@ -1361,33 +1366,6 @@ function myplanAjaxSubmitQuickAdd(id, submitOptions, methodToCall, e, bDialog) {
         }
     };
     myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:'false'}, elementToBlock, id, blockOptions);
-}
-function autoCompleteText(atpId) {
-    var sQuery = jQuery("input[id='search_text_box_control']").val();
-    var emptySuggestions = ["No courses Found"];
-    jQuery("#search_text_box_control").autocomplete({source:function (request, response) {
-        jQuery.ajax({
-            url:"/student/myplan/quickAdd/autoSuggestions?courseCd=" + sQuery + "&atpId=" + atpId,
-            type:"GET",
-            beforeSend:null,
-            data:"list=" + '',
-            dataType:"json",
-            error:function () {
-                jQuery("#search_text_box_control").autocomplete({source:emptySuggestions});
-            },
-            success:function (data) {
-                if (data.aaData.length > 0) {
-                    response(data.aaData);
-                }
-                else {
-                    response(emptySuggestions)
-                }
-            }
-        });
-    }
-    });
-    jQuery(document).ajaxStart(jQuery.unblockUI).ajaxStop(jQuery.unblockUI);
-
 }
 
 function toggleComponentContent(obj, sectionId, selector, expandText, collapseText) {
@@ -1607,44 +1585,4 @@ function buildHoverText(obj) {
         }
     }
     obj.attr("title", message).find("img.uif-image").attr("alt", message);
-}
-
-
-function ksapCreateSuggest(controlId, options, queryFieldId, queryParameters, localSource, suggestOptions) {
-    if (localSource) {
-        options.source = suggestOptions;
-    }
-    else {
-        options.source = function (request, response) {
-            var queryData = {};
-
-            queryData.methodToCall = 'performFieldSuggest';
-            queryData.ajaxRequest = true;
-            queryData.ajaxReturnType = 'update-none';
-            queryData.formKey = jQuery("input#formKey").val();
-            queryData.viewId = jQuery("input#viewId").val();
-            queryData.queryTerm = request.term;
-            queryData.queryFieldId = queryFieldId;
-
-            for (var parameter in queryParameters) {
-                queryData['queryParameter.' + parameter] = coerceValue(queryParameters[parameter]);
-            }
-
-            jQuery.ajax({
-                url:jQuery("form#kualiForm").attr("action"),
-                dataType:"json",
-                beforeSend:null,
-                complete:null,
-                error:null,
-                data:queryData,
-                success:function (data) {
-                    response(data.resultData);
-                }
-            });
-        };
-    }
-
-    jQuery(document).ready(function () {
-        jQuery("#" + controlId).autocomplete(options);
-    });
 }

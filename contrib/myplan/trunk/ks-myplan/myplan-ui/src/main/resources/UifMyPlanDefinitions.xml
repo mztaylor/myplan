@@ -29,6 +29,11 @@
         <property name="breadcrumbs.render" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
         <property name="onLoadScript" value="try{Typekit.load();}catch(e){}"/>
+        <property name="header">
+            <bean parent="Uif-ViewHeader">
+                <property name="headerLevel" value="h2"/>
+            </bean>
+        </property>
     </bean>
 
     <!-- View without the header and footer and just the theme -->
