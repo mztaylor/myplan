@@ -133,6 +133,7 @@ public class DegreeAuditController extends UifControllerBase {
 
                 DegreeAuditService degreeAuditService = getDegreeAuditService();
 
+                /*TODO:Default value should be set in UI, Remove adding the default value in code once fix for KULRICE-9846 is in*/
                 degreeAuditForm.setCampusParam(DEFAULT_CAMPUS_ID);
                 planAuditForm.setCampusParam(DEFAULT_CAMPUS_ID);
 
