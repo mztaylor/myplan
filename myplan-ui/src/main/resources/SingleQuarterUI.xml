@@ -613,7 +613,7 @@
                                   p:propertyName="activityOfferingItem.activityOfferingType"
                                   p:style="text-transform:capitalize; margin:0;">
                             </bean>
-                            <bean parent="KSAP-MessageField" p:messageText="(@{#line.activityOfferingItem.credits})"
+                            <bean parent="KSAP-MessageField" p:messageText="(@{#line.credit})"
                                   p:render="@{#line.activityOfferingItem.primary}">
                                 <property name="cssClasses">
                                     <list merge="true">
