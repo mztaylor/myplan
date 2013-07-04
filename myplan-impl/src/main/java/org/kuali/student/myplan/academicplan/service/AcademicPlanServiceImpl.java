@@ -292,7 +292,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         attributeInfos.add(new AttributeInfo("forCourses", ""));
         attributeInfos.add(new AttributeInfo("forCredits", ""));
         attributeInfos.add(new AttributeInfo("forQuarter", ""));
-        attributeInfos.add(new AttributeInfo("requestedBy", user.getFirstName() + " " + user.getLastName()));
+        attributeInfos.add(new AttributeInfo("requestedBy", user.getName().toUpperCase()));
         dto.setAttributes(attributeInfos);
 
         //  Creating a new LearningPlanEntity from above learningPLanInfo with new PlanTypeKey
