@@ -996,9 +996,12 @@ function getAuditProgram(param, type) {
         return jQuery("select[name='" + type + "Audit.programParam" + campus + "'] option:selected").text();
     }
 }
+var pendingPlanAuditHeadingText = 'We are currently auditing your plan for \'<span class="programName"></span>\'.';
+
+var pendingDegreeAuditHeadingText = 'We are currently running your audit for \'<span class="programName"></span>\'.';
 
 var blockPendingAuditStyle = {
-    message:'<img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="" class="icon"/><div class="heading">We are currently running your audit for \'<span class="programName"></span>\'.</div><div class="content">Audits may take 1-5 minutes to load. Feel free to leave this page to explore MyPlan further while your audit is running. You will receive a browser notification when your report is complete.</div>',
+    message:'<img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="" class="icon"/><div class="heading"></div>',
     fadeIn:250,
     fadeOut:250,
     css:{
@@ -1022,22 +1025,27 @@ var blockPendingAuditStyle = {
 
 var replaceBlockPendingAudit;
 
-function changeLoadingMessage(selector, programName) {
+function changeLoadingMessage(selector, programName, auditType) {
     replaceBlockPendingAudit = setInterval(function () {
-        setLoadingMessage(selector, programName)
+        setLoadingMessage(selector, programName, auditType)
     }, 100);
 }
 
-function setLoadingMessage(selector, programName) {
+function setLoadingMessage(selector, programName, auditType) {
     if (jQuery(selector + ' div.blockUI.blockMsg.blockElement').length > 0) {
-        fnAddLoadingText(selector, programName);
+        fnAddLoadingText(selector, programName, auditType);
     }
 }
 
-function fnAddLoadingText(selector, programName) {
+function fnAddLoadingText(selector, programName, auditType) {
     clearInterval(replaceBlockPendingAudit);
     jQuery(selector + " div.blockUI.blockOverlay").css(blockPendingAuditStyle.overlayCSS);
     jQuery(selector + " div.blockUI.blockMsg.blockElement").html(blockPendingAuditStyle.message).css(blockPendingAuditStyle.css).data("growl", "false");
+    if (auditType == "plan"){
+        jQuery(selector + " div.blockUI.blockMsg.blockElement .heading").html(pendingPlanAuditHeadingText);
+    }else{
+        jQuery(selector + " div.blockUI.blockMsg.blockElement .heading").html(pendingDegreeAuditHeadingText);
+    }
     jQuery(selector + " div.blockUI.blockMsg.blockElement .programName").text(programName);
 }
 
@@ -1058,7 +1066,7 @@ function setPendingAudit(obj, minutes) {
         if (typeof data.recentAuditId === 'undefined') data.recentAuditId = '';
 
         if (data.programId != 'default') {
-            changeLoadingMessage('.myplan-audit-report', data.programName);
+            changeLoadingMessage('.myplan-audit-report', data.programName, data.auditType);
             jQuery.ajax({
                 url:"/student/myplan/audit/status",
                 data:{"programId":data.programId, "auditId":data.recentAuditId},
@@ -1109,6 +1117,11 @@ function blockPendingAudit(data) {
     var elementToBlock = jQuery("#" + id);
     elementToBlock.block(blockPendingAuditStyle);
     jQuery("#" + id + " div.blockUI.blockMsg.blockElement").data("growl", "true");
+    if (data.auditType == "plan"){
+        jQuery("#" + id + " div.blockUI.blockMsg.blockElement .heading").html(pendingPlanAuditHeadingText);
+    }else{
+        jQuery("#" + id + " div.blockUI.blockMsg.blockElement .heading").html(pendingDegreeAuditHeadingText);
+    }
     jQuery("#" + id + " div.blockUI.blockMsg.blockElement .programName").text(data.programName);
     jQuery("#" + id).subscribe('AUDIT_COMPLETE', function () {
         window.location.assign(window.location.href.split("#")[0]);
