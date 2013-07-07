@@ -55,7 +55,7 @@
         </property>
     </bean>
 
-    <bean id="plan_audits_summary_list" parent="KSAP-StackedCollectionGroup" p:headerText="Recent Plan Reviews">
+    <bean id="plan_audits_summary_list" parent="KSAP-StackedCollectionGroup" p:headerText="Recent Plan Audits">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.PlanAuditItem"/>
         <property name="propertyName" value="lookupResults"/>
         <property name="header">
@@ -177,7 +177,7 @@
                                               p:propertyName="auditedCoursesCount"/>
                                         <bean parent="planAuditData" p:label="Credits"
                                               p:propertyName="totalAuditedCredit"/>
-                                        <bean parent="planAuditData" p:label="Quarters"
+                                        <bean parent="planAuditData" p:label="Through"
                                               p:propertyName="auditedQuarterUpTo"/>
                                     </list>
                                 </property>
@@ -406,7 +406,7 @@
                     </list>
                 </property>
                 <property name="messageText"
-                          value="Select your campus and intended degree program from the dropdown menu below. Plan reviews may take 1-5 minutes to load. You must have at least one course in your plan to run a plan review."/>
+                          value="Select your campus and intended degree program from the dropdown menu below."/>
             </bean>
         </property>
         <property name="items">
@@ -587,7 +587,7 @@
     </bean>
 
 
-    <bean id="empty_plan_audits" parent="KSAP-HorizontalBoxGroup">
+    <bean id="empty_plan_audits" parent="KSAP-VerticalBoxGroup">
         <property name="render" value="@{#form.planAudit.auditHtml EQ null}"/>
         <!--<property name="headerText" value="How to Use Plan Audit for Academic Planning"/>
         <property name="header">
@@ -599,45 +599,48 @@
                     <property name="header">
                         <bean parent="Uif-HeaderFive"/>
                     </property>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-container-300</value>
-                            <value>myplan-audit-info-panel</value>
-                        </list>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-Message">
-                                <property name="messageText"
-                                          value="Wondering if your plan will meet your program requirements?
-                                          [br/][br/]
-                                          This plan review compares your academic record and planned courses with program requirements to give you a general idea of what will be needed to complete your degree.
-                                          [br/][br/]
-                                          Make sure that you have added courses to your plan for future quarters, then select your program from the menu above and run a Plan Audit to determine if you are on the right track with your plan.
-                                          [br/][br/]
-                                          This review is meant as a planning tool, and is not an official evaluation of academic progress. Work with your adviser to ensure that your planned courses will meet your degree or program requirements. Final confirmation of degree requirements will be subject to department or college and university approval.
-                                          "/>
-                            </bean>
-                        </list>
-                    </property>
                 </bean>
-                <bean parent="KSAP-VerticalBoxGroup" p:headerText="Track Your Progress">
+                <bean parent="KSAP-VerticalBoxGroup" >
                     <property name="header">
                         <bean parent="Uif-HeaderFive"/>
                     </property>
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>fl-container-300</value>
+                            <value>fl-container-680</value>
                             <value>myplan-audit-info-panel</value>
                         </list>
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message">
+                            <bean parent="Uif-Message" p:style="padding:10px">
                                 <property name="messageText"
-                                          value="Stay on top of your required credits and courses. DARS will compare your academic record with program requirements so that you know what&#39;s needed to complete your degree.
+                                          value="Will your plan meet your program requirements?
                                           [br/][br/]
-                                          Select your program from the menu above &amp; run DARS to see your academic progress now."/>
+                                          Plan Audit compares planned courses and your academic record with your requirements to give you an idea of what will be needed to complete your degree.
+                                          [br/][br/]
+                                          This Audit is meant as a planning tool and is not an official evaluation of academic progress. Work with your adviser to ensure that your planned courses will meet your degree or program requirements.
+                                          "/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="KSAP-VerticalBoxGroup" >
+                    <property name="header">
+                        <bean parent="Uif-HeaderFive"/>
+                    </property>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-container-680</value>
+                            <value>myplan-audit-info-panel</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message" p:style="padding:10px">
+                                <property name="messageText"
+                                          value="What do you need to do?
+                                          [br/][br/]
+                                          Make sure that you have added courses to your plan for future quarters, then select your program from the menu above and run a Plan Audit to see if you are on the right track. "/>
                             </bean>
                         </list>
                     </property>
@@ -706,7 +709,7 @@
                     <property name="instructionalMessage">
                         <bean parent="KSAP-NoSpanMessage">
                             <property name="messageText"
-                                      value="One or more of your planned courses requires additional information. In order to run this plan review, MyPlan needs more details for the following course(s):"/>
+                                      value="To run your Plan Audit, MyPlan needs more information for the following course(s):"/>
                             <property name="propertyReplacers">
                                 <list>
                                     <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="messageText"
@@ -970,13 +973,13 @@
         <property name="headerText" value="Excluded Planned Courses"/>
         <property name="instructionalMessage">
             <bean parent="KSAP-NoSpanMessage"
-                  p:messageText="The following courses in your plan will not be included in your review because they are not listed in the current Time Schedule(s). [0]">
+                  p:messageText="The following course(s) are not included in your Plan Audit because they may not be offered in the quarter planned. [0]">
                 <property name="generateSpan" value="true"/>
                 <property name="inlineComponents">
                     <list>
                         <bean parent="Uif-Link"
-                              p:href="course?methodToCall=start&amp;viewId=CourseSearch-FormView"
-                              p:linkText="Find additional courses."/>
+                              p:href="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView"
+                              p:linkText="View your plan."/>
                     </list>
                 </property>
             </bean>
