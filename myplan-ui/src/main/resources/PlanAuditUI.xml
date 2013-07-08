@@ -111,7 +111,7 @@
             </bean>
         </property>
         <property name="instructionalMessage">
-            <bean parent="Uif-Message" p:messageText="No recent plan reviews found.">
+            <bean parent="Uif-Message" p:messageText="No recent Plan Audits found.">
                 <property name="cssClasses">
                     <list merge="true">
                         <value>ksap-emptyCollection</value>
