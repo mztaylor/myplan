@@ -1149,16 +1149,14 @@ function pollPendingAudit(programId, recentAuditId, auditType) {
                 });
             }
             var title = "Degree Audit";
-            var text = "audit";
             if (auditType == "plan") {
                 title = "Plan Audit";
-                text = "review";
             }
             if (jQuery.cookie("myplan_audit_running") == null || response.status == 'FAILED') {
-                if (growl) showGrowl("Your " + text + " was unable to complete.", title + " Error", "errorGrowl");
+                if (growl) showGrowl("Your " + title + " was unable to complete.", title + " Error", "errorGrowl");
             } else {
                 var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("myplan_audit_running")));
-                if (growl) showGrowl(data.programName + " " + text + " is ready to view.", title + " Completed", "infoGrowl");
+                if (growl) showGrowl(data.programName + " " + title + " is ready to view.", title + " Completed", "infoGrowl");
             }
             jQuery.cookie("myplan_audit_running", null, {expires:new Date().setTime(0)});
             jQuery.publish("AUDIT_COMPLETE", [

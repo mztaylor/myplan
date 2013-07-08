@@ -520,9 +520,10 @@
         </property>
     </bean>
 
-    <bean id="plan_audit_run" parent="degree_audit_run" p:methodToCall="runPlanAudit" p:hidden="true" p:disabled="false"
+    <bean id="plan_audit_run" parent="Uif-PrimaryActionButton" p:methodToCall="runPlanAudit" p:hidden="true"
+          p:disabled="false"
           p:refreshId="plan_audit_section" p:focusOnIdAfterSubmit="plan_audits_summary"
-          p:actionLabel="Review Plan">
+          p:actionLabel="Audit Plan">
         <property name="onClickScript" value="
             setPendingAudit(jQuery('button#plan_audit_validate'), 5);
         "/>
@@ -552,7 +553,7 @@
                         <list>
                             <bean parent="MyPlanMessagingIcon"/>
                             <bean parent="KSAP-Message"
-                                  p:messageText="You have no planned courses available for review. [0] and add them to your plan.">
+                                  p:messageText="You have no planned courses available to audit. [0] and add them to your plan.">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>message</value>
@@ -656,7 +657,7 @@
         </property>
     </bean>
 
-    <bean id="plan_audit_report_section" parent="KSAP-VerticalBoxGroup" p:headerText="Plan Review">
+    <bean id="plan_audit_report_section" parent="KSAP-VerticalBoxGroup" p:headerText="Plan Audit">
         <property name="onDocumentReadyScript" value="initAuditActions();"/>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
@@ -710,7 +711,7 @@
                         <list>
                             <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="headerText"
                                   p:condition="#form.planAudit.cleanList.size() + #form.planAudit.messyItems.size() EQ 0"
-                                  p:replacement="No Plan Review Available"/>
+                                  p:replacement="No Plan Audit Available"/>
                         </list>
                     </property>
                     <property name="instructionalMessage">
@@ -721,7 +722,7 @@
                                 <list>
                                     <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="messageText"
                                           p:condition="#form.planAudit.cleanList.size() + #form.planAudit.messyItems.size() EQ 0"
-                                          p:replacement="We are unable to generate a plan review because the courses you have planned do not appear in the published Time Schedule(s)."/>
+                                          p:replacement="We are unable to generate a Plan Audit because the courses you have planned do not appear in the published Time Schedule(s)."/>
                                 </list>
                             </property>
                             <property name="cssClasses">
