@@ -35,20 +35,19 @@
     </bean>
 
 
-    <bean id="recent_audits_help_icon" parent="MyPlanHelpImage">
+    <bean id="recent_degree_audits_help_icon" parent="MyPlanHelpImage">
         <property name="toolTip">
             <bean parent="MyPlan-Tooltip-Right"
-                  p:tooltipContent="Displays the last seven audits run through MyPlan. Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#822&quot;);&gt;Learn more&lt;/a&gt;"/>
+                  p:tooltipContent="Recent Degree Audits (DARS) displays the last seven Degree Audits run through MyPlan. Degree Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#822&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
-    <bean id="recent_reviews_help_icon" parent="MyPlanHelpImage">
+    <bean id="recent_plan_audits_help_icon" parent="MyPlanHelpImage">
         <property name="toolTip">
             <bean parent="MyPlan-Tooltip-Right"
-                  p:tooltipContent="Displays up to the last seven Plan Audits run in MyPlan. Plan Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#822&quot;);&gt;Learn more&lt;/a&gt;"/>
+                  p:tooltipContent="Recent Plan Audits displays up to the last seven Plan Audits run in MyPlan. Plan Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#822&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
-
 
     <bean id="completed_help_icon" parent="MyPlanHelpImage"
           p:render="@{#parentLine.completedTerm and #parentLine.displayCompletedHelp ? true : false}">
