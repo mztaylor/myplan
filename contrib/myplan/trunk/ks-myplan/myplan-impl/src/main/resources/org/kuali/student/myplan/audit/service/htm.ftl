@@ -77,40 +77,11 @@
     <h1> ${dpTitle1?xml} </h1>
 
     <div class="audit-summary">
-        <div class="audit-summary-data plan-audit-data">
-            <label>Planned Through:</label>
-
-            <div>
-                <span class="for-quarter"> FOR-QUARTER </span>
-            </div>
-        </div>
         <div class="audit-summary-data ">
             <label>Date Prepared:</label>
 
             <div>
                 <span class="date-prepared"> ${preparedDate} </span>
-            </div>
-        </div>
-        <div class="audit-summary-data plan-audit-data">
-            <label>Planned Courses:</label>
-
-            <div>
-                <span class="for-courses"> FOR-COURSES </span> courses <span class="ksap-text-gray">(<span
-                    class="for-credits"> FOR-CREDITS </span> credits)</span>
-            </div>
-        </div>
-        <div class="audit-summary-data">
-            <label>Program Entry Qtr:</label>
-
-            <div>
-                <span class="program-entry-qtr"> ${termMap[catalogYearTerm?substring(4,5)]} ${catalogYearTerm?substring(0,4)} </span>
-            </div>
-        </div>
-        <div class="audit-summary-data plan-audit-data">
-            <label>Requested By:</label>
-
-            <div>
-                <span class="prepared-by"> PREPARED-BY </span>
             </div>
         </div>
         <div class="audit-summary-data">
@@ -124,6 +95,47 @@
                 <span class="prepared-for-name" stuno="${stuno}"> ${stuno} </span>
             </div>
         </div>
+        <div class="audit-summary-data plan-audit-data">
+            <label>Requested By:</label>
+
+            <div>
+                <span class="prepared-by"> PREPARED-BY </span>
+            </div>
+        </div>
+        <div class="audit-summary-data">
+            <label>Program Entry Qtr:</label>
+
+            <div>
+                <span class="program-entry-qtr"> ${termMap[catalogYearTerm?substring(4,5)]} ${catalogYearTerm?substring(0,4)} </span>
+            </div>
+        </div>
+        <div class="audit-summary-data plan-audit-data">
+            <label>Planned Credits:</label>
+
+            <div>
+                <span class="for-credits"> FOR-CREDITS </span>
+            </div>
+        </div>
+
+        <div class="audit-summary-data plan-audit-data">
+            <label>Planned Courses:</label>
+
+            <div>
+                <span class="for-courses"> FOR-COURSES </span>
+            </div>
+        </div>
+
+        <div class="audit-summary-data plan-audit-data">
+            <label>Planned Through:</label>
+
+            <div>
+                <span class="for-quarter"> FOR-QUARTER </span>
+            </div>
+        </div>
+
+
+
+
 
     <#if degreeDate?trim != "NotFound">
         <div class="audit-summary-data ">
@@ -576,6 +588,9 @@ ${headerLine?xml}
             <#if showHeader || showTotals || subreq.showSelectNotFrom || subreq.showTakenCourses >
             <div class="subrequirement ${justTitle}">
                 <div class="header">
+                    <#if subreq.showTakenCourses && rname?contains('WIFCRSES') >
+                        <div class="planHeading"> PLANNED COURSES INCLUDED IN YOUR AUDIT </div>
+                    </#if>
                     <#if showSubreqStatus >
                         <#assign subreqToolTip = " "  >
                         <#if subreqStatusMap[subreq.status]?? >
