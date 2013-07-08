@@ -1195,11 +1195,11 @@ div.activityAction div.blockElement {
 
 .myplan-audit-info-panel {
     background: #ffffff;
-    border: solid 1px #a9a9a9;
-    padding: 10px 0 0 10px;
-    border-radius: 8px;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
+    border: solid 1px #e1e1e0;
+    padding: 10px 10px 0 10px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
     overflow: hidden;
 }
 

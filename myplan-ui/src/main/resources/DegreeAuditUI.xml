@@ -55,7 +55,8 @@
         </property>
     </bean>
 
-    <bean id="degree_audits_summary_list" parent="KSAP-StackedCollectionGroup" p:headerText="Recent Audit Reports">
+    <bean id="degree_audits_summary_list" parent="KSAP-StackedCollectionGroup"
+          p:headerText="Recent Degree Audits (DARS)">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
         <property name="propertyName" value="lookupResults"/>
         <property name="header">
@@ -430,63 +431,64 @@
         </property>
     </bean>
 
-    <bean id="empty_degree_audits" parent="KSAP-HorizontalBoxGroup" >
+    <bean id="empty_degree_audits" parent="KSAP-HorizontalBoxGroup"
+          p:headerText="How to Use Degree Audit (DARS) for Academic Planning">
         <property name="render" value="@{#form.degreeAudit.auditHtml EQ null}"/>
         <property name="header">
-            <bean parent="Uif-HeaderFour"/>
+            <bean parent="Uif-HeaderFour">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>uif-boxLayoutVerticalItem</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>ksap-noMargin</value>
+            </list>
         </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-VerticalBoxGroup"
-                      p:headerText="How to Use Degree Audit (DARS) for Academic Planning" p:style="padding:10px;">
+                <bean parent="KSAP-VerticalBoxGroup" p:headerText="Explore Programs and Minors" p:width="318px">
+                    <property name="style" value="margin-right:20px; height:175px;"/>
                     <property name="header">
                         <bean parent="Uif-HeaderFive"/>
                     </property>
-                </bean>
-                <bean parent="KSAP-HorizontalBoxGroup">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-audit-info-panel</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-VerticalBoxGroup" p:headerText="Explore Programs and Minors">
-                                <property name="header">
-                                    <bean parent="Uif-HeaderFive"/>
-                                </property>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-container-300</value>
-                                        <value>myplan-audit-info-panel</value>
-                                    </list>
-                                </property>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="Uif-Message">
-                                            <property name="messageText"
-                                                      value="Still deciding on a degree program? DARS can help you determine your academic progress towards any degree.
-                                              [br/][br/]
-                                              Select a program from the menu above and run DARS to explore listed majors and more."/>
-                                        </bean>
-                                    </list>
-                                </property>
+                            <bean parent="Uif-Message">
+                                <property name="messageText"
+                                          value="Still deciding on a degree program? DARS can help you determine your academic progress towards any degree.
+                                  [br/][br/]
+                                  Select a program from the menu above and run DARS to explore listed majors and more."/>
                             </bean>
-                            <bean parent="KSAP-VerticalBoxGroup" p:headerText="Track Your Progress">
-                                <property name="header">
-                                    <bean parent="Uif-HeaderFive"/>
-                                </property>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-container-300</value>
-                                        <value>myplan-audit-info-panel</value>
-                                    </list>
-                                </property>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="Uif-Message">
-                                            <property name="messageText"
-                                                      value="Stay on top of your required credits and courses. DARS will compare your academic record with program requirements so that you know what&#39;s needed to complete your degree.
-                                              [br/][br/]
-                                              Select your program from the menu above &amp; run DARS to see your academic progress now."/>
-                                        </bean>
-                                    </list>
-                                </property>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="KSAP-VerticalBoxGroup" p:headerText="Track Your Progress" p:width="318px">
+                    <property name="style" value="height:175px;"/>
+                    <property name="header">
+                        <bean parent="Uif-HeaderFive"/>
+                    </property>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>ksap-noMargin</value>
+                            <value>myplan-audit-info-panel</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message">
+                                <property name="messageText"
+                                          value="Stay on top of your required credits and courses. DARS will compare your academic record with program requirements so that you know what&#39;s needed to complete your degree.
+                                  [br/][br/]
+                                  Select your program from the menu above &amp; run DARS to see your academic progress now."/>
                             </bean>
                         </list>
                     </property>

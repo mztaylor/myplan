@@ -482,7 +482,7 @@
         "/>
     </bean>
 
-    <bean id="KSAP-DegreeAuditList" parent="KSAP-Module" p:headerText="Recent Audit Reports"
+    <bean id="KSAP-DegreeAuditList" parent="KSAP-Module" p:headerText="Recent Degree Audits (DARS)"
           p:id="KSAP-DegreeAuditList">
         <property name="onDocumentReadyScript" value="
             myplanRetrieveComponent('KSAP-DegreeAuditList','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
@@ -496,7 +496,7 @@
         "/>
     </bean>
 
-    <bean id="KSAP-PlanAuditList" parent="KSAP-Module" p:headerText="Recent Plan Reviews" p:id="KSAP-PlanAuditList">
+    <bean id="KSAP-PlanAuditList" parent="KSAP-Module" p:headerText="Recent Plan Audits" p:id="KSAP-PlanAuditList">
         <property name="onDocumentReadyScript" value="
             myplanRetrieveComponent('KSAP-PlanAuditList','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
             jQuery('#KSAP-PlanAuditList')
