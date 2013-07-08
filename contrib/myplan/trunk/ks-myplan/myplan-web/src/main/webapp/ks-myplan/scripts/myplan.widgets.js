@@ -1041,9 +1041,9 @@ function fnAddLoadingText(selector, programName, auditType) {
     clearInterval(replaceBlockPendingAudit);
     jQuery(selector + " div.blockUI.blockOverlay").css(blockPendingAuditStyle.overlayCSS);
     jQuery(selector + " div.blockUI.blockMsg.blockElement").html(blockPendingAuditStyle.message).css(blockPendingAuditStyle.css).data("growl", "false");
-    if (auditType == "plan"){
+    if (auditType == "plan") {
         jQuery(selector + " div.blockUI.blockMsg.blockElement .heading").html(pendingPlanAuditHeadingText);
-    }else{
+    } else {
         jQuery(selector + " div.blockUI.blockMsg.blockElement .heading").html(pendingDegreeAuditHeadingText);
     }
     jQuery(selector + " div.blockUI.blockMsg.blockElement .programName").text(programName);
@@ -1117,9 +1117,9 @@ function blockPendingAudit(data) {
     var elementToBlock = jQuery("#" + id);
     elementToBlock.block(blockPendingAuditStyle);
     jQuery("#" + id + " div.blockUI.blockMsg.blockElement").data("growl", "true");
-    if (data.auditType == "plan"){
+    if (data.auditType == "plan") {
         jQuery("#" + id + " div.blockUI.blockMsg.blockElement .heading").html(pendingPlanAuditHeadingText);
-    }else{
+    } else {
         jQuery("#" + id + " div.blockUI.blockMsg.blockElement .heading").html(pendingDegreeAuditHeadingText);
     }
     jQuery("#" + id + " div.blockUI.blockMsg.blockElement .programName").text(data.programName);
@@ -1151,7 +1151,7 @@ function pollPendingAudit(programId, recentAuditId, auditType) {
             var title = "Degree Audit";
             var text = "audit";
             if (auditType == "plan") {
-                title = "Plan Review";
+                title = "Plan Audit";
                 text = "review";
             }
             if (jQuery.cookie("myplan_audit_running") == null || response.status == 'FAILED') {
