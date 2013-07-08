@@ -96,7 +96,7 @@
             </div>
         </div>
         <div class="audit-summary-data plan-audit-data">
-            <label>Requested By:</label>
+            <label>Prepared By:</label>
 
             <div>
                 <span class="prepared-by"> PREPARED-BY </span>
@@ -588,7 +588,7 @@ ${headerLine?xml}
             <#if showHeader || showTotals || subreq.showSelectNotFrom || subreq.showTakenCourses >
             <div class="subrequirement ${justTitle}">
                 <div class="header">
-                    <#if subreq.showTakenCourses && rname?contains('WIFCRSES') >
+                    <#if subreq.showTakenCourses && req.category?contains("what-if_courses" ) >
                         <div class="planHeading"> PLANNED COURSES INCLUDED IN YOUR AUDIT </div>
                     </#if>
                     <#if showSubreqStatus >
