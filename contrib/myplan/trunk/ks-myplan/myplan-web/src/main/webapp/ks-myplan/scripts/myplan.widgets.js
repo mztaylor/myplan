@@ -998,7 +998,7 @@ function getAuditProgram(param, type) {
 }
 var pendingPlanAuditHeadingText = 'We are currently auditing your plan for \'<span class="programName"></span>\'.';
 
-var pendingDegreeAuditHeadingText = 'We are currently running your audit for \'<span class="programName"></span>\'.';
+var pendingDegreeAuditHeadingText = 'We are currently auditing your degree for \'<span class="programName"></span>\'.';
 
 var blockPendingAuditStyle = {
     message:'<img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="" class="icon"/><div class="heading"></div>',
