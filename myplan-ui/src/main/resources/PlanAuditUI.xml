@@ -420,6 +420,12 @@
                         <bean class="org.kuali.student.myplan.course.util.AuditRunCampusParam"/>
                     </property>
                 </bean>
+                <bean parent="KSAP-SimpleInputField" p:propertyName="planExists" p:hidden="true"
+                      p:defaultValue="@{#form.planExists}">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
                 <bean parent="KSAP-HorizontalBoxGroup">
                     <property name="items">
                         <list>
@@ -496,19 +502,19 @@
     <bean id="plan_audit_validate" parent="Uif-PrimaryActionButton" p:actionLabel="Audit Your Plan"
           p:title="Audit Your Plan">
         <property name="disabled"
-                  value="@{!#form.planExists OR (#form.planAudit.campusParam EQ '306' AND #form.planAudit.programParamSeattle EQ 'default') OR (#form.planAudit.campusParam EQ '310' AND #form.planAudit.programParamBothell EQ 'default') OR (#form.planAudit.campusParam EQ '323' AND #form.planAudit.programParamTacoma EQ 'default')}"/>
+                  value="@{(#form.planExists EQ false) OR (#form.planAudit.campusParam EQ '306' AND #form.planAudit.programParamSeattle EQ 'default') OR (#form.planAudit.campusParam EQ '310' AND #form.planAudit.programParamBothell EQ 'default') OR (#form.planAudit.campusParam EQ '323' AND #form.planAudit.programParamTacoma EQ 'default')}"/>
         <property name="actionScript" value="
             validatePlanAudit('plan_hand_off_container','plan_audit_hand_off','reviewPlanAudit','audit',{viewId:'PlanAuditHandOff-FormView',pageId:'plan_audit_hand_off'});
         "/>
         <property name="onDocumentReadyScript" value="
             var disableCompId = 'plan_audit_validate';
             var condition = function () {
-                return ((jQuery.cookie('myplan_audit_running') != null) || (coerceValue('planAudit.campusParam') == '306' &amp;&amp; coerceValue('planAudit.programParamSeattle') == 'default') || (coerceValue('planAudit.campusParam') == '310' &amp;&amp; coerceValue('planAudit.programParamBothell') == 'default') || (coerceValue('planAudit.campusParam') == '323' &amp;&amp; coerceValue('planAudit.programParamTacoma') == 'default'));
+                return ((jQuery.cookie('myplan_audit_running') != null) || (coerceValue('planExists') == false) || (coerceValue('planAudit.campusParam') == '306' &amp;&amp; coerceValue('planAudit.programParamSeattle') == 'default') || (coerceValue('planAudit.campusParam') == '310' &amp;&amp; coerceValue('planAudit.programParamBothell') == 'default') || (coerceValue('planAudit.campusParam') == '323' &amp;&amp; coerceValue('planAudit.programParamTacoma') == 'default'));
             };
             disabledCheck(disableCompId, 'action', condition);
             jQuery('button#' + disableCompId).subscribe('AUDIT_COMPLETE', function () {
                 var condition = function () {
-                    return ((coerceValue('planAudit.campusParam') == '306' &amp;&amp; coerceValue('planAudit.programParamSeattle') == 'default') || (coerceValue('planAudit.campusParam') == '310' &amp;&amp; coerceValue('planAudit.programParamBothell') == 'default') || (coerceValue('planAudit.campusParam') == '323' &amp;&amp; coerceValue('planAudit.programParamTacoma') == 'default'));
+                    return ((coerceValue('planExists') == false) || (coerceValue('planAudit.campusParam') == '306' &amp;&amp; coerceValue('planAudit.programParamSeattle') == 'default') || (coerceValue('planAudit.campusParam') == '310' &amp;&amp; coerceValue('planAudit.programParamBothell') == 'default') || (coerceValue('planAudit.campusParam') == '323' &amp;&amp; coerceValue('planAudit.programParamTacoma') == 'default'));
                 };
                 disabledCheck(jQuery(this).attr('id'), 'action', condition);
             });
