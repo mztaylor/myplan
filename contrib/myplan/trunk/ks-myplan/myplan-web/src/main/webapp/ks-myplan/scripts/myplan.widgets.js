@@ -1100,7 +1100,7 @@ function getPendingAudit(id, type) {
         if (type == data.auditType) {
             var component = jQuery("#" + id + " .uif-stackedCollectionLayout");
             if (data) {
-                var item = jQuery("<div />").addClass("uif-collectionItem pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span class="title">Running <span class="program">' + data.programName + '</span></span>');
+                var item = jQuery("<div />").addClass("uif-collectionItem pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span class="title">Auditing <span class="program">' + data.programName + '</span></span>');
                 component.prepend(item);
                 pollPendingAudit(data.programId, data.recentAuditId, data.auditType);
             }
@@ -1596,4 +1596,53 @@ function buildHoverText(obj) {
         }
     }
     obj.attr("title", message).find("img.uif-image").attr("alt", message);
+}
+
+function coerceValue(name) {
+    var value = "";
+
+    var nameSelect = "[name='" + escapeName(name) + "']";
+
+    // when group is opened in lightbox make sure to get the value from field in the lightbox
+    // if that field is in the lightbox
+    var parent = document;
+    if (jQuery(nameSelect, jQuery(".fancybox-wrap")).length) {
+        parent = jQuery(".fancybox-wrap");
+    }
+
+    if (jQuery(nameSelect + ":checkbox", parent).length == 1) {
+        value = jQuery(nameSelect + ":checked", parent).val();
+    }
+    else if (jQuery(nameSelect + ":checkbox", parent).length > 1) {
+        value = [];
+        jQuery(nameSelect + ":checked", parent).each(function () {
+            value.push(jQuery(this).val());
+        });
+    }
+    else if (jQuery(nameSelect + ":radio", parent).length) {
+        value = jQuery(nameSelect + ":checked", parent).val();
+    }
+    else if (jQuery(nameSelect, parent).length) {
+        if (jQuery(nameSelect, parent).hasClass("watermark")) {
+            jQuery.watermark.hide(nameSelect, parent);
+            value = jQuery(nameSelect, parent).val();
+            jQuery.watermark.show(nameSelect, parent);
+        }
+        else {
+            value = jQuery(nameSelect, parent).val();
+        }
+    }
+
+    if (value == null) {
+        value = "";
+    }
+
+    if (value == "true") {
+        value = true
+    }
+    if (value == "false") {
+        value = false
+    }
+
+    return value;
 }
