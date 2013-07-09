@@ -160,7 +160,10 @@ function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
                     setFancyboxScrollableGroup(115);
                 },
                 afterClose:function () {
-                    auditButtonState("plan_audit_validate");
+                    var condition = function () {
+                        return ((jQuery.cookie("myplan_audit_running") != null) || (coerceValue("planExists") == false) || (coerceValue("planAudit.campusParam") == "306" && coerceValue("planAudit.programParamSeattle") == "default") || (coerceValue("planAudit.campusParam") == "310" && coerceValue("planAudit.programParamBothell") == "default") || (coerceValue("planAudit.campusParam") == "323" && coerceValue("planAudit.programParamTacoma") == "default"));
+                    };
+                    disabledCheck("plan_audit_validate", "action", condition);
                 }
             });
             elementToBlock.unblock();

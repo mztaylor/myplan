@@ -1598,6 +1598,7 @@ function buildHoverText(obj) {
     obj.attr("title", message).find("img.uif-image").attr("alt", message);
 }
 
+// TODO: Redefinition of coerceValue function not needed after bug resolved - https://jira.kuali.org/browse/KULRICE-9883
 function coerceValue(name) {
     var value = "";
 
