@@ -698,7 +698,7 @@
                         <list>
                             <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="headerText"
                                   p:condition="#form.planAudit.messyItems.size() EQ 0"
-                                  p:replacement="@{#form.planAudit.cleanList.size() GT 0 ? ' ' : 'No Plan Review Available'}"/>
+                                  p:replacement="@{#form.planAudit.cleanList.size() GT 0 ? ' ' : 'No Plan Audit Available'}"/>
                         </list>
                     </property>
                     <property name="instructionalMessage">
@@ -709,7 +709,7 @@
                                 <list>
                                     <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="messageText"
                                           p:condition="#form.planAudit.messyItems.size() EQ 0"
-                                          p:replacement="@{#form.planAudit.cleanList.size() GT 0 ? ' ' : 'We are unable to generate a plan review because the courses you have planned do not appear in the published Time Schedule(s).'}"/>
+                                          p:replacement="@{#form.planAudit.cleanList.size() GT 0 ? ' ' : 'We are unable to generate a plan audit because the courses you have planned do not appear in the published Time Schedule(s).'}"/>
                                 </list>
                             </property>
                             <property name="cssClasses">
@@ -737,7 +737,7 @@
                                         <value>ksap-noMargin</value>
                                         <value>ksap-defaultPadding</value>
                                         <value>ksap-scrollableGroup</value>
-                                        <value>ksap-solidBorder</value>
+                                        <value>@{#form.planAudit.messyItems.size() GT 0 ? 'ksap-solidBorder' : ''}</value>
                                         <value>ksap-noLeftBorder</value>
                                         <value>ksap-noRightBorder</value>
                                     </list>
@@ -764,7 +764,7 @@
                                     <list>
                                         <bean id="submit_plan_audit" parent="Uif-PrimaryActionButton" p:disabled="true"
                                               p:style="margin:0px 20px 0px 0px;">
-                                            <property name="actionLabel" value="Submit"/>
+                                            <property name="actionLabel" value="@{#form.planAudit.messyItems.size() EQ 0 ? 'OK, Got it' : 'Submit'}"/>
                                             <property name="actionScript" value="runPlanAudit('plan_audit_run');"/>
                                             <property name="onDocumentReadyScript"
                                                       value="buttonState('plan_audit_messy_items', 'submit_plan_audit');"/>
