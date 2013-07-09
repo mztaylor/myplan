@@ -320,7 +320,7 @@
                     </list>
                 </property>
                 <property name="messageText"
-                          value="Select your campus and choose a degree program or minor from the dropdown menu below. Audits may take 1-5 minutes to load. You can leave this page to browse MyPlan further while you wait."/>
+                          value="Select your campus and choose a degree program or minor from the dropdown menu below."/>
             </bean>
         </property>
         <property name="items">
