@@ -647,12 +647,12 @@ public class AtpHelper {
         }
 
         /**
-         * returns term as 'AUT 2013'
+         * returns term as 'AU 13'
          * @return
          */
         public String toShortTermName() {
-            String a = TERM_ID_LIST.get(getTerm() - 1).substring(0, 3).toUpperCase();
-            String b = getYearAsString();
+            String a = TERM_ID_LIST.get(getTerm() - 1).substring(0, 2).toUpperCase();
+            String b = getYearAsString().substring(2);
             return a + " " + b;
         }
 
