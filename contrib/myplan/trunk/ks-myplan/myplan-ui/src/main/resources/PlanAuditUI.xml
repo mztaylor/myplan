@@ -263,7 +263,7 @@
             </list>
         </property>
         <property name="header">
-            <bean parent="Uif-HeaderTwo"/>
+            <bean parent="Uif-ViewHeader" p:headerLevel="h2"/>
         </property>
 
         <property name="additionalScriptFiles">
@@ -762,7 +762,8 @@
                                         <value>ksap-noMargin</value>
                                         <value>ksap-defaultPadding</value>
                                         <value>ksap-scrollableGroup</value>
-                                        <value>@{#form.planAudit.messyItems.size() GT 0 ? 'ksap-solidBorder' : ''}</value>
+                                        <value>@{#form.planAudit.messyItems.size() GT 0 ? 'ksap-solidBorder' : ''}
+                                        </value>
                                         <value>ksap-noLeftBorder</value>
                                         <value>ksap-noRightBorder</value>
                                     </list>
@@ -789,7 +790,8 @@
                                     <list>
                                         <bean id="submit_plan_audit" parent="Uif-PrimaryActionButton" p:disabled="true"
                                               p:style="margin:0px 20px 0px 0px;">
-                                            <property name="actionLabel" value="@{#form.planAudit.messyItems.size() EQ 0 ? 'Ok, I get it' : 'Submit'}"/>
+                                            <property name="actionLabel"
+                                                      value="@{#form.planAudit.messyItems.size() EQ 0 ? 'Ok, I get it' : 'Submit'}"/>
                                             <property name="actionScript" value="runPlanAudit('plan_audit_run');"/>
                                             <property name="onDocumentReadyScript"
                                                       value="buttonState('plan_audit_messy_items', 'submit_plan_audit');"/>

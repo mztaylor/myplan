@@ -162,7 +162,7 @@
             </list>
         </property>
         <property name="header">
-            <bean parent="Uif-HeaderTwo"/>
+            <bean parent="Uif-ViewHeader" p:headerLevel="h2"/>
         </property>
 
         <property name="additionalScriptFiles">
