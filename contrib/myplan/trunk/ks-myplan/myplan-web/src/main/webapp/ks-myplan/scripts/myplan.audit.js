@@ -108,7 +108,7 @@ function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
     jQuery("body").append(tempForm);
 
     var blockOptions = {
-        message:'<img src="../ks-myplan/images/btnLoader.gif" style="vertical-align:middle; margin-right:10px;"/>Validating your plan',
+        message:'<img src="../ks-myplan/images/btnLoader.gif" style="vertical-align:middle; margin-right:10px;"/>Processing request',
         css:{
             width:'100%',
             border:'none',
