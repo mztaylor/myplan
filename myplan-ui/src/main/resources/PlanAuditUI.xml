@@ -65,7 +65,7 @@
             <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">
                     <list>
-                        <ref bean="recent_reviews_help_icon"/>
+                        <ref bean="recent_plan_audits_help_icon"/>
                     </list>
                 </property>
             </bean>
@@ -386,7 +386,6 @@
                     </property>
                 </bean>
                 <bean parent="run_plan_audits"/>
-                <bean parent="plan_items_empty_message"/>
                 <ref bean="plan_audit_section"/>
             </list>
         </property>
@@ -398,26 +397,33 @@
                 <value>myplan-run-audit-panel</value>
             </list>
         </property>
-        <property name="instructionalMessage">
-            <bean parent="KSAP-Message">
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>uif-boxLayoutVerticalItem</value>
-                    </list>
-                </property>
-                <property name="messageText"
-                          value="Select your campus and intended degree program from the dropdown menu below."/>
-            </bean>
-        </property>
         <property name="items">
             <list>
+                <bean parent="plan_items_empty_message"/>
                 <!--TODO: https://jira.kuali.org/browse/KULRICE-9846 progressiveRender expressions are evaluated before the defaultValue is set, workaround is to set the value on the backend -->
                 <bean parent="KSAP-SimpleInputField" p:propertyName="planAudit.campusParam" p:defaultValue="306">
+                    <property name="instructionalMessage">
+                        <bean parent="KSAP-Message">
+                            <property name="cssClasses">
+                                <list merge="true">
+                                    <value>uif-boxLayoutVerticalItem</value>
+                                </list>
+                            </property>
+                            <property name="messageText"
+                                      value="Select your campus and intended degree program from the dropdown menu below."/>
+                        </bean>
+                    </property>
                     <property name="control">
                         <bean parent="Uif-HorizontalRadioControl"/>
                     </property>
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.course.util.AuditRunCampusParam"/>
+                    </property>
+                </bean>
+                <bean parent="KSAP-SimpleInputField" p:propertyName="planExists" p:hidden="true"
+                      p:defaultValue="@{#form.planExists}">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
                 <bean parent="KSAP-HorizontalBoxGroup">
@@ -496,19 +502,19 @@
     <bean id="plan_audit_validate" parent="Uif-PrimaryActionButton" p:actionLabel="Audit Your Plan"
           p:title="Audit Your Plan">
         <property name="disabled"
-                  value="@{!#form.planExists OR (#form.planAudit.campusParam EQ '306' AND #form.planAudit.programParamSeattle EQ 'default') OR (#form.planAudit.campusParam EQ '310' AND #form.planAudit.programParamBothell EQ 'default') OR (#form.planAudit.campusParam EQ '323' AND #form.planAudit.programParamTacoma EQ 'default')}"/>
+                  value="@{(#form.planExists EQ false) OR (#form.planAudit.campusParam EQ '306' AND #form.planAudit.programParamSeattle EQ 'default') OR (#form.planAudit.campusParam EQ '310' AND #form.planAudit.programParamBothell EQ 'default') OR (#form.planAudit.campusParam EQ '323' AND #form.planAudit.programParamTacoma EQ 'default')}"/>
         <property name="actionScript" value="
             validatePlanAudit('plan_hand_off_container','plan_audit_hand_off','reviewPlanAudit','audit',{viewId:'PlanAuditHandOff-FormView',pageId:'plan_audit_hand_off'});
         "/>
         <property name="onDocumentReadyScript" value="
             var disableCompId = 'plan_audit_validate';
             var condition = function () {
-                return ((jQuery.cookie('myplan_audit_running') != null) || (coerceValue('planAudit.campusParam') == '306' &amp;&amp; coerceValue('planAudit.programParamSeattle') == 'default') || (coerceValue('planAudit.campusParam') == '310' &amp;&amp; coerceValue('planAudit.programParamBothell') == 'default') || (coerceValue('planAudit.campusParam') == '323' &amp;&amp; coerceValue('planAudit.programParamTacoma') == 'default'));
+                return ((jQuery.cookie('myplan_audit_running') != null) || (coerceValue('planExists') == false) || (coerceValue('planAudit.campusParam') == '306' &amp;&amp; coerceValue('planAudit.programParamSeattle') == 'default') || (coerceValue('planAudit.campusParam') == '310' &amp;&amp; coerceValue('planAudit.programParamBothell') == 'default') || (coerceValue('planAudit.campusParam') == '323' &amp;&amp; coerceValue('planAudit.programParamTacoma') == 'default'));
             };
             disabledCheck(disableCompId, 'action', condition);
             jQuery('button#' + disableCompId).subscribe('AUDIT_COMPLETE', function () {
                 var condition = function () {
-                    return ((coerceValue('planAudit.campusParam') == '306' &amp;&amp; coerceValue('planAudit.programParamSeattle') == 'default') || (coerceValue('planAudit.campusParam') == '310' &amp;&amp; coerceValue('planAudit.programParamBothell') == 'default') || (coerceValue('planAudit.campusParam') == '323' &amp;&amp; coerceValue('planAudit.programParamTacoma') == 'default'));
+                    return ((coerceValue('planExists') == false) || (coerceValue('planAudit.campusParam') == '306' &amp;&amp; coerceValue('planAudit.programParamSeattle') == 'default') || (coerceValue('planAudit.campusParam') == '310' &amp;&amp; coerceValue('planAudit.programParamBothell') == 'default') || (coerceValue('planAudit.campusParam') == '323' &amp;&amp; coerceValue('planAudit.programParamTacoma') == 'default'));
                 };
                 disabledCheck(jQuery(this).attr('id'), 'action', condition);
             });
@@ -520,9 +526,9 @@
         </property>
     </bean>
 
-    <bean id="plan_audit_run" parent="degree_audit_run" p:methodToCall="runPlanAudit" p:hidden="true" p:disabled="false"
-          p:refreshId="plan_audit_section" p:focusOnIdAfterSubmit="plan_audits_summary"
-          p:actionLabel="Review Plan">
+    <bean id="plan_audit_run" parent="Uif-PrimaryActionButton" p:methodToCall="runPlanAudit" p:hidden="true"
+          p:disabled="false" p:refreshId="plan_audit_section" p:focusOnIdAfterSubmit="plan_audits_summary"
+          p:actionLabel="Audit Plan">
         <property name="onClickScript" value="
             setPendingAudit(jQuery('button#plan_audit_validate'), 5);
         "/>
@@ -552,7 +558,7 @@
                         <list>
                             <bean parent="MyPlanMessagingIcon"/>
                             <bean parent="KSAP-Message"
-                                  p:messageText="You have no planned courses available for review. [0] and add them to your plan.">
+                                  p:messageText="You have no planned courses available to audit. [0] and add them to your plan.">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>message</value>
@@ -587,15 +593,27 @@
     </bean>
 
 
-    <bean id="empty_plan_audits" parent="KSAP-VerticalBoxGroup">
+    <bean id="empty_plan_audits" parent="KSAP-HorizontalBoxGroup"
+          p:headerText="How to Use Plan Audit for Academic Planning">
         <property name="render" value="@{#form.planAudit.auditHtml EQ null}"/>
-        <!--<property name="headerText" value="How to Use Plan Audit for Academic Planning"/>
         <property name="header">
-            <bean parent="Uif-HeaderFour"/>
-        </property>-->
+            <bean parent="Uif-HeaderFour">
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>uif-boxLayoutVerticalItem</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>ksap-noMargin</value>
+            </list>
+        </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-VerticalBoxGroup" p:headerText="How to Use Plan Audit for Academic Planning">
+                <bean parent="KSAP-VerticalBoxGroup" p:width="318px">
+                    <property name="style" value="margin-right:20px; height:215px;"/>
                     <property name="header">
                         <bean parent="Uif-HeaderFive"/>
                     </property>
@@ -644,7 +662,7 @@
         </property>
     </bean>
 
-    <bean id="plan_audit_report_section" parent="KSAP-VerticalBoxGroup" p:headerText="Plan Review">
+    <bean id="plan_audit_report_section" parent="KSAP-VerticalBoxGroup" p:headerText="Plan Audit">
         <property name="onDocumentReadyScript" value="initAuditActions();"/>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
@@ -698,7 +716,7 @@
                         <list>
                             <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="headerText"
                                   p:condition="#form.planAudit.messyItems.size() EQ 0"
-                                  p:replacement="@{#form.planAudit.cleanList.size() GT 0 ? ' ' : 'No Plan Audit Available'}"/>
+                                  p:replacement="@{#form.planAudit.cleanList.size() EQ 0 ? 'No Plan Audit Available' : ' '}"/>
                         </list>
                     </property>
                     <property name="instructionalMessage">
@@ -709,7 +727,7 @@
                                 <list>
                                     <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="messageText"
                                           p:condition="#form.planAudit.messyItems.size() EQ 0"
-                                          p:replacement="@{#form.planAudit.cleanList.size() GT 0 ? ' ' : 'We are unable to generate a plan audit because the courses you have planned do not appear in the published Time Schedule(s).'}"/>
+                                          p:replacement="@{#form.planAudit.cleanList.size() EQ 0 ? 'We are unable to generate a plan audit because the courses you have planned do not appear in the published Time Schedule(s).' : ' '}"/>
                                 </list>
                             </property>
                             <property name="cssClasses">
@@ -737,7 +755,8 @@
                                         <value>ksap-noMargin</value>
                                         <value>ksap-defaultPadding</value>
                                         <value>ksap-scrollableGroup</value>
-                                        <value>@{#form.planAudit.messyItems.size() GT 0 ? 'ksap-solidBorder' : ''}</value>
+                                        <value>@{#form.planAudit.messyItems.size() GT 0 ? 'ksap-solidBorder' : ''}
+                                        </value>
                                         <value>ksap-noLeftBorder</value>
                                         <value>ksap-noRightBorder</value>
                                     </list>
@@ -764,7 +783,8 @@
                                     <list>
                                         <bean id="submit_plan_audit" parent="Uif-PrimaryActionButton" p:disabled="true"
                                               p:style="margin:0px 20px 0px 0px;">
-                                            <property name="actionLabel" value="@{#form.planAudit.messyItems.size() EQ 0 ? 'OK, Got it' : 'Submit'}"/>
+                                            <property name="actionLabel"
+                                                      value="@{#form.planAudit.messyItems.size() EQ 0 ? 'OK, Got it' : 'Submit'}"/>
                                             <property name="actionScript" value="runPlanAudit('plan_audit_run');"/>
                                             <property name="onDocumentReadyScript"
                                                       value="buttonState('plan_audit_messy_items', 'submit_plan_audit');"/>
