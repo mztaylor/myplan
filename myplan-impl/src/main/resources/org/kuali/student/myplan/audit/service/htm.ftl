@@ -45,10 +45,10 @@
 }>
 
 <#assign termMap = {
-"1":"WIN",
-"2":"SPR",
-"3":"SUM",
-"4":"AUT"
+"1":"WI",
+"2":"SP",
+"3":"SU",
+"4":"AU"
 }>
 
 <#assign satisfiedMap = {
@@ -106,7 +106,7 @@
             <label>Program Entry Qtr:</label>
 
             <div>
-                <span class="program-entry-qtr"> ${termMap[catalogYearTerm?substring(4,5)]} ${catalogYearTerm?substring(0,4)} </span>
+                <span class="program-entry-qtr"> ${termMap[catalogYearTerm?substring(4,5)]} ${catalogYearTerm?substring(2,4)} </span>
             </div>
         </div>
         <div class="audit-summary-data plan-audit-data">
