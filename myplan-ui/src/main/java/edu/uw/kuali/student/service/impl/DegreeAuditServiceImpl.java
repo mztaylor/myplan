@@ -278,6 +278,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         String auditId = null;
         DegreeAuditRequest req = new DegreeAuditRequest(studentId, programId);
         int totalCredits = 0;
+        int totalPlanned = 0;
         try {
 
             List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlan(academicPlanId, context);
@@ -338,7 +339,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         course.quarter = yt.getTermAsID();
                         course.year = yt.getYearAsString();
                         req.courses.add(course);
-
+                        totalPlanned++;
                         //Adding new course request if a secondary activity exists
                         //NOTE: secondary activity courses should no pass credit
                         if (secondaryActivity != null) {
@@ -373,7 +374,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                 for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
                     String key = attributeInfo.getKey();
                     if ("forCourses".equalsIgnoreCase(key)) {
-                        attributeInfo.setValue(String.valueOf(req.courses.size()));
+                        attributeInfo.setValue(String.valueOf(totalPlanned));
                     } else if ("forCredits".equalsIgnoreCase(key)) {
                         attributeInfo.setValue(String.valueOf(totalCredits));
                     } else if ("forQuarter".equalsIgnoreCase(key)) {
