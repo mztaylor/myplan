@@ -979,7 +979,8 @@
         </property>
 
         <property name="layoutManager">
-            <bean parent="Uif-MultiRowTableCollectionLayout">
+            <bean parent="Uif-TableCollectionLayout"
+                                class="org.kuali.rice.krad.uif.layout.extension.CourseSectionDetailsLayoutManager">
                 <property name="id"
                           value="@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_@{#line.yearTerm.toATP().replace('.','-')}"/>
                 <property name="numberOfColumns" value="7"/>
@@ -1108,18 +1109,18 @@
             <null/>
         </property>
         <property name="label" value="Section"/>
-        <property name="onDocumentReadyScript" value="
-            var row = jQuery('#@{#line.atpId.replace('.','-')}-@{#line.registrationCode}').parents('tr');
-            row.addClass('row');
-            if (@{#line.primary}) {
-                row.addClass('primary');
-            } else {
-                row.addClass('secondary');
-                if (row.prev('tr').prev('tr').prev('tr').hasClass('primary')) row.addClass('top');
-            }
-            if (@{#line.planItemId NE null}) row.addClass('myplan-section-planned');
-            if (@{#line.stateKey NE 'active'}) row.addClass('fl-text-lightgray');
-        "/>
+        <!--<property name="onDocumentReadyScript" value="-->
+            <!--var row = jQuery('#@{#line.atpId.replace('.','-')}-@{#line.registrationCode}').parents('tr');-->
+            <!--row.addClass('row');-->
+            <!--if (@{#line.primary}) {-->
+                <!--row.addClass('primary');-->
+            <!--} else {-->
+                <!--row.addClass('secondary');-->
+                <!--if (row.prev('tr').prev('tr').prev('tr').hasClass('primary')) row.addClass('top');-->
+            <!--}-->
+            <!--if (@{#line.planItemId NE null}) row.addClass('myplan-section-planned');-->
+            <!--if (@{#line.stateKey NE 'active'}) row.addClass('fl-text-lightgray');-->
+        <!--"/>-->
         <property name="cssClasses">
             <list merge="true">
                 <value>activityCode</value>

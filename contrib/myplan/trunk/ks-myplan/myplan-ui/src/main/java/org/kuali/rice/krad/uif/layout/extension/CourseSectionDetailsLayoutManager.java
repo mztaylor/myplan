@@ -43,8 +43,9 @@ public class CourseSectionDetailsLayoutManager extends TableLayoutManager {
 			StringBuilder r1css = new StringBuilder();
 			r1css.append("row");
 			r1css.append(aoi.isPrimary() ? " primary" : " secondary");
-			if (!LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY.equals(aoi
-					.getStateKey()))
+            // TODO:  MYPLAN-2139 Update after mapping is changed
+			//if (!LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY.equals(aoi.getStateKey()))
+            if (!"active".equals(aoi.getStateKey()))
 				r1css.append(" fl-text-lightgray");
 			StringBuilder r2css = new StringBuilder();
 			if (!aoi.isPrimary())
