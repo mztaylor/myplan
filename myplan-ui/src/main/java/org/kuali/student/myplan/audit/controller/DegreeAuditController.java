@@ -44,6 +44,7 @@ import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -199,7 +200,7 @@ public class DegreeAuditController extends UifControllerBase {
 
             for (LearningPlanInfo learningPlanInfo : learningPlanList) {
                 String learningPlanID = learningPlanInfo.getId();
-                List<PlanItemInfo> planItemInfoList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, CONTEXT_INFO);
+                List<PlanItemInfo> planItemInfoList = getAcademicPlanService().getPlanItemsInPlanByAtp(learningPlanID, AtpHelper.getFirstOpenForPlanTerm(), PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, CONTEXT_INFO);
                 if (planItemInfoList != null && planItemInfoList.size() > 0) {
                     return true;
                 }
