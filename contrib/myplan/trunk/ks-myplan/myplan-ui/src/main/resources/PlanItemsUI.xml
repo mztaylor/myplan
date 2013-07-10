@@ -60,8 +60,8 @@
                             </bean>
                             <ref bean="planned_menu_items"/>
                             <ref bean="backup_menu_items"/>
-                            <ref bean="completed_menu_items"/>
-                            <ref bean="completed_backup_menu_items"/>
+                            <ref bean="completed_courses_menu_items"/>
+                            <ref bean="completed_planned_backup_menu_items"/>
                             <bean id="hidden_new_user_flag" parent="KSAP-SimpleDataField" p:propertyName="newUser"
                                   p:hidden="true"/>
                         </list>
@@ -161,10 +161,16 @@
                   value="openPlanItemPopUp(jQuery(this).data('planitemid'),'move_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'move_dialog_page', moveCourse:'true',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
     </bean>
 
-    <bean id="menuOptionCopy" parent="Uif-Link" p:linkText="Copy to Another Quarter"
+    <bean id="menuOptionCopyPlanItem" parent="Uif-Link" p:linkText="Copy to Another Quarter"
           p:title="Copy to Another Quarter" p:href="#">
         <property name="onClickScript"
                   value="openPlanItemPopUp(jQuery(this).data('planitemid'),'copy_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'copy_dialog_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
+    </bean>
+
+    <bean id="menuOptionCopyCourse" parent="Uif-Link" p:linkText="Copy to Another Quarter"
+          p:title="Copy to Another Quarter" p:href="#">
+        <property name="onClickScript"
+                  value="openPlanItemPopUp(jQuery(this).data('courseid'),'copy_dialog_page',{courseId:jQuery(this).data('courseid'),pageId:'copy_dialog_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
     </bean>
 
     <bean id="menuOptionDelete" parent="Uif-Link" p:linkText="Delete from Plan"
@@ -196,7 +202,7 @@
                 <bean parent="menuOptionMarkBackup"/>
                 <bean parent="menuTextBackup"/>
                 <bean parent="menuOptionMove"/>
-                <bean parent="menuOptionCopy"/>
+                <bean parent="menuOptionCopyPlanItem"/>
                 <bean parent="menuOptionDelete"/>
                 <bean parent="menuTextDelete"/>
             </list>
@@ -211,7 +217,7 @@
                 <bean parent="menuOptionMarkPlanned"/>
                 <bean parent="menuTextPlanned"/>
                 <bean parent="menuOptionMove"/>
-                <bean parent="menuOptionCopy"/>
+                <bean parent="menuOptionCopyPlanItem"/>
                 <bean parent="menuOptionDelete"/>
                 <bean parent="menuTextDelete"/>
             </list>
@@ -219,22 +225,24 @@
     </bean>
 
     <!--Completed Menu Items-->
-    <bean id="completed_menu_items" parent="KSAP-VerticalBoxGroup" p:hidden="true" p:cssClasses="fl-container-150">
-        <property name="items">
-            <list>
-                <bean parent="menuOptionCourseSummary"/>
-                <bean parent="menuOptionCopy" p:style="margin:0;"/>
-            </list>
-        </property>
-    </bean>
-
-    <!--Completed backup Menu Items-->
-    <bean id="completed_backup_menu_items" parent="KSAP-VerticalBoxGroup" p:hidden="true"
+    <bean id="completed_courses_menu_items" parent="KSAP-VerticalBoxGroup" p:hidden="true"
           p:cssClasses="fl-container-150">
         <property name="items">
             <list>
                 <bean parent="menuOptionCourseSummary"/>
-                <bean parent="menuOptionCopy"/>
+                <bean parent="menuOptionCopyCourse" p:style="margin:0;"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <!--Completed planned/backup Menu Items-->
+    <bean id="completed_planned_backup_menu_items" parent="KSAP-VerticalBoxGroup" p:hidden="true"
+          p:cssClasses="fl-container-150">
+        <property name="items">
+            <list>
+                <bean parent="menuOptionCourseSummary"/>
+                <bean parent="menuOptionCopyPlanItem"/>
                 <bean parent="menuOptionDelete"/>
                 <bean parent="menuTextDelete"/>
             </list>
@@ -581,6 +589,7 @@
         <property name="dataAttributes">
             <map>
                 <entry key="courseid" value="@{#line.courseId}"/>
+                <entry key="atpid" value="@{#line.atpId}"/>
                 <entry key="acadrecatpid" value="@{#line.atpId}"/>
             </map>
         </property>
@@ -650,7 +659,7 @@
                             <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="onClickScript"
                                   p:condition="#line.courseCode NE null AND #line.courseId NE null">
                                 <property name="replacement"
-                                          value="openMenu('@{#line.uuid}_completed','completed_menu_items','@{#line.atpId}',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
+                                          value="openMenu('@{#line.uuid}_completed','completed_courses_menu_items','@{#line.atpId}',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false);"/>
                             </bean>
                             <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="cssClasses"
                                   p:condition="#line.courseCode NE null AND #line.courseId NE null">
@@ -813,7 +822,7 @@
         <property name="items">
             <list>
                 <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to swtich menu -->
-                <!-- @{#parentLine.openForPlanning ? 'planned_menu_items' : 'completed_backup_menu_items'} -->
+                <!-- @{#parentLine.openForPlanning ? 'planned_menu_items' : 'completed_planned_backup_menu_items'} -->
                 <bean parent="planItemGroup"
                       p:id="@{#line.planItemDataObject.id}_planned_@{#line.planItemDataObject.atp.replace('.','-')}">
                     <property name="onClickScript"
@@ -876,7 +885,7 @@
         <property name="items">
             <list>
                 <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to switch menu -->
-                <!-- @{#parentLine.openForPlanning ? 'backup_menu_items' : 'completed_backup_menu_items'} -->
+                <!-- @{#parentLine.openForPlanning ? 'backup_menu_items' : 'completed_planned_backup_menu_items'} -->
                 <bean parent="planItemGroup"
                       p:id="@{#line.planItemDataObject.id}_backup_@{#line.planItemDataObject.atp.replace('.','-')}">
                     <property name="onClickScript"
