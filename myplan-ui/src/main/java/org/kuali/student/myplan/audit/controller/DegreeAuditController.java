@@ -190,7 +190,7 @@ public class DegreeAuditController extends UifControllerBase {
 
 
     /**
-     * Method is used to check if at least one planned course exists in the student's Academic plan
+     * Method is used to check if at least one planned course exists in the student's Academic plan from the current plannable term
      *
      * @return
      */
