@@ -32,7 +32,7 @@
         </property>
         <property name="additionalScriptFiles">
             <list>
-                <value>ks-myplan/plugins/jcarousellite.js?@{#ConfigProperties['myplan.version']}</value>
+                <value>ks-myplan/plugins/jcarousellite.js?@{#ConfigProperties['myplan.buildNumber']}</value>
             </list>
         </property>
         <property name="items">

@@ -268,7 +268,7 @@
 
         <property name="additionalScriptFiles">
             <list>
-                <value>ks-myplan/scripts/myplan.audit.js?@{#ConfigProperties['myplan.version']}</value>
+                <value>ks-myplan/scripts/myplan.audit.js?@{#ConfigProperties['myplan.buildNumber']}</value>
                 <!-- TODO: remove fancybox linkage after https://jira.kuali.org/browse/KULRICE-9396 is resolved -->
                 <value>ks-myplan/plugins/jquery.fancybox.pack.js?2.1.4</value>
             </list>
