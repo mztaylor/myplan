@@ -167,7 +167,7 @@
 
         <property name="additionalScriptFiles">
             <list>
-                <value>ks-myplan/scripts/myplan.audit.js?@{#ConfigProperties['myplan.version']}</value>
+                <value>ks-myplan/scripts/myplan.audit.js?@{#ConfigProperties['myplan.buildNumber']}</value>
             </list>
         </property>
         <property name="additionalCssFiles">
