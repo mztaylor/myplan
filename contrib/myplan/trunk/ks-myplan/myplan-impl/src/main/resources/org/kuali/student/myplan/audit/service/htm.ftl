@@ -20,8 +20,8 @@
 "Opt":"This sub-requirement is optional.",
 "+":"The sub-requirement has been satisfied.",
 "-":"The sub-requirement has not been satisfied.",
-"IP -":"A course is in-progress which partially satisfies the sub-requirement but does not complete it.",
-"IP +":"A course is in-progress which partially satisfies the sub-requirement.",
+"IP-":"A course is in-progress which partially satisfies the sub-requirement but does not complete it.",
+"IP+":"A course is in-progress which partially satisfies the sub-requirement.",
 "0000":"Zeros precede some transfer courses to indicate that quarter and year the course was taken are not available to DARS.",
 "R":"This sub-requirement is mandatory.",
 "*":"This sub-requirement is optional.",
@@ -31,9 +31,9 @@
 "DP":"This course has been retaken.",
 ">D":"Credit has been removed from this retaken course. For the purpose of a given requirement, credit may be restored--as when a minimum grade is required. This course is used in your UW GPA.",
 ">PL":"The course is planned.",
-"PL":"The requirement is satisfied when the planned course is completed.",
-"PL -":"A course is planned which partially satisfies the sub-requirement but does not complete it.",
-"PL +":"A course is planned which satisfies the sub-requirement."
+"PL":"The requirement would be satisfied if the in-progress and planned courses were completed.",
+"PL-":"The sub-requirement would be partially-satisfied but not complete if the in-progress and planned courses were completed.",
+"PL+":"The sub-requirement would be satisfied if the in-progress and planned courses were completed."
 }>
 
 <#assign subreqStatusMap = {
@@ -582,7 +582,6 @@ ${headerLine?xml}
              showTotals: ${showTotals?string?xml}
              showHeader: ${showHeader?string?xml}
              showSelectNotFrom: ${subreq.showSelectNotFrom?string?xml}
-
             -->
 
             <#if showHeader || showTotals || subreq.showSelectNotFrom || subreq.showTakenCourses >
@@ -593,8 +592,10 @@ ${headerLine?xml}
                     </#if>
                     <#if showSubreqStatus >
                         <#assign subreqToolTip = " "  >
-                        <#if subreqStatusMap[subreq.status]?? >
-                            <#if toolTipsMap[subreqStatusMap[subreq.status]]?? >
+                        <#if subreqStatusMap[subreq.status]??>
+                            <#if toolTipsMap[subreq.seqErr?xml+subreqStatusMap[subreq.status]]?? >
+                                <#assign subreqToolTip = toolTipsMap[subreq.seqErr?xml+subreqStatusMap[subreq.status]]  >
+                            <#elseif toolTipsMap[subreqStatusMap[subreq.status]]??>
                                 <#assign subreqToolTip = toolTipsMap[subreqStatusMap[subreq.status]]  >
                             </#if>
                         </#if>
