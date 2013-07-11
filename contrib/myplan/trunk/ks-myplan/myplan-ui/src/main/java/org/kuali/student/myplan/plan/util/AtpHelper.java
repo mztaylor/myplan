@@ -648,6 +648,7 @@ public class AtpHelper {
 
         /**
          * returns term as 'AU 13'
+         *
          * @return
          */
         public String toShortTermName() {
@@ -847,10 +848,16 @@ public class AtpHelper {
         return futureTerms.get(futureTerms.size() - 1);
     }
 
-    public static YearTerm getLastPlannedTerm() {
+
+    /**
+     * Provides the last planned or last registered term in academic plan
+     * @return
+     */
+    public static YearTerm getLastPlannedOrRegisteredTerm() {
         YearTerm lastPlannedTerm = atpToYearTerm(getCurrentAtpId());
+        String regId = UserSessionHelper.getStudentRegId();
         try {
-            String regId = UserSessionHelper.getStudentRegId();
+
             List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regId, LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
             for (LearningPlanInfo learningPlan : learningPlanList) {
                 String learningPlanID = learningPlan.getId();
@@ -869,6 +876,21 @@ public class AtpHelper {
             }
         } catch (Exception e) {
             logger.error("Could not load the last Planned YearTerm");
+        }
+
+        List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
+
+        try {
+            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(regId, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Could not retrieve StudentCourseRecordInfo from the SWS.", e);
+        }
+
+        for (StudentCourseRecordInfo studentCourseRecordInfo : studentCourseRecordInfos) {
+            YearTerm academicYearTerm = atpToYearTerm(studentCourseRecordInfo.getTermName());
+            if (academicYearTerm.compareTo(lastPlannedTerm) == 1) {
+                lastPlannedTerm = academicYearTerm;
+            }
         }
         return lastPlannedTerm;
     }

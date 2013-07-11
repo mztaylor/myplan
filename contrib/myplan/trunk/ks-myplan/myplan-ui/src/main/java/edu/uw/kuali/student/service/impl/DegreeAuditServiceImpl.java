@@ -368,7 +368,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             if (academicPlanId != null) {
                 // getting the learning plan for given academicPlanId
                 LearningPlanInfo learningPlanInfo = getAcademicPlanService().getLearningPlan(academicPlanId, context);
-                YearTerm lastYT = AtpHelper.getLastPlannedTerm();
+                YearTerm lastYT = AtpHelper.getLastPlannedOrRegisteredTerm();
 
                 //updating the learning plan with new attribute values.
                 for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
