@@ -105,8 +105,8 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
 
     public static class Choice implements Cloneable {
         public String credit = "";
-        public String section = null;
-        public String secondaryActivity = null;
+        public String section = "";
+        public String secondaryActivity = "";
         boolean crNcGradingOption = false;
         boolean writing = false;
         boolean honors = false;
@@ -163,9 +163,9 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
         public Choice build(String key) {
             Choice choice = new Choice();
             String[] str = key.split(":");
-            choice.section = StringUtils.hasText(str[0]) ? str[0] : null;
-            choice.secondaryActivity = StringUtils.hasText(str[1]) ? str[1] : null;
-            choice.credit = StringUtils.hasText(str[2]) ? str[2] : null;
+            choice.section = StringUtils.hasText(str[0]) ? str[0] : "";
+            choice.secondaryActivity = StringUtils.hasText(str[1]) ? str[1] : "";
+            choice.credit = StringUtils.hasText(str[2]) ? str[2] : "";
             choice.writing = str[3].contains(WRITING_CREDIT);
             choice.honors = str[3].contains(HONORS_CREDIT);
             choice.crNcGradingOption = str[3].contains(CR_NO_CR_GRADING_OPTION);
@@ -345,7 +345,7 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
                                     for (String temp : list) {
                                         Choice choice = new Choice();
                                         choice.credit = temp;
-                                        choice.section = section;
+                                        choice.section = StringUtils.hasText(section) ? section : "";
                                         choice.honors = honors;
                                         choice.writing = writing;
                                         choice.secondaryActivity = StringUtils.hasText(nonHonorsSecondaryActivity) ? nonHonorsSecondaryActivity : "";
@@ -392,8 +392,8 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
                                         item.setCourseCode(courseInfo.getCode());
                                         item.setCourseId(courseInfo.getVersionInfo().getVersionIndId());
                                         item.setCredit(credits);
-                                        item.setSectionCode(section);
-                                        item.setSecondaryActivityCode(secondaryActivity);
+                                        item.setSectionCode(StringUtils.hasText(section) ? section : "");
+                                        item.setSecondaryActivityCode(StringUtils.hasText(secondaryActivity) ? secondaryActivity : "");
                                         courseItems.add(item);
                                     }
                                 } else {
