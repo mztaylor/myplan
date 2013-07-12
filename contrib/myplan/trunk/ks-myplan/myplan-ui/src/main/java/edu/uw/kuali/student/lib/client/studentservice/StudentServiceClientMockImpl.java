@@ -190,4 +190,10 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
     public boolean connectionStatus(String url) {
         return false;
     }
+
+    @Override
+    public String getAllSectionsStatus(String year, String quarter, String abbrev, String num) throws ServiceException {
+        return null;
+    };
+
 }
