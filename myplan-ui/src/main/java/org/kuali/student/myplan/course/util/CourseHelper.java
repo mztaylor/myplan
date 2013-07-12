@@ -6,7 +6,9 @@ import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 
 public interface CourseHelper {
@@ -36,6 +38,10 @@ public interface CourseHelper {
     public String getCodeFromActivityId(String activityId);
 
     public String getCourseVersionIdByTerm(String courseId, String termId);
+
+    public HashMap<String, String> fetchCourseDivisions();
+
+    public String extractDivisions(HashMap<String, String> divisionMap, String query, List<String> divisions, boolean isSpaceAllowed);
 
 
     /**

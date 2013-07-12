@@ -299,10 +299,10 @@
         <property name="onDocumentReadyScript" value="
             jQuery('.myplan-carousel-list li .myplan-term-current.open, .myplan-carousel-list li .myplan-term-future.open').find('.myplan-term-planned .uif-stackedCollectionLayout, .myplan-term-backup .uif-stackedCollectionLayout').each(function(){
             	var atpId = jQuery(this).parents('.myplan-carousel-term').data('atpid');
-            	var planType = jQuery(this).parents('.myplan-carousel-term').data('plantype');
+            	var backupFlag = jQuery(this).parents('.myplan-carousel-term').data('backupflag');
             	var size = jQuery(this).parents('.myplan-carousel-term').data('size');
             	var jQuickAdd = jQuery('&lt;div /&gt;').addClass('quick-add-cell').html('Add a course to plan').click(function(e){
-            		openQuickAddPopUp('quick_Add','quickAdd_dialog_page',{atpId:atpId,pageId:'quickAdd_dialog_page',planType:planType},e,null,{tail:{hidden:true},align:'left',position:'bottom'});
+            		openQuickAddPopUp('quick_Add','quickAdd_dialog_page',{atpId:atpId,pageId:'quickAdd_dialog_page',backup:backupFlag},e,null,{tail:{hidden:true},align:'left',position:'bottom'});
             	});
             	if (size &lt; 8) {
             		jQuery(this).append(jQuickAdd.show());
@@ -790,7 +790,7 @@
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="dataAttributes">
             <map>
-                <entry key="plantype" value="planned"/>
+                <entry key="backupflag" value="false"/>
                 <entry key="atpid" value="@{#line.atpId}"/>
                 <entry key="size" value="@{#line.plannedList.size()}"/>
             </map>
@@ -872,7 +872,7 @@
         </property>
         <property name="dataAttributes">
             <map>
-                <entry key="plantype" value="backup"/>
+                <entry key="backupflag" value="true"/>
                 <entry key="atpId" value="@{#line.atpId}"/>
                 <entry key="size" value="@{#line.backupList.size()}"/>
             </map>

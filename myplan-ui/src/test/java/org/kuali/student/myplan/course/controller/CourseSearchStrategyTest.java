@@ -4,19 +4,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kuali.student.common.search.dto.SearchParam;
 import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
-import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,13 +28,6 @@ public class CourseSearchStrategyTest {
 
     public void setCourseSearchStrategy(CourseSearchStrategy strategy) {
         this.courseSearchStrategy = strategy;
-    }
-
-    @Test
-    public void testFetchCourseDivisions() throws Exception {
-        CourseSearchStrategy strategy = getCourseSearchStrategy();
-        HashMap<String, String> divisionsMap = strategy.fetchCourseDivisions();
-        assertFalse(divisionsMap.isEmpty());
     }
 
     @Test
@@ -215,23 +204,6 @@ public class CourseSearchStrategyTest {
         assertEquals("myplan.lu.search.fulltext", requests.get(0).getSearchKey());
         assertEquals("text", requests.get(0).getParams().get(0).getValue());
         assertEquals("text", requests.get(1).getParams().get(0).getValue());
-    }
-
-    @Test
-    public void testExtractDivisions() throws Exception {
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("A", "A   ");
-        map.put("AB", "A B ");
-        map.put("B", "B   ");
-        map.put("C", "C   ");
-        CourseSearchStrategy strategy = getCourseSearchStrategy();
-        ArrayList<String> divisions = new ArrayList<String>();
-        String query = "A B C";
-        query = strategy.extractDivisions(map, query, divisions);
-        assertEquals("", query);
-        assertEquals(2, divisions.size());
-        assertEquals("A B ", divisions.get(0));
-        assertEquals("C   ", divisions.get(1));
     }
 
     @Test

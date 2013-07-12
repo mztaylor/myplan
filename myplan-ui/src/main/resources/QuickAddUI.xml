@@ -35,26 +35,14 @@
                         </list>
                     </property>
                 </bean>
-                <bean id="quick_add_action_response_page" parent="Uif-Page" p:id="quick_add_action_response_page">
-                    <property name="validationMessages">
-                        <bean parent="Uif-GroupValidationMessages">
-                            <property name="displayMessages" value="true"/>
-                            <property name="displayFieldLabelWithMessages" value="false"/>
-                        </bean>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <ref bean="quick_add_actions_response"/>
-                        </list>
-                    </property>
-                </bean>
+                <ref bean="plan_action_response_page"/>
             </list>
         </property>
         <property name="footer.render" value="false"/>
-        <property name="formClass" value="org.kuali.student.myplan.quickAdd.form.QuickAddForm"/>
+        <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
     </bean>
 
-    <bean id="quick_add_dialog" parent="KSAP-VerticalBoxGroup" p:headerText="Add a course to @{termYear}">
+    <bean id="quick_add_dialog" parent="KSAP-VerticalBoxGroup" p:headerText="Add a course to @{termName}">
         <property name="cssClasses">
             <list merge="true">
                 <value>ksap-noMargin</value>
@@ -93,7 +81,7 @@
     </bean>
 
     <bean id="quick_add_placeholder_add_dialog" parent="KSAP-VerticalBoxGroup"
-          p:headerText="Add a Course or a Placeholder to @{termYear}">
+          p:headerText="Add course or placeholder to @{termName}">
         <property name="cssClasses">
             <list merge="true">
                 <value>ksap-noMargin</value>
@@ -179,7 +167,7 @@
             <bean parent="Uif-Suggest" p:render="true" p:sourceQueryMethodResults="false">
                 <property name="suggestQuery">
                     <bean parent="Uif-AttributeQueryConfig"
-                          p:queryMethodInvokerConfig.staticMethod="org.kuali.student.myplan.quickAdd.service.QuickAddSuggestHelperService.getSuggestions"/>
+                          p:queryMethodInvokerConfig.staticMethod="org.kuali.student.myplan.plan.service.QuickAddSuggestHelperService.getSuggestions"/>
                 </property>
             </bean>
         </property>
@@ -243,7 +231,7 @@
 
     <bean id="quickAddCourse" p:id="quickAddCourse" parent="Uif-PrimaryActionButton-Small" p:actionLabel="Add to Plan">
         <property name="actionScript"
-                  value="myplanAjaxSubmitQuickAdd('quick_Add',{ atpId:'@{atpId}',planType:'@{planType}'},'quickAddCourse',e);"/>
+                  value="myplanAjaxSubmitQuickAdd('quick_Add',{ atpId:'@{atpId}',backup:'@{backup}'},'addPlannedCourse',e);"/>
         <property name="onDocumentReadyScript" value="
                     jQuery('#quickAddCourse')
                         .subscribe('PLAN_ITEM_ADDED', function(data){
@@ -258,15 +246,6 @@
     <bean id="cancelQuickAddCourse" p:id="cancelQuickAddCourse" parent="Uif-SecondaryActionButton-Small"
           p:actionLabel="Cancel">
         <property name="actionScript" value="fnCloseAllPopups();"/>
-    </bean>
-
-    <bean id="quick_add_actions_response" parent="Uif-VerticalBoxSection">
-        <property name="items">
-            <list>
-                <bean id="request_status_item_key" parent="Uif-DataField" p:propertyName="requestStatus"/>
-                <bean id="json_events_item_key" parent="Uif-DataField" p:propertyName="javascriptEventsAsJSON"/>
-            </list>
-        </property>
     </bean>
 
 </beans>

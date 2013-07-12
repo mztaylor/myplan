@@ -20,20 +20,20 @@ import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.config.property.ConfigContext;
-import org.kuali.rice.core.api.criteria.InPredicate;
-import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.common.exceptions.MissingParameterException;
-import org.kuali.student.common.search.dto.*;
+import org.kuali.student.common.search.dto.SearchParam;
+import org.kuali.student.common.search.dto.SearchRequest;
+import org.kuali.student.common.search.dto.SearchResult;
+import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
-import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.lum.lu.service.LuService;
@@ -143,10 +143,10 @@ public class CourseSearchController extends UifControllerBase {
             return null;
 
         }
-        HashMap<String, String> divisionMap = fetchCourseDivisions();
+        HashMap<String, String> divisionMap = getCourseHelper().fetchCourseDivisions();
 
         ArrayList<String> divisions = new ArrayList<String>();
-        extractDivisions(divisionMap, subject, divisions, false);
+        getCourseHelper().extractDivisions(divisionMap, subject, divisions, false);
         if (divisions.size() > 0) {
             subject = divisions.get(0);
         }
@@ -688,61 +688,6 @@ public class CourseSearchController extends UifControllerBase {
  form.setTermsFacetItems(termsFacet.getFacetItems());
  logger.info("End of populating termsFacet  of CourseSearchController:" + System.currentTimeMillis());
  logger.info("End of method populateFacets of CourseSearchController:" + System.currentTimeMillis());*/
-    }
-
-    public HashMap<String, String> fetchCourseDivisions() {
-        HashMap<String, String> map = new HashMap<String, String>();
-        try {
-            SearchRequest request = new SearchRequest("myplan.distinct.clu.divisions");
-
-            SearchResult result = getLuService().search(request);
-
-            for (SearchResultRow row : result.getRows()) {
-                for (SearchResultCell cell : row.getCells()) {
-                    String division = cell.getValue();
-                    // Store both trimmed and original, because source data
-                    // is sometimes space padded.
-                    String key = division.trim().replaceAll("\\s+", "");
-                    map.put(key, division);
-                }
-            }
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
-        return map;
-    }
-
-    public String extractDivisions(HashMap<String, String> divisionMap, String query, List<String> divisions, boolean isSpaceAllowed) {
-        boolean match = true;
-        while (match) {
-            match = false;
-            // Retokenize after each division found is removed
-            // Remove extra spaces to normalize input
-            if (!isSpaceAllowed) {
-                query = query.trim().replaceAll("[\\s\\\\/:?\\\"<>|`~!@#$%^*()_+-={}\\]\\[;',.]", " ");
-            } else {
-                query = query.replaceAll("[\\\\/:?\\\"<>|`~!@#$%^*()_+-={}\\]\\[;',.]", " ");
-            }
-            List<QueryTokenizer.Token> tokens = QueryTokenizer.tokenize(query);
-            List<String> list = QueryTokenizer.toStringList(tokens);
-            List<String> pairs = TokenPairs.toPairs(list);
-            TokenPairs.sortedLongestFirst(pairs);
-
-            Iterator<String> i = pairs.iterator();
-            while (match == false && i.hasNext()) {
-                String pair = i.next();
-
-                String key = pair.replace(" ", "");
-                if (divisionMap.containsKey(key)) {
-                    String division = divisionMap.get(key);
-                    divisions.add(division);
-                    query = query.replace(pair, "");
-                    match = true;
-                }
-            }
-        }
-        return query;
     }
 
 
