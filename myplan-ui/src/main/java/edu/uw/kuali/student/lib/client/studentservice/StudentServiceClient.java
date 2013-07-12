@@ -89,6 +89,8 @@ public interface StudentServiceClient {
 
     public abstract String getSectionStatus(String year, String quarter, String abbrev, String num, String section) throws ServiceException;
 
+    public abstract String getAllSectionsStatus(String year, String quarter, String abbrev, String num) throws ServiceException;
+
     /**
      * @param regId
      * @return

@@ -103,25 +103,27 @@ public class CourseHelperImpl implements CourseHelper {
         return path;
     }
 
-    public LinkedHashMap<String, LinkedHashMap<String, Object>> getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt,
-                                                                                    String curric, String num) throws ServiceException, DocumentException {
-        StudentServiceClient client = getStudentServiceClient();
 
+    public LinkedHashMap<String, LinkedHashMap<String, Object>> getAllSectionStatus(
+            LinkedHashMap<String,LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt, String curric, String num)
+            throws ServiceException, DocumentException {
+
+        StudentServiceClient client = getStudentServiceClient();
+       // call SWS get enrollment info for all sections
         String year = yt.getYearAsString();
         String quarter = yt.getTermAsID();
-        String xml = client.getSections(year, quarter, curric, num);
+        String xml = client.getAllSectionsStatus(year, quarter, curric, num);
         Document doc = newDocument(xml);
-        DefaultXPath statusPath = newXPath("/s:SearchResults/s:Sections/s:Section/s:SectionID");
+        DefaultXPath statusPath = newXPath("/s:List/s:SectionStatuses/s:SectionStatus");
         List list = statusPath.selectNodes(doc);
+
+       // loop through each section, extract info
         for (Object node : list) {
-            Element element = (Element) node;
-            String section = element.getTextTrim();
-
-            doSectionStatus(mapmap, client, yt, curric, num, section);
-
-        }
-        return mapmap;
-    }
+            Element sectionStatus = (Element) node;
+            formatSectionStatus(mapmap, sectionStatus, yt);
+       }
+       return mapmap;
+   }
 
 
     /**
@@ -228,7 +230,7 @@ public class CourseHelperImpl implements CourseHelper {
         return result;
     }
 
-
+    // no longer used since we changed to a bulk SWS call for section status
     private void doSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> parent, StudentServiceClient client, AtpHelper.YearTerm yt,
                                  String curric, String num, String sectionID)
             throws ServiceException, DocumentException {
@@ -246,6 +248,26 @@ public class CourseHelperImpl implements CourseHelper {
         String yea = status.elementText("Status");
         boolean enrollOpen = "open".equalsIgnoreCase(yea);
         String limitEstimateEnrollmentIndicator = status.elementText("LimitEstimateEnrollmentIndicator");
+        boolean enrollEstimate = "estimate".equalsIgnoreCase(limitEstimateEnrollmentIndicator);
+
+        LinkedHashMap<String, Object> childmap = new LinkedHashMap<String, Object>();
+        childmap.put("enrollCount", enrollCount);
+        childmap.put("enrollMaximum", enrollMaximum);
+        childmap.put("enrollOpen", enrollOpen);
+        childmap.put("enrollEstimate", enrollEstimate);
+        String atpId = yt.toATP().replace('.', '-');
+        String key = "enrl_" + atpId + "_" + sln;
+        parent.put(key, childmap);
+    }
+
+private void formatSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> parent, Element sectionStatus,
+                              AtpHelper.YearTerm yt)  throws DocumentException {
+        String sln = sectionStatus.elementText("SLN");
+        int enrollMaximum = getAsInteger(sectionStatus, "LimitEstimateEnrollment");
+        int enrollCount = getAsInteger(sectionStatus, "CurrentEnrollment");
+        String status = sectionStatus.elementText("Status");
+        boolean enrollOpen = "open".equalsIgnoreCase(status);
+        String limitEstimateEnrollmentIndicator = sectionStatus.elementText("LimitEstimateEnrollmentIndicator");
         boolean enrollEstimate = "estimate".equalsIgnoreCase(limitEstimateEnrollmentIndicator);
 
         LinkedHashMap<String, Object> childmap = new LinkedHashMap<String, Object>();
