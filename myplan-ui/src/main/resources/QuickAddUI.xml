@@ -42,7 +42,7 @@
         <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
     </bean>
 
-    <bean id="quick_add_dialog" parent="KSAP-VerticalBoxGroup" p:headerText="Add a course to @{termName}">
+    <bean id="quick_add_dialog" parent="KSAP-VerticalBoxGroup" p:headerText="Add a course to @{termName} @{backup ? 'backup' : 'plan'}">
         <property name="cssClasses">
             <list merge="true">
                 <value>ksap-noMargin</value>
