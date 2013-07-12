@@ -323,8 +323,7 @@ public class AtpHelper {
      * @return
      */
     public static String atpIdToTermName(String atpId) {
-        String[] termYear = atpIdToTermNameAndYear(atpId);
-        return (termYear[0] + " " + termYear[1]);
+        return atpId != null ? atpToYearTerm(atpId).toLabel() : null;
     }
 
     /**
@@ -851,6 +850,7 @@ public class AtpHelper {
 
     /**
      * Provides the last planned or last registered term in academic plan
+     *
      * @return
      */
     public static YearTerm getLastPlannedOrRegisteredTerm() {

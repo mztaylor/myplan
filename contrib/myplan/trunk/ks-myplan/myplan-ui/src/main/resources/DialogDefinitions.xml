@@ -1420,7 +1420,7 @@
                                         <bean id="academic_planner_share" parent="Uif-InputField"
                                               p:propertyName="enableAdviserView" p:width="auto">
                                             <property name="onChangeScript" value="
-                                                myplanWriteHiddenToForm('methodToCall', 'academicPlanner', 'student_academic_planner_page_form');
+                                                myplanWriteHiddenToForm('methodToCall', 'planAccess', 'student_academic_planner_page_form');
                                                 jQuery('#student_academic_planner_page_form').ajaxSubmit();
                                             "/>
                                             <property name="control">

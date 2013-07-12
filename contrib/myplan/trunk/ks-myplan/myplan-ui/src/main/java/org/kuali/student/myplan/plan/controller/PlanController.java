@@ -132,9 +132,18 @@ public class PlanController extends UifControllerBase {
         return new PlanForm();
     }
 
-    @RequestMapping(params = "methodToCall=startAcademicPlannerForm")
-    public ModelAndView startAcademicPlannerForm(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
-                                                 HttpServletRequest request, HttpServletResponse response) {
+    /**
+     * plan Access form for student to provide viewing plan access to adviser
+     *
+     * @param form
+     * @param result
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(params = "methodToCall=startPlanAccessForm")
+    public ModelAndView startPlanAccessForm(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
+                                            HttpServletRequest request, HttpServletResponse response) {
         super.start(form, result, request, response);
 
         /**
@@ -144,7 +153,7 @@ public class PlanController extends UifControllerBase {
         List<LearningPlanInfo> plan = null;
 
         /**
-         * Loading Plan Items count and adviser sharing flag
+         * Loading Bookmark Plan Items count and adviser sharing flag
          */
         try {
 
@@ -152,13 +161,10 @@ public class PlanController extends UifControllerBase {
 
             if (!CollectionUtils.isEmpty(plan)) {
 
+                //A student should have only one learning plan associated to his Id
                 LearningPlan learningPlan = plan.get(0);
 
-                if (learningPlan.getShared()) {
-                    planForm.setEnableAdviserView(learningPlan.getShared().toString());
-                } else {
-                    planForm.setEnableAdviserView(learningPlan.getShared().toString());
-                }
+                planForm.setEnableAdviserView(learningPlan.getShared().toString());
 
                 List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlanByType(learningPlan.getId(), PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, PlanConstants.CONTEXT_INFO);
 
@@ -238,12 +244,9 @@ public class PlanController extends UifControllerBase {
 
             if (hasText(planForm.getAtpId())) {
                 String termYear = AtpHelper.atpIdToTermName(planForm.getAtpId());
-                if (!planForm.isBackup()) {
-                    termYear = termYear + PlanConstants.PLAN;
-                } else {
-                    termYear = termYear + PlanConstants.BACKUP;
-                }
                 planForm.setTermName(termYear);
+            } else {
+                return doPageRefreshError(planForm, "Could not open Quick Add.", null);
             }
             return getUIFModelAndView(planForm);
         }
@@ -272,6 +275,7 @@ public class PlanController extends UifControllerBase {
                     }
 
                     if (!CollectionUtils.isEmpty(planItem.getPlanPeriods())) {
+                        //Assuming plan Item can only have one plan period
                         planItemAtpId = planItem.getPlanPeriods().get(0);
                         if (planItemAtpId.equalsIgnoreCase(planForm.getAtpId()) && !planForm.isSetToPlanning()) {
                             planForm.setSetToPlanning(AtpHelper.isAtpSetToPlanning(planItemAtpId));
@@ -300,9 +304,7 @@ public class PlanController extends UifControllerBase {
 
         }
 
-        if (planForm.getAtpId() != null) {
-            planForm.setTermName(AtpHelper.atpIdToTermName(planForm.getAtpId()));
-        }
+        planForm.setTermName(AtpHelper.atpIdToTermName(planForm.getAtpId()));
 
         /**
          * Populated the course summary details using the courseId or the versionIndependentId (planItem refObjId)
@@ -432,58 +434,7 @@ public class PlanController extends UifControllerBase {
         events.putAll(removeEvent);
         events.putAll(makeAddEvent(planItem, courseDetails, form));
 
-
-        //Add additional add events for Activity data if present
-        List<ActivityOfferingItem> plannedActivities = getPlannedActivitiesByCourseAndTerm(courseDetails.getCode(), planItemAtpId);
-        if (!CollectionUtils.isEmpty(plannedActivities)) {
-
-            List<String> plannedActivityCodes = new ArrayList<String>();
-            List<String> suspendedActivityCodes = new ArrayList<String>();
-            List<String> withdrawnActivityCodes = new ArrayList<String>();
-
-            for (ActivityOfferingItem activityOfferingItem : plannedActivities) {
-
-                if (PlanConstants.SUSPENDED_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
-
-                    suspendedActivityCodes.add(activityOfferingItem.getCode());
-
-                } else if (PlanConstants.WITHDRAWN_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
-
-                    withdrawnActivityCodes.add(activityOfferingItem.getCode());
-
-                }
-
-                plannedActivityCodes.add(activityOfferingItem.getCode());
-
-            }
-
-            String sections = StringUtils.join(plannedActivities.toArray(), ", ");
-
-            if (sections != null) {
-                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("sections", sections);
-            }
-
-            if (!withdrawnActivityCodes.isEmpty() || !suspendedActivityCodes.isEmpty()) {
-
-                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("showAlert", "true");
-
-                String statusAlert = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).get("statusAlert");
-
-                StringBuffer sb = new StringBuffer();
-
-                sb = sb.append(statusAlert);
-
-                if (!withdrawnActivityCodes.isEmpty()) {
-                    sb = sb.append(String.format(PlanConstants.WITHDRAWN_ALERT, StringUtils.join(withdrawnActivityCodes.toArray(), ", ")));
-                }
-
-                if (!suspendedActivityCodes.isEmpty()) {
-                    sb = sb.append(String.format(PlanConstants.SUSPENDED_ALERT, StringUtils.join(suspendedActivityCodes.toArray(), ", ")));
-                }
-
-                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("statusAlert", sb.toString());
-            }
-        }
+        addStatusAlertEvents(courseDetails.getCode(), planItemAtpId, events);
 
         events.putAll(makeUpdateTotalCreditsEvent(planItemAtpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
@@ -580,51 +531,8 @@ public class PlanController extends UifControllerBase {
         events.putAll(removeEvent);
         events.putAll(makeAddEvent(planItem, courseDetails, form));
 
-        List<ActivityOfferingItem> plannedActivities = getPlannedActivitiesByCourseAndTerm(courseDetails.getCode(), planItemAtpId);
+        addStatusAlertEvents(courseDetails.getCode(), planItemAtpId, events);
 
-        if (!CollectionUtils.isEmpty(plannedActivities)) {
-
-            List<String> plannedActivityCodes = new ArrayList<String>();
-            List<String> suspendedActivityCodes = new ArrayList<String>();
-            List<String> withdrawnActivityCodes = new ArrayList<String>();
-
-            for (ActivityOfferingItem activityOfferingItem : plannedActivities) {
-
-                if (PlanConstants.SUSPENDED_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
-                    suspendedActivityCodes.add(activityOfferingItem.getCode());
-                } else if (PlanConstants.WITHDRAWN_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
-                    withdrawnActivityCodes.add(activityOfferingItem.getCode());
-                }
-
-                plannedActivityCodes.add(activityOfferingItem.getCode());
-            }
-
-            String sections = StringUtils.join(plannedActivityCodes.toArray(), ", ");
-
-            if (sections != null) {
-                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("sections", sections);
-            }
-
-            if (!withdrawnActivityCodes.isEmpty() || !suspendedActivityCodes.isEmpty()) {
-
-                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("showAlert", "true");
-                String statusAlert = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).get("statusAlert");
-
-                StringBuffer sb = new StringBuffer();
-                sb = sb.append(statusAlert);
-
-                if (!withdrawnActivityCodes.isEmpty()) {
-                    sb = sb.append(String.format(PlanConstants.WITHDRAWN_ALERT, StringUtils.join(withdrawnActivityCodes.toArray(), ", ")));
-                }
-
-                if (!suspendedActivityCodes.isEmpty()) {
-                    sb = sb.append(String.format(PlanConstants.SUSPENDED_ALERT, StringUtils.join(suspendedActivityCodes.toArray(), ", ")));
-                }
-
-                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("statusAlert", sb.toString());
-
-            }
-        }
         events.putAll(makeUpdateTotalCreditsEvent(planItemAtpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
         form.setJavascriptEvents(events);
@@ -1191,11 +1099,19 @@ public class PlanController extends UifControllerBase {
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_ADDED, params);
     }
 
-    /*Academic Planner*/
+    /**
+     * Plan Access for Adviser is updated in this method
+     *
+     * @param form
+     * @param result
+     * @param httprequest
+     * @param httpresponse
+     * @return
+     */
 
-    @RequestMapping(params = "methodToCall=academicPlanner")
-    public ModelAndView academicPlanner(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
-                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+    @RequestMapping(params = "methodToCall=planAccess")
+    public ModelAndView planAccess(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
+                                   HttpServletRequest httprequest, HttpServletResponse httpresponse) {
         if (UserSessionHelper.isAdviser()) {
             String[] params = {};
             return doErrorPage(form, PlanConstants.ERROR_KEY_ADVISER_ACCESS, params);
@@ -1246,6 +1162,66 @@ public class PlanController extends UifControllerBase {
         return getUIFModelAndView(form);
 
 
+    }
+
+    /**
+     * Adds the status alerts to the provided event if any planned activities are available
+     *
+     * @param courseCode
+     * @param atpId
+     */
+    private void addStatusAlertEvents(String courseCode, String atpId, Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events) {
+        //Add additional add events for Activity data if present
+        List<ActivityOfferingItem> plannedActivities = getPlannedActivitiesByCourseAndTerm(courseCode, atpId);
+        if (!CollectionUtils.isEmpty(plannedActivities)) {
+
+            List<String> plannedActivityCodes = new ArrayList<String>();
+            List<String> suspendedActivityCodes = new ArrayList<String>();
+            List<String> withdrawnActivityCodes = new ArrayList<String>();
+
+            for (ActivityOfferingItem activityOfferingItem : plannedActivities) {
+
+                if (PlanConstants.SUSPENDED_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
+
+                    suspendedActivityCodes.add(activityOfferingItem.getCode());
+
+                } else if (PlanConstants.WITHDRAWN_STATE.equalsIgnoreCase(activityOfferingItem.getStateKey())) {
+
+                    withdrawnActivityCodes.add(activityOfferingItem.getCode());
+
+                }
+
+                plannedActivityCodes.add(activityOfferingItem.getCode());
+
+            }
+
+            String sections = StringUtils.join(plannedActivities.toArray(), ", ");
+
+            if (sections != null) {
+                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("sections", sections);
+            }
+
+            if (!withdrawnActivityCodes.isEmpty() || !suspendedActivityCodes.isEmpty()) {
+
+                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("showAlert", "true");
+
+                String statusAlert = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).get("statusAlert");
+
+                StringBuffer sb = new StringBuffer();
+
+                sb = sb.append(statusAlert);
+
+                if (!withdrawnActivityCodes.isEmpty()) {
+                    sb = sb.append(String.format(PlanConstants.WITHDRAWN_ALERT, StringUtils.join(withdrawnActivityCodes.toArray(), ", ")));
+                }
+
+                if (!suspendedActivityCodes.isEmpty()) {
+                    sb = sb.append(String.format(PlanConstants.SUSPENDED_ALERT, StringUtils.join(suspendedActivityCodes.toArray(), ", ")));
+                }
+
+                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("statusAlert", sb.toString());
+            }
+        }
     }
 
     /**
@@ -1548,13 +1524,14 @@ public class PlanController extends UifControllerBase {
                             CourseOfferingInfo courseOfferingInfo = null;
                             try {
                                 courseOfferingInfo = getCourseOfferingService().getCourseOffering(courseOfferingId, CourseSearchConstants.CONTEXT_INFO);
+                                if (courseCode.equalsIgnoreCase(courseOfferingInfo.getCourseCode())) {
+                                    ActivityOfferingItem activityOfferingItem = getCourseDetailsInquiryService().getActivityItem(activityDisplayInfo, courseOfferingInfo, !AtpHelper.isAtpSetToPlanning(termId), termId, planItem.getId());
+                                    activityOfferingItems.add(activityOfferingItem);
+                                }
                             } catch (Exception e) {
                                 logger.error("Could not retrieve CourseOffering data for" + courseOfferingId, e);
                             }
-                            if (courseCode.equalsIgnoreCase(courseOfferingInfo.getCourseCode())) {
-                                ActivityOfferingItem activityOfferingItem = getCourseDetailsInquiryService().getActivityItem(activityDisplayInfo, courseOfferingInfo, !AtpHelper.isAtpSetToPlanning(termId), termId, planItem.getId());
-                                activityOfferingItems.add(activityOfferingItem);
-                            }
+
                         }
                     }
                 }
@@ -1743,9 +1720,6 @@ String term = t[0] + " " + t[1];*/
             for (AtpHelper.YearTerm yt : atpList) {
                 getCourseHelper().getAllSectionStatus(payload, yt, curric, num);
             }
-
-//            String ugh = mapper.defaultPrettyPrintingWriter().writeValueAsString(payload);
-//            System.out.println(ugh);
 
             String json = mapper.writeValueAsString(payload);
             response.setHeader("content-type", "application/json");

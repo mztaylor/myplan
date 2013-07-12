@@ -22,7 +22,7 @@
         <div id="applicationUser">
             <% if (!UserSessionHelper.isAdviser()) { %>
             <div class="identity">
-                Welcome, <a class="name" onclick="openPopUpForm('student_academic_planner_page','student_academic_planner_page','startAcademicPlannerForm','plan',{viewId:'StudentAcademicPlanner-FormView',pageId:'student_academic_planner_page'},event,null,{width:'16px'},{tail:{align:'right'},align:'right',position:'bottom',alwaysVisible:'false'},true);">${UserSession.person.firstName}</a>
+                Welcome, <a class="name" onclick="openPopUpForm('student_academic_planner_page','student_academic_planner_page','startPlanAccessForm','plan',{viewId:'StudentAcademicPlanner-FormView',pageId:'student_academic_planner_page'},event,null,{width:'16px'},{tail:{align:'right'},align:'right',position:'bottom',alwaysVisible:'false'},true);">${UserSession.person.firstName}</a>
             </div>
             <% } %>
             <% if (UserSessionHelper.isAdviser()) { %>
