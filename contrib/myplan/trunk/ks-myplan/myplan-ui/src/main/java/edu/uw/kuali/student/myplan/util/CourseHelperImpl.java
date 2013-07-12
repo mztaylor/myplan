@@ -23,6 +23,8 @@ import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
+import org.kuali.student.myplan.course.controller.QueryTokenizer;
+import org.kuali.student.myplan.course.controller.TokenPairs;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -424,5 +426,75 @@ public class CourseHelperImpl implements CourseHelper {
     public String buildActivityRefObjId(String atpId, String subject, String number, String activityCd) {
         AtpHelper.YearTerm yearTerm = AtpHelper.atpToYearTerm(atpId);
         return joinStringsByDelimiter(':', yearTerm.getYearAsString(), yearTerm.getTermAsString(), subject, number, activityCd);
+    }
+
+    /**
+     * Populates available course Divisions Map
+     *
+     * @return
+     */
+    @Override
+    public HashMap<String, String> fetchCourseDivisions() {
+        HashMap<String, String> map = new HashMap<String, String>();
+        try {
+            SearchRequest request = new SearchRequest("myplan.distinct.clu.divisions");
+
+            SearchResult result = getLuService().search(request);
+
+            for (SearchResultRow row : result.getRows()) {
+                for (SearchResultCell cell : row.getCells()) {
+                    String division = cell.getValue();
+                    // Store both trimmed and original, because source data
+                    // is sometimes space padded.
+                    String key = division.trim().replaceAll("\\s+", "");
+                    map.put(key, division);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Failed to fetch course divisions", e);
+        }
+        return map;
+    }
+
+    /**
+     * Extracts the division for given Query
+     *
+     * @param divisionMap
+     * @param query
+     * @param divisions
+     * @param isSpaceAllowed
+     * @return
+     */
+    @Override
+    public String extractDivisions(HashMap<String, String> divisionMap, String query, List<String> divisions, boolean isSpaceAllowed) {
+        boolean match = true;
+        while (match) {
+            match = false;
+            // Retokenize after each division found is removed
+            // Remove extra spaces to normalize input
+            if (!isSpaceAllowed) {
+                query = query.trim().replaceAll("[\\s\\\\/:?\\\"<>|`~!@#$%^*()_+-={}\\]\\[;',.]", " ");
+            } else {
+                query = query.replaceAll("[\\\\/:?\\\"<>|`~!@#$%^*()_+-={}\\]\\[;',.]", " ");
+            }
+            List<QueryTokenizer.Token> tokens = QueryTokenizer.tokenize(query);
+            List<String> list = QueryTokenizer.toStringList(tokens);
+            List<String> pairs = TokenPairs.toPairs(list);
+            TokenPairs.sortedLongestFirst(pairs);
+
+            Iterator<String> i = pairs.iterator();
+            while (match == false && i.hasNext()) {
+                String pair = i.next();
+
+                String key = pair.replace(" ", "");
+                if (divisionMap.containsKey(key)) {
+                    String division = divisionMap.get(key);
+                    divisions.add(division);
+                    query = query.replace(pair, "");
+                    match = true;
+                }
+            }
+        }
+        return query;
     }
 }

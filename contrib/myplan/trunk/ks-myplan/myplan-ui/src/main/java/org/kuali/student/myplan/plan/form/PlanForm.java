@@ -16,7 +16,6 @@ package org.kuali.student.myplan.plan.form;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
@@ -33,35 +32,56 @@ import java.util.Map;
  * Form for all plan item actions.
  */
 public class PlanForm extends UifFormBase {
+
     private final Logger logger = Logger.getLogger(PlanForm.class);
 
     /**
      * The return code for a plan item add, change, or delete.
      */
     public enum REQUEST_STATUS {
-        /*  The requested operation was successful. */
+        //Requested operation succeeded
         SUCCESS,
-        /*  The requested operation was unnecessary (e.g. the plan item was already deleted), but appropriate
-         *  javascript events were generated/available.
-         *
-         *  TODO: Looks like this status may not be necessary. */
-        NOOP,
-        /* The requested operation failed. */
+        //Requested operation failed.
         ERROR
     }
 
     /**
-     * Storage for the status of a request for add, change, or delete of a plan item.
+     * Request status for add, change, or delete of a plan item.
      */
     private REQUEST_STATUS requestStatus;
 
-    //  Saved courses params.
+
+    /**
+     * ********************************************************
+     * Common properties
+     * ********************************************************
+     */
     private String planItemId;
 
     private String courseId;
 
+    private String atpId;
 
-    /*properties used for section Planning*/
+    private String termName;
+
+    // Used for populating the menu options for the Academic record
+    private String acadRecAtpId;
+
+    //   based on this Add to plan page items are populated
+    private boolean moveCourse = false;
+
+    //Form checkbox to determine plan item type (planned or backup).
+    private boolean backup = false;
+
+    /*Flag used for populating the exact menu items for a course in past,present, future terms */
+    private boolean setToPlanning = false;
+
+
+    /**
+     * *******************************************************
+     * Activity Planning properties
+     * ********************************************************
+     */
     private String sectionCode;
 
     private String registrationCode;
@@ -77,12 +97,8 @@ public class PlanForm extends UifFormBase {
     private boolean primary;
 
     private List<String> sectionsToDelete;
-    
-    private String activityStateKey;
 
-    //Flag Used for student to hide or un hide
-    // plan view to adviser
-    private String enableAdviserView = PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY;
+    private String activityStateKey;
 
     private CourseSummaryDetails courseSummaryDetails;
 
@@ -90,33 +106,49 @@ public class PlanForm extends UifFormBase {
 
     private PlannedCourseSummary plannedCourseSummary;
 
-    //  Form fields.
-    private String atpId;
+    //Flag Used for student to hide or un hide plan view to adviser
+    private String enableAdviserView = PlanConstants.LEARNING_PLAN_ITEM_SHARED_TRUE_KEY;
 
-    private String termName;
 
-    private boolean other = false;
-
-    //   Form checkbox to determine plan item type (planned or backup).
-    private boolean backup = false;
-
-    // Used for populating the menu oprions for the Academic record course link
-    private String acadRecAtpId;
-
-    //   based on this Add to plan page items are populated
-    private boolean moveCourse = false;
-
-    // boolean to show or hide Other option.
-    private boolean showOther = false;
-
-    /*Flag used for populating the exact menu items for a course in past,present, future terms */
-    private boolean setToPlanning = false;
-
+    /**
+     * ********************************************************
+     * Student Academic Planner properties
+     * ********************************************************
+     */
     private int messagesCount = 0;
 
     private int bookmarkedCount = 0;
 
     private boolean newUser;
+
+    /**
+     * ********************************************************
+     * Quick Add properties
+     * *******************************************************
+     */
+    private String courseCd;
+
+    private String type = "course";
+
+    private List<String> credit;
+    private String note;
+
+    private List<String> placeholder;
+
+
+    /**
+     * *******************************************************
+     * A list of javascript events as:
+     * EVENT_NAME
+     * param1: p1
+     * param2: p2
+     * PLAN_ITEM_ADDED
+     * itemType: plannedCourse
+     * planItem: pi1
+     * courseId: c1
+     * *******************************************************
+     */
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> javascriptEvents;
 
     public int getBookmarkedCount() {
         return bookmarkedCount;
@@ -150,24 +182,6 @@ public class PlanForm extends UifFormBase {
         this.termName = termName;
     }
 
-    /**
-     * A list of javascript events as:
-     * EVENT_NAME
-     * param1: p1
-     * param2: p2
-     * PLAN_ITEM_ADDED
-     * itemType: plannedCourse
-     * planItem: pi1
-     * courseId: c1
-     */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> javascriptEvents;
-
-    private ObjectMapper mapper = new ObjectMapper();
-
-    public PlanForm() {
-        super();
-    }
-
     public Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> getJavascriptEvents() {
         return javascriptEvents;
     }
@@ -182,14 +196,6 @@ public class PlanForm extends UifFormBase {
 
     public void setAtpId(String atpId) {
         this.atpId = atpId;
-    }
-
-    public boolean isOther() {
-        return other;
-    }
-
-    public void setOther(boolean other) {
-        this.other = other;
     }
 
     public String getCourseId() {
@@ -254,14 +260,6 @@ public class PlanForm extends UifFormBase {
 
     public void setAcadRecAtpId(String acadRecAtpId) {
         this.acadRecAtpId = acadRecAtpId;
-    }
-
-    public boolean isShowOther() {
-        return showOther;
-    }
-
-    public void setShowOther(boolean showOther) {
-        this.showOther = showOther;
     }
 
     public String getEnableAdviserView() {
@@ -360,7 +358,51 @@ public class PlanForm extends UifFormBase {
         this.activityStateKey = activityStateKey;
     }
 
-    /*Only used in the Ui for getting the short Term*/
+    public String getCourseCd() {
+        return courseCd;
+    }
+
+    public void setCourseCd(String courseCd) {
+        this.courseCd = courseCd;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+
+    public List<String> getPlaceholder() {
+        return placeholder;
+    }
+
+    public void setPlaceholder(List<String> placeholder) {
+        this.placeholder = placeholder;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public List<String> getCredit() {
+        return credit;
+    }
+
+    public void setCredit(List<String> credit) {
+        this.credit = credit;
+    }
+
+
+    /**
+     * Only used in the UI for getting the short Term
+     */
     public String getShortTerm() {
         String shortTermName = "";
         if (getAtpId() != null) {
@@ -391,7 +433,9 @@ public class PlanForm extends UifFormBase {
         return jsonOut;
     }
 
-    //  Added this for using in the crud message matrix property editor
+    /**
+     * Added this for using in the crud message matrix property editor
+     */
     public CourseDetails getCourseAndPlanSummary() {
         CourseDetails courseDetails = new CourseDetails();
         courseDetails.setCourseSummaryDetails(this.getCourseSummaryDetails());

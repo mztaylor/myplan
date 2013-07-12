@@ -4,8 +4,6 @@ import org.kuali.student.lum.lu.LUConstants;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
 
-import java.util.regex.Pattern;
-
 public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String PARAM_COURSE_ID = "courseId";
@@ -17,6 +15,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String PLAN_ITEM_RESPONSE_PAGE_ID = "plan_item_action_response_page";
     public static final String PLAN_PAGE_ID = "planned_courses_detail_page";
+    public static final String ACTION_MENU_PAGE_ID = "add_planned_course";
 
     public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
     public static final String SECTION_TYPE = "kuali.lui.type.activity.offering";
@@ -60,6 +59,11 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String ERROR_KEY_NO_STUDENT_PROXY_ID = "myplan.text.error.adviser.noStudentId";
     public static final String WARNING_STUDENT_CONTEXT_SWITCH = "myplan.text.warning.adviser.studentSwitch";
 
+    public static final String QUICK_ADD_RESPONSE_PAGE_ID = "quick_add_action_response_page";
+    public static final String COURSE_NOT_FOUND = "myplan.text.error.quickAdd.courseNotFound";
+    public static final String EMPTY_SEARCH = "myplan.text.error.quickAdd.emptySearch";
+    public static final String ACCESS_DENIED = "myplan.text.error.permissionDenied";
+
     //  Global context info for use in service methods which need caching, but don't use the context argument.
     public static final ContextInfo CONTEXT_INFO = new ContextInfo();
 
@@ -72,9 +76,13 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String PLANNED_TYPE = "planned";
     public static final String BACKUP_TYPE = "backup";
 
+    public static final String PLAN = " plan";
+    public static final String BACKUP = " backup";
+
     public static final String MOVE_DIALOG_PAGE = "move_dialog_page";
     public static final String COPY_DIALOG_PAGE = "copy_dialog_page";
     public static final String DELETE_DIALOG_PAGE = "plan_item_delete_page";
+    public static final String QUICK_ADD_DIALOG_PAGE = "quickAdd_dialog_page";
 
     /*Term Names Autumn,Winter,Spring,Summer*/
     public static final String TERM_1 = "Winter";

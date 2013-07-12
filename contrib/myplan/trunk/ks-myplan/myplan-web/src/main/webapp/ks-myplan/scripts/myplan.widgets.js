@@ -1288,7 +1288,7 @@ function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions
 
     clickOutsidePopOver(popupBoxId, popupBox);
 
-    var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", "quickAdd").attr("method", "post").hide();
+    var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post").hide();
     var tempFormInputs = '<div style="display:none;"><input type="hidden" name="viewId" value="QuickAdd-FormView" />';
     jQuery.each(retrieveOptions, function (name, value) {
         tempFormInputs += '<input type="hidden" name="' + name + '" value="' + value + '" />';
@@ -1303,9 +1303,9 @@ function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions
         var component;
         if (jQuery("span#request_status_item_key_control", htmlContent).length <= 0) {
             component = jQuery("#" + getId, htmlContent);
-            var quickAddForm = jQuery('<form />').attr("id", id + "_form").attr("action", "quickAdd").attr("method", "post");
+            var quickAddForm = jQuery('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post");
         } else {
-            eval(jQuery("input[data-for='quick_add_action_response_page']", htmlContent).val().replace("#quick_add_action_response_page", "body"));
+            eval(jQuery("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page", "body"));
             var sError = '<img src="../ks-myplan/images/pixel.gif" alt="" class="icon"/><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>';
             component = jQuery("<div />").html(sError).addClass("myplan-feedback error").width(175);
         }
@@ -1324,7 +1324,7 @@ function openQuickAddPopUp(id, getId, retrieveOptions, e, selector, popupOptions
         }});
     };
 
-    myplanAjaxSubmitForm("start", updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:"false"}, elementToBlock, id);
+    myplanAjaxSubmitForm("startAddPlannedCourseForm", updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:"false"}, elementToBlock, id);
     jQuery("form#" + id + "_form").remove();
 }
 
@@ -1343,7 +1343,7 @@ function myplanAjaxSubmitQuickAdd(id, submitOptions, methodToCall, e, bDialog) {
     jQuery("#" + id + "_form").append(formInputs);
     var updateRefreshableComponentCallback = function (htmlContent) {
         var status = jQuery.trim(jQuery("span#request_status_item_key_control", htmlContent).text().toLowerCase());
-        eval(jQuery("input[data-for='quick_add_action_response_page']", htmlContent).val().replace("#quick_add_action_response_page", "body"));
+        eval(jQuery("input[data-for='plan_item_action_response_page']", htmlContent).val().replace("#plan_item_action_response_page", "body"));
         elementToBlock.unblock();
         switch (status) {
             case 'success':

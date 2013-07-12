@@ -2,10 +2,8 @@ package org.kuali.student.myplan.course;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kuali.rice.kim.impl.identity.PersonImpl;
 import org.kuali.student.common.exceptions.MissingParameterException;
 import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.controller.CourseSearchController;
@@ -308,29 +306,6 @@ public class CourseSearchControllerTest {
         assertTrue(form.getTermsFacetItems().size()==0);*/
     }
 
-    @Test
-    public void testExtractDivisions() throws Exception {
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("A", "A   ");
-        map.put("AB", "A B ");
-        map.put("B", "B   ");
-        map.put("C", "C   ");
-        CourseSearchController controller = getSearchController();
-        ArrayList<String> divisions = new ArrayList<String>();
-        String query = "A B C";
-        query = controller.extractDivisions(map, query, divisions, false);
-        assertEquals("", query);
-        assertEquals(2, divisions.size());
-        assertEquals("A B ", divisions.get(0));
-        assertEquals("C   ", divisions.get(1));
-    }
-
-    @Test
-    public void testFetchCourseDivisions() throws Exception {
-        CourseSearchController controller = getSearchController();
-        HashMap<String, String> divisionsMap = controller.fetchCourseDivisions();
-        assertFalse(divisionsMap.isEmpty());
-    }
 }
 
 

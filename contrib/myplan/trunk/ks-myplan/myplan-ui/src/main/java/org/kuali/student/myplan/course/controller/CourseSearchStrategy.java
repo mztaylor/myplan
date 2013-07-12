@@ -1,21 +1,23 @@
 package org.kuali.student.myplan.course.controller;
 
+import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.common.search.dto.SearchResult;
-import org.kuali.student.common.search.dto.SearchResultCell;
-import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
+import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
 
 import javax.xml.namespace.QName;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,6 +28,8 @@ public class CourseSearchStrategy {
     /*Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
     private HashMap<String, List<OrgInfo>> orgTypeCache;
     private HashMap<String, Map<String, String>> hashMap;
+
+    private CourseHelper courseHelper;
 
     public HashMap<String, List<OrgInfo>> getOrgTypeCache() {
         if (this.orgTypeCache == null) {
@@ -47,30 +51,6 @@ public class CourseSearchStrategy {
 
     public void setHashMap(HashMap<String, Map<String, String>> hashMap) {
         this.hashMap = hashMap;
-    }
-
-
-    public HashMap<String, String> fetchCourseDivisions() {
-        HashMap<String, String> map = new HashMap<String, String>();
-        try {
-            SearchRequest request = new SearchRequest("myplan.distinct.clu.divisions");
-
-            SearchResult result = getLuService().search(request);
-
-            for (SearchResultRow row : result.getRows()) {
-                for (SearchResultCell cell : row.getCells()) {
-                    String division = cell.getValue();
-                    // Store both trimmed and original, because source data
-                    // is sometimes space padded.
-                    String key = division.trim().replaceAll("\\s+", "");
-                    map.put(key, division);
-                }
-            }
-        } catch (Exception e) {
-            // TODO: Handle this exception better
-            e.printStackTrace();
-        }
-        return map;
     }
 
 
@@ -155,42 +135,6 @@ public class CourseSearchStrategy {
 
     }
 
-    /**
-     * @param divisionMap for reference
-     * @param query       initial query
-     * @param divisions   matches found
-     * @return query string, minus matches found
-     */
-    public String extractDivisions(HashMap<String, String> divisionMap, String query, List<String> divisions) {
-        boolean match = true;
-        while (match) {
-            match = false;
-            // Retokenize after each division found is removed
-            // Remove extra spaces to normalize input
-            /*Replacing all the special characters in query with empty space except for Ampersand(&)character
-              cause it might be in course codes*/
-            query = query.trim().replaceAll("[\\s\\\\/:?\\\"<>|`~!@#$%^*()_+-={}\\]\\[;',.]", " ");
-            List<QueryTokenizer.Token> tokens = QueryTokenizer.tokenize(query);
-            List<String> list = QueryTokenizer.toStringList(tokens);
-            List<String> pairs = TokenPairs.toPairs(list);
-            TokenPairs.sortedLongestFirst(pairs);
-
-            Iterator<String> i = pairs.iterator();
-            while (match == false && i.hasNext()) {
-                String pair = i.next();
-
-                String key = pair.replace(" ", "");
-                if (divisionMap.containsKey(key)) {
-                    String division = divisionMap.get(key);
-                    divisions.add(division);
-                    query = query.replace(pair, "");
-                    match = true;
-                }
-            }
-        }
-        return query;
-    }
-
     public void addDivisionSearches(List<String> divisions, List<String> codes, List<String> levels, List<SearchRequest> requests) {
         for (String division : divisions) {
             boolean needDivisionQuery = true;
@@ -265,10 +209,10 @@ public class CourseSearchStrategy {
             query = query.replace(code, "");
         }
 
-        HashMap<String, String> divisionMap = fetchCourseDivisions();
+        HashMap<String, String> divisionMap = getCourseHelper().fetchCourseDivisions();
 
         ArrayList<String> divisions = new ArrayList<String>();
-        query = extractDivisions(divisionMap, query, divisions);
+        query = getCourseHelper().extractDivisions(divisionMap, query, divisions, false);
 
 
         ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
@@ -464,4 +408,14 @@ public class CourseSearchStrategy {
         this.luService = luService;
     }
 
+    public CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = new CourseHelperImpl();
+        }
+        return courseHelper;
+    }
+
+    public void setCourseHelper(CourseHelper courseHelper) {
+        this.courseHelper = courseHelper;
+    }
 }
