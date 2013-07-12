@@ -290,8 +290,8 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
                     String bucketType = BUCKET_IGNORE;
                     String credit = "0";
-                    String section = null;
-                    String secondaryActivity = null;
+                    String section = "";
+                    String secondaryActivity = "";
                     for (AttributeInfo attrib : planItem.getAttributes()) {
                         String key = attrib.getKey();
                         String value = attrib.getValue();
@@ -300,9 +300,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         } else if (CREDIT.equals(key)) {
                             credit = value;
                         } else if (SECTION.equals(key)) {
-                            section = value;
+                            section = value != null ? value : "";
                         } else if (SECONDARY_ACTIVITY.equals(key)) {
-                            secondaryActivity = value;
+                            secondaryActivity = value != null ? value : "";
                         }
                     }
 
