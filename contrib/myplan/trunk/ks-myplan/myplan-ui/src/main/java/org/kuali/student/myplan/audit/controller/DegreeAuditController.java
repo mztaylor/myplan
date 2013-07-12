@@ -51,6 +51,7 @@ import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -200,14 +201,25 @@ public class DegreeAuditController extends UifControllerBase {
 
             for (LearningPlanInfo learningPlanInfo : learningPlanList) {
                 String learningPlanID = learningPlanInfo.getId();
-                List<PlanItemInfo> planItemInfoList = getAcademicPlanService().getPlanItemsInPlanByAtp(learningPlanID, AtpHelper.getFirstOpenForPlanTerm(), PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, CONTEXT_INFO);
-                if (planItemInfoList != null && planItemInfoList.size() > 0) {
-                    return true;
+                List<PlanItemInfo> planItemInfoList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, CONTEXT_INFO);
+                if (!CollectionUtils.isEmpty(planItemInfoList)) {
+                    AtpHelper.YearTerm firstOpenForPlanningTerm = AtpHelper.atpToYearTerm(AtpHelper.getFirstOpenForPlanTerm());
+                    for (PlanItemInfo planItemInfo : planItemInfoList) {
+                        if (!CollectionUtils.isEmpty(planItemInfo.getPlanPeriods())) {
+                            AtpHelper.YearTerm planItemYearTerm = AtpHelper.atpToYearTerm(planItemInfo.getPlanPeriods().get(0));
+                            if (planItemYearTerm.compareTo(firstOpenForPlanningTerm) >= 0) {
+                                return true;
+                            }
+                        }
+                    }
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception e)
+
+        {
             logger.error("Error loading Plan items ", e);
         }
+
         return false;
     }
 
