@@ -59,7 +59,6 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String ERROR_KEY_NO_STUDENT_PROXY_ID = "myplan.text.error.adviser.noStudentId";
     public static final String WARNING_STUDENT_CONTEXT_SWITCH = "myplan.text.warning.adviser.studentSwitch";
 
-    public static final String QUICK_ADD_RESPONSE_PAGE_ID = "quick_add_action_response_page";
     public static final String COURSE_NOT_FOUND = "myplan.text.error.quickAdd.courseNotFound";
     public static final String EMPTY_SEARCH = "myplan.text.error.quickAdd.emptySearch";
     public static final String ACCESS_DENIED = "myplan.text.error.permissionDenied";
@@ -82,7 +81,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String MOVE_DIALOG_PAGE = "move_dialog_page";
     public static final String COPY_DIALOG_PAGE = "copy_dialog_page";
     public static final String DELETE_DIALOG_PAGE = "plan_item_delete_page";
-    public static final String QUICK_ADD_DIALOG_PAGE = "quickAdd_dialog_page";
+    public static final String QUICK_ADD_DIALOG_PAGE = "quick_add_page";
 
     /*Term Names Autumn,Winter,Spring,Summer*/
     public static final String TERM_1 = "Winter";
