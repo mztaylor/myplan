@@ -846,6 +846,13 @@
             <null/>
         </property>
     </bean>
+    <bean id="KSAP-VerticalBoxGroup-NoMargin" parent="KSAP-VerticalBoxGroup">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>ksap-noMargin</value>
+            </list>
+        </property>
+    </bean>
 
     <bean id="KSAP-HorizontalBoxGroup" parent="Uif-HorizontalBoxGroup">
         <property name="validationMessages">
@@ -861,6 +868,13 @@
             <null/>
         </property>
     </bean>
+    <bean id="KSAP-HorizontalBoxGroup-NoMargin" parent="KSAP-HorizontalBoxGroup">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>ksap-noMargin</value>
+            </list>
+        </property>
+    </bean>
 
     <bean id="KSAP-VerticalFieldGroup" parent="Uif-VerticalFieldGroup">
         <property name="fieldLabel">
@@ -873,6 +887,14 @@
             <bean parent="KSAP-VerticalBoxGroup"/>
         </property>
     </bean>
+    <bean id="KSAP-VerticalFieldGroup-NoMargin" parent="KSAP-VerticalFieldGroup">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>ksap-noMargin</value>
+            </list>
+        </property>
+    </bean>
+
 
     <bean id="KSAP-HorizontalFieldGroup" parent="Uif-HorizontalFieldGroup">
         <property name="fieldLabel">
@@ -884,6 +906,23 @@
         <property name="group">
             <bean parent="KSAP-HorizontalBoxGroup"/>
         </property>
+    </bean>
+    <bean id="KSAP-HorizontalFieldGroup-NoMargin" parent="KSAP-HorizontalFieldGroup">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>ksap-noMargin</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-PopoverPage" parent="Uif-Page">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="width" value="300px"/>
     </bean>
 
     <bean id="KSAP-Suggest" parent="Uif-Suggest-parentBean">

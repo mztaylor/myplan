@@ -103,37 +103,52 @@
         "/>
     </bean>
 
-    <bean id="menuOptionCourseSummary" parent="Uif-Link" p:linkText="View Course Summary"
-          p:title="View Course Summary" p:href="#">
-        <property name="onClickScript"
+    <bean id="menuOptionCourseSummary" parent="Uif-ActionLink" p:actionLabel="View Course Summary"
+          p:title="View Course Summary">
+        <property name="actionScript"
                   value="openPlanItemPopUp(jQuery(this).data('courseid'),'course_summary_dialog_page',{courseId:jQuery(this).data('courseid'),pageId:'course_summary_dialog_page'},e,null,{tail:{hidden:true},align:'top'});"/>
     </bean>
 
-    <bean id="menuOptionPlanItemSummary" parent="Uif-Link" p:linkText="View Course Summary"
-          p:title="View Course Summary" p:href="#">
-        <property name="onClickScript"
+    <bean id="menuOptionPlanItemSummary" parent="Uif-ActionLink" p:actionLabel="View Course Summary"
+          p:title="View Course Summary">
+        <property name="actionScript"
                   value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page',atpId:jQuery(this).data('atpid'),courseId:jQuery(this).data('courseid')},e,null,{tail:{hidden:true},align:'top'});"/>
     </bean>
 
-    <bean id="menuOptionMarkBackup" parent="Uif-Link" p:linkText="Mark as Backup Course"
-          p:title="Mark as Backup Course" p:href="#">
+    <!-- NEW FUNCTIONALITY hidden from view in 1.4 release -->
+    <bean id="menuOptionEditPlanItemCourse" parent="Uif-ActionLink" p:actionLabel="Edit Course/Note" p:render="false"
+          p:title="Edit Course/Note">
+        <property name="actionScript"
+                  value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page',atpId:jQuery(this).data('atpid'),courseId:jQuery(this).data('courseid')},e,null,{tail:{hidden:true},align:'top'});"/>
+    </bean>
+
+    <!-- NEW FUNCTIONALITY hidden from view in 1.4 release -->
+    <bean id="menuOptionEditPlanItemPlaceholder" parent="Uif-ActionLink" p:actionLabel="Edit Placeholder"
+          p:render="false"
+          p:title="Edit Course/Note">
+        <property name="actionScript"
+                  value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page',atpId:jQuery(this).data('atpid'),courseId:jQuery(this).data('courseid')},e,null,{tail:{hidden:true},align:'top'});"/>
+    </bean>
+
+    <bean id="menuOptionMarkBackup" parent="Uif-ActionLink" p:actionLabel="Mark as Backup Course"
+          p:title="Mark as Backup Course">
         <property name="cssClasses">
             <list merge="true">
                 <value>ksap-noMargin</value>
             </list>
         </property>
-        <property name="onClickScript"
+        <property name="actionScript"
                   value="myPlanAjaxPlanItemMove(jQuery(this).data('planitemid'),'planItemId','plannedToBackup',e);"/>
     </bean>
 
-    <bean id="menuOptionMarkPlanned" parent="Uif-Link" p:linkText="Mark as Planned course"
-          p:title="Mark as Planned course" p:href="#">
+    <bean id="menuOptionMarkPlanned" parent="Uif-ActionLink" p:actionLabel="Mark as Planned course"
+          p:title="Mark as Planned course">
         <property name="cssClasses">
             <list merge="true">
                 <value>ksap-noMargin</value>
             </list>
         </property>
-        <property name="onClickScript"
+        <property name="actionScript"
                   value="myPlanAjaxPlanItemMove(jQuery(this).data('planitemid'),'planItemId','backupToPlanned',e);"/>
     </bean>
 
@@ -155,32 +170,32 @@
         </property>
     </bean>
 
-    <bean id="menuOptionMove" parent="Uif-Link" p:linkText="Move to Another Quarter"
-          p:title="Move to Another Quarter" p:href="#">
-        <property name="onClickScript"
+    <bean id="menuOptionMove" parent="Uif-ActionLink" p:actionLabel="Move to Another Quarter"
+          p:title="Move to Another Quarter">
+        <property name="actionScript"
                   value="openPlanItemPopUp(jQuery(this).data('planitemid'),'move_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'move_dialog_page', moveCourse:'true',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
     </bean>
 
-    <bean id="menuOptionCopyPlanItem" parent="Uif-Link" p:linkText="Copy to Another Quarter"
-          p:title="Copy to Another Quarter" p:href="#">
-        <property name="onClickScript"
+    <bean id="menuOptionCopyPlanItem" parent="Uif-ActionLink" p:actionLabel="Copy to Another Quarter"
+          p:title="Copy to Another Quarter">
+        <property name="actionScript"
                   value="openPlanItemPopUp(jQuery(this).data('planitemid'),'copy_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'copy_dialog_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
     </bean>
 
-    <bean id="menuOptionCopyCourse" parent="Uif-Link" p:linkText="Copy to Another Quarter"
-          p:title="Copy to Another Quarter" p:href="#">
-        <property name="onClickScript"
+    <bean id="menuOptionCopyCourse" parent="Uif-ActionLink" p:actionLabel="Copy to Another Quarter"
+          p:title="Copy to Another Quarter">
+        <property name="actionScript"
                   value="openPlanItemPopUp(jQuery(this).data('courseid'),'copy_dialog_page',{courseId:jQuery(this).data('courseid'),pageId:'copy_dialog_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
     </bean>
 
-    <bean id="menuOptionDelete" parent="Uif-Link" p:linkText="Delete from Plan"
-          p:title="Delete from Plan" p:href="#">
+    <bean id="menuOptionDelete" parent="Uif-ActionLink" p:actionLabel="Delete from Plan"
+          p:title="Delete from Plan">
         <property name="cssClasses">
             <list merge="true">
                 <value>ksap-noMargin</value>
             </list>
         </property>
-        <property name="onClickScript"
+        <property name="actionScript"
                   value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_delete_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_delete_page',atpId:jQuery(this).data('atpid')},e,null,{tail:{hidden:true},align:'top'});"/>
     </bean>
 
@@ -199,6 +214,7 @@
         <property name="items">
             <list>
                 <bean parent="menuOptionPlanItemSummary"/>
+                <bean parent="menuOptionEditPlanItemCourse"/>
                 <bean parent="menuOptionMarkBackup"/>
                 <bean parent="menuTextBackup"/>
                 <bean parent="menuOptionMove"/>
@@ -214,6 +230,7 @@
         <property name="items">
             <list>
                 <bean parent="menuOptionPlanItemSummary"/>
+                <bean parent="menuOptionEditPlanItemCourse"/>
                 <bean parent="menuOptionMarkPlanned"/>
                 <bean parent="menuTextPlanned"/>
                 <bean parent="menuOptionMove"/>
@@ -302,7 +319,7 @@
             	var backupFlag = jQuery(this).parents('.myplan-carousel-term').data('backupflag');
             	var size = jQuery(this).parents('.myplan-carousel-term').data('size');
             	var jQuickAdd = jQuery('&lt;div /&gt;').addClass('quick-add-cell').html('Add a course to plan').click(function(e){
-            		openQuickAddPopUp('quick_Add','quickAdd_dialog_page',{atpId:atpId,pageId:'quickAdd_dialog_page',backup:backupFlag},e,null,{tail:{hidden:true},align:'left',position:'bottom'});
+            		openPlanItemPopUp('quick_add','quick_add_page',{atpId:atpId,pageId:'quick_add_page',backup:backupFlag},e,null,{tail:{hidden:true},align:'left',position:'bottom'});
             	});
             	if (size &lt; 8) {
             		jQuery(this).append(jQuickAdd.show());
