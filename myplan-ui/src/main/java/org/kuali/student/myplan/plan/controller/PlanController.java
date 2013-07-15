@@ -827,9 +827,15 @@ public class PlanController extends UifControllerBase {
             return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
 
-        /**
-         * Populating courseId from courseCode (QuickAdd view) 
-         */
+
+        /*
+        * ************************************************************************************************************
+        *                                  QuickAdd a course or placeholder to Plan
+        * ************************************************************************************************************
+        */
+
+        boolean placeHolder = false;
+        /** Populating courseId from courseCode (QuickAdd view) */
         if (hasText(form.getCourseCd())) {
             HashMap<String, String> divisionMap = getCourseHelper().fetchCourseDivisions();
             DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(form.getCourseCd());
@@ -861,13 +867,12 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Course ID was missing.", null);
         }
 
-        // Retrieve courseDetails based on the passed in CourseId and then update courseDetails based on the version independent Id
+        /*Retrieve courseDetails based on the passed in CourseId and then update courseDetails based on the version independent Id*/
         CourseSummaryDetails courseDetails = null;
-        // Now switch to the details based on the version independent Id
-        //  Lookup course details as well need them in case there is an error below.
+
         try {
             courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
-            // Now switch the courseDetails based on the versionIndependent Id
+            /* Switching the courseDetails based on the versionIndependent Id*/
             if (!courseId.equals(courseDetails.getVersionIndependentId())) {
                 courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseDetails.getVersionIndependentId());
             }
@@ -882,11 +887,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Should the course be type 'planned' or 'backup'. Default to planned.
-        boolean backup = form.isBackup();
-        String newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
-        if (backup) {
-            newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP;
-        }
+        String newType = form.isBackup() ? PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP : PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
 
         String newAtpId = form.getAtpId();
 
@@ -896,38 +897,30 @@ public class PlanController extends UifControllerBase {
 
         String studentId = UserSessionHelper.getStudentRegId();
 
-        LearningPlan plan = null;
-        // Synchronized is used to ensure only one learning plan is created for a given student Id
-        synchronized (studentId) {
-            try {
-                //  If something goes wrong with the query then a RuntimeException will be thrown. Otherwise, the method
-                //  will return the default plan or null. Having multiple plans will also produce a RuntimeException.
-                plan = getLearningPlan(studentId);
-            } catch (RuntimeException e) {
-                return doOperationFailedError(form, "Query for default learning plan failed.", e);
-            }
-
-            /*
-            *  Create a default learning plan if there isn't one already and skip querying for plan items.
-            */
-            if (plan == null) {
-                try {
-                    plan = createDefaultLearningPlan(studentId);
-                } catch (Exception e) {
-                    return doOperationFailedError(form, "Unable to create learning plan.", e);
-                }
-            }
+        LearningPlan plan = getSynchronizedLearningPlan(studentId);
+        if (plan == null) {
+            return doOperationFailedError(form, "Unable to create learning plan.", null);
         }
-        /*Retrieve course activity offerings for the term to be planned*/
-        /*Adding Section related courses logic */
+
         boolean addCourse = true;
         boolean addPrimaryCourse = false;
         boolean addSecondaryCourse = false;
-        String primarySectionCode = null;
-        String secondarySectionCode = null;
+
+        /*
+        * ************************************************************************************************************
+        * Process the activities to know if course or primary activity or secondary activity or all need to be added
+        * to the Plan
+        *
+        * Planning a course --> addCourse will be true.
+        * Planning a primary activity and course not planned --> addCourse will be true and add primary will be true.
+        * Planning a secondary activity and primary not planned and course not planned --> addCourse will be true and add
+        * primary will be true and secondary will be true.
+        * ************************************************************************************************************
+        */
+
         if (form.getSectionCode() != null) {
             String primaryRegistrationCode = null;
-            List<ActivityOfferingItem> activityOfferings = getCourseDetailsInquiryService().getActivityOfferingItemsById(courseId, form.getAtpId());
+            List<ActivityOfferingItem> activityOfferings = getCourseDetailsInquiryService().getActivityOfferingItemsById(courseDetails.getCourseId(), form.getAtpId());
             /*Populate the primary and secondary flags*/
             for (ActivityOfferingItem activityOfferingItem : activityOfferings) {
                 if (activityOfferingItem.isPrimary() && !form.isPrimary() && form.getSectionCode().startsWith(activityOfferingItem.getCode())) {
@@ -940,8 +933,7 @@ public class PlanController extends UifControllerBase {
                             addCourse = false;
                         }
                         addPrimaryCourse = true;
-                        primarySectionCode = activityOfferingItem.getCode();
-                        form.setPrimarySectionCode(primarySectionCode);
+                        form.setPrimarySectionCode(activityOfferingItem.getCode());
                         form.setPrimaryRegistrationCode(activityOfferingItem.getRegistrationCode());
                         break;
                     } else {
@@ -950,8 +942,7 @@ public class PlanController extends UifControllerBase {
                             addCourse = false;
                         } else {
                             addPrimaryCourse = true;
-                            primarySectionCode = activityOfferingItem.getCode().substring(0, 1);
-                            form.setPrimarySectionCode(primarySectionCode);
+                            form.setPrimarySectionCode(getCourseHelper().getCodeFromActivityId(activityOfferingItem.getPrimaryActivityOfferingId()));
                             form.setPrimaryRegistrationCode(primaryRegistrationCode);
                             PlanItemInfo coursePlanItem = getPlannedOrBackupPlanItem(courseDetails.getVersionIndependentId(), form.getAtpId());
                             if (coursePlanItem != null) {
@@ -959,17 +950,14 @@ public class PlanController extends UifControllerBase {
                             }
                         }
                         addSecondaryCourse = true;
-                        secondarySectionCode = activityOfferingItem.getCode();
                         break;
                     }
                 }
             }
-
         }
 
 
-        /*  Do validations. */
-        //  Plan Size exceeded.
+        /*Plan capacity validation.*/
         if (addCourse) {
             boolean hasCapacity = false;
             try {
@@ -982,84 +970,98 @@ public class PlanController extends UifControllerBase {
                 return doPlanCapacityExceededError(form, newType);
             }
         }
-        //  Validate: Adding to historical term.
+
+
+        /*Historical term validation*/
         if (!AtpHelper.isAtpSetToPlanning(newAtpId)) {
             return doCannotChangeHistoryError(form);
         }
 
+
+        /*
+         * ************************************************************************************************************
+         *                                  Adding a course to Plan
+         * ************************************************************************************************************
+         */
+
         //  See if a wishList item exists for the course. If so, then update it. Otherwise create a new plan item.
         PlanItemInfo planItem = getWishlistPlanItem(courseDetails.getVersionIndependentId());
 
-        /*PlanItems for sections*/
-        PlanItemInfo primaryPlanItem = null;
-        PlanItemInfo secondaryPlanItem = null;
-        //  Storage for wishlist events.
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> wishlistEvents = null;
-        //  Create a new plan item if no wishlist exists. Otherwise, update the wishlist item.
-        if (planItem == null) {
+
+        if (planItem == null && addCourse) {
             try {
-                if (addCourse) {
-                    planItem = addPlanItem(plan, courseDetails.getVersionIndependentId(), newAtpId, newType, form.getNote());
-                }
-                if (addPrimaryCourse) {
-                    if (primarySectionCode != null) {
-                        primaryPlanItem = addActivityOfferingPlanItem(plan, getCourseHelper().buildActivityRefObjId(newAtpId, courseDetails.getSubjectArea(), courseDetails.getCourseNumber(), primarySectionCode), newAtpId, newType);
-                        form.setPrimaryPlanItemId(primaryPlanItem.getId());
 
-                    } else {
-                        return doOperationFailedError(form, "Could not add section to new plan item.", null);
-                    }
-                }
-                if (addSecondaryCourse) {
-                    if (secondarySectionCode != null) {
-                        secondaryPlanItem = addActivityOfferingPlanItem(plan, getCourseHelper().buildActivityRefObjId(newAtpId, courseDetails.getSubjectArea(), courseDetails.getCourseNumber(), secondarySectionCode), newAtpId, newType);
+                planItem = addPlanItem(plan, courseDetails.getVersionIndependentId(), newAtpId, newType, form.getNote());
 
-                    } else {
-                        return doOperationFailedError(form, "Could not add section to new plan item.", null);
-                    }
-                }
             } catch (DuplicateEntryException e) {
                 return doDuplicatePlanItem(form, newAtpId, courseDetails);
             } catch (Exception e) {
                 return doOperationFailedError(form, "Unable to add plan item.", e);
             }
-        } else {
+        } else if (planItem != null && addCourse) {
+
             //  Check for duplicates since addPlanItem isn't being called.
             if (addCourse && isDuplicate(plan, newAtpId, courseDetails.getVersionIndependentId(), newType)) {
                 return doDuplicatePlanItem(form, newAtpId, courseDetails);
             }
-            //  Create wishlist events before updating the plan item.
+
+            //  Create wishList events before updating the plan item.
             wishlistEvents = makeRemoveEvent(planItem, courseDetails, planItem.getRefObjectId(), form, null);
             planItem.setTypeKey(newType);
             planItem.setPlanPeriods(Arrays.asList(newAtpId));
+
             try {
-                if (addCourse) {
-                    planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, UserSessionHelper.makeContextInfoInstance());
-                }
-                if (addPrimaryCourse) {
-                    if (primarySectionCode != null) {
-                        primaryPlanItem = addActivityOfferingPlanItem(plan, getCourseHelper().buildActivityRefObjId(newAtpId, courseDetails.getSubjectArea(), courseDetails.getCourseNumber(), primarySectionCode), newAtpId, newType);
-                        form.setPrimaryPlanItemId(primaryPlanItem.getId());
-                    } else {
-                        return doOperationFailedError(form, "Could not add section to new plan item.", null);
-                    }
-                }
-                if (addSecondaryCourse) {
-                    if (secondarySectionCode != null) {
-                        secondaryPlanItem = addActivityOfferingPlanItem(plan, getCourseHelper().buildActivityRefObjId(newAtpId, courseDetails.getSubjectArea(), courseDetails.getCourseNumber(), secondarySectionCode), newAtpId, newType);
-                    } else {
-                        return doOperationFailedError(form, "Could not add section to new plan item.", null);
-                    }
-                }
+
+                planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, UserSessionHelper.makeContextInfoInstance());
+
             } catch (Exception e) {
-                return doOperationFailedError(form, "Unable MetaENtito update wishlist plan item.", e);
+
             }
         }
 
-        //  Create the map of javascript event(s) that should be thrown in the UI.
+        /*
+        * *************************************************************************************************************
+        *                             Adding activities to Plan
+        * *************************************************************************************************************
+        */
+
+        /*PlanItems for sections*/
+        PlanItemInfo primaryPlanItem = null;
+        PlanItemInfo secondaryPlanItem = null;
+
+        if (addPrimaryCourse && form.getPrimarySectionCode() != null) {
+
+            primaryPlanItem = addActivityOfferingPlanItem(plan, getCourseHelper().buildActivityRefObjId(newAtpId, courseDetails.getSubjectArea(), courseDetails.getCourseNumber(), form.getPrimarySectionCode()), newAtpId, newType);
+            form.setPrimaryPlanItemId(primaryPlanItem.getId());
+
+        }
+
+        if (addSecondaryCourse && form.getSectionCode() != null) {
+
+            secondaryPlanItem = addActivityOfferingPlanItem(plan, getCourseHelper().buildActivityRefObjId(newAtpId, courseDetails.getSubjectArea(), courseDetails.getCourseNumber(), form.getSectionCode()), newAtpId, newType);
+
+        }
+
+
+        /*
+        * *************************************************************************************************************
+        *                   Adding placeholders to the plan
+        * *************************************************************************************************************
+        */
+
+
+        /*
+        * *************************************************************************************************************
+        *                   Adding events to the form
+        * *************************************************************************************************************
+        */
+
+
+        /*Create the map of javascript event(s) that should be thrown in the UI.*/
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
-        //  If a wishlist item was clobbered then generate Javascript events.
+        /*If a wishList item was clobbered then generate Javascript events.*/
         if (wishlistEvents != null) {
             events.putAll(wishlistEvents);
         }
@@ -1083,7 +1085,6 @@ public class PlanController extends UifControllerBase {
 
         events.putAll(makeUpdateTotalCreditsEvent(plannedTerm, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
-        //  Populate the form.
         form.setJavascriptEvents(events);
 
         String[] params = {};
@@ -1091,7 +1092,6 @@ public class PlanController extends UifControllerBase {
             params = new String[]{AtpHelper.atpIdToTermName(planItem.getPlanPeriods().get(0))};
         } else if (primaryPlanItem != null) {
             params = new String[]{AtpHelper.atpIdToTermName(primaryPlanItem.getPlanPeriods().get(0))};
-
         } else if (secondaryPlanItem != null) {
             params = new String[]{AtpHelper.atpIdToTermName(secondaryPlanItem.getPlanPeriods().get(0))};
         }
@@ -1225,6 +1225,38 @@ public class PlanController extends UifControllerBase {
     }
 
     /**
+     * Returns synchronized learning plan
+     *
+     * @param studentId
+     * @return
+     */
+    private LearningPlan getSynchronizedLearningPlan(String studentId) {
+        LearningPlan plan = null;
+        // Synchronized is used to ensure only one learning plan is created for a given student Id
+        synchronized (studentId) {
+            try {
+                //  If something goes wrong with the query then a RuntimeException will be thrown. Otherwise, the method
+                //  will return the default plan or null. Having multiple plans will also produce a RuntimeException.
+                plan = getLearningPlan(studentId);
+            } catch (RuntimeException e) {
+                return null;
+            }
+
+            /*
+            *  Create a default learning plan if there isn't one already and skip querying for plan items.
+            */
+            if (plan == null) {
+                try {
+                    plan = createDefaultLearningPlan(studentId);
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+        }
+        return plan;
+    }
+
+    /**
      * Build an HTML link to a specific ATP in the quarter view.
      *
      * @param atpId
@@ -1329,27 +1361,11 @@ public class PlanController extends UifControllerBase {
         }
 
         String studentId = UserSessionHelper.getStudentRegId();
-        LearningPlan plan = null;
-        // Synchronized is used to ensure only one learning plan is created for a given student Id
-        synchronized (studentId) {
-            try {
-                //  Throws RuntimeException is there is a problem. Otherwise, returns a plan or null.
-                plan = getLearningPlan(studentId);
-            } catch (RuntimeException e) {
-                return doOperationFailedError(form, "Query for default learning plan failed.", e);
-            }
-
-            /*
-            *  Create a default learning plan if there isn't one already and skip querying for plan items.
-            */
-            if (plan == null) {
-                try {
-                    plan = createDefaultLearningPlan(studentId);
-                } catch (Exception e) {
-                    return doOperationFailedError(form, "Unable to create learning plan.", e);
-                }
-            }
+        LearningPlan plan = getSynchronizedLearningPlan(studentId);
+        if (plan == null) {
+            return doOperationFailedError(form, "Unable to create learning plan.", null);
         }
+
         // Retrieve courseDetails based on the passed in CourseId and then update courseDetails based on the version independent Id
         CourseSummaryDetails courseDetails = null;
         // Now switch to the details based on the version independent Id
