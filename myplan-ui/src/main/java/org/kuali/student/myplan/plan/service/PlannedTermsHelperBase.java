@@ -57,7 +57,7 @@ public class PlannedTermsHelperBase {
         String globalCurrentAtpId = null;
         globalCurrentAtpId = AtpHelper.getCurrentAtpId();
         if (StringUtils.isEmpty(focusAtpId)) {
-            focusAtpId = globalCurrentAtpId;
+            focusAtpId = AtpHelper.getFirstOpenForPlanTerm();
         }
 
         String[] focusQuarterYear = new String[2];
