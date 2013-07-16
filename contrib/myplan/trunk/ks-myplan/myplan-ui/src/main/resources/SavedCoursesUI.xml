@@ -86,7 +86,21 @@
                 <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 7"/>
             </list>
         </property>
-        <property name="onDocumentReadyScript" value="truncateField('saved_courses_summary', 10);"/>
+        <property name="onDocumentReadyScript" value="
+            truncateField('saved_courses_summary', 10);
+            jQuery('#saved_courses_summary').on('PLAN_ITEM_DELETED', function(event, data){
+                if( data.planItemType === 'wishlist' ) {
+                    myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
+                    jQuery('div.jquerypopover.jquerypopover-myplan .jquerypopover-tail').fadeOut(250, function() {
+                        jQuery(this).remove();
+                    });
+                }
+            }).on('PLAN_ITEM_ADDED', function(event, data){
+                if( data.planItemType === 'wishlist' ) {
+                    myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'}, data.planItemId);
+                }
+            });
+        "/>
         <property name="layoutManager.lineGroupPrototype.id" value="@{#line.planItemDataObject.id}"/>
         <property name="layoutManager.lineGroupPrototype.onClickScript" value="
             openPlanItemPopUp('@{#line.courseDetails.courseId}','add_remove_course_popover_page',{planItemId:'@{#line.planItemDataObject.id}', courseId:'@{#line.courseDetails.courseId}'},e,null,{position:'left', tail:{align:'top'},align:'top'});
@@ -279,7 +293,7 @@
         <property name="render" value="@{lookupResults.size() gt 0}"/>
         <property name="onDocumentReadyScript" value="
             jQuery('#saved_courses_detail_list ul').css('minHeight',jQuery('#saved_courses_detail_list ul').height());
-            jQuery('.myplan-saved-courses-detail').subscribe('PLAN_ITEM_DELETED', function(data){
+            jQuery('.myplan-saved-courses-detail').on('PLAN_ITEM_DELETED', function(event, data){
                 if (data.planItemType === 'wishlist') {
                     fnRemoveSavedItem(data.planItemId, 'myplan-saved-courses-detail');
                     fnUpdateSavedCount( jQuery(this).find('.uif-sectionHeader .uif-headerText strong').text() );

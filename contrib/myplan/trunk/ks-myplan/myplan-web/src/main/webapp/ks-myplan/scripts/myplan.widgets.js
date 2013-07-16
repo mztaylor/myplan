@@ -389,11 +389,10 @@ function openPlanItemPopUp(id, getId, retrieveOptions, e, selector, popupOptions
     clickOutsidePopOver(popupBoxId, popupBox);
 
     var tempForm = jQuery('<form />').attr("id", id + "_form").attr("action", "plan").attr("method", "post").hide();
-    var tempFormInputs = '<div style="display:none;"><input type="hidden" name="viewId" value="PlannedCourse-FormView" />';
+    var tempFormInputs = '<input type="hidden" name="viewId" value="PlannedCourse-FormView" />';
     jQuery.each(retrieveOptions, function (name, value) {
         tempFormInputs += '<input type="hidden" name="' + name + '" value="' + value + '" />';
     });
-    tempFormInputs += '</div>';
     jQuery(tempForm).append(tempFormInputs);
     jQuery("body").append(tempForm);
 
@@ -499,7 +498,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
                 var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key_control", htmlContent).text()));
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
-                        eval('jQuery.publish("' + key + '", [' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ']);');
+                        eval('jQuery.event.trigger("' + key + '", ' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ');');
                     }
                 }
                 setUrlHash('modified', 'true');
@@ -512,7 +511,7 @@ function myplanAjaxSubmitPlanItem(id, type, methodToCall, e, bDialog) {
                     if (jQuery("body").HasPopOver()) jQuery("body").HidePopOver();
                     openDialog(sHtml.html(), e);
                 } else {
-                    eval('jQuery.publish("ERROR", [' + JSON.stringify(oMessage) + ']);');
+                    eval('jQuery.event.trigger("ERROR", ' + JSON.stringify(oMessage) + ');');
                 }
                 break;
         }
@@ -568,7 +567,7 @@ function myplanAjaxSubmitSectionItem(id, methodToCall, action, formData, e) {
                 var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key_control", htmlContent).text()));
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
-                        eval('jQuery.publish("' + key + '", [' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ']);');
+                        eval('jQuery.event.trigger("' + key + '", ' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ');');
                     }
                 }
                 setUrlHash('modified', 'true');
@@ -629,7 +628,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
             }
 
             if (highlightId) {
-                jQuery("[id^='" + highlightId + "']").parents('li').animate({backgroundColor:"#ffffcc"}, 1).animate({backgroundColor:"#ffffff"}, 1500, function () {
+                jQuery("[id^='" + highlightId + "']").animate({backgroundColor:"#ffffcc"}, 1).animate({backgroundColor:"#ffffff"}, 1500, function () {
                     jQuery(this).removeAttr("style");
                 });
             }
@@ -1078,9 +1077,7 @@ function setPendingAudit(obj, minutes) {
                         disabledCheck(obj.attr("id"), 'action', function () {
                             return true;
                         });
-                        jQuery.publish('REFRESH_AUDITS', [
-                            {"type":data.auditType}
-                        ]);
+                        jQuery.event.trigger('REFRESH_AUDITS', data);
                         setUrlHash('modified', 'true');
                     }
                 },
@@ -1123,7 +1120,7 @@ function blockPendingAudit(data) {
         jQuery("#" + id + " div.blockUI.blockMsg.blockElement .heading").html(pendingDegreeAuditHeadingText);
     }
     jQuery("#" + id + " div.blockUI.blockMsg.blockElement .programName").text(data.programName);
-    jQuery("#" + id).subscribe('AUDIT_COMPLETE', function () {
+    jQuery("#" + id).on('AUDIT_COMPLETE', function (event, data) {
         window.location.assign(window.location.href.split("#")[0]);
     });
 }
@@ -1144,7 +1141,7 @@ function pollPendingAudit(programId, recentAuditId, auditType) {
             var growl = true;
             if (readUrlParam("viewId") == "DegreeAudit-FormView") {
                 growl = jQuery(".myplan-audit-report div.blockUI.blockMsg.blockElement").data("growl");
-                if (readUrlParam(auditType + "Audit.auditId") != false) jQuery("body").subscribe('AUDIT_COMPLETE', function () {
+                if (readUrlParam(auditType + "Audit.auditId") != false) jQuery("body").on('AUDIT_COMPLETE', function (event, data) {
                     setUrlParam(auditType + "Audit.auditId", "");
                 });
             }
@@ -1159,9 +1156,7 @@ function pollPendingAudit(programId, recentAuditId, auditType) {
                 if (growl) showGrowl(data.programName + " " + title + " is ready to view.", title + " Completed", "infoGrowl");
             }
             jQuery.cookie("myplan_audit_running", null, {expires:new Date().setTime(0)});
-            jQuery.publish("AUDIT_COMPLETE", [
-                {"type":auditType}
-            ]);
+            jQuery.event.trigger("AUDIT_COMPLETE", {"auditType":auditType});
         }
     });
 }
@@ -1351,14 +1346,14 @@ function myplanAjaxSubmitQuickAdd(id, submitOptions, methodToCall, e, bDialog) {
                 var json = jQuery.parseJSON(jQuery.trim(jQuery("span#json_events_item_key_control", htmlContent).text()));
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
-                        eval('jQuery.publish("' + key + '", [' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ']);');
+                        eval('jQuery.event.trigger("' + key + '", ' + JSON.stringify(jQuery.extend(json[key], oMessage)) + ');');
                     }
                 }
                 setUrlHash('modified', 'true');
                 break;
             case 'error':
                 var oMessage = { 'message':'<img src="../ks-myplan/images/pixel.gif" alt="" class="icon"><span class="message">' + jQuery('body').data('validationMessages').serverErrors[0] + '</span>', 'cssClass':'myplan-feedback error' };
-                eval('jQuery.publish("ERROR", [' + JSON.stringify(oMessage) + ']);');
+                eval('jQuery.event.trigger("ERROR", ' + JSON.stringify(oMessage) + ');');
                 break;
         }
     };

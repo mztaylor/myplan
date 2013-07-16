@@ -254,27 +254,23 @@
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
-            jq('#course_search_results')
-                .subscribe('PLAN_ITEM_DELETED', function(data){
-                    if (data.planItemType === 'wishlist') {
-                        fnRestoreSearchAddButton(data.courseDetails.courseId);
-                    }
-                })
-                .subscribe('PLAN_ITEM_ADDED', function(data){
-                    if (data.planItemType === 'wishlist') {
-                        fnDisplayMessage('Bookmarked', 'bookmarked', data.courseDetails.courseId+'_status', false);
-                    }
-                })
-                .subscribe('PLAN_ITEM_ADDED', function(data){
-                    if (data.planItemType === 'planned') {
-                        fnDisplayMessage('Planned', 'planned', data.courseDetails.courseId+'_status', false);
-                    }
-                })
-                .subscribe('PLAN_ITEM_ADDED', function(data){
-                    if (data.planItemType === 'backup') {
-                        fnDisplayMessage('Planned', 'planned', data.courseDetails.courseId+'_status', false);
-                    }
-                });
+            jQuery('#course_search_results').on('PLAN_ITEM_DELETED', function(event, data){
+                if (data.planItemType === 'wishlist') {
+                    fnRestoreSearchAddButton(data.courseDetails.courseId);
+                }
+            }).on('PLAN_ITEM_ADDED', function(event, data){
+                if (data.planItemType === 'wishlist') {
+                    fnDisplayMessage('Bookmarked', 'bookmarked', data.courseDetails.courseId+'_status', false);
+                }
+            }).on('PLAN_ITEM_ADDED', function(event, data){
+                if (data.planItemType === 'planned') {
+                    fnDisplayMessage('Planned', 'planned', data.courseDetails.courseId+'_status', false);
+                }
+            }).on('PLAN_ITEM_ADDED', function(event, data){
+                if (data.planItemType === 'backup') {
+                    fnDisplayMessage('Planned', 'planned', data.courseDetails.courseId+'_status', false);
+                }
+            });
         "/>
         <property name="richTable.templateOptions">
             <map merge="true">
@@ -380,13 +376,11 @@
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
-            jq('#facet_quarter')
-                .subscribe('GENERATE_FACETS', function(){
-                    fnGenerateFacetGroup(6, this, terms);
-                })
-                .subscribe('UPDATE_FACETS', function(data){
-                    fnUpdateFacetList(data, 6, this);
-                });
+            jQuery('#facet_quarter').on('GENERATE_FACETS', function(event){
+                fnGenerateFacetGroup(6, jQuery(this), terms);
+            }).on('UPDATE_FACETS', function(event, data){
+                fnUpdateFacetList(data, 6, jQuery(this));
+            });
         "/>
     </bean>
     <bean id="facet_genedureq" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Gen. Edu. Req.">
@@ -402,13 +396,11 @@
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
-            jq('#facet_genedureq')
-                .subscribe('GENERATE_FACETS', function(){
-                    fnGenerateFacetGroup(7, this, alpha);
-                })
-                .subscribe('UPDATE_FACETS', function(data){
-                    fnUpdateFacetList(data, 7, this);
-                });
+            jQuery('#facet_genedureq').on('GENERATE_FACETS', function(event){
+                fnGenerateFacetGroup(7, jQuery(this), alpha);
+            }).on('UPDATE_FACETS', function(event, data){
+                fnUpdateFacetList(data, 7, jQuery(this));
+            });
         "/>
     </bean>
     <bean id="facet_credits" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Credits">
@@ -424,13 +416,11 @@
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
-            jq('#facet_credits')
-                .subscribe('GENERATE_FACETS', function(){
-                    fnGenerateFacetGroup(8, this, numeric);
-                })
-                .subscribe('UPDATE_FACETS', function(data){
-                    fnUpdateFacetList(data, 8, this);
-                });
+            jQuery('#facet_credits').on('GENERATE_FACETS', function(event){
+                fnGenerateFacetGroup(8, jQuery(this), numeric);
+            }).on('UPDATE_FACETS', function(event, data){
+                fnUpdateFacetList(data, 8, jQuery(this));
+            });
         "/>
     </bean>
     <bean id="facet_level" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Course Level">
@@ -446,13 +436,11 @@
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
-            jq('#facet_level')
-                .subscribe('GENERATE_FACETS', function(){
-                    fnGenerateFacetGroup(9, this, numeric);
-                })
-                .subscribe('UPDATE_FACETS', function(data){
-                    fnUpdateFacetList(data, 9, this);
-                });
+            jQuery('#facet_level').on('GENERATE_FACETS', function(event){
+                fnGenerateFacetGroup(9, jQuery(this), numeric);
+            }).on('UPDATE_FACETS', function(event, data){
+                fnUpdateFacetList(data, 9, jQuery(this));
+            });
         "/>
     </bean>
     <bean id="facet_curriculum" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Course Prefix">
@@ -468,13 +456,11 @@
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
-            jq('#facet_curriculum')
-                .subscribe('GENERATE_FACETS', function(){
-                    fnGenerateFacetGroup(10, this, alpha);
-                })
-                .subscribe('UPDATE_FACETS', function(data){
-                    fnUpdateFacetList(data, 10, this);
-                });
+            jQuery('#facet_curriculum').on('GENERATE_FACETS', function(event){
+                fnGenerateFacetGroup(10, jQuery(this), alpha);
+            }).on('UPDATE_FACETS', function(event, data){
+                fnUpdateFacetList(data, 10, jQuery(this));
+            });
         "/>
     </bean>
 

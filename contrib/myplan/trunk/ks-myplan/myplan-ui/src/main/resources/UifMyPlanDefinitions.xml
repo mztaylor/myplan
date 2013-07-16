@@ -219,7 +219,6 @@
                 <value>krad/scripts/krad.validate.js</value>
                 <value>ks-myplan/scripts/myplan.widgets.js?@{#ConfigProperties['myplan.buildNumber']}</value>
                 <value>ks-myplan/scripts/myplan.events.js?@{#ConfigProperties['myplan.buildNumber']}</value>
-                <value>ks-myplan/plugins/jquery.subscribe.js?@{#ConfigProperties['myplan.buildNumber']}</value>
                 <value>ks-myplan/plugins/polling.js?@{#ConfigProperties['myplan.buildNumber']}</value>
                 <value>ks-myplan/jquery-popover/jquery.popover.js?@{#ConfigProperties['myplan.buildNumber']}</value>
                 <value>ks-myplan/scripts/myplan.google.js?@{#ConfigProperties['myplan.buildNumber']}</value>
@@ -451,13 +450,6 @@
         <property name="header.render" value="false"/>
         <property name="onDocumentReadyScript" value="
             myplanRetrieveComponent('KSAP-MessagesList','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
-            jQuery('#KSAP-MessagesList')
-                .subscribe('MESSAGE_SENT', function(){
-                    myplanRetrieveComponent('messages_summary','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
-                })
-                .subscribe('COMMENT_SENT', function(){
-                    myplanRetrieveComponent('messages_summary','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
-                });
         "/>
     </bean>
 
@@ -465,20 +457,6 @@
     <bean id="KSAP-BookmarkList" parent="KSAP-Module" p:headerText="Bookmarked Courses" p:id="KSAP-BookmarkList">
         <property name="onDocumentReadyScript" value="
             myplanRetrieveComponent('KSAP-BookmarkList','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
-            jQuery('#KSAP-BookmarkList')
-                .subscribe('PLAN_ITEM_DELETED', function( data ){
-                    if( data.planItemType === 'wishlist' ) {
-                        myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
-                        jQuery('div.jquerypopover.jquerypopover-myplan .jquerypopover-tail').fadeOut(250, function() {
-                            jQuery(this).remove();
-                        });
-                    }
-                })
-                .subscribe('PLAN_ITEM_ADDED', function( data ){
-                    if( data.planItemType === 'wishlist' ) {
-                        myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'},data.planItemId);
-                    }
-                });
         "/>
     </bean>
 
@@ -486,26 +464,12 @@
           p:id="KSAP-DegreeAuditList">
         <property name="onDocumentReadyScript" value="
             myplanRetrieveComponent('KSAP-DegreeAuditList','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
-            jQuery('#KSAP-DegreeAuditList')
-                .subscribe('REFRESH_AUDITS', function( data ){
-                    if( data.type == 'degree' ) myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
-                })
-                .subscribe('AUDIT_COMPLETE', function(data){
-                    if( data.type == 'degree' ) myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
-                });
         "/>
     </bean>
 
     <bean id="KSAP-PlanAuditList" parent="KSAP-Module" p:headerText="Recent Plan Audits" p:id="KSAP-PlanAuditList">
         <property name="onDocumentReadyScript" value="
             myplanRetrieveComponent('KSAP-PlanAuditList','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
-            jQuery('#KSAP-PlanAuditList')
-                .subscribe('REFRESH_AUDITS', function( data ) {
-                    if( data.type == 'plan' ) myplanRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
-                })
-                .subscribe('AUDIT_COMPLETE', function( data ) {
-                    if( data.type == 'plan' ) myplanRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
-                });
         "/>
     </bean>
 

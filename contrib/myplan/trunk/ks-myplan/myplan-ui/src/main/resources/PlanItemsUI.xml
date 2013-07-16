@@ -559,15 +559,15 @@
         </property>
         <property name="onDocumentReadyScript" value="
             truncateField('planned_courses_detail_list', 12, true);
-            jQuery('#planned_courses_detail_list').subscribe('PLAN_ITEM_ADDED', function(data){
-                                                    fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit, data.showAlert, data.termName, data.timeScheduleOpen, data.sections, data.statusAlert);
-                                                }).subscribe('PLAN_ITEM_DELETED', function(data){
-                                                    fnRemovePlanItem(data.atpId, data.planItemType, data.planItemId);
-                                                }).subscribe('UPDATE_NEW_TERM_TOTAL_CREDITS', function(data){
-                                                    fnUpdateCredits(data.atpId, data.totalCredits);
-                                                }).subscribe('UPDATE_OLD_TERM_TOTAL_CREDITS', function(data){
-                                                    fnUpdateCredits(data.atpId, data.totalCredits);
-                                                });
+            jQuery('#planned_courses_detail_list').on('PLAN_ITEM_ADDED', function(event, data) {
+                fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit, data.showAlert, data.termName, data.timeScheduleOpen, data.sections, data.statusAlert);
+            }).on('PLAN_ITEM_DELETED', function(event, data) {
+                fnRemovePlanItem(data.atpId, data.planItemType, data.planItemId);
+            }).on('UPDATE_NEW_TERM_TOTAL_CREDITS', function(event, data) {
+                fnUpdateCredits(data.atpId, data.totalCredits);
+            }).on('UPDATE_OLD_TERM_TOTAL_CREDITS', function(event, data) {
+                fnUpdateCredits(data.atpId, data.totalCredits);
+            });
         "/>
     </bean>
     <bean id="academicRecordCourseCode" parent="KSAP-MessageField" p:messageText="@{#line.courseCode}">

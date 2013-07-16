@@ -228,51 +228,47 @@
 
     <bean id="single_collection_data" parent="KSAP-VerticalBoxGroup">
         <property name="onDocumentReadyScript" value="
-            jQuery('body').subscribe('SECTION_ITEM_ADDED', function(data) {
-                    fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'added', data);
-                    if (data.ItemsToUpdate &amp;&amp; data.Primary == 'false') {
+            jQuery('body').on('SECTION_ITEM_ADDED', function(event, data) {
+                fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'added', data);
+                if (data.ItemsToUpdate &amp;&amp; data.Primary == 'false') {
+                    var items = data.ItemsToUpdate.split(',');
+                    jQuery.each(items, function (index, value) {
+                        fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'added', data, true);
+                    });
+                }
+            }).on('SECTION_ITEM_DELETED', function(event, data) {
+                if (jQuery('#' + 'button_' + data.atpId + '_' + data.RegistrationCode).data('initial') || data.ActivityStateKey == 'withdrawn') {
+                    fnRemoveSectionRow('button_' + data.atpId + '_' + data.RegistrationCode);
+                    if (data.ItemsToUpdate) {
                         var items = data.ItemsToUpdate.split(',');
                         jQuery.each(items, function (index, value) {
-                            fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'added', data, true);
+                            fnRemoveSectionRow('button_' + data.atpId + '_' + items[index]);
                         });
                     }
-                })
-                .subscribe('SECTION_ITEM_DELETED', function(data) {
-                    if (jQuery('#' + 'button_' + data.atpId + '_' + data.RegistrationCode).data('initial') || data.ActivityStateKey == 'withdrawn') {
-                        fnRemoveSectionRow('button_' + data.atpId + '_' + data.RegistrationCode);
-                        if (data.ItemsToUpdate) {
-                            var items = data.ItemsToUpdate.split(',');
-                            jQuery.each(items, function (index, value) {
-                                fnRemoveSectionRow('button_' + data.atpId + '_' + items[index]);
-                            });
-                        }
-                    } else {
-                        var action = 'deleted';
-                        if (data.ActivityStateKey == 'suspended') action = data.ActivityStateKey;
-                        fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, action, data);
-                        if (data.ItemsToUpdate) {
-                            var items = data.ItemsToUpdate.split(',');
-                            jQuery.each(items, function (index, value) {
-                                fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], action, data);
-                            });
-                        }
+                } else {
+                    var action = 'deleted';
+                    if (data.ActivityStateKey == 'suspended') action = data.ActivityStateKey;
+                    fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, action, data);
+                    if (data.ItemsToUpdate) {
+                        var items = data.ItemsToUpdate.split(',');
+                        jQuery.each(items, function (index, value) {
+                            fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], action, data);
+                        });
                     }
-                })
-                .subscribe('UPDATE_NEW_TERM_TOTAL_CREDITS', function(data) {
-                    if (data.atpId == '@{dataObject.atpId.replaceAll('\.','-')}') {
-                        fnUpdateQuarterViewCredits(data.totalCredits);
-                    }
-                })
-                .subscribe('PLAN_ITEM_DELETED', function(data) {
-                    if (data.atpId == '@{dataObject.atpId.replaceAll('\.','-')}' &amp;&amp; data.planItemType != 'wishlist') {
-                        myplanRetrieveComponent(data.atpId + '_' + data.planItemType, data.atpId + '_' + data.planItemType, 'start', 'inquiry', {viewId:'SingleTerm-InquiryView', term_atp_id:'@{dataObject.atpId}'}, null, {css:{top:'1px',left:'1px',border:'none',background:'none'},overlayCSS:{backgroundColor: '#fff'}});
-                    }
-                })
-                .subscribe('PLAN_ITEM_ADDED', function(data) {
-                    if (data.atpId == '@{dataObject.atpId.replaceAll('\.','-')}' &amp;&amp; data.planItemType != 'wishlist') {
-                        myplanRetrieveComponent(data.atpId + '_' + data.planItemType, data.atpId + '_' + data.planItemType, 'start', 'inquiry', {viewId:'SingleTerm-InquiryView', term_atp_id:'@{dataObject.atpId}'}, null, {css:{top:'1px',left:'1px',border:'none',background:'none'},overlayCSS:{backgroundColor: '#fff'}});
-                    }
-                });
+                }
+            }).on('UPDATE_NEW_TERM_TOTAL_CREDITS', function(event, data) {
+                if (data.atpId == '@{dataObject.atpId.replaceAll('\.','-')}') {
+                    fnUpdateQuarterViewCredits(data.totalCredits);
+                }
+            }).on('PLAN_ITEM_DELETED', function(event, data) {
+                if (data.atpId == '@{dataObject.atpId.replaceAll('\.','-')}' &amp;&amp; data.planItemType != 'wishlist') {
+                    myplanRetrieveComponent(data.atpId + '_' + data.planItemType, data.atpId + '_' + data.planItemType, 'start', 'inquiry', {viewId:'SingleTerm-InquiryView', term_atp_id:'@{dataObject.atpId}'}, null, {css:{top:'1px',left:'1px',border:'none',background:'none'},overlayCSS:{backgroundColor: '#fff'}});
+                }
+            }).on('PLAN_ITEM_ADDED', function(event, data) {
+                if (data.atpId == '@{dataObject.atpId.replaceAll('\.','-')}' &amp;&amp; data.planItemType != 'wishlist') {
+                    myplanRetrieveComponent(data.atpId + '_' + data.planItemType, data.atpId + '_' + data.planItemType, 'start', 'inquiry', {viewId:'SingleTerm-InquiryView', term_atp_id:'@{dataObject.atpId}'}, null, {css:{top:'1px',left:'1px',border:'none',background:'none'},overlayCSS:{backgroundColor: '#fff'}});
+                }
+            });
         "/>
         <property name="cssClasses">
             <list merge="true">
