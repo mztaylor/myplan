@@ -323,7 +323,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     // TODO: this needs to be moved into ATP helper
                     lastOffered = lastOffered.substring(0, 1).toUpperCase().concat(lastOffered.substring(1, lastOffered.length()));
                     String atpId = AtpHelper.getAtpIdFromTermYear(lastOffered);
-                    if (AtpHelper.isAtpCompletedTerm(atpId)) {
+                    if (!AtpHelper.isAtpSetToPlanning(atpId)) {
                         courseDetails.setLastOffered(lastOffered);
                     }
                 } else {
