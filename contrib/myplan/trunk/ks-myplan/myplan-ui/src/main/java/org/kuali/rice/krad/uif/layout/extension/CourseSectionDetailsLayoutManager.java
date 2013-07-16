@@ -45,9 +45,14 @@ public class CourseSectionDetailsLayoutManager extends TableLayoutManager {
 			r1css.append(aoi.isPrimary() ? " primary" : " secondary");
             // TODO:  MYPLAN-2139 Update after mapping is changed
 			//if (!LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY.equals(aoi.getStateKey()))
-            if (!"active".equals(aoi.getStateKey()))
+            boolean  offered = "active".equals(aoi.getStateKey());
+            if (!offered) {
 				r1css.append(" fl-text-lightgray");
-			StringBuilder r2css = new StringBuilder();
+            }
+
+            rowCss.add(r1css.toString());
+
+            StringBuilder r2css = new StringBuilder();
 			if (!aoi.isPrimary())
 				r2css.append("collapsible");
 			if (aoi.getPlanItemId() != null) {
@@ -56,9 +61,11 @@ public class CourseSectionDetailsLayoutManager extends TableLayoutManager {
 				r2css.append(r2css.length() == 0 ? " " : "").append(
 						"myplan-section-planned");
 			}
-			rowCss.add(r1css.toString());
-			rowCss.add(r2css.toString());
-			rowCss.add(r2css.toString());
+
+            if(offered) {
+			    rowCss.add(r2css.toString());
+			    rowCss.add(r2css.toString());
+            }
 			if (LOG.isDebugEnabled())
 				LOG.debug("AO luiId " + aoi.getCode() + " lineIndex = "
 						+ lineIndex + " css(1) " + r1css.toString()
