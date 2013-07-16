@@ -842,9 +842,6 @@ public class PlanController extends UifControllerBase {
             if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
                 String subject = courseCode.getSubject();
                 String number = courseCode.getNumber();
-                if (number.length() != 3) {
-                    return doErrorPage(form, "Course number is wrong", PlanConstants.COURSE_NOT_FOUND, new String[]{form.getCourseCd()}, null);
-                }
                 ArrayList<String> divisions = new ArrayList<String>();
                 getCourseHelper().extractDivisions(divisionMap, subject, divisions, false);
                 if (divisions.size() > 0) {
@@ -853,7 +850,9 @@ public class PlanController extends UifControllerBase {
                     form.setCourseId(courseId);
                 }
             }
-
+            if (form.getCourseId() == null) {
+                return doErrorPage(form, "Course not found", PlanConstants.COURSE_NOT_FOUND, new String[]{form.getCourseCd()}, null);
+            }
         }
 
 
