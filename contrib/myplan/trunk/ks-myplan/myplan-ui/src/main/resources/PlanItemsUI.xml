@@ -119,7 +119,7 @@
     <bean id="menuOptionEditPlanItemCourse" parent="Uif-ActionLink" p:actionLabel="Edit Course/Note" p:render="false"
           p:title="Edit Course/Note">
         <property name="actionScript"
-                  value="openPlanItemPopUp(jQuery(this).data('planitemid'),'course_summary_dialog_page',{planItemId:jQuery(this).data('planitemid'),pageId:'course_summary_dialog_page',atpId:jQuery(this).data('atpid'),courseId:jQuery(this).data('courseid')},e,null,{tail:{hidden:true},align:'top'});"/>
+                  value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_add_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_add_page',atpId:jQuery(this).data('atpid'),courseId:jQuery(this).data('courseid')},e,null,{tail:{hidden:true},align:'top'});"/>
     </bean>
 
     <!-- NEW FUNCTIONALITY hidden from view in 1.4 release -->
@@ -312,6 +312,7 @@
     </bean>
 
     <!-- Single term view that lists planned course, total credits and backup courses -->
+    <!-- TODO: Dont commit quickadd link using plan_item_add_page as the pageId, use quick_add_page until 1.4 tagged and trunk moves to 1.5 (plan_item_add_page) -->
     <bean id="planned_courses_detail" parent="KSAP-VerticalBoxGroup" p:width="630px">
         <property name="onDocumentReadyScript" value="
             jQuery('.myplan-carousel-list li .myplan-term-current.open, .myplan-carousel-list li .myplan-term-future.open').find('.myplan-term-planned .uif-stackedCollectionLayout, .myplan-term-backup .uif-stackedCollectionLayout').each(function(){
