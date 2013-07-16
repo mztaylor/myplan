@@ -274,7 +274,7 @@ public class DegreeAuditController extends UifControllerBase {
                 } else {
                     String[] params = {};
                     GlobalVariables.getMessageMap().putError("degreeAudit.programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
-                    form.setAuditHtml(String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL)));
+                    form.setAuditHtml(String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL), DegreeAuditConstants.AUDIT_STATUS_ERROR_MSG));
                 }
             }
 
@@ -563,7 +563,7 @@ public class DegreeAuditController extends UifControllerBase {
                     if ("auditId".equalsIgnoreCase(key) && StringUtils.hasText(value)) {
                         /*TODO: cache this getAuditStatus method*/
                         StatusInfo statusInfo = degreeAuditService.getAuditRunStatus(value, PlanConstants.CONTEXT_INFO);
-                        if (statusInfo.getIsSuccess()) {
+                        if (statusInfo.getIsSuccess() != null) {
                             recentPlanAuditId = value;
                             break;
                         }
