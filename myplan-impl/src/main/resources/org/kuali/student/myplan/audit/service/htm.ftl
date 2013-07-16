@@ -836,7 +836,6 @@ ${headerLine?xml}
     <hr class="headerRule"/>
 </div>
 </#if>
-<input name="script" type="hidden" value="jQuery.publish('NEW_AUDIT');"/>
 
 <div> (audit template updated: ${svnDate?substring( 8, 27 )}) </div>
 </div>
