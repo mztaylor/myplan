@@ -56,9 +56,6 @@
                             <bean id="request_status_item_key" parent="Uif-DataField" p:propertyName="requestStatus"/>
                             <bean id="json_events_item_key" parent="Uif-DataField"
                                   p:propertyName="javascriptEventsAsJSON"/>
-                            <!--  These two can go away once the javascript eventing is totally implemented. -->
-                            <!--<bean id="add_plan_item_key" parent="Uif-DataField" p:propertyName="planItemId"/>
-                            <bean id="course_id_item_key" parent="Uif-DataField" p:propertyName="courseId"/>-->
                         </list>
                     </property>
                 </bean>
@@ -335,7 +332,8 @@
 
                 <!-- This page is for adding courses, course placeholder, or a general placeholder -->
                 <bean parent="KSAP-PopoverPage" p:id="plan_item_add_page"
-                      p:headerText="Add course or placeholder to @{#form.termName}" p:width="350px">
+                      p:headerText="@{#form.planItemId EQ null ? 'Add':'Edit'} course or placeholder to @{#form.termName}"
+                      p:width="350px">
                     <property name="instructionalText"
                               value="What would you like to add to your @{#form.termName}?"/>
                     <property name="items">
@@ -461,19 +459,8 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-SimpleInputField" p:propertyName="note"
-                                  p:style="margin: 20px 0;">
-                                <property name="label" value="Note for course or placeholder"/>
-                                <property name="fieldLabel.render" value="true"/>
-                                <property name="labelPlacement" value="TOP"/>
-                                <property name="control">
-                                    <bean parent="Uif-TextControl"
-                                          p:watermarkText="Enter a short note (150 characters max)" p:maxLength="150"
-                                          p:style="width:90%">
-                                        <property name="required" value="@{#form.placeholder EQ 'other'}"/>
-                                    </bean>
-                                </property>
-                            </bean>
+                            <bean parent="planItemNote" p:style="margin: 20px 0;"/>
+                            <bean parent="planItemAddBackup"/>
                             <bean parent="KSAP-SimpleInputField" p:id="errorPlaceholder" p:propertyName="atpId"
                                   p:hidden="true">
                                 <property name="control">
@@ -485,11 +472,9 @@
                                     <list>
                                         <bean id="actionCoursePlaceholder" p:id="actionCoursePlaceholder"
                                               parent="Uif-PrimaryActionButton-Small"
-                                              p:actionLabel="Add to Plan">
-                                            <!-- TODO: FIX ACTION FUNCTION ==== Dont use quickadd function, being deprecated. Make sure all necessary data is passed to plan controller. -->
+                                              p:actionLabel="@{#form.planItemId EQ null ? 'Add to Plan':'Save'}">
                                             <property name="actionScript"
-                                                      value="myplanAjaxSubmitPlanItem('quick_add', 'quick_add', 'addPlannedCourse', e, true);
-                                                      myplanAjaxSubmitQuickAdd('quick_Add',{ atpId:'@{#form.atpId}',planType:'@{#form.backup ? 'backup' : 'plan'}'},'quickAddCourse',e);"/>
+                                                      value="myplanAjaxSubmitPlanItem('quick_add', 'quick_add', 'addPlannedCourse', e, true);"/>
                                             <property name="disabled"
                                                       value="@{#form.type EQ null OR (#form.type EQ 'course' AND #form.courseCd EQ null) OR (#form.type EQ 'general' AND #form.placeholder EQ null) OR (#form.placeholder EQ 'other' AND #form.note EQ null)}"/>
                                             <property name="evaluateDisabledOnKeyUp" value="true"/>
@@ -535,17 +520,8 @@
                                 <property name="constraintText"
                                           value="Note: The course you selected MAY NOT be offered in your selected quarter. Check back when the Time Schedule is released."/>
                             </bean>
-                            <bean parent="KSAP-SimpleInputField" p:propertyName="atpId" p:hidden="true">
-                                <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
-                                </property>
-                            </bean>
-                            <bean parent="KSAP-SimpleInputField" p:propertyName="backup" p:hidden="true"
-                                  p:defaultValue="@{backup}">
-                                <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
-                                </property>
-                            </bean>
+                            <bean parent="planItemAddAtpId"/>
+                            <bean parent="planItemAddBackup"/>
                             <bean parent="KSAP-VerticalBoxGroup" p:id="errorPlaceholder" p:hidden="true"/>
                             <bean parent="KSAP-HorizontalBoxGroup-NoMargin" p:id="actionButtonsGroup">
                                 <property name="items">
@@ -585,7 +561,6 @@
             </list>
         </property>
     </bean>
-    <!---->
 
     <bean id="course_details_summary_info" parent="KSAP-VerticalBoxGroup-NoMargin">
         <property name="items">
@@ -984,6 +959,23 @@
         </property>
     </bean>
 
+    <!-- Text input for plan item notes field -->
+    <bean id="planItemNote" parent="KSAP-SimpleInputField" p:propertyName="note"
+          p:defaultValue="@{#form.planItemId NE null ? #form.note : ''}"
+          p:style="margin: 20px 0;">
+        <property name="label" value="Note for course or placeholder"/>
+        <property name="fieldLabel.render" value="true"/>
+        <property name="fieldLabel.style" value="font-weight: normal !important;"/>
+        <property name="labelPlacement" value="TOP"/>
+        <property name="control">
+            <bean parent="Uif-TextControl"
+                  p:watermarkText="Enter a short note (150 characters max)" p:maxLength="150"
+                  p:style="width:90%">
+                <property name="required" value="@{#form.placeholder EQ 'other'}"/>
+            </bean>
+        </property>
+    </bean>
+
     <!-- Option list of credit values for placeholders -->
     <bean id="dropdownPlaceholderCredits" parent="Uif-DropdownControl">
         <property name="options">
@@ -1000,6 +992,21 @@
                 <bean parent="Uif-KeyLabelPair" p:key="9" p:value="9"/>
                 <bean parent="Uif-KeyLabelPair" p:key="10" p:value="10"/>
             </list>
+        </property>
+    </bean>
+
+    <!-- Hidden input for atpId to be passed to plan controller -->
+    <bean id="planItemAddAtpId" parent="KSAP-SimpleInputField" p:propertyName="atpId" p:hidden="true">
+        <property name="control">
+            <bean parent="Uif-HiddenControl"/>
+        </property>
+    </bean>
+
+    <!-- Hidden input for backup flag to be passed to plan controller -->
+    <bean id="planItemAddBackup" parent="KSAP-SimpleInputField" p:propertyName="backup" p:hidden="true"
+          p:defaultValue="@{backup}">
+        <property name="control">
+            <bean parent="Uif-HiddenControl"/>
         </property>
     </bean>
 

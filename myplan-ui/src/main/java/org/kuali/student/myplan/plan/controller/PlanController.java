@@ -240,7 +240,7 @@ public class PlanController extends UifControllerBase {
          * Loading and returning quickAdd view if requested
          *
          */
-        if (PlanConstants.QUICK_ADD_DIALOG_PAGE.equals(form.getPageId())) {
+        if (PlanConstants.QUICK_ADD_DIALOG_PAGE.equals(form.getPageId()) || PlanConstants.ADD_DIALOG_PAGE.equals(form.getPageId())) {
 
             if (hasText(planForm.getAtpId())) {
                 String termYear = AtpHelper.atpIdToTermName(planForm.getAtpId());
