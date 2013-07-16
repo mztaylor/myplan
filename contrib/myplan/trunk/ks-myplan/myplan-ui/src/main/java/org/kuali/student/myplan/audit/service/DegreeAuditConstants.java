@@ -58,5 +58,7 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
             "<input name=\"script\" type=\"hidden\" data-role=\"script\" value=\"removeCookie();\"/></div>";
     public static final String IS_AUDIT_SERVICE_UP = "isAuditServiceRunning";
 
+    public static final String AUDIT_STATUS_ERROR_MSG = "audit status returned error";
+
 
 }

@@ -22,6 +22,7 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
+import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.audit.service.model.AuditDataSource;
@@ -342,7 +343,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         totalPlanned++;
                         //Adding new course request if a secondary activity exists
                         //NOTE: secondary activity courses should no pass credit
-                        if (secondaryActivity != null) {
+                        if (StringUtils.hasText(secondaryActivity)) {
                             DegreeAuditCourseRequest secondaryActivityCourse = (DegreeAuditCourseRequest) course.clone();
                             secondaryActivityCourse.credit = "0";
                             secondaryActivityCourse.activity = secondaryActivity;
@@ -466,15 +467,19 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
         switch (status) {
             case -2:
+                info.setSuccess(null);
                 info.setMessage("audit request not found");
                 break;
             case -1:
+                info.setSuccess(false);
                 info.setMessage("completed with errors");
                 break;
             case 0:
+                info.setSuccess(null);
                 info.setMessage("not finished processing");
                 break;
             case 1:
+                info.setSuccess(true);
                 info.setMessage("complete");
                 break;
             default:
@@ -492,9 +497,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         while (true) {
             StatusInfo info = this.getAuditRunStatus(auditId, context);
             logger.debug(info.getMessage());
-            if (info.getIsSuccess()) {
-                return getHTMLReport(auditId, auditTypeKey);
+            if (info.getIsSuccess() != null) {
+                return getHTMLReport(auditId, auditTypeKey, info.getIsSuccess());
             }
+
 
             try {
                 Thread.sleep(200);
@@ -509,11 +515,11 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         }
     }
 
-    private AuditReportInfo getHTMLReport(String auditId, String auditTypeKey) throws OperationFailedException {
+    private AuditReportInfo getHTMLReport(String auditId, String auditTypeKey, boolean success) throws OperationFailedException {
 
         AuditReportInfo auditReportInfo = new AuditReportInfo();
         auditReportInfo.setAuditId(auditId);
-        String answer = "Audit ID " + auditId + " not available";
+        String answer = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL), DegreeAuditConstants.AUDIT_STATUS_ERROR_MSG);
         try {
             JobQueueRunHibernateDao dao = (JobQueueRunHibernateDao) getJobQueueRunDao();
             String sql = "SELECT report.report, run.stuno, run.dprog, run.webtitle FROM JobQueueRun run, JobQueueReport report  WHERE run.intSeqNo = report.jobqSeqNo AND run.jobid = ? AND run.reportType = 'HTM'";
@@ -525,100 +531,102 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             String dprog = (String) item[2];
             auditReportInfo.setProgramId(dprog);
             String webtitle = (String) item[3];
-            auditReportInfo.setProgramTitle(webtitle);
+            //reason for adding dprog if wetitle is null is specified in jira - 2175
+            auditReportInfo.setProgramTitle(StringUtils.hasText(webtitle) ? webtitle : dprog);
 
-            byte[] report = (byte[]) item[0];
-            String garbage = new String(report);
-            InputStream in = new ByteArrayInputStream(garbage.getBytes());
+            if (success) {
+                byte[] report = (byte[]) item[0];
+                String garbage = new String(report);
+                InputStream in = new ByteArrayInputStream(garbage.getBytes());
 
-            SAXReader sax = new SAXReader();
-            Document doc = sax.read(in);
+                SAXReader sax = new SAXReader();
+                Document doc = sax.read(in);
 
-            findClassLinkifyTextAndConvertCoursesToLinks(doc);
+                findClassLinkifyTextAndConvertCoursesToLinks(doc);
 
-            String name = null;
-            Text preparedFor = (Text) doc.selectSingleNode("//span[contains(@class,'prepared-for-name')]/text()");
-            boolean isUserSession = UserSessionHelper.isUserSession();
-            String regId = null;
-            if (isUserSession) {
-                regId = UserSessionHelper.getStudentRegId();
-                name = UserSessionHelper.getNameCapitalized(regId);
-            } else {
-                String stuno = preparedFor.getText();
-                String syskey = convertMyPlanStunoToSDBSyskey(stuno);
-                Person person = getStudentServiceClient().getPersonBySysKey(syskey);
-                name = person.getFirstName() + " " + person.getLastName();
-                regId = person.getPrincipalId();
-            }
-            preparedFor.setText(name);
+                String name = null;
+                Text preparedFor = (Text) doc.selectSingleNode("//span[contains(@class,'prepared-for-name')]/text()");
+                boolean isUserSession = UserSessionHelper.isUserSession();
+                String regId = null;
+                if (isUserSession) {
+                    regId = UserSessionHelper.getStudentRegId();
+                    name = UserSessionHelper.getNameCapitalized(regId);
+                } else {
+                    String stuno = preparedFor.getText();
+                    String syskey = convertMyPlanStunoToSDBSyskey(stuno);
+                    Person person = getStudentServiceClient().getPersonBySysKey(syskey);
+                    name = person.getFirstName() + " " + person.getLastName();
+                    regId = person.getPrincipalId();
+                }
+                preparedFor.setText(name);
 
 
-            boolean planAudit = false;
-            String forCourses = "";
-            String forCredits = "";
-            String forQuarter = "";
-            String preparedBy = "";
-            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regId, LEARNING_PLAN_TYPE_PLAN_AUDIT, CONTEXT_INFO);
-            for (LearningPlanInfo learningPlanInfo : learningPlanList) {
+                boolean planAudit = false;
+                String forCourses = "";
+                String forCredits = "";
+                String forQuarter = "";
+                String preparedBy = "";
+                List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regId, LEARNING_PLAN_TYPE_PLAN_AUDIT, CONTEXT_INFO);
+                for (LearningPlanInfo learningPlanInfo : learningPlanList) {
 //                PlanAuditItem planAuditItem = new PlanAuditItem();
-                for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
-                    String key = attributeInfo.getKey();
-                    String value = attributeInfo.getValue();
-                    if ("forCourses".equalsIgnoreCase(key)) {
-                        forCourses = value;
-                    } else if ("forCredits".equalsIgnoreCase(key)) {
-                        forCredits = value;
-                    } else if ("forQuarter".equalsIgnoreCase(key)) {
-                        forQuarter = value;
-                    } else if ("auditId".equalsIgnoreCase(key)) {
-                        if (auditId.equals(value)) {
-                            planAudit = true;
+                    for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
+                        String key = attributeInfo.getKey();
+                        String value = attributeInfo.getValue();
+                        if ("forCourses".equalsIgnoreCase(key)) {
+                            forCourses = value;
+                        } else if ("forCredits".equalsIgnoreCase(key)) {
+                            forCredits = value;
+                        } else if ("forQuarter".equalsIgnoreCase(key)) {
+                            forQuarter = value;
+                        } else if ("auditId".equalsIgnoreCase(key)) {
+                            if (auditId.equals(value)) {
+                                planAudit = true;
+                            }
+                        } else if ("requestedBy".equalsIgnoreCase(key)) {
+                            preparedBy = value;
                         }
-                    } else if ("requestedBy".equalsIgnoreCase(key)) {
-                        preparedBy = value;
                     }
+                    if (planAudit) break;
                 }
-                if (planAudit) break;
-            }
 
-            if (preparedBy != null) {
-                Text node = (Text) doc.selectSingleNode("//span[contains(@class,'prepared-by')]/text()");
-                if (node != null) {
-                    node.setText(preparedBy);
-                }
-            }
-
-            if (planAudit) {
-                {
-                    Text node = (Text) doc.selectSingleNode("//span[contains(@class,'for-credits')]/text()");
+                if (preparedBy != null) {
+                    Text node = (Text) doc.selectSingleNode("//span[contains(@class,'prepared-by')]/text()");
                     if (node != null) {
-                        node.setText(forCredits);
+                        node.setText(preparedBy);
                     }
                 }
 
-                {
-                    Text node = (Text) doc.selectSingleNode("//span[contains(@class,'for-courses')]/text()");
-                    if (node != null) {
-                        node.setText(forCourses);
+                if (planAudit) {
+                    {
+                        Text node = (Text) doc.selectSingleNode("//span[contains(@class,'for-credits')]/text()");
+                        if (node != null) {
+                            node.setText(forCredits);
+                        }
+                    }
+
+                    {
+                        Text node = (Text) doc.selectSingleNode("//span[contains(@class,'for-courses')]/text()");
+                        if (node != null) {
+                            node.setText(forCourses);
+                        }
+                    }
+
+                    {
+                        Text node = (Text) doc.selectSingleNode("//span[contains(@class,'for-quarter')]/text()");
+                        if (node != null) {
+                            node.setText(forQuarter);
+                        }
                     }
                 }
 
-                {
-                    Text node = (Text) doc.selectSingleNode("//span[contains(@class,'for-quarter')]/text()");
-                    if (node != null) {
-                        node.setText(forQuarter);
-                    }
+                Element root = (Element) doc.selectSingleNode("/html/div");
+                // Replace the placeholder text for auditid
+                Attribute a = root.attribute("auditid");
+                if (a != null) {
+                    a.setValue(auditId);
                 }
+                answer = writeXML(root);
             }
-
-            Element root = (Element) doc.selectSingleNode("/html/div");
-            // Replace the placeholder text for auditid
-            Attribute a = root.attribute("auditid");
-            if (a != null) {
-                a.setValue(auditId);
-            }
-            answer = writeXML(root);
-
         } catch (Exception e) {
             String msg = "getHTMLReport failed auditId: " + auditId;
             logger.error(msg, e);
@@ -627,6 +635,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         AuditDataSource dataSource = new AuditDataSource(answer, auditId);
         DataHandler dh = new DataHandler(dataSource);
         auditReportInfo.setReport(dh);
+
         return auditReportInfo;
     }
 
@@ -799,13 +808,15 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             for (JobQueueRun jqr : load) {
                 String reportType = jqr.getReportType();
-                if ("HTM".equals(reportType)) {
+                boolean failedAudit = jqr.getComplete().equalsIgnoreCase("E");
+                //Add only reports of type HTM and not failed audits, or failed audits if it is the most recent audit.
+                if ("HTM".equals(reportType) && (!failedAudit || (failedAudit && list.size() == 0))) {
                     AuditReportInfo audit = new AuditReportInfo();
                     audit.setAuditId(jqr.getJobid());
                     audit.setReportType(DegreeAuditServiceConstants.AUDIT_TYPE_KEY_SUMMARY);
                     audit.setStudentId(stuno);
                     audit.setProgramId(jqr.getDprog().replace(" ", "$"));
-                    audit.setProgramTitle(jqr.getWebtitle());
+                    audit.setProgramTitle(StringUtils.hasText(jqr.getWebtitle()) ? jqr.getWebtitle() : jqr.getDprog());
                     audit.setRunDate(jqr.getRundate());
                     audit.setRequirementsSatisfied("Unknown");
                     String ip = jqr.getIp();
