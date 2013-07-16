@@ -210,7 +210,7 @@ function searchForCourses(id, parentId) {
                 jQuery(this).empty();
             });
             if (oSettings.fnRecordsDisplay() > 0) {
-                jQuery.publish("GENERATE_FACETS");
+                jQuery.event.trigger("GENERATE_FACETS");
             }
         },
         fnServerData:function (sSource, aoData, fnCallback) {
@@ -349,7 +349,7 @@ function fnFacetFilter(sFilter, i, e) {
             // Clear filter
             oTable.fnFilter('', i, true, false);
             setUrlHash(i, '');
-            jQuery.publish("UPDATE_FACETS", [-1]);
+            jQuery.event.trigger("UPDATE_FACETS", -1);
         } else {
             // Update checked status of facet
             oFacets[i][sFilter].checked = !oFacets[i][sFilter].checked;
@@ -365,7 +365,7 @@ function fnFacetFilter(sFilter, i, e) {
             // Filter results of facet selection
             oTable.fnFilter(aSelections.join("|"), i, true, false);
             setUrlHash(i, aSelections.join("|").replace(/\;/g, ""));
-            jQuery.publish("UPDATE_FACETS", [i]);
+            jQuery.event.trigger("UPDATE_FACETS", i);
         }
     }
 }

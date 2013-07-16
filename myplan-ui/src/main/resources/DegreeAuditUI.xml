@@ -82,6 +82,9 @@
             if (readUrlParam('viewId') == 'DegreeAudit-FormView') {
                 indicateViewingAudit('degree_audits_summary','degreeAudit');
             }
+            jQuery('#degree_audits_summary').on('REFRESH_AUDITS AUDIT_COMPLETE', function(event, data){
+                if( data.auditType == 'degree' ) myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+            });
         "/>
         <property name="layoutManager.lineGroupPrototype.id" value="link_@{#line.report.auditId}"/>
         <property name="layoutManager.lineGroupPrototype.title" value="@{#line.programTitle}"/>
@@ -403,7 +406,7 @@
                 return ((jQuery.cookie('myplan_audit_running') != null) || (coerceValue('degreeAudit.campusParam') == '306' &amp;&amp; coerceValue('degreeAudit.programParamSeattle') == 'default') || (coerceValue('degreeAudit.campusParam') == '310' &amp;&amp; coerceValue('degreeAudit.programParamBothell') == 'default') || (coerceValue('degreeAudit.campusParam') == '323' &amp;&amp; coerceValue('degreeAudit.programParamTacoma') == 'default'));
             };
             disabledCheck(disableCompId, 'action', condition);
-            jQuery('button#' + disableCompId).subscribe('AUDIT_COMPLETE', function () {
+            jQuery('button#' + disableCompId).on('AUDIT_COMPLETE', function(event, data) {
                 var condition = function () {
                     return ((coerceValue('degreeAudit.campusParam') == '306' &amp;&amp; coerceValue('degreeAudit.programParamSeattle') == 'default') || (coerceValue('degreeAudit.campusParam') == '310' &amp;&amp; coerceValue('degreeAudit.programParamBothell') == 'default') || (coerceValue('degreeAudit.campusParam') == '323' &amp;&amp; coerceValue('degreeAudit.programParamTacoma') == 'default'));
                 };

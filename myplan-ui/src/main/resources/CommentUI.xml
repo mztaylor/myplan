@@ -186,7 +186,7 @@
     <bean id="comment_sent" parent="Uif-HorizontalBoxGroup" p:render="@{#form.feedBackMode}"
           p:style="margin:0 0 0 100px;">
         <property name="onDocumentReadyScript"
-                  value="parent.jQuery.publish('COMMENT_SENT'); parent.jQuery.fancybox.inner.css({height:jQuery('.fancybox-iframe').contents().find('body').height()+'px'});"/>
+                  value="parent.jQuery.event.trigger('COMMENT_SENT'); parent.jQuery.fancybox.inner.css({height:jQuery('.fancybox-iframe').contents().find('body').height()+'px'});"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-feedback</value>
@@ -564,6 +564,11 @@
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
         <property name="propertyName" value="lookupResults"/>
+        <property name="onDocumentReadyScript" value="
+            jQuery('#messages_summary').on('MESSAGE_SENT COMMENT_SENT', function(event, data){
+                myplanRetrieveComponent('messages_summary','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
+            });
+        "/>
         <property name="header">
             <bean parent="Uif-HeaderBase" p:cssClasses="" p:headerText="">
                 <property name="lowerGroup">
@@ -835,8 +840,8 @@
         <property name="layoutManager.renderSequenceField" value="false"/>
         <property name="header.render" value="false"/>
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
-        <property name="onDocumentReadyScript" value="jQuery('#messages_detail_list')
-            .subscribe('COMMENT_SENT', function(){
+        <property name="onDocumentReadyScript" value="
+            jQuery('#messages_detail_list').on('COMMENT_SENT', function(event, data){
                 myplanRetrieveComponent('messages_detail_list','messages_detail_list','search','lookup',{viewId:'MessagesDetail-LookupView'});
             });
         "/>

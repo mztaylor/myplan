@@ -81,6 +81,9 @@
             if (readUrlParam('viewId') == 'PlanAudit-FormView') {
                 indicateViewingAudit('plan_audits_summary', 'planAudit');
             }
+            jQuery('#plan_audits_summary').on('REFRESH_AUDITS AUDIT_COMPLETE', function(event, data) {
+                if( data.auditType == 'plan' ) myplanRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
+            });
         "/>
         <property name="filters">
             <list>
@@ -512,7 +515,7 @@
                 return ((jQuery.cookie('myplan_audit_running') != null) || (coerceValue('planExists') == false) || (coerceValue('planAudit.campusParam') == '306' &amp;&amp; coerceValue('planAudit.programParamSeattle') == 'default') || (coerceValue('planAudit.campusParam') == '310' &amp;&amp; coerceValue('planAudit.programParamBothell') == 'default') || (coerceValue('planAudit.campusParam') == '323' &amp;&amp; coerceValue('planAudit.programParamTacoma') == 'default'));
             };
             disabledCheck(disableCompId, 'action', condition);
-            jQuery('button#' + disableCompId).subscribe('AUDIT_COMPLETE', function () {
+            jQuery('button#' + disableCompId).on('AUDIT_COMPLETE', function (event, data) {
                 var condition = function () {
                     return ((coerceValue('planExists') == false) || (coerceValue('planAudit.campusParam') == '306' &amp;&amp; coerceValue('planAudit.programParamSeattle') == 'default') || (coerceValue('planAudit.campusParam') == '310' &amp;&amp; coerceValue('planAudit.programParamBothell') == 'default') || (coerceValue('planAudit.campusParam') == '323' &amp;&amp; coerceValue('planAudit.programParamTacoma') == 'default'));
                 };
@@ -791,7 +794,7 @@
                                         <bean id="submit_plan_audit" parent="Uif-PrimaryActionButton" p:disabled="true"
                                               p:style="margin:0px 20px 0px 0px;">
                                             <property name="actionLabel"
-                                                      value="@{#form.planAudit.messyItems.size() EQ 0 ? 'Ok, I get it' : 'Submit'}"/>
+                                                      value="@{#form.planAudit.messyItems.size() EQ 0 ? 'Ok, proceed' : 'Submit'}"/>
                                             <property name="actionScript" value="runPlanAudit('plan_audit_run');"/>
                                             <property name="onDocumentReadyScript"
                                                       value="buttonState('plan_audit_messy_items', 'submit_plan_audit');"/>
