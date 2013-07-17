@@ -92,37 +92,45 @@
                     </property>
                 </bean>
 
-                <!--This page is used for the Move to another quarter Dialog box -->
+                <!--This page is used for adding a course to the plan dialog box -->
                 <bean parent="KSAP-PopoverPage" p:id="add_dialog_page" p:headerText="Add to Plan">
                     <property name="instructionalText"
                               value="Which quarter would you like to add [b]@{courseSummaryDetails.code}[/b] to?"/>
                     <property name="items">
                         <list>
-                            <ref bean="courseTermsScheduled"/>
-                            <ref bean="courseTermSelection"/>
-                            <ref bean="courseMarkAsBackup"/>
-                            <bean parent="KSAP-HorizontalBoxGroup" p:id="actionButtonsGroup">
+                            <bean parent="courseTermsScheduled"/>
+                            <bean parent="courseTermSelection"/>
+                            <!-- TODO: plan item note is 1.5 functionality, do not commit to 1.4 -->
+                            <bean parent="planItemNote"/>
+                            <bean parent="courseMarkAsBackup"/>
+                            <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
                                 <property name="items">
                                     <list>
-                                        <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
-                                              p:actionLabel="Add To Plan">
-                                            <property name="actionScript"
-                                                      value="myplanAjaxSubmitPlanItem('@{courseSummaryDetails.courseId}', 'courseId', 'addPlannedCourse', e,true);"/>
-                                            <property name="onDocumentReadyScript" value="
-                                                jQuery('#addPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
-                                                    if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                                        fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
-                                                    }
-                                                }).on('ERROR', function(event, data){
-                                                    fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
-                                                });
-                                            "/>
+                                        <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
+                                            <property name="items">
+                                                <list>
+                                                    <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
+                                                          p:actionLabel="Add To Plan">
+                                                        <property name="actionScript"
+                                                                  value="myplanAjaxSubmitPlanItem('@{courseSummaryDetails.courseId}', 'courseId', 'addPlannedCourse', e,true);"/>
+                                                        <property name="onDocumentReadyScript" value="
+                                                            jQuery('#addPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
+                                                                if (data.planItemType === 'planned' || data.planItemType === 'backup') {
+                                                                    fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
+                                                                }
+                                                            }).on('ERROR', function(event, data){
+                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
+                                                            });
+                                                        "/>
+                                                    </bean>
+                                                    <bean parent="closePopoverCancel"/>
+                                                </list>
+                                            </property>
                                         </bean>
-                                        <bean parent="closePopoverCancel"/>
+                                        <bean parent="errorPlaceholder"/>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="errorPlaceholder"/>
                         </list>
                     </property>
                 </bean>
@@ -153,32 +161,44 @@
                                                 jQuery('#move_sections_info').on('PLAN_ITEM_ADDED', function(event, data){
                                                     jQuery(this).parents().find('.myplan-status.info').fadeOut(250);
                                                 });"/>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>message</value>
+                                                </list>
+                                            </property>
                                         </bean>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-HorizontalBoxGroup" p:id="actionButtonsGroup">
+                            <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
                                 <property name="items">
                                     <list>
-                                        <bean p:id="movePlannedCourse" parent="Uif-PrimaryActionButton-Small"
-                                              p:actionLabel="Move">
-                                            <property name="actionScript"
-                                                      value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'movePlannedCourse', e,true);"/>
-                                            <property name="onDocumentReadyScript" value="
-                                                jQuery('#movePlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
-                                                    if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                                        fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
-                                                    }
-                                                }).on('ERROR', function(event, data){
-                                                    fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true, 'errorPlaceholder');
-                                                });
-                                            "/>
+                                        <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
+                                            <property name="items">
+                                                <list>
+                                                    <bean p:id="movePlannedCourse"
+                                                          parent="Uif-PrimaryActionButton-Small"
+                                                          p:actionLabel="Move">
+                                                        <property name="actionScript"
+                                                                  value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'movePlannedCourse', e,true);"/>
+                                                        <property name="onDocumentReadyScript" value="
+                                                            jQuery('#movePlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
+                                                                if (data.planItemType === 'planned' || data.planItemType === 'backup') {
+                                                                    fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
+                                                                }
+                                                            }).on('ERROR', function(event, data){
+                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true, 'errorPlaceholder');
+                                                            });
+                                                        "/>
+                                                    </bean>
+                                                    <bean parent="closePopoverCancel"/>
+                                                </list>
+                                            </property>
                                         </bean>
-                                        <bean parent="closePopoverCancel"/>
+                                        <bean parent="errorPlaceholder"/>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="errorPlaceholder"/>
                         </list>
                     </property>
                 </bean>
@@ -209,66 +229,79 @@
                                                 jQuery('#copy_sections_info').on('PLAN_ITEM_ADDED', function(event, data){
                                                     jQuery(this).parents().find('.myplan-status.info').fadeOut(250);
                                                 });"/>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>message</value>
+                                                </list>
+                                            </property>
                                         </bean>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-HorizontalBoxGroup" p:id="actionButtonsGroup">
+                            <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
                                 <property name="items">
                                     <list>
-                                        <bean p:id="copyPlannedCourse"
-                                              parent="Uif-PrimaryActionButton-Small"
-                                              p:render="@{setToPlanning}"
-                                              p:actionLabel="Copy">
-                                            <property name="actionScript"
-                                                      value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse', e, true);"/>
-                                            <property name="onDocumentReadyScript" value="
-                                                jQuery('#copyPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
-                                                    if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                                        fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
-                                                    }
-                                                }).on('ERROR', function(event, data){
-                                                    fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true, 'errorPlaceholder');
-                                                });
-                                            "/>
+                                        <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
+                                            <property name="items">
+                                                <list>
+                                                    <bean p:id="copyPlannedCourse"
+                                                          parent="Uif-PrimaryActionButton-Small"
+                                                          p:render="@{setToPlanning}"
+                                                          p:actionLabel="Copy">
+                                                        <property name="actionScript"
+                                                                  value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse', e, true);"/>
+                                                        <property name="onDocumentReadyScript" value="
+                                                            jQuery('#copyPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
+                                                                if (data.planItemType === 'planned' || data.planItemType === 'backup') {
+                                                                    fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
+                                                                }
+                                                            }).on('ERROR', function(event, data){
+                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true, 'errorPlaceholder');
+                                                            });
+                                                        "/>
+                                                    </bean>
+                                                    <bean p:id="copyPastPlannedCourse"
+                                                          parent="Uif-PrimaryActionButton-Small"
+                                                          p:render="@{setToPlanning eq false and planItemId ne null}"
+                                                          p:actionLabel="Copy">
+                                                        <property name="actionScript"
+                                                                  value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse', e, true);"/>
+                                                        <property name="onDocumentReadyScript" value="
+                                                            jQuery('#copyPastPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
+                                                                if (data.planItemType === 'planned' || data.planItemType === 'backup') {
+                                                                    fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
+                                                                }
+                                                            }).on('ERROR', function(event, data){
+                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true, 'errorPlaceholder');
+                                                            });
+                                                        "/>
+                                                    </bean>
+                                                    <bean p:id="copyAcademicCourse"
+                                                          parent="Uif-PrimaryActionButton-Small"
+                                                          p:render="@{setToPlanning eq false and planItemId eq null}"
+                                                          p:actionLabel="Copy">
+                                                        <property name="actionScript"
+                                                                  value="myplanAjaxSubmitPlanItem('@{courseId}', 'courseId', 'addPlannedCourse', e, true);"/>
+                                                        <property name="onDocumentReadyScript" value="
+                                                            jQuery('#copyAcademicCourse').on('PLAN_ITEM_ADDED', function(event, data){
+                                                                if (data.planItemType === 'planned' || data.planItemType === 'backup') {
+                                                                    fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
+                                                                }
+                                                            }).on('ERROR', function(event, data){
+                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true, 'errorPlaceholder');
+                                                            });
+                                                        "/>
+                                                    </bean>
+                                                    <bean parent="closePopoverCancel"/>
+                                                </list>
+                                            </property>
                                         </bean>
-                                        <bean p:id="copyPastPlannedCourse"
-                                              parent="Uif-PrimaryActionButton-Small"
-                                              p:render="@{setToPlanning eq false and planItemId ne null}"
-                                              p:actionLabel="Copy">
-                                            <property name="actionScript"
-                                                      value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse', e, true);"/>
-                                            <property name="onDocumentReadyScript" value="
-                                                jQuery('#copyPastPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
-                                                    if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                                        fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
-                                                    }
-                                                }).on('ERROR', function(event, data){
-                                                    fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true, 'errorPlaceholder');
-                                                });
-                                            "/>
-                                        </bean>
-                                        <bean p:id="copyAcademicCourse"
-                                              parent="Uif-PrimaryActionButton-Small"
-                                              p:render="@{setToPlanning eq false and planItemId eq null}"
-                                              p:actionLabel="Copy">
-                                            <property name="actionScript"
-                                                      value="myplanAjaxSubmitPlanItem('@{courseId}', 'courseId', 'addPlannedCourse', e, true);"/>
-                                            <property name="onDocumentReadyScript" value="
-                                                jQuery('#copyAcademicCourse').on('PLAN_ITEM_ADDED', function(event, data){
-                                                    if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                                        fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
-                                                    }
-                                                }).on('ERROR', function(event, data){
-                                                    fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true, 'errorPlaceholder');
-                                                });
-                                            "/>
-                                        </bean>
-                                        <bean parent="closePopoverCancel"/>
+                                        <bean parent="errorPlaceholder"/>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="errorPlaceholder"/>
+
+
                         </list>
                     </property>
                 </bean>
@@ -298,6 +331,11 @@
                                                 jQuery('#delete_sections_info').on('PLAN_ITEM_DELETED', function(event, data){
                                                     jQuery(this).parents().find('.myplan-status.info').fadeOut(250);
                                                 });"/>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>message</value>
+                                                </list>
+                                            </property>
                                         </bean>
                                     </list>
                                 </property>
@@ -333,7 +371,7 @@
                 <!-- This page is for adding courses, course placeholder, or a general placeholder -->
                 <bean parent="KSAP-PopoverPage" p:id="plan_item_add_page"
                       p:headerText="@{#form.planItemId EQ null ? 'Add':'Edit'} course or placeholder to @{#form.termName}"
-                      p:width="350px">
+                      p:width="325px">
                     <property name="instructionalText"
                               value="What would you like to add to your @{#form.termName}?"/>
                     <property name="items">
@@ -370,7 +408,7 @@
                                                                 <property name="onDocumentReadyScript"
                                                                           value="jQuery('#courseCd').focus();"/>
                                                                 <property name="watermarkText" value="e.g. BIOL 180"/>
-                                                                <property name="maxLength" value="11"/>
+                                                                <property name="maxLength" value="10"/>
                                                             </bean>
                                                         </property>
                                                     </bean>
@@ -459,34 +497,43 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="planItemNote" p:style="margin: 20px 0;"/>
+                            <bean parent="planItemNote" p:style="margin: 10px 0 20px;"
+                                  p:label="Note for course or placeholder"/>
                             <bean parent="planItemAddBackup"/>
-                            <bean parent="KSAP-SimpleInputField" p:id="errorPlaceholder" p:propertyName="atpId"
-                                  p:hidden="true">
+                            <bean parent="planItemAddAtpId"/>
+                            <bean parent="KSAP-SimpleInputField" p:propertyName="planItemId"
+                                  p:hidden="true" p:render="@{#form.planItemId NE null}">
                                 <property name="control">
                                     <bean parent="Uif-HiddenControl"/>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-HorizontalBoxGroup-NoMargin" p:id="actionButtonsGroup">
+                            <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
                                 <property name="items">
                                     <list>
-                                        <bean id="actionCoursePlaceholder" p:id="actionCoursePlaceholder"
-                                              parent="Uif-PrimaryActionButton-Small"
-                                              p:actionLabel="@{#form.planItemId EQ null ? 'Add to Plan':'Save'}">
-                                            <property name="actionScript"
-                                                      value="myplanAjaxSubmitPlanItem('quick_add', 'quick_add', 'addPlannedCourse', e, true);"/>
-                                            <property name="disabled"
-                                                      value="@{#form.type EQ null OR (#form.type EQ 'course' AND #form.courseCd EQ null) OR (#form.type EQ 'general' AND #form.placeholder EQ null) OR (#form.placeholder EQ 'other' AND #form.note EQ null)}"/>
-                                            <property name="evaluateDisabledOnKeyUp" value="true"/>
-                                            <property name="onDocumentReadyScript" value="
-                                                jQuery('#actionCoursePlaceholder').on('PLAN_ITEM_ADDED', function(event, data){
-                                                    fnCloseAllPopups();
-                                                }).on('ERROR', function(event, data){
-                                                    fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
-                                                });
-                                            "/>
+                                        <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
+                                            <property name="items">
+                                                <list>
+                                                    <bean id="actionCoursePlaceholder" p:id="actionCoursePlaceholder"
+                                                          parent="Uif-PrimaryActionButton-Small"
+                                                          p:actionLabel="@{#form.planItemId EQ null ? 'Add to Plan':'Save'}">
+                                                        <property name="actionScript"
+                                                                  value="myplanAjaxSubmitPlanItem('@{#form.planItemId EQ null ? 'quick_add' : #form.planItemId}', '@{#form.planItemId EQ null ? 'quick_add' : 'planItemId'}', 'addPlannedCourse', e, true);"/>
+                                                        <property name="disabled"
+                                                                  value="@{#form.type EQ null OR (#form.type EQ 'course' AND #form.courseCd EQ null) OR (#form.type EQ 'general' AND #form.placeholder EQ null) OR (#form.placeholder EQ 'other' AND #form.note EQ null)}"/>
+                                                        <property name="evaluateDisabledOnKeyUp" value="true"/>
+                                                        <property name="onDocumentReadyScript" value="
+                                                            jQuery('#actionCoursePlaceholder').on('PLAN_ITEM_ADDED', function(event, data){
+                                                                fnCloseAllPopups();
+                                                            }).on('ERROR', function(event, data){
+                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
+                                                            });
+                                                        "/>
+                                                    </bean>
+                                                    <bean parent="closePopoverCancel"/>
+                                                </list>
+                                            </property>
                                         </bean>
-                                        <bean parent="closePopoverCancel"/>
+                                        <bean parent="KSAP-VerticalBoxGroup" p:id="errorPlaceholder" p:hidden="true"/>
                                     </list>
                                 </property>
                             </bean>
@@ -522,26 +569,35 @@
                             </bean>
                             <bean parent="planItemAddAtpId"/>
                             <bean parent="planItemAddBackup"/>
-                            <bean parent="KSAP-VerticalBoxGroup" p:id="errorPlaceholder" p:hidden="true"/>
-                            <bean parent="KSAP-HorizontalBoxGroup-NoMargin" p:id="actionButtonsGroup">
+                            <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
                                 <property name="items">
                                     <list>
-                                        <bean id="quickAddCourse" p:id="quickAddCourse"
-                                              parent="Uif-PrimaryActionButton-Small" p:actionLabel="Add to Plan">
-                                            <property name="actionScript"
-                                                      value="myplanAjaxSubmitPlanItem('quick_add', 'quick_add', 'addPlannedCourse', e, true);"/>
-                                            <property name="onDocumentReadyScript" value="
-                                                jQuery('#quickAddCourse').on('PLAN_ITEM_ADDED', function(event, data){
-                                                    fnCloseAllPopups();
-                                                }).on('ERROR', function(event, data){
-                                                    fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
-                                                });
-                                            "/>
+                                        <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
+                                            <property name="items">
+                                                <list>
+                                                    <bean id="quickAddCourse" p:id="quickAddCourse"
+                                                          parent="Uif-PrimaryActionButton-Small"
+                                                          p:actionLabel="Add to Plan">
+                                                        <property name="actionScript"
+                                                                  value="myplanAjaxSubmitPlanItem('quick_add', 'quick_add', 'addPlannedCourse', e, true);"/>
+                                                        <property name="onDocumentReadyScript" value="
+                                                            jQuery('#quickAddCourse').on('PLAN_ITEM_ADDED', function(event, data){
+                                                                fnCloseAllPopups();
+                                                            }).on('ERROR', function(event, data){
+                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
+                                                            });
+                                                        "/>
+                                                    </bean>
+                                                    <bean parent="closePopoverCancel"/>
+                                                </list>
+                                            </property>
                                         </bean>
-                                        <bean parent="closePopoverCancel"/>
+                                        <bean parent="KSAP-VerticalBoxGroup" p:id="errorPlaceholder" p:hidden="true"/>
                                     </list>
                                 </property>
                             </bean>
+
+
                         </list>
                     </property>
                 </bean>
@@ -702,35 +758,43 @@
                   value="Which quarter would you like to add [b]@{courseSummaryDetails.code}[/b] to?"/>
         <property name="items">
             <list>
-                <ref bean="courseTermsScheduled"/>
-                <ref bean="courseTermSelection"/>
-                <ref bean="courseMarkAsBackup"/>
-                <bean parent="KSAP-HorizontalFieldGroup" p:id="actionButtonsGroup">
+                <bean parent="courseTermsScheduled"/>
+                <bean parent="courseTermSelection"/>
+                <!-- TODO: plan item note is 1.5 functionality, do not commit to 1.4 -->
+                <bean parent="planItemNote"/>
+                <bean parent="courseMarkAsBackup"/>
+                <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
                     <property name="items">
                         <list>
-                            <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
-                                  p:actionLabel="Add To Plan">
-                                <property name="actionScript"
-                                          value="myplanAjaxSubmitPlanItem('@{courseSummaryDetails.courseId}', 'courseId', 'addPlannedCourse', e, true);"/>
-                                <property name="onDocumentReadyScript" value="
-                                    jQuery('#addPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
-                                        if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                             fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
-                                        }
-                                    }).on('ERROR', function(event, data){
-                                        fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false, true, 'errorPlaceholder');
-                                    });
-                                "/>
+                            <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
+                                <property name="items">
+                                    <list>
+                                        <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
+                                              p:actionLabel="Add To Plan">
+                                            <property name="actionScript"
+                                                      value="myplanAjaxSubmitPlanItem('@{courseSummaryDetails.courseId}', 'courseId', 'addPlannedCourse', e, true);"/>
+                                            <property name="onDocumentReadyScript" value="
+                                                jQuery('#addPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
+                                                    if (data.planItemType === 'planned' || data.planItemType === 'backup') {
+                                                         fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
+                                                    }
+                                                }).on('ERROR', function(event, data){
+                                                    fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false, true, 'errorPlaceholder');
+                                                });
+                                            "/>
+                                        </bean>
+                                        <bean p:id="cancelAddPlannedCourse" parent="Uif-SecondaryActionButton-Small"
+                                              p:actionLabel="Cancel">
+                                            <property name="actionScript"
+                                                      value="fnPopoverSlider('course_details_info', 'course_popover_group', 'right');"/>
+                                        </bean>
+                                    </list>
+                                </property>
                             </bean>
-                            <bean p:id="cancelAddPlannedCourse" parent="Uif-SecondaryActionButton-Small"
-                                  p:actionLabel="Cancel">
-                                <property name="actionScript"
-                                          value="fnPopoverSlider('course_details_info', 'course_popover_group', 'right');"/>
-                            </bean>
+                            <bean parent="errorPlaceholder"/>
                         </list>
                     </property>
                 </bean>
-                <bean parent="errorPlaceholder"/>
             </list>
         </property>
     </bean>
@@ -748,7 +812,7 @@
                     </property>
                 </bean>
                 <!-- Container for buttons -->
-                <bean parent="KSAP-HorizontalBoxGroup">
+                <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
                     <property name="items">
                         <list>
                             <bean p:id="deleteCourseYesButton" parent="Uif-PrimaryActionButton-Small"
@@ -960,18 +1024,36 @@
     </bean>
 
     <!-- Text input for plan item notes field -->
-    <bean id="planItemNote" parent="KSAP-SimpleInputField" p:propertyName="note"
-          p:defaultValue="@{#form.planItemId NE null ? #form.note : ''}"
-          p:style="margin: 20px 0;">
-        <property name="label" value="Note for course or placeholder"/>
+    <bean id="planItemNote" parent="KSAP-SimpleInputField" p:propertyName="note" p:render="false"
+          p:defaultValue="@{#form.planItemId NE null ? #form.note : ''}">
+        <property name="label" value="Note for course"/>
         <property name="fieldLabel.render" value="true"/>
-        <property name="fieldLabel.style" value="font-weight: normal !important;"/>
+        <property name="fieldLabel.cssClasses">
+            <list merge="true">
+                <value>myplan-text-normal</value>
+            </list>
+        </property>
         <property name="labelPlacement" value="TOP"/>
         <property name="control">
-            <bean parent="Uif-TextControl"
-                  p:watermarkText="Enter a short note (150 characters max)" p:maxLength="150"
-                  p:style="width:90%">
+            <bean parent="Uif-TextAreaControl"
+                  p:watermarkText="Enter a short note (500 characters max)" p:maxLength="500"
+                  p:style="resize:none; width:97%">
                 <property name="required" value="@{#form.placeholder EQ 'other'}"/>
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>ksap-characterCount</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="constraintMessage">
+            <bean parent="KSAP-Message" p:messageText="characters remaining">
+                <property name="onDocumentReadyScript" value="jQuery('.ksap-characterCount').characterCount();"/>
+                <property name="cssClasses">
+                    <list merge="true">
+                        <value>counter</value>
+                    </list>
+                </property>
             </bean>
         </property>
     </bean>
@@ -1011,7 +1093,7 @@
     </bean>
 
     <!-- Placeholder DIV for error messages after submission failure -->
-    <bean id="errorPlaceholder" parent="KSAP-SimpleInputField" p:id="errorPlaceholder"
+    <bean id="errorPlaceholder" parent="KSAP-SimpleInputField" p:id="errorPlaceholder" p:hidden="true"
           p:propertyName="courseSummaryDetails.courseId">
         <property name="control">
             <bean parent="Uif-HiddenControl"/>
@@ -1023,7 +1105,7 @@
     -->
 
     <!--  Add to plan button. Used contextually in course details popup actions -->
-    <bean id="addToPlanButton" p:id="addToPlanButton" parent="Uif-PrimaryActionButton-Small" p:actionLabel="Add to Plan"
+    <bean id="addToPlanButton" parent="Uif-PrimaryActionButton-Small" p:id="addToPlanButton" p:actionLabel="Add to Plan"
           p:actionImagePlacement="RIGHT">
         <property name="actionScript"
                   value="fnPopoverSlider('add_planned_course_fields', 'course_popover_group', 'left');"/>
@@ -1039,7 +1121,7 @@
     </bean>
 
     <!--  Add to saved courses. Used contextually in course details popup actions -->
-    <bean id="addSavedCourseButton" p:id="addSavedCourseButton" parent="Uif-SecondaryActionButton-Small"
+    <bean id="addSavedCourseButton" parent="Uif-SecondaryActionButton-Small" p:id="addSavedCourseButton"
           p:actionLabel="Bookmark Course">
         <property name="onDocumentReadyScript" value="
             jQuery('#addSavedCourseButton').on('PLAN_ITEM_ADDED', function(event, data){
@@ -1053,14 +1135,14 @@
     </bean>
 
     <!-- Remove from saved courses list button. -->
-    <bean id="removeSavedCourseButton" p:id="removeSavedCourseButton" parent="Uif-SecondaryActionButton-Small"
+    <bean id="removeSavedCourseButton" parent="Uif-SecondaryActionButton-Small" p:id="removeSavedCourseButton"
           p:actionLabel="Delete">
         <property name="actionScript"
                   value="fnPopoverSlider('delete_from_list_confirmation','course_popover_group','left');"/>
     </bean>
 
     <!-- Cancel button to close popover -->
-    <bean id="closePopoverCancel" parent="Uif-SecondaryActionButton-Small"
+    <bean id="closePopoverCancel" parent="Uif-SecondaryActionButton-Small" p:id="closePopoverCancel"
           p:actionLabel="Cancel">
         <property name="actionScript"
                   value="fnCloseAllPopups();"/>

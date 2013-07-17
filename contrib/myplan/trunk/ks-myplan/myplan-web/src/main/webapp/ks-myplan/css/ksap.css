@@ -7,6 +7,7 @@ blue block item hover = #e3f0fe;
 
 ::-webkit-input-placeholder {
     color: #ccc;
+    font-style: italic;
 }
 
 :-moz-placeholder {
@@ -110,6 +111,17 @@ input[type="text"], input[type="password"], textarea, select {
 a.inlineBlock {
     display: inline;
     white-space: normal;
+}
+
+.uif-inputField .uif-message.counter {
+    font-size: 80%;
+    font-style: italic;
+    color: #aaa;
+    line-height: 12px;
+    text-align: right;
+    display: block;
+    width: 97%;
+    margin-left: 8px;
 }
 
 /* KSAP CLASSES */
