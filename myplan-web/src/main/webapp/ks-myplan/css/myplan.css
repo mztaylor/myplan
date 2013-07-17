@@ -1299,6 +1299,14 @@ div.activityAction div.blockElement {
     text-shadow: 1px 1px 1px #ffffff;
 }
 
+.myplan-status .uif-boxLayoutHorizontalItem {
+    margin: 0;
+}
+
+.uif-boxLayoutVerticalItem.myplan-feedback.error {
+    margin: 10px 0 0;
+}
+
 .myplan-feedback.success {
     color: #006600;
 }
@@ -1353,10 +1361,7 @@ div.activityAction div.blockElement {
     left: 0px;
 }
 
-.myplan-feedback .message {
-    margin-left: 23px;
-}
-
+.myplan-feedback .message,
 .myplan-status .message {
     margin-left: 26px;
 }
