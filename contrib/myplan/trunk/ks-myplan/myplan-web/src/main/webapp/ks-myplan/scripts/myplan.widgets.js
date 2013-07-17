@@ -1183,6 +1183,17 @@ function buttonState(parentId, buttonId) {
 }
 
 (function ($) {
+    // TODO remove publish method after old audits have been purged as audit FTL inline scripted a publish call
+    $.fn.extend({
+        publish:function (eventName, args, context) {
+            return true;
+        }
+    });
+    $.extend({
+        publish:function (eventName, data, context) {
+            return $().publish(eventName, data, context);
+        }
+    });
     $.fn.characterCount = function (options) {
         var oDefaults = {
             maxLength:100,
@@ -1220,7 +1231,6 @@ function buttonState(parentId, buttonId) {
             });
         });
     };
-
 })(jQuery);
 
 function fnCreateDate(sData) {
