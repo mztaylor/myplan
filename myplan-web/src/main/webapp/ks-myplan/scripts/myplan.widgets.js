@@ -1399,6 +1399,47 @@ function buildHoverText(obj) {
     obj.attr("title", message).find("img.uif-image").attr("alt", message);
 }
 
+(function ($) {
+    // TODO remove publish method after old audits have been purged as audit FTL inline scripted a publish call
+    $.publish = function (event) {
+        return true;
+    };
+    $.fn.characterCount = function (options) {
+        var oDefaults = {
+            maxLength:500,
+            warningLength:10,
+            classCounter:'counter',
+            classWarning:'warning'
+        };
+
+        var options = $.extend(oDefaults, options);
+
+        function calculate(obj, options) {
+            var iCount = $(obj).val().length;
+            var iAvailable = options.maxLength - iCount;
+            var sValue = $(obj).val();
+            if (iCount > options.maxLength) {
+                $(obj).val(sValue.substr(0, options.maxLength));
+            }
+            if (iAvailable <= options.warningLength && iAvailable >= 0) {
+                $('.' + options.classCounter).addClass(options.classWarning);
+            } else {
+                $('.' + options.classCounter).removeClass(options.classWarning);
+            }
+            $('.' + options.classCounter).html('<strong>' + iAvailable + '</strong>' + ' character' + ((iAvailable != 1) ? 's' : '') + ' remaining');
+        }
+
+        ;
+
+        this.each(function () {
+            calculate(this, options);
+            $(this).on("keyup paste cut contextmenu change mouseout blur", function (e) {
+                calculate(this, options);
+            });
+        });
+    };
+})(jQuery);
+
 function fnCreateDate(sData) {
     var jTemp = jQuery(sData);
     jTemp.find("legend, .myplan-sort-remove").remove();
@@ -1425,61 +1466,6 @@ jQuery.fn.dataTableExt.oSort['longdate-desc'] = function (x, y) {
 Array.max = function (array) {
     return Math.max.apply(Math, array);
 };
-
-// TODO remove publish method after old audits have been purged as audit FTL inline scripted a publish call
-(function ($) {
-    $.fn.extend({
-        publish:function (eventName, args, context) {
-            return true;
-        }
-    });
-    $.extend({
-        publish:function (eventName, data, context) {
-            return $().publish(eventName, data, context);
-        }
-    });
-})(jQuery);
-
-(function ($) {
-    $.fn.characterCount = function (options) {
-        var oDefaults = {
-            maxLength:500,
-            warningLength:10,
-            classCounter:'counter',
-            classWarning:'warning'
-        };
-
-        var options = $.extend(oDefaults, options);
-
-        function calculate(obj, options) {
-            var iCount = $(obj).val().length;
-            var iAvailable = options.maxLength - iCount;
-            var sValue = $(obj).val();
-            if (iCount > options.maxLength) {
-                $(obj).val(sValue.substr(0, options.maxLength));
-            }
-            if (iAvailable <= options.warningLength && iAvailable >= 0) {
-                $('.' + options.classCounter).addClass(options.classWarning);
-            } else {
-                $('.' + options.classCounter).removeClass(options.classWarning);
-            }
-            var remainder = options.maxLength - $(obj).val().length;
-            $('.' + options.classCounter).html('<strong>' + remainder + '</strong>' + ' characters remaining');
-        }
-
-        ;
-
-        this.each(function () {
-            calculate(this, options);
-            $(this).keyup(function () {
-                calculate(this, options);
-            });
-            $(this).change(function () {
-                calculate(this, options);
-            });
-        });
-    };
-})(jQuery);
 
 // TODO: Redefinition of coerceValue function not needed after bug resolved - https://jira.kuali.org/browse/KULRICE-9883
 function coerceValue(name) {
