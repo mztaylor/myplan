@@ -221,8 +221,8 @@ public class StudentServiceClientImpl
      */
     @Override
     public String getSectionInfo(String year, String quarter, String curriculum) throws ServiceException {
-        curriculum = curriculum.replace(" ", "%20");
-        curriculum = curriculum.replace("&", "%26");
+
+        curriculum = urlEscape(curriculum);
         StringBuilder url = new StringBuilder(getBaseUrl());
         url.append("/").append(getServiceVersion())
                 .append("/").append("public/section.xml?")
@@ -268,8 +268,8 @@ public class StudentServiceClientImpl
      * @throws ServiceException
      */
     public String getSections(String year, String abbrev, String num, int futureTerms) throws ServiceException {
-        abbrev = abbrev.replace(" ", "%20");
-        abbrev = abbrev.replace("&", "%26");
+
+        abbrev = urlEscape(abbrev);
         StringBuilder url = new StringBuilder(getBaseUrl());
         url.append("/").append(getServiceVersion())
                 .append("/").append("public/section.xml?")
@@ -278,7 +278,6 @@ public class StudentServiceClientImpl
                 .append("curriculum_abbreviation=").append(abbrev).append("&")
                 .append("course_number=").append(num).append("&delete_flag=suspended,active&future_terms=").append(futureTerms);
         return sendQuery(url.toString().trim());
-
     }
 
     /**
@@ -292,9 +291,8 @@ public class StudentServiceClientImpl
      * @throws ServiceException
      */
     public String getSections(String year, String quarter, String abbrev, String num) throws ServiceException {
-        abbrev = abbrev.replace(" ", "%20");
-        abbrev = abbrev.replace("&", "%26");
 
+        abbrev = urlEscape(abbrev);
         StringBuilder url = new StringBuilder(getBaseUrl());
         url.append("/").append(getServiceVersion())
                 .append("/").append("public/section.xml?")
@@ -310,11 +308,10 @@ public class StudentServiceClientImpl
      */
     public String getSecondarySections(String year, String quarter, String abbrev, String num, String section)
             throws ServiceException {
+
         String base = getBaseUrl();
         String ver = getServiceVersion();
-
-        abbrev = abbrev.replace(" ", "%20");
-        abbrev = abbrev.replace("&", "%26");
+        abbrev = urlEscape(abbrev);
         String url = String.format("%s/%s/public/course/%s,%s,%s,%s/%s.xml", base, ver, year, quarter, abbrev, num, section);
         return sendQuery(url);
     }
@@ -324,15 +321,14 @@ public class StudentServiceClientImpl
      * <p/>
      * /student/v4/course/2013,winter,ASTR,101/A/status.xml
      */
-    public String getSectionStatus(String year, String quarter, String abbrev, String num, String section) throws ServiceException {
+    public String getSectionStatus(String year, String quarter, String abbrev, String num, String section)
+            throws ServiceException {
+
         String base = getBaseUrl();
         String ver = getServiceVersion();
-
-        abbrev = abbrev.replace(" ", "%20");
-        abbrev = abbrev.replace("&", "%26");
+        abbrev = urlEscape(abbrev);
         String url = String.format("%s/%s/course/%s,%s,%s,%s/%s/status.xml", base, ver, year, quarter, abbrev, num, section);
         return sendQuery(url);
-
     }
 
      /**
@@ -346,11 +342,10 @@ public class StudentServiceClientImpl
      * @throws ServiceException
      */
     public String getAllSectionsStatus(String year, String quarter, String abbrev, String num) throws ServiceException {
+
         String base = getBaseUrl();
         String ver = getServiceVersion();
-
-        abbrev = abbrev.replace(" ", "%20");
-        abbrev = abbrev.replace("&", "%26");
+        abbrev = urlEscape(abbrev);
         String url = String.format("%s/%s/course/%s,%s,%s,%s/status.xml", base, ver, year, quarter, abbrev, num);
         return sendQuery(url);
     }
@@ -378,9 +373,10 @@ public class StudentServiceClientImpl
 
 
     @Override
-    public String getTimeSchedules(String year, String term, String curriculum, String courseNumber, String sectionUrl) throws ServiceException {
-        curriculum = curriculum.replace(" ", "%20");
-        curriculum = curriculum.replace("&", "%26");
+    public String getTimeSchedules(String year, String term, String curriculum, String courseNumber, String sectionUrl)
+            throws ServiceException {
+
+        curriculum = urlEscape(curriculum);
         StringBuilder url = new StringBuilder(getBaseUrl());
         if (sectionUrl != null) {
             url.append(sectionUrl);
@@ -392,7 +388,6 @@ public class StudentServiceClientImpl
                     .append("curriculum_abbreviation=").append(curriculum).append("&course_number=").append(courseNumber);
         }
         return sendQuery(url.toString().trim());
-
     }
 
 //    /**
@@ -508,4 +503,11 @@ public class StudentServiceClientImpl
             throw new ServiceException("Could not read response.", e);
         }
     }
+
+     private String urlEscape(String text) {
+        text = text.replace(" ", "%20");
+        text = text.replace("&", "%26");
+        return text;
+     }
+
 }
