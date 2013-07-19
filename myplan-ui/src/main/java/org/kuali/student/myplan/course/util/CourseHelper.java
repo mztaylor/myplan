@@ -14,7 +14,7 @@ import java.util.Set;
 public interface CourseHelper {
 
 
-    public LinkedHashMap<String, LinkedHashMap<String, Object>> getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt,
+    public void getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt,
                                                                                     String curric, String num) throws ServiceException, DocumentException;
 
     public DeconstructedCourseCode getCourseDivisionAndNumber(String courseCode);

@@ -112,9 +112,8 @@ public class CourseHelperImpl implements CourseHelper {
     }
 
 
-    public LinkedHashMap<String, LinkedHashMap<String, Object>> getAllSectionStatus(
-            LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt, String curric, String num)
-            throws ServiceException, DocumentException {
+    public void getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt,
+                                    String curric, String num) throws ServiceException, DocumentException {
 
         StudentServiceClient client = getStudentServiceClient();
         // call SWS get enrollment info for all sections
@@ -130,7 +129,6 @@ public class CourseHelperImpl implements CourseHelper {
             Element sectionStatus = (Element) node;
             formatSectionStatus(mapmap, sectionStatus, yt);
         }
-        return mapmap;
     }
 
 
@@ -236,36 +234,6 @@ public class CourseHelperImpl implements CourseHelper {
         }
 
         return result;
-    }
-
-    // no longer used since we changed to a bulk SWS call for section status
-    private void doSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> parent, StudentServiceClient client, AtpHelper.YearTerm yt,
-                                 String curric, String num, String sectionID)
-            throws ServiceException, DocumentException {
-        String year = yt.getYearAsString();
-        String quarter = yt.getTermAsID();
-        String xml = client.getSectionStatus(year, quarter, curric, num, sectionID);
-        Document doc = newDocument(xml);
-
-        DefaultXPath statusPath = newXPath("/s:SectionStatus");
-        Element status = (Element) statusPath.selectSingleNode(doc);
-
-        String sln = status.elementText("SLN");
-        int enrollMaximum = getAsInteger(status, "LimitEstimateEnrollment");
-        int enrollCount = getAsInteger(status, "CurrentEnrollment");
-        String yea = status.elementText("Status");
-        boolean enrollOpen = "open".equalsIgnoreCase(yea);
-        String limitEstimateEnrollmentIndicator = status.elementText("LimitEstimateEnrollmentIndicator");
-        boolean enrollEstimate = "estimate".equalsIgnoreCase(limitEstimateEnrollmentIndicator);
-
-        LinkedHashMap<String, Object> childmap = new LinkedHashMap<String, Object>();
-        childmap.put("enrollCount", enrollCount);
-        childmap.put("enrollMaximum", enrollMaximum);
-        childmap.put("enrollOpen", enrollOpen);
-        childmap.put("enrollEstimate", enrollEstimate);
-        String atpId = yt.toATP().replace('.', '-');
-        String key = "enrl_" + atpId + "_" + sln;
-        parent.put(key, childmap);
     }
 
     private void formatSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> parent, Element sectionStatus,
