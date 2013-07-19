@@ -76,13 +76,21 @@ public class CourseHelperImpl implements CourseHelper {
         return studentServiceClient;
     }
 
-    private static transient LuService luService;
+    private LuService luService;
 
-    protected static LuService getLuService() {
+    protected LuService getLuService() {
         if (luService == null) {
             luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
         }
         return luService;
+    }
+
+    public void setLuService(LuService luService) {
+        this.luService = luService;
+    }
+
+    public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
+        this.courseOfferingService = courseOfferingService;
     }
 
     private static Document newDocument(String xml) throws DocumentException {
@@ -105,11 +113,11 @@ public class CourseHelperImpl implements CourseHelper {
 
 
     public LinkedHashMap<String, LinkedHashMap<String, Object>> getAllSectionStatus(
-            LinkedHashMap<String,LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt, String curric, String num)
+            LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt, String curric, String num)
             throws ServiceException, DocumentException {
 
         StudentServiceClient client = getStudentServiceClient();
-       // call SWS get enrollment info for all sections
+        // call SWS get enrollment info for all sections
         String year = yt.getYearAsString();
         String quarter = yt.getTermAsID();
         String xml = client.getAllSectionsStatus(year, quarter, curric, num);
@@ -117,13 +125,13 @@ public class CourseHelperImpl implements CourseHelper {
         DefaultXPath statusPath = newXPath("/s:List/s:SectionStatuses/s:SectionStatus");
         List list = statusPath.selectNodes(doc);
 
-       // loop through each section, extract info
+        // loop through each section, extract info
         for (Object node : list) {
             Element sectionStatus = (Element) node;
             formatSectionStatus(mapmap, sectionStatus, yt);
-       }
-       return mapmap;
-   }
+        }
+        return mapmap;
+    }
 
 
     /**
@@ -260,8 +268,8 @@ public class CourseHelperImpl implements CourseHelper {
         parent.put(key, childmap);
     }
 
-private void formatSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> parent, Element sectionStatus,
-                              AtpHelper.YearTerm yt)  throws DocumentException {
+    private void formatSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> parent, Element sectionStatus,
+                                     AtpHelper.YearTerm yt) throws DocumentException {
         String sln = sectionStatus.elementText("SLN");
         int enrollMaximum = getAsInteger(sectionStatus, "LimitEstimateEnrollment");
         int enrollCount = getAsInteger(sectionStatus, "CurrentEnrollment");

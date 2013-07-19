@@ -475,7 +475,7 @@ public class DegreeAuditController extends UifControllerBase {
         logger.info("Started the hand off screen at" + System.currentTimeMillis());
 
         //Processing the Handoff logic and adding the messy and clean courses for plan audit
-        PlanAuditForm form = getDegreeAuditHelper().processHandOff(auditForm.getPlanAudit());
+        PlanAuditForm form = getDegreeAuditHelper().processHandOff(auditForm.getPlanAudit(), UserSessionHelper.getStudentRegId());
 
         if (!form.getMessyItems().isEmpty()) {
             Map<String, String> prevChoices = getPlanItemSnapShots();
@@ -624,6 +624,18 @@ public class DegreeAuditController extends UifControllerBase {
                     GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
         }
         return academicPlanService;
+    }
+
+    public void setOrganizationService(OrganizationService organizationService) {
+        this.organizationService = organizationService;
+    }
+
+    public void setAcademicPlanService(AcademicPlanService academicPlanService) {
+        this.academicPlanService = academicPlanService;
+    }
+
+    public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
+        this.courseOfferingService = courseOfferingService;
     }
 
     public DegreeAuditHelper getDegreeAuditHelper() {

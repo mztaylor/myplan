@@ -16,6 +16,17 @@ import javax.jws.WebParam;
 import java.util.*;
 
 public class AcademicPlanServiceMockImpl implements AcademicPlanService {
+
+    public List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();
+
+    public List<PlanItemInfo> getPlanItemInfos() {
+        return planItemInfos;
+    }
+
+    public void setPlanItemInfos(List<PlanItemInfo> planItemInfos) {
+        this.planItemInfos = planItemInfos;
+    }
+
     @Override
     public LearningPlanInfo getLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
@@ -28,7 +39,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     @Override
     public List<PlanItemInfo> getPlanItemsInPlanByType(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "planItemTypeKey") String planItemTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return planItemInfos;
     }
 
     @Override
@@ -174,23 +185,8 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     @Override
     public PlanItemInfo createPlanItem(@WebParam(name = "planItem") PlanItemInfo planItem, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        PlanItemInfo plan = new PlanItemInfo();
-        plan.setId("planItem1");
-        RichTextInfo richText = new RichTextInfo();
-        plan.setDescr(richText);
-        // ENGL 101
-        String cluID = "05a2ec10-4c83-4f17-b3d1-938ffdab6ac6";
-        plan.setRefObjectId(cluID);
-        String type = "";
-        plan.setRefObjectType(type);
-        List<String> atps = new ArrayList<String>();
-        atps.add("kuali.uw.atp.autumn2011");
-        plan.setPlanPeriods(atps);
-
-        plan.setId("1");
-
-
-        return plan;
+        planItemInfos.add(planItem);
+        return planItem;
     }
 
     @Override
@@ -225,7 +221,8 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     @Override
     public StatusInfo deletePlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        setPlanItemInfos(new ArrayList<PlanItemInfo>());
+        return null;
     }
 
     @Override

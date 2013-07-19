@@ -75,6 +75,13 @@
 
     </bean>
 
+    <bean id="lrcClient"
+          class="org.kuali.rice.ksb.messaging.KSBClientProxyFactoryBean">
+        <property name="serviceEndpointInterface"
+                  value="org.kuali.student.lum.lrc.service.LrcService"/>
+        <property name="serviceQName"
+                  value="{http://student.kuali.org/wsdl/lrc}LearningResultService"/>
+    </bean>
 
     <!-- Course Service Config -->
     <bean id="courseAssembler"
@@ -82,7 +89,7 @@
         <property name="luService" ref="luServiceImpl"/>
         <!--<property name="loAssembler" ref="loAssembler"/>-->
         <!--<property name="loService" ref="loClient"/>-->
-        <!--<property name="lrcService" ref="lrcClient"/>-->
+        <property name="lrcService" ref="lrcClient"/>
         <!--<property name="cluAssemblerUtils" ref="cluAssemblerUtils"/>-->
         <!--<property name="formatAssembler" ref="formatAssembler"/>-->
         <!--<property name="courseJointAssembler" ref="courseJointAssembler"/>-->
