@@ -124,6 +124,10 @@ public class AtpHelper {
         AtpHelper.academicPlanService = academicPlanService;
     }
 
+    public static void setAcademicCalendarService(AcademicCalendarService academicCalendarService) {
+        AtpHelper.academicCalendarService = academicCalendarService;
+    }
+
     /**
      * Query the Academic Calendar Service, determine the current ATP, and the return the ID.
      *

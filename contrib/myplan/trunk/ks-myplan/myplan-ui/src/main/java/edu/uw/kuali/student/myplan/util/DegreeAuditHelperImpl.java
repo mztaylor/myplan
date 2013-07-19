@@ -26,7 +26,6 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.springframework.util.StringUtils;
 
@@ -55,7 +54,7 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
 
     private transient CourseOfferingService courseOfferingService;
 
-    private static CourseHelper courseHelper;
+    private CourseHelper courseHelper;
 
     public enum Campus {
         CAMPUS_306("0"),
@@ -180,14 +179,14 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
      * @return
      */
     @Override
-    public PlanAuditForm processHandOff(PlanAuditForm planAuditForm) {
+    public PlanAuditForm processHandOff(PlanAuditForm planAuditForm, String studentId) {
         List<CourseItem> courseItems = planAuditForm.getCleanList();
 
         List<AtpHelper.YearTerm> publishedTerms = AtpHelper.getPublishedYearTermList();
 
         String startAtpId = AtpHelper.getFirstOpenForPlanTerm();
 
-        Map<String, List<PlanItemInfo>> planItemsMap = populatePlanItemsMap();
+        Map<String, List<PlanItemInfo>> planItemsMap = populatePlanItemsMap(studentId);
         logger.info("Retrieved planned courses in " + System.currentTimeMillis());
 
         //Get back future terms starting from the given atpId(currently open for planning)
@@ -328,9 +327,9 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
                                     if (!honors && secondaryActivities != null && !secondaryActivities.isEmpty()) {
 
                                         for (ActivityOfferingItem activityOfferingItem : secondaryActivities) {
-                                            if (activityOfferingItem.isHonorsSection()) {
+                                            if (activityOfferingItem.isHonorsSection() && honorsSecondaryActivity == null) {
                                                 honorsSecondaryActivity = activityOfferingItem.getCode();
-                                            } else {
+                                            } else if (nonHonorsSecondaryActivity == null) {
                                                 nonHonorsSecondaryActivity = activityOfferingItem.getCode();
                                             }
                                             if (honorsSecondaryActivity != null && nonHonorsSecondaryActivity != null) {
@@ -572,10 +571,10 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
      *
      * @return
      */
-    private Map<String, List<PlanItemInfo>> populatePlanItemsMap() {
+    private Map<String, List<PlanItemInfo>> populatePlanItemsMap(String studentId) {
         Map<String, List<PlanItemInfo>> planItemsMap = new HashMap<String, List<PlanItemInfo>>();
         try {
-            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentRegId(), LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentId, LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
 
             for (LearningPlanInfo learningPlanInfo : learningPlanList) {
                 String learningPlanID = learningPlanInfo.getId();
@@ -671,7 +670,7 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
         return this.courseOfferingService;
     }
 
-    public static CourseHelper getCourseHelper() {
+    public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
             courseHelper = new CourseHelperImpl();
         }
@@ -694,4 +693,19 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
         return academicPlanService;
     }
 
+    public void setAcademicPlanService(AcademicPlanService academicPlanService) {
+        this.academicPlanService = academicPlanService;
+    }
+
+    public void setCourseService(CourseService courseService) {
+        this.courseService = courseService;
+    }
+
+    public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
+        this.courseOfferingService = courseOfferingService;
+    }
+
+    public void setCourseHelper(CourseHelper courseHelper) {
+        this.courseHelper = courseHelper;
+    }
 }

@@ -13,7 +13,7 @@ import org.kuali.student.myplan.audit.form.PlanAuditForm;
  */
 public interface DegreeAuditHelper {
 
-    public PlanAuditForm processHandOff(PlanAuditForm planAuditForm);
+    public PlanAuditForm processHandOff(PlanAuditForm planAuditForm, String studentId);
 
     public DegreeAuditForm copyCampusToForm(AuditReportInfo report, DegreeAuditForm form);
 

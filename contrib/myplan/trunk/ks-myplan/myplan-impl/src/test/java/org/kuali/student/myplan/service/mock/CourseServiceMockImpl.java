@@ -24,8 +24,34 @@ public class CourseServiceMockImpl implements CourseService {
 
     private Set<String> validCourseIds;
 
+    public Map<String, CourseInfo> courseInfos;
+
+
+    public Map<String, CourseInfo> getCourseInfos() {
+        if (courseInfos == null) {
+            courseInfos = new HashMap<String, CourseInfo>();
+        }
+        return courseInfos;
+    }
+
+    public void setCourseInfos(Map<String, CourseInfo> courseInfos) {
+        this.courseInfos = courseInfos;
+    }
+
+    public Set<String> getValidCourseIds() {
+        if (validCourseIds == null) {
+            validCourseIds = new HashSet<String>();
+        }
+        return validCourseIds;
+    }
+
+
+    public void setValidCourseIds(Set<String> validCourseIds) {
+        this.validCourseIds = validCourseIds;
+    }
+
     /**
-     *  Allow the test context to set a list valid/existing course Ids.
+     * Allow the test context to set a list valid/existing course Ids.
      *
      * @param validCourseIds
      */
@@ -35,12 +61,15 @@ public class CourseServiceMockImpl implements CourseService {
 
     @Override
     public CourseInfo getCourse(@WebParam(name = "courseId") String courseId) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        if ( ! validCourseIds.contains(courseId)) {
+        if (!validCourseIds.contains(courseId)) {
             throw new DoesNotExistException();
+        }
+        if (getCourseInfos().containsKey(courseId)) {
+            return courseInfos.get(courseId);
         }
         CourseInfo courseInfo = new CourseInfo();
         courseInfo.setId(courseId);
-        RichTextInfo richTextInfo=new RichTextInfo();
+        RichTextInfo richTextInfo = new RichTextInfo();
         courseInfo.setDescr(richTextInfo);
         return courseInfo;
     }
@@ -63,13 +92,15 @@ public class CourseServiceMockImpl implements CourseService {
     @Override
     public List<StatementTreeViewInfo> getCourseStatements(@WebParam(name = "courseId") String courseId, @WebParam(name = "nlUsageTypeKey") String nlUsageTypeKey, @WebParam(name = "language") String language) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
 
-        List<StatementTreeViewInfo> statementTreeViewInfos=new ArrayList<StatementTreeViewInfo>();
+        List<StatementTreeViewInfo> statementTreeViewInfos = new ArrayList<StatementTreeViewInfo>();
         return statementTreeViewInfos;
     }
 
     @Override
     public CourseInfo createCourse(@WebParam(name = "courseInfo") CourseInfo courseInfo) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException, DoesNotExistException, CircularRelationshipException, DependentObjectsExistException, UnsupportedActionException {
-        throw new RuntimeException("Not implemented.");
+        getValidCourseIds().add(courseInfo.getId());
+        getCourseInfos().put(courseInfo.getId(), courseInfo);
+        return courseInfo;
     }
 
     @Override

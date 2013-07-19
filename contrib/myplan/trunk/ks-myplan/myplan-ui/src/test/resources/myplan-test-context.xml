@@ -19,6 +19,15 @@
     <import resource="classpath:ks-services-test-context.xml"/>
 
 
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.kuali.rice.core.impl.config.property.ConfigInitializer.initialize"/>
+        <property name="arguments">
+            <list>
+                <ref bean="bootstrapConfig"/>
+            </list>
+        </property>
+    </bean>
+
     <bean id="searchController" class="org.kuali.student.myplan.course.controller.CourseSearchController">
         <property name="luService" ref="luServiceImpl"/>
         <property name="atpService" ref="atpServiceImpl"/>
@@ -45,16 +54,36 @@
             <value>${uw.truststore.password}</value>
         </constructor-arg>
     </bean>
-    <bean name="StudentServiceClient" class="edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientMockImpl"/>
+    <bean name="StudentServiceClient"
+          class="edu.uw.kuali.student.lib.client.studentservice.StudentServiceClientMockImpl"/>
     <!-- Override acalService bean with UW implementation -->
     <bean id="acalService" class="edu.uw.kuali.student.service.impl.UwAcademicCalendarServiceImpl">
-        <property name="studentServiceClient" ref="StudentServiceClient"/>
+        <property name="studentServiceClient" ref="studentServiceClient"/>
     </bean>
     <!--<bean id="personimpl" class="org.kuali.rice.kim.impl.identity.PersonImpl">-->
     <!--</bean>-->
 
     <!-- Override ks-enroll CourseOfferingService bean with UW implementation -->
-    <bean id="coService" class="edu.uw.kuali.student.myplan.tests.unit.FakeCourseOfferingService">
+    <!--<bean id="coService" class="edu.uw.kuali.student.myplan.tests.unit.FakeCourseOfferingService">
+    </bean>-->
+    <bean id="coService" class="edu.uw.kuali.student.service.impl.UwCourseOfferingServiceImpl">
+        <property name="courseHelper" ref="courseHelper"/>
+        <property name="courseService" ref="courseServiceMock"/>
+        <property name="offeringServiceUtils" ref="offeringServiceUtils"/>
+        <property name="studentServiceClient" ref="studentServiceClient"/>
+    </bean>
+
+    <bean id="offeringServiceUtils" class="edu.uw.kuali.student.myplan.util.CourseOfferingServiceUtils"/>
+
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod"
+                  value="edu.uw.kuali.student.myplan.util.CourseOfferingServiceUtils.setCourseHelper"/>
+        <property name="arguments">
+            <list>
+                <ref bean="courseHelper"/>
+            </list>
+        </property>
     </bean>
 
     <!--
@@ -72,13 +101,15 @@
 
     -->
     <!--<bean id="personImpl" class="org.kuali.student.myplan.service.mock.PersonMockImpl"/>-->
-    <bean id="academicPlanService" class="org.kuali.student.myplan.academicplan.service.mock.AcademicPlanServiceMockImpl"/>
+    <bean id="academicPlanService"
+          class="org.kuali.student.myplan.academicplan.service.mock.AcademicPlanServiceMockImpl"/>
+
 
     <bean id="courseSearchStrategy" class="org.kuali.student.myplan.course.controller.CourseSearchStrategy">
         <property name="luService" ref="luServiceImpl"/>
-<!--
-        <property name="enumService" ref="emServiceImpl"/>
--->
+        <!--
+                <property name="enumService" ref="emServiceImpl"/>
+        -->
     </bean>
 
     <bean id="coursePreReqSearch" class="org.kuali.student.myplan.course.service.CoursePreReqSearch">
@@ -93,48 +124,85 @@
         <property name="sessionFactory" ref="uachieveapi.sessionFactory"/>
     </bean>
     <tx:annotation-driven transaction-manager="uachieve.txManager"/>
-    <bean id="velocity" class="org.apache.velocity.app.Velocity" />
+    <bean id="velocity" class="org.apache.velocity.app.Velocity"/>
 
     <bean id="degreeAuditService" class="edu.uw.kuali.student.service.impl.DegreeAuditServiceImpl">
         <property name="jobQueueRunLoader" ref="uachieveapi.jobQueueRunLoader"/>
         <property name="jobQueueRunDao" ref="uachieveapi.jobQueueRunDao"/>
         <property name="jobQueueListDao" ref="uachieveapi.jobQueueListDao"/>
         <property name="dprogDao" ref="uachieveapi.dprogDao"/>
+        <property name="postAuditRequestURL" value="${uw.studentservice.url}/v5/degreeaudit.xml"/>
         <!--<property name="velocity" ref="velocity"/>-->
     </bean>
 
+    <bean id="courseHelper" class="edu.uw.kuali.student.myplan.util.CourseHelperImpl">
+        <property name="courseService" ref="courseServiceMock"/>
+        <property name="studentServiceClient" ref="studentServiceClient"/>
+        <property name="luService" ref="luServiceImpl"/>
+        <property name="courseOfferingService" ref="coService"/>
+    </bean>
 
-    <bean id="courseDetailsInquiryViewHelperServiceImpl" class="org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl">
+
+    <bean id="courseDetailsInquiryViewHelperServiceImpl"
+          class="org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl">
         <property name="atpService" ref="atpServiceImpl"/>
         <property name="courseOfferingService" ref="coService"/>
         <property name="academicCalendarService" ref="acalService"/>
         <property name="courseService" ref="courseServiceImpl"/>
+        <property name="courseHelper" ref="courseHelper"/>
     </bean>
 
     <bean id="degreeAuditController" class="org.kuali.student.myplan.audit.controller.DegreeAuditController">
-        <!--<property name="person" ref="personImpl"/>-->
-        <property name="degreeAuditService" ref="degreeAuditService" />
+        <property name="degreeAuditService" ref="degreeAuditService"/>
+        <property name="courseHelper" ref="courseHelper"/>
+        <property name="academicPlanService" ref="academicPlanService"/>
     </bean>
 
     <bean id="planController" class="org.kuali.student.myplan.plan.controller.PlanController">
-        <property name="courseDetailsInquiryHelper" ref="CourseDetailsInquiryViewHelperService"/>
         <!--<property name="person" ref="personimpl"/>-->
         <property name="academicPlanService" ref="academicPlanService"/>
+        <property name="courseHelper" ref="courseHelper"/>
+        <property name="courseDetailsInquiryService" ref="courseDetailsInquiryViewHelperServiceImpl"/>
     </bean>
 
-    <bean name="CourseDetailsInquiryViewHelperService" class=" org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl">
-                  <property name="courseService" ref="CourseService" />
-        <property name="atpService" ref="atpServiceImpl"/>
-        <property name="academicCalendarService" ref="acalService"/>
-        <property name="courseOfferingService" ref="coService"/>
-        <property name="academicPlanService" ref="academicPlanService"/>
 
-    </bean>
-    <bean name="CourseService" class="org.kuali.student.myplan.service.mock.CourseServiceMockImpl">
+    <bean name="courseServiceMock" class="org.kuali.student.myplan.service.mock.CourseServiceMockImpl">
         <property name="validCourses">
             <set>
                 <value>e8a3fe1f-0592-4515-822c-4f806910775a</value>
             </set>
+        </property>
+    </bean>
+
+    <bean id="degreeAuditHelper" class="edu.uw.kuali.student.myplan.util.DegreeAuditHelperImpl">
+        <property name="academicPlanService" ref="academicPlanService"/>
+        <property name="courseOfferingService" ref="coService"/>
+        <property name="courseService" ref="courseServiceMock"/>
+        <property name="courseHelper" ref="courseHelper"/>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.kuali.student.myplan.plan.util.AtpHelper.setAcademicPlanService"/>
+        <property name="arguments">
+            <list>
+                <ref bean="academicPlanService"/>
+            </list>
+        </property>
+    </bean>
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.kuali.student.myplan.plan.util.AtpHelper.setAcademicCalendarService"/>
+        <property name="arguments">
+            <list>
+                <ref bean="acalService"/>
+            </list>
+        </property>
+    </bean>
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.kuali.student.myplan.plan.util.AtpHelper.setAtpService"/>
+        <property name="arguments">
+            <list>
+                <ref bean="atpServiceImpl"/>
+            </list>
         </property>
     </bean>
 
