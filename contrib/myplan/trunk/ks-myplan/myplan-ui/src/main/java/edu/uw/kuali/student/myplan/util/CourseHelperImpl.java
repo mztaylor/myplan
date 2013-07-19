@@ -274,14 +274,13 @@ public class CourseHelperImpl implements CourseHelper {
         int enrollMaximum = getAsInteger(sectionStatus, "LimitEstimateEnrollment");
         int enrollCount = getAsInteger(sectionStatus, "CurrentEnrollment");
         String status = sectionStatus.elementText("Status");
-        boolean enrollOpen = "open".equalsIgnoreCase(status);
         String limitEstimateEnrollmentIndicator = sectionStatus.elementText("LimitEstimateEnrollmentIndicator");
         boolean enrollEstimate = "estimate".equalsIgnoreCase(limitEstimateEnrollmentIndicator);
 
         LinkedHashMap<String, Object> childmap = new LinkedHashMap<String, Object>();
         childmap.put("enrollCount", enrollCount);
         childmap.put("enrollMaximum", enrollMaximum);
-        childmap.put("enrollOpen", enrollOpen);
+        childmap.put("status", status);
         childmap.put("enrollEstimate", enrollEstimate);
         String atpId = yt.toATP().replace('.', '-');
         String key = "enrl_" + atpId + "_" + sln;

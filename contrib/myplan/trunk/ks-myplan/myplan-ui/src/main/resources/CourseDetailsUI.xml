@@ -1244,7 +1244,7 @@
         <property name="group.validationMessages">
             <null/>
         </property>
-        <property name="label" value="ENRL / Limit"/>
+        <property name="label" value="ENRL STATUS"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>activityEnrlStatus</value>
@@ -1276,7 +1276,7 @@
         <property name="group.validationMessages">
             <null/>
         </property>
-        <property name="label" value="ENRL / Limit"/>
+        <property name="label" value="ENRL STATUS"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>activityEnrlData</value>

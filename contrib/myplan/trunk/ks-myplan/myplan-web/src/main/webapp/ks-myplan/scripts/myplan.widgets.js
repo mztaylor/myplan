@@ -1217,7 +1217,17 @@ function myplanGetSectionEnrollment(url, retrieveOptions, componentId) {
         success:function (response) {
             elementToBlock.fadeOut(250);
             jQuery.each(response, function (sectionId, enrlObject) {
-                var message = "<strong>" + enrlObject.enrollCount + "</strong> / " + enrlObject.enrollMaximum;
+                var message = "";
+                if (enrlObject.status) {
+                    if  (enrlObject.status == "open") {
+                        message += "<span class='fl-text-green fl-font-size-120 ksap-text-bold'>Open</span><br />";
+                    }
+                    else if (enrlObject.status == "closed") {
+                        message += "<span class='fl-font-size-120 ksap-text-bold'>Closed</span><br />";
+                    }
+                    // else status might be "Add Code Required" or a couple other things, but ignore all of them.
+                }
+                message += "<strong>" + enrlObject.enrollCount + "</strong> / " + enrlObject.enrollMaximum;
                 var title = enrlObject.enrollCount + " enrolled out of " + enrlObject.enrollMaximum;
                 if (enrlObject.enrollEstimate) {
                     message += "E";
