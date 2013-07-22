@@ -205,7 +205,7 @@ public class DegreeAuditController extends UifControllerBase {
                 if (!CollectionUtils.isEmpty(planItemInfoList)) {
                     AtpHelper.YearTerm firstOpenForPlanningTerm = AtpHelper.atpToYearTerm(AtpHelper.getFirstOpenForPlanTerm());
                     for (PlanItemInfo planItemInfo : planItemInfoList) {
-                        if (!CollectionUtils.isEmpty(planItemInfo.getPlanPeriods()) && PlanConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType())) {
+                        if (!CollectionUtils.isEmpty(planItemInfo.getPlanPeriods()) && PlanConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType()) && StringUtils.hasText(getCourseHelper().getVerifiedCourseId(planItemInfo.getRefObjectId()))) {
                             AtpHelper.YearTerm planItemYearTerm = AtpHelper.atpToYearTerm(planItemInfo.getPlanPeriods().get(0));
                             if (planItemYearTerm.compareTo(firstOpenForPlanningTerm) >= 0) {
                                 return true;
