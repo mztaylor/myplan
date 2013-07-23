@@ -9,8 +9,8 @@ var popupOptionsDefault = {
     themeMargins:{total:"20px", difference:"5px"},
     themeName:"myplan",
     distance:"0px",
-    openingSpeed:25,
-    closingSpeed:25
+    openingSpeed:5,
+    closingSpeed:5
 };
 
 function readUrlHash(key) {
