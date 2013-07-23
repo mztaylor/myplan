@@ -5,9 +5,9 @@ import org.apache.log4j.Logger;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
+import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 
-import javax.xml.namespace.QName;
 import java.util.*;
 
 /**
@@ -45,11 +45,11 @@ public class GenEduReqFacet extends AbstractFacet {
             for (String key : keys) {
                 /*Doing this to fix a bug in IE8 which is trimming off the I&S as I*/
                 /*Reversing the above fix for this process*/
-                if(key.contains("&amp;")){
-                    key=key.replace("&amp;","&");
+                if (key.contains("&amp;")) {
+                    key = key.replace("&amp;", "&");
                 }
                 if (isNewFacetKey(FACET_KEY_DELIMITER + key + FACET_KEY_DELIMITER)) {
-                    EnumeratedValueInfo e = EnumerationHelper.getGenEdReqEnumInfo(EnumerationHelper.getEnumCodeForAbbrVal(key));
+                    EnumeratedValueInfo e = EnumerationHelper.getEnumValueInfoForCodeByType(EnumerationHelper.getEnumCodeForAbbrValByType(key, PlanConstants.GEN_EDU_ENUM_KEY), PlanConstants.GEN_EDU_ENUM_KEY);
                     key = e.getAbbrevValue();
                     String title = e.getValue();
                     if (!StringUtils.isEmpty(title)) {

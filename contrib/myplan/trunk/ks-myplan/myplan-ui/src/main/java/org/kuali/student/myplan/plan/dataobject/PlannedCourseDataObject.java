@@ -30,6 +30,11 @@ public class PlannedCourseDataObject implements Comparable {
     // TODO: KULRICE-9003. This should be on plannedTerm once the jira is resolved
     private transient boolean timeScheduleOpen;
 
+    /*Place Holder*/
+    private String placeHolderCode;
+
+    private String placeHolderCredit;
+
     public CourseSummaryDetails getCourseDetails() {
         if (courseDetails == null) {
             System.out.println("COURSE DETAILS ARE NULL!!!");
@@ -99,6 +104,22 @@ public class PlannedCourseDataObject implements Comparable {
         this.statusAlerts = statusAlerts;
     }
 
+    public String getPlaceHolderCode() {
+        return placeHolderCode;
+    }
+
+    public void setPlaceHolderCode(String placeHolderCode) {
+        this.placeHolderCode = placeHolderCode;
+    }
+
+    public String getPlaceHolderCredit() {
+        return placeHolderCredit;
+    }
+
+    public void setPlaceHolderCredit(String placeHolderCredit) {
+        this.placeHolderCredit = placeHolderCredit;
+    }
+
     //Used to get the list strings as a single string
     public String getAlertsAsString() {
         if (getStatusAlerts() != null) {
@@ -132,6 +153,8 @@ public class PlannedCourseDataObject implements Comparable {
                     }
                 }
                 credit = PlannedTermsHelperBase.unionCreditList(creditList);
+            } else if (placeHolderCredit != null) {
+                credit = placeHolderCredit;
             } else if (courseDetails != null) {
                 credit = courseDetails.getCredit();
             }

@@ -116,7 +116,7 @@
     </bean>
 
     <!-- NEW FUNCTIONALITY hidden from view in 1.4 release -->
-    <bean id="menuOptionEditPlanItemCourse" parent="Uif-ActionLink" p:actionLabel="Edit Course/Note" p:render="false"
+    <bean id="menuOptionEditPlanItemCourse" parent="Uif-ActionLink" p:actionLabel="Edit Course/Note" p:render="true"
           p:title="Edit Course/Note">
         <property name="actionScript"
                   value="openPlanItemPopUp(jQuery(this).data('planitemid'),'plan_item_add_page',{planItemId:jQuery(this).data('planitemid'),pageId:'plan_item_add_page',atpId:jQuery(this).data('atpid'),courseId:jQuery(this).data('courseid')},e,null,{tail:{hidden:true},align:'top'});"/>
@@ -320,7 +320,7 @@
             	var backupFlag = jQuery(this).parents('.myplan-carousel-term').data('backupflag');
             	var size = jQuery(this).parents('.myplan-carousel-term').data('size');
             	var jQuickAdd = jQuery('&lt;div /&gt;').addClass('quick-add-cell').html('Add a course to plan').click(function(e){
-            		openPlanItemPopUp('quick_add','quick_add_page',{atpId:atpId,pageId:'quick_add_page',backup:backupFlag},e,null,{tail:{hidden:true},align:'left',position:'bottom'});
+            		openPlanItemPopUp('quick_add','plan_item_add_page',{atpId:atpId,pageId:'plan_item_add_page',backup:backupFlag},e,null,{tail:{hidden:true},align:'left',position:'bottom'});
             	});
             	if (size &lt; 8) {
             		jQuery(this).append(jQuickAdd.show());
@@ -750,7 +750,7 @@
         </property>
     </bean>
     <bean id="planItemCourseCode" parent="KSAP-MessageField">
-        <property name="messageText" value="@{#line.courseDetails.code}"/>
+        <property name="messageText" value="@{#line.placeHolderCode eq null ? #line.courseDetails.code : #line.placeHolderCode}"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>code</value>
@@ -767,7 +767,7 @@
         </property>
     </bean>
     <bean id="planItemCredit" parent="KSAP-MessageField">
-        <property name="messageText" value="(@{#line.credit})"/>
+        <property name="messageText" value="(@{#line.placeHolderCredit EQ null ? #line.credit : #line.placeHolderCredit})"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>credit</value>
@@ -776,7 +776,7 @@
     </bean>
 
     <bean id="planItemGroup" parent="KSAP-HorizontalFieldGroup" p:title="@{#line.courseDetails.courseTitle}"
-          p:render="@{#line.courseDetails.code ne null}">
+          p:render="@{#line.courseDetails.code ne null OR #line.placeHolderCode ne null}">
         <property name="dataAttributes">
             <map>
                 <entry key="courseid" value="@{#line.courseDetails.courseId}"/>

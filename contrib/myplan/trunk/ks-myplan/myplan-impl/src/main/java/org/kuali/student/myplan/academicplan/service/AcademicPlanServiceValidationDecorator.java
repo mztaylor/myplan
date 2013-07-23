@@ -12,6 +12,7 @@ import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.infc.HoldsDataDictionaryService;
 import org.kuali.student.r2.common.infc.HoldsValidator;
 import org.kuali.student.r2.core.class1.util.ValidationUtils;
+import org.springframework.util.CollectionUtils;
 
 import javax.jws.WebParam;
 import java.util.List;
@@ -122,7 +123,7 @@ public class AcademicPlanServiceValidationDecorator
             List<ValidationResultInfo> nextDecoratorErrors =
                     getNextDecorator().validatePlanItem(validationType, planItemInfo, context);
 
-            if (null != nextDecoratorErrors) {
+            if (!CollectionUtils.isEmpty(nextDecoratorErrors)) {
                 errors.addAll(nextDecoratorErrors);
             }
         } catch (DoesNotExistException ex) {

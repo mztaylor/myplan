@@ -16,7 +16,7 @@ public class SavedCoursesSummaryLookupableHelperImpl extends PlanItemLookupableH
     protected List<PlannedCourseDataObject> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         String studentId = UserSessionHelper.getStudentRegId();
         try {
-            List<PlannedCourseDataObject> plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, studentId);
+            List<PlannedCourseDataObject> plannedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, studentId, false);
             Collections.sort(plannedCoursesList);
             return plannedCoursesList;
         } catch (Exception e) {

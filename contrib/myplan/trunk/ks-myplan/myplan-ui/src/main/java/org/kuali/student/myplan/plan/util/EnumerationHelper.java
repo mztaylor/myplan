@@ -45,49 +45,69 @@ public class EnumerationHelper {
     }
 
 
-    public static EnumeratedValueInfo getGenEdReqEnumInfo(String key) {
+    /**
+     * Returns a EnumerationValueInfo for given enum code and enum key
+     *
+     * @param code
+     * @param key
+     * @return
+     */
+    public static EnumeratedValueInfo getEnumValueInfoForCodeByType(String code, String key) {
         EnumeratedValueInfo enumValueInfo = null;
         try {
             List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-            if (!getEnumServiceCache().containsKey("kuali.uw.lu.genedreq")) {
-                enumeratedValueInfoList = getEnumerationValueInfoList("kuali.uw.lu.genedreq");
+            if (!getEnumServiceCache().containsKey(key)) {
+                enumeratedValueInfoList = getEnumerationValueInfoList(key);
             } else {
-                enumeratedValueInfoList = getEnumServiceCache().get("kuali.uw.lu.genedreq");
+                enumeratedValueInfoList = getEnumServiceCache().get(key);
             }
             for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
                 String enumCode = enumVal.getCode();
-                if (enumCode.equalsIgnoreCase(key)) {
+                if (enumCode.equalsIgnoreCase(code)) {
                     enumValueInfo = enumVal;
                     break;
                 }
             }
         } catch (Exception e) {
-            logger.error("Could not load genEdReqValue");
+            logger.error("Could not load enumerationValueInfo for code " + code);
         }
         return enumValueInfo;
     }
 
 
-    public static List<EnumeratedValueInfo> getEnumerationValueInfoList(String param) {
+    /**
+     * Returns a list of EnumeratedValueInfo objects for given enum key
+     *
+     * @param key
+     * @return
+     */
+    public static List<EnumeratedValueInfo> getEnumerationValueInfoList(String key) {
         List<EnumeratedValueInfo> enumeratedValueInfoList = null;
         try {
-            enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(param, null, null, null);
-            getEnumServiceCache().put(param, enumeratedValueInfoList);
+            enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(key, null, null, null);
+            getEnumServiceCache().put(key, enumeratedValueInfoList);
         } catch (Exception e) {
-            logger.error("No Values for campuses found", e);
+            logger.error("Could not load the enum list", e);
         }
         return enumeratedValueInfoList;
     }
 
-    public static String getEnumAbbrValForCode(String code) {
+    /**
+     * Returns the abbreviated enum value for code by type
+     *
+     * @param code
+     * @param key
+     * @return
+     */
+    public static String getEnumAbbrValForCodeByType(String code, String key) {
         String enumAbbrValue = null;
         try {
 
             List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-            if (!getEnumServiceCache().containsKey("kuali.uw.lu.genedreq")) {
-                enumeratedValueInfoList = getEnumerationValueInfoList("kuali.uw.lu.genedreq");
+            if (!getEnumServiceCache().containsKey(key)) {
+                enumeratedValueInfoList = getEnumerationValueInfoList(key);
             } else {
-                enumeratedValueInfoList = getEnumServiceCache().get("kuali.uw.lu.genedreq");
+                enumeratedValueInfoList = getEnumServiceCache().get(key);
             }
             for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
                 String enumCode = enumVal.getCode();
@@ -97,21 +117,28 @@ public class EnumerationHelper {
                 }
             }
         } catch (Exception e) {
-            logger.error("Could not load genEdReqValue");
+            logger.error("Could not load enumeration value info for code " + code);
         }
         return enumAbbrValue;
 
     }
 
-    public static String getEnumValForCode(String code) {
+    /**
+     * returns a Enumerated value for code by Type
+     *
+     * @param code
+     * @param key
+     * @return
+     */
+    public static String getEnumValueForCodeByType(String code, String key) {
         String enumAbbrValue = null;
         try {
 
             List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-            if (!getEnumServiceCache().containsKey("kuali.uw.lu.genedreq")) {
-                enumeratedValueInfoList = getEnumerationValueInfoList("kuali.uw.lu.genedreq");
+            if (!getEnumServiceCache().containsKey(key)) {
+                enumeratedValueInfoList = getEnumerationValueInfoList(key);
             } else {
-                enumeratedValueInfoList = getEnumServiceCache().get("kuali.uw.lu.genedreq");
+                enumeratedValueInfoList = getEnumServiceCache().get(key);
             }
             for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
                 String enumCode = enumVal.getCode();
@@ -121,21 +148,28 @@ public class EnumerationHelper {
                 }
             }
         } catch (Exception e) {
-            logger.error("Could not load genEdReqValue");
+            logger.error("Could not get the Enum value for code " + code);
         }
         return enumAbbrValue;
 
     }
 
-    public static String getEnumCodeForAbbrVal(String abbrVal) {
+    /**
+     * returns a Enumerated code for abbreviated value by Type
+     *
+     * @param abbrVal
+     * @param key
+     * @return
+     */
+    public static String getEnumCodeForAbbrValByType(String abbrVal, String key) {
         String enumCode = null;
         try {
 
             List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-            if (!getEnumServiceCache().containsKey("kuali.uw.lu.genedreq")) {
-                enumeratedValueInfoList = getEnumerationValueInfoList("kuali.uw.lu.genedreq");
+            if (!getEnumServiceCache().containsKey(key)) {
+                enumeratedValueInfoList = getEnumerationValueInfoList(key);
             } else {
-                enumeratedValueInfoList = getEnumServiceCache().get("kuali.uw.lu.genedreq");
+                enumeratedValueInfoList = getEnumServiceCache().get(key);
             }
             for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
                 String enumAbbrVal = enumVal.getAbbrevValue();
@@ -145,7 +179,7 @@ public class EnumerationHelper {
                 }
             }
         } catch (Exception e) {
-            logger.error("Could not load genEdReqValue");
+            logger.error("Could not get the code value for abbreviated value " + abbrVal);
         }
         return enumCode;
 

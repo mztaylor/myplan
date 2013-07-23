@@ -138,7 +138,7 @@
                 <!--This page is used for the Move to another quarter Dialog box -->
                 <bean parent="KSAP-PopoverPage" p:id="move_dialog_page" p:headerText="Move to Another Quarter">
                     <property name="instructionalText"
-                              value="Which quarter would you like to move [b]@{courseSummaryDetails.code}[/b] to?"/>
+                              value="Which quarter would you like to move [b]@{placeholder EQ null ? courseCd EQ null ?courseSummaryDetails.code:courseCd : placeholderCode}[/b] to?"/>
                     <property name="items">
                         <list>
                             <ref bean="courseTermsScheduled"/>
@@ -206,7 +206,7 @@
                 <!--This page is used for the Copy to another quarter Dialog box -->
                 <bean parent="KSAP-PopoverPage" p:id="copy_dialog_page" p:headerText="Copy to Another Quarter">
                     <property name="instructionalText"
-                              value="Which quarter would you like to copy [b]@{courseSummaryDetails.code}[/b] to?"/>
+                              value="Which quarter would you like to copy [b]@{placeholder EQ null ? courseCd EQ null ?courseSummaryDetails.code:courseCd : placeholderCode}[/b] to?"/>
                     <property name="items">
                         <list>
                             <ref bean="courseTermsScheduled"/>
@@ -308,9 +308,9 @@
 
                 <!--This page is used for the Delete plan Item Dialog box -->
                 <bean parent="KSAP-PopoverPage" p:id="plan_item_delete_page"
-                      p:headerText="Delete @{courseSummaryDetails.code} @{atpId eq null ? 'Bookmark' : 'from the '+shortTerm+' Plan'}">
+                      p:headerText="Delete @{placeholder EQ null ? courseCd EQ null ?courseSummaryDetails.code:courseCd : placeholderCode} @{atpId eq null ? 'Bookmark' : 'from the '+shortTerm+' Plan'}">
                     <property name="instructionalText"
-                              value="Are you sure that you want to delete [b]@{courseSummaryDetails.code}[/b]? Once deleted, you cannot undo."/>
+                              value="Are you sure that you want to delete [b]@{placeholder EQ null ? courseCd EQ null ?courseSummaryDetails.code:courseCd : placeholderCode}[/b]? Once deleted, you cannot undo."/>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-HorizontalBoxGroup"
@@ -457,32 +457,10 @@
                                                     <bean parent="KSAP-SimpleInputField" p:propertyName="placeholder"
                                                           p:width="70%">
                                                         <property name="control">
-                                                            <bean parent="Uif-DropdownControl" p:style="width:90%;">
-                                                                <property name="options">
-                                                                    <list>
-                                                                        <bean parent="Uif-KeyLabelPair" p:key=""
-                                                                              p:value="Select a Placeholder"/>
-                                                                        <bean parent="Uif-KeyLabelPair" p:key="elective"
-                                                                              p:value="Elective"/>
-                                                                        <bean parent="Uif-KeyLabelPair" p:key="c"
-                                                                              p:value="C (English Composition)"/>
-                                                                        <bean parent="Uif-KeyLabelPair" p:key="w"
-                                                                              p:value="W (Additional Writing)"/>
-                                                                        <bean parent="Uif-KeyLabelPair" p:key="qsr"
-                                                                              p:value="Q/SR (Quantitative and Symbolic Reasoning)"/>
-                                                                        <bean parent="Uif-KeyLabelPair" p:key="fl"
-                                                                              p:value="FL (Foreign Language)"/>
-                                                                        <bean parent="Uif-KeyLabelPair" p:key="vlpa"
-                                                                              p:value="VLPA (Visual, Literary, and Performing Arts)"/>
-                                                                        <bean parent="Uif-KeyLabelPair" p:key="is"
-                                                                              p:value="I&amp;S (Individuals and Societies)"/>
-                                                                        <bean parent="Uif-KeyLabelPair" p:key="nw"
-                                                                              p:value="NW (Natural World)"/>
-                                                                        <bean parent="Uif-KeyLabelPair" p:key="other"
-                                                                              p:value="Other (Enter description in 'Note' below)"/>
-                                                                    </list>
-                                                                </property>
-                                                            </bean>
+                                                            <bean parent="Uif-DropdownControl" p:style="width:90%;"/>
+                                                        </property>
+                                                        <property name="optionsFinder">
+                                                            <bean class="org.kuali.student.myplan.plan.util.PlaceHoldersBuilder"/>
                                                         </property>
                                                     </bean>
                                                     <bean parent="KSAP-SimpleInputField" p:propertyName="credit"
@@ -802,7 +780,7 @@
     <!-- Delete from courses list confirmation -->
     <bean id="delete_from_list_confirmation" parent="KSAP-VerticalBoxGroup" p:hidden="true" p:width="300px">
         <property name="instructionalText"
-                  value="Are you sure that you want to delete [b]@{courseSummaryDetails.code}[/b] from the Bookmarked Courses list? Once deleted, you cannot undo."/>
+                  value="Are you sure that you want to delete [b]@{placeholder EQ null ? courseSummaryDetails.code : placeholder}[/b] from the Bookmarked Courses list? Once deleted, you cannot undo."/>
         <property name="items">
             <list>
                 <bean id="hidden_planItemId" parent="KSAP-SimpleInputField" p:propertyName="planItemId"
@@ -1024,7 +1002,7 @@
     </bean>
 
     <!-- Text input for plan item notes field -->
-    <bean id="planItemNote" parent="KSAP-SimpleInputField" p:propertyName="note" p:render="false"
+    <bean id="planItemNote" parent="KSAP-SimpleInputField" p:propertyName="note" p:render="true"
           p:defaultValue="@{#form.planItemId NE null ? #form.note : ''}">
         <property name="label" value="Note for course"/>
         <property name="fieldLabel.render" value="true"/>

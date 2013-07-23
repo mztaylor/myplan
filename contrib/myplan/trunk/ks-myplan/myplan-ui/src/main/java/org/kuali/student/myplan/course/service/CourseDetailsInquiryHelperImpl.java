@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
-import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.organization.dto.OrgInfo;
@@ -260,11 +259,11 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             if (YES.equals(value) && key.startsWith(CourseSearchConstants.GEN_EDU_REQUIREMENTS_PREFIX)) {
 
                 // Get only the abbre_val of gen ed requirements
-                String abbrev = EnumerationHelper.getEnumAbbrValForCode(key);
+                String abbrev = EnumerationHelper.getEnumAbbrValForCodeByType(key, PlanConstants.GEN_EDU_ENUM_KEY);
                 courseDetails.getAbbrGenEdRequirements().add(abbrev);
 
                 //  Get general education requirements.
-                EnumeratedValueInfo info = EnumerationHelper.getGenEdReqEnumInfo(key);
+                EnumeratedValueInfo info = EnumerationHelper.getEnumValueInfoForCodeByType(key, PlanConstants.GEN_EDU_ENUM_KEY);
                 String genEdText = String.format("%s (%s)", info.getValue(), info.getAbbrevValue());
                 courseDetails.getGenEdRequirements().add(genEdText);
             }

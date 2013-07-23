@@ -30,6 +30,7 @@ import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
+import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
@@ -51,6 +52,7 @@ import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -238,6 +240,7 @@ public class PlanController extends UifControllerBase {
 
         /**
          * Loading and returning quickAdd view if requested
+         * Pre-populating the data for quickAdd view if requested for edit
          *
          */
         if (PlanConstants.QUICK_ADD_DIALOG_PAGE.equals(form.getPageId()) || PlanConstants.ADD_DIALOG_PAGE.equals(form.getPageId())) {
@@ -247,6 +250,40 @@ public class PlanController extends UifControllerBase {
                 planForm.setTermName(termYear);
             } else {
                 return doPageRefreshError(planForm, "Could not open Quick Add.", null);
+            }
+
+            if (hasText(planForm.getPlanItemId())) {
+                try {
+                    PlanItemInfo planItemInfo = getAcademicPlanService().getPlanItem(planForm.getPlanItemId(), PlanConstants.CONTEXT_INFO);
+                    if (hasText(planItemInfo.getDescr().getPlain())) {
+                        planForm.setNote(planItemInfo.getDescr().getPlain());
+                    }
+                    if (isPlaceHolderType(planItemInfo.getRefObjectType())) {
+                        if (hasText(planItemInfo.getRefObjectId())) {
+                            if (PlanConstants.PLACE_HOLDER_TYPE_GENERAL.equals(planItemInfo.getRefObjectType())) {
+                                planForm.setType(PlanConstants.GENERAL_TYPE);
+                                planForm.setPlaceholder(planItemInfo.getRefObjectId());
+                            } else {
+                                planForm.setCourseCd(planItemInfo.getRefObjectId());
+                            }
+
+                            for (AttributeInfo attributeInfo : planItemInfo.getAttributes()) {
+                                if (PlanConstants.PLACE_HOLDER_CREDIT.equals(attributeInfo.getKey())) {
+                                    planForm.setCredit(attributeInfo.getValue());
+                                }
+                            }
+                        }
+                    } else {
+                        if (hasText(planItemInfo.getRefObjectId())) {
+                            CourseInfo courseInfo = getCourseHelper().getCourseInfo(planItemInfo.getRefObjectId());
+                            if (courseInfo != null && hasText(courseInfo.getCode())) {
+                                planForm.setCourseCd(courseInfo.getCode());
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    return doPageRefreshError(planForm, "Could not open Quick Add.", null);
+                }
             }
             return getUIFModelAndView(planForm);
         }
@@ -268,12 +305,6 @@ public class PlanController extends UifControllerBase {
                 planItem = getAcademicPlanService().getPlanItem(planForm.getPlanItemId(), PlanConstants.CONTEXT_INFO);
 
                 if (planItem != null) {
-                    planForm.setCourseId(planItem.getRefObjectId());
-
-                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP.equalsIgnoreCase(planItem.getTypeKey())) {
-                        planForm.setBackup(true);
-                    }
-
                     if (!CollectionUtils.isEmpty(planItem.getPlanPeriods())) {
                         //Assuming plan Item can only have one plan period
                         planItemAtpId = planItem.getPlanPeriods().get(0);
@@ -285,6 +316,22 @@ public class PlanController extends UifControllerBase {
                         }
                     }
 
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP.equalsIgnoreCase(planItem.getTypeKey())) {
+                        planForm.setBackup(true);
+                    }
+
+                    if (PlanConstants.PLACE_HOLDER_TYPE_GENERAL.equals(planItem.getRefObjectType())) {
+                        planForm.setPlaceholder(planItem.getRefObjectId());
+                        planForm.setCredit(getCreditFromAttributes(planItem.getAttributes()));
+                        planForm.setType(PlanConstants.GENERAL_TYPE);
+                        return getUIFModelAndView(planForm);
+                    } else if (PlanConstants.PLACE_HOLDER_TYPE_COURSE.equals(planItem.getRefObjectType())) {
+                        planForm.setCourseCd(planItem.getRefObjectId());
+                        planForm.setCredit(getCreditFromAttributes(planItem.getAttributes()));
+                        return getUIFModelAndView(planForm);
+                    } else {
+                        planForm.setCourseId(planItem.getRefObjectId());
+                    }
 
                 } else {
 
@@ -410,10 +457,14 @@ public class PlanController extends UifControllerBase {
 
         //  Load course summary details.
         CourseSummaryDetails courseDetails = null;
-        try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
-        } catch (Exception e) {
-            return doOperationFailedError(form, "Unable to retrieve Course Details.", e);
+        if (!isPlaceHolderType(planItem.getRefObjectType())) {
+            try {
+                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
+            } catch (Exception e) {
+                return doOperationFailedError(form, "Unable to retrieve Course Details.", e);
+            }
+        } else {
+            courseDetails = new CourseSummaryDetails();
         }
 
         //  Make removed event before updating the plan item.
@@ -505,10 +556,14 @@ public class PlanController extends UifControllerBase {
 
         //  Load course summary details.
         CourseSummaryDetails courseDetails = null;
-        try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
-        } catch (Exception e) {
-            return doOperationFailedError(form, "Unable to retrieve Course Details.", e);
+        if (!isPlaceHolderType(planItem.getRefObjectType())) {
+            try {
+                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
+            } catch (Exception e) {
+                return doOperationFailedError(form, "Unable to retrieve Course Details.", e);
+            }
+        } else {
+            courseDetails = new CourseSummaryDetails();
         }
 
         //  Make removed event before updating the plan item.
@@ -592,10 +647,14 @@ public class PlanController extends UifControllerBase {
 
         //  Lookup course details as they will be needed for errors.
         CourseSummaryDetails courseDetails = null;
-        try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
-        } catch (Exception e) {
-            return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
+        if (!isPlaceHolderType(planItem.getRefObjectType())) {
+            try {
+                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
+            } catch (Exception e) {
+                return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
+            }
+        } else {
+            courseDetails = new CourseSummaryDetails();
         }
 
         //  Make sure there isn't a plan item for the same course id in the destination ATP.
@@ -734,12 +793,18 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, String.format("Could not fetch plan item."), null);
         }
 
+        String credit = null;
         //  Lookup course details as they will be needed for errors.
         CourseSummaryDetails courseDetails = null;
-        try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
-        } catch (Exception e) {
-            return doOperationFailedError(form, "Unable to retrieve Course Details.", e);
+        if (!isPlaceHolderType(planItem.getRefObjectType())) {
+            try {
+                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
+            } catch (Exception e) {
+                return doOperationFailedError(form, "Unable to retrieve Course Details.", e);
+            }
+        } else {
+            courseDetails = new CourseSummaryDetails();
+            credit = getCreditFromAttributes(planItem.getAttributes());
         }
 
         //  Make sure there isn't a plan item for the same course id in the destination ATP.
@@ -781,10 +846,9 @@ public class PlanController extends UifControllerBase {
 
         PlanItemInfo planItemCopy = null;
         try {
-            String courseId = planItem.getRefObjectId();
-            planItemCopy = addPlanItem(learningPlan, courseId, newAtpId, planItem.getTypeKey(), form.getNote());
+            planItemCopy = addPlanItem(learningPlan, planItem.getRefObjectId(), planItem.getRefObjectType(), newAtpId, planItem.getTypeKey(), form.getNote(), credit);
         } catch (DuplicateEntryException e) {
-            return doDuplicatePlanItem(form, formatAtpIdForUI(newAtpId), courseDetails);
+            return doDuplicatePlanItem(form, formatAtpIdForUI(newAtpId), courseDetails.getCode());
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to add plan item.", e);
         }
@@ -827,83 +891,121 @@ public class PlanController extends UifControllerBase {
             return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
 
-
         /*
         * ************************************************************************************************************
         *                                  QuickAdd a course or placeholder to Plan
         * ************************************************************************************************************
         */
 
-        boolean placeHolder = false;
-        /** Populating courseId from courseCode (QuickAdd view) */
-        if (hasText(form.getCourseCd())) {
-            HashMap<String, String> divisionMap = getCourseHelper().fetchCourseDivisions();
-            DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(form.getCourseCd());
-            if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
-                String subject = courseCode.getSubject();
-                String number = courseCode.getNumber();
-                ArrayList<String> divisions = new ArrayList<String>();
-                getCourseHelper().extractDivisions(divisionMap, subject, divisions, false);
-                if (divisions.size() > 0) {
-                    subject = divisions.get(0);
-                    String courseId = getCourseHelper().getCourseId(subject, number);
-                    form.setCourseId(courseId);
+
+        boolean addCourse = true;
+        boolean addPlaceHolder = false;
+        boolean addPrimaryCourse = false;
+        boolean addSecondaryCourse = false;
+        CourseSummaryDetails courseDetails = null;
+        String studentId = UserSessionHelper.getStudentRegId();
+
+
+        String planItemId = form.getPlanItemId();
+
+        String quickAddType = form.getType();
+        String courseCd = form.getCourseCd();
+        String placeHolderId = form.getPlaceholder();
+        String placeHolderCd = EnumerationHelper.getEnumAbbrValForCodeByType(placeHolderId, PlanConstants.PLACE_HOLDER_ENUM_KEY);
+        String placeHolderType = null;
+
+        if (hasText(courseCd) || hasText(placeHolderId)) {
+            /*Updating the plan item from quickAdd*/
+            if (hasText(planItemId)) {
+                return updatePlaceHolder(form, planItemId);
+            }
+
+            if (PlanConstants.GENERAL_TYPE.equals(quickAddType)) {
+                addPlaceHolder = true;
+                placeHolderType = PlanConstants.PLACE_HOLDER_TYPE_GENERAL;
+                if (!hasText(form.getCredit())) {
+                    return doErrorPage(form, "Credit required", PlanConstants.CREDIT_REQUIRED, new String[]{placeHolderCd}, null);
+                }
+            } else {
+                HashMap<String, String> divisionMap = getCourseHelper().fetchCourseDivisions();
+                DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(courseCd);
+                if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
+                    String subject = courseCode.getSubject();
+                    String number = courseCode.getNumber();
+                    if (number.matches(PlanConstants.COURSE_PLACEHOLDER_REGEX)) {
+                        courseCd = courseCode.getCourseCode();
+                        addPlaceHolder = true;
+                        placeHolderType = PlanConstants.PLACE_HOLDER_TYPE_COURSE;
+                        if (!hasText(form.getCredit())) {
+                            return doErrorPage(form, "Credit required", PlanConstants.CREDIT_REQUIRED, new String[]{courseCd}, null);
+                        }
+                    } else {
+                        ArrayList<String> divisions = new ArrayList<String>();
+                        getCourseHelper().extractDivisions(divisionMap, subject, divisions, false);
+                        if (!CollectionUtils.isEmpty(divisions)) {
+                            subject = divisions.get(0);
+                            String courseId = getCourseHelper().getCourseId(subject, number);
+                            form.setCourseId(courseId);
+                        }
+                    }
+                }
+
+                if (form.getCourseId() == null && !addPlaceHolder) {
+                    return doErrorPage(form, "Course not found", PlanConstants.COURSE_NOT_FOUND, new String[]{courseCd}, null);
                 }
             }
-            if (form.getCourseId() == null) {
-                return doErrorPage(form, "Course not found", PlanConstants.COURSE_NOT_FOUND, new String[]{form.getCourseCd()}, null);
+        }
+
+
+        if (!addPlaceHolder) {
+
+            /* This method needs a Course ID and an ATP ID when Planning a course.*/
+            String courseId = form.getCourseId();
+
+            if (StringUtils.isEmpty(courseId)) {
+                return doOperationFailedError(form, "Course ID was missing.", null);
+            }
+
+            /*Retrieve courseDetails based on the passed in CourseId and then update courseDetails based on the version independent Id*/
+            try {
+
+                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
+                /* Switching the courseDetails based on the versionIndependent Id*/
+                if (!courseId.equals(courseDetails.getVersionIndependentId())) {
+                    courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseDetails.getVersionIndependentId());
+                }
+
+            } catch (Exception e) {
+                return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
             }
         }
 
 
-        /**
-         * This method needs a Course ID and an ATP ID.
-         */
-        String courseId = form.getCourseId();
-
-
-        if (StringUtils.isEmpty(courseId)) {
-            return doOperationFailedError(form, "Course ID was missing.", null);
-        }
-
-        /*Retrieve courseDetails based on the passed in CourseId and then update courseDetails based on the version independent Id*/
-        CourseSummaryDetails courseDetails = null;
-
-        try {
-            courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
-            /* Switching the courseDetails based on the versionIndependent Id*/
-            if (!courseId.equals(courseDetails.getVersionIndependentId())) {
-                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseDetails.getVersionIndependentId());
-            }
-        } catch (Exception e) {
-            return doOperationFailedError(form, "Unable to retrieve Course Details.", null);
-        }
-
-
-        //  Further validation of ATP IDs will happen in the service validation methods.
-        if (StringUtils.isEmpty(form.getAtpId())) {
-            return doOperationFailedError(form, "Term Year value missing", null);
-        }
-
-        //  Should the course be type 'planned' or 'backup'. Default to planned.
+        /* Should the course be type 'planned' or 'backup'. Default to planned.*/
         String newType = form.isBackup() ? PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP : PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
 
         String newAtpId = form.getAtpId();
 
+        /*Term is required for this method to complete*/
+        if (!hasText(newAtpId)) {
+            return doOperationFailedError(form, "Missing Term to add course to plan", null);
+        }
+
+        /*Term format validation*/
         if (!AtpHelper.isAtpIdFormatValid(newAtpId)) {
             return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpId), null);
         }
 
-        String studentId = UserSessionHelper.getStudentRegId();
+        /*Historical term validation*/
+        if (!AtpHelper.isAtpSetToPlanning(newAtpId)) {
+            return doCannotChangeHistoryError(form);
+        }
 
         LearningPlan plan = getSynchronizedLearningPlan(studentId);
         if (plan == null) {
-            return doOperationFailedError(form, "Unable to create learning plan.", null);
+            return doOperationFailedError(form, "Unable to create/retrieve learning plan.", null);
         }
 
-        boolean addCourse = true;
-        boolean addPrimaryCourse = false;
-        boolean addSecondaryCourse = false;
 
         /*
         * ************************************************************************************************************
@@ -957,7 +1059,7 @@ public class PlanController extends UifControllerBase {
 
 
         /*Plan capacity validation.*/
-        if (addCourse) {
+        if (addCourse || addPlaceHolder) {
             boolean hasCapacity = false;
             try {
                 hasCapacity = isAtpHasCapacity(plan, newAtpId, newType);
@@ -971,84 +1073,91 @@ public class PlanController extends UifControllerBase {
         }
 
 
-        /*Historical term validation*/
-        if (!AtpHelper.isAtpSetToPlanning(newAtpId)) {
-            return doCannotChangeHistoryError(form);
-        }
-
-
         /*
-         * ************************************************************************************************************
-         *                                  Adding a course to Plan
-         * ************************************************************************************************************
-         */
-
-        //  See if a wishList item exists for the course. If so, then update it. Otherwise create a new plan item.
-        PlanItemInfo planItem = getWishlistPlanItem(courseDetails.getVersionIndependentId());
-
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> wishlistEvents = null;
-
-        if (planItem == null && addCourse) {
-            try {
-
-                planItem = addPlanItem(plan, courseDetails.getVersionIndependentId(), newAtpId, newType, form.getNote());
-
-            } catch (DuplicateEntryException e) {
-                return doDuplicatePlanItem(form, newAtpId, courseDetails);
-            } catch (Exception e) {
-                return doOperationFailedError(form, "Unable to add plan item.", e);
-            }
-        } else if (planItem != null && addCourse) {
-
-            //  Check for duplicates since addPlanItem isn't being called.
-            if (addCourse && isDuplicate(plan, newAtpId, courseDetails.getVersionIndependentId(), newType)) {
-                return doDuplicatePlanItem(form, newAtpId, courseDetails);
-            }
-
-            //  Create wishList events before updating the plan item.
-            wishlistEvents = makeRemoveEvent(planItem, courseDetails, planItem.getRefObjectId(), form, null);
-            planItem.setTypeKey(newType);
-            planItem.setPlanPeriods(Arrays.asList(newAtpId));
-
-            try {
-
-                planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, UserSessionHelper.makeContextInfoInstance());
-
-            } catch (Exception e) {
-
-            }
-        }
-
-        /*
-        * *************************************************************************************************************
-        *                             Adding activities to Plan
-        * *************************************************************************************************************
+        * ************************************************************************************************************
+        *                                  Adding a course to Plan
+        * ************************************************************************************************************
         */
 
+        PlanItemInfo planItem = null;
         /*PlanItems for sections*/
         PlanItemInfo primaryPlanItem = null;
         PlanItemInfo secondaryPlanItem = null;
 
-        if (addPrimaryCourse && form.getPrimarySectionCode() != null) {
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> wishlistEvents = null;
 
-            primaryPlanItem = addActivityOfferingPlanItem(plan, getCourseHelper().buildActivityRefObjId(newAtpId, courseDetails.getSubjectArea(), courseDetails.getCourseNumber(), form.getPrimarySectionCode()), newAtpId, newType);
-            form.setPrimaryPlanItemId(primaryPlanItem.getId());
+        if (!addPlaceHolder) {
+            //  See if a wishList item exists for the course. If so, then update it. Otherwise create a new plan item.
+            planItem = getWishlistPlanItem(courseDetails.getVersionIndependentId());
+
+            if (planItem == null && addCourse) {
+                try {
+
+                    planItem = addPlanItem(plan, courseDetails.getVersionIndependentId(), PlanConstants.COURSE_TYPE, newAtpId, newType, form.getNote(), null);
+
+                } catch (DuplicateEntryException e) {
+                    return doDuplicatePlanItem(form, newAtpId, courseDetails.getCode());
+                } catch (Exception e) {
+                    return doOperationFailedError(form, "Unable to add plan item.", e);
+                }
+            } else if (planItem != null && addCourse) {
+
+                //  Check for duplicates since addPlanItem isn't being called.
+                if (addCourse && isDuplicate(plan, newAtpId, courseDetails.getVersionIndependentId(), newType)) {
+                    return doDuplicatePlanItem(form, newAtpId, courseDetails.getCode());
+                }
+
+                //  Create wishList events before updating the plan item.
+                wishlistEvents = makeRemoveEvent(planItem, courseDetails, planItem.getRefObjectId(), form, null);
+                planItem.setTypeKey(newType);
+                planItem.setPlanPeriods(Arrays.asList(newAtpId));
+
+                try {
+
+                    planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, UserSessionHelper.makeContextInfoInstance());
+
+                } catch (Exception e) {
+
+                }
+            }
+
+            /*
+            * *************************************************************************************************************
+            *                             Adding activities to Plan
+            * *************************************************************************************************************
+            */
+
+
+            if (addPrimaryCourse && form.getPrimarySectionCode() != null && !addPlaceHolder) {
+                String refObjId = getCourseHelper().buildActivityRefObjId(newAtpId, courseDetails.getSubjectArea(), courseDetails.getCourseNumber(), form.getPrimarySectionCode());
+                primaryPlanItem = addPlanItem(plan, refObjId, PlanConstants.SECTION_TYPE, newAtpId, newType, form.getNote(), null);
+                form.setPrimaryPlanItemId(primaryPlanItem.getId());
+
+            }
+
+            if (addSecondaryCourse && form.getSectionCode() != null && !addPlaceHolder) {
+                String refObjId = getCourseHelper().buildActivityRefObjId(newAtpId, courseDetails.getSubjectArea(), courseDetails.getCourseNumber(), form.getSectionCode());
+                secondaryPlanItem = addPlanItem(plan, refObjId, PlanConstants.SECTION_TYPE, newAtpId, newType, form.getNote(), null);
+
+            }
 
         }
-
-        if (addSecondaryCourse && form.getSectionCode() != null) {
-
-            secondaryPlanItem = addActivityOfferingPlanItem(plan, getCourseHelper().buildActivityRefObjId(newAtpId, courseDetails.getSubjectArea(), courseDetails.getCourseNumber(), form.getSectionCode()), newAtpId, newType);
-
-        }
-
-
         /*
         * *************************************************************************************************************
         *                   Adding placeholders to the plan
         * *************************************************************************************************************
         */
+        if (addPlaceHolder) {
+            try {
+                String refObjId = PlanConstants.PLACE_HOLDER_TYPE_GENERAL.equals(placeHolderType) ? placeHolderId : courseCd;
+                planItem = addPlanItem(plan, refObjId, placeHolderType, newAtpId, newType, form.getNote(), form.getCredit());
 
+            } catch (DuplicateEntryException e) {
+                return doDuplicatePlanItem(form, newAtpId, placeHolderCd);
+            } catch (Exception e) {
+                return doOperationFailedError(form, "Unable to add plan item.", e);
+            }
+        }
 
         /*
         * *************************************************************************************************************
@@ -1066,17 +1175,22 @@ public class PlanController extends UifControllerBase {
         }
         String plannedTerm = null;
         try {
-            if (planItem != null) {
+            if (!addPlaceHolder) {
+                if (planItem != null) {
+                    plannedTerm = planItem.getPlanPeriods().get(0);
+                    events.putAll(makeAddEvent(planItem, courseDetails, form));
+                }
+                if (primaryPlanItem != null) {
+                    plannedTerm = primaryPlanItem.getPlanPeriods().get(0);
+                    events.putAll(makeAddEvent(primaryPlanItem, courseDetails, form));
+                }
+                if (secondaryPlanItem != null) {
+                    plannedTerm = secondaryPlanItem.getPlanPeriods().get(0);
+                    events.putAll(makeAddEvent(secondaryPlanItem, courseDetails, form));
+                }
+            } else {
                 plannedTerm = planItem.getPlanPeriods().get(0);
-                events.putAll(makeAddEvent(planItem, courseDetails, form));
-            }
-            if (primaryPlanItem != null) {
-                plannedTerm = primaryPlanItem.getPlanPeriods().get(0);
-                events.putAll(makeAddEvent(primaryPlanItem, courseDetails, form));
-            }
-            if (secondaryPlanItem != null) {
-                plannedTerm = secondaryPlanItem.getPlanPeriods().get(0);
-                events.putAll(makeAddEvent(secondaryPlanItem, courseDetails, form));
+                events.putAll(makePlaceHolderAddEvent(planItem));
             }
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to create add event.", e);
@@ -1161,6 +1275,77 @@ public class PlanController extends UifControllerBase {
         return getUIFModelAndView(form);
 
 
+    }
+
+    /**
+     * returns true if the reofbjtype is a placeholder
+     *
+     * @param refObjType
+     * @return
+     */
+    private boolean isPlaceHolderType(String refObjType) {
+        return PlanConstants.PLACE_HOLDER_TYPE_COURSE.equals(refObjType) || PlanConstants.PLACE_HOLDER_TYPE_GENERAL.equals(refObjType);
+    }
+
+    /**
+     * Updates the Placeholders or notes of a planItem
+     *
+     * @param form
+     * @param planItemId
+     * @return
+     */
+    private ModelAndView updatePlaceHolder(PlanForm form, String planItemId) {
+
+        PlanItemInfo planItemInfo = null;
+        try {
+            planItemInfo = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+            if (planItemInfo != null) {
+
+                String credit = getCreditFromAttributes(planItemInfo.getAttributes());
+
+
+                boolean update = false;
+
+                if (PlanConstants.PLACE_HOLDER_TYPE_GENERAL.equals(planItemInfo.getRefObjectType())) {
+                    /*PlaceHolder update*/
+                    if (hasText(form.getPlaceholder()) && !form.getPlaceholder().equalsIgnoreCase(planItemInfo.getRefObjectId())) {
+                        return doErrorPage(form, "QuickAdd request to update failed", PlanConstants.UPDATE_FAILED, new String[]{form.getCourseCd() != null ? form.getCourseCd() : EnumerationHelper.getEnumAbbrValForCodeByType(form.getPlaceholder(), PlanConstants.PLACE_HOLDER_ENUM_KEY)}, null);
+                    }
+                }
+
+                /*credit update*/
+                if (credit == null && hasText(form.getCredit())) {
+                    List<AttributeInfo> attributeInfos = new ArrayList<AttributeInfo>();
+                    attributeInfos.add(new AttributeInfo(PlanConstants.PLACE_HOLDER_CREDIT, form.getCredit()));
+                    planItemInfo.setAttributes(attributeInfos);
+                    update = true;
+                } else if (hasText(form.getCredit()) && !form.getCredit().equalsIgnoreCase(credit)) {
+                    for (AttributeInfo attributeInfo : planItemInfo.getAttributes()) {
+                        if (PlanConstants.PLACE_HOLDER_CREDIT.equalsIgnoreCase(attributeInfo.getKey())) {
+                            attributeInfo.setValue(form.getCredit());
+                        }
+                    }
+                    update = true;
+                }
+
+                /*Note update*/
+                if (form.getNote() != null && !form.getNote().equalsIgnoreCase(planItemInfo.getDescr().getPlain())) {
+                    planItemInfo.getDescr().setFormatted(form.getNote());
+                    planItemInfo.getDescr().setPlain(form.getNote());
+                    update = true;
+                }
+
+                if (update) {
+                    String[] params = {};
+                    getAcademicPlanService().updatePlanItem(planItemId, planItemInfo, PlanConstants.CONTEXT_INFO);
+                    return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_UPDATED_ITEM, params);
+                }
+            }
+        } catch (Exception e) {
+            return doErrorPage(form, "QuickAdd request to update failed", PlanConstants.UPDATE_FAILED, new String[]{form.getCourseCd() != null ? form.getCourseCd() : EnumerationHelper.getEnumAbbrValForCodeByType(form.getPlaceholder(), PlanConstants.PLACE_HOLDER_ENUM_KEY)}, null);
+        }
+
+        return doErrorPage(form, "QuickAdd request to update failed", PlanConstants.UPDATE_FAILED, new String[]{form.getCourseCd() != null ? form.getCourseCd() : EnumerationHelper.getEnumAbbrValForCodeByType(form.getPlaceholder(), PlanConstants.PLACE_HOLDER_ENUM_KEY)}, null);
     }
 
     /**
@@ -1253,6 +1438,21 @@ public class PlanController extends UifControllerBase {
             }
         }
         return plan;
+    }
+
+    /**
+     * Extracts placeholder credit value from attributes
+     *
+     * @param attributeInfos
+     * @return
+     */
+    private String getCreditFromAttributes(List<AttributeInfo> attributeInfos) {
+        for (AttributeInfo attributeInfo : attributeInfos) {
+            if (PlanConstants.PLACE_HOLDER_CREDIT.equals(attributeInfo.getKey())) {
+                return attributeInfo.getValue();
+            }
+        }
+        return null;
     }
 
     /**
@@ -1382,9 +1582,9 @@ public class PlanController extends UifControllerBase {
 
         PlanItemInfo planItem = null;
         try {
-            planItem = addPlanItem(plan, courseDetails.getVersionIndependentId(), null, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, form.getNote());
+            planItem = addPlanItem(plan, courseDetails.getVersionIndependentId(), PlanConstants.COURSE_TYPE, null, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, null, null);
         } catch (DuplicateEntryException e) {
-            return doDuplicatePlanItem(form, null, courseDetails);
+            return doDuplicatePlanItem(form, null, courseDetails.getCode());
         } catch (Exception e) {
             return doOperationFailedError(form, "Unable to add plan item.", e);
         }
@@ -1432,10 +1632,10 @@ public class PlanController extends UifControllerBase {
             terms.add(AtpHelper.atpIdToTermName(term));
         }
         CourseSummaryDetails courseDetail = null;
-        if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
+        if (PlanConstants.COURSE_TYPE.equals(planItem.getRefObjectType())) {
             courseDetail = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
             courseId = courseDetail.getCourseId();
-        } else {
+        } else if (PlanConstants.SECTION_TYPE.equals(planItem.getRefObjectType())) {
             String activityId = planItem.getRefObjectId();
             ActivityOfferingDisplayInfo activityDisplayInfo = null;
             CourseOfferingInfo courseOfferingInfo = null;
@@ -1483,7 +1683,11 @@ public class PlanController extends UifControllerBase {
 
         //  Make events ...
 
-        events.putAll(makeRemoveEvent(planItem, null, courseId, form, new ArrayList<String>(planItemsToRemove.values())));
+        if (isPlaceHolderType(planItem.getRefObjectType())) {
+            events.putAll(makeRemovePlaceHolderEvent(planItem, form, new ArrayList<String>(planItemsToRemove.values())));
+        } else {
+            events.putAll(makeRemoveEvent(planItem, null, courseId, form, new ArrayList<String>(planItemsToRemove.values())));
+        }
         planItemsToRemove.put(planItemId, null);
         try {
             if (planItemsToRemove.size() > 0) {
@@ -1671,17 +1875,11 @@ public class PlanController extends UifControllerBase {
     /**
      * Blow-up response for all plan item actions.
      */
-    private ModelAndView doDuplicatePlanItem(PlanForm form, String atpId, CourseSummaryDetails courseDetails) {
-        /*String[] t = {"?", "?"};
-try {
-    t = AtpHelper.atpIdToTermNameAndYear(atpId);
-} catch (RuntimeException e) {
-    logger.error("Could not convert ATP ID to a term and year.", e);
-}
-String term = t[0] + " " + t[1];*/
-        String[] params = {courseDetails.getCode(), AtpHelper.atpIdToTermName(atpId)};
+    private ModelAndView doDuplicatePlanItem(PlanForm form, String atpId, String code) {
+        String[] params = {code, AtpHelper.atpIdToTermName(atpId)};
         return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
     }
+
 
     /**
      * Success response for all plan item actions.
@@ -1753,16 +1951,16 @@ String term = t[0] + " " + t[1];*/
      * Adds a plan item for the given course id and ATPs.
      *
      * @param plan         The learning plan to add the item to.
-     * @param courseId     The id of the course.
+     * @param refObjId     The id of the course.
      * @param atpId        A list of ATP/term ids if the plan item is a planned course.
-     * @param planItemType Saved couse or planned course.
+     * @param planItemType Saved course or planned course.
      * @return The newly created plan item or the existing plan item where a plan item already exists for the given course.
      * @throws RuntimeException on errors.
      */
-    protected PlanItemInfo addPlanItem(LearningPlan plan, String courseId, String atpId, String planItemType, String note)
+    protected PlanItemInfo addPlanItem(LearningPlan plan, String refObjId, String refObjType, String atpId, String planItemType, String note, String credit)
             throws DuplicateEntryException {
 
-        if (StringUtils.isEmpty(courseId)) {
+        if (StringUtils.isEmpty(refObjId)) {
             throw new RuntimeException("Empty Course ID");
         }
 
@@ -1771,64 +1969,14 @@ String term = t[0] + " " + t[1];*/
         PlanItemInfo pii = new PlanItemInfo();
         pii.setLearningPlanId(plan.getId());
         pii.setTypeKey(planItemType);
-        pii.setRefObjectType(PlanConstants.COURSE_TYPE);
-        pii.setRefObjectId(courseId);
-
-        pii.setStateKey(PlanConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
-
-        RichTextInfo rti = new RichTextInfo();
-        rti.setFormatted("");
-        rti.setPlain("");
-        pii.setDescr(rti);
-
-        if (null != atpId) {
-            pii.setPlanPeriods(Arrays.asList(atpId));
-        }
-
-        //  Don't allow duplicates.
-        if (isDuplicate(plan, atpId, courseId, planItemType)) {
-            throw new DuplicateEntryException("Duplicate plan item exists.");
-        }
-
-        try {
-            newPlanItem = getAcademicPlanService().createPlanItem(pii, UserSessionHelper.makeContextInfoInstance());
-        } catch (Exception e) {
-            logger.error("Could not create plan item.", e);
-            throw new RuntimeException("Could not create plan item.", e);
-        }
-
-        return newPlanItem;
-    }
-
-    /**
-     * @param plan
-     * @param refObjId
-     * @param atpId
-     * @param planItemType
-     * @return
-     * @throws DuplicateEntryException
-     */
-    protected PlanItemInfo addActivityOfferingPlanItem(LearningPlan plan, String
-            refObjId, String atpId, String planItemType)
-            throws DuplicateEntryException {
-
-        if (StringUtils.isEmpty(refObjId)) {
-            throw new RuntimeException("Empty RefObjId");
-        }
-
-        PlanItemInfo newPlanItem = null;
-
-        PlanItemInfo pii = new PlanItemInfo();
-        pii.setLearningPlanId(plan.getId());
-        pii.setTypeKey(planItemType);
-        pii.setRefObjectType(PlanConstants.SECTION_TYPE);
+        pii.setRefObjectType(refObjType);
         pii.setRefObjectId(refObjId);
 
         pii.setStateKey(PlanConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
 
         RichTextInfo rti = new RichTextInfo();
-        rti.setFormatted("");
-        rti.setPlain("");
+        rti.setFormatted(hasText(note) ? note : "");
+        rti.setPlain(hasText(note) ? note : "");
         pii.setDescr(rti);
 
         if (null != atpId) {
@@ -1838,6 +1986,12 @@ String term = t[0] + " " + t[1];*/
         //  Don't allow duplicates.
         if (isDuplicate(plan, atpId, refObjId, planItemType)) {
             throw new DuplicateEntryException("Duplicate plan item exists.");
+        }
+
+        if (isPlaceHolderType(refObjType) && hasText(credit)) {
+            List<AttributeInfo> attributeInfos = new ArrayList<AttributeInfo>();
+            attributeInfos.add(new AttributeInfo(PlanConstants.PLACE_HOLDER_CREDIT, credit));
+            pii.setAttributes(attributeInfos);
         }
 
         try {
@@ -2098,6 +2252,52 @@ String term = t[0] + " " + t[1];*/
     }
 
     /**
+     * @param planItem
+     * @param planForm
+     * @param itemsToUpdate
+     * @return
+     */
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemovePlaceHolderEvent(PlanItemInfo planItem, PlanForm planForm, List<String> itemsToUpdate) {
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+        Map<String, String> params = new HashMap<String, String>();
+
+        //  Only planned or backup items get an atpId attribute.
+        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
+                planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+            params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
+        }
+        params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
+        params.put("planItemId", planItem.getId());
+        //  Create Javascript events.
+        String courseDetailsAsJson;
+        try {
+            //  Serialize course details into a string of JSON.
+            courseDetailsAsJson = mapper.writeValueAsString(new CourseSummaryDetails());
+        } catch (Exception e) {
+            logger.error("Could not convert javascript events to JSON.", e);
+            throw new RuntimeException("Could not convert javascript events to JSON.", e);
+        }
+        String itemsToBeUpdated = null;
+        if (itemsToUpdate != null && itemsToUpdate.size() > 0) {
+            itemsToBeUpdated = StringUtils.join(itemsToUpdate.toArray(), ",");
+        }
+
+        params.put("courseDetails", courseDetailsAsJson);
+        if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
+            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, params);
+        } else {
+            params.put("SectionCode", planForm.getSectionCode());
+            params.put("RegistrationCode", planForm.getRegistrationCode());
+            params.put("InstituteCode", planForm.getInstituteCode());
+            params.put("shortTermName", AtpHelper.atpIdToShortTermName(planItem.getPlanPeriods().get(0)));
+            params.put("ItemsToUpdate", itemsToBeUpdated);
+            params.put("ActivityStateKey", planForm.getActivityStateKey());
+            events.put(PlanConstants.JS_EVENT_NAME.SECTION_ITEM_DELETED, params);
+        }
+        return events;
+    }
+
+    /**
      * Creates an update credits event.
      *
      * @param atpId The id of the term.
@@ -2195,6 +2395,47 @@ String term = t[0] + " " + t[1];*/
         } else if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
             events.put(PlanConstants.JS_EVENT_NAME.SECTION_ITEM_ADDED, params);
         }
+        return events;
+    }
+
+
+    /**
+     * Creates an add plan item event.
+     *
+     * @param planItem
+     * @return
+     * @throws RuntimeException if anything goes wrong.
+     */
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makePlaceHolderAddEvent(PlanItemInfo planItem) {
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        params.put("planItemId", planItem.getId());
+        params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
+
+        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
+                planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+            String atpId = planItem.getPlanPeriods().get(0);
+            String termName = AtpHelper.atpIdToTermName(atpId);
+            params.put("atpId", formatAtpIdForUI(atpId));
+            params.put("termName", termName);
+        }
+
+
+        /*TODO: adding these as the current events needs this once the js is updated to handle the place holders then remove this*/
+        //  Create Javascript events.
+        String courseDetailsAsJson;
+        try {
+            //  Serialize course details into a string of JSON.
+            mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+            courseDetailsAsJson = mapper.writeValueAsString(new CourseSummaryDetails());
+        } catch (Exception e) {
+            throw new RuntimeException("Could not convert javascript events to JSON.", e);
+        }
+        params.put("courseDetails", courseDetailsAsJson);
+        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, params);
+        params.put("statusAlert", "");
         return events;
     }
 
