@@ -1168,8 +1168,20 @@
         <property name="label" value=""/>
         <property name="altText" value="Delete"/>
         <property name="style" value="margin:8px 0 0 0;"/>
-        <property name="onClickScript"
-                  value="myplanAjaxSubmitSectionItem('@{#line.planItemId}', 'removeItem', 'plan', {planItemId:'@{#line.planItemId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:'@{#line.instituteCode}',registrationCode:'@{#line.registrationCode}',viewId:'PlannedCourse-FormView',primary:@{#line.primary},activityStateKey:'@{#line.stateKey}'}, e);"/>
+        <property name="onClickScript" value="
+            var additionalFormData = {
+                methodToCall: 'removeItem',
+                viewId: 'PlannedCourse-FormView',
+                planItemId: '@{#line.planItemId}',
+                sectionCode: '@{#line.code}',
+                atpId: '@{#line.atpId}',
+                instituteCode: '@{#line.instituteCode}',
+                registrationCode: '@{#line.registrationCode}',
+                primary: @{#line.primary},
+                activityStateKey: '@{#line.stateKey}'
+            };
+            submitHiddenForm('plan', additionalFormData, e);
+        "/>
         <property name="cssClasses">
             <list merge="true">
                 <value>activityAction</value>
@@ -1208,20 +1220,32 @@
 
     <bean id="singleQuarterMoveCourse" parent="Uif-ActionLink" p:actionLabel="Move"
           p:style="display:inline-block;">
-        <property name="actionScript"
-                  value="openPlanItemPopUp('@{#line.planItemDataObject.id}','move_dialog_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'move_dialog_page',moveCourse:'true'},e,null,{tail:{hidden:true},align:'middle',position:'left'});"/>
+        <property name="actionScript" value="
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', pageId:'move_dialog_page'};
+            var popupStyle = {width:'300px', height:'16px'};
+            var popupOptions = {tail:{hidden:true}, position:'left', align:'middle', close:true};
+            openPopup('move_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
+        "/>
     </bean>
 
     <bean id="singleQuarterCopyCourse" parent="Uif-ActionLink" p:actionLabel="Copy"
           p:style="display:inline-block;">
-        <property name="actionScript"
-                  value="openPlanItemPopUp('@{#line.planItemDataObject.id}','copy_dialog_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'copy_dialog_page'},e,null,{tail:{hidden:true},align:'middle',position:'left'});"/>
+        <property name="actionScript" value="
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', pageId:'copy_dialog_page'};
+            var popupStyle = {width:'300px', height:'16px'};
+            var popupOptions = {tail:{hidden:true}, position:'left', align:'middle', close:true};
+            openPopup('copy_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
+        "/>
     </bean>
 
     <bean id="singleQuarterDeleteCourse" parent="Uif-ActionLink" p:actionLabel="Delete"
           p:style="display:inline-block;">
-        <property name="actionScript"
-                  value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',atpId:'@{#line.planItemDataObject.atp}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'middle',position:'left'});"/>
+        <property name="actionScript" value="
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', pageId:'plan_item_delete_page'};
+            var popupStyle = {width:'300px', height:'16px'};
+            var popupOptions = {tail:{hidden:true}, position:'left', align:'middle', close:true};
+            openPopup('plan_item_delete_page', retrieveData, 'plan', popupStyle, popupOptions, e);
+        "/>
     </bean>
 
     <bean id="single_Collection_Empty" parent="KSAP-VerticalBoxGroup">

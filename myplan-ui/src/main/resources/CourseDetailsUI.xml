@@ -159,8 +159,12 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="actionScript"
-                              value="openPlanItemPopUp('@{dataObject.courseSummaryDetails.courseId}','add_dialog_page',{courseId:'@{dataObject.courseSummaryDetails.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},position:'right',align:'top'});"/>
+                    <property name="actionScript" value="
+                        var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:'@{dataObject.courseSummaryDetails.courseId}', pageId:'add_dialog_page'};
+                        var popupStyle = {width:'300px', height:'16px'};
+                        var popupOptions = {tail:{hidden:true}, position:'right', align:'top', close:true};
+                        openPopup('add_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
+                    "/>
                 </bean>
                 <bean parent="Uif-SecondaryActionButton" p:actionLabel="Bookmark Course"
                       p:id="@{dataObject.courseSummaryDetails.courseId}_addSavedCourse"
@@ -175,8 +179,10 @@
                                 fnRestoreDetailsAddButton(data.courseDetails.courseId);
                             }
                     });"/>
-                    <property name="actionScript"
-                              value="myPlanAjaxPlanItemMove('@{dataObject.courseSummaryDetails.courseId}', 'courseId', 'addSavedCourse', e);"/>
+                    <property name="actionScript" value="
+                        var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:'@{dataObject.courseSummaryDetails.courseId}'};
+                        submitHiddenForm('plan', additionalFormData, e);
+                    "/>
                 </bean>
                 <bean parent="Uif-LinkGroup" p:id="@{dataObject.courseSummaryDetails.courseId}_bookmarked"
                       p:render="@{dataObject.plannedCourseSummary.savedItemId ne null AND dataObject.plannedCourseSummary.plannedList.size() eq 0 AND dataObject.plannedCourseSummary.backupList.size() eq 0 AND dataObject.plannedCourseSummary.academicTerms.size() eq 0}"
@@ -1521,8 +1527,18 @@
             </list>
         </property>
         <property name="style" value="margin:8px 0 0 0;"/>
-        <property name="onClickScript"
-                  value="myplanAjaxSubmitSectionItem('@{dataObject.courseSummaryDetails.courseId}', 'addPlannedCourse', 'plan', {courseId:'@{dataObject.courseSummaryDetails.courseId}',sectionCode:'@{#line.code}',atpId:'@{#line.atpId}',instituteCode:@{#line.instituteCode},registrationCode:'@{#line.registrationCode}',viewId:'PlannedCourse-FormView'}, e);"/>
+        <property name="onClickScript" value="
+            var additionalFormData = {
+                viewId: 'PlannedCourse-FormView',
+                methodToCall: 'addPlannedCourse',
+                courseId: '@{dataObject.courseSummaryDetails.courseId}',
+                sectionCode: '@{#line.code}',
+                atpId: '@{#line.atpId}',
+                instituteCode: '@{#line.instituteCode}',
+                registrationCode: '@{#line.registrationCode}'
+            };
+            submitHiddenForm('plan', additionalFormData, e);
+        "/>
     </bean>
 
     <bean id="section_button" parent="Uif-ImageField">
@@ -1542,6 +1558,9 @@
     </bean>
 
     <bean id="current_section_status" parent="Uif-ActionLink" p:style="margin:0;">
+        <property name="dataAttributes">
+            <map/>
+        </property>
         <property name="actionScript"
                   value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
     </bean>

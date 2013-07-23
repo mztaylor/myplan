@@ -101,9 +101,12 @@
                 }
             });
         "/>
-        <property name="layoutManager.lineGroupPrototype.id" value="@{#line.planItemDataObject.id}"/>
+        <property name="layoutManager.lineGroupPrototype.id" value="link_@{#line.planItemDataObject.id}"/>
         <property name="layoutManager.lineGroupPrototype.onClickScript" value="
-            openPlanItemPopUp('@{#line.courseDetails.courseId}','add_remove_course_popover_page',{planItemId:'@{#line.planItemDataObject.id}', courseId:'@{#line.courseDetails.courseId}'},e,null,{position:'left', tail:{align:'top'},align:'top'});
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', pageId:'add_remove_course_popover_page'};
+            var popupStyle = {width:'300px', height:'16px'};
+            var popupOptions = {tail:{align:'top'}, position:'left', align:'top', close:true};
+            openPopup('add_remove_course_popover_page', retrieveData, 'plan', popupStyle, popupOptions, e);
         "/>
         <property name="instructionalMessage">
             <bean parent="Uif-Message"
@@ -495,12 +498,20 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-PrimaryActionButton-Small" p:actionLabel="Add to Plan">
-                                <property name="actionScript"
-                                          value="openPlanItemPopUp('@{#line.courseDetails.courseId}','add_dialog_page',{courseId:'@{#line.courseDetails.courseId}',pageId:'add_dialog_page', moveCourse:'false'},e,null,{tail:{hidden:true},align:'bottom',position:'right'});"/>
+                                <property name="actionScript" value="
+                                    var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:'@{#line.courseDetails.courseId}', pageId:'add_dialog_page'};
+                                    var popupStyle = {width:'300px', height:'16px'};
+                                    var popupOptions = {tail:{hidden:true}, position:'right', align:'bottom', close:true};
+                                    openPopup('add_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
+                                "/>
                             </bean>
                             <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Delete">
-                                <property name="actionScript"
-                                          value="openPlanItemPopUp('@{#line.planItemDataObject.id}','plan_item_delete_page',{planItemId:'@{#line.planItemDataObject.id}',pageId:'plan_item_delete_page'},e,null,{tail:{hidden:true},align:'bottom',position:'right'});"/>
+                                <property name="actionScript" value="
+                                    var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', pageId:'plan_item_delete_page'};
+                                    var popupStyle = {width:'300px', height:'16px'};
+                                    var popupOptions = {tail:{hidden:true}, position:'right', align:'bottom', close:true};
+                                    openPopup('plan_item_delete_page', retrieveData, 'plan', popupStyle, popupOptions, e);
+                                "/>
                             </bean>
                         </list>
                     </property>

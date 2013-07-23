@@ -843,7 +843,7 @@
                     if (i(z) && i(z.privateVars) && a("#" + z.privateVars.id).length > 0 && z.privateVars.is_open == true) {
                         var x = a("#" + z.privateVars.id);
                         var C = c(x, a(this), z);
-                        var B = 2;
+                        var B = 0; // 2; // Setting to "2" makes the popover shift when inner html is set after opening.
                         if (typeof y == "boolean" && y == true) {
                             x.css({
                                 top:C.top,
