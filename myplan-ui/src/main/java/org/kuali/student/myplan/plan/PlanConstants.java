@@ -19,6 +19,12 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
     public static final String SECTION_TYPE = "kuali.lui.type.activity.offering";
+    public static final String PLACE_HOLDER_TYPE_GENERAL = "uw.academicPlan.general.placeHolder";
+    public static final String PLACE_HOLDER_TYPE_COURSE = "uw.academicPlan.course.placeHolder";
+
+    public static final String GEN_EDU_ENUM_KEY = "kuali.uw.lu.genedreq";
+    public static final String PLACE_HOLDER_ENUM_KEY = "uw.academicplan.placeholder";
+
 
     // CRUD operations positive feedback.
     public static final String SUCCESS_KEY = "myplan.text.success";
@@ -31,6 +37,10 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String SUCCESS_KEY_ITEM_DELETED = "myplan.text.success.itemDeleted";
 
     public static final String SUCCESS_KEY_SAVED_ITEM_ADDED = "myplan.text.success.savedCourseList.itemAdded";
+
+
+    public static final String SUCCESS_KEY_UPDATED_ITEM = "myplan.text.success.quickAdd.itemUpdated";
+
 
     //  CRUD error feedback
     public static final String ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS = "myplan.text.error.plannedCourseList.itemAlreadyExists";
@@ -60,6 +70,8 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String WARNING_STUDENT_CONTEXT_SWITCH = "myplan.text.warning.adviser.studentSwitch";
 
     public static final String COURSE_NOT_FOUND = "myplan.text.error.quickAdd.courseNotFound";
+    public static final String CREDIT_REQUIRED = "myplan.text.error.quickAdd.creditRequired";
+    public static final String UPDATE_FAILED = "myplan.text.error.quickAdd.updateFailed";
     public static final String EMPTY_SEARCH = "myplan.text.error.quickAdd.emptySearch";
     public static final String ACCESS_DENIED = "myplan.text.error.permissionDenied";
 
@@ -74,6 +86,10 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String PLANNED_TYPE = "planned";
     public static final String BACKUP_TYPE = "backup";
+
+    public static final String GENERAL_TYPE = "general";
+    public static final String COURSE_PLACEHOLDER_REGEX = "^[1-9](?i)XX$";
+    public static final String PLACE_HOLDER_CREDIT = "PlaceHolderCredit";
 
     public static final String PLAN = " plan";
     public static final String BACKUP = " backup";
@@ -103,6 +119,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String COURSE_NOT_SCHEDULE_ALERT = "%s is not scheduled for %s. ";
 
 
+
     /*Query keys for getting the termInfos from the academic calender*/
     public static final String PLANNING = "PLANNING";
     public static final String INPROGRESS = "INPROGRESS";
@@ -119,7 +136,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String SESSION_KEY_IS_ADVISER = "kuali.uw.authz.adviser";
     public static final String SESSION_KEY_STUDENT_ID = "kuali.uw.authn.studentId";
     public static final String SESSION_KEY_STUDENT_NAME = "kuali.uw.authn.studentName";
-    public static final String SESSION_KEY_STUDENT_NUMBER = "kuali.uw.authn.studentNumber";
+    public static final String SESSION_KEY_STUDENT_NUMBER = "kuali.uw.authn.studentNumber";        
 
     /**
      * Names of javascript events that can be scheduled in response to the outcome of a plan item request.

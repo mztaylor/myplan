@@ -20,6 +20,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
@@ -44,7 +45,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     @Autowired
     private CourseHelper courseHelper;
 
-    protected List<PlannedCourseDataObject> getPlanItems(String planItemType, String studentId)
+    protected List<PlannedCourseDataObject> getPlanItems(String planItemType, String studentId, boolean includePlaceHolders)
             throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
 
         List<PlannedCourseDataObject> plannedCourseList = new ArrayList<PlannedCourseDataObject>();
@@ -59,7 +60,8 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             Map<String, List<String>> sectionsWithdrawn = new HashMap<String, List<String>>();
             Map<String, List<String>> sectionsSuspended = new HashMap<String, List<String>>();
             for (PlanItemInfo planItemInfo : planItemInfoList) {
-                populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn);
+                populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn, includePlaceHolders);
+
             }
             if (!planItemType.equalsIgnoreCase(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
                 addActivitiesToPlannedCourseList(plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn);
@@ -80,7 +82,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
      * @throws DoesNotExistException
      * @throws OperationFailedException
      */
-    public List<PlannedCourseDataObject> getPlannedCoursesFromAtp(String planItemType, String studentId, String startAtp) throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
+    public List<PlannedCourseDataObject> getPlannedCoursesFromAtp(String planItemType, String studentId, String startAtp, boolean addPlaceHolders) throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
         List<PlannedCourseDataObject> plannedCourseList = new ArrayList<PlannedCourseDataObject>();
         AcademicPlanService academicPlanService = getAcademicPlanService();
         List<LearningPlanInfo> learningPlanList = academicPlanService.getLearningPlansForStudentByType(studentId, LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
@@ -92,7 +94,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             Map<String, List<String>> sectionsSuspended = new HashMap<String, List<String>>();
             for (PlanItemInfo planItemInfo : planItemInfoList) {
                 if (planItemInfo.getTypeKey().equalsIgnoreCase(planItemType) && planItemInfo.getPlanPeriods().get(0).compareTo(startAtp) >= 0) {
-                    populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn);
+                    populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn, addPlaceHolders);
                 }
             }
             addActivitiesToPlannedCourseList(plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn);
@@ -157,7 +159,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
      * @param plannedCourseList
      * @param plannedSections
      */
-    private void populatePlannedCourseList(PlanItemInfo planItemInfo, String planItemType, List<PlannedCourseDataObject> plannedCourseList, Map<String, List<ActivityOfferingItem>> plannedSections, Map<String, List<String>> sectionsSuspended, Map<String, List<String>> sectionsWithdrawn) {
+    private void populatePlannedCourseList(PlanItemInfo planItemInfo, String planItemType, List<PlannedCourseDataObject> plannedCourseList, Map<String, List<ActivityOfferingItem>> plannedSections, Map<String, List<String>> sectionsSuspended, Map<String, List<String>> sectionsWithdrawn, boolean addPlaceHolders) {
         String courseID = planItemInfo.getRefObjectId();
         //  Only create a data object for the specified type.
         if (planItemInfo.getTypeKey().equals(planItemType) && planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
@@ -237,9 +239,39 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                 }
             }
 
+        } else if (addPlaceHolders && planItemInfo.getTypeKey().equals(planItemType) && PlanConstants.PLACE_HOLDER_TYPE_GENERAL.equals(planItemInfo.getRefObjectType())) {
+            PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
+            PlanItemDataObject planItemData = PlanItemDataObject.build(planItemInfo);
+            plannedCourse.setPlanItemDataObject(planItemData);
+            String placeHolderValue = EnumerationHelper.getEnumAbbrValForCodeByType(planItemInfo.getRefObjectId(), PlanConstants.PLACE_HOLDER_ENUM_KEY);
+            if (placeHolderValue == null) {
+                placeHolderValue = EnumerationHelper.getEnumAbbrValForCodeByType(planItemInfo.getRefObjectId(), PlanConstants.GEN_EDU_ENUM_KEY);
+            }
+            plannedCourse.setPlaceHolderCode(placeHolderValue);
+            plannedCourse.setCourseDetails(new CourseSummaryDetails());
+            for (AttributeInfo attributeInfo : planItemInfo.getAttributes()) {
+                if (PlanConstants.PLACE_HOLDER_CREDIT.equals(attributeInfo.getKey())) {
+                    plannedCourse.setPlaceHolderCredit(attributeInfo.getValue());
+                }
+            }
+            plannedCourseList.add(plannedCourse);
+
+        } else if (addPlaceHolders && planItemInfo.getTypeKey().equals(planItemType) && PlanConstants.PLACE_HOLDER_TYPE_COURSE.equals(planItemInfo.getRefObjectType())) {
+            PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
+            PlanItemDataObject planItemData = PlanItemDataObject.build(planItemInfo);
+            plannedCourse.setPlanItemDataObject(planItemData);
+            plannedCourse.setPlaceHolderCode(planItemInfo.getRefObjectId());
+            plannedCourse.setCourseDetails(new CourseSummaryDetails());
+            for (AttributeInfo attributeInfo : planItemInfo.getAttributes()) {
+                if (PlanConstants.PLACE_HOLDER_CREDIT.equals(attributeInfo.getKey())) {
+                    plannedCourse.setPlaceHolderCredit(attributeInfo.getValue());
+                }
+            }
+            plannedCourseList.add(plannedCourse);
 
         }
     }
+
 
     /**
      * returns key(eg: COM=240=kuali.uw.atp.2013.4)

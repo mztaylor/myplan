@@ -24,6 +24,7 @@ import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 
 import javax.xml.namespace.QName;
@@ -427,7 +428,7 @@ public class PlannedTermsHelperBase {
         List<PlannedCourseDataObject> plannedCourseDataObjects = new ArrayList<PlannedCourseDataObject>();
         String startAtp = AtpHelper.getFirstOpenForPlanTerm();
         try {
-            plannedCourseDataObjects = planItemLookupableHelperBase.getPlannedCoursesFromAtp(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, UserSessionHelper.getStudentRegId(), startAtp);
+            plannedCourseDataObjects = planItemLookupableHelperBase.getPlannedCoursesFromAtp(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, UserSessionHelper.getStudentRegId(), startAtp, false);
         } catch (Exception e) {
             logger.error("Could not retrieve the planItems" + e);
         }
@@ -568,19 +569,29 @@ public class PlannedTermsHelperBase {
                                 courseSectionCreditsMap.put(key, credits);
                             }
                         }
-                    } else if (PlanConstants.COURSE_TYPE.equalsIgnoreCase(luType)) {
+                    } else {
                         plannedCourses.add(planItem);
                     }
                 }
                 for (PlanItemInfo planItemInfo : plannedCourses) {
-                    CourseInfo courseInfo = getCourseHelper().getCourseInfo(planItemInfo.getRefObjectId());
-                    String key = generateKey(courseInfo.getSubjectArea().trim(), courseInfo.getCourseNumberSuffix());
-                    List<String> sectionCreditRangeList = courseSectionCreditsMap.get(key);
                     String credit = null;
-                    if (sectionCreditRangeList != null && sectionCreditRangeList.size() > 0) {
-                        credit = unionCreditList(sectionCreditRangeList);
+                    if (PlanConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType())) {
+                        CourseInfo courseInfo = getCourseHelper().getCourseInfo(planItemInfo.getRefObjectId());
+                        String key = generateKey(courseInfo.getSubjectArea().trim(), courseInfo.getCourseNumberSuffix());
+                        List<String> sectionCreditRangeList = courseSectionCreditsMap.get(key);
+
+                        if (sectionCreditRangeList != null && sectionCreditRangeList.size() > 0) {
+                            credit = unionCreditList(sectionCreditRangeList);
+                        } else {
+                            credit = CreditsFormatter.formatCredits(courseInfo);
+                        }
                     } else {
-                        credit = CreditsFormatter.formatCredits(courseInfo);
+                        for (AttributeInfo attributeInfo : planItemInfo.getAttributes()) {
+                            if (PlanConstants.PLACE_HOLDER_CREDIT.equals(attributeInfo.getKey())) {
+                                credit = attributeInfo.getValue();
+                                break;
+                            }
+                        }
                     }
                     if (hasText(credit)) {
                         creditList.add(credit);

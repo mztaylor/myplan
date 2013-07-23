@@ -700,7 +700,7 @@ public class CourseSearchController extends UifControllerBase {
             if (genEdsOut.length() != 0) {
                 genEdsOut.append(", ");
             }
-            req = EnumerationHelper.getEnumAbbrValForCode(req);
+            req = EnumerationHelper.getEnumAbbrValForCodeByType(req, PlanConstants.GEN_EDU_ENUM_KEY);
             /*Doing this to fix a bug in IE8 which is trimming off the I&S as I*/
             if (req.contains("&")) {
                 req = req.replace("&", "&amp;");

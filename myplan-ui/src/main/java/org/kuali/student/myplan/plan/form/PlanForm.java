@@ -24,6 +24,7 @@ import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.EnumerationHelper;
 
 import java.util.List;
 import java.util.Map;
@@ -130,10 +131,10 @@ public class PlanForm extends UifFormBase {
 
     private String type = "course";
 
-    private List<String> credit;
+    private String credit;
     private String note;
 
-    private List<String> placeholder;
+    private String placeholder;
 
 
     /**
@@ -375,11 +376,11 @@ public class PlanForm extends UifFormBase {
     }
 
 
-    public List<String> getPlaceholder() {
+    public String getPlaceholder() {
         return placeholder;
     }
 
-    public void setPlaceholder(List<String> placeholder) {
+    public void setPlaceholder(String placeholder) {
         this.placeholder = placeholder;
     }
 
@@ -391,11 +392,11 @@ public class PlanForm extends UifFormBase {
         this.note = note;
     }
 
-    public List<String> getCredit() {
+    public String getCredit() {
         return credit;
     }
 
-    public void setCredit(List<String> credit) {
+    public void setCredit(String credit) {
         this.credit = credit;
     }
 
@@ -447,6 +448,10 @@ public class PlanForm extends UifFormBase {
     /*TODO: KUALI-RICE: Remove this once 6286 Upgrade to list with rice 2.2.1 and replace the prop name in definition*/
     public PlanForm getThis() {
         return this;
+    }
+
+    public String getPlaceholderCode() {
+        return EnumerationHelper.getEnumAbbrValForCodeByType(placeholder, PlanConstants.PLACE_HOLDER_ENUM_KEY);
     }
 
 }

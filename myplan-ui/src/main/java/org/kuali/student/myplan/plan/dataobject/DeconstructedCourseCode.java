@@ -18,6 +18,10 @@ public class DeconstructedCourseCode {
         this.section = section;
     }
 
+    public String getCourseCode() {
+        return String.format("%s %s", subject, number);
+    }
+
     public String getSubject() {
         return subject;
     }

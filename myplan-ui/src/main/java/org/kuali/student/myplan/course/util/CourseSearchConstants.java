@@ -76,6 +76,8 @@ public class CourseSearchConstants {
 
     public static final String COURSE_CODE_WITH_SECTION_REGEX = "^[A-Z]{1}[A-Z &]{2,6}\\s[0-9]{3}\\s[A-Z]{1}[A-Z0-9]{0,1}$";
 
+    public static final String UNFORMATTED_COURSE_PLACE_HOLDER_REGEX = "^[a-zA-Z]{1}[a-zA-Z &]{2,7}[1-9](?i)XX$";
+
 
     /*Activity Constants*/
 

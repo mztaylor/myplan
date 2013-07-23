@@ -159,6 +159,11 @@ public class CourseHelperImpl implements CourseHelper {
             String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
             subject = splitStr[0].trim();
             number = splitStr[1].trim();
+        } else if (courseCode.matches(CourseSearchConstants.UNFORMATTED_COURSE_PLACE_HOLDER_REGEX)) {
+            int size = courseCode.length();
+            int splitIndex = size - 3;
+            subject = courseCode.substring(0, splitIndex);
+            number = courseCode.substring(splitIndex, size);
         }
         return new DeconstructedCourseCode(subject, number, activityCd);
     }
