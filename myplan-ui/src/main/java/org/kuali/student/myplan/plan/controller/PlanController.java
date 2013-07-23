@@ -926,6 +926,9 @@ public class PlanController extends UifControllerBase {
                 if (!hasText(form.getCredit())) {
                     return doErrorPage(form, "Credit required", PlanConstants.CREDIT_REQUIRED, new String[]{placeHolderCd}, null);
                 }
+                if(PlanConstants.PLACE_HOLDER_OTHER_CODE.equals(placeHolderId) && !hasText(form.getNote())){
+                    return doErrorPage(form, "Note required", PlanConstants.NOTE_REQUIRED, new String[]{placeHolderCd}, null);
+                }
             } else {
                 HashMap<String, String> divisionMap = getCourseHelper().fetchCourseDivisions();
                 DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(courseCd);

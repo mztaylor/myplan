@@ -24,6 +24,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String GEN_EDU_ENUM_KEY = "kuali.uw.lu.genedreq";
     public static final String PLACE_HOLDER_ENUM_KEY = "uw.academicplan.placeholder";
+    public static final String PLACE_HOLDER_OTHER_CODE = "uw.academicplan.placeholder.other";
 
 
     // CRUD operations positive feedback.
@@ -71,6 +72,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String COURSE_NOT_FOUND = "myplan.text.error.quickAdd.courseNotFound";
     public static final String CREDIT_REQUIRED = "myplan.text.error.quickAdd.creditRequired";
+    public static final String NOTE_REQUIRED = "myplan.text.error.quickAdd.noteRequired";
     public static final String UPDATE_FAILED = "myplan.text.error.quickAdd.updateFailed";
     public static final String EMPTY_SEARCH = "myplan.text.error.quickAdd.emptySearch";
     public static final String ACCESS_DENIED = "myplan.text.error.permissionDenied";
