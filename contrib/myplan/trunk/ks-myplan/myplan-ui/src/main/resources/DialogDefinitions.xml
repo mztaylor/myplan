@@ -590,8 +590,56 @@
                                     </list>
                                 </property>
                             </bean>
+                        </list>
+                    </property>
+                </bean>
 
-
+                <!-- This page is for editing a note by itself -->
+                <bean parent="KSAP-PopoverPage" p:id="edit_note_page"
+                      p:headerText="Edit Note">
+                    <property name="instructionalText"
+                              value="Edit note for [b]@{#form.courseCd}[/b]"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="planItemNote">
+                                <property name="fieldLabel.render" value="false"/>
+                            </bean>
+                            <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
+                                            <property name="items">
+                                                <list>
+                                                    <bean id="actionSaveNote" p:id="actionCoursePlaceholder"
+                                                          parent="Uif-PrimaryActionButton-Small"
+                                                          p:actionLabel="Save">
+                                                        <property name="actionScript" value="
+                                                            var additionalFormData = {
+                                                                viewId: 'PlannedCourse-FormView',
+                                                                methodToCall: 'addPlannedCourse',
+                                                                atpId: '@{#form.atpId}',
+                                                                backup: @{#form.backup},
+                                                                pageId: 'edit_note_page',
+                                                                planItemId: '@{#form.planItemId}'
+                                                            };
+                                                            submitPopupForm(additionalFormData, e, false);
+                                                        "/>
+                                                        <property name="onDocumentReadyScript" value="
+                                                            jQuery('#actionCoursePlaceholder').on('PLAN_ITEM_ADDED', function(event, data){
+                                                                fnCloseAllPopups();
+                                                            }).on('ERROR', function(event, data){
+                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
+                                                            });
+                                                        "/>
+                                                    </bean>
+                                                    <bean parent="closePopoverCancel"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="KSAP-VerticalBoxGroup" p:id="errorPlaceholder" p:hidden="true"/>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
