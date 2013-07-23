@@ -97,15 +97,20 @@ function initAuditActions() {
     });
 }
 
-function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
-    jQuery("button#plan_audit_validate").addClass("disabled").attr("disabled", true);
+function validatePlanAudit(obj) {
 
-    var tempForm = '<form id="' + id + '_form" action="' + action + '" method="post" style="display:none;">';
-    jQuery.each(retrieveOptions, function (name, value) {
-        tempForm += '<input type="hidden" name="' + name + '" value="' + value + '" />';
-    });
-    tempForm += '</form>';
-    jQuery("body").append(tempForm);
+    var id = "plan_hand_off_container";
+    var getId = "plan_audit_hand_off";
+    var retrieveData = {
+        viewId:"PlanAuditHandOff-FormView",
+        methodToCall:"reviewPlanAudit",
+        pageId:"plan_audit_hand_off"
+    };
+
+    obj.addClass("disabled").attr("disabled", true);
+
+    var retrieveForm = '<form id="retrieveForm" action="audit" method="post" />';
+    jQuery("body").append(retrieveForm);
 
     var blockOptions = {
         message:'<img src="../ks-myplan/images/btnLoader.gif" style="vertical-align:middle; margin-right:10px;"/>Processing request',
@@ -127,7 +132,7 @@ function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
 
     var elementToBlock = jQuery("#plan_audit_actions_container");
 
-    var updateRefreshableComponentCallback = function (htmlContent) {
+    var successCallback = function (htmlContent) {
         setUrlHash('modified', 'true');
         var showHandOffScreen = (jQuery("input#showHandOffScreen_control", htmlContent).val() == "true");
 
@@ -163,7 +168,7 @@ function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
                     var condition = function () {
                         return ((jQuery.cookie("myplan_audit_running") != null) || (coerceValue("planExists") == false) || (coerceValue("planAudit.campusParam") == "306" && coerceValue("planAudit.programParamSeattle") == "default") || (coerceValue("planAudit.campusParam") == "310" && coerceValue("planAudit.programParamBothell") == "default") || (coerceValue("planAudit.campusParam") == "323" && coerceValue("planAudit.programParamTacoma") == "default"));
                     };
-                    disabledCheck("plan_audit_validate", "action", condition);
+                    disabledCheck(obj.attr("id"), "action", condition);
                 }
             });
             elementToBlock.unblock();
@@ -174,8 +179,8 @@ function validatePlanAudit(id, getId, methodToCall, action, retrieveOptions) {
 
     };
 
-    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:"false"}, elementToBlock, id, blockOptions);
-    jQuery("form#" + id + "_form").remove();
+    ksapAjaxSubmitForm(retrieveData, successCallback, elementToBlock, "retrieveForm");
+    jQuery("form#retrieveForm").remove();
 }
 
 function setFancyboxScrollableGroup(addPadding) {

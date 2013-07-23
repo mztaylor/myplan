@@ -19,8 +19,6 @@
      limitations under the License.
     -->
 
-    <!-- ################################# Course Details Popover ############################## -->
-
     <!--
       This provides the pop-over panels (not the "dialog" ones) for CRUD actions on Course items.
     -->
@@ -34,27 +32,23 @@
         <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
         <property name="footer.render" value="false"/>
         <property name="header.render" value="false"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-view</value>
-            </list>
-        </property>
-        <property name="style" value="margin:0;"/>
         <property name="items">
             <list>
 
                 <!-- Page displaying all plan action response. This page is returned in response to any action on a plan item. It passes data base to javascript events to the UI-->
                 <bean parent="Uif-Page" p:id="plan_item_action_response_page">
+                    <property name="header.render" value="false"/>
                     <property name="validationMessages">
                         <bean parent="Uif-GroupValidationMessages">
                             <property name="displayMessages" value="true"/>
                             <property name="displayFieldLabelWithMessages" value="false"/>
                         </bean>
                     </property>
+                    <property name="validationMessages.render" value="false"/>
                     <property name="items">
                         <list>
-                            <bean id="request_status_item_key" parent="Uif-DataField" p:propertyName="requestStatus"/>
-                            <bean id="json_events_item_key" parent="Uif-DataField"
+                            <bean id="requestStatus" parent="KSAP-SimpleDataField" p:propertyName="requestStatus"/>
+                            <bean id="jsonEvents" parent="KSAP-SimpleDataField"
                                   p:propertyName="javascriptEventsAsJSON"/>
                         </list>
                     </property>
@@ -100,7 +94,6 @@
                         <list>
                             <bean parent="courseTermsScheduled"/>
                             <bean parent="courseTermSelection"/>
-                            <!-- TODO: plan item note is 1.5 functionality, do not commit to 1.4 -->
                             <bean parent="planItemNote"/>
                             <bean parent="courseMarkAsBackup"/>
                             <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
@@ -111,8 +104,10 @@
                                                 <list>
                                                     <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
                                                           p:actionLabel="Add To Plan">
-                                                        <property name="actionScript"
-                                                                  value="myplanAjaxSubmitPlanItem('@{courseSummaryDetails.courseId}', 'courseId', 'addPlannedCourse', e,true);"/>
+                                                        <property name="actionScript" value="
+                                                            var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addPlannedCourse', courseId:'@{courseSummaryDetails.courseId}'};
+                                                            submitPopupForm(additionalFormData, e, false);
+                                                        "/>
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#addPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
                                                                 if (data.planItemType === 'planned' || data.planItemType === 'backup') {
@@ -179,8 +174,10 @@
                                                     <bean p:id="movePlannedCourse"
                                                           parent="Uif-PrimaryActionButton-Small"
                                                           p:actionLabel="Move">
-                                                        <property name="actionScript"
-                                                                  value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'movePlannedCourse', e,true);"/>
+                                                        <property name="actionScript" value="
+                                                            var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'movePlannedCourse', planItemId:'@{planItemId}'};
+                                                            submitPopupForm(additionalFormData, e, false);
+                                                        "/>
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#movePlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
                                                                 if (data.planItemType === 'planned' || data.planItemType === 'backup') {
@@ -248,8 +245,10 @@
                                                           parent="Uif-PrimaryActionButton-Small"
                                                           p:render="@{setToPlanning}"
                                                           p:actionLabel="Copy">
-                                                        <property name="actionScript"
-                                                                  value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse', e, true);"/>
+                                                        <property name="actionScript" value="
+                                                            var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'copyPlannedCourse', planItemId:'@{planItemId}'};
+                                                            submitPopupForm(additionalFormData, e, false);
+                                                        "/>
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#copyPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
                                                                 if (data.planItemType === 'planned' || data.planItemType === 'backup') {
@@ -264,8 +263,10 @@
                                                           parent="Uif-PrimaryActionButton-Small"
                                                           p:render="@{setToPlanning eq false and planItemId ne null}"
                                                           p:actionLabel="Copy">
-                                                        <property name="actionScript"
-                                                                  value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'copyPlannedCourse', e, true);"/>
+                                                        <property name="actionScript" value="
+                                                            var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'copyPlannedCourse', planItemId:'@{planItemId}'};
+                                                            submitPopupForm(additionalFormData, e, false);
+                                                        "/>
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#copyPastPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
                                                                 if (data.planItemType === 'planned' || data.planItemType === 'backup') {
@@ -280,8 +281,10 @@
                                                           parent="Uif-PrimaryActionButton-Small"
                                                           p:render="@{setToPlanning eq false and planItemId eq null}"
                                                           p:actionLabel="Copy">
-                                                        <property name="actionScript"
-                                                                  value="myplanAjaxSubmitPlanItem('@{courseId}', 'courseId', 'addPlannedCourse', e, true);"/>
+                                                        <property name="actionScript" value="
+                                                            var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addPlannedCourse', courseId:'@{courseId}'};
+                                                            submitPopupForm(additionalFormData, e, false);
+                                                        "/>
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#copyAcademicCourse').on('PLAN_ITEM_ADDED', function(event, data){
                                                                 if (data.planItemType === 'planned' || data.planItemType === 'backup') {
@@ -340,18 +343,20 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-SimpleInputField" p:propertyName="atpId">
-                                <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
-                                </property>
-                            </bean>
                             <bean parent="KSAP-HorizontalBoxGroup">
                                 <property name="items">
                                     <list>
                                         <bean p:id="deletePlannedCourse" parent="Uif-PrimaryActionButton-Small"
                                               p:actionLabel="Delete">
-                                            <property name="actionScript"
-                                                      value="myplanAjaxSubmitPlanItem('@{planItemId}', 'planItemId', 'removeItem', e);"/>
+                                            <property name="actionScript" value="
+                                                var additionalFormData = {
+                                                    viewId: 'PlannedCourse-FormView',
+                                                    methodToCall: 'removeItem',
+                                                    planItemId: '@{planItemId}',
+                                                    atpId: '@{atpId}'
+                                                };
+                                                submitPopupForm(additionalFormData, e, false);
+                                            "/>
                                             <property name="onDocumentReadyScript" value="
                                                 jQuery('#deletePlannedCourse').on('PLAN_ITEM_DELETED', function(event, data){
                                                     fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
@@ -477,8 +482,6 @@
                             </bean>
                             <bean parent="planItemNote" p:style="margin: 10px 0 20px;"
                                   p:label="Note for course or placeholder"/>
-                            <bean parent="planItemAddBackup"/>
-                            <bean parent="planItemAddAtpId"/>
                             <bean parent="KSAP-SimpleInputField" p:propertyName="planItemId"
                                   p:hidden="true" p:render="@{#form.planItemId NE null}">
                                 <property name="control">
@@ -494,8 +497,16 @@
                                                     <bean id="actionCoursePlaceholder" p:id="actionCoursePlaceholder"
                                                           parent="Uif-PrimaryActionButton-Small"
                                                           p:actionLabel="@{#form.planItemId EQ null ? 'Add to Plan':'Save'}">
-                                                        <property name="actionScript"
-                                                                  value="myplanAjaxSubmitPlanItem('@{#form.planItemId EQ null ? 'quick_add' : #form.planItemId}', '@{#form.planItemId EQ null ? 'quick_add' : 'planItemId'}', 'addPlannedCourse', e, true);"/>
+                                                        <property name="actionScript" value="
+                                                            var additionalFormData = {
+                                                                viewId: 'PlannedCourse-FormView',
+                                                                methodToCall: 'addPlannedCourse',
+                                                                atpId: '@{#form.atpId}',
+                                                                backup: @{#form.backup},
+                                                                pageId: 'plan_item_add_page'
+                                                            };
+                                                            submitPopupForm(additionalFormData, e, false);
+                                                        "/>
                                                         <property name="disabled"
                                                                   value="@{#form.type EQ null OR (#form.type EQ 'course' AND #form.courseCd EQ null) OR (#form.type EQ 'general' AND #form.placeholder EQ null) OR (#form.placeholder EQ 'other' AND #form.note EQ null)}"/>
                                                         <property name="evaluateDisabledOnKeyUp" value="true"/>
@@ -545,8 +556,6 @@
                                 <property name="constraintText"
                                           value="Note: The course you selected MAY NOT be offered in your selected quarter. Check back when the Time Schedule is released."/>
                             </bean>
-                            <bean parent="planItemAddAtpId"/>
-                            <bean parent="planItemAddBackup"/>
                             <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
                                 <property name="items">
                                     <list>
@@ -556,8 +565,15 @@
                                                     <bean id="quickAddCourse" p:id="quickAddCourse"
                                                           parent="Uif-PrimaryActionButton-Small"
                                                           p:actionLabel="Add to Plan">
-                                                        <property name="actionScript"
-                                                                  value="myplanAjaxSubmitPlanItem('quick_add', 'quick_add', 'addPlannedCourse', e, true);"/>
+                                                        <property name="actionScript" value="
+                                                            var additionalFormData = {
+                                                                viewId:'PlannedCourse-FormView',
+                                                                methodToCall:'addPlannedCourse',
+                                                                backup: @{#form.backup},
+                                                                atpId: @{#form.atpId}
+                                                            };
+                                                            submitPopupForm(additionalFormData, e, false);
+                                                        "/>
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#quickAddCourse').on('PLAN_ITEM_ADDED', function(event, data){
                                                                 fnCloseAllPopups();
@@ -583,12 +599,7 @@
         </property>
     </bean>
 
-    <bean id="course_details_info" parent="KSAP-VerticalBoxGroup">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>fl-container-300</value>
-            </list>
-        </property>
+    <bean id="course_details_info" parent="KSAP-VerticalBoxGroup" p:width="300px">
         <property name="items">
             <list>
                 <ref bean="course_details_summary_info"/>
@@ -691,7 +702,7 @@
                             </bean>
                             <!-- If in plan and in saved courses and not in academic record list -->
                             <bean parent="KSAP-HorizontalBoxGroup"
-                                  p:render="@{((plannedCourseSummary.backupList.size() gt 0 or plannedCourseSummary.plannedList.size() gt 0) and plannedCourseSummary.savedItemId ne null and plannedCourseSummary.academicTerms.size() eq 0)}">
+                                  p:render="@{((plannedCourseSummary.backupList.size() GT 0 OR plannedCourseSummary.plannedList.size() GT 0) AND plannedCourseSummary.savedItemId NE null and plannedCourseSummary.academicTerms.size() EQ 0)}">
                                 <property name="items">
                                     <list>
                                         <ref bean="addToPlanButton"/>
@@ -749,8 +760,10 @@
                                     <list>
                                         <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
                                               p:actionLabel="Add To Plan">
-                                            <property name="actionScript"
-                                                      value="myplanAjaxSubmitPlanItem('@{courseSummaryDetails.courseId}', 'courseId', 'addPlannedCourse', e, true);"/>
+                                            <property name="actionScript" value="
+                                                var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addPlannedCourse', courseId:'@{courseSummaryDetails.courseId}'};
+                                                submitPopupForm(additionalFormData, e, false);
+                                            "/>
                                             <property name="onDocumentReadyScript" value="
                                                 jQuery('#addPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
                                                     if (data.planItemType === 'planned' || data.planItemType === 'backup') {
@@ -783,7 +796,7 @@
                   value="Are you sure that you want to delete [b]@{placeholder EQ null ? courseSummaryDetails.code : placeholder}[/b] from the Bookmarked Courses list? Once deleted, you cannot undo."/>
         <property name="items">
             <list>
-                <bean id="hidden_planItemId" parent="KSAP-SimpleInputField" p:propertyName="planItemId"
+                <bean parent="KSAP-SimpleInputField" p:propertyName="planItemId"
                       p:defaultValue="@{planItemId}" p:hidden="true">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
@@ -795,8 +808,10 @@
                         <list>
                             <bean p:id="deleteCourseYesButton" parent="Uif-PrimaryActionButton-Small"
                                   p:actionLabel="Delete">
-                                <property name="actionScript"
-                                          value="myplanAjaxSubmitPlanItem('@{courseSummaryDetails.courseId}', 'courseId', 'removeItem', e);"/>
+                                <property name="actionScript" value="
+                                    var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'removeItem', courseId:'@{courseSummaryDetails.courseId}'};
+                                    submitPopupForm(additionalFormData, e, false);
+                                "/>
                                 <property name="onDocumentReadyScript" value="
                                    jQuery('#deleteCourseYesButton').on('PLAN_ITEM_DELETED', function(event, data) {
                                        fnDisplayMessage(data.message, data.cssClass, 'deleteCourseYesButton', true, true);
@@ -881,8 +896,8 @@
                                                       p:messageText="&quot;Shared&quot; plans are viewable by all UW advisers. &quot;Private&quot; plans are only viewable by you."/>
                                             </property>
                                             <property name="onChangeScript" value="
-                                                myplanWriteHiddenToForm('methodToCall', 'planAccess', 'student_academic_planner_page_form');
-                                                jQuery('#student_academic_planner_page_form').ajaxSubmit();
+                                                myplanWriteHiddenToForm('methodToCall', 'planAccess', 'student_academic_planner_page');
+                                                jQuery('#student_academic_planner_page').ajaxSubmit();
                                             "/>
                                             <property name="control">
                                                 <bean parent="Uif-VerticalRadioControl">
@@ -1055,21 +1070,6 @@
         </property>
     </bean>
 
-    <!-- Hidden input for atpId to be passed to plan controller -->
-    <bean id="planItemAddAtpId" parent="KSAP-SimpleInputField" p:propertyName="atpId" p:hidden="true">
-        <property name="control">
-            <bean parent="Uif-HiddenControl"/>
-        </property>
-    </bean>
-
-    <!-- Hidden input for backup flag to be passed to plan controller -->
-    <bean id="planItemAddBackup" parent="KSAP-SimpleInputField" p:propertyName="backup" p:hidden="true"
-          p:defaultValue="@{backup}">
-        <property name="control">
-            <bean parent="Uif-HiddenControl"/>
-        </property>
-    </bean>
-
     <!-- Placeholder DIV for error messages after submission failure -->
     <bean id="errorPlaceholder" parent="KSAP-SimpleInputField" p:id="errorPlaceholder" p:hidden="true"
           p:propertyName="courseSummaryDetails.courseId">
@@ -1108,8 +1108,10 @@
                 }
             });
         "/>
-        <property name="actionScript"
-                  value="myplanAjaxSubmitPlanItem('@{courseSummaryDetails.courseId}', 'courseId', 'addSavedCourse', e);"/>
+        <property name="actionScript" value="
+            var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:'@{courseSummaryDetails.courseId}'};
+            submitPopupForm(additionalFormData, e, false);
+        "/>
     </bean>
 
     <!-- Remove from saved courses list button. -->

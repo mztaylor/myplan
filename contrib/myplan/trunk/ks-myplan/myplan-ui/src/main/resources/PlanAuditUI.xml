@@ -507,7 +507,7 @@
         <property name="disabled"
                   value="@{(#form.planExists EQ false) OR (#form.planAudit.campusParam EQ '306' AND #form.planAudit.programParamSeattle EQ 'default') OR (#form.planAudit.campusParam EQ '310' AND #form.planAudit.programParamBothell EQ 'default') OR (#form.planAudit.campusParam EQ '323' AND #form.planAudit.programParamTacoma EQ 'default')}"/>
         <property name="actionScript" value="
-            validatePlanAudit('plan_hand_off_container','plan_audit_hand_off','reviewPlanAudit','audit',{viewId:'PlanAuditHandOff-FormView',pageId:'plan_audit_hand_off'});
+            validatePlanAudit(jQuery(this));
         "/>
         <property name="onDocumentReadyScript" value="
             var disableCompId = 'plan_audit_validate';

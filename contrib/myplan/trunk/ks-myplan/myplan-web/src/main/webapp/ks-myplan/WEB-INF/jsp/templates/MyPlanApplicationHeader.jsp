@@ -22,7 +22,8 @@
         <div id="applicationUser">
             <% if (!UserSessionHelper.isAdviser()) { %>
             <div class="identity">
-                Welcome, <a class="name" onclick="openPopUpForm('student_academic_planner_page','student_academic_planner_page','startPlanAccessForm','plan',{viewId:'StudentAcademicPlanner-FormView',pageId:'student_academic_planner_page'},event,null,{width:'16px'},{tail:{align:'right'},align:'right',position:'bottom',alwaysVisible:'false'},true);">${UserSession.person.firstName}</a>
+                Welcome, <a class="name"
+                            onclick="var retrieveData = {action:'plan', viewId:'StudentAcademicPlanner-FormView', methodToCall:'startPlanAccessForm', pageId:'student_academic_planner_page'}; var popupStyle = {width:'16px', height:'16px'}; var popupOptions = {tail:{align:'right'}, position:'bottom', align:'right', close:true}; openPopup('student_academic_planner_page', retrieveData, 'plan', popupStyle, popupOptions, window.event);">${UserSession.person.firstName}</a>
             </div>
             <% } %>
             <% if (UserSessionHelper.isAdviser()) { %>
@@ -31,7 +32,8 @@
             </div>
             <% } %>
         </div>
-        <img id="myplanUwPatch" src="../ks-myplan/images/myplan_w_patch_purple.png" />
+        <img id="myplanUwPatch" src="../ks-myplan/images/myplan_w_patch_purple.png"/>
+
         <div id="applicationNavigation">
             <ul>
                 <li class="active home"><a href="plan?methodToCall=start&viewId=PlannedCourses-FormView">Plan</a></li>
@@ -42,12 +44,12 @@
     </div>
 
 
-
     <% if (UserSessionHelper.isAdviser()) { %>
     <div class="adviser-banner">
-        You are viewing <strong><%= UserSessionHelper.getStudentName() %>.</strong>'s MyPlan: functionalities are limited except
+        You are viewing <strong><%= UserSessionHelper.getStudentName() %>.</strong>'s MyPlan: functionalities are
+        limited except
         <a href="comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page">leaving
-        a message</a> to <%= UserSessionHelper.getStudentName() %>. <a href="#">Learn more about Adviser View</a>
+            a message</a> to <%= UserSessionHelper.getStudentName() %>. <a href="#">Learn more about Adviser View</a>
     </div>
     <% } %>
 </div>
