@@ -102,14 +102,14 @@
                                         <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
                                             <property name="items">
                                                 <list>
-                                                    <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
+                                                    <bean p:id="addUpdatePlanItem" parent="Uif-PrimaryActionButton-Small"
                                                           p:actionLabel="Add To Plan">
                                                         <property name="actionScript" value="
-                                                            var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addPlannedCourse', courseId:'@{courseSummaryDetails.courseId}'};
+                                                            var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', courseId:'@{courseSummaryDetails.courseId}'};
                                                             submitPopupForm(additionalFormData, e, false);
                                                         "/>
                                                         <property name="onDocumentReadyScript" value="
-                                                            jQuery('#addPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
+                                                            jQuery('#addUpdatePlanItem').on('PLAN_ITEM_ADDED', function(event, data){
                                                                 if (data.planItemType === 'planned' || data.planItemType === 'backup') {
                                                                     fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
                                                                 }
@@ -282,7 +282,7 @@
                                                           p:render="@{setToPlanning eq false and planItemId eq null}"
                                                           p:actionLabel="Copy">
                                                         <property name="actionScript" value="
-                                                            var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addPlannedCourse', courseId:'@{courseId}'};
+                                                            var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', courseId:'@{courseId}'};
                                                             submitPopupForm(additionalFormData, e, false);
                                                         "/>
                                                         <property name="onDocumentReadyScript" value="
@@ -500,7 +500,7 @@
                                                         <property name="actionScript" value="
                                                             var additionalFormData = {
                                                                 viewId: 'PlannedCourse-FormView',
-                                                                methodToCall: 'addPlannedCourse',
+                                                                methodToCall: 'addUpdatePlanItem',
                                                                 atpId: '@{#form.atpId}',
                                                                 backup: @{#form.backup},
                                                                 pageId: 'plan_item_add_page'
@@ -568,7 +568,7 @@
                                                         <property name="actionScript" value="
                                                             var additionalFormData = {
                                                                 viewId:'PlannedCourse-FormView',
-                                                                methodToCall:'addPlannedCourse',
+                                                                methodToCall:'addUpdatePlanItem',
                                                                 backup: @{#form.backup},
                                                                 atpId: @{#form.atpId}
                                                             };
@@ -616,7 +616,7 @@
                                                         <property name="actionScript" value="
                                                             var additionalFormData = {
                                                                 viewId: 'PlannedCourse-FormView',
-                                                                methodToCall: 'addPlannedCourse',
+                                                                methodToCall: 'addUpdatePlanItem',
                                                                 atpId: '@{#form.atpId}',
                                                                 backup: @{#form.backup},
                                                                 pageId: 'edit_note_page',
@@ -806,14 +806,14 @@
                             <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
                                 <property name="items">
                                     <list>
-                                        <bean p:id="addPlannedCourse" parent="Uif-PrimaryActionButton-Small"
+                                        <bean p:id="addUpdatePlanItem" parent="Uif-PrimaryActionButton-Small"
                                               p:actionLabel="Add To Plan">
                                             <property name="actionScript" value="
-                                                var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addPlannedCourse', courseId:'@{courseSummaryDetails.courseId}'};
+                                                var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', courseId:'@{courseSummaryDetails.courseId}'};
                                                 submitPopupForm(additionalFormData, e, false);
                                             "/>
                                             <property name="onDocumentReadyScript" value="
-                                                jQuery('#addPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
+                                                jQuery('#addUpdatePlanItem').on('PLAN_ITEM_ADDED', function(event, data){
                                                     if (data.planItemType === 'planned' || data.planItemType === 'backup') {
                                                          fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
                                                     }
