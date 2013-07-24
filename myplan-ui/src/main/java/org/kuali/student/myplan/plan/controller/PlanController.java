@@ -465,7 +465,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Make removed event before updating the plan item.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> removeEvent = makeRemoveEvent(planItem, courseDetails, planItem.getRefObjectId(), form, null);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> removeEvent = makeRemoveEvent(planItem, courseDetails, form, null);
 
         //  Update
         planItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
@@ -564,7 +564,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Make removed event before updating the plan item.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> removeEvent = makeRemoveEvent(planItem, courseDetails, planItem.getRefObjectId(), form, null);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> removeEvent = makeRemoveEvent(planItem, courseDetails, form, null);
 
         //  Set type to "planned".
         planItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
@@ -687,7 +687,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Create events before updating the plan item.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> originalRemoveEvents = makeRemoveEvent(planItem, courseDetails, planItem.getRefObjectId(), form, null);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> originalRemoveEvents = makeRemoveEvent(planItem, courseDetails, form, null);
         //  Save the source ATP ID to create credit total updates later.
         String originalAtpId = planItem.getPlanPeriods().get(0);
 
@@ -881,9 +881,9 @@ public class PlanController extends UifControllerBase {
      * @param httpresponse
      * @return
      */
-    @RequestMapping(params = "methodToCall=addPlannedCourse")
-    public ModelAndView addPlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
-                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+    @RequestMapping(params = "methodToCall=addUpdatePlanItem")
+    public ModelAndView addUpdatePlanItem(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
+                                          HttpServletRequest httprequest, HttpServletResponse httpresponse) {
         if (UserSessionHelper.isAdviser()) {
             return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
@@ -1109,7 +1109,7 @@ public class PlanController extends UifControllerBase {
                 }
 
                 //  Create wishList events before updating the plan item.
-                wishlistEvents = makeRemoveEvent(planItem, courseDetails, planItem.getRefObjectId(), form, null);
+                wishlistEvents = makeRemoveEvent(planItem, courseDetails, form, null);
                 planItem.setTypeKey(newType);
                 planItem.setPlanPeriods(Arrays.asList(newAtpId));
 
@@ -1176,22 +1176,17 @@ public class PlanController extends UifControllerBase {
         }
         String plannedTerm = null;
         try {
-            if (!addPlaceHolder) {
-                if (planItem != null) {
-                    plannedTerm = planItem.getPlanPeriods().get(0);
-                    events.putAll(makeAddEvent(planItem, courseDetails, form));
-                }
-                if (primaryPlanItem != null) {
-                    plannedTerm = primaryPlanItem.getPlanPeriods().get(0);
-                    events.putAll(makeAddEvent(primaryPlanItem, courseDetails, form));
-                }
-                if (secondaryPlanItem != null) {
-                    plannedTerm = secondaryPlanItem.getPlanPeriods().get(0);
-                    events.putAll(makeAddEvent(secondaryPlanItem, courseDetails, form));
-                }
-            } else {
+            if (planItem != null) {
                 plannedTerm = planItem.getPlanPeriods().get(0);
-                events.putAll(makePlaceHolderAddEvent(planItem));
+                events.putAll(makeAddEvent(planItem, courseDetails, form));
+            }
+            if (primaryPlanItem != null) {
+                plannedTerm = primaryPlanItem.getPlanPeriods().get(0);
+                events.putAll(makeAddEvent(primaryPlanItem, courseDetails, form));
+            }
+            if (secondaryPlanItem != null) {
+                plannedTerm = secondaryPlanItem.getPlanPeriods().get(0);
+                events.putAll(makeAddEvent(secondaryPlanItem, courseDetails, form));
             }
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to create add event.", e);
@@ -1303,6 +1298,7 @@ public class PlanController extends UifControllerBase {
             planItemInfo = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
 
             if (planItemInfo != null) {
+                String atpId = planItemInfo.getPlanPeriods().get(0);
                 String placeHolderId = null;
                 String placeHolderType = null;
                 String placeHolderCd = null;
@@ -1322,29 +1318,26 @@ public class PlanController extends UifControllerBase {
 
                 /*Course level PlaceHolder type and value update*/
                 if (hasText(form.getCourseCd())) {
-                    HashMap<String, String> divisionMap = getCourseHelper().fetchCourseDivisions();
+
                     DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(form.getCourseCd());
+
                     if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
                         String subject = courseCode.getSubject();
                         String number = courseCode.getNumber();
                         if (number.matches(PlanConstants.COURSE_PLACEHOLDER_REGEX)) {
-                            planItemInfo.setRefObjectId(form.getCourseCd());
+                            planItemInfo.setRefObjectId(String.format("%s %s", subject, number));
                             planItemInfo.setRefObjectType(PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL);
                         } else {
-                            ArrayList<String> divisions = new ArrayList<String>();
-                            getCourseHelper().extractDivisions(divisionMap, subject, divisions, false);
-                            if (!CollectionUtils.isEmpty(divisions)) {
-                                subject = divisions.get(0);
-                                String courseId = getCourseHelper().getCourseId(subject, number);
-                                CourseInfo courseInfo = getCourseHelper().getCourseInfo(courseId);
-                                String versionId = courseInfo.getVersionInfo().getVersionIndId();
-                                //  Check for duplicates since addPlanItem isn't being called.
-                                if (isDuplicate(planItemInfo.getPlanPeriods().get(0), versionId, planItemInfo.getTypeKey())) {
-                                    return doDuplicatePlanItem(form, planItemInfo.getPlanPeriods().get(0), courseInfo.getCode());
-                                }
-                                planItemInfo.setRefObjectId(courseInfo.getVersionInfo().getVersionIndId());
-                                planItemInfo.setRefObjectType(PlanConstants.COURSE_TYPE);
+                            String courseId = getCourseHelper().getCourseId(subject, number);
+                            CourseInfo courseInfo = getCourseHelper().getCourseInfo(courseId);
+                            String versionId = courseInfo.getVersionInfo().getVersionIndId();
+                            //  Check for duplicates since addPlanItem isn't being called.
+                            if (isDuplicate(atpId, versionId, planItemInfo.getTypeKey())) {
+                                return doDuplicatePlanItem(form, atpId, courseInfo.getCode());
                             }
+                            planItemInfo.setRefObjectId(courseInfo.getVersionInfo().getVersionIndId());
+                            planItemInfo.setRefObjectType(PlanConstants.COURSE_TYPE);
+
                         }
 
                     }
@@ -1365,7 +1358,17 @@ public class PlanController extends UifControllerBase {
                 planItemInfo.setDescr(richTextInfo);
 
                 String[] params = {};
-                getAcademicPlanService().updatePlanItem(planItemId, planItemInfo, PlanConstants.CONTEXT_INFO);
+                planItemInfo = getAcademicPlanService().updatePlanItem(planItemId, planItemInfo, PlanConstants.CONTEXT_INFO);
+
+                //  Create events
+                Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+                events.putAll(makeAddEvent(planItemInfo, null, form));
+
+                events.putAll(makeUpdateTotalCreditsEvent(atpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
+
+                form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
+                form.setJavascriptEvents(events);
+
                 return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_UPDATED_ITEM, params);
 
             }
@@ -1690,6 +1693,7 @@ public class PlanController extends UifControllerBase {
                 return doOperationFailedError(form, "Could not delete plan item", null);
             }
         }
+
         Map<String, String> planItemsToRemove = new HashMap<String, String>();
         if (!AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST.equals(planItem.getTypeKey())) {
             if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
@@ -1701,13 +1705,11 @@ public class PlanController extends UifControllerBase {
 
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
+
         //  Make events ...
 
-        if (isPlaceHolderType(planItem.getRefObjectType())) {
-            events.putAll(makeRemovePlaceHolderEvent(planItem, form, new ArrayList<String>(planItemsToRemove.values())));
-        } else {
-            events.putAll(makeRemoveEvent(planItem, null, courseId, form, new ArrayList<String>(planItemsToRemove.values())));
-        }
+        events.putAll(makeRemoveEvent(planItem, courseDetail, form, new ArrayList<String>(planItemsToRemove.values())));
+
         planItemsToRemove.put(planItemId, null);
         try {
             if (planItemsToRemove.size() > 0) {
@@ -2224,105 +2226,60 @@ public class PlanController extends UifControllerBase {
      * @param planItem
      * @return
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo
-                                                                                          planItem, CourseSummaryDetails courseDetails, String courseId, PlanForm planForm, List<String> itemsToUpdate) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemoveEvent(PlanItemInfo planItem, CourseSummaryDetails courseDetails, PlanForm planForm, List<String> itemsToUpdate) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
 
-        //  Only planned or backup items get an atpId attribute.
-        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
-                planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-            params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
-        }
         params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
         params.put("planItemId", planItem.getId());
-        //  Create Javascript events.
-        String courseDetailsAsJson;
-        try {
-            if (courseDetails == null) {
-                courseDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
-            }
-            //  Serialize course details into a string of JSON.
-            courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
-        } catch (Exception e) {
-            logger.error("Could not convert javascript events to JSON.", e);
-            throw new RuntimeException("Could not convert javascript events to JSON.", e);
-        }
-        String itemsToBeUpdated = null;
-        if (itemsToUpdate != null && itemsToUpdate.size() > 0) {
-            itemsToBeUpdated = StringUtils.join(itemsToUpdate.toArray(), ",");
+
+        String courseId = null;
+        if (!isPlaceHolderType(planItem.getRefObjectType())) {
+            params.put("courseId", courseDetails.getCourseId());
         }
 
-        params.put("courseDetails", courseDetailsAsJson);
-        if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
-            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, params);
-        } else {
-            params.put("SectionCode", planForm.getSectionCode());
-            params.put("RegistrationCode", planForm.getRegistrationCode());
-            params.put("InstituteCode", planForm.getInstituteCode());
-            params.put("shortTermName", AtpHelper.atpIdToShortTermName(planItem.getPlanPeriods().get(0)));
-            params.put("ItemsToUpdate", itemsToBeUpdated);
-            params.put("ActivityStateKey", planForm.getActivityStateKey());
-            if (courseDetails.getCourseId() != null && planForm.getInstituteCode() != null && planForm.getSectionCode() != null) {
-                String sectionCode = null;
-                List<String> sections = new ArrayList<String>();
-                if (!planForm.isPrimary()) {
-                    sectionCode = planForm.getSectionCode().substring(0, 1);
-                    sections.add(sectionCode);
-                    sections.addAll(getPlannedSectionsBySectionCd(courseDetails.getCode(), planItem, true, sectionCode).values());
-                    Collections.sort(sections);
-                    params.put("PrimaryDeleteHoverText", StringUtils.join(sections, ", "));
+        //  Only planned or backup items get an atpId attribute.
+        if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equals(planItem.getTypeKey()) ||
+                PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP.equals(planItem.getTypeKey())) {
+            params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
+
+            if (PlanConstants.SECTION_TYPE.equals(planItem.getRefObjectType())) {
+                String itemsToBeUpdated = null;
+                if (itemsToUpdate != null && itemsToUpdate.size() > 0) {
+                    itemsToBeUpdated = StringUtils.join(itemsToUpdate.toArray(), ",");
                 }
 
+                params.put("SectionCode", planForm.getSectionCode());
+                params.put("RegistrationCode", planForm.getRegistrationCode());
+                params.put("InstituteCode", planForm.getInstituteCode());
+                params.put("shortTermName", AtpHelper.atpIdToShortTermName(planItem.getPlanPeriods().get(0)));
+                params.put("ItemsToUpdate", itemsToBeUpdated);
+                params.put("ActivityStateKey", planForm.getActivityStateKey());
+
+                if (courseDetails.getCourseId() != null && planForm.getInstituteCode() != null && planForm.getSectionCode() != null) {
+                    String sectionCode = null;
+                    List<String> sections = new ArrayList<String>();
+                    if (!planForm.isPrimary()) {
+                        sectionCode = planForm.getSectionCode().substring(0, 1);
+                        sections.add(sectionCode);
+                        sections.addAll(getPlannedSectionsBySectionCd(courseDetails.getCode(), planItem, true, sectionCode).values());
+                        Collections.sort(sections);
+                        params.put("PrimaryDeleteHoverText", StringUtils.join(sections, ", "));
+                    }
+
+                }
             }
+
+
+        }
+
+
+        if (PlanConstants.SECTION_TYPE.equals(planItem.getRefObjectType())) {
             events.put(PlanConstants.JS_EVENT_NAME.SECTION_ITEM_DELETED, params);
-        }
-        return events;
-    }
-
-    /**
-     * @param planItem
-     * @param planForm
-     * @param itemsToUpdate
-     * @return
-     */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeRemovePlaceHolderEvent(PlanItemInfo planItem, PlanForm planForm, List<String> itemsToUpdate) {
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
-        Map<String, String> params = new HashMap<String, String>();
-
-        //  Only planned or backup items get an atpId attribute.
-        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
-                planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-            params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
-        }
-        params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
-        params.put("planItemId", planItem.getId());
-        //  Create Javascript events.
-        String courseDetailsAsJson;
-        try {
-            //  Serialize course details into a string of JSON.
-            courseDetailsAsJson = mapper.writeValueAsString(new CourseSummaryDetails());
-        } catch (Exception e) {
-            logger.error("Could not convert javascript events to JSON.", e);
-            throw new RuntimeException("Could not convert javascript events to JSON.", e);
-        }
-        String itemsToBeUpdated = null;
-        if (itemsToUpdate != null && itemsToUpdate.size() > 0) {
-            itemsToBeUpdated = StringUtils.join(itemsToUpdate.toArray(), ",");
-        }
-
-        params.put("courseDetails", courseDetailsAsJson);
-        if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
-            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, params);
         } else {
-            params.put("SectionCode", planForm.getSectionCode());
-            params.put("RegistrationCode", planForm.getRegistrationCode());
-            params.put("InstituteCode", planForm.getInstituteCode());
-            params.put("shortTermName", AtpHelper.atpIdToShortTermName(planItem.getPlanPeriods().get(0)));
-            params.put("ItemsToUpdate", itemsToBeUpdated);
-            params.put("ActivityStateKey", planForm.getActivityStateKey());
-            events.put(PlanConstants.JS_EVENT_NAME.SECTION_ITEM_DELETED, params);
+            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED, params);
         }
+
         return events;
     }
 
@@ -2354,35 +2311,43 @@ public class PlanController extends UifControllerBase {
      * @return
      * @throws RuntimeException if anything goes wrong.
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeAddEvent(PlanItemInfo
-                                                                                       planItem, CourseSummaryDetails courseDetails, PlanForm planForm) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeAddEvent(PlanItemInfo planItem, CourseSummaryDetails courseDetails, PlanForm planForm) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
         params.put("planItemId", planItem.getId());
         params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
+
         //  Only planned or backup items get an atpId attribute.
         if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
                 planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+
             String atpId = planItem.getPlanPeriods().get(0);
             String termName = AtpHelper.atpIdToTermName(atpId);
+
             params.put("atpId", formatAtpIdForUI(atpId));
-            // event for aler Icon
-            List<String> publishedTerms = AtpHelper.getPublishedTerms();
-            boolean scheduled = AtpHelper.isCourseOfferedInTerm(atpId, courseDetails.getCode());
-            boolean timeScheduleOpen = publishedTerms.contains(atpId);
+
             boolean showAlert = false;
-            if (timeScheduleOpen) {
-                showAlert = !scheduled;
-            }
             StringBuffer statusAlert = new StringBuffer();
-            if (timeScheduleOpen && !scheduled) {
-                statusAlert = statusAlert.append(String.format(PlanConstants.COURSE_NOT_SCHEDULE_ALERT, courseDetails.getCode(), termName));
+            if (!isPlaceHolderType(planItem.getRefObjectType())) {
+                // event for alert Icon
+                List<String> publishedTerms = AtpHelper.getPublishedTerms();
+                boolean scheduled = AtpHelper.isCourseOfferedInTerm(atpId, courseDetails.getCode());
+                boolean timeScheduleOpen = publishedTerms.contains(atpId);
+
+                if (timeScheduleOpen) {
+                    showAlert = !scheduled;
+                }
+
+
+                if (timeScheduleOpen && !scheduled) {
+                    statusAlert = statusAlert.append(String.format(PlanConstants.COURSE_NOT_SCHEDULE_ALERT, courseDetails.getCode(), termName));
+                }
+
             }
             params.put("showAlert", String.valueOf(showAlert));
-            params.put("termName", termName);
-            params.put("timeScheduleOpen", String.valueOf(timeScheduleOpen));
             params.put("statusAlert", statusAlert.toString());
-            if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
+
+            if (PlanConstants.SECTION_TYPE.equals(planItem.getRefObjectType())) {
                 params.put("SectionCode", planForm.getSectionCode());
                 params.put("RegistrationCode", planForm.getRegistrationCode());
                 params.put("PrimarySectionCode", planForm.getPrimarySectionCode());
@@ -2408,65 +2373,42 @@ public class PlanController extends UifControllerBase {
             }
         }
 
-
-        //  Create Javascript events.
-        String courseDetailsAsJson;
-        try {
-            //  Serialize course details into a string of JSON.
-            mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            courseDetailsAsJson = mapper.writeValueAsString(courseDetails);
-        } catch (Exception e) {
-            throw new RuntimeException("Could not convert javascript events to JSON.", e);
+        String planItemShortTitle = null;
+        String planItemLongTitle = null;
+        String courseId = null;
+        String credit = null;
+        if (isPlaceHolderType(planItem.getRefObjectType())) {
+            if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
+                planItemShortTitle = planItem.getRefObjectId();
+                planItemLongTitle = planItem.getRefObjectId();
+                credit = getCreditFromAttributes(planItem.getAttributes());
+            } else {
+                planItemShortTitle = EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), planItem.getRefObjectType());
+                planItemLongTitle = EnumerationHelper.getEnumValueForCodeByType(planItem.getRefObjectId(), planItem.getRefObjectType());
+                credit = getCreditFromAttributes(planItem.getAttributes());
+            }
+        } else {
+            planItemShortTitle = courseDetails.getCode();
+            planItemLongTitle = courseDetails.getCourseTitle();
+            courseId = courseDetails.getCourseId();
+            credit = courseDetails.getCredit();
         }
-        params.put("courseDetails", courseDetailsAsJson);
-        if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
-            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, params);
-        } else if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
+
+        params.put("planItemShortTitle", planItemShortTitle);
+        params.put("planItemLongTitle", planItemLongTitle);
+        params.put("courseId", courseId);
+        params.put("credit", credit);
+
+
+        if (PlanConstants.SECTION_TYPE.equals(planItem.getRefObjectType())) {
             events.put(PlanConstants.JS_EVENT_NAME.SECTION_ITEM_ADDED, params);
+        } else {
+            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, params);
         }
+
         return events;
     }
 
-
-    /**
-     * Creates an add plan item event.
-     *
-     * @param planItem
-     * @return
-     * @throws RuntimeException if anything goes wrong.
-     */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makePlaceHolderAddEvent(PlanItemInfo planItem) {
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
-
-        Map<String, String> params = new HashMap<String, String>();
-
-        params.put("planItemId", planItem.getId());
-        params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
-
-        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
-                planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-            String atpId = planItem.getPlanPeriods().get(0);
-            String termName = AtpHelper.atpIdToTermName(atpId);
-            params.put("atpId", formatAtpIdForUI(atpId));
-            params.put("termName", termName);
-        }
-
-
-        /*TODO: adding these as the current events needs this once the js is updated to handle the place holders then remove this*/
-        //  Create Javascript events.
-        String courseDetailsAsJson;
-        try {
-            //  Serialize course details into a string of JSON.
-            mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            courseDetailsAsJson = mapper.writeValueAsString(new CourseSummaryDetails());
-        } catch (Exception e) {
-            throw new RuntimeException("Could not convert javascript events to JSON.", e);
-        }
-        params.put("courseDetails", courseDetailsAsJson);
-        events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, params);
-        params.put("statusAlert", "");
-        return events;
-    }
 
     private String formatAtpIdForUI(String atpId) {
         return atpId.replaceAll("\\.", "-");

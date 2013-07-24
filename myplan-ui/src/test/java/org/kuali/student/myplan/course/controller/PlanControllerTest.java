@@ -2,17 +2,11 @@ package org.kuali.student.myplan.course.controller;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kuali.rice.kim.api.identity.principal.Principal;
-import org.kuali.rice.kim.impl.identity.PersonImpl;
-import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.myplan.course.service.CoursePreReqSearch;
 import org.kuali.student.myplan.plan.controller.PlanController;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -70,7 +64,7 @@ public class PlanControllerTest {
 
         planForm.setViewId("PlannedCourse-FormView");
         PlanController controller = getPlanController();
-        controller.addPlannedCourse(planForm, null, null, null);
+        controller.addUpdatePlanItem(planForm, null, null, null);
         assertTrue(planForm.getPlanItemId() != null);
     }
 
