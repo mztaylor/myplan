@@ -31,6 +31,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.springframework.util.CollectionUtils;
 
 import javax.xml.namespace.QName;
 import java.io.StringReader;
@@ -147,25 +148,42 @@ public class CourseHelperImpl implements CourseHelper {
         String activityCd = null;
         if (courseCode.matches(CourseSearchConstants.FORMATTED_COURSE_CODE_REGEX)) {
             String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
-            subject = splitStr[0].trim();
+            subject = getDivisionVerifiedSubject(splitStr[0].trim());
             number = splitStr[1].trim();
         } else if (courseCode.matches(CourseSearchConstants.COURSE_CODE_WITH_SECTION_REGEX)) {
             activityCd = courseCode.substring(courseCode.lastIndexOf(" "), courseCode.length()).trim();
             courseCode = courseCode.substring(0, courseCode.lastIndexOf(" ")).trim();
             String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
-            subject = splitStr[0].trim();
+            subject = getDivisionVerifiedSubject(splitStr[0].trim());
             number = splitStr[1].trim();
         } else if (courseCode.matches(CourseSearchConstants.UNFORMATTED_COURSE_CODE_REGEX)) {
             String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
-            subject = splitStr[0].trim();
+            subject = getDivisionVerifiedSubject(splitStr[0].trim());
             number = splitStr[1].trim();
         } else if (courseCode.matches(CourseSearchConstants.UNFORMATTED_COURSE_PLACE_HOLDER_REGEX)) {
             int size = courseCode.length();
             int splitIndex = size - 3;
-            subject = courseCode.substring(0, splitIndex);
+            subject = getDivisionVerifiedSubject(courseCode.substring(0, splitIndex));
             number = courseCode.substring(splitIndex, size);
         }
         return new DeconstructedCourseCode(subject, number, activityCd);
+    }
+
+    /**
+     * Used to get the division verified subject
+     * Eg "A S" if typed in as AS it is matched in division map and actual "A S" is returned
+     *
+     * @param subject
+     * @return
+     */
+    private String getDivisionVerifiedSubject(String subject) {
+        HashMap<String, String> divisionMap = fetchCourseDivisions();
+        ArrayList<String> divisions = new ArrayList<String>();
+        extractDivisions(divisionMap, subject, divisions, false);
+        if (!CollectionUtils.isEmpty(divisions)) {
+            return divisions.get(0);
+        }
+        return subject;
     }
 
     /**

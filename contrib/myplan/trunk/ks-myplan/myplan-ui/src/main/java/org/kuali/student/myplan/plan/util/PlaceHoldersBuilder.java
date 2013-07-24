@@ -30,7 +30,7 @@ public class PlaceHoldersBuilder extends KeyValuesBase {
 
 
         for (EnumeratedValueInfo enumValue : enums) {
-            list.add(new ConcreteKeyValue(enumValue.getCode(), String.format("%s (%s) - Gen. Edu. Req.", enumValue.getAbbrevValue(), enumValue.getValue())));
+            list.add(new ConcreteKeyValue(String.format("%s|%s", enumValue.getCode(), enumValue.getEnumerationKey()), String.format("%s (%s) - Gen. Edu. Req.", enumValue.getAbbrevValue(), enumValue.getValue())));
         }
 
         return list;

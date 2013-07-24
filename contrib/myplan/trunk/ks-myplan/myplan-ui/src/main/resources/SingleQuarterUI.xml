@@ -814,7 +814,7 @@
                     <property name="width" value="618px"/>
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-SimpleDataField" p:propertyName="courseDetails.code">
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="courseDetails.code" p:render="@{#line.courseDetails.code NE null}">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>ksap-text-bold</value>
@@ -823,7 +823,16 @@
                                 <property name="style" value="margin:0 5px 0 0;"/>
                             </bean>
 
-                            <bean parent="Uif-LinkField" p:width="350px">
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="placeHolderCode" p:render="@{#line.placeHolderCode NE null}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>ksap-text-bold</value>
+                                    </list>
+                                </property>
+                                <property name="style" value="margin:0 5px 0 0;"/>
+                            </bean>
+
+                            <bean parent="Uif-LinkField" p:width="350px" p:render="@{#line.courseDetails.courseTitle ne null}">
                                 <property name="linkText" value="@{#line.courseDetails.courseTitle}"/>
                                 <property name="title" value="@{#line.courseDetails.courseTitle} "/>
                                 <property name="href"
@@ -835,6 +844,7 @@
                                     </list>
                                 </property>
                             </bean>
+
 
                             <!--<bean parent="KSAP-MessageField" p:messageText="(@{#line.courseDetails.credit})">
                                 <property name="style" value="margin:0 25px 0 0;"/>

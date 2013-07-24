@@ -239,7 +239,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                 }
             }
 
-        } else if (addPlaceHolders && planItemInfo.getTypeKey().equals(planItemType) && PlanConstants.PLACE_HOLDER_TYPE_GENERAL.equals(planItemInfo.getRefObjectType())) {
+        } else if (addPlaceHolders && planItemInfo.getTypeKey().equals(planItemType) && (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItemInfo.getRefObjectType()) || PlanConstants.PLACE_HOLDER_TYPE.equals(planItemInfo.getRefObjectType()))) {
             PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
             PlanItemDataObject planItemData = PlanItemDataObject.build(planItemInfo);
             plannedCourse.setPlanItemDataObject(planItemData);
@@ -256,7 +256,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             }
             plannedCourseList.add(plannedCourse);
 
-        } else if (addPlaceHolders && planItemInfo.getTypeKey().equals(planItemType) && PlanConstants.PLACE_HOLDER_TYPE_COURSE.equals(planItemInfo.getRefObjectType())) {
+        } else if (addPlaceHolders && planItemInfo.getTypeKey().equals(planItemType) && PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItemInfo.getRefObjectType())) {
             PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
             PlanItemDataObject planItemData = PlanItemDataObject.build(planItemInfo);
             plannedCourse.setPlanItemDataObject(planItemData);

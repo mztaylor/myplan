@@ -19,12 +19,15 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
     public static final String SECTION_TYPE = "kuali.lui.type.activity.offering";
-    public static final String PLACE_HOLDER_TYPE_GENERAL = "uw.academicPlan.general.placeHolder";
-    public static final String PLACE_HOLDER_TYPE_COURSE = "uw.academicPlan.course.placeHolder";
+    public static final String PLACE_HOLDER_TYPE_GEN_ED = "kuali.uw.lu.genedreq";
+    public static final String PLACE_HOLDER_TYPE = "uw.academicplan.placeholder";
+    public static final String PLACE_HOLDER_TYPE_COURSE_LEVEL = " uw.cluset.type.course.level";
 
     public static final String GEN_EDU_ENUM_KEY = "kuali.uw.lu.genedreq";
     public static final String PLACE_HOLDER_ENUM_KEY = "uw.academicplan.placeholder";
     public static final String PLACE_HOLDER_OTHER_CODE = "uw.academicplan.placeholder.other";
+
+    public static final String CODE_KEY_SEPARATOR = "\\|";
 
 
     // CRUD operations positive feedback.
@@ -121,7 +124,6 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String COURSE_NOT_SCHEDULE_ALERT = "%s is not scheduled for %s. ";
 
 
-
     /*Query keys for getting the termInfos from the academic calender*/
     public static final String PLANNING = "PLANNING";
     public static final String INPROGRESS = "INPROGRESS";
@@ -138,7 +140,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String SESSION_KEY_IS_ADVISER = "kuali.uw.authz.adviser";
     public static final String SESSION_KEY_STUDENT_ID = "kuali.uw.authn.studentId";
     public static final String SESSION_KEY_STUDENT_NAME = "kuali.uw.authn.studentName";
-    public static final String SESSION_KEY_STUDENT_NUMBER = "kuali.uw.authn.studentNumber";        
+    public static final String SESSION_KEY_STUDENT_NUMBER = "kuali.uw.authn.studentNumber";
 
     /**
      * Names of javascript events that can be scheduled in response to the outcome of a plan item request.
