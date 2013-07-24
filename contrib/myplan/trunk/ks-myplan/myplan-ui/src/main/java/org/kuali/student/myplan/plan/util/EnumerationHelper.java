@@ -54,23 +54,16 @@ public class EnumerationHelper {
      */
     public static EnumeratedValueInfo getEnumValueInfoForCodeByType(String code, String key) {
         EnumeratedValueInfo enumValueInfo = null;
-        try {
-            List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-            if (!getEnumServiceCache().containsKey(key)) {
-                enumeratedValueInfoList = getEnumerationValueInfoList(key);
-            } else {
-                enumeratedValueInfoList = getEnumServiceCache().get(key);
+
+        List<EnumeratedValueInfo> enumeratedValueInfoList = getEnumerationValueInfoList(key);
+        for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
+            String enumCode = enumVal.getCode();
+            if (enumCode.equalsIgnoreCase(code)) {
+                enumValueInfo = enumVal;
+                break;
             }
-            for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
-                String enumCode = enumVal.getCode();
-                if (enumCode.equalsIgnoreCase(code)) {
-                    enumValueInfo = enumVal;
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Could not load enumerationValueInfo for code " + code);
         }
+
         return enumValueInfo;
     }
 
@@ -83,11 +76,16 @@ public class EnumerationHelper {
      */
     public static List<EnumeratedValueInfo> getEnumerationValueInfoList(String key) {
         List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-        try {
-            enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(key, null, null, null);
-            getEnumServiceCache().put(key, enumeratedValueInfoList);
-        } catch (Exception e) {
-            logger.error("Could not load the enum list", e);
+
+        if (getEnumServiceCache().containsKey(key)) {
+            enumeratedValueInfoList = getEnumServiceCache().get(key);
+        } else {
+            try {
+                enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(key, null, null, null);
+                getEnumServiceCache().put(key, enumeratedValueInfoList);
+            } catch (Exception e) {
+                logger.error("Could not load the enum list", e);
+            }
         }
         return enumeratedValueInfoList;
     }
@@ -101,26 +99,15 @@ public class EnumerationHelper {
      */
     public static String getEnumAbbrValForCodeByType(String code, String key) {
         String enumAbbrValue = null;
-        try {
-
-            List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-            if (!getEnumServiceCache().containsKey(key)) {
-                enumeratedValueInfoList = getEnumerationValueInfoList(key);
-            } else {
-                enumeratedValueInfoList = getEnumServiceCache().get(key);
+        List<EnumeratedValueInfo> enumeratedValueInfoList = getEnumerationValueInfoList(key);
+        for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
+            String enumCode = enumVal.getCode();
+            if (enumCode.equalsIgnoreCase(code)) {
+                enumAbbrValue = enumVal.getAbbrevValue();
+                break;
             }
-            for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
-                String enumCode = enumVal.getCode();
-                if (enumCode.equalsIgnoreCase(code)) {
-                    enumAbbrValue = enumVal.getAbbrevValue();
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Could not load enumeration value info for code " + code);
         }
         return enumAbbrValue;
-
     }
 
     /**
@@ -132,26 +119,17 @@ public class EnumerationHelper {
      */
     public static String getEnumValueForCodeByType(String code, String key) {
         String enumAbbrValue = null;
-        try {
 
-            List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-            if (!getEnumServiceCache().containsKey(key)) {
-                enumeratedValueInfoList = getEnumerationValueInfoList(key);
-            } else {
-                enumeratedValueInfoList = getEnumServiceCache().get(key);
+        List<EnumeratedValueInfo> enumeratedValueInfoList = getEnumerationValueInfoList(key);
+        for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
+            String enumCode = enumVal.getCode();
+            if (enumCode.equalsIgnoreCase(code)) {
+                enumAbbrValue = enumVal.getValue();
+                break;
             }
-            for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
-                String enumCode = enumVal.getCode();
-                if (enumCode.equalsIgnoreCase(code)) {
-                    enumAbbrValue = enumVal.getValue();
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Could not get the Enum value for code " + code);
         }
-        return enumAbbrValue;
 
+        return enumAbbrValue;
     }
 
     /**
@@ -163,27 +141,17 @@ public class EnumerationHelper {
      */
     public static String getEnumCodeForAbbrValByType(String abbrVal, String key) {
         String enumCode = null;
-        try {
 
-            List<EnumeratedValueInfo> enumeratedValueInfoList = null;
-            if (!getEnumServiceCache().containsKey(key)) {
-                enumeratedValueInfoList = getEnumerationValueInfoList(key);
-            } else {
-                enumeratedValueInfoList = getEnumServiceCache().get(key);
+        List<EnumeratedValueInfo> enumeratedValueInfoList = getEnumerationValueInfoList(key);
+        for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
+            String enumAbbrVal = enumVal.getAbbrevValue();
+            if (enumAbbrVal.equalsIgnoreCase(abbrVal)) {
+                enumCode = enumVal.getCode();
+                break;
             }
-            for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
-                String enumAbbrVal = enumVal.getAbbrevValue();
-                if (enumAbbrVal.equalsIgnoreCase(abbrVal)) {
-                    enumCode = enumVal.getCode();
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Could not get the code value for abbreviated value " + abbrVal);
         }
+
         return enumCode;
-
     }
-
 
 }
