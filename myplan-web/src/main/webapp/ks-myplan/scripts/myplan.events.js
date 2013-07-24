@@ -3,29 +3,23 @@
  Function: add course to quarter plan view
  #################################################################
  */
-function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseCredits, showAlert, termName, timeScheduleOpen, sections, statusAlert) {
-    var item = '<div id="' + planItemId + '_' + type + '_' + atpId + '_div" class="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem">' +
+function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseCredits, showAlert, sections, statusAlert) {
+    var item = '<div id="' + planItemId + '_' + type + '_' + atpId + '_div" class="uif-verticalBoxGroup uif-collectionItem">' +
         '<div class="uif-boxLayout uif-verticalBoxLayout clearfix">' +
-        '<div id="' + planItemId + '_' + type + '_' + atpId + '" class="uif-field uif-fieldGroup uif-horizontalFieldGroup myplan-course-valid ' + ((showAlert == "true") ? 'alert' : '') + '" title="' + courseTitle + '" data-planitemid="' + planItemId + '" data-atpid="' + atpId.replace(/-/g, ".") + '">' +
+        '<div id="' + planItemId + '_' + type + '_' + atpId + '" class="uif-horizontalFieldGroup myplan-course-valid ' + ((showAlert == "true") ? 'alert' : '') + '" title="' + courseTitle + '" data-planitemid="' + planItemId + '" data-atpid="' + atpId.replace(/-/g, ".") + '">' +
         '<fieldset>' +
-        '<div class="uif-group uif-boxGroup uif-horizontalBoxGroup">' +
-        '<div class="uif-boxLayout uif-horizontalBoxLayout clearfix">';
-    if (statusAlert.length > 0) {
-        item += '<div class="' + ((showAlert == "true") ? 'alert-icon' : '') + ' uif-field uif-imageField uif-boxLayoutHorizontalItem " title="' + statusAlert + '">' +
+        '<div class="uif-horizontalBoxGroup">' +
+        '<div class="uif-horizontalBoxLayout clearfix">';
+    if (showAlert == "true") {
+        item += '<div class="planItemAlert uif-boxLayoutHorizontalItem" title="' + statusAlert + '">' +
             '<img src="/student/ks-myplan/images/pixel.gif" alt="' + statusAlert + '" class="uif-image"/>' +
             '</div>';
     }
-    var sectionsDiv = '';
+    item += '<div class="planItemTitle uif-boxLayoutHorizontalItem">' + courseCode + '</div>';
     if (sections) {
-        sectionsDiv = '<div class="uif-field uif-messageField sections uif-boxLayoutHorizontalItem myplan-text-ellipsis"> <span class="uif-message">' +
-            sections + '</span></div>';
+        item += '<div class="planItemActivities myplan-text-ellipsis uif-boxLayoutHorizontalItem">' + sections + '</div>';
     }
-    item += '<div class="uif-field uif-messageField code uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem">' +
-        '<span class="uif-message">' + courseCode + '</span>' +
-        '</div>' + sectionsDiv +
-        '<div class="uif-field uif-messageField credit uif-boxLayoutHorizontalItem uif-boxLayoutHorizontalItem">' +
-        '<span class="uif-message">(' + courseCredits + ')</span>' +
-        '</div>' +
+    item += '<div class="planItemCredit uif-boxLayoutHorizontalItem">(' + courseCredits + ')</div>' +
         '</div>' +
         '</div>' +
         '</fieldset>' +
@@ -41,7 +35,7 @@ function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseC
     runHiddenScripts(planItemId + "_" + type + "_" + atpId + "_div");
 
     jQuery("#" + planItemId + "_" + type + "_" + atpId + "_div").show().animate({backgroundColor:"#ffffff"}, 3000);
-    truncateField(planItemId + "_" + type + "_" + atpId + "_div", 12, true);
+    truncateField(planItemId + "_" + type + "_" + atpId + "_div", true);
 }
 /*
  #################################################################
@@ -133,7 +127,7 @@ function fnRestoreDetailsAddButton(courseId) {
     jQuery("#" + courseId + "_bookmarked").wrap("<div></div>");
     jQuery("#" + courseId + "_bookmarked").parent("div").fadeOut(250, function () {
         jQuery(this).html('<button id="' + courseId + '_addSavedCourse" class="uif-action uif-secondaryActionButton uif-boxLayoutHorizontalItem" onclick="var additionalFormData = {viewId:\'PlannedCourse-FormView\', methodToCall:\'addSavedCourse\', courseId:\'' + courseId + '\'}; submitHiddenForm(\'plan\', additionalFormData, event);">Bookmark Course</button>');
-        jQuery(this).siblings("input[data-role='script']").removeAttr("script").attr("name", "script").val("jQuery(document).ready(function () {jQuery('#" + courseId + "_addSavedCourse').on('PLAN_ITEM_ADDED', function (event, data) {if (data.planItemType === 'wishlist') {fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId + '_addSavedCourse', true, false,false);}});});");
+        jQuery(this).siblings("input[data-role='script']").removeAttr("script").attr("name", "script").val("jQuery(document).ready(function () {jQuery('#" + courseId + "_addSavedCourse').on('PLAN_ITEM_ADDED', function (event, data) {if (data.planItemType === 'wishlist') {fnDisplayMessage(data.message, data.cssClass, data.courseId + '_addSavedCourse', true, false,false);}});});");
         runHiddenScripts();
         jQuery(this).fadeIn(250);
     });
@@ -170,8 +164,8 @@ function fnToggleSectionAction(actionId, regId, action, data, primaryPlan) {
         case "deleted":
             component.removeClass('myplan-delete').addClass('myplan-add').attr("data-planned", "false").data("planned", false).parent("td").removeClass('myplan-delete').addClass('myplan-add');
             row.removeClass('myplan-section-planned').next('tr.collapsible').removeClass('myplan-section-planned').next('tr.collapsible').removeClass('myplan-section-planned');
-            script = "jQuery('#' + '" + actionId + "').click(function(e) { var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', courseId:'" + data.courseDetails.courseId + "', sectionCode:'" + component.data("coursesection") + "', atpId:'" + data.atpId.replace(/-/g, '.') + "', instituteCode:'" + data.InstituteCode + "', registrationCode:'" + regId + "', primary:" + component.data("primary") + "}; submitHiddenForm('plan', additionalFormData, e); }); ";
-            if (jQuery("#" + data.courseDetails.courseId + "_toggle").data("hidden")) {
+            script = "jQuery('#' + '" + actionId + "').click(function(e) { var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', courseId:'" + data.courseId + "', sectionCode:'" + component.data("coursesection") + "', atpId:'" + data.atpId.replace(/-/g, '.') + "', instituteCode:'" + data.InstituteCode + "', registrationCode:'" + regId + "', primary:" + component.data("primary") + "}; submitHiddenForm('plan', additionalFormData, e); }); ";
+            if (jQuery("#" + data.courseId + "_toggle").data("hidden")) {
                 row.hide().next('tr.collapsible').hide().next('tr.collapsible').hide();
             }
             break;
@@ -179,12 +173,12 @@ function fnToggleSectionAction(actionId, regId, action, data, primaryPlan) {
             component.removeClass('myplan-delete').attr("data-planned", "false").data("planned", false).html("--").parent("td").removeClass('myplan-delete');
             row.removeClass('myplan-section-planned');
             script = "jQuery('#' + '" + actionId + "').off('click'); ";
-            if (jQuery("#" + data.courseDetails.courseId + "_toggle").data("hidden")) {
+            if (jQuery("#" + data.courseId + "_toggle").data("hidden")) {
                 row.hide();
             }
             break;
     }
-    if (action != "suspended") script += "jQuery('#' + '" + actionId + "').mouseover(function(){ buildHoverText(jQuery(this));}); ";
+    if (action != "suspended") script += "jQuery('#' + '" + actionId + "').mouseover(function(){ buildHoverText(jQuery(this)); }); ";
     updateHiddenScript(actionId, script);
 }
 

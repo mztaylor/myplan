@@ -599,9 +599,9 @@
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
-            truncateField('planned_courses_detail_list', 12, true);
+            truncateField('planned_courses_detail_list', true);
             jQuery('#planned_courses_detail_list').on('PLAN_ITEM_ADDED', function(event, data) {
-                fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.courseDetails.code, data.courseDetails.courseTitle, data.courseDetails.credit, data.showAlert, data.termName, data.timeScheduleOpen, data.sections, data.statusAlert);
+                fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.planItemShortTitle, data.planItemLongTitle, data.credit, data.showAlert, data.sections, data.statusAlert);
             }).on('PLAN_ITEM_DELETED', function(event, data) {
                 fnRemovePlanItem(data.atpId, data.planItemType, data.planItemId);
             }).on('UPDATE_NEW_TERM_TOTAL_CREDITS', function(event, data) {
@@ -782,47 +782,58 @@
         </property>
     </bean>
 
-    <bean id="planItemAlerts" parent="Uif-ImageField"
+    <bean id="planItemAlert" parent="Uif-ImageField"
           p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
           p:title="@{#line.alertsAsString}"
           p:altText="@{#line.alertsAsString}"
           p:render="@{#line.showAlert}">
         <property name="cssClasses">
-            <list merge="true">
-                <value>alert-icon</value>
+            <list merge="false">
+                <value>planItemAlert</value>
             </list>
         </property>
     </bean>
-    <bean id="planItemCourseCode" parent="KSAP-MessageField">
+    <bean id="planItemTitle" parent="KSAP-MessageField">
         <property name="messageText"
                   value="@{#line.placeHolderCode eq null ? #line.courseDetails.code : #line.placeHolderCode}"/>
         <property name="cssClasses">
-            <list merge="true">
-                <value>code</value>
+            <list merge="false">
+                <value>planItemTitle</value>
             </list>
         </property>
     </bean>
-    <bean id="planItemActivityCode" parent="KSAP-MessageField" p:render="@{#line.sections NE ''}">
+    <bean id="planItemActivities" parent="KSAP-MessageField" p:render="@{#line.sections NE ''}">
         <property name="messageText" value="@{#line.sections}"/>
         <property name="cssClasses">
-            <list merge="true">
-                <value>sections</value>
+            <list merge="false">
+                <value>planItemActivities</value>
                 <value>myplan-text-ellipsis</value>
             </list>
         </property>
     </bean>
-    <bean id="planItemCredit" parent="KSAP-MessageField" p:render="@{#line.placeHolderCredit NE null OR #line.credit NE null}">
+    <bean id="planItemCredit" parent="KSAP-MessageField"
+          p:render="@{#line.credit NE null OR #line.placeHolderCredit NE null}">
         <property name="messageText"
                   value="(@{#line.placeHolderCredit EQ null ? #line.credit : #line.placeHolderCredit})"/>
         <property name="cssClasses">
-            <list merge="true">
-                <value>credit</value>
+            <list merge="false">
+                <value>planItemCredit</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="planItemNote" parent="Uif-ImageField" p:render="false"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+          p:title="Note"
+          p:altText="Note">
+        <property name="cssClasses">
+            <list merge="false">
+                <value>planItemNote</value>
             </list>
         </property>
     </bean>
 
     <bean id="planItemGroup" parent="KSAP-HorizontalFieldGroup" p:title="@{#line.courseDetails.courseTitle}"
-          p:render="@{#line.courseDetails.code ne null OR #line.placeHolderCode ne null}">
+          p:render="@{#line.courseDetails.code NE null OR #line.placeHolderCode NE null}">
         <property name="dataAttributes">
             <map>
                 <entry key="courseid" value="@{#line.courseDetails.courseId}"/>
@@ -839,10 +850,11 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="planItemAlerts"/>
-                <bean parent="planItemCourseCode"/>
-                <bean parent="planItemActivityCode"/>
+                <bean parent="planItemAlert"/>
+                <bean parent="planItemTitle"/>
+                <bean parent="planItemActivities"/>
                 <bean parent="planItemCredit"/>
+                <bean parent="planItemNote"/>
             </list>
         </property>
     </bean>
@@ -870,7 +882,7 @@
         <property name="layoutManager.lineGroupPrototype.id"
                   value="@{#line.planItemDataObject.id}_planned_@{#line.planItemDataObject.atp.replace('.','-')}_div"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses"
-                  value="uif-group uif-boxGroup uif-verticalBoxGroup uif-collectionItem uif-boxCollectionItem uif-tooltip"/>
+                  value="uif-verticalBoxGroup uif-collectionItem uif-tooltip"/>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -945,6 +957,8 @@
                 <entry key="size" value="@{#line.backupList.size()}"/>
             </map>
         </property>
+        <property name="layoutManager.lineGroupPrototype.id"
+                  value="@{#line.planItemDataObject.id}_backup_@{#line.planItemDataObject.atp.replace('.','-')}_div"/>
         <property name="header.rightGroup.items">
             <list>
                 <bean parent="backup_help_icon"/>

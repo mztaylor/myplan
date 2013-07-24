@@ -97,7 +97,7 @@ function setUrlParam(key, value) {
 if (readUrlHash("modified")) {
     var url = window.location.href;
     var aHash = window.location.href.split("#")[1].replace("#", "").split("&");
-    aHash.splice("modified=true", 1);
+    aHash.splice(aHash.indexOf("modified=true"), 1);
     window.location.assign(url.split("#")[0] + ((aHash.length > 0) ? "#" + aHash.join("&") : ""));
 }
 
@@ -646,21 +646,22 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
  fit on one line.
  ######################################################################################
  */
-function truncateField(id, margin, floated) {
+function truncateField(id, floated) {
     jQuery("#" + id + " .uif-horizontalFieldGroup").each(function () {
         var itemSelector = ".uif-horizontalBoxGroup > .uif-horizontalBoxLayout > .uif-boxLayoutHorizontalItem";
-        if (jQuery(this).find(itemSelector + ".myplan-text-ellipsis").length != 0) {
+        var ellipsisItem = jQuery(this).find(itemSelector + ".myplan-text-ellipsis");
+        if (ellipsisItem.length != 0) {
             jQuery(this).css("display", "block");
             var fixed = 0;
             jQuery(this).find(itemSelector + ":not(.myplan-text-ellipsis)").each(function () {
-                fixed = fixed + jQuery(this).width();
+                fixed = fixed + jQuery(this).outerWidth(true);
             });
-            var ellipsis = jQuery(this).width() - ( ( fixed + 1 ) + margin );
+            var available = jQuery(this).width() - ( fixed + ( ellipsisItem.outerWidth(true) - ellipsisItem.width() ) );
             if (!floated) {
-                jQuery(this).find(itemSelector + ".myplan-text-ellipsis").width(ellipsis);
+                ellipsisItem.width(available);
             } else {
-                if (jQuery(this).find(itemSelector + ".myplan-text-ellipsis").width() >= ellipsis) {
-                    jQuery(this).find(itemSelector + ".myplan-text-ellipsis").width(ellipsis);
+                if (ellipsisItem.width() >= available) {
+                    ellipsisItem.width(available);
                 }
             }
         }

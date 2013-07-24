@@ -102,7 +102,8 @@
                                         <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
                                             <property name="items">
                                                 <list>
-                                                    <bean p:id="addUpdatePlanItem" parent="Uif-PrimaryActionButton-Small"
+                                                    <bean p:id="addUpdatePlanItem"
+                                                          parent="Uif-PrimaryActionButton-Small"
                                                           p:actionLabel="Add To Plan">
                                                         <property name="actionScript" value="
                                                             var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', courseId:'@{courseSummaryDetails.courseId}'};
@@ -1100,7 +1101,7 @@
     </bean>
 
     <!-- Option list of credit values for placeholders -->
-    <bean id="dropdownPlaceholderCredits" parent="Uif-DropdownControl">
+    <bean id="dropdownPlaceholderCredits" parent="Uif-DropdownControl" p:disabled="false">
         <property name="options">
             <list>
                 <bean parent="Uif-KeyLabelPair" p:key="" p:value="Credit"/>
@@ -1114,6 +1115,21 @@
                 <bean parent="Uif-KeyLabelPair" p:key="8" p:value="8"/>
                 <bean parent="Uif-KeyLabelPair" p:key="9" p:value="9"/>
                 <bean parent="Uif-KeyLabelPair" p:key="10" p:value="10"/>
+                <bean parent="Uif-KeyLabelPair" p:key="11" p:value="11"/>
+                <bean parent="Uif-KeyLabelPair" p:key="12" p:value="12"/>
+                <bean parent="Uif-KeyLabelPair" p:key="13" p:value="13"/>
+                <bean parent="Uif-KeyLabelPair" p:key="14" p:value="14"/>
+                <bean parent="Uif-KeyLabelPair" p:key="15" p:value="15"/>
+                <bean parent="Uif-KeyLabelPair" p:key="16" p:value="16"/>
+                <bean parent="Uif-KeyLabelPair" p:key="17" p:value="17"/>
+                <bean parent="Uif-KeyLabelPair" p:key="18" p:value="18"/>
+                <bean parent="Uif-KeyLabelPair" p:key="19" p:value="19"/>
+                <bean parent="Uif-KeyLabelPair" p:key="20" p:value="20"/>
+                <bean parent="Uif-KeyLabelPair" p:key="21" p:value="21"/>
+                <bean parent="Uif-KeyLabelPair" p:key="22" p:value="22"/>
+                <bean parent="Uif-KeyLabelPair" p:key="23" p:value="23"/>
+                <bean parent="Uif-KeyLabelPair" p:key="24" p:value="24"/>
+                <bean parent="Uif-KeyLabelPair" p:key="25" p:value="25"/>
             </list>
         </property>
     </bean>
