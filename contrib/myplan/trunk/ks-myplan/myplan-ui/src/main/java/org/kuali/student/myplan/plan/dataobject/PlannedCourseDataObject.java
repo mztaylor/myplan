@@ -30,7 +30,13 @@ public class PlannedCourseDataObject implements Comparable {
     // TODO: KULRICE-9003. This should be on plannedTerm once the jira is resolved
     private transient boolean timeScheduleOpen;
 
+    private String note;
+
     /*Place Holder*/
+
+    /*Needed for differentiating course and placeholders in UI*/
+    private boolean placeHolder;
+
     private String placeHolderCode;
 
     private String placeHolderCredit;
@@ -118,6 +124,22 @@ public class PlannedCourseDataObject implements Comparable {
 
     public void setPlaceHolderCredit(String placeHolderCredit) {
         this.placeHolderCredit = placeHolderCredit;
+    }
+
+    public boolean isPlaceHolder() {
+        return placeHolder;
+    }
+
+    public void setPlaceHolder(boolean placeHolder) {
+        this.placeHolder = placeHolder;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     //Used to get the list strings as a single string

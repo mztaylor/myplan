@@ -2233,8 +2233,10 @@ public class PlanController extends UifControllerBase {
         params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
         params.put("planItemId", planItem.getId());
 
-        String courseId = null;
-        if (!isPlaceHolderType(planItem.getRefObjectType())) {
+        boolean placeHolder = isPlaceHolderType(planItem.getRefObjectType());
+        params.put("placeHolder", String.valueOf(placeHolder));
+
+        if (!placeHolder) {
             params.put("courseId", courseDetails.getCourseId());
         }
 
@@ -2317,6 +2319,8 @@ public class PlanController extends UifControllerBase {
         params.put("planItemId", planItem.getId());
         params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
 
+        boolean placeHolder = isPlaceHolderType(planItem.getRefObjectType());
+
         //  Only planned or backup items get an atpId attribute.
         if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
                 planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
@@ -2328,7 +2332,7 @@ public class PlanController extends UifControllerBase {
 
             boolean showAlert = false;
             StringBuffer statusAlert = new StringBuffer();
-            if (!isPlaceHolderType(planItem.getRefObjectType())) {
+            if (!placeHolder) {
                 // event for alert Icon
                 List<String> publishedTerms = AtpHelper.getPublishedTerms();
                 boolean scheduled = AtpHelper.isCourseOfferedInTerm(atpId, courseDetails.getCode());
@@ -2377,7 +2381,7 @@ public class PlanController extends UifControllerBase {
         String planItemLongTitle = null;
         String courseId = null;
         String credit = null;
-        if (isPlaceHolderType(planItem.getRefObjectType())) {
+        if (placeHolder) {
             if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
                 planItemShortTitle = planItem.getRefObjectId();
                 planItemLongTitle = planItem.getRefObjectId();
@@ -2394,6 +2398,7 @@ public class PlanController extends UifControllerBase {
             credit = courseDetails.getCredit();
         }
 
+        params.put("placeHolder", String.valueOf(placeHolder));
         params.put("planItemShortTitle", planItemShortTitle);
         params.put("planItemLongTitle", planItemLongTitle);
         params.put("courseId", courseId);
