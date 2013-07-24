@@ -14,12 +14,14 @@ import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.*;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -254,6 +256,36 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                         }
                     }
 
+
+                } else if (planItem.getTypeKey().equals(planItemType) && (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItem.getRefObjectType()) || PlanConstants.PLACE_HOLDER_TYPE.equals(planItem.getRefObjectType()))) {
+                    PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
+                    PlanItemDataObject planItemData = PlanItemDataObject.build(planItem);
+                    plannedCourse.setPlanItemDataObject(planItemData);
+                    String placeHolderValue = EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), PlanConstants.PLACE_HOLDER_ENUM_KEY);
+                    if (placeHolderValue == null) {
+                        placeHolderValue = EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), PlanConstants.GEN_EDU_ENUM_KEY);
+                    }
+                    plannedCourse.setPlaceHolderCode(placeHolderValue);
+                    plannedCourse.setCourseDetails(new CourseSummaryDetails());
+                    for (AttributeInfo attributeInfo : planItem.getAttributes()) {
+                        if (PlanConstants.PLACE_HOLDER_CREDIT.equals(attributeInfo.getKey())) {
+                            plannedCourse.setPlaceHolderCredit(attributeInfo.getValue());
+                        }
+                    }
+                    plannedCoursesList.add(plannedCourse);
+
+                } else if (planItem.getTypeKey().equals(planItemType) && PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
+                    PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
+                    PlanItemDataObject planItemData = PlanItemDataObject.build(planItem);
+                    plannedCourse.setPlanItemDataObject(planItemData);
+                    plannedCourse.setPlaceHolderCode(planItem.getRefObjectId());
+                    plannedCourse.setCourseDetails(new CourseSummaryDetails());
+                    for (AttributeInfo attributeInfo : planItem.getAttributes()) {
+                        if (PlanConstants.PLACE_HOLDER_CREDIT.equals(attributeInfo.getKey())) {
+                            plannedCourse.setPlaceHolderCredit(attributeInfo.getValue());
+                        }
+                    }
+                    plannedCoursesList.add(plannedCourse);
 
                 }
             }
