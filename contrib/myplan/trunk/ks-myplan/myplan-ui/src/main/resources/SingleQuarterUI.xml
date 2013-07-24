@@ -364,7 +364,7 @@
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
-            truncateField('@{dataObject.atpId.replace('.','-')}_completed', 5);
+            truncateField('@{dataObject.atpId.replace('.','-')}_completed');
 
             var tableHead = jQuery('table#@{dataObject.atpId.replace('.','-')} thead');
             tableHead.before('
@@ -788,7 +788,7 @@
             </bean>
         </property>
         <property name="onDocumentReadyScript"
-                  value="truncateField('@{dataObject.atpId.replace('.','-')}_planned', 35, true);"/>
+                  value="truncateField('@{dataObject.atpId.replace('.','-')}_planned', true);"/>
         <property name="header">
             <bean parent="Uif-HeaderFour"/>
         </property>
@@ -814,7 +814,8 @@
                     <property name="width" value="618px"/>
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-SimpleDataField" p:propertyName="courseDetails.code" p:render="@{#line.courseDetails.code NE null}">
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="courseDetails.code"
+                                  p:render="@{#line.courseDetails.code NE null}">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>ksap-text-bold</value>
@@ -823,7 +824,8 @@
                                 <property name="style" value="margin:0 5px 0 0;"/>
                             </bean>
 
-                            <bean parent="KSAP-SimpleDataField" p:propertyName="placeHolderCode" p:render="@{#line.placeHolderCode NE null}">
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="placeHolderCode"
+                                  p:render="@{#line.placeHolderCode NE null}">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>ksap-text-bold</value>
@@ -832,7 +834,8 @@
                                 <property name="style" value="margin:0 5px 0 0;"/>
                             </bean>
 
-                            <bean parent="Uif-LinkField" p:width="350px" p:render="@{#line.courseDetails.courseTitle ne null}">
+                            <bean parent="Uif-LinkField" p:width="350px"
+                                  p:render="@{#line.courseDetails.courseTitle ne null}">
                                 <property name="linkText" value="@{#line.courseDetails.courseTitle}"/>
                                 <property name="title" value="@{#line.courseDetails.courseTitle} "/>
                                 <property name="href"
@@ -933,7 +936,7 @@
     <bean id="single_Backup_Collection" parent="single_Planned_Collection" p:headerText="Backup Courses">
         <property name="propertyName" value="backupList"/>
         <property name="onDocumentReadyScript"
-                  value="truncateField('@{dataObject.atpId.replace('.','-')}_backup', 35, true);"/>
+                  value="truncateField('@{dataObject.atpId.replace('.','-')}_backup', true);"/>
         <property name="header.rightGroup">
             <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">

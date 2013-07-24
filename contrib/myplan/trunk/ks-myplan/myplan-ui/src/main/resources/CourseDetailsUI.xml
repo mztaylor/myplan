@@ -136,11 +136,11 @@
         <property name="onDocumentReadyScript" value="
             jQuery('#course_details_actions').on('PLAN_ITEM_ADDED', function(event, data){
                 if (data.planItemType === 'wishlist') {
-                    fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId+'_addSavedCourse', true, null, false, '@{dataObject.courseSummaryDetails.courseId}_bookmarked');
+                    fnDisplayMessage(data.message, data.cssClass, data.courseId + '_addSavedCourse', true, null, false, '@{dataObject.courseSummaryDetails.courseId}_bookmarked');
                 }
             }).on('PLAN_ITEM_DELETED', function(event, data){
-                if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
-                    fnRestoreDetailsAddButton(data.courseDetails.courseId);
+                if (data.planItemType === 'wishlist' &amp;&amp; data.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
+                    fnRestoreDetailsAddButton(data.courseId);
                 }
             });
         "/>
@@ -172,11 +172,11 @@
                     <property name="onDocumentReadyScript" value="
                         jQuery('#@{dataObject.courseSummaryDetails.courseId}_addSavedCourse').on('PLAN_ITEM_ADDED', function(event, data){
                             if (data.planItemType === 'wishlist') {
-                                fnDisplayMessage(data.message, data.cssClass, data.courseDetails.courseId+'_addSavedCourse', true, null, false, '@{dataObject.courseSummaryDetails.courseId}_bookmarked');
+                                fnDisplayMessage(data.message, data.cssClass, data.courseId + '_addSavedCourse', true, null, false, '@{dataObject.courseSummaryDetails.courseId}_bookmarked');
                             }
                         }).on('PLAN_ITEM_DELETED', function(event, data){
-                            if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
-                                fnRestoreDetailsAddButton(data.courseDetails.courseId);
+                            if (data.planItemType === 'wishlist' &amp;&amp; data.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
+                                fnRestoreDetailsAddButton(data.courseId);
                             }
                     });"/>
                     <property name="actionScript" value="
@@ -189,8 +189,8 @@
                       p:groupBeginDelimiter="" p:groupEndDelimiter="" p:linkSeparator="">
                     <!--<property name="onDocumentReadyScript"
                               value="jQuery('#@{dataObject.courseSummaryDetails.courseId}_bookmarked').on('PLAN_ITEM_DELETED', function(event, data){
-                                  if (data.planItemType === 'wishlist' &amp;&amp; data.courseDetails.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
-                                      fnRestoreDetailsAddButton(data.courseDetails.courseId);
+                                  if (data.planItemType === 'wishlist' &amp;&amp; data.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
+                                      fnRestoreDetailsAddButton(data.courseId);
                                   }
                               });"/>-->
                     <property name="cssClasses">

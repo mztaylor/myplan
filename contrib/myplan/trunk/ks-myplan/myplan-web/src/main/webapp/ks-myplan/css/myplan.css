@@ -1082,25 +1082,25 @@ div.activityAction div.blockElement {
     font-family: Helvetica, Arial, Verdana, sans-serif;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .code {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .planItemTitle {
     color: #000;
     margin-right: 4px;
 }
 
-.myplan-carousel-list ul li .myplan-term-past .uif-stackedCollectionLayout .uif-collectionItem .code {
+.myplan-carousel-list ul li .myplan-term-past .uif-stackedCollectionLayout .uif-collectionItem .planItemTitle {
     color: #555;
 }
 
-.myplan-carousel-list ul li .myplan-term-past .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid .code {
+.myplan-carousel-list ul li .myplan-term-past .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid .planItemTitle {
     color: #666;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .sections {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .planItemActivities {
     color: #444;
     margin-right: 4px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .credit {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .planItemCredit {
     color: #888;
 }
 
@@ -1128,11 +1128,12 @@ div.activityAction div.blockElement {
     width: 136px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .alert .alert-icon {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .alert .planItemAlert {
     margin-right: 4px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .alert-icon img,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .planItemAlert img,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .planItemNote img,
 .activityEnrlStatus .alert-icon img {
     border: none;
     width: 18px;
@@ -1141,7 +1142,7 @@ div.activityAction div.blockElement {
     background: url('../images/myplan_icon_sprites.png') no-repeat -1000px -1000px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .alert-icon img,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .planItemAlert img,
 .activityEnrlStatus .alert-icon img {
     background-position: -54px -115px;
 }

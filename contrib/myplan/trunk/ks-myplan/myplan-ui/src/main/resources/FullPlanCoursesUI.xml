@@ -168,7 +168,7 @@
                     jQuery(this).height(maxHeight);
                 });
             });
-            truncateField('full_planned_courses_detail', 8, true);
+            truncateField('full_planned_courses_detail', true);
         "/>
         <property name="cssClasses">
             <list merge="true">
@@ -422,13 +422,15 @@
         <property name="disclosure.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseDetails.code ne null OR #line.placeHolderCode ne null}">
+                <bean parent="Uif-HorizontalFieldGroup"
+                      p:render="@{#line.courseDetails.code ne null OR #line.placeHolderCode ne null}">
                     <property name="group.validationMessages">
                         <null/>
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField" p:messageText="@{#line.placeHolderCode eq null ? #line.courseDetails.code : #line.placeHolderCode}"
+                            <bean parent="Uif-MessageField"
+                                  p:messageText="@{#line.placeHolderCode eq null ? #line.courseDetails.code : #line.placeHolderCode}"
                                   p:style="margin:0 4px 0 0;"/>
                             <bean parent="Uif-MessageField" p:messageText="@{#line.sections}"
                                   p:style="margin:0 4px 0 0;">
@@ -438,7 +440,9 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="Uif-MessageField" p:render="@{#line.placeHolderCredit NE null OR #line.credit NE null}" p:messageText="(@{#line.placeHolderCredit EQ null ? #line.credit : #line.placeHolderCredit})"
+                            <bean parent="Uif-MessageField"
+                                  p:render="@{#line.placeHolderCredit NE null OR #line.credit NE null}"
+                                  p:messageText="(@{#line.placeHolderCredit EQ null ? #line.credit : #line.placeHolderCredit})"
                                   p:style="margin:0;"/>
                         </list>
                     </property>
