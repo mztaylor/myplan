@@ -27,6 +27,7 @@ import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -111,43 +112,45 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     private void addActivitiesToPlannedCourseList(List<PlannedCourseDataObject> plannedCourseList, Map<String, List<ActivityOfferingItem>> plannedSections, Map<String, List<String>> sectionsSuspended, Map<String, List<String>> sectionsWithdrawn) {
         List<String> publishedTerms = AtpHelper.getPublishedTerms();
         for (PlannedCourseDataObject plannedCourse : plannedCourseList) {
-            String key = generateKey(plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp());
-            List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(key);
-            if (activityOfferingItems != null && activityOfferingItems.size() > 0) {
-                Collections.sort(activityOfferingItems, new Comparator<ActivityOfferingItem>() {
-                    @Override
-                    public int compare(ActivityOfferingItem item1, ActivityOfferingItem item2) {
-                        return item1.getCode().compareTo(item2.getCode());
-                    }
-                });
+            if (!plannedCourse.isPlaceHolder()) {
+                String key = generateKey(plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp());
+                List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(key);
+                if (activityOfferingItems != null && activityOfferingItems.size() > 0) {
+                    Collections.sort(activityOfferingItems, new Comparator<ActivityOfferingItem>() {
+                        @Override
+                        public int compare(ActivityOfferingItem item1, ActivityOfferingItem item2) {
+                            return item1.getCode().compareTo(item2.getCode());
+                        }
+                    });
+                }
+                boolean scheduled = AtpHelper.isCourseOfferedInTerm(plannedCourse.getPlanItemDataObject().getAtp(), plannedCourse.getCourseDetails().getCode());
+                boolean timeScheduleOpen = publishedTerms.contains(plannedCourse.getPlanItemDataObject().getAtp());
+                if (timeScheduleOpen) {
+                    plannedCourse.setShowAlert(!scheduled);
+                }
+                plannedCourse.setTimeScheduleOpen(timeScheduleOpen);
+                List<String> statusAlerts = new ArrayList<String>();
+                if (timeScheduleOpen && !scheduled) {
+                    statusAlerts.add(String.format(PlanConstants.COURSE_NOT_SCHEDULE_ALERT, plannedCourse.getCourseDetails().getCode(), plannedCourse.getPlanItemDataObject().getTermName()));
+                    plannedCourse.setSectionsAvailable(false);
+                }
+                if (sectionsWithdrawn.containsKey(key)) {
+                    List<String> sectionList = sectionsWithdrawn.get(key);
+                    String[] sections = sectionList.toArray(new String[sectionList.size()]);
+                    statusAlerts.add(String.format(PlanConstants.WITHDRAWN_ALERT, getCourseHelper().joinStringsByDelimiter(',', sections)));
+                    plannedCourse.setShowAlert(true);
+                }
+                if (sectionsSuspended.containsKey(key)) {
+                    List<String> sectionList = sectionsSuspended.get(key);
+                    String[] sections = sectionList.toArray(new String[sectionList.size()]);
+                    statusAlerts.add(String.format(PlanConstants.SUSPENDED_ALERT, getCourseHelper().joinStringsByDelimiter(',', sections)));
+                    plannedCourse.setShowAlert(true);
+                }
+                if (!statusAlerts.isEmpty()) {
+                    plannedCourse.setStatusAlerts(statusAlerts);
+                }
+                plannedCourse.setPlanActivities(activityOfferingItems);
             }
-            boolean scheduled = AtpHelper.isCourseOfferedInTerm(plannedCourse.getPlanItemDataObject().getAtp(), plannedCourse.getCourseDetails().getCode());
-            boolean timeScheduleOpen = publishedTerms.contains(plannedCourse.getPlanItemDataObject().getAtp());
-            if (timeScheduleOpen) {
-                plannedCourse.setShowAlert(!scheduled);
-            }
-            plannedCourse.setTimeScheduleOpen(timeScheduleOpen);
-            List<String> statusAlerts = new ArrayList<String>();
-            if (timeScheduleOpen && !scheduled) {
-                statusAlerts.add(String.format(PlanConstants.COURSE_NOT_SCHEDULE_ALERT, plannedCourse.getCourseDetails().getCode(), plannedCourse.getPlanItemDataObject().getTermName()));
-                plannedCourse.setSectionsAvailable(false);
-            }
-            if (sectionsWithdrawn.containsKey(key)) {
-                List<String> sectionList = sectionsWithdrawn.get(key);
-                String[] sections = sectionList.toArray(new String[sectionList.size()]);
-                statusAlerts.add(String.format(PlanConstants.WITHDRAWN_ALERT, getCourseHelper().joinStringsByDelimiter(',', sections)));
-                plannedCourse.setShowAlert(true);
-            }
-            if (sectionsSuspended.containsKey(key)) {
-                List<String> sectionList = sectionsSuspended.get(key);
-                String[] sections = sectionList.toArray(new String[sectionList.size()]);
-                statusAlerts.add(String.format(PlanConstants.SUSPENDED_ALERT, getCourseHelper().joinStringsByDelimiter(',', sections)));
-                plannedCourse.setShowAlert(true);
-            }
-            if (!statusAlerts.isEmpty()) {
-                plannedCourse.setStatusAlerts(statusAlerts);
-            }
-            plannedCourse.setPlanActivities(activityOfferingItems);
         }
     }
 
@@ -167,7 +170,9 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
             PlanItemDataObject planItemData = PlanItemDataObject.build(planItemInfo);
             plannedCourse.setPlanItemDataObject(planItemData);
-
+            if (planItemInfo.getDescr() != null && StringUtils.hasText(planItemInfo.getDescr().getPlain())) {
+                plannedCourse.setNote(planItemInfo.getDescr().getPlain());
+            }
             //  If the course info lookup fails just log the error and omit the item.
             try {
                 if (getCourseDetailsInquiryHelper().isCourseIdValid(courseID)) {
@@ -242,6 +247,10 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
         } else if (addPlaceHolders && planItemInfo.getTypeKey().equals(planItemType) && (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItemInfo.getRefObjectType()) || PlanConstants.PLACE_HOLDER_TYPE.equals(planItemInfo.getRefObjectType()))) {
             PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
             PlanItemDataObject planItemData = PlanItemDataObject.build(planItemInfo);
+            plannedCourse.setPlaceHolder(true);
+            if (planItemInfo.getDescr() != null && StringUtils.hasText(planItemInfo.getDescr().getPlain())) {
+                plannedCourse.setNote(planItemInfo.getDescr().getPlain());
+            }
             plannedCourse.setPlanItemDataObject(planItemData);
             String placeHolderValue = EnumerationHelper.getEnumAbbrValForCodeByType(planItemInfo.getRefObjectId(), PlanConstants.PLACE_HOLDER_ENUM_KEY);
             if (placeHolderValue == null) {
@@ -259,6 +268,10 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
         } else if (addPlaceHolders && planItemInfo.getTypeKey().equals(planItemType) && PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItemInfo.getRefObjectType())) {
             PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
             PlanItemDataObject planItemData = PlanItemDataObject.build(planItemInfo);
+            plannedCourse.setPlaceHolder(true);
+            if (planItemInfo.getDescr() != null && StringUtils.hasText(planItemInfo.getDescr().getPlain())) {
+                plannedCourse.setNote(planItemInfo.getDescr().getPlain());
+            }
             plannedCourse.setPlanItemDataObject(planItemData);
             plannedCourse.setPlaceHolderCode(planItemInfo.getRefObjectId());
             plannedCourse.setCourseDetails(new CourseSummaryDetails());
