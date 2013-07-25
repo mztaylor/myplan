@@ -11,15 +11,15 @@ function fnAddPlanItem(atpId, type, planItemId, courseCode, courseTitle, courseC
         '<div class="uif-horizontalBoxGroup">' +
         '<div class="uif-horizontalBoxLayout clearfix">';
     if (showAlert == "true") {
-        item += '<div class="planItemAlert uif-boxLayoutHorizontalItem" title="' + statusAlert + '">' +
+        item += '<div class="itemAlert uif-boxLayoutHorizontalItem" title="' + statusAlert + '">' +
             '<img src="/student/ks-myplan/images/pixel.gif" alt="' + statusAlert + '" class="uif-image"/>' +
             '</div>';
     }
-    item += '<div class="planItemTitle uif-boxLayoutHorizontalItem">' + courseCode + '</div>';
-    if (sections) {
-        item += '<div class="planItemActivities myplan-text-ellipsis uif-boxLayoutHorizontalItem">' + sections + '</div>';
+    item += '<div class="itemTitle uif-boxLayoutHorizontalItem">' + courseCode + '</div>';
+    if (sections != "") {
+        item += '<div class="itemActivities myplan-text-ellipsis uif-boxLayoutHorizontalItem">' + sections + '</div>';
     }
-    item += '<div class="planItemCredit uif-boxLayoutHorizontalItem">(' + courseCredits + ')</div>' +
+    item += '<div class="itemCredit uif-boxLayoutHorizontalItem">(' + courseCredits + ')</div>' +
         '</div>' +
         '</div>' +
         '</fieldset>' +

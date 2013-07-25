@@ -611,10 +611,11 @@
             });
         "/>
     </bean>
+
     <bean id="academicRecordCourseCode" parent="KSAP-MessageField" p:messageText="@{#line.courseCode}">
         <property name="cssClasses">
             <list merge="true">
-                <value>code</value>
+                <value>itemTitle</value>
             </list>
         </property>
     </bean>
@@ -622,7 +623,7 @@
           p:render="@{#line.activityCode NE null}">
         <property name="cssClasses">
             <list merge="true">
-                <value>sections</value>
+                <value>itemActivities</value>
                 <value>myplan-text-ellipsis</value>
             </list>
         </property>
@@ -630,7 +631,7 @@
     <bean id="academicRecordCredit" parent="KSAP-MessageField" p:messageText="(@{#line.credit})">
         <property name="cssClasses">
             <list merge="true">
-                <value>credit</value>
+                <value>itemCredit</value>
             </list>
         </property>
     </bean>
@@ -638,7 +639,7 @@
           p:render="@{#line.grade NE null}">
         <property name="cssClasses">
             <list merge="true">
-                <value>grade</value>
+                <value>itemGrade</value>
             </list>
         </property>
     </bean>
@@ -789,7 +790,7 @@
           p:render="@{#line.showAlert}">
         <property name="cssClasses">
             <list merge="false">
-                <value>planItemAlert</value>
+                <value>itemAlert</value>
             </list>
         </property>
     </bean>
@@ -798,7 +799,7 @@
                   value="@{#line.placeHolderCode eq null ? #line.courseDetails.code : #line.placeHolderCode}"/>
         <property name="cssClasses">
             <list merge="false">
-                <value>planItemTitle</value>
+                <value>itemTitle</value>
             </list>
         </property>
     </bean>
@@ -806,7 +807,7 @@
         <property name="messageText" value="@{#line.sections}"/>
         <property name="cssClasses">
             <list merge="false">
-                <value>planItemActivities</value>
+                <value>itemActivities</value>
                 <value>myplan-text-ellipsis</value>
             </list>
         </property>
@@ -817,17 +818,17 @@
                   value="(@{#line.placeHolderCredit EQ null ? #line.credit : #line.placeHolderCredit})"/>
         <property name="cssClasses">
             <list merge="false">
-                <value>planItemCredit</value>
+                <value>itemCredit</value>
             </list>
         </property>
     </bean>
-    <bean id="planItemNote" parent="Uif-ImageField" p:render="false"
+    <bean id="planItemNoteIcon" parent="Uif-ImageField" p:render="@{#line.note NE null}"
           p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
-          p:title="Note"
-          p:altText="Note">
+          p:title="@{#line.note}"
+          p:altText="@{#line.note}">
         <property name="cssClasses">
             <list merge="false">
-                <value>planItemNote</value>
+                <value>itemNote</value>
             </list>
         </property>
     </bean>
@@ -854,7 +855,7 @@
                 <bean parent="planItemTitle"/>
                 <bean parent="planItemActivities"/>
                 <bean parent="planItemCredit"/>
-                <bean parent="planItemNote"/>
+                <bean parent="planItemNoteIcon"/>
             </list>
         </property>
     </bean>
@@ -882,7 +883,7 @@
         <property name="layoutManager.lineGroupPrototype.id"
                   value="@{#line.planItemDataObject.id}_planned_@{#line.planItemDataObject.atp.replace('.','-')}_div"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses"
-                  value="uif-verticalBoxGroup uif-collectionItem uif-tooltip"/>
+                  value="uif-verticalBoxGroup uif-collectionItem uif-tooltip @{#line.placeHolder ? 'placeholder':''}"/>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
