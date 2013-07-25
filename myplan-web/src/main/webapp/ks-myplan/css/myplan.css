@@ -1177,10 +1177,20 @@ div.activityAction div.blockElement {
     font-family: Helvetica, Arial, Verdana, sans-serif;
 }
 
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.placeholder .myplan-course-valid {
+    background-image: url('../images/myplan_placeholder_ticker.png');
+    background-repeat: no-repeat;
+    background-position: right top;
+}
+
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid:hover,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell:hover {
     background-color: #e3f0fe;
     cursor: pointer;
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.placeholder .myplan-course-valid:hover {
+    background-image: url('../images/myplan_placeholder_ticker_hover.png');
 }
 
 .myplan-carousel-list .myplan-carousel-term-total {
