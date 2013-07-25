@@ -79,6 +79,17 @@ public class PlannedTermsHelperBase {
         */
         List<PlannedTerm> plannedTerms = new ArrayList<PlannedTerm>();
         if (plannedCoursesList != null && plannedCoursesList.size() > 0) {
+
+            /*Sorting planned courses and placeHolders*/
+            Collections.sort(plannedCoursesList, new Comparator<PlannedCourseDataObject>() {
+                @Override
+                public int compare(PlannedCourseDataObject p1, PlannedCourseDataObject p2) {
+                    boolean v1 = p1.isPlaceHolder();
+                    boolean v2 = p2.isPlaceHolder();
+                    return v1 == v2 ? 0 : (v1 ? 1 : -1);
+                }
+            });
+
             for (PlannedCourseDataObject plan : plannedCoursesList) {
                 String atp = plan.getPlanItemDataObject().getAtp();
                 boolean exists = false;
@@ -105,6 +116,18 @@ public class PlannedTermsHelperBase {
          * Populating the backup list for the Plans
         */
         if (backupCoursesList != null && backupCoursesList.size() > 0) {
+
+            /*Sorting planned courses and placeHolders*/
+            Collections.sort(backupCoursesList, new Comparator<PlannedCourseDataObject>() {
+                @Override
+                public int compare(PlannedCourseDataObject p1, PlannedCourseDataObject p2) {
+                    boolean v1 = p1.isPlaceHolder();
+                    boolean v2 = p2.isPlaceHolder();
+                    return v1 == v2 ? 0 : (v1 ? 1 : -1);
+                }
+            });
+
+
             int count = plannedTerms.size();
             for (PlannedCourseDataObject bl : backupCoursesList) {
                 String atp = bl.getPlanItemDataObject().getAtp();
