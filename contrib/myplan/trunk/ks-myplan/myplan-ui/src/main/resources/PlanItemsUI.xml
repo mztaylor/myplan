@@ -601,9 +601,11 @@
         <property name="onDocumentReadyScript" value="
             truncateField('planned_courses_detail_list', true);
             jQuery('#planned_courses_detail_list').on('PLAN_ITEM_ADDED', function(event, data) {
-                fnAddPlanItem(data.atpId, data.planItemType, data.planItemId, data.planItemShortTitle, data.planItemLongTitle, data.credit, data.showAlert, data.sections, data.statusAlert);
+                fnAddPlanItem(data);
             }).on('PLAN_ITEM_DELETED', function(event, data) {
                 fnRemovePlanItem(data.atpId, data.planItemType, data.planItemId);
+            }).on('PLAN_ITEM_UPDATED', function(event, data) {
+                fnUpdatePlanItem(data);
             }).on('UPDATE_NEW_TERM_TOTAL_CREDITS', function(event, data) {
                 fnUpdateCredits(data.atpId, data.totalCredits);
             }).on('UPDATE_OLD_TERM_TOTAL_CREDITS', function(event, data) {
