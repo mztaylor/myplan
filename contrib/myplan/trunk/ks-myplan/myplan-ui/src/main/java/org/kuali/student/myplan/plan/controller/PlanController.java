@@ -1457,6 +1457,7 @@ public class PlanController extends UifControllerBase {
 
             }
 
+            Collections.sort(plannedActivityCodes);
             String sections = StringUtils.join(plannedActivityCodes.toArray(), ", ");
 
             if (sections != null) {
