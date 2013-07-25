@@ -148,6 +148,8 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static enum JS_EVENT_NAME {
         /* (atpId), type, courseId, courseCode, courseTitle, courseCredits */
         PLAN_ITEM_ADDED,
+        /* (atpId), type, courseId, courseCode, courseTitle, courseCredits */
+        PLAN_ITEM_UPDATED,
         /*(atpId), type, courseId, courseCode, courseTitle, sectionCode, primarySection, courseCredits*/
         SECTION_ITEM_ADDED,
         /* atpId, type, courseId */
