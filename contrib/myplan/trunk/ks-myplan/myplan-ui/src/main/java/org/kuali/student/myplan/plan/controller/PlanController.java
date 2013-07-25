@@ -1457,7 +1457,7 @@ public class PlanController extends UifControllerBase {
 
             }
 
-            String sections = StringUtils.join(plannedActivities.toArray(), ", ");
+            String sections = StringUtils.join(plannedActivityCodes.toArray(), ", ");
 
             if (sections != null) {
                 events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("sections", sections);
