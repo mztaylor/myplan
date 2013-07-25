@@ -17,7 +17,6 @@ package org.kuali.student.myplan.plan.controller;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
@@ -480,7 +479,7 @@ public class PlanController extends UifControllerBase {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         events.putAll(removeEvent);
-        events.putAll(makeAddEvent(planItem, courseDetails, form));
+        events.putAll(makeAddUpdateEvent(planItem, courseDetails, form, false));
 
         addStatusAlertEvents(courseDetails.getCode(), planItemAtpId, events);
 
@@ -581,7 +580,7 @@ public class PlanController extends UifControllerBase {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         events.putAll(removeEvent);
-        events.putAll(makeAddEvent(planItem, courseDetails, form));
+        events.putAll(makeAddUpdateEvent(planItem, courseDetails, form, false));
 
         addStatusAlertEvents(courseDetails.getCode(), planItemAtpId, events);
 
@@ -730,7 +729,7 @@ public class PlanController extends UifControllerBase {
         events.putAll(makeUpdateTotalCreditsEvent(originalAtpId, PlanConstants.JS_EVENT_NAME.UPDATE_OLD_TERM_TOTAL_CREDITS));
 
         try {
-            events.putAll(makeAddEvent(planItem, courseDetails, form));
+            events.putAll(makeAddUpdateEvent(planItem, courseDetails, form, false));
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to create add event.", e);
         }
@@ -857,7 +856,7 @@ public class PlanController extends UifControllerBase {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         try {
-            events.putAll(makeAddEvent(planItemCopy, courseDetails, form));
+            events.putAll(makeAddUpdateEvent(planItemCopy, courseDetails, form, false));
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to create add event.", e);
         }
@@ -1178,15 +1177,15 @@ public class PlanController extends UifControllerBase {
         try {
             if (planItem != null) {
                 plannedTerm = planItem.getPlanPeriods().get(0);
-                events.putAll(makeAddEvent(planItem, courseDetails, form));
+                events.putAll(makeAddUpdateEvent(planItem, courseDetails, form, false));
             }
             if (primaryPlanItem != null) {
                 plannedTerm = primaryPlanItem.getPlanPeriods().get(0);
-                events.putAll(makeAddEvent(primaryPlanItem, courseDetails, form));
+                events.putAll(makeAddUpdateEvent(primaryPlanItem, courseDetails, form, false));
             }
             if (secondaryPlanItem != null) {
                 plannedTerm = secondaryPlanItem.getPlanPeriods().get(0);
-                events.putAll(makeAddEvent(secondaryPlanItem, courseDetails, form));
+                events.putAll(makeAddUpdateEvent(secondaryPlanItem, courseDetails, form, false));
             }
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Unable to create add event.", e);
@@ -1285,15 +1284,15 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=updateNote")
     public ModelAndView updateNote(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                    HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-
+        PlanItemInfo planItemInfo = null;
         if (form.getPlanItemId() != null) {
 
             try {
 
-                PlanItemInfo planItemInfo = getAcademicPlanService().getPlanItem(form.getPlanItemId(), PlanConstants.CONTEXT_INFO);
+                planItemInfo = getAcademicPlanService().getPlanItem(form.getPlanItemId(), PlanConstants.CONTEXT_INFO);
                 planItemInfo.getDescr().setPlain(form.getNote());
                 planItemInfo.getDescr().setFormatted(form.getNote());
-                getAcademicPlanService().updatePlanItem(form.getPlanItemId(), planItemInfo, PlanConstants.CONTEXT_INFO);
+                planItemInfo = getAcademicPlanService().updatePlanItem(form.getPlanItemId(), planItemInfo, PlanConstants.CONTEXT_INFO);
 
             } catch (Exception e) {
 
@@ -1307,7 +1306,15 @@ public class PlanController extends UifControllerBase {
 
         }
 
-        return getUIFModelAndView(form);
+        //  Create events
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+
+        events.putAll(makeAddUpdateEvent(planItemInfo, null, form, true));
+
+        form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
+        form.setJavascriptEvents(events);
+
+        return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_UPDATED_ITEM, new String[]{});
     }
 
 
@@ -1400,7 +1407,7 @@ public class PlanController extends UifControllerBase {
 
                 //  Create events
                 Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
-                events.putAll(makeAddEvent(planItemInfo, null, form));
+                events.putAll(makeAddUpdateEvent(planItemInfo, null, form, true));
 
                 events.putAll(makeUpdateTotalCreditsEvent(atpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
@@ -1652,7 +1659,7 @@ public class PlanController extends UifControllerBase {
 
         //  Create events
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
-        events.putAll(makeAddEvent(planItem, courseDetails, form));
+        events.putAll(makeAddUpdateEvent(planItem, courseDetails, form, false));
 
         form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
         form.setJavascriptEvents(events);
@@ -2344,14 +2351,14 @@ public class PlanController extends UifControllerBase {
     }
 
     /**
-     * Creates an add plan item event.
+     * Creates an add or update plan item event.
      *
      * @param planItem
      * @param courseDetails
      * @return
      * @throws RuntimeException if anything goes wrong.
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeAddEvent(PlanItemInfo planItem, CourseSummaryDetails courseDetails, PlanForm planForm) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeAddUpdateEvent(PlanItemInfo planItem, CourseSummaryDetails courseDetails, PlanForm planForm, boolean updateEvent) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
         params.put("planItemId", planItem.getId());
@@ -2419,6 +2426,10 @@ public class PlanController extends UifControllerBase {
         String planItemLongTitle = null;
         String courseId = null;
         String credit = null;
+        String note = null;
+        if (hasText(planItem.getDescr().getPlain())) {
+            note = planItem.getDescr().getPlain();
+        }
         if (placeHolder) {
             if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
                 planItemShortTitle = planItem.getRefObjectId();
@@ -2441,12 +2452,17 @@ public class PlanController extends UifControllerBase {
         params.put("planItemLongTitle", planItemLongTitle);
         params.put("courseId", courseId);
         params.put("credit", credit);
+        params.put("note", note);
 
 
         if (PlanConstants.SECTION_TYPE.equals(planItem.getRefObjectType())) {
             events.put(PlanConstants.JS_EVENT_NAME.SECTION_ITEM_ADDED, params);
         } else {
-            events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, params);
+            if (!updateEvent) {
+                events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED, params);
+            } else {
+                events.put(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_UPDATED, params);
+            }
         }
 
         return events;
