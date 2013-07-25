@@ -916,53 +916,56 @@ public class PlanController extends UifControllerBase {
             placeHolderCd = EnumerationHelper.getEnumAbbrValForCodeByType(placeHolderId, placeHolderType);
         }
 
-        if (hasText(courseCd) || hasText(placeHolderId)) {
-            /*Updating the plan item from quickAdd*/
-            if (hasText(planItemId)) {
-                return updatePlaceHolder(form, planItemId);
-            }
-
-            if (PlanConstants.GENERAL_TYPE.equals(quickAddType)) {
-
-                addPlaceHolder = true;
-
-                if (PlanConstants.PLACE_HOLDER_OTHER_CODE.equals(placeHolderId) && !hasText(form.getNote())) {
-                    return doErrorPage(form, "Note required", PlanConstants.NOTE_REQUIRED, new String[]{placeHolderCd}, null);
+        if (PlanConstants.ADD_DIALOG_PAGE.equals(form.getPageId())) {
+            if (hasText(courseCd) || hasText(placeHolderId)) {
+                /*Updating the plan item from quickAdd*/
+                if (hasText(planItemId)) {
+                    return updatePlaceHolder(form, planItemId);
                 }
 
-            } else {
+                if (PlanConstants.GENERAL_TYPE.equals(quickAddType)) {
+
+                    addPlaceHolder = true;
+
+                    if (PlanConstants.PLACE_HOLDER_OTHER_CODE.equals(placeHolderId) && !hasText(form.getNote())) {
+                        return doErrorPage(form, "Note required", PlanConstants.NOTE_REQUIRED, new String[]{placeHolderCd}, null);
+                    }
+
+                } else {
 
 
-                DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(courseCd);
+                    DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(courseCd);
 
-                if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
+                    if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
 
-                    String subject = courseCode.getSubject();
-                    String number = courseCode.getNumber();
+                        String subject = courseCode.getSubject();
+                        String number = courseCode.getNumber();
 
-                    /*Differentiating normal course with course level PlaceHolder*/
-                    if (number.matches(PlanConstants.COURSE_PLACEHOLDER_REGEX)) {
+                        /*Differentiating normal course with course level PlaceHolder*/
+                        if (number.matches(PlanConstants.COURSE_PLACEHOLDER_REGEX)) {
 
-                        addPlaceHolder = true;
-                        placeHolderType = PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL;
-                        placeHolderId = String.format("%s %s", subject, number);
+                            addPlaceHolder = true;
+                            placeHolderType = PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL;
+                            placeHolderId = String.format("%s %s", subject, number);
 
-                    } else {
+                        } else {
 
-                        String courseId = getCourseHelper().getCourseId(subject, number);
-                        form.setCourseId(courseId);
+                            String courseId = getCourseHelper().getCourseId(subject, number);
+                            form.setCourseId(courseId);
+
+                        }
 
                     }
 
-                }
+                    if (form.getCourseId() == null && !addPlaceHolder) {
+                        return doErrorPage(form, "Course not found", PlanConstants.COURSE_NOT_FOUND, new String[]{courseCd}, null);
+                    }
 
-                if (form.getCourseId() == null && !addPlaceHolder) {
-                    return doErrorPage(form, "Course not found", PlanConstants.COURSE_NOT_FOUND, new String[]{courseCd}, null);
                 }
-
+            } else {
+                return doErrorPage(form, "Empty Search", PlanConstants.EMPTY_SEARCH, new String[]{courseCd}, null);
             }
         }
-
 
         if (!addPlaceHolder) {
 
@@ -1339,6 +1342,7 @@ public class PlanController extends UifControllerBase {
     private ModelAndView updatePlaceHolder(PlanForm form, String planItemId) {
 
         PlanItemInfo planItemInfo = null;
+        CourseSummaryDetails courseSummaryDetails = null;
         try {
             planItemInfo = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
 
@@ -1374,13 +1378,13 @@ public class PlanController extends UifControllerBase {
                             planItemInfo.setRefObjectType(PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL);
                         } else {
                             String courseId = getCourseHelper().getCourseId(subject, number);
-                            CourseInfo courseInfo = getCourseHelper().getCourseInfo(courseId);
-                            String versionId = courseInfo.getVersionInfo().getVersionIndId();
+                            courseSummaryDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
+                            String versionId = courseSummaryDetails.getVersionIndependentId();
                             //  Check for duplicates since addPlanItem isn't being called.
-                            if (isDuplicate(atpId, versionId, planItemInfo.getTypeKey())) {
-                                return doDuplicatePlanItem(form, atpId, courseInfo.getCode());
+                            if (!versionId.equals(planItemInfo.getRefObjectId()) && isDuplicate(atpId, versionId, planItemInfo.getTypeKey())) {
+                                return doDuplicatePlanItem(form, atpId, courseSummaryDetails.getCode());
                             }
-                            planItemInfo.setRefObjectId(courseInfo.getVersionInfo().getVersionIndId());
+                            planItemInfo.setRefObjectId(versionId);
                             planItemInfo.setRefObjectType(PlanConstants.COURSE_TYPE);
 
                         }
@@ -1407,7 +1411,7 @@ public class PlanController extends UifControllerBase {
 
                 //  Create events
                 Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
-                events.putAll(makeAddUpdateEvent(planItemInfo, null, form, true));
+                events.putAll(makeAddUpdateEvent(planItemInfo, courseSummaryDetails, form, true));
 
                 events.putAll(makeUpdateTotalCreditsEvent(atpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
