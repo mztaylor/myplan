@@ -1274,6 +1274,44 @@ public class PlanController extends UifControllerBase {
     }
 
     /**
+     * Update PlanItem Note
+     *
+     * @param form
+     * @param result
+     * @param httprequest
+     * @param httpresponse
+     * @return
+     */
+    @RequestMapping(params = "methodToCall=updateNote")
+    public ModelAndView updateNote(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
+                                   HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+
+        if (form.getPlanItemId() != null) {
+
+            try {
+
+                PlanItemInfo planItemInfo = getAcademicPlanService().getPlanItem(form.getPlanItemId(), PlanConstants.CONTEXT_INFO);
+                planItemInfo.getDescr().setPlain(form.getNote());
+                planItemInfo.getDescr().setFormatted(form.getNote());
+                getAcademicPlanService().updatePlanItem(form.getPlanItemId(), planItemInfo, PlanConstants.CONTEXT_INFO);
+
+            } catch (Exception e) {
+
+                return doOperationFailedError(form, "Failed to get PlanItem for planItemId " + form.getPlanItemId(), e);
+
+            }
+
+        } else {
+
+            return doOperationFailedError(form, "Failed to update note", null);
+
+        }
+
+        return getUIFModelAndView(form);
+    }
+
+
+    /**
      * returns true if the reofbjtype is a placeholder
      *
      * @param refObjType
