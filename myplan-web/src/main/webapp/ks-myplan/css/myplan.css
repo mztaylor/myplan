@@ -1082,32 +1082,41 @@ div.activityAction div.blockElement {
     font-family: Helvetica, Arial, Verdana, sans-serif;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .planItemTitle {
-    color: #000;
-    margin-right: 4px;
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.placeholder {
+    font-family: Georgia, serif;
+    font-style: italic;
 }
 
-.myplan-carousel-list ul li .myplan-term-past .uif-stackedCollectionLayout .uif-collectionItem .planItemTitle {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemTitle {
+    color: #000;
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.placeholder .itemTitle,
+.myplan-carousel-list ul li .myplan-term-past .uif-stackedCollectionLayout .uif-collectionItem .itemTitle {
     color: #555;
 }
 
-.myplan-carousel-list ul li .myplan-term-past .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid .planItemTitle {
+.myplan-carousel-list ul li .myplan-term-past .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid .itemTitle {
     color: #666;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .planItemActivities {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemActivities {
     color: #444;
-    margin-right: 4px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .planItemCredit {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemCredit {
     color: #888;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .grade {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemGrade {
     color: #777;
     font-weight: bold;
     float: right;
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemTitle,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemActivities {
+    margin-right: 4px;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid,
@@ -1128,12 +1137,16 @@ div.activityAction div.blockElement {
     width: 136px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .alert .planItemAlert {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .alert .itemAlert {
     margin-right: 4px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .planItemAlert img,
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .planItemNote img,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemNote {
+    margin-left: 4px;
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemAlert img,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemNote img,
 .activityEnrlStatus .alert-icon img {
     border: none;
     width: 18px;
@@ -1142,9 +1155,15 @@ div.activityAction div.blockElement {
     background: url('../images/myplan_icon_sprites.png') no-repeat -1000px -1000px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .planItemAlert img,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemAlert img,
 .activityEnrlStatus .alert-icon img {
     background-position: -54px -115px;
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemNote img {
+    width: 12px;
+    height: 12px;
+    background-position: -3px -183px;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell {

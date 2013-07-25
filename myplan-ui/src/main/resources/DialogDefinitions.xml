@@ -1066,7 +1066,7 @@
     </bean>
 
     <!-- Text input for plan item notes field -->
-    <bean id="planItemNote" parent="KSAP-SimpleInputField" p:propertyName="note" p:render="true"
+    <bean id="planItemNote" parent="KSAP-SimpleInputField" p:propertyName="note"
           p:defaultValue="@{#form.planItemId NE null ? #form.note : ''}">
         <property name="label" value="Note for course"/>
         <property name="fieldLabel.render" value="true"/>
