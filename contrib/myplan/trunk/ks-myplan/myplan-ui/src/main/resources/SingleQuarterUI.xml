@@ -228,6 +228,9 @@
 
     <bean id="single_collection_data" parent="KSAP-VerticalBoxGroup">
         <property name="onDocumentReadyScript" value="
+            jQuery('a.ksap-lightBoxLink').each(function() {
+                createLightBoxLink(jQuery(this).attr('id'), {helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, false);
+            });
             jQuery('body').on('SECTION_ITEM_ADDED', function(event, data) {
                 fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'added', data);
                 if (data.ItemsToUpdate &amp;&amp; data.Primary == 'false') {
@@ -667,10 +670,13 @@
                                   p:messageText="@{#line.activityOfferingItem.sectionComments}"
                                     />
                             <bean parent="current_section_status"
-                                  p:actionLabel="@{#line.activityOfferingItem.details}"
+                                  p:linkText="@{#line.activityOfferingItem.details}"
                                   p:style="display:inline; float:none;">
-                                <property name="actionScript"
+                                <property name="href"
+                                          value="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.activityOfferingItem.qtryr}&amp;SLN=@{#line.activityOfferingItem.registrationCode}"/>
+                                <!--<property name="actionScript"
                                           value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.activityOfferingItem.qtryr}&amp;SLN=@{#line.activityOfferingItem.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
+                           -->
                             </bean>
                         </list>
                     </property>
@@ -734,9 +740,12 @@
                     <property name="items">
                         <list>
                             <bean parent="current_section_status"
-                                  p:actionLabel="@{#line.activityOfferingItem.registrationCode}">
-                                <property name="actionScript"
+                                  p:linkText="@{#line.activityOfferingItem.registrationCode}">
+                                <property name="href"
+                                          value="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.activityOfferingItem.qtryr}&amp;SLN=@{#line.activityOfferingItem.registrationCode}"/>
+                                <!--<property name="actionScript"
                                           value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.activityOfferingItem.qtryr}&amp;SLN=@{#line.activityOfferingItem.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
+                           -->
                             </bean>
                         </list>
                     </property>
