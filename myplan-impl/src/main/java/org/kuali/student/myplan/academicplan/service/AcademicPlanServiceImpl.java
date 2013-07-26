@@ -637,7 +637,12 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
          *
          * TODO: Move these validations to the data dictionary.
          */
-        checkPlanItemDuplicate(planItemInfo);
+
+        /*Duplicate check should only be for course and sections not for placeholders*/
+        if (AcademicPlanServiceConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType()) || AcademicPlanServiceConstants.SECTION_TYPE.equals(planItemInfo.getRefObjectType())) {
+            checkPlanItemDuplicate(planItemInfo);
+        }
+
 
         return validationResultInfos;
     }

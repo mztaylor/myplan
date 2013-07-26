@@ -1423,7 +1423,7 @@ public class PlanController extends UifControllerBase {
             }
 
         } catch (Exception e) {
-            return doErrorPage(form, "QuickAdd request to update failed", PlanConstants.UPDATE_FAILED, new String[]{form.getCourseCd() != null ? form.getCourseCd() : EnumerationHelper.getEnumAbbrValForCodeByType(form.getPlaceholder(), PlanConstants.PLACE_HOLDER_ENUM_KEY)}, null);
+            return doErrorPage(form, "QuickAdd request to update failed", PlanConstants.UPDATE_FAILED, new String[]{form.getCourseCd() != null ? form.getCourseCd() : EnumerationHelper.getEnumAbbrValForCodeByType(form.getPlaceholder(), PlanConstants.PLACE_HOLDER_ENUM_KEY)}, e);
         }
 
         return doErrorPage(form, "QuickAdd request to update failed", PlanConstants.UPDATE_FAILED, new String[]{form.getCourseCd() != null ? form.getCourseCd() : EnumerationHelper.getEnumAbbrValForCodeByType(form.getPlaceholder(), PlanConstants.PLACE_HOLDER_ENUM_KEY)}, null);
@@ -2065,7 +2065,7 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Don't allow duplicates.
-        if (isDuplicate(atpId, refObjId, planItemType)) {
+        if (!isPlaceHolderType(refObjType) && isDuplicate(atpId, refObjId, planItemType)) {
             throw new DuplicateEntryException("Duplicate plan item exists.");
         }
 

@@ -17,12 +17,6 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String PLAN_PAGE_ID = "planned_courses_detail_page";
     public static final String ACTION_MENU_PAGE_ID = "add_planned_course";
 
-    public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
-    public static final String SECTION_TYPE = "kuali.lui.type.activity.offering";
-    public static final String PLACE_HOLDER_TYPE_GEN_ED = "kuali.uw.lu.genedreq";
-    public static final String PLACE_HOLDER_TYPE = "uw.academicplan.placeholder";
-    public static final String PLACE_HOLDER_TYPE_COURSE_LEVEL = " uw.cluset.type.course.level";
-
     public static final String GEN_EDU_ENUM_KEY = "kuali.uw.lu.genedreq";
     public static final String PLACE_HOLDER_ENUM_KEY = "uw.academicplan.placeholder";
     public static final String PLACE_HOLDER_OTHER_CODE = "uw.academicplan.placeholder.other";
