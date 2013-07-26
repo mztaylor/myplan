@@ -1390,3 +1390,58 @@ function coerceValue(name) {
 
     return value;
 }
+// TODO: Redefinition of setupProgressiveCheck function not needed if improvement resolved - https://jira.kuali.org/browse/KULRICE-9992
+function setupProgressiveCheck(controlName, disclosureId, baseId, condition, alwaysRetrieve, methodToCall, onKeyUp) {
+    if (!baseId.match("\_c0$")) {
+        var theControl = jQuery("[name='" + escapeName(controlName) + "']");
+        var eventType = 'change';
+
+        if (onKeyUp && (theControl.is("textarea") || theControl.is("input[type='text'], input[type='password']"))) {
+            eventType = 'keyup paste cut contextmenu mouseout blur';
+        }
+
+        theControl.on(eventType, function () {
+            var refreshDisclosure = jQuery("#" + disclosureId);
+            if (refreshDisclosure.length) {
+                var displayWithId = disclosureId;
+
+                if (condition()) {
+                    if (refreshDisclosure.data("role") == "placeholder" || alwaysRetrieve) {
+                        retrieveComponent(disclosureId, methodToCall);
+                    }
+                    else {
+                        refreshDisclosure.addClass(kradVariables.PROGRESSIVE_DISCLOSURE_HIGHLIGHT_CLASS);
+                        refreshDisclosure.show();
+
+                        if (refreshDisclosure.parent().is("td")) {
+                            refreshDisclosure.parent().show();
+                        }
+
+                        refreshDisclosure.animate({backgroundColor:"transparent"}, 6000);
+
+                        //re-enable validation on now shown inputs
+                        hiddenInputValidationToggle(disclosureId);
+
+                        var displayWithLabel = jQuery(".displayWith-" + displayWithId);
+                        displayWithLabel.show();
+                        if (displayWithLabel.parent().is("td") || displayWithLabel.parent().is("th")) {
+                            displayWithLabel.parent().show();
+                        }
+                    }
+                }
+                else {
+                    refreshDisclosure.hide();
+
+                    // ignore validation on hidden inputs
+                    hiddenInputValidationToggle(disclosureId);
+
+                    var displayWithLabel = jQuery(".displayWith-" + displayWithId);
+                    displayWithLabel.hide();
+                    if (displayWithLabel.parent().is("td") || displayWithLabel.parent().is("th")) {
+                        displayWithLabel.parent().hide();
+                    }
+                }
+            }
+        });
+    }
+}

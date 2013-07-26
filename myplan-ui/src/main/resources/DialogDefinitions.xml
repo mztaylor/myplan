@@ -404,6 +404,7 @@
                                             </property>
                                         </bean>
                                         <bean parent="KSAP-HorizontalBoxGroup" p:style="margin-left:2em;"
+                                              p:id="courseOptions"
                                               p:progressiveRender="#form.type EQ 'course'">
                                             <property name="items">
                                                 <list>
@@ -424,10 +425,10 @@
                                                             <bean parent="dropdownPlaceholderCredits"/>
                                                         </property>
                                                         <property name="onDocumentReadyScript" value="
-                                                            jQuery('#courseCode_control').bind('keyup paste cut contextmenu mouseout blur', function(e) {
-                                                                var display = ( /([0-9]xx)/i.test( jQuery(this).val() ) ) ? 'block' : 'none';
-                                                                jQuery('#creditsCourse').css('display', display);
-                                                            });
+                                                            var condition = function () {
+                                                                return ( /([0-9]xx)/i.test( coerceValue('courseCd') ) );
+                                                            };
+                                                            setupProgressiveCheck('courseCd', 'creditsCourse', 'creditsCourse', condition, false, '', true)
                                                         "/>
                                                     </bean>
                                                 </list>
@@ -457,6 +458,7 @@
                                             </property>
                                         </bean>
                                         <bean parent="KSAP-HorizontalBoxGroup" p:style="margin-left:2em;"
+                                              p:id="placeholderOptions"
                                               p:progressiveRender="#form.type EQ 'general'">
                                             <property name="items">
                                                 <list>

@@ -19,7 +19,7 @@ function planItemTemplate(data) {
         "type":"hidden",
         "name":"script",
         "data-role":"script"
-    }).val("jQuery('#" + data.planItemId + "_" + data.planItemType + "_" + data.atpId + "').click(function(e) { openMenu('" + data.planItemId + "_" + data.planItemType + "','" + data.planItemType + "_menu_items','" + data.atpId.replace(/-/g, ".") + "',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false); });")
+    }).val("jQuery('#" + data.planItemId + "_" + data.planItemType + "_" + data.atpId + "').click(function(e) { openMenu('" + data.planItemId + "_" + data.planItemType + "','" + data.planItemType + "_" + ((data.placeHolder == "true") ? "placeholder" : "course" ) + "_menu','" + data.atpId.replace(/-/g, ".") + "',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false); });")
 
     if (data.placeHolder == "true") {
         item.addClass("placeholder");
