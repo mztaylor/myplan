@@ -1146,6 +1146,7 @@ div.activityAction div.blockElement {
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemAlert img,
+.myplan-quarter-detail .myplan-course-item .itemAlert img,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemNote img,
 .myplan-quarter-detail .myplan-course-item .itemNote img,
 .activityEnrlStatus .alert-icon img {
@@ -1157,6 +1158,7 @@ div.activityAction div.blockElement {
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemAlert img,
+.myplan-quarter-detail .myplan-course-item .itemAlert img,
 .activityEnrlStatus .alert-icon img {
     background-position: -54px -115px;
 }
