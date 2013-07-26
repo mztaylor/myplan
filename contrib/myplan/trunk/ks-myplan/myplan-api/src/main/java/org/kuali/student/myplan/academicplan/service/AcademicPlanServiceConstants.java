@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.academicplan.service;
 
+import org.kuali.student.lum.lu.LUConstants;
 import org.kuali.student.r2.common.constants.CommonServiceConstants;
 
 /**
@@ -21,9 +22,16 @@ public class AcademicPlanServiceConstants {
     public static final String LEARNING_PLAN_ITEM_TYPE_WISHLIST = "kuali.academicplan.item.wishlist";
     public static final String LEARNING_PLAN_ITEM_TYPE_WHATIF = "'kuali.academicplan.item.whatif";
 
-    public static final String LEARNING_PLAN_ACTIVE_STATE_KEY  = "kuali.academicplan.plan.state.active";
+    public static final String LEARNING_PLAN_ACTIVE_STATE_KEY = "kuali.academicplan.plan.state.active";
     public static final String LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY = "kuali.academicplan.planitem.state.active";
     public static final String LEARNING_PLAN_ITEM_SHARED_TRUE_KEY = "true";
     public static final String LEARNING_PLAN_ITEM_SHARED_FALSE_KEY = "false";
+
+    /*PRefObjTypes*/
+    public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
+    public static final String SECTION_TYPE = "kuali.lui.type.activity.offering";
+    public static final String PLACE_HOLDER_TYPE_GEN_ED = "kuali.uw.lu.genedreq";
+    public static final String PLACE_HOLDER_TYPE = "uw.academicplan.placeholder";
+    public static final String PLACE_HOLDER_TYPE_COURSE_LEVEL = " uw.cluset.type.course.level";
 
 }
