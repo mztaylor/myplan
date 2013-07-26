@@ -65,17 +65,16 @@ function fnAddPlanItem(data) {
     jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size", size);
     fnShowHideQuickAddLink(data.atpId, data.planItemType, size);
 
-    planItemTemplate(data).prependTo("." + data.atpId + ".myplan-term-" + data.planItemType + " .uif-stackedCollectionLayout").css({backgroundColor:"#ffffcc"}).hide();
+    planItemTemplate(data).prependTo("." + data.atpId + ".myplan-term-" + data.planItemType + " .uif-stackedCollectionLayout");
     runHiddenScripts(data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div");
-
-    jQuery("#" + data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div").show().animate({backgroundColor:"#ffffff"}, 3000);
+    jQuery("#" + data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div").css({backgroundColor:"#ffffcc"}).animate({backgroundColor:"#ffffff"}, 3000);
     truncateField(data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div", true);
 }
 
 function fnUpdatePlanItem(data) {
-    jQuery("#" + data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div").fadeOut(50).replaceWith(planItemTemplate(data));
+    jQuery("#" + data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div").replaceWith(planItemTemplate(data));
     runHiddenScripts(data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div");
-    jQuery("#" + data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div").css({backgroundColor:"#ffffcc"}).show().animate({backgroundColor:"#ffffff"}, 3000);
+    jQuery("#" + data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div").css({backgroundColor:"#ffffcc"}).animate({backgroundColor:"#ffffff"}, 3000);
     truncateField(data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div", true);
 }
 /*

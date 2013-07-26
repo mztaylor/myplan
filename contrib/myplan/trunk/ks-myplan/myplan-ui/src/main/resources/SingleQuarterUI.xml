@@ -824,7 +824,15 @@
                                 <property name="style" value="margin:0 5px 0 0;"/>
                             </bean>
 
-                            <bean parent="KSAP-SimpleDataField" p:propertyName="placeHolderCode"
+                            <bean parent="KSAP-MessageField"
+                                  p:messageText="@{#line.placeHolderCode} (@{#line.placeHolderCredit})"
+                                  p:render="@{#line.placeHolderCode NE null}">
+                                <property name="title" value="@{#line.placeHolderCode}"/>
+                                <property name="style"
+                                          value="margin:0 5px 0 0; font-family: Georgia, serif; font-style: italic;"/>
+                            </bean>
+
+                            <!--<bean parent="KSAP-SimpleDataField" p:propertyName="placeHolderCode"
                                   p:render="@{#line.placeHolderCode NE null}">
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -832,10 +840,10 @@
                                     </list>
                                 </property>
                                 <property name="style" value="margin:0 5px 0 0;"/>
-                            </bean>
+                            </bean>-->
 
-                            <bean parent="Uif-LinkField" p:width="350px"
-                                  p:render="@{#line.courseDetails.courseTitle ne null}">
+                            <bean parent="Uif-LinkField"
+                                  p:render="@{#line.courseDetails.courseTitle NE null}">
                                 <property name="linkText" value="@{#line.courseDetails.courseTitle}"/>
                                 <property name="title" value="@{#line.courseDetails.courseTitle} "/>
                                 <property name="href"
@@ -848,10 +856,17 @@
                                 </property>
                             </bean>
 
-
-                            <!--<bean parent="KSAP-MessageField" p:messageText="(@{#line.courseDetails.credit})">
-                                <property name="style" value="margin:0 25px 0 0;"/>
-                            </bean>-->
+                            <bean parent="Uif-ImageField" p:render="@{#line.note NE null}"
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                                  p:title="@{#line.note}"
+                                  p:altText="@{#line.note}">
+                                <property name="style" value="position:relative; top:-2px;"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>itemNote</value>
+                                    </list>
+                                </property>
+                            </bean>
 
                             <!-- Past quarters -->
                             <bean parent="singleQuarterStudentActions">
@@ -905,7 +920,7 @@
                             <!--For Advisers only-->
                             <bean parent="singleQuarterSectionsToggle">
                                 <property name="style"
-                                          value="display:inline-block; font-size:11px; margin:0; text-align:right; float:right;"/>
+                                          value="display:inline-block; font-size:11px; margin:0 0 0 30px; text-align:right; float:right;"/>
                                 <property name="render"
                                           value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND #line.sectionsAvailable}"/>
                             </bean>
@@ -1210,7 +1225,8 @@
     </bean>
 
     <bean id="singleQuarterStudentActions" parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
-          p:linkSeparator="|" p:style="display:inline-block; font-size:11px; margin:0; text-align:right; float:right;">
+          p:linkSeparator="|"
+          p:style="display:inline-block; font-size:11px; margin:0 0 0 30px; text-align:right; float:right;">
         <property name="validationMessages">
             <null/>
         </property>
