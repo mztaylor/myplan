@@ -1399,8 +1399,9 @@ public class PlanController extends UifControllerBase {
                     if (PlanConstants.PLACE_HOLDER_CREDIT.equalsIgnoreCase(attributeInfo.getKey())) {
                         if (attributeInfo.getValue() != null && !attributeInfo.getValue().equals(form.getCredit())) {
                             creditUpdated = true;
+                            attributeInfo.setValue(form.getCredit());
                         }
-                        attributeInfo.setValue(form.getCredit());
+
                     }
                 }
 
