@@ -829,7 +829,7 @@
                                   p:render="@{#line.placeHolderCode NE null}">
                                 <property name="title" value="@{#line.placeHolderCode}"/>
                                 <property name="style"
-                                          value="margin:0 5px 0 0; font-family: Georgia, serif; font-style: italic;"/>
+                                          value="margin:0 5px 0 0; font-family: Georgia, serif; font-style: italic; color: #555;"/>
                             </bean>
 
                             <!--<bean parent="KSAP-SimpleDataField" p:propertyName="placeHolderCode"
