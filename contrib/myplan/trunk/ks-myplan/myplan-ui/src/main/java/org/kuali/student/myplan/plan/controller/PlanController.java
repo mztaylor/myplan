@@ -1351,6 +1351,7 @@ public class PlanController extends UifControllerBase {
                 String placeHolderId = null;
                 String placeHolderType = null;
                 String placeHolderCd = null;
+                boolean creditUpdated = false;
 
                 /*General placeholder/ placeholder type and value update */
                 if (hasText(form.getPlaceholder())) {
@@ -1396,6 +1397,7 @@ public class PlanController extends UifControllerBase {
                 /*Credit update*/
                 for (AttributeInfo attributeInfo : planItemInfo.getAttributes()) {
                     if (PlanConstants.PLACE_HOLDER_CREDIT.equalsIgnoreCase(attributeInfo.getKey())) {
+                        creditUpdated = !attributeInfo.getValue().equals(form.getCredit());
                         attributeInfo.setValue(form.getCredit());
                     }
                 }
@@ -1413,8 +1415,9 @@ public class PlanController extends UifControllerBase {
                 Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
                 events.putAll(makeAddUpdateEvent(planItemInfo, courseSummaryDetails, form, true));
 
-                events.putAll(makeUpdateTotalCreditsEvent(atpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
-
+                if (creditUpdated && PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equals(planItemInfo.getTypeKey())) {
+                    events.putAll(makeUpdateTotalCreditsEvent(atpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
+                }
                 form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
                 form.setJavascriptEvents(events);
 
