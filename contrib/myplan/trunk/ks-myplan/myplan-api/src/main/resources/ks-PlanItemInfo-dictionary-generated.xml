@@ -207,12 +207,10 @@ A description of the Learning Plan Item
 
 	<bean id="PlanItemInfo.descr.plain-generated" abstract="true" parent="BaseKuali.descr.plain">
 		<property name="name" value="plain"/>
-        <property name="validCharactersConstraint" ref="uw.AnyCharacterPatternConstraint" />
 	</bean>
 
 	<bean id="PlanItemInfo.descr.formatted-generated" abstract="true" parent="BaseKuali.descr.formatted">
 		<property name="name" value="formatted"/>
-        <property name="validCharactersConstraint" ref="uw.AnyCharacterPatternConstraint" />
 	</bean>
 
 	<bean id="PlanItemInfo.meta-generated" abstract="true" parent="ComplexAttributeDefinition">
@@ -301,10 +299,4 @@ being thrown.
 	<bean id="PlanItemInfo.meta.updateId-generated" abstract="true" parent="BaseKuali.meta.updateId">
 		<property name="name" value="updateId"/>
 	</bean>
-
-    <bean id="uw.AnyCharacterPatternConstraint"
-          class="org.kuali.rice.krad.datadictionary.validation.constraint.AnyCharacterPatternConstraint">
-        <property name="value"
-                  value="^[A-Za-z0-9.,&gt;&lt;_\\/\-\?\+=(){}\[\];:'&quot;&amp;%$\^~`\*#@!|\t\n\r\xA0 ]*$"/>
-    </bean>
 </beans>
