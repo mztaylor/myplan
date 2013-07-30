@@ -130,12 +130,6 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String MULTIPLE = ",";
 
 
-    /* Keys for storing info in the session. */
-    public static final String SESSION_KEY_IS_ADVISER = "kuali.uw.authz.adviser";
-    public static final String SESSION_KEY_STUDENT_ID = "kuali.uw.authn.studentId";
-    public static final String SESSION_KEY_STUDENT_NAME = "kuali.uw.authn.studentName";
-    public static final String SESSION_KEY_STUDENT_NUMBER = "kuali.uw.authn.studentNumber";
-
     /**
      * Names of javascript events that can be scheduled in response to the outcome of a plan item request.
      */

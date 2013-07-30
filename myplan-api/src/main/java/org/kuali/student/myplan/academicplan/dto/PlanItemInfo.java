@@ -19,7 +19,7 @@ import java.util.Set;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PlanItemInfo", propOrder = {"refObjectId", "refObjectType", "learningPlanId", "planPeriods", "id",
-        "typeKey", "stateKey", "descr", "meta", "attributes", "_futureElements"})
+        "typeKey", "stateKey", "descr", "systemKey", "meta", "attributes", "_futureElements"})
 public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
 
     @XmlAttribute
@@ -40,6 +40,9 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
     @XmlElement
     private List<String> planPeriods;
 
+    @XmlElement
+    private String systemKey;
+
     @XmlAnyElement
     private List<Element> _futureElements;
 
@@ -49,6 +52,7 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
         this.refObjectId = null;
         this.refObjectType = null;
         this.learningPlanId = null;
+        this.systemKey = null;
         this.planPeriods = new ArrayList<String>();
         this._futureElements = null;
     }
@@ -56,20 +60,19 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
     public PlanItemInfo(PlanItem item) {
         super(item);
 
-        if(null != item) {
+        if (null != item) {
             this.id = item.getId();
             this.refObjectId = item.getRefObjectId();
             this.refObjectType = item.getRefObjectType();
             this.learningPlanId = item.getLearningPlanId();
 
-            if(null != item.getPlanPeriods()) {
-                for(String atpId : item.getPlanPeriods()) {
+            if (null != item.getPlanPeriods()) {
+                for (String atpId : item.getPlanPeriods()) {
                     this.planPeriods.add(atpId);
                 }
             }
 
             this.descr = (null != item.getDescr()) ? new RichTextInfo(item.getDescr()) : null;
-
         }
     }
 
@@ -119,5 +122,13 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
 
     public void setPlanPeriods(List<String> planPeriods) {
         this.planPeriods = planPeriods;
+    }
+
+    public String getSystemKey() {
+        return systemKey;
+    }
+
+    public void setSystemKey(String systemKey) {
+        this.systemKey = systemKey;
     }
 }
