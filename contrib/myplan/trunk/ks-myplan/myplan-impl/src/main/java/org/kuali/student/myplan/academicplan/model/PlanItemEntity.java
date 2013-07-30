@@ -1,15 +1,23 @@
 package org.kuali.student.myplan.academicplan.model;
 
 import com.sun.istack.NotNull;
+import org.kuali.rice.core.api.config.property.ConfigContext;
+import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.kim.api.identity.PersonService;
+import org.kuali.rice.kim.api.services.KimApiServiceLocator;
+import org.kuali.rice.krad.UserSession;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.entity.AttributeOwner;
 import org.kuali.student.r2.common.entity.MetaEntity;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,34 +26,34 @@ import java.util.Set;
 @SuppressWarnings({"JpaDataSourceORMInspection"})
 @Entity
 @Table(name = "KSPL_LRNG_PLAN_ITEM",
-    uniqueConstraints = @UniqueConstraint(columnNames={"PLAN_ID", "TYPE_ID", "REF_OBJ_ID"}))
-@NamedQueries( {
+        uniqueConstraints = @UniqueConstraint(columnNames = {"PLAN_ID", "TYPE_ID", "REF_OBJ_ID"}))
+@NamedQueries({
 
-    @NamedQuery(name = "LearningPlanItem.getPlanItems",
-            query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p WHERE " +
-                    "pi.learningPlan = p " +
-                    "and p.id =:learningPlanId"),
+        @NamedQuery(name = "LearningPlanItem.getPlanItems",
+                query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p WHERE " +
+                        "pi.learningPlan = p " +
+                        "and p.id =:learningPlanId"),
 
-    @NamedQuery(name = "LearningPlanItem.getPlanItemsByType",
-            query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p WHERE " +
-                    "pi.learningPlan = p " +
-                    "and p.id =:learningPlanId " +
-                    "and pi.learningPlanItemType.id =:learningPlanItemType"),
+        @NamedQuery(name = "LearningPlanItem.getPlanItemsByType",
+                query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p WHERE " +
+                        "pi.learningPlan = p " +
+                        "and p.id =:learningPlanId " +
+                        "and pi.learningPlanItemType.id =:learningPlanItemType"),
 
-    @NamedQuery(name = "LearningPlanItem.getPlanItemsByRefObjectId",
-            query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p  WHERE " +
-                    "pi.learningPlan = p " +
-                    "and p.id =:learningPlanId " +
-                    "and pi.refObjectTypeKey = :refObjectTypeKey " +
-                    "and pi.refObjectId = :refObjectId")
+        @NamedQuery(name = "LearningPlanItem.getPlanItemsByRefObjectId",
+                query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p  WHERE " +
+                        "pi.learningPlan = p " +
+                        "and p.id =:learningPlanId " +
+                        "and pi.refObjectTypeKey = :refObjectTypeKey " +
+                        "and pi.refObjectId = :refObjectId")
 })
 public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanItemAttributeEntity> {
 
     @NotNull
-    @Column(name="REF_OBJ_TYPE_KEY")
-	private String refObjectTypeKey;
+    @Column(name = "REF_OBJ_TYPE_KEY")
+    private String refObjectTypeKey;
 
-    @Column(name="REF_OBJ_ID")
+    @Column(name = "REF_OBJ_ID")
     private String refObjectId;
 
     @ManyToOne()
@@ -63,42 +71,42 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private Set<PlanItemAttributeEntity> attributes;
 
-    @ElementCollection (fetch=FetchType.EAGER)
-    @CollectionTable(name="KSPL_LRNG_PLAN_ITEM_ATP_ID",
-        joinColumns=@JoinColumn(name="PLAN_ITEM_ID"),
-            uniqueConstraints = @UniqueConstraint(columnNames={"PLAN_ITEM_ID", "ATP_ID"}))
-    @Column(name="ATP_ID")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "KSPL_LRNG_PLAN_ITEM_ATP_ID",
+            joinColumns = @JoinColumn(name = "PLAN_ITEM_ID"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"PLAN_ITEM_ID", "ATP_ID"}))
+    @Column(name = "ATP_ID")
     private Set<String> planPeriods;
 
-    public PlanItemEntity(){
+    public PlanItemEntity() {
         super();
     }
 
-	@Override
-	public Set<PlanItemAttributeEntity> getAttributes() {
-		return this.attributes;
-	}
+    @Override
+    public Set<PlanItemAttributeEntity> getAttributes() {
+        return this.attributes;
+    }
 
-	@Override
-	public void setAttributes(Set<PlanItemAttributeEntity> attributes) {
-		this.attributes = attributes;
-	}
+    @Override
+    public void setAttributes(Set<PlanItemAttributeEntity> attributes) {
+        this.attributes = attributes;
+    }
 
-	public String getRefObjectTypeKey() {
-		return refObjectTypeKey;
-	}
+    public String getRefObjectTypeKey() {
+        return refObjectTypeKey;
+    }
 
-	public void setRefObjectTypeKey(String refObjectTypeKey) {
-		this.refObjectTypeKey = refObjectTypeKey;
-	}
+    public void setRefObjectTypeKey(String refObjectTypeKey) {
+        this.refObjectTypeKey = refObjectTypeKey;
+    }
 
-	public String getRefObjectId() {
-		return refObjectId;
-	}
+    public String getRefObjectId() {
+        return refObjectId;
+    }
 
-	public void setRefObjectId(String refObjectId) {
-		this.refObjectId = refObjectId;
-	}
+    public void setRefObjectId(String refObjectId) {
+        this.refObjectId = refObjectId;
+    }
 
     public PlanItemTypeEntity getLearningPlanItemType() {
         return learningPlanItemType;
@@ -156,6 +164,7 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
 
     /**
      * Provides and data transfer object representation of the plan item.
+     *
      * @return LearningPlanInfo
      */
     public PlanItemInfo toDto() {
@@ -186,7 +195,47 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
         }
         dto.setAttributes(attributes);
 
+        String externalIdentifier = ConfigContext.getCurrentContextConfig().getProperty(AcademicPlanServiceConstants.EXTERNAL_IDENTIFIER);
+
+        if (StringUtils.hasText(externalIdentifier)) {
+            UserSession session = GlobalVariables.getUserSession();
+            String regId = null;
+            if (session.retrieveObject(AcademicPlanServiceConstants.SESSION_KEY_IS_ADVISER) != null) {
+                regId = (String) session.retrieveObject(AcademicPlanServiceConstants.SESSION_KEY_STUDENT_ID);
+            } else {
+                regId = session.getPerson().getPrincipalId();
+            }
+
+
+            if (regId != null) {
+                Person person = getPersonService().getPerson(regId);
+                if (person != null) {
+                    Map<String, String> idmap = person.getExternalIdentifiers();
+                    // Rice KIM's equivalent to systemKey is /Person/StudentSystemKey from SWS
+                    String systemKey = idmap.get(externalIdentifier);
+                    if (StringUtils.hasText(systemKey)) {
+                        dto.setSystemKey(systemKey);
+                    }
+                }
+            }
+
+        }
+
         return dto;
+    }
+
+    private static transient PersonService personService;
+
+    public synchronized static PersonService getPersonService() {
+        if (personService == null) {
+            personService = KimApiServiceLocator.getPersonService();
+        }
+        return personService;
+    }
+
+
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
     }
 
     @Override

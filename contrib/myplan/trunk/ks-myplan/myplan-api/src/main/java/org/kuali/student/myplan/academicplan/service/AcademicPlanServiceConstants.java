@@ -27,11 +27,20 @@ public class AcademicPlanServiceConstants {
     public static final String LEARNING_PLAN_ITEM_SHARED_TRUE_KEY = "true";
     public static final String LEARNING_PLAN_ITEM_SHARED_FALSE_KEY = "false";
 
-    /*PRefObjTypes*/
+    /*RefObjTypes*/
     public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
     public static final String SECTION_TYPE = "kuali.lui.type.activity.offering";
     public static final String PLACE_HOLDER_TYPE_GEN_ED = "kuali.uw.lu.genedreq";
     public static final String PLACE_HOLDER_TYPE = "uw.academicplan.placeholder";
-    public static final String PLACE_HOLDER_TYPE_COURSE_LEVEL = " uw.cluset.type.course.level";
+    public static final String PLACE_HOLDER_TYPE_COURSE_LEVEL = "uw.cluset.type.course.level";
+
+    /* Keys for storing info in the session. */
+    public static final String SESSION_KEY_IS_ADVISER = "kuali.uw.authz.adviser";
+    public static final String SESSION_KEY_STUDENT_ID = "kuali.uw.authn.studentId";
+    public static final String SESSION_KEY_STUDENT_NAME = "kuali.uw.authn.studentName";
+    public static final String SESSION_KEY_STUDENT_NUMBER = "kuali.uw.authn.studentNumber";
+
+    /*External Identifier*/
+    public static final String EXTERNAL_IDENTIFIER = "ksap.persist.externalIdentifier";
 
 }
