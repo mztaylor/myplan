@@ -76,9 +76,9 @@ public class OrgHelper {
             }
             for (SearchResultRow row : searchResult.getRows()) {
                 OrgInfo orgInfo = new OrgInfo();
-                orgInfo.setId(getCellValue(row, "org.resultColumn.orgId"));
-                orgInfo.setShortName(getCellValue(row, "org.resultColumn.orgShortName"));
-                orgInfo.setLongName(getCellValue(row, "org.resultColumn.orgLongName"));
+                orgInfo.setId(SearchHelper.getCellValue(row, "org.resultColumn.orgId"));
+                orgInfo.setShortName(SearchHelper.getCellValue(row, "org.resultColumn.orgShortName"));
+                orgInfo.setLongName(SearchHelper.getCellValue(row, "org.resultColumn.orgLongName"));
                 orgInfoList.add(orgInfo);
 
             }
@@ -98,7 +98,7 @@ public class OrgHelper {
             logger.error("Search Failed to get the Organization Data ", e);
         }
         for (SearchResultRow row : searchResult.getRows()) {
-            subjects.put(getCellValue(row, "org.resultColumn.attrValue"), getCellValue(row, "org.resultColumn.name"));
+            subjects.put(SearchHelper.getCellValue(row, "org.resultColumn.attrValue"), SearchHelper.getCellValue(row, "org.resultColumn.name"));
 
         }
         return subjects;
@@ -114,7 +114,7 @@ public class OrgHelper {
             logger.error("Search Failed to get the Organization Data ", e);
         }
         for (SearchResultRow row : searchResult.getRows()) {
-            subjects.put(getCellValue(row, "org.resultColumn.attrValue").trim(), getCellValue(row, "org.resultColumn.name"));
+            subjects.put(SearchHelper.getCellValue(row, "org.resultColumn.attrValue").trim(), SearchHelper.getCellValue(row, "org.resultColumn.name"));
 
         }
         return subjects;
@@ -136,22 +136,4 @@ public class OrgHelper {
         return orgInfoList;
 
     }
-
-
-    /**
-     * Returns the value for the SearchResultCell in the SearchResultRow comparing with given key
-     *
-     * @param row
-     * @param key
-     * @return
-     */
-    public static String getCellValue(SearchResultRow row, String key) {
-        for (SearchResultCell cell : row.getCells()) {
-            if (key.equals(cell.getKey())) {
-                return cell.getValue();
-            }
-        }
-        throw new RuntimeException("cell result '" + key + "' not found");
-    }
-
 }

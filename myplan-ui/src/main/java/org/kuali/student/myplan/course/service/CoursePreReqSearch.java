@@ -10,6 +10,7 @@ import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
+import org.kuali.student.myplan.plan.util.SearchHelper;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -55,7 +56,7 @@ public class CoursePreReqSearch {
             req.addParam("subject", subject);
             SearchResult result = getLuService().search(req);
             for (SearchResultRow row : result.getRows()) {
-                String cluid = OrgHelper.getCellValue(row, "lu.resultColumn.cluId");
+                String cluid = SearchHelper.getCellValue(row, "lu.resultColumn.cluId");
                 courseList.add(cluid);
             }
             return courseList;
@@ -81,7 +82,7 @@ public class CoursePreReqSearch {
             req.addParam("range", range);
             SearchResult result = getLuService().search(req);
             for (SearchResultRow row : result.getRows()) {
-                String cluid = OrgHelper.getCellValue(row, "lu.resultColumn.cluId");
+                String cluid = SearchHelper.getCellValue(row, "lu.resultColumn.cluId");
                 courseList.add(cluid);
             }
             return courseList;
@@ -107,8 +108,8 @@ public class CoursePreReqSearch {
             req.addParam("range", range);
             SearchResult result = getLuService().search(req);
             for (SearchResultRow row : result.getRows()) {
-                String cluid = OrgHelper.getCellValue(row, "lu.resultColumn.cluId");
-                String code = OrgHelper.getCellValue(row, "lu.resultColumn.luOptionalCode");
+                String cluid = SearchHelper.getCellValue(row, "lu.resultColumn.cluId");
+                String code = SearchHelper.getCellValue(row, "lu.resultColumn.luOptionalCode");
                 if (!excludeList.contains(code)) {
                     courseList.add(cluid);
                 }

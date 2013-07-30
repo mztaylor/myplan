@@ -5,6 +5,8 @@ import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.plan.PlanConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,18 +23,21 @@ public class PlaceHoldersBuilder extends KeyValuesBase {
 
     @Override
     public List<KeyValue> getKeyValues() {
+        String value, key;
+        List<KeyValue> kvList = new ArrayList<KeyValue>();
 
-        List<KeyValue> list = new ArrayList<KeyValue>();
-
-        List<EnumeratedValueInfo> enums = new ArrayList<EnumeratedValueInfo>();
-        enums.addAll(EnumerationHelper.getEnumerationValueInfoList("uw.academicplan.placeholder"));
-        enums.addAll(EnumerationHelper.getEnumerationValueInfoList("kuali.uw.lu.genedreq"));
-
+        List<EnumeratedValueInfo> enums =  EnumerationHelper.getEnumsByContext(
+                CourseSearchConstants.ENUM_CONTEXT_KEY_SEARCH_PLACEHOLDER_KEY);
 
         for (EnumeratedValueInfo enumValue : enums) {
-            list.add(new ConcreteKeyValue(String.format("%s|%s", enumValue.getCode(), enumValue.getEnumerationKey()), String.format("%s (%s) - Gen. Edu. Req.", enumValue.getAbbrevValue(), enumValue.getValue())));
+            key   = String.format("%s|%s",   enumValue.getCode(), enumValue.getEnumerationKey());
+            value = String.format("%s (%s)", enumValue.getAbbrevValue(), enumValue.getValue());
+            if ( enumValue.getEnumerationKey().equals(PlanConstants.GEN_EDU_ENUM_KEY) ) {
+                value += " - Gen. Edu. Req.";
+            }
+            kvList.add(new ConcreteKeyValue(key,value));
         }
 
-        return list;
+        return kvList;
     }
 }

@@ -5,8 +5,13 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.common.search.dto.SearchRequest;
+import org.kuali.student.common.search.dto.SearchResult;
+import org.kuali.student.common.search.dto.SearchResultRow;
+import org.kuali.student.common.exceptions.MissingParameterException;
 
 import javax.xml.namespace.QName;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -99,6 +104,7 @@ public class EnumerationHelper {
      */
     public static String getEnumAbbrValForCodeByType(String code, String key) {
         String enumAbbrValue = null;
+
         List<EnumeratedValueInfo> enumeratedValueInfoList = getEnumerationValueInfoList(key);
         for (EnumeratedValueInfo enumVal : enumeratedValueInfoList) {
             String enumCode = enumVal.getCode();
@@ -107,6 +113,7 @@ public class EnumerationHelper {
                 break;
             }
         }
+
         return enumAbbrValue;
     }
 
@@ -154,4 +161,37 @@ public class EnumerationHelper {
         return enumCode;
     }
 
+    /**
+     * returns all the Enumerations associated with a specific context, potentially for different enum_keys.
+     * So, if a subset of enum_key foo values are associated with context bar and a subset of enum_key boo values
+     * are associated with context bar then a get for context bar values will retrieve both the foo and boo values.
+     *
+     * @param contextKey - the context to fetch enums for; in database this is value of KSEM_CTX_T.CTX_KEY
+     *
+     * @return list of EnumeratedValueInfo for the enums joined to the requested contextKey
+     */
+    public static List<EnumeratedValueInfo> getEnumsByContext(String contextKey) {
+        List<EnumeratedValueInfo> enumeratedValueInfoList = new ArrayList<EnumeratedValueInfo>();
+        SearchRequest searchRequest = new SearchRequest(CourseSearchConstants.ENUM_CONTEXT_KEY_SEARCH_TYPE);
+        searchRequest.addParam(CourseSearchConstants.ENUM_CONTEXT_KEY_SEARCH_PARAM_NAME, contextKey);
+        SearchResult searchResult = new SearchResult();
+        try {
+            searchResult = getEnumerationService().search(searchRequest);
+            } catch (MissingParameterException e) {
+                logger.error("Search Failed in getEnumsByContext to get the Enumeration Data for " + contextKey +
+                        ". Exception info: " +  e);
+                return enumeratedValueInfoList;   // an empty list
+        }
+
+        for (SearchResultRow row : searchResult.getRows()) {
+            EnumeratedValueInfo enumInfo = new EnumeratedValueInfo();
+            enumInfo.setCode          (SearchHelper.getCellValue(row, "enumeration.resultColumn.code"));
+            enumInfo.setAbbrevValue   (SearchHelper.getCellValue(row, "enumeration.resultColumn.abbrevValue"));
+            enumInfo.setValue         (SearchHelper.getCellValue(row, "enumeration.resultColumn.value"));
+            enumInfo.setEnumerationKey(SearchHelper.getCellValue(row, "enumeration.resultColumn.enumKey"));
+            enumeratedValueInfoList.add(enumInfo);
+        }
+
+        return enumeratedValueInfoList;
+    }
 }

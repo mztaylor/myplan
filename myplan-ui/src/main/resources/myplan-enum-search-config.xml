@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2010 The Kuali Foundation Licensed under the
+    Educational Community License, Version 2.0 (the "License"); you may
+    not use this file except in compliance with the License. You may
+    obtain a copy of the License at
+
+    http://www.osedu.org/licenses/ECL-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an "AS IS"
+    BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+    or implied. See the License for the specific language governing
+    permissions and limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:search="http://student.kuali.org/xsd/search-extension"
+       xsi:schemaLocation="http://student.kuali.org/xsd/search-extension
+                           http://student.kuali.org/xsd/search-extension/search-extension.xsd
+                           http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <import resource="classpath:em-search-config.xml"/>
+
+    <search:searchResultTypeInfo id="enumeration.result.contextSearch" parent="enumeration.result.contextSearch-parent"/>
+	<search:searchResultTypeInfo id="enumeration.result.contextSearch-parent" abstract="true">
+		<search:name>All enumeration results</search:name>
+		<search:desc>Enumeration Results</search:desc>
+		<search:resultColumns>
+			<ref bean="enumeration.resultColumn.code" />
+			<ref bean="enumeration.resultColumn.abbrevValue" />
+			<ref bean="enumeration.resultColumn.value" />
+            <ref bean="enumeration.resultColumn.enumKey" />
+		</search:resultColumns>
+	</search:searchResultTypeInfo>
+
+     <!-- are these 3 resultColumn really needed? simply copied from ks em-search-config.xml -->
+    <search:resultColumn id="enumeration.resultColumn.code" parent="enumeration.resultColumn.code-parent"/>
+	<search:resultColumn id="enumeration.resultColumn.code-parent" abstract="true">
+		<search:name>Code</search:name>
+		<search:desc>The internal code of the enumeration value</search:desc>
+		<search:dataType>string</search:dataType>
+	</search:resultColumn>
+
+	<search:resultColumn id="enumeration.resultColumn.abbrevValue" parent="enumeration.resultColumn.abbrevValue-parent"/>
+	<search:resultColumn id="enumeration.resultColumn.abbrevValue-parent" abstract="true">
+		<search:name>Abbreviation of the code</search:name>
+		<search:desc>An abbreviation of the enumeration value</search:desc>
+		<search:dataType>string</search:dataType>
+	</search:resultColumn>
+
+	<search:resultColumn id="enumeration.resultColumn.value" parent="enumeration.resultColumn.value-parent"/>
+	<search:resultColumn id="enumeration.resultColumn.value-parent" abstract="true">
+		<search:name>Description of the code</search:name>
+		<search:desc>The description of the enumeration value</search:desc>
+		<search:dataType>string</search:dataType>
+	</search:resultColumn>
+
+    <search:resultColumn id="enumeration.resultColumn.enumKey" parent="enumeration.resultColumn.enumKey-parent"/>
+	<search:resultColumn id="enumeration.resultColumn.enumKey-parent" abstract="true">
+		<search:name>ENUM_KEY from KSEM_ENUM_VAL_T </search:name>
+		<search:desc>The ENUM_KEY identifies the type of entry</search:desc>
+		<search:dataType>string</search:dataType>
+	</search:resultColumn>
+
+    <search:searchCriteriaTypeInfo id="enumeration.criteria.context.key" parent="enumeration.criteria.context.key-parent"/>
+    <search:searchCriteriaTypeInfo id="enumeration.criteria.context.key-parent" abstract="true">
+        <search:name>EnumsByContextKeyCriteria</search:name>
+        <search:desc>Criteria for searching across enums by context key</search:desc>
+        <search:queryParams>
+            <ref bean="enum.queryParam.contextKey"/>
+        </search:queryParams>
+    </search:searchCriteriaTypeInfo>
+
+    <search:queryParam id="enum.queryParam.contextKey" parent="enumeration.queryParam.contextKey-parent"/>
+	<search:queryParam id="enumeration.queryParam.contextKey-parent" abstract="true">
+		<ref bean="enumeration.fieldDescriptor.contextType" />
+	</search:queryParam>
+
+    <search:searchType id="enum.search.by.context.key" parent="enum.search.by.context.key-parent"/>
+    <search:searchType id="enum.search.by.context.key-parent" abstract="true">
+        <search:name>Enum Search by Context Key</search:name>
+        <search:desc>Retrieve all the enums for a context, even across enum-keys.</search:desc>
+        <search:searchResultTypeInfo>
+            <ref bean="enumeration.result.contextSearch"/>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <ref bean="enumeration.criteria.context.key"/>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
+
+    <!--Query Map-->
+    <bean id="queryMap" parent="queryMap-parent"/>
+    <bean id="queryMap-parent" class="org.springframework.beans.factory.config.MapFactoryBean">
+        <property name="sourceMap">
+            <map merge="true">
+                <entry key="enum.search.by.context.key">
+                    <value>NATIVE:
+                        SELECT cd, abbrev_val, val, enum_key
+                        FROM  ksem_enum_val_t em JOIN ksem_ctx_jn_enum_val_t emjn on  em.id = emjn.enum_val_id JOIN ksem_ctx_t emctx on emjn.ctx_id = emctx.id
+                        WHERE emctx.ctx_key = :enum_query_param_context_key
+                        ORDER BY sort_key
+                    </value>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+</beans>
