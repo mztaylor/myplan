@@ -61,6 +61,8 @@ public class CourseOfferingServiceUtils {
         DefaultXPath coursePath = newXPath("/s:Section/s:Course");
         Element sectionNode = (Element) sectionPath.selectSingleNode(document);
         Element courseNode = (Element) coursePath.selectSingleNode(document);
+
+        /*Calculating institute code and skipping if code is other than seattle and UWPCE*/
         String instituteCode = null;
 
         {
@@ -273,6 +275,7 @@ public class CourseOfferingServiceUtils {
         DefaultXPath primarySectionPath = newXPath("/s:Section/s:PrimarySection");
         DefaultXPath secondarySectionPath = newXPath("/s:Section");
         DefaultXPath coursePath = newXPath("/s:Section/s:Course");
+
         Element curriculumCommentsNode = (Element) curriculumCommentsPath.selectSingleNode(document);
         Element secondarySection = (Element) secondarySectionPath.selectSingleNode(document);
         Element courseCommentsNode = (Element) courseCommentsPath.selectSingleNode(document);
@@ -280,6 +283,38 @@ public class CourseOfferingServiceUtils {
         Element courseNode = (Element) coursePath.selectSingleNode(document);
         List comments = courseCommentsNode.content();
         List curricComments = curriculumCommentsNode.content();
+
+
+        /*Calculating institute code and skipping if code is other than seattle and UWPCE*/
+        String instituteCode = null;
+
+        {
+            DefaultXPath linkPath = newXPath("s:Curriculum/s:TimeScheduleLinkAbbreviation");
+            Element link = (Element) linkPath.selectSingleNode(secondarySection);
+            instituteCode = link.getTextTrim();
+
+            // displaying main campus, PCE, and ROTC
+            // refer to https://jira.cac.washington.edu/browse/MYPLAN-1583 for list of supported institute codes
+            int instituteNumber = getInstituteNumber(instituteCode);
+            switch (instituteNumber) {
+                case 0: // Main campus
+                case 95: // PCE
+                case 88: // ROTC
+                {
+                    instituteCode = Integer.toString(instituteNumber);
+                    break;
+                }
+
+                case -1: //  POA #1: Exclude sections with a null/blankTimeScheduleLinkAbbreviation.
+                default: // Also omit all others not in above list
+                {
+                    return null;
+                }
+            }
+
+        }
+
+
         for (Object ob : comments) {
             Element element = (Element) ob;
             String text = element.elementText("Text");
