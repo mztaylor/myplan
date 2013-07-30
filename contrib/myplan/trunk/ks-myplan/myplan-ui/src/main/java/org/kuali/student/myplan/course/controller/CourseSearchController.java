@@ -53,6 +53,7 @@ import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
+import org.kuali.student.myplan.plan.util.SearchHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
@@ -232,10 +233,10 @@ public class CourseSearchController extends UifControllerBase {
             searchRequest.setParams(params);
             SearchResult searchResult = getLuService().search(searchRequest);
             for (SearchResultRow row : searchResult.getRows()) {
-                String id = OrgHelper.getCellValue(row, "credit.id");
-                String type = OrgHelper.getCellValue(row, "credit.type");
-                String min = OrgHelper.getCellValue(row, "credit.min");
-                String max = OrgHelper.getCellValue(row, "credit.max");
+                String id = SearchHelper.getCellValue(row, "credit.id");
+                String type = SearchHelper.getCellValue(row, "credit.type");
+                String min = SearchHelper.getCellValue(row, "credit.min");
+                String max = SearchHelper.getCellValue(row, "credit.max");
                 Credit credit = new Credit();
                 credit.id = id;
                 credit.min = Float.valueOf(min);
@@ -421,7 +422,7 @@ public class CourseSearchController extends UifControllerBase {
             SearchResult searchResult = getLuService().search(request);
             if (searchResult != null) {
                 for (SearchResultRow row : searchResult.getRows()) {
-                    results.add(OrgHelper.getCellValue(row, "courseCode"));
+                    results.add(SearchHelper.getCellValue(row, "courseCode"));
                 }
             }
 
@@ -452,7 +453,7 @@ public class CourseSearchController extends UifControllerBase {
         for (SearchRequest request : requests) {
             SearchResult searchResult = getLuService().search(request);
             for (SearchResultRow row : searchResult.getRows()) {
-                String id = OrgHelper.getCellValue(row, "lu.resultColumn.cluId");
+                String id = SearchHelper.getCellValue(row, "lu.resultColumn.cluId");
                 /* hitCourseID(courseMap, id);*/
                 Hit hit = new Hit(id);
                 tempHits.add(hit);
@@ -524,7 +525,7 @@ public class CourseSearchController extends UifControllerBase {
         List<AtpTypeInfo> termsOffered = new ArrayList<AtpTypeInfo>();
         SearchResult result = getLuService().search(request);
         for (SearchResultRow row : result.getRows()) {
-            String id = OrgHelper.getCellValue(row, "atp.id");
+            String id = SearchHelper.getCellValue(row, "atp.id");
 
             // Don't add the terms that are not found
             AtpTypeInfo atpType = getATPType(id);
@@ -546,7 +547,7 @@ public class CourseSearchController extends UifControllerBase {
         List<String> reqs = new ArrayList<String>();
         SearchResult result = getLuService().search(request);
         for (SearchResultRow row : result.getRows()) {
-            String genEd = OrgHelper.getCellValue(row, "gened.name");
+            String genEd = SearchHelper.getCellValue(row, "gened.name");
             reqs.add(genEd);
         }
         String formatted = formatGenEduReq(reqs);
@@ -612,13 +613,13 @@ public class CourseSearchController extends UifControllerBase {
         request.addParam("courseID", courseId);
         SearchResult result = getLuService().search(request);
         for (SearchResultRow row : result.getRows()) {
-            String name = OrgHelper.getCellValue(row, "course.name");
-            String number = OrgHelper.getCellValue(row, "course.number");
-            String subject = OrgHelper.getCellValue(row, "course.subject");
-            String level = OrgHelper.getCellValue(row, "course.level");
-            String creditsID = OrgHelper.getCellValue(row, "course.credits");
-            String code = OrgHelper.getCellValue(row, "course.code");
-            String versionIndId = OrgHelper.getCellValue(row, "course.verIndId");
+            String name = SearchHelper.getCellValue(row, "course.name");
+            String number = SearchHelper.getCellValue(row, "course.number");
+            String subject = SearchHelper.getCellValue(row, "course.subject");
+            String level = SearchHelper.getCellValue(row, "course.level");
+            String creditsID = SearchHelper.getCellValue(row, "course.credits");
+            String code = SearchHelper.getCellValue(row, "course.code");
+            String versionIndId = SearchHelper.getCellValue(row, "course.verIndId");
             course.setCourseVersionIndependentId(versionIndId);
 
             course.setCourseId(courseId);

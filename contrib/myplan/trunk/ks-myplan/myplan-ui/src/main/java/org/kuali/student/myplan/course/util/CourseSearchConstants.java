@@ -78,6 +78,12 @@ public class CourseSearchConstants {
 
     public static final String UNFORMATTED_COURSE_PLACE_HOLDER_REGEX = "^[a-zA-Z]{1}[a-zA-Z &]{2,7}[1-9](?i)XX$";
 
+    /* for Enum service search */
+    public static final String ENUM_CONTEXT_KEY_SEARCH_PLACEHOLDER_KEY = "uw.enumcontext.academicplan.placeholder";
+    public static final String ENUM_CONTEXT_KEY_SEARCH_TYPE            = "enum.search.by.context.key";
+    // param_name must be '_' separated, not '.' separated b/c we have code that mutiliates . into _ and that's
+    // what it looks for.
+    public static final String ENUM_CONTEXT_KEY_SEARCH_PARAM_NAME      = "enum_query_param_context_key";
 
     /*Activity Constants*/
 
