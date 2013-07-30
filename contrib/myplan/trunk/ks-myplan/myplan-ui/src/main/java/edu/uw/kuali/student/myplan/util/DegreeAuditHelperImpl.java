@@ -11,10 +11,7 @@ import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
-import org.kuali.student.myplan.audit.dataobject.CourseItem;
-import org.kuali.student.myplan.audit.dataobject.IgnoreTermDataObject;
-import org.kuali.student.myplan.audit.dataobject.MessyItem;
-import org.kuali.student.myplan.audit.dataobject.MessyTermDataObject;
+import org.kuali.student.myplan.audit.dataobject.*;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.form.DegreeAuditForm;
 import org.kuali.student.myplan.audit.form.PlanAuditForm;
@@ -34,6 +31,7 @@ import java.util.*;
 
 import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED;
 import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
+import static org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT;
 import static org.kuali.student.myplan.audit.service.DegreeAuditConstants.*;
 import static org.kuali.student.myplan.course.util.CourseSearchConstants.CONTEXT_INFO;
 
@@ -660,6 +658,39 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
         activity.setHonorsSection(displayInfo.getIsHonorsOffering());
         activity.setGradingOption(courseOfferingInfo.getGradingOptionName());
         return activity;
+    }
+
+    public Map<String, PlanAuditItem> getPlanItemSnapShots(String studentId) {
+        Map<String, PlanAuditItem> auditsInLearningPlan = new HashMap<String, PlanAuditItem>();
+        try {
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentId, LEARNING_PLAN_TYPE_PLAN_AUDIT, PlanConstants.CONTEXT_INFO);
+            for (LearningPlanInfo learningPlanInfo : learningPlanList) {
+                PlanAuditItem planAuditItem = new PlanAuditItem();
+                String auditId = null;
+                for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
+                    String key = attributeInfo.getKey();
+                    String value = attributeInfo.getValue();
+                    if ("forCourses".equalsIgnoreCase(key)) {
+                        planAuditItem.setAuditedCoursesCount(value);
+                    } else if ("forCredits".equalsIgnoreCase(key)) {
+                        planAuditItem.setTotalAuditedCredit(value);
+                    } else if ("forQuarter".equalsIgnoreCase(key)) {
+                        planAuditItem.setAuditedQuarterUpTo(value);
+                    } else if ("auditId".equalsIgnoreCase(key)) {
+                        auditId = value;
+                    }
+                }
+
+
+                if (auditId != null) {
+                    auditsInLearningPlan.put(auditId, planAuditItem);
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("cannot populate plan audit snapshots", e);
+        }
+
+        return auditsInLearningPlan;
     }
 
     protected CourseOfferingService getCourseOfferingService() {

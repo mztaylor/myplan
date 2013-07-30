@@ -1,11 +1,14 @@
 package org.kuali.student.myplan.audit.service;
 
+import edu.uw.kuali.student.myplan.util.DegreeAuditHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.audit.dataobject.DegreeAuditItem;
+import org.kuali.student.myplan.audit.dataobject.PlanAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.util.DegreeAuditDataObjectHelper;
+import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -19,6 +22,8 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     private transient DegreeAuditService degreeAuditService;
 
+    private DegreeAuditHelper degreeAuditHelper;
+
     @Override
     protected List<DegreeAuditItem> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         List<DegreeAuditItem> degreeAuditItems = new ArrayList<DegreeAuditItem>();
@@ -28,6 +33,7 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
             Date begin = new Date();
             Date end = new Date();
 
+            Map<String, PlanAuditItem> auditsInLearningPlan = getDegreeAuditHelper().getPlanItemSnapShots(regId);
             DegreeAuditService degreeAuditService = getDegreeAuditService();
             List<AuditReportInfo> audits = degreeAuditService.getAuditsForStudentInDateRange(regId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
 
@@ -37,7 +43,7 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
             HashSet<String> programSet = new HashSet<String>();
             for (AuditReportInfo audit : audits) {
                 String programId = audit.getProgramId();
-                if (!programSet.contains(programId) && !audit.isWhatIfAudit()) {
+                if (!programSet.contains(programId) && !audit.isWhatIfAudit() && !auditsInLearningPlan.containsKey(audit.getAuditId())) {
                     programSet.add(programId);
                     DegreeAuditItem item = DegreeAuditDataObjectHelper.makeDegreeAuditDataObject(audit);
                     degreeAuditItems.add(item);
@@ -65,5 +71,14 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
         return degreeAuditService;
     }
 
+    public DegreeAuditHelper getDegreeAuditHelper() {
+        if (degreeAuditHelper == null) {
+            degreeAuditHelper = new DegreeAuditHelperImpl();
+        }
+        return degreeAuditHelper;
+    }
 
+    public void setDegreeAuditHelper(DegreeAuditHelper degreeAuditHelper) {
+        this.degreeAuditHelper = degreeAuditHelper;
+    }
 }

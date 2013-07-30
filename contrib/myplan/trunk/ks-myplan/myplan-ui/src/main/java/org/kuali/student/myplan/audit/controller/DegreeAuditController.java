@@ -33,6 +33,7 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstant
 import org.kuali.student.myplan.audit.dataobject.CourseItem;
 import org.kuali.student.myplan.audit.dataobject.MessyItem;
 import org.kuali.student.myplan.audit.dataobject.MessyTermDataObject;
+import org.kuali.student.myplan.audit.dataobject.PlanAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.form.AuditForm;
 import org.kuali.student.myplan.audit.form.DegreeAuditForm;
@@ -146,10 +147,12 @@ public class DegreeAuditController extends UifControllerBase {
 
                 List<AuditReportInfo> reportList = degreeAuditService.getAuditsForStudentInDateRange(regId, startDate, endDate, context);
 
+                Map<String, PlanAuditItem> auditsInLearningPlan = getDegreeAuditHelper().getPlanItemSnapShots(regId);
+
                 if (degreeAuditId == null) {
                     // Grab first degree audit
                     for (AuditReportInfo report : reportList) {
-                        if (!report.isWhatIfAudit()) {
+                        if (!report.isWhatIfAudit() && !auditsInLearningPlan.containsKey(report.getAuditId())) {
                             degreeAuditId = report.getAuditId();
                             break;
                         }

@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.audit.service;
 
+import edu.uw.kuali.student.myplan.util.DegreeAuditHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
@@ -7,6 +8,7 @@ import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.audit.dataobject.PlanAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
+import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -27,6 +29,8 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     private transient AcademicPlanService academicPlanService;
 
+    private DegreeAuditHelper degreeAuditHelper;
+
     @Override
     protected List<PlanAuditItem> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         List<PlanAuditItem> planAuditItems = new ArrayList<PlanAuditItem>();
@@ -35,33 +39,9 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
             //  TODO: Calculate dates that make sense.
             Date begin = new Date();
             Date end = new Date();
-            Map<String, PlanAuditItem> auditsInLearningPlan = new HashMap<String, PlanAuditItem>();
-            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regId, LEARNING_PLAN_TYPE_PLAN_AUDIT, CONTEXT_INFO);
-            for (LearningPlanInfo learningPlanInfo : learningPlanList) {
-                PlanAuditItem planAuditItem = new PlanAuditItem();
-                String auditId = null;
-                for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
-                    String key = attributeInfo.getKey();
-                    String value = attributeInfo.getValue();
-                    if ("forCourses".equalsIgnoreCase(key)) {
-                        planAuditItem.setAuditedCoursesCount(value);
-                    } else if ("forCredits".equalsIgnoreCase(key)) {
-                        planAuditItem.setTotalAuditedCredit(value);
-                    } else if ("forQuarter".equalsIgnoreCase(key)) {
-                        planAuditItem.setAuditedQuarterUpTo(value);
-                    } else if ("auditId".equalsIgnoreCase(key)) {
-                        auditId = value;
-                    }
-                }
+            Map<String, PlanAuditItem> auditsInLearningPlan = getDegreeAuditHelper().getPlanItemSnapShots(regId);
 
-
-                if (auditId != null) {
-                    auditsInLearningPlan.put(auditId, planAuditItem);
-                }
-            }
-
-            DegreeAuditService degreeAuditService = getDegreeAuditService();
-            List<AuditReportInfo> audits = degreeAuditService.getAuditsForStudentInDateRange(regId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
+            List<AuditReportInfo> audits = getDegreeAuditService().getAuditsForStudentInDateRange(regId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
 
             /**
              *  Make a list of PlanAuditItem, but only include the most recent audit for a particular program.
@@ -113,4 +93,14 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
         this.academicPlanService = academicPlanService;
     }
 
+    public DegreeAuditHelper getDegreeAuditHelper() {
+        if (degreeAuditHelper == null) {
+            degreeAuditHelper = new DegreeAuditHelperImpl();
+        }
+        return degreeAuditHelper;
+    }
+
+    public void setDegreeAuditHelper(DegreeAuditHelper degreeAuditHelper) {
+        this.degreeAuditHelper = degreeAuditHelper;
+    }
 }
