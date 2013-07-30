@@ -215,18 +215,17 @@ function openPopup(getId, retrieveData, formAction, popupStyle, popupOptions, e)
             var errorMessage = '<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><div class="message">' + jQuery("body").data("validationMessages").serverErrors[0] + '</div>';
             component = jQuery("<div />").addClass("myplan-feedback error").html(errorMessage);
         }
-        elementToBlock.unblock({onUnblock:function () {
-            if (jQuery("#KSAP-Popover").length) {
-                popupItem.SetPopOverInnerHtml(component);
-                fnPositionPopUp(popupId);
-                if (popupOptions.close || typeof popupOptions.close === 'undefined') jQuery("#" + popupId + " .jquerypopover-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
-                jQuery("#" + popupId + " img.myplan-popup-close").on('click', function () {
-                    popupItem.HidePopOver();
-                    fnCloseAllPopups();
-                });
-            }
-            runHiddenScripts(getId);
-        }});
+        if (jQuery("#KSAP-Popover").length) {
+            popupItem.SetPopOverInnerHtml(component);
+            fnPositionPopUp(popupId);
+            if (popupOptions.close || typeof popupOptions.close === 'undefined') jQuery("#" + popupId + " .jquerypopover-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
+            jQuery("#" + popupId + " img.myplan-popup-close").on('click', function () {
+                popupItem.HidePopOver();
+                fnCloseAllPopups();
+            });
+        }
+        runHiddenScripts(getId);
+        elementToBlock.unblock();
     };
 
     ksapAjaxSubmitForm(retrieveData, successCallback, elementToBlock, "retrieveForm");
@@ -508,24 +507,25 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
 
     var updateRefreshableComponentCallback = function (htmlContent) {
         var component = jQuery("#" + getId, htmlContent);
-        elementToBlock.unblock({onUnblock:function () {
-            // replace component
-            if (jQuery("#" + id).length) {
-                jQuery("#" + id).replaceWith(component);
-            }
 
-            runHiddenScripts(getId);
+        // replace component
+        if (jQuery("#" + id).length) {
+            jQuery("#" + id).replaceWith(component);
+        }
 
-            if (jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).length > 0) {
-                eval(jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).val());
-            }
+        runHiddenScripts(getId);
 
-            if (highlightId) {
-                jQuery("[id^='" + highlightId + "']").animate({backgroundColor:"#ffffcc"}, 1).animate({backgroundColor:"#ffffff"}, 1500, function () {
-                    jQuery(this).removeAttr("style");
-                });
-            }
-        }});
+        if (jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).length > 0) {
+            eval(jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).val());
+        }
+
+        if (highlightId) {
+            jQuery("[id^='" + highlightId + "']").animate({backgroundColor:"#ffffcc"}, 1).animate({backgroundColor:"#ffffff"}, 1500, function () {
+                jQuery(this).removeAttr("style");
+            });
+        }
+
+        elementToBlock.unblock();
     };
 
     if (!methodToCall) {
