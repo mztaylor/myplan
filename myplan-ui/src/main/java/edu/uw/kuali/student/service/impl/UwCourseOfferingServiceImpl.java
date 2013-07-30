@@ -699,7 +699,9 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
                 String primaryID = primarySectionElement.elementText("SectionID");
                 if (primarySectionID.equals(primaryID)) {
                     CourseOfferingInfo info = offeringServiceUtils.buildCourseOfferingInfo(secondaryDoc, courseInfo);
-                    list.add(info);
+                    if (info != null) {
+                        list.add(info);
+                    }
                 }
             }
             return list;
