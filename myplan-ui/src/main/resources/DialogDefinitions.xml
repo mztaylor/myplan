@@ -947,8 +947,8 @@
                                                       p:messageText="&quot;Shared&quot; plans are viewable by all UW advisers. &quot;Private&quot; plans are only viewable by you."/>
                                             </property>
                                             <property name="onChangeScript" value="
-                                                myplanWriteHiddenToForm('methodToCall', 'planAccess', 'student_academic_planner_page');
-                                                jQuery('#student_academic_planner_page').ajaxSubmit();
+                                                myplanWriteHiddenToForm('methodToCall', 'planAccess', 'popupForm');
+                                                jQuery('#popupForm').ajaxSubmit();
                                             "/>
                                             <property name="control">
                                                 <bean parent="Uif-VerticalRadioControl">
