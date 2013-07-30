@@ -841,6 +841,7 @@
     </bean>
 
     <bean id="KSAP-VerticalFieldGroup" parent="Uif-VerticalFieldGroup">
+        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/field/fieldGroup.ftl"/>
         <property name="fieldLabel">
             <bean parent="Uif-Label">
                 <property name="render" value="false"/>
@@ -861,6 +862,7 @@
 
 
     <bean id="KSAP-HorizontalFieldGroup" parent="Uif-HorizontalFieldGroup">
+        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/field/fieldGroup.ftl"/>
         <property name="fieldLabel">
             <bean parent="Uif-Label">
                 <property name="render" value="false"/>

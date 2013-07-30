@@ -1105,25 +1105,23 @@
     </bean>
 
 
-    <bean id="activityCode" parent="Uif-VerticalFieldGroup" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
-        <property name="group.validationMessages">
-            <null/>
-        </property>
+    <bean id="activityCode" parent="KSAP-VerticalFieldGroup" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
         <property name="label" value="Section"/>
-        <!--<property name="onDocumentReadyScript" value="-->
-        <!--var row = jQuery('#@{#line.atpId.replace('.','-')}-@{#line.registrationCode}').parents('tr');-->
-        <!--row.addClass('row');-->
-        <!--if (@{#line.primary}) {-->
-        <!--row.addClass('primary');-->
-        <!--} else {-->
-        <!--row.addClass('secondary');-->
-        <!--if (row.prev('tr').prev('tr').prev('tr').hasClass('primary')) row.addClass('top');-->
-        <!--}-->
-        <!--if (@{#line.planItemId NE null}) row.addClass('myplan-section-planned');-->
-        <!--if (@{#line.stateKey NE 'active'}) row.addClass('fl-text-lightgray');-->
-        <!--"/>-->
+        <property name="fieldLabel.render" value="true"/>
+        <!--<property name="onDocumentReadyScript" value="
+        var row = jQuery('#@{#line.atpId.replace('.','-')}-@{#line.registrationCode}').parents('tr');
+        row.addClass('row');
+        if (@{#line.primary}) {
+        row.addClass('primary');
+        } else {
+        row.addClass('secondary');
+        if (row.prev('tr').prev('tr').prev('tr').hasClass('primary')) row.addClass('top');
+        }
+        if (@{#line.planItemId NE null}) row.addClass('myplan-section-planned');
+        if (@{#line.stateKey NE 'active'}) row.addClass('fl-text-lightgray');
+        "/>-->
         <property name="cssClasses">
-            <list merge="true">
+            <list merge="false">
                 <value>activityCode</value>
                 <value>fl-text-align-center</value>
                 <value>@{#line.stateKey EQ 'active'?'':'fl-text-gray'}</value>
@@ -1144,15 +1142,15 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-ActionLink" p:actionLabel="View more" p:style="margin:0;"
+                <bean parent="Uif-Link" p:linkText="View more" p:style="margin:0;"
                       p:render="@{!#line.primary AND #line.stateKey eq 'active'}">
                     <property name="dataAttributes">
                         <map>
                             <entry key="collapsed" value="true"/>
                         </map>
                     </property>
-                    <property name="actionScript"
-                              value="toggleSectionDetails(jQuery(this).parents('tr.row'), jQuery(this), 'View more', 'View less')"/>
+                    <property name="onClickScript"
+                              value="stopEvent(e); toggleSectionDetails(jQuery(this).parents('tr.row'), jQuery(this), 'View more', 'View less')"/>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>fl-font-size-80</value>
@@ -1163,46 +1161,36 @@
         </property>
     </bean>
 
-    <bean id="activityType" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
-        <property name="group.validationMessages">
-            <null/>
-        </property>
+    <bean id="activityType" parent="KSAP-MessageField" p:rowSpan="1" p:colSpan="1">
         <property name="label" value="Type (Credit)"/>
+        <property name="fieldLabel.render" value="true"/>
+        <property name="messageText"
+                  value="@{#line.activityOfferingType}@{#line.primary ? ' (' + #line.credits + ')':''}"/>
         <property name="cssClasses">
-            <list merge="true">
+            <list merge="false">
                 <value>activityType</value>
             </list>
         </property>
-        <property name="items">
-            <list>
-                <bean parent="KSAP-SimpleDataField" p:propertyName="activityOfferingType"
-                      p:style="margin-right:0.33em; text-transform:capitalize;">
-                </bean>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="(@{#line.credits})" p:render="@{#line.primary}"
-                      p:style="margin:0;"/>
-            </list>
-        </property>
+        <property name="style" value="margin:0; text-transform:capitalize;"/>
     </bean>
 
-    <bean id="activityMeetingData" parent="Uif-DataField" p:rowSpan="1" p:colSpan="1">
+    <bean id="activityMeetingData" parent="KSAP-SimpleDataField" p:rowSpan="1" p:colSpan="1">
         <property name="label" value="Meeting Time &amp; Location"/>
         <property name="propertyName" value="activityItem"/>
         <property name="escapeHtmlInPropertyValue" value="false"/>
         <property name="propertyEditor" ref="meeting_building_link_formatter"/>
         <property name="cssClasses">
-            <list merge="true">
+            <list merge="false">
                 <value>activityMeetingData</value>
             </list>
         </property>
     </bean>
 
-    <bean id="activityRegCode" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
-        <property name="group.validationMessages">
-            <null/>
-        </property>
+    <bean id="activityRegCode" parent="KSAP-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
         <property name="label" value="SLN"/>
+        <property name="fieldLabel.render" value="true"/>
         <property name="cssClasses">
-            <list merge="true">
+            <list merge="false">
                 <value>activityRegCode</value>
             </list>
         </property>
@@ -1217,13 +1205,11 @@
         </property>
     </bean>
 
-    <bean id="activityEnrlRestr" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
-        <property name="group.validationMessages">
-            <null/>
-        </property>
+    <bean id="activityEnrlRestr" parent="KSAP-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1">
         <property name="label" value="ENRL RESTR"/>
+        <property name="fieldLabel.render" value="true"/>
         <property name="cssClasses">
-            <list merge="true">
+            <list merge="false">
                 <value>activityEnrlRestr</value>
             </list>
         </property>
@@ -1244,15 +1230,13 @@
         </property>
     </bean>
 
-    <bean id="activityEnrlStatus" parent="Uif-VerticalFieldGroup" p:rowSpan="1" p:colSpan="1"
+    <bean id="activityEnrlStatus" parent="KSAP-VerticalFieldGroup" p:rowSpan="1" p:colSpan="1"
           p:id="enrl_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}"
           p:title="Section @{#line.code} is @{#line.stateKey}">
-        <property name="group.validationMessages">
-            <null/>
-        </property>
         <property name="label" value="ENRL STATUS"/>
+        <property name="fieldLabel.render" value="true"/>
         <property name="cssClasses">
-            <list merge="true">
+            <list merge="false">
                 <value>activityEnrlStatus</value>
                 <value>fl-text-bold</value>
                 <value>fl-text-align-center</value>
@@ -1277,14 +1261,12 @@
         </property>
     </bean>
 
-    <bean id="activityEnrlData" parent="Uif-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1"
+    <bean id="activityEnrlData" parent="KSAP-HorizontalFieldGroup" p:rowSpan="1" p:colSpan="1"
           p:id="enrl_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}">
-        <property name="group.validationMessages">
-            <null/>
-        </property>
         <property name="label" value="ENRL STATUS"/>
+        <property name="fieldLabel.render" value="true"/>
         <property name="cssClasses">
-            <list merge="true">
+            <list merge="false">
                 <value>activityEnrlData</value>
             </list>
         </property>
@@ -1303,10 +1285,12 @@
         </property>
     </bean>
 
-    <bean id="activityInstructor" parent="Uif-VerticalFieldGroup" p:rowSpan="1" p:colSpan="2" p:valign="TOP">
+    <bean id="activityInstructor" parent="KSAP-VerticalFieldGroup" p:rowSpan="1" p:colSpan="2" p:valign="TOP">
         <property name="id" value="instructor_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}"/>
-        <property name="group.validationMessages">
-            <null/>
+        <property name="cssClasses">
+            <list merge="false">
+                <value>activityInstructor</value>
+            </list>
         </property>
         <property name="items">
             <list>
@@ -1327,12 +1311,9 @@
         "/>
     </bean>
 
-    <bean id="activityOther" parent="Uif-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="3">
-        <property name="group.validationMessages">
-            <null/>
-        </property>
+    <bean id="activityOther" parent="KSAP-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="3">
         <property name="cssClasses">
-            <list merge="true">
+            <list merge="false">
                 <value>activityOther</value>
             </list>
         </property>
@@ -1447,11 +1428,8 @@
         </property>
     </bean>
 
-    <bean id="activityAdditionalDetails" parent="Uif-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="5">
+    <bean id="activityAdditionalDetails" parent="KSAP-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="5">
         <property name="id" value="details_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}"/>
-        <property name="group.validationMessages">
-            <null/>
-        </property>
         <property name="onDocumentReadyScript" value="
             var collapsibleRow = jQuery('#details_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}').parents('tr');
             var secondary = @{!#line.primary};
@@ -1462,17 +1440,14 @@
             if (@{#line.planItemId NE null}) collapsibleRow.addClass('myplan-section-planned');
         "/>
         <property name="cssClasses">
-            <list merge="true">
+            <list merge="false">
                 <value>activityAdditionalDetails</value>
             </list>
         </property>
         <property name="items">
             <list>
                 <bean parent="Uif-Label" p:labelText="Additional Details" p:renderColon="false" p:style="margin:0;"/>
-                <bean parent="Uif-HorizontalFieldGroup" p:style="margin:0;">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
+                <bean parent="KSAP-HorizontalFieldGroup" p:style="margin:0;">
                     <property name="items">
                         <list>
                             <bean parent="KSAP-NoSpanMessage"
@@ -1494,7 +1469,7 @@
     <bean id="activityActionLink" parent="Uif-LinkField">
         <property name="fieldLabel.render" value="false"/>
         <property name="cssClasses">
-            <list merge="true">
+            <list merge="false">
                 <value>activityAction</value>
                 <value>fl-text-align-center</value>
             </list>
