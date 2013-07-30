@@ -541,13 +541,13 @@ public class PlanController extends UifControllerBase {
         boolean hasCapacity = false;
         try {
             hasCapacity = isAtpHasCapacity(getLearningPlan(UserSessionHelper.getStudentRegId()),
-                    planItemAtpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
+                    planItemAtpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
 
         if (!hasCapacity) {
-            return doPlanCapacityExceededError(form, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
+            return doPlanCapacityExceededError(form, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
         }
 
         //  Load course summary details.
