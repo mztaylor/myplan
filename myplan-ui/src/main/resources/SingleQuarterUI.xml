@@ -896,7 +896,7 @@
                                           value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND dataObject.completedTerm}"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="singleQuarterCopyCourse"/>
+                                        <bean parent="singleQuarterMoveCourse"/>
                                         <bean parent="singleQuarterDeleteCourse"/>
                                     </list>
                                 </property>
@@ -929,10 +929,22 @@
                             <!-- Future Quarters and no Time Schedule -->
                             <bean parent="singleQuarterStudentActions">
                                 <property name="render"
-                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND !#line.timeScheduleOpen AND !dataObject.completedTerm}"/>
+                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND !#line.timeScheduleOpen AND !dataObject.completedTerm AND !dataObject.currentTermForView}"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="singleQuarterCopyCourse"/>
+                                        <bean parent="singleQuarterMoveCourse"/>
+                                        <bean parent="singleQuarterDeleteCourse"/>
+                                    </list>
+                                </property>
+                            </bean>
+
+                            <!-- Current Quarter and no Time Schedule -->
+                            <bean parent="singleQuarterStudentActions">
+                                <property name="render"
+                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND !#line.timeScheduleOpen AND !dataObject.completedTerm AND dataObject.currentTermForView}"/>
+                                <property name="items">
+                                    <list>
                                         <bean parent="singleQuarterMoveCourse"/>
                                         <bean parent="singleQuarterDeleteCourse"/>
                                     </list>
