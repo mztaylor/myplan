@@ -282,6 +282,18 @@ public class PlannedTermsHelperBase {
 
             }
 
+            //  Can't do this step until the sort has been done else the index won't be correct.
+            int i = 0;
+            for (PlannedTerm pt : plannedTermList) {
+                String[] qy = AtpHelper.atpIdToTermAndYear(pt.getAtpId());
+                if (qy[0].equals(focusQuarterYear[0])
+                        && qy[1].equals(focusQuarterYear[1])) {
+                    pt.setIndex(i);
+                    break;
+                }
+                i++;
+            }
+
             populateHelpIconFlags(plannedTermList);
             populateSingleQuarterAtpIds(plannedTermList);
             return plannedTermList;
