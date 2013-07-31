@@ -308,17 +308,19 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         // copy all the planItems
         List<PlanItemEntity> planItems = planItemDao.getLearningPlanItems(fromLearningPlanId);
         for (PlanItemEntity pie : planItems) {
-            PlanItemInfo planItemInfo = pie.toDto();
-            planItemInfo.setLearningPlanId(newLearningPlan.getId());
-            PlanItemEntity planItemEntity = populatePlanItemEntity(planItemInfo, context);
-            //  Save the new plan item.
-            planItemDao.persist(planItemEntity);
+            if (AcademicPlanServiceConstants.SECTION_TYPE.equals(pie.getRefObjectTypeKey()) || AcademicPlanServiceConstants.COURSE_TYPE.equals(pie.getRefObjectTypeKey())) {
+                PlanItemInfo planItemInfo = pie.toDto();
+                planItemInfo.setLearningPlanId(newLearningPlan.getId());
+                PlanItemEntity planItemEntity = populatePlanItemEntity(planItemInfo, context);
+                //  Save the new plan item.
+                planItemDao.persist(planItemEntity);
 
-            // update the learningPlan
-            LearningPlanEntity plan = planItemEntity.getLearningPlan();
-            plan.setUpdateId(context.getPrincipalId());
-            plan.setUpdateTime(new Date());
-            learningPlanDao.update(plan);
+                // update the learningPlan
+                LearningPlanEntity plan = planItemEntity.getLearningPlan();
+                plan.setUpdateId(context.getPrincipalId());
+                plan.setUpdateTime(new Date());
+                learningPlanDao.update(plan);
+            }
         }
 
         return learningPlanDao.find(newLearningPlan.getId()).toDto();
@@ -750,6 +752,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         if (planItem.getAttributes() != null) {
             for (Attribute att : planItem.getAttributes()) {
                 PlanItemAttributeEntity attEntity = new PlanItemAttributeEntity(att, pie);
+                attEntity.setId(UUIDHelper.genStringUUID());
                 pie.getAttributes().add(attEntity);
             }
         }
