@@ -295,7 +295,6 @@
     <bean id="backup_placeholder_menu" parent="KSAP-VerticalBoxGroup" p:hidden="true" p:cssClasses="fl-container-150">
         <property name="items">
             <list>
-                <bean parent="menuOptionPlanItemSummary"/>
                 <bean parent="menuOptionEditPlanItemPlaceholder"/>
                 <bean parent="menuOptionMarkPlanned"/>
                 <bean parent="menuTextPlanned"/>
