@@ -44,8 +44,10 @@ function planItemTemplate(data) {
         var sections = jQuery("<div/>").addClass("itemActivities myplan-text-ellipsis uif-boxLayoutHorizontalItem").append(data.sections);
         horizontalBox.append(sections);
     }
-    var credit = jQuery("<div/>").addClass("itemCredit uif-boxLayoutHorizontalItem").append("(" + data.credit + ")");
-    horizontalBox.append(credit);
+    if(data.credit != null && data.credit != ""){
+        var credit = jQuery("<div/>").addClass("itemCredit uif-boxLayoutHorizontalItem").append("(" + data.credit + ")");
+        horizontalBox.append(credit);
+    }
     if (data.note) {
         var note = jQuery("<div/>").addClass("itemNote uif-boxLayoutHorizontalItem").append(image.attr({
             "title":data.note,
