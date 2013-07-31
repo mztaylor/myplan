@@ -661,7 +661,7 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Query for existing plan item failed.", null);
         }
 
-        if (existingPlanItem != null) {
+        if (existingPlanItem != null && !isPlaceHolderType(existingPlanItem.getRefObjectType())) {
             String[] params = {courseDetails.getCode(), AtpHelper.atpIdToTermName(newAtpId)};
             return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
         }
@@ -811,7 +811,7 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Query for existing plan item failed.", e);
         }
 
-        if (existingPlanItem != null) {
+        if (existingPlanItem != null && !isPlaceHolderType(existingPlanItem.getRefObjectType())) {
             String[] params = {courseDetails.getCode(), AtpHelper.atpIdToTermName(newAtpId)};
             return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
         }
