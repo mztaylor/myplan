@@ -1379,6 +1379,9 @@ public class PlanController extends UifControllerBase {
                             planItemInfo.setRefObjectType(PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL);
                         } else {
                             String courseId = getCourseHelper().getCourseId(subject, number);
+                            if (!hasText(courseId)) {
+                                return doErrorPage(form, "Course not found", PlanConstants.COURSE_NOT_FOUND, new String[]{form.getCourseCd()}, null);
+                            }
                             courseSummaryDetails = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
                             String versionId = courseSummaryDetails.getVersionIndependentId();
                             //  Check for duplicates since addPlanItem isn't being called.
