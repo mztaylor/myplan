@@ -1115,6 +1115,8 @@ public class PlanController extends UifControllerBase {
                 wishlistEvents = makeRemoveEvent(planItem, courseDetails, form, null);
                 planItem.setTypeKey(newType);
                 planItem.setPlanPeriods(Arrays.asList(newAtpId));
+                String note = hasText(form.getNote()) ? form.getNote() : "";
+                planItem.setDescr(new RichTextInfo(note, note));
 
                 try {
 
