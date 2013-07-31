@@ -728,7 +728,8 @@
                               value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseSummaryDetails.courseId}"/>
                 </bean>
                 <bean parent="KSAP-HorizontalBoxGroup">
-                    <property name="render" value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isStudent()}"/>
+                    <property name="render"
+                              value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
                     <property name="items">
                         <list>
                             <!-- If not in plan and not in saved courses and not in academic record list -->
