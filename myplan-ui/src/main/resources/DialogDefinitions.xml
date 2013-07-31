@@ -1056,7 +1056,7 @@
         <property name="items">
             <list>
                 <bean id="checkbox_backup" parent="KSAP-SimpleInputField" p:propertyName="backup" p:defaultValue="false"
-                      p:label="Mark as [b]'Backup'[/b] course. (Optional)"
+                      p:label="Mark as [b]'Backup'[/b] course."
                       p:labelPlacement="RIGHT">
                     <property name="fieldLabel.render" value="true"/>
                     <property name="fieldLabel.cssClasses" value="myplan-text-normal"/>
