@@ -97,7 +97,7 @@
             </list>
         </property>
         <property name="instructionalMessage">
-            <bean parent="Uif-Message" p:messageText="No recent degree audits found.">
+            <bean parent="Uif-Message" p:messageText="No recent Degree Audits found.">
                 <property name="cssClasses">
                     <list merge="true">
                         <value>ksap-emptyCollection</value>
