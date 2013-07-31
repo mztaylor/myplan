@@ -1611,7 +1611,7 @@ public class PlanController extends UifControllerBase {
             throw new RuntimeException("Could not retrieve plan items.");
         } else {
             for (PlanItem p : planItems) {
-                if (p.getPlanPeriods().get(0).equals(atpId) && p.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
+                if (p.getPlanPeriods().get(0).equals(atpId) && (PlanConstants.COURSE_TYPE.equalsIgnoreCase(p.getRefObjectType()) || isPlaceHolderType(p.getRefObjectType()))) {
                     counter++;
                 }
             }
