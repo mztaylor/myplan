@@ -71,6 +71,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
+import java.io.IOException;
 import java.util.*;
 
 import static org.springframework.util.StringUtils.hasText;
@@ -2442,7 +2443,11 @@ public class PlanController extends UifControllerBase {
         String credit = null;
         String note = null;
         if (hasText(planItem.getDescr().getPlain())) {
-            note = planItem.getDescr().getPlain();
+            try {
+                note = mapper.writeValueAsString(planItem.getDescr().getPlain()).replaceAll("^\"|\"$", "");
+            } catch (IOException e) {
+                logger.error("Could not add the note to add event");
+            }
         }
         if (placeHolder) {
             if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
