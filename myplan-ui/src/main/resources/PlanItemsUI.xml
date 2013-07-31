@@ -948,13 +948,21 @@
                     <property name="replacement">
                         <list>
                             <bean parent="planItemGroup"
-                                  p:id="@{#line.planItemDataObject.id}_planned_@{#line.planItemDataObject.atp.replace('.','-')}">
+                                  p:id="@{#line.planItemDataObject.id}_planned_@{#line.planItemDataObject.atp.replace('.','-')}" p:render="@{!#line.placeHolder}">
                                 <property name="onClickScript" value="
                                     var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:'@{#line.courseDetails.courseId}', pageId:'course_summary_dialog_page'};
                                     var popupStyle = {width:'300px', height:'16px'};
                                     var popupOptions = {tail:{hidden:true}, position:'right', align:'top', close:true};
                                     openPopup('course_summary_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
                                 "/>
+                            </bean>
+                            <bean parent="planItemGroup"
+                                  p:id="@{#line.planItemDataObject.id}_planned_@{#line.planItemDataObject.atp.replace('.','-')}" p:render="@{#line.placeHolder}">
+                                <property name="cssClasses">
+                                    <list>
+                                        <value>myplan-course-invalid</value>
+                                    </list>
+                                </property>
                             </bean>
                         </list>
                     </property>
@@ -1017,7 +1025,7 @@
                     <property name="replacement">
                         <list>
                             <bean parent="planItemGroup"
-                                  p:id="@{#line.planItemDataObject.id}_backup_@{#line.planItemDataObject.atp.replace('.','-')}">
+                                  p:id="@{#line.planItemDataObject.id}_backup_@{#line.planItemDataObject.atp.replace('.','-')}" p:render="@{!#line.placeHolder}">
                                 <property name="onClickScript" value="
                                     var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:'@{#line.courseDetails.courseId}', pageId:'course_summary_dialog_page'};
                                     var popupStyle = {width:'300px', height:'16px'};
@@ -1025,6 +1033,15 @@
                                     openPopup('course_summary_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
                                 "/>
                             </bean>
+                            <bean parent="planItemGroup"
+                                  p:id="@{#line.planItemDataObject.id}_backup_@{#line.planItemDataObject.atp.replace('.','-')}" p:render="@{#line.placeHolder}">
+                                <property name="cssClasses">
+                                    <list>
+                                        <value>myplan-course-invalid</value>
+                                    </list>
+                                </property>
+                            </bean>
+
                         </list>
                     </property>
                 </bean>
