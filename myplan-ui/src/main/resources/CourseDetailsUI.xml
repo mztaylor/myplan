@@ -1108,7 +1108,7 @@
     <bean id="activityCode" parent="KSAP-VerticalFieldGroup" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
         <property name="label" value="Section"/>
         <property name="fieldLabel.render" value="true"/>
-        <property name="onDocumentReadyScript" value="
+        <!--<property name="onDocumentReadyScript" value="
         var row = jQuery('#@{#line.atpId.replace('.','-')}-@{#line.registrationCode}').parents('tr');
         row.addClass('row');
         if (@{#line.primary}) {
@@ -1119,7 +1119,7 @@
         }
         if (@{#line.planItemId NE null}) row.addClass('myplan-section-planned');
         if (@{#line.stateKey NE 'active'}) row.addClass('fl-text-lightgray');
-        "/>
+        "/>-->
         <property name="cssClasses">
             <list merge="false">
                 <value>activityCode</value>
