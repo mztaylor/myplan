@@ -141,6 +141,7 @@
                     </property>
                 </bean>
                 <ref bean="full_planned_courses_detail"/>
+                <ref bean="planNotesCollection"/>
                 <bean parent="Uif-MessageField" p:label="Document was created"
                       p:messageText="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).displayCurrentDateTime('MM/dd/yy - h:mm a')} [End of document]">
                     <property name="fieldLabel.renderColon" value="false"/>
@@ -204,6 +205,26 @@
                     </property>
                 </bean>
                 <ref bean="academicYearCollection"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="planNotesCollection" parent="Uif-ListCollectionSection" p:headerText="* NOTES">
+        <property name="header">
+            <bean parent="Uif-HeaderFour"/>
+        </property>
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject"/>
+        <property name="propertyName" value="lookupResults"/>
+        <property name="layoutManager.lineGroupPrototype.render" value="@{#line.hasNote}"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-SimpleDataField" p:propertyName="this" p:style="text-align:left;"
+                      p:escapeHtmlInPropertyValue="false">
+                    <property name="propertyEditor" ref="plan_notes_formatter"/>
+                </bean>
             </list>
         </property>
     </bean>
@@ -444,6 +465,10 @@
                                   p:render="@{#line.placeHolderCredit NE null OR #line.credit NE null}"
                                   p:messageText="(@{#line.placeHolderCredit EQ null ? #line.credit : #line.placeHolderCredit})"
                                   p:style="margin:0;"/>
+                            <bean parent="Uif-MessageField"
+                                  p:render="@{#line.note NE null}"
+                                  p:messageText="*"
+                                  p:style="margin: 0 0 0 2px;"/>
                         </list>
                     </property>
                 </bean>

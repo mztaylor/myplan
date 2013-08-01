@@ -501,6 +501,9 @@
           class="org.kuali.student.myplan.course.util.PlannedSectionsPropertyEditor">
         <property name="moveDialog" value="true"/>
     </bean>
+    <bean id="plan_notes_formatter"
+          class="org.kuali.student.myplan.course.util.PlanNotesPropertyEditor">
+    </bean>
     <bean id="copy_planned_sections_formatter"
           class="org.kuali.student.myplan.course.util.PlannedSectionsPropertyEditor">
         <property name="copyDialog" value="true"/>

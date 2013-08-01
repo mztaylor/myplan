@@ -11,6 +11,7 @@ import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
         /*************PlannedCourseList**************/
         List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
         try {
-            plannedCoursesList = getPlannedCoursesFromAtp(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, studentId, AtpHelper.getFirstOpenForPlanTerm(),true);
+            plannedCoursesList = getPlannedCoursesFromAtp(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, studentId, AtpHelper.getFirstOpenForPlanTerm(), true);
         } catch (Exception e) {
             logger.error("Could not load plannedCourseslist", e);
 
@@ -92,8 +93,27 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
             fullPlanItemsDataObject.setTerms(plannedTermList);
             fullPlanItemsDataObjectList.add(fullPlanItemsDataObject);
             fullPlanItemsDataObject.setCurrentYear(currentYear);
+            fullPlanItemsDataObject.setHasNote(doesPlanItemNoteExist(plannedTermList));
         }
         return fullPlanItemsDataObjectList;
+    }
+
+    /**
+     * Used to know if any of the planned Terms items has a note (Needed for UI rendering)
+     *
+     *
+     * @param plannedTerms
+     * @return
+     */
+    private boolean doesPlanItemNoteExist(List<PlannedTerm> plannedTerms) {
+        for (PlannedTerm plannedTerm : plannedTerms) {
+            for (PlannedCourseDataObject plannedCourseDataObject : plannedTerm.getPlannedList()) {
+                if (StringUtils.hasText(plannedCourseDataObject.getNote())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 

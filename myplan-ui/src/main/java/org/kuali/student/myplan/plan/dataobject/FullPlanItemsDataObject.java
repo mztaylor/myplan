@@ -21,6 +21,9 @@ public class FullPlanItemsDataObject {
 
     private boolean currentYear;
 
+    /*Needed for UI rendering*/
+    private boolean hasNote;
+
     public String getYearRange() {
         return yearRange;
     }
@@ -55,6 +58,18 @@ public class FullPlanItemsDataObject {
         this.currentYear = currentYear;
     }
 
+    public boolean isHasNote() {
+        return hasNote;
+    }
+
+    public void setHasNote(boolean hasNote) {
+        this.hasNote = hasNote;
+    }
+
+    // TODO: Remove this once KULRICE-9735 is fixed
+    public FullPlanItemsDataObject getThis() {
+        return this;
+    }
 
     // TODO: KRAD workaround to enable a TableLayoutManager
     public PlannedTerm getTerm0() {
