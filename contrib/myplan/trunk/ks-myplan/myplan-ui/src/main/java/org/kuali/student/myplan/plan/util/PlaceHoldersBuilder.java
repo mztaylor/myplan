@@ -31,7 +31,13 @@ public class PlaceHoldersBuilder extends KeyValuesBase {
 
         for (EnumeratedValueInfo enumValue : enums) {
             key   = String.format("%s|%s",   enumValue.getCode(), enumValue.getEnumerationKey());
-            value = String.format("%s (%s)", enumValue.getAbbrevValue(), enumValue.getValue());
+            // arbitrarily, we sometimes use both AbbrevValue and Value, sometimes not
+            if (enumValue.getAbbrevValue().equals(enumValue.getValue()) ||
+                enumValue.getAbbrevValue().equals("Elective") ) {
+                value = String.format("%s", enumValue.getAbbrevValue());
+            }  else {
+                value = String.format("%s (%s)", enumValue.getAbbrevValue(), enumValue.getValue());
+            }
             if ( enumValue.getEnumerationKey().equals(PlanConstants.GEN_EDU_ENUM_KEY) ) {
                 value += " - Gen. Edu. Req.";
             }
