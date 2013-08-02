@@ -39,7 +39,7 @@ public class PlaceHoldersBuilder extends KeyValuesBase {
                 value = String.format("%s (%s)", enumValue.getAbbrevValue(), enumValue.getValue());
             }
             if ( enumValue.getEnumerationKey().equals(PlanConstants.GEN_EDU_ENUM_KEY) ) {
-                value += " - Gen. Edu. Req.";
+                value += " - Gen. Ed. Req.";
             }
             kvList.add(new ConcreteKeyValue(key,value));
         }
