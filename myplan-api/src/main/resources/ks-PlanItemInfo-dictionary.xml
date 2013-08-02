@@ -94,11 +94,6 @@
 	<!-- insert any overrides to the generated attribute definitions here -->
 	</bean>
 
-    <bean id="PlanItemInfo.systemKey" parent="PlanItemInfo.systemKey-parent"/>
-    <bean id="PlanItemInfo.systemKey-parent" abstract="true" parent="PlanItemInfo.systemKey-generated">
-        <!-- insert any overrides to the generated attribute definitions here -->
-    </bean>
-
 	<bean id="PlanItemInfo.meta" parent="PlanItemInfo.meta-parent"/>
 	<bean id="PlanItemInfo.meta-parent" abstract="true" parent="PlanItemInfo.meta-generated">
 	<!-- insert any overrides to the generated attribute definitions here -->
