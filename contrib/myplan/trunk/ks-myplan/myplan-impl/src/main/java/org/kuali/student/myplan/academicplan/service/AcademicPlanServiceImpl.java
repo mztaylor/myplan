@@ -1,7 +1,11 @@
 package org.kuali.student.myplan.academicplan.service;
 
+import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.kim.api.identity.PersonService;
+import org.kuali.rice.kim.api.services.KimApiServiceLocator;
+import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.core.atp.service.AtpService;
@@ -25,6 +29,8 @@ import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.infc.Attribute;
 import org.kuali.student.r2.common.infc.ValidationResult;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.jws.WebParam;
 import javax.xml.namespace.QName;
@@ -43,6 +49,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     private CourseService courseService;
     private AtpService atpService;
     private LuService luService;
+    private PersonService personService;
 
     /**
      * This method provides a way to manually provide a CourseService implementation during testing.
@@ -333,6 +340,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                        @WebParam(name = "context") ContextInfo context)
             throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException,
             OperationFailedException, PermissionDeniedException {
+
+        //Add system key to planItem attributes
+        addSysKeyToPlanItemAttributes(planItem);
 
         PlanItemEntity pie = populatePlanItemEntity(planItem, context);
         //  Save the new plan item.
@@ -797,5 +807,47 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             throw new RuntimeException("Query to ATP service failed.", e);
         }
         return true;
+    }
+
+    /**
+     * Adds student system key to plan item attributes
+     *
+     * @param planItemInfo
+     */
+    private void addSysKeyToPlanItemAttributes(PlanItemInfo planItemInfo) {
+        String externalIdentifier = ConfigContext.getCurrentContextConfig().getProperty(AcademicPlanServiceConstants.EXTERNAL_IDENTIFIER);
+
+        if (StringUtils.hasText(externalIdentifier)) {
+
+            UserSession session = GlobalVariables.getUserSession();
+            String regId = session.getPerson().getPrincipalId();
+
+            if (regId != null) {
+                Person person = getPersonService().getPerson(regId);
+                if (person != null && StringUtils.hasText(person.getExternalIdentifiers().get(externalIdentifier))) {
+                    String systemKey = person.getExternalIdentifiers().get(externalIdentifier);
+                    if (CollectionUtils.isEmpty(planItemInfo.getAttributes())) {
+                        List<AttributeInfo> attributeInfos = new ArrayList<AttributeInfo>();
+                        attributeInfos.add(new AttributeInfo("systemKey", systemKey));
+                        planItemInfo.setAttributes(attributeInfos);
+                    } else {
+                        planItemInfo.getAttributes().add(new AttributeInfo("systemKey", systemKey));
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    public PersonService getPersonService() {
+        if (personService == null) {
+            personService = KimApiServiceLocator.getPersonService();
+        }
+        return personService;
+    }
+
+    public void setPersonService(PersonService personService) {
+        this.personService = personService;
     }
 }
