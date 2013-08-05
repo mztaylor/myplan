@@ -194,7 +194,8 @@
                                         <bean parent="KSAP-YourStuff">
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="KSAP-PlanAuditList"/>
+                                                    <!--TODO: uncomment once plan Audits are available
+                                                    <bean parent="KSAP-PlanAuditList"/>-->
                                                     <bean parent="KSAP-DegreeAuditList"/>
                                                     <bean parent="KSAP-BookmarkList"/>
                                                 </list>
@@ -277,9 +278,23 @@
         "/>
         <property name="items">
             <list>
-                <bean parent="audit_tabs"/>
+                <!--TODO: uncomment once plan Audits are available
+                <bean parent="audit_tabs"/>-->
                 <bean parent="run_degree_audits"/>
                 <ref bean="audit_section"/>
+            </list>
+        </property>
+        <property name="propertyReplacers">
+            <list>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
+                    <property name="replacement">
+                        <list>
+                            <ref bean="audit_adviser_actions_message"/>
+                            <ref bean="audit_section"/>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
@@ -510,6 +525,37 @@
             <list>
                 <bean p:id="@{degreeAudit.auditId}" parent="KSAP-Message" p:messageText="@{degreeAudit.auditHtml}"
                       p:style="display:block;" p:cssClasses="degreeAudit auditHtml"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="audit_adviser_actions_message" parent="Uif-VerticalBoxGroup">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-status</value>
+                <value>info</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-HorizontalFieldGroup">
+                    <property name="group.validationMessages.render" value="false"/>
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-Message"
+                                  p:messageText="Advisers are unable to run degree audits."/>
+                            <bean parent="Uif-Link" p:target="">
+                                <property name="linkText" value="Learn more about Adviser View."/>
+                                <property name="href"
+                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
