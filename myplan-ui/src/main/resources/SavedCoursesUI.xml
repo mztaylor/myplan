@@ -229,7 +229,8 @@
                                         <bean parent="KSAP-YourStuff">
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="KSAP-PlanAuditList"/>
+                                                    <!--TODO: uncomment once plan Audits are available
+                                                    <bean parent="KSAP-PlanAuditList"/>-->
                                                     <bean parent="KSAP-DegreeAuditList"/>
                                                 </list>
                                             </property>
