@@ -98,6 +98,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String DELETE_DIALOG_PAGE = "plan_item_delete_page";
     public static final String QUICK_ADD_DIALOG_PAGE = "quick_add_page";
     public static final String ADD_DIALOG_PAGE = "plan_item_add_page";
+    public static final String EDIT_NOTE_PAGE = "edit_note_page";
 
     /*Term Names Autumn,Winter,Spring,Summer*/
     public static final String TERM_1 = "Winter";

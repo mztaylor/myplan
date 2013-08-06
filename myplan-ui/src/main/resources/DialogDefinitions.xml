@@ -617,7 +617,7 @@
                                                         <property name="actionScript" value="
                                                             var additionalFormData = {
                                                                 viewId: 'PlannedCourse-FormView',
-                                                                methodToCall: 'addUpdatePlanItem',
+                                                                methodToCall: 'updateNote',
                                                                 atpId: '@{#form.atpId}',
                                                                 backup: @{#form.backup},
                                                                 pageId: 'edit_note_page',
@@ -938,7 +938,8 @@
                             <bean parent="KSAP-VerticalBoxGroup" p:style="border-bottom: dotted 1px #cfcfcf;">
                                 <property name="items">
                                     <list>
-                                        <bean id="plan_access" parent="Uif-InputField" p:label="MyPlan Settings" p:labelPlacement="TOP"
+                                        <bean id="plan_access" parent="Uif-InputField" p:label="MyPlan Settings"
+                                              p:labelPlacement="TOP"
                                               p:propertyName="enableAdviserView" p:width="auto">
                                             <property name="instructionalMessage">
                                                 <bean parent="Uif-Message"
