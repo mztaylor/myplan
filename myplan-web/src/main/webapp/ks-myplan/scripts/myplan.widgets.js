@@ -210,7 +210,7 @@ function openPopup(getId, retrieveData, formAction, popupStyle, popupOptions, e)
             var popupForm = jQuery('<form />').attr("id", "popupForm").attr("action", formAction).attr("method", "post");
             component = jQuery("#" + getId, htmlContent).wrap(popupForm).parent();
         } else {
-            var pageId = jQuery("#pageId").val();
+            var pageId = jQuery("#pageId", htmlContent).val();
             eval(jQuery("input[data-role='dataScript'][data-for='" + pageId + "']", htmlContent).val().replace("#" + pageId, "body"));
             var errorMessage = '<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><div class="message">' + jQuery("body").data("validationMessages").serverErrors[0] + '</div>';
             component = jQuery("<div />").addClass("myplan-feedback error").html(errorMessage);
