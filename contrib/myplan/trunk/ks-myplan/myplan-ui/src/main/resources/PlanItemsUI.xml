@@ -64,6 +64,7 @@
                             <ref bean="backup_placeholder_menu"/>
                             <ref bean="completed_courses_menu_items"/>
                             <ref bean="completed_planned_backup_menu_items"/>
+                            <ref bean="completed_placeholder_menu_items"/>
                             <bean id="hidden_new_user_flag" parent="KSAP-SimpleDataField" p:propertyName="newUser"
                                   p:hidden="true"/>
                         </list>
@@ -324,6 +325,18 @@
         <property name="items">
             <list>
                 <bean parent="menuOptionCourseSummary"/>
+                <bean parent="menuOptionMove"/>
+                <bean parent="menuOptionDelete"/>
+                <bean parent="menuTextDelete"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--Completed planned/backup placeholder items-->
+    <bean id="completed_placeholder_menu_items" parent="KSAP-VerticalBoxGroup" p:hidden="true"
+          p:cssClasses="fl-container-150">
+        <property name="items">
+            <list>
                 <bean parent="menuOptionMove"/>
                 <bean parent="menuOptionDelete"/>
                 <bean parent="menuTextDelete"/>
