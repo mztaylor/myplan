@@ -139,6 +139,9 @@ public class PlannedCourseDataObject implements Comparable {
     }
 
     public void setNote(String note) {
+        if (note != null) {
+            note = note.replaceAll("\\u00a0", " ");
+        }
         this.note = note;
     }
 

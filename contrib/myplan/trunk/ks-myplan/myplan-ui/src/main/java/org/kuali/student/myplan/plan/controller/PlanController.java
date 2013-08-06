@@ -243,7 +243,7 @@ public class PlanController extends UifControllerBase {
          * Pre-populating the data for quickAdd view if requested for edit
          *
          */
-        if (PlanConstants.QUICK_ADD_DIALOG_PAGE.equals(form.getPageId()) || PlanConstants.ADD_DIALOG_PAGE.equals(form.getPageId())) {
+        if (PlanConstants.QUICK_ADD_DIALOG_PAGE.equals(form.getPageId()) || PlanConstants.ADD_DIALOG_PAGE.equals(form.getPageId()) || PlanConstants.EDIT_NOTE_PAGE.equals(form.getPageId())) {
 
             if (hasText(planForm.getAtpId())) {
                 String termYear = AtpHelper.atpIdToTermName(planForm.getAtpId());
@@ -1291,6 +1291,7 @@ public class PlanController extends UifControllerBase {
     public ModelAndView updateNote(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                    HttpServletRequest httprequest, HttpServletResponse httpresponse) {
         PlanItemInfo planItemInfo = null;
+        CourseSummaryDetails courseSummaryDetails = null;
         if (form.getPlanItemId() != null) {
 
             try {
@@ -1299,6 +1300,10 @@ public class PlanController extends UifControllerBase {
                 planItemInfo.getDescr().setPlain(form.getNote());
                 planItemInfo.getDescr().setFormatted(form.getNote());
                 planItemInfo = getAcademicPlanService().updatePlanItem(form.getPlanItemId(), planItemInfo, PlanConstants.CONTEXT_INFO);
+
+                if (!isPlaceHolderType(planItemInfo.getRefObjectType())) {
+                    courseSummaryDetails = getVersionVerifiedCourseDetails(planItemInfo.getRefObjectId());
+                }
 
             } catch (Exception e) {
 
@@ -1315,7 +1320,7 @@ public class PlanController extends UifControllerBase {
         //  Create events
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
-        events.putAll(makeAddUpdateEvent(planItemInfo, null, form, true));
+        events.putAll(makeAddUpdateEvent(planItemInfo, courseSummaryDetails, form, true));
 
         form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
         form.setJavascriptEvents(events);

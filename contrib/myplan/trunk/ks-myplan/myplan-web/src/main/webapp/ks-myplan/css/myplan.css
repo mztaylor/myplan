@@ -1074,12 +1074,28 @@ div.activityAction div.blockElement {
     height: 208px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .addItemAction {
     margin: 1px 0 0 0;
     font-size: 0.8462em;
-    padding: 0px;
     background: none;
     font-family: Helvetica, Arial, Verdana, sans-serif;
+    height: 25px;
+    line-height: 25px;
+    padding: 0 4px 0 26px;
+    color: #000;
+    position: relative;
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .addItemAction {
+    font-style: italic;
+    color: #117bdf;
+    text-align: center;
+    padding: 0;
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.alert {
+    padding: 0 4px;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.placeholder {
@@ -1087,8 +1103,31 @@ div.activityAction div.blockElement {
     font-style: italic;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemTitle {
-    color: #000;
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem:hover,
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .addItemAction:hover {
+    background-color: #e3f0fe;
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.noAction:hover {
+    background: none;
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem:hover .itemNote img {
+    opacity: 0.4;
+    filter: alpha(opacity = 40);
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.noAction:hover .itemNote img {
+    opacity: 1;
+    filter: alpha(opacity = 100);
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemAction {
+    cursor: pointer;
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.noAction .itemAction {
+    cursor: default;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.placeholder .itemTitle,
@@ -1096,7 +1135,7 @@ div.activityAction div.blockElement {
     color: #555;
 }
 
-.myplan-carousel-list ul li .myplan-term-past .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid .itemTitle {
+.myplan-carousel-list ul li .myplan-term-past .uif-stackedCollectionLayout .uif-collectionItem.noAction .itemTitle {
     color: #666;
 }
 
@@ -1111,38 +1150,24 @@ div.activityAction div.blockElement {
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemGrade {
     color: #777;
     font-weight: bold;
-    float: right;
+    position: absolute;
+    right: 0px;
+    margin: 0 4px;
 }
 
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemAlert,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemTitle,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemActivities {
     margin-right: 4px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid,
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid,
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell {
-    height: 25px;
-    line-height: 25px;
-    padding: 0 5px 0 26px;
-}
-
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid,
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-invalid {
-    width: 114px;
-}
-
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid.alert {
-    padding: 0 5px 0 4px;
-    width: 136px;
-}
-
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .alert .itemAlert {
-    margin-right: 4px;
-}
-
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemNote {
-    margin-left: 4px;
+    position: absolute;
+    right: 4px;
+    top: 6px;
+    margin: 0;
+    padding: 0px;
+    line-height: 12px;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemAlert img,
@@ -1170,31 +1195,9 @@ div.activityAction div.blockElement {
     background-position: -3px -183px;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell {
-    font-size: 0.8462em;
-    font-style: italic;
-    color: #117bdf;
-    padding: 0px;
-    text-align: center;
-    margin: 1px 0 0 0;
-    background: none;
-    font-family: Helvetica, Arial, Verdana, sans-serif;
-}
-
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.placeholder .myplan-course-valid {
-    background-image: url('../images/myplan_placeholder_ticker.png');
-    background-repeat: no-repeat;
-    background-position: right top;
-}
-
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .myplan-course-valid:hover,
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .quick-add-cell:hover {
-    background-color: #e3f0fe;
-    cursor: pointer;
-}
-
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.placeholder .myplan-course-valid:hover {
-    background-image: url('../images/myplan_placeholder_ticker_hover.png');
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemNote:hover img {
+    opacity: 1;
+    filter: alpha(opacity = 100);
 }
 
 .myplan-carousel-list .myplan-carousel-term-total {

@@ -188,6 +188,11 @@ function openPopup(getId, retrieveData, formAction, popupStyle, popupOptions, e)
         jQuery.each(popupStyle, function (property, value) {
             popupHtml.css(property, value);
         });
+    } else {
+        popupHtml.css({
+            width:"300px",
+            height:"16px"
+        });
     }
     popupSettings.innerHtml = popupHtml.wrap("<div>").parent().clone().html();
 
@@ -261,9 +266,9 @@ function openMenu(id, getId, atpId, e, selector, popupClasses, popupOptions, clo
     if (atpId != null) {
         var openForPlanning = jQuery('input[id^="' + atpId + '_plan_status"]').val();
         if (openForPlanning == "false" && getId != "completed_courses_menu_items") {
-            if(getId == "planned_placeholder_menu" || getId == "backup_placeholder_menu"){
+            if (getId == "planned_placeholder_menu" || getId == "backup_placeholder_menu") {
                 getId = "completed_placeholder_menu_items";
-            }else{
+            } else {
                 getId = "completed_planned_backup_menu_items";
             }
         }
@@ -326,6 +331,33 @@ function openDialog(sText, e, close) {
         fnCloseAllPopups();
     });
 }
+/**
+ *
+ */
+function editNote(obj, e) {
+    var planItemId = obj.data("planitemid");
+    var atpId = obj.data("atpid");
+    var planItemType = obj.data("planitemtype");
+    jQuery("#" + planItemType + "_" + atpId.replace(/\./g, "-") + "_" + planItemId + "_note").HideBubblePopup();
+    var retrieveData = {
+        action:'plan',
+        viewId:'PlannedCourse-FormView',
+        methodToCall:'startAddPlannedCourseForm',
+        planItemId:planItemId,
+        atpId:atpId,
+        pageId:'edit_note_page'
+    };
+    var popupOptions = {
+        tail:{
+            hidden:true
+        },
+        align:'top',
+        close:true,
+        selector:"body"
+    };
+    openPopup('edit_note_page', retrieveData, 'plan', null, popupOptions, e);
+}
+
 /**
  *
  *
@@ -524,7 +556,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
         }
 
         if (highlightId) {
-            jQuery("[id^='" + highlightId + "']").animate({backgroundColor:"#ffffcc"}, 1).animate({backgroundColor:"#ffffff"}, 1500, function () {
+            jQuery("[id^='" + highlightId + "']").animate({backgroundColor:"#faf5ca"}, 1).animate({backgroundColor:"#ffffff"}, 1500, function () {
                 jQuery(this).removeAttr("style");
             });
         }
@@ -1279,6 +1311,53 @@ function buildHoverText(obj) {
         }
     }
     obj.attr("title", message).find("img.uif-image").attr("alt", message);
+}
+
+function buildTooltip(id, content, position, align, delay, speed) {
+    var my;
+    var offset = 20 - (jQuery("#" + id).width() / 2);
+    switch (align) {
+        case "left":
+            my = "left-" + offset;
+            break;
+        case "right":
+            my = "right+" + offset;
+            break;
+    }
+    switch (position) {
+        case "top":
+            my += " bottom-2";
+            break;
+        case "right":
+            my += " top+2";
+            break;
+    }
+    jQuery("#" + id).tooltip({
+        content:content.replace(/\s+/g, " "),
+        tooltipClass:position + align,
+        show:{
+            delay:delay,
+            duration:speed,
+            easing:speed
+        },
+        position:{
+            my:my,
+            at:align + ' ' + position,
+            of:jQuery("#" + id)
+        },
+        close:function (event, ui) {
+            ui.tooltip.hover(
+                function () {
+                    jQuery(this).stop(true).fadeTo(speed, 1);
+                },
+                function () {
+                    jQuery(this).fadeOut(speed, function () {
+                        jQuery(this).remove();
+                    })
+                }
+            );
+        }
+    });
 }
 
 (function ($) {

@@ -4,93 +4,119 @@
  #################################################################
  */
 function planItemTemplate(data) {
-    var item = jQuery("<div/>").attr("id", data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div").addClass("uif-verticalBoxGroup uif-collectionItem uif-tooltip");
+    var itemId = data.planItemType + "_" + data.atpId + "_" + data.planItemId;
+    var image = jQuery("<img/>").attr("src", "/student/ks-myplan/images/pixel.gif");
+    var actionGroup = jQuery("<div/>").attr("class", "uif-horizontalBoxLayout");
+    var itemGroup = jQuery("<div/>").attr("class", "uif-horizontalBoxLayout");
 
-    var group = jQuery("<div/>").attr("id", data.planItemId + "_" + data.planItemType + "_" + data.atpId).attr({
-        "title":data.planItemLongTitle,
+    var item = jQuery("<div/>").attr({
+        "id":itemId + "_group",
+        "class":"uif-verticalBoxGroup uif-collectionItem"
+    });
+
+    var title = jQuery("<div/>").attr("class", "itemTitle uif-boxLayoutHorizontalItem").append(data.planItemShortTitle);
+    actionGroup.append(title);
+
+    if (data.sections != null && data.sections != "") {
+        var sections = jQuery("<div/>").attr("class", "itemActivities myplan-text-ellipsis uif-boxLayoutHorizontalItem").append(data.sections);
+        actionGroup.append(sections);
+    }
+
+    if (data.credit != null && data.credit != "") {
+        var credit = jQuery("<div/>").attr("class", "itemCredit uif-boxLayoutHorizontalItem").append("(" + data.credit + ")");
+        actionGroup.append(credit);
+    }
+
+    var action = jQuery("<div/>").attr("id", itemId).attr({
+        "title":data.planItemShortTitle + " " + ((data.sections != null && data.sections != "") ? data.sections + " " : "") + "'" + data.planItemLongTitle + "'",
+        "class":"uif-horizontalFieldGroup itemAction uif-tooltip uif-boxLayoutHorizontalItem",
         "data-atpid":data.atpId.replace(/-/g, "."),
         "data-planitemid":data.planItemId,
-        "data-placeholder":data.placeHolder
-    }).addClass("uif-horizontalFieldGroup myplan-course-valid uif-boxLayoutVerticalItem clearfix");
+        "data-placeholder":data.placeHolder,
+        "style":"width:" + ((data.note) ? "99px; padding-right: 16px;" : "115px;")
+    });
 
-    var horizontalBox = jQuery("<div/>").addClass("uif-horizontalBoxLayout clearfix");
+    if (data.placeHolder == "true") {
+        item.addClass("placeholder");
+    } else {
+        action.attr({
+            "data-courseid":data.courseId,
+            "data-plannedsections":data.sections
+        });
+    }
+
+    actionGroup.clone().appendTo(action).wrap('<div class="uif-horizontalBoxGroup"/>');
+
+    if (data.showAlert == "true") {
+        var alert = jQuery("<div/>").attr({
+            "title":data.statusAlert,
+            "class":"itemAlert uif-boxLayoutHorizontalItem"
+        }).append(image.clone().attr("alt", data.statusAlert));
+        itemGroup.append(alert);
+        item.addClass("alert");
+    }
+
+    itemGroup.append(action);
 
     var script = jQuery("<input/>").attr({
         "type":"hidden",
         "name":"script",
         "data-role":"script"
-    }).val("jQuery('#" + data.planItemId + "_" + data.planItemType + "_" + data.atpId + "').click(function(e) { openMenu('" + data.planItemId + "_" + data.planItemType + "','" + data.planItemType + "_" + ((data.placeHolder == "true") ? "placeholder" : "course" ) + "_menu','" + data.atpId.replace(/-/g, ".") + "',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false); });")
+    }).val("jQuery('#" + itemId + "').click(function(e) { openMenu('" + data.planItemId + "_" + data.planItemType + "','" + data.planItemType + "_" + ((data.placeHolder == "true") ? "placeholder" : "course" ) + "_menu','" + data.atpId.replace(/-/g, ".") + "',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false); });")
 
-    if (data.placeHolder == "true") {
-        item.addClass("placeholder");
-    } else {
-        group.attr("data-courseid", data.courseId).attr("data-plannedsections", data.sections);
-    }
-
-    var image = jQuery("<img/>").attr("src", "/student/ks-myplan/images/pixel.gif");
-
-    if (data.showAlert == "true") {
-        var alert = jQuery("<div/>").attr("id", data.planItemId + "_alert").addClass("itemAlert uif-boxLayoutHorizontalItem").append(image.attr({
-            "title":data.statusAlert,
-            "alt":data.statusAlert
-        }));
-        horizontalBox.append(alert);
-        group.addClass("alert");
-        //script.val(script.val() + " createTooltip('" + data.planItemId + "_alert', '" + data.statusAlert + "', {position:'top',align:'left',alwaysVisible:false,tail:{align:'left',hidden:false},themePath:'../ks-myplan/jquery-popover/jquerypopover-theme/',themeName:'myplan-help',selectable:true,width:'250px',closingDelay:500,themeMargins:{ total:'17px', difference:'8px' }}, true, true);");
-    }
-    var title = jQuery("<div/>").addClass("itemTitle uif-boxLayoutHorizontalItem").append(data.planItemShortTitle);
-    horizontalBox.append(title);
-    if (data.sections != "") {
-        var sections = jQuery("<div/>").addClass("itemActivities myplan-text-ellipsis uif-boxLayoutHorizontalItem").append(data.sections);
-        horizontalBox.append(sections);
-    }
-    if(data.credit != null && data.credit != ""){
-        var credit = jQuery("<div/>").addClass("itemCredit uif-boxLayoutHorizontalItem").append("(" + data.credit + ")");
-        horizontalBox.append(credit);
-    }
     if (data.note) {
-        var note = jQuery("<div/>").addClass("itemNote uif-boxLayoutHorizontalItem").append(image.attr({
-            "title":data.note,
-            "alt":data.note
-        }));
-        horizontalBox.append(note);
-        // popup for note
+        var note = jQuery("<div/>").attr({
+            "id":itemId + "_note",
+            "class":"itemNote uif-boxLayoutHorizontalItem uif-tooltip"
+        }).append(image.clone());
+        itemGroup.append(note);
+        var createTooltip = " createTooltip('" + itemId + "_note', ' <p>" + data.note + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId.replace(/-/g, ".") + " onclick=editNote(jQuery(this),event);>Edit Note</a></p> ', {position:'top',align:'left',alwaysVisible:false,tail:{ align:'left', hidden: false },themePath:'../ks-myplan/jquery-popover/jquerypopover-theme/',themeName:'myplan-help',selectable:true,width:'250px',closingDelay:500,themeMargins:{ total:'17px', difference:'10px' },openingDelay:750}, true, true);";
+        script.val(script.val() + createTooltip);
     }
-    horizontalBox.clone().appendTo(group).wrap("<fieldset/>").wrap('<div class="uif-horizontalBoxGroup"/>');
-    group.clone().appendTo(item).wrap('<div class="uif-verticalBoxLayout clearfix"/>').after(script);
+
+    itemGroup.append(script);
+
+    itemGroup.clone().appendTo(item).wrap('<div class="uif-horizontalBoxGroup"/>');
 
     return item;
 }
 
 function fnAddPlanItem(data) {
+    var itemId = data.planItemType + "_" + data.atpId + "_" + data.planItemId;
     var size = parseFloat(jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size")) + 1;
     jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size", size);
     fnShowHideQuickAddLink(data.atpId, data.planItemType, size);
 
     planItemTemplate(data).prependTo("." + data.atpId + ".myplan-term-" + data.planItemType + " .uif-stackedCollectionLayout");
-    runHiddenScripts(data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div");
-    jQuery("#" + data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div").css({backgroundColor:"#ffffcc"}).animate({backgroundColor:"#ffffff"}, 3000);
-    truncateField(data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div", true);
+    runHiddenScripts(itemId + "_group");
+    jQuery("#" + itemId + "_group").css({backgroundColor:"#faf5ca"}).animate({backgroundColor:"#ffffff"}, 1500, "linear", function () {
+        jQuery(this).removeAttr("style");
+    });
+    truncateField(itemId + "_group", true);
 }
 
 function fnUpdatePlanItem(data) {
-    jQuery("#" + data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div").replaceWith(planItemTemplate(data));
-    runHiddenScripts(data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div");
-    jQuery("#" + data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div").css({backgroundColor:"#ffffcc"}).animate({backgroundColor:"#ffffff"}, 3000);
-    truncateField(data.planItemId + "_" + data.planItemType + "_" + data.atpId + "_div", true);
+    var itemId = data.planItemType + "_" + data.atpId + "_" + data.planItemId;
+    jQuery("#" + itemId + "_group").replaceWith(planItemTemplate(data));
+    runHiddenScripts(itemId + "_group");
+    jQuery("#" + itemId + "_group").css({backgroundColor:"#faf5ca"}).animate({backgroundColor:"#ffffff"}, 1500, "linear", function () {
+        jQuery(this).removeAttr("style");
+    });
+    truncateField(itemId + "_group", true);
 }
 /*
  #################################################################
  Function: remove course from quarter plan view
  #################################################################
  */
-function fnRemovePlanItem(atpId, type, planItemId) {
-    jQuery("#" + planItemId + "_" + type + "_" + atpId).unbind('click');
-    var size = parseFloat(jQuery("." + atpId + ".myplan-term-" + type).attr("data-size")) - 1;
-    jQuery("." + atpId + ".myplan-term-" + type).attr("data-size", size);
-    fnShowHideQuickAddLink(atpId, type, size);
+function fnRemovePlanItem(data) {
+    var itemId = data.planItemType + "_" + data.atpId + "_" + data.planItemId;
+    jQuery("#" + itemId).unbind('click');
+    var size = parseFloat(jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size")) - 1;
+    jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size", size);
+    fnShowHideQuickAddLink(data.atpId, data.planItemType, size);
 
-    jQuery("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .uif-collectionItem #" + planItemId + "_" + type + "_" + atpId).parents(".uif-collectionItem").fadeOut(250, function () {
+    jQuery("." + data.atpId + ".myplan-term-" + data.planItemType + " #" + itemId + "_group").fadeOut(250, function () {
         jQuery(this).remove();
     });
 }

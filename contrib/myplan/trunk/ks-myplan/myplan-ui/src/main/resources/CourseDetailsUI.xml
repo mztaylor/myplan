@@ -1294,10 +1294,23 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="Uif-Label" p:labelText="Instructor" p:renderColon="false" p:style="margin:0;"/>
-                <bean parent="KSAP-SimpleDataField" p:style="margin:0;">
-                    <property name="propertyName" value="instructor"/>
+                <bean parent="Uif-Label" p:labelText="Instructor" p:renderColon="false">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>ksap-noMargin</value>
+                        </list>
+                    </property>
                 </bean>
+                <bean parent="KSAP-MessageField" p:messageText="@{#line.instructor}">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>ksap-noMargin</value>
+                        </list>
+                    </property>
+                </bean>
+                <!--<bean parent="KSAP-SimpleDataField" p:style="margin:0;">
+                    <property name="propertyName" value="instructor"/>
+                </bean>-->
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
