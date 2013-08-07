@@ -370,7 +370,7 @@
             <bean parent="Uif-HeaderFour"/>
         </property>
         <property name="header.render"
-                  value="@{(#line.openForPlanning and #line.academicRecord.size() GT 0) OR #line.currentTermForView}"/>
+                  value="@{(#line.openForPlanning OR #line.currentTermForView) AND #line.academicRecord.size() GT 0}"/>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
                 <property name="lineGroupPrototype">
