@@ -30,8 +30,9 @@ public class AcademicPlanServiceConstants {
     /*RefObjTypes*/
     public static final String COURSE_TYPE = LUConstants.CLU_TYPE_CREDIT_COURSE;
     public static final String SECTION_TYPE = "kuali.lui.type.activity.offering";
-    public static final String PLACE_HOLDER_TYPE_GEN_ED = "kuali.uw.lu.genedreq";
-    public static final String PLACE_HOLDER_TYPE = "uw.academicplan.placeholder";
+    // todo change for CM 2.0  to uw.course.genedrequirement
+    public static final String PLACE_HOLDER_TYPE_GEN_ED = "kuali.uw.lu.genedreq";  // from KSEM_ENUM_T.enum_key
+    public static final String PLACE_HOLDER_TYPE = "uw.academicplan.placeholder";  // from KSEM_ENUM_T.enum_key
     public static final String PLACE_HOLDER_TYPE_COURSE_LEVEL = "uw.cluset.type.course.level";
 
     /* Keys for storing info in the session. */

@@ -506,6 +506,11 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             learningPlanDao.update(newPlan);
         }
 
+        // update credits
+         if ( planItem.getCredit() != null ) {
+            planItemEntity.setCredit(planItem.getCredit());
+         }
+
         return planItemDao.find(updatePlanItemId).toDto();
     }
 
@@ -786,6 +791,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             throw new InvalidParameterException(String.format("Unknown learning plan id [%s]", planItem.getLearningPlanId()));
         }
         pie.setLearningPlan(plan);
+
+        pie.setCredit(planItem.getCredit());
+
         return pie;
 
     }

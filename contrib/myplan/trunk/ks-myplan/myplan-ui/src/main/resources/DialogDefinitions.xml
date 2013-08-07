@@ -418,7 +418,7 @@
                                                         </property>
                                                     </bean>
                                                     <bean parent="Uif-InputField" p:propertyName="credit"
-                                                          p:id="creditsCourse" p:hidden="true">
+                                                          p:id="creditsCourse" p:hidden="true" p:defaultValue="@{#form.type EQ 'course' AND #form.credit NE null ? #form.credit : ''}">
                                                         <property name="control">
                                                             <bean parent="dropdownPlaceholderCredits"/>
                                                         </property>
@@ -470,7 +470,7 @@
                                                         </property>
                                                     </bean>
                                                     <bean parent="KSAP-SimpleInputField" p:propertyName="credit"
-                                                          p:id="creditsGeneral">
+                                                          p:id="creditsGeneral" p:defaultValue="@{#form.type EQ 'general' AND #form.credit NE null ? #form.credit : ''}">
                                                         <property name="control">
                                                             <bean parent="dropdownPlaceholderCredits"/>
                                                         </property>

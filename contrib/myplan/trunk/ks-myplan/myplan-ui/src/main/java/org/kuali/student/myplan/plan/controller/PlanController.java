@@ -159,7 +159,8 @@ public class PlanController extends UifControllerBase {
          */
         try {
 
-            plan = getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentRegId(), PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
+            plan = getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentRegId(),
+                    PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
 
             if (!CollectionUtils.isEmpty(plan)) {
 
@@ -168,7 +169,8 @@ public class PlanController extends UifControllerBase {
 
                 planForm.setEnableAdviserView(learningPlan.getShared().toString());
 
-                List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlanByType(learningPlan.getId(), PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, PlanConstants.CONTEXT_INFO);
+                List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlanByType(learningPlan.getId(),
+                        PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, PlanConstants.CONTEXT_INFO);
 
                 if (!CollectionUtils.isEmpty(planItems)) {
                     planForm.setBookmarkedCount(planItems.size());
@@ -235,6 +237,7 @@ public class PlanController extends UifControllerBase {
          * Initializing
          */
         super.start(form, result, request, response);
+        // ignore the form returned by super.start()
         PlanForm planForm = (PlanForm) form;
 
 
@@ -264,10 +267,12 @@ public class PlanController extends UifControllerBase {
                                 planForm.setCourseCd(planItemInfo.getRefObjectId());
                             } else {
                                 planForm.setType(PlanConstants.GENERAL_TYPE);
-                                planForm.setPlaceholder(String.format("%s|%s", planItemInfo.getRefObjectId(), planItemInfo.getRefObjectType()));
+                                planForm.setPlaceholder(String.format("%s|%s", planItemInfo.getRefObjectId(),
+                                        planItemInfo.getRefObjectType()));
                             }
-
-                            planForm.setCredit(getCreditFromAttributes(planItemInfo.getAttributes()));
+                            if ( planItemInfo.getCredit() != null ) {
+                                planForm.setCredit(String.valueOf(planItemInfo.getCredit().intValue()));
+                            }
                         }
                     } else {
                         if (hasText(planItemInfo.getRefObjectId())) {
@@ -286,7 +291,8 @@ public class PlanController extends UifControllerBase {
 
 
         //Plan activities are needed only for move, copy, delete functionality
-        List<String> activitiesRequiredPages = Arrays.asList(PlanConstants.MOVE_DIALOG_PAGE, PlanConstants.COPY_DIALOG_PAGE, PlanConstants.DELETE_DIALOG_PAGE);
+        List<String> activitiesRequiredPages = Arrays.asList(PlanConstants.MOVE_DIALOG_PAGE,
+                PlanConstants.COPY_DIALOG_PAGE, PlanConstants.DELETE_DIALOG_PAGE);
         PlanItemInfo planItem = null;
         String planItemAtpId = null;
 
@@ -319,12 +325,16 @@ public class PlanController extends UifControllerBase {
                     if (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItem.getRefObjectType())
                             || PlanConstants.PLACE_HOLDER_TYPE.equals(planItem.getRefObjectType())) {
                         planForm.setPlaceholder(planItem.getRefObjectId());
-                        planForm.setCredit(getCreditFromAttributes(planItem.getAttributes()));
+                        if ( planItem.getCredit() != null ) {
+                            planForm.setCredit(String.valueOf(planItem.getCredit().intValue()));
+                        }
                         planForm.setType(PlanConstants.GENERAL_TYPE);
                         return getUIFModelAndView(planForm);
                     } else if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
                         planForm.setCourseCd(planItem.getRefObjectId());
-                        planForm.setCredit(getCreditFromAttributes(planItem.getAttributes()));
+                        if ( planItem.getCredit() != null ) {
+                            planForm.setCredit(String.valueOf(planItem.getCredit().intValue()));
+                        }
                         return getUIFModelAndView(planForm);
                     } else {
                         planForm.setCourseId(planItem.getRefObjectId());
@@ -655,16 +665,19 @@ public class PlanController extends UifControllerBase {
         }
 
         //  Make sure there isn't a plan item for the same course id in the destination ATP.
-        PlanItemInfo existingPlanItem = null;
-        try {
-            existingPlanItem = getPlannedOrBackupPlanItem(planItem.getRefObjectId(), newAtpId);
-        } catch (RuntimeException e) {
-            return doOperationFailedError(form, "Query for existing plan item failed.", null);
-        }
+        // unless maybe it's a placeholder? could go either way, but assume user actually wants additional placeholder
+        if (!isPlaceHolderType(planItem.getRefObjectType())) {
+            PlanItemInfo existingPlanItem = null;
+            try {
+                existingPlanItem = getPlannedOrBackupPlanItem(planItem.getRefObjectId(), newAtpId);
+            } catch (RuntimeException e) {
+                return doOperationFailedError(form, "Query for existing plan item failed.", null);
+            }
 
-        if (existingPlanItem != null && !isPlaceHolderType(existingPlanItem.getRefObjectType())) {
-            String[] params = {courseDetails.getCode(), AtpHelper.atpIdToTermName(newAtpId)};
-            return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
+            if (existingPlanItem != null) {
+                String[] params = {courseDetails.getCode(), AtpHelper.atpIdToTermName(newAtpId)};
+                return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
+            }
         }
 
         /*Remove the Planned Sections for this course before moving the course to another term*/
@@ -801,20 +814,25 @@ public class PlanController extends UifControllerBase {
             }
         } else {
             courseDetails = new CourseSummaryDetails();
-            credit = getCreditFromAttributes(planItem.getAttributes());
+            if ( planItem.getCredit() != null ) {
+                credit = String.valueOf(planItem.getCredit().intValue());
+            }
         }
 
         //  Make sure there isn't a plan item for the same course id in the destination ATP.
-        PlanItemInfo existingPlanItem = null;
-        try {
-            existingPlanItem = getPlannedOrBackupPlanItem(planItem.getRefObjectId(), newAtpId);
-        } catch (RuntimeException e) {
-            return doOperationFailedError(form, "Query for existing plan item failed.", e);
-        }
-
-        if (existingPlanItem != null && !isPlaceHolderType(existingPlanItem.getRefObjectType())) {
-            String[] params = {courseDetails.getCode(), AtpHelper.atpIdToTermName(newAtpId)};
-            return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
+         // unless maybe it's a placeholder? could go either way, but assume user actually wants additional placeholder
+        if (!isPlaceHolderType(planItem.getRefObjectType())) {
+            PlanItemInfo existingPlanItem = null;
+            try {
+                existingPlanItem = getPlannedOrBackupPlanItem(planItem.getRefObjectId(), newAtpId);
+            } catch (RuntimeException e) {
+                return doOperationFailedError(form, "Query for existing plan item failed.", e);
+            }
+    
+            if (existingPlanItem != null) {
+                String[] params = {courseDetails.getCode(), AtpHelper.atpIdToTermName(newAtpId)};
+                return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
+            }
         }
 
         //  Do validations.
@@ -843,7 +861,8 @@ public class PlanController extends UifControllerBase {
 
         PlanItemInfo planItemCopy = null;
         try {
-            planItemCopy = addPlanItem(learningPlan, planItem.getRefObjectId(), planItem.getRefObjectType(), newAtpId, planItem.getTypeKey(), form.getNote(), credit);
+            planItemCopy = addPlanItem(learningPlan, planItem.getRefObjectId(), planItem.getRefObjectType(),
+                    newAtpId, planItem.getTypeKey(), form.getNote(), credit);
         } catch (DuplicateEntryException e) {
             return doDuplicatePlanItem(form, formatAtpIdForUI(newAtpId), courseDetails.getCode());
         } catch (Exception e) {
@@ -1156,7 +1175,8 @@ public class PlanController extends UifControllerBase {
         else {
             try {
 
-                planItem = addPlanItem(plan, placeHolderId, placeHolderType, newAtpId, newType, form.getNote(), form.getCredit());
+                planItem = addPlanItem(plan, placeHolderId, placeHolderType, newAtpId, newType, form.getNote(),
+                        form.getCredit());
 
             } catch (DuplicateEntryException e) {
                 return doDuplicatePlanItem(form, newAtpId, placeHolderCd != null ? placeHolderCd : courseCd);
@@ -1406,14 +1426,9 @@ public class PlanController extends UifControllerBase {
 
 
                 /*Credit update*/
-                for (AttributeInfo attributeInfo : planItemInfo.getAttributes()) {
-                    if (PlanConstants.PLACE_HOLDER_CREDIT.equalsIgnoreCase(attributeInfo.getKey())) {
-                        if ((attributeInfo.getValue() != null && !attributeInfo.getValue().equals(form.getCredit())) || (attributeInfo.getValue() == null && form.getCredit() != null)) {
-                            creditUpdated = true;
-                            attributeInfo.setValue(form.getCredit());
-                        }
-
-                    }
+                if ( !planItemInfo.getCredit().toString().equals(form.getCredit() )) {
+                    creditUpdated = true;
+                    planItemInfo.setCredit(Float.valueOf(form.getCredit()));
                 }
 
                 /*Note update*/
@@ -1540,20 +1555,6 @@ public class PlanController extends UifControllerBase {
         return plan;
     }
 
-    /**
-     * Extracts placeholder credit value from attributes
-     *
-     * @param attributeInfos
-     * @return
-     */
-    private String getCreditFromAttributes(List<AttributeInfo> attributeInfos) {
-        for (AttributeInfo attributeInfo : attributeInfos) {
-            if (PlanConstants.PLACE_HOLDER_CREDIT.equals(attributeInfo.getKey())) {
-                return attributeInfo.getValue();
-            }
-        }
-        return null;
-    }
 
     /**
      * Build an HTML link to a specific ATP in the quarter view.
@@ -2086,10 +2087,8 @@ public class PlanController extends UifControllerBase {
             throw new DuplicateEntryException("Duplicate plan item exists.");
         }
 
-        if (isPlaceHolderType(refObjType)) {
-            List<AttributeInfo> attributeInfos = new ArrayList<AttributeInfo>();
-            attributeInfos.add(new AttributeInfo(PlanConstants.PLACE_HOLDER_CREDIT, credit));
-            pii.setAttributes(attributeInfos);
+        if (isPlaceHolderType(refObjType) && credit != null) {
+             pii.setCredit(Float.parseFloat(credit));
         }
 
         try {
@@ -2358,8 +2357,8 @@ public class PlanController extends UifControllerBase {
      * @param atpId The id of the term.
      * @return
      */
-    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeUpdateTotalCreditsEvent(String
-                                                                                                      atpId, PlanConstants.JS_EVENT_NAME eventName) {
+    private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeUpdateTotalCreditsEvent(String atpId,
+                                                                             PlanConstants.JS_EVENT_NAME eventName) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         Map<String, String> params = new HashMap<String, String>();
@@ -2460,11 +2459,15 @@ public class PlanController extends UifControllerBase {
             if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
                 planItemShortTitle = planItem.getRefObjectId();
                 planItemLongTitle = planItem.getRefObjectId();
-                credit = getCreditFromAttributes(planItem.getAttributes());
+                if ( planItem.getCredit() != null ) {
+                    credit = String.valueOf(planItem.getCredit().intValue());
+                }
             } else {
                 planItemShortTitle = EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), planItem.getRefObjectType());
                 planItemLongTitle = EnumerationHelper.getEnumValueForCodeByType(planItem.getRefObjectId(), planItem.getRefObjectType());
-                credit = getCreditFromAttributes(planItem.getAttributes());
+                if ( planItem.getCredit() != null ) {
+                    credit = String.valueOf(planItem.getCredit().intValue());
+                }
             }
         } else {
             planItemShortTitle = courseDetails.getCode();

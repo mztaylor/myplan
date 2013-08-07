@@ -136,7 +136,8 @@ public class DegreeAuditController extends UifControllerBase {
 
                 DegreeAuditService degreeAuditService = getDegreeAuditService();
 
-                /*TODO:Default value should be set in UI, Remove adding the default value in code once fix for KULRICE-9846 is in*/
+                /*TODO:Default value should be set in UI, Remove adding the default value in code once fix for
+                 KULRICE-9846 is in*/
                 degreeAuditForm.setCampusParam(DEFAULT_CAMPUS_ID);
                 planAuditForm.setCampusParam(DEFAULT_CAMPUS_ID);
 
@@ -145,7 +146,8 @@ public class DegreeAuditController extends UifControllerBase {
                 Date endDate = new Date();
                 ContextInfo context = new ContextInfo();
 
-                List<AuditReportInfo> reportList = degreeAuditService.getAuditsForStudentInDateRange(regId, startDate, endDate, context);
+                List<AuditReportInfo> reportList = degreeAuditService.getAuditsForStudentInDateRange(regId, startDate,
+                        endDate, context);
 
                 Map<String, PlanAuditItem> auditsInLearningPlan = getDegreeAuditHelper().getPlanItemSnapShots(regId);
 
@@ -158,9 +160,11 @@ public class DegreeAuditController extends UifControllerBase {
                         }
                     }
                 }
-                // TODO: For now we are getting the auditType from the end user. This needs to be removed before going live and hard coded to audit type key html
+                // TODO: For now we are getting the auditType from the end user. This needs to be removed before going
+                // live and hard coded to audit type key html
                 if (StringUtils.hasText(degreeAuditId)) {
-                    AuditReportInfo degreeReport = degreeAuditService.getAuditReport(degreeAuditId, degreeAuditForm.getAuditType(), context);
+                    AuditReportInfo degreeReport = degreeAuditService.getAuditReport(degreeAuditId,
+                            degreeAuditForm.getAuditType(), context);
                     degreeAuditForm.setAuditId(degreeAuditId);
                     getDegreeAuditHelper().copyCampusToForm(degreeReport, degreeAuditForm);
                     copyReportToForm(degreeReport, degreeAuditForm);
@@ -197,22 +201,30 @@ public class DegreeAuditController extends UifControllerBase {
 
 
     /**
-     * Method is used to check if at least one planned course exists in the student's Academic plan from the current plannable term
+     * Method is used to check if at least one planned course exists in the student's Academic plan from the current
+     * plannable term
      *
      * @return
      */
     private boolean doesPlannedCourseExist() {
         try {
-            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentRegId(), LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
+            List<LearningPlanInfo> learningPlanList =
+                    getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentRegId(),
+                            LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
 
             for (LearningPlanInfo learningPlanInfo : learningPlanList) {
                 String learningPlanID = learningPlanInfo.getId();
-                List<PlanItemInfo> planItemInfoList = getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, CONTEXT_INFO);
+                List<PlanItemInfo> planItemInfoList =
+                        getAcademicPlanService().getPlanItemsInPlanByType(learningPlanID,
+                                PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, CONTEXT_INFO);
                 if (!CollectionUtils.isEmpty(planItemInfoList)) {
                     AtpHelper.YearTerm firstOpenForPlanningTerm = AtpHelper.atpToYearTerm(AtpHelper.getFirstOpenForPlanTerm());
                     for (PlanItemInfo planItemInfo : planItemInfoList) {
-                        if (!CollectionUtils.isEmpty(planItemInfo.getPlanPeriods()) && PlanConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType()) && StringUtils.hasText(getCourseHelper().getVerifiedCourseId(planItemInfo.getRefObjectId()))) {
-                            AtpHelper.YearTerm planItemYearTerm = AtpHelper.atpToYearTerm(planItemInfo.getPlanPeriods().get(0));
+                        if (!CollectionUtils.isEmpty(planItemInfo.getPlanPeriods()) &&
+                                PlanConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType()) &&
+                                StringUtils.hasText(getCourseHelper().getVerifiedCourseId(planItemInfo.getRefObjectId()))) {
+                            AtpHelper.YearTerm planItemYearTerm =
+                                    AtpHelper.atpToYearTerm(planItemInfo.getPlanPeriods().get(0));
                             if (planItemYearTerm.compareTo(firstOpenForPlanningTerm) >= 0) {
                                 return true;
                             }
@@ -274,30 +286,38 @@ public class DegreeAuditController extends UifControllerBase {
                     String auditType = form.getAuditType();
                     AuditReportInfo info = degreeAuditService.runAudit(regid, programId, auditType, context);
                     String auditID = info.getAuditId();
-                    // TODO: For now we are getting the auditType from the end user. This needs to be remvoed before going live and hard coded to audit type key html
+                    // TODO: For now we are getting the auditType from the end user. This needs to be remvoed before
+                    // going live and hard coded to audit type key html
                     AuditReportInfo report = degreeAuditService.getAuditReport(auditID, auditType, context);
                     copyReportToForm(report, form);
                 } else {
                     String[] params = {};
-                    GlobalVariables.getMessageMap().putError("degreeAudit.programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
-                    form.setAuditHtml(String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL), DegreeAuditConstants.AUDIT_STATUS_ERROR_MSG));
+                    GlobalVariables.getMessageMap().putError("degreeAudit.programParamSeattle",
+                            DegreeAuditConstants.AUDIT_RUN_FAILED, params);
+                    form.setAuditHtml(String.format(DegreeAuditConstants.AUDIT_FAILED_HTML,
+                            ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL),
+                            DegreeAuditConstants.AUDIT_STATUS_ERROR_MSG));
                 }
             }
 
         } catch (DataRetrievalFailureException e) {
             String[] params = {};
-            GlobalVariables.getMessageMap().putError("degreeAudit.programParamSeattle", DegreeAuditConstants.NO_SYSTEM_KEY, params);
+            GlobalVariables.getMessageMap().putError("degreeAudit.programParamSeattle",
+                    DegreeAuditConstants.NO_SYSTEM_KEY, params);
 
         } catch (Exception e) {
             logger.error("Could not complete audit run");
             String[] params = {};
-            GlobalVariables.getMessageMap().putError("degreeAudit.programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
+            GlobalVariables.getMessageMap().putError("degreeAudit.programParamSeattle",
+                    DegreeAuditConstants.AUDIT_RUN_FAILED, params);
             Throwable cause = e.getCause();
             if (cause != null) {
                 String message = cause.getMessage();
                 if (message != null) {
                     String errorMessage = getErrorMessageFromXml(message);
-                    String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL), errorMessage);
+                    String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML,
+                            ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL),
+                            errorMessage);
                     form.setAuditHtml(html);
                 }
             }
@@ -327,13 +347,17 @@ public class DegreeAuditController extends UifControllerBase {
                     ContextInfo context = new ContextInfo();
                     context.setPrincipalId(regid);
                     DegreeAuditService degreeAuditService = getDegreeAuditService();
-                    List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regid, LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
+                    List<LearningPlanInfo> learningPlanList =
+                            getAcademicPlanService().getLearningPlansForStudentByType(regid, LEARNING_PLAN_TYPE_PLAN,
+                                    CONTEXT_INFO);
                     for (LearningPlanInfo learningPlan : learningPlanList) {
-                        LearningPlanInfo learningPlanInfo = getAcademicPlanService().copyLearningPlan(learningPlan.getId(), AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT, context);
+                        LearningPlanInfo learningPlanInfo = getAcademicPlanService().copyLearningPlan(learningPlan.getId(),
+                                AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT, context);
                         String learningPlanInfoId = learningPlanInfo.getId();
 
                         savePlanItemSnapshots(form, learningPlanInfoId);
-                        String auditId = degreeAuditService.runWhatIfAuditAsync(regid, programId, form.getAuditType(), learningPlanInfoId, context);
+                        String auditId = degreeAuditService.runWhatIfAuditAsync(regid, programId, form.getAuditType(),
+                                learningPlanInfoId, context);
                         AuditReportInfo report = degreeAuditService.getAuditReport(auditId, form.getAuditType(), context);
 
 
@@ -343,26 +367,32 @@ public class DegreeAuditController extends UifControllerBase {
 
                 } else {
                     String[] params = {};
-                    GlobalVariables.getMessageMap().putError("planAudit.programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
-                    form.setAuditHtml(String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL)));
+                    GlobalVariables.getMessageMap().putError("planAudit.programParamSeattle",
+                            DegreeAuditConstants.AUDIT_RUN_FAILED, params);
+                    form.setAuditHtml(String.format(DegreeAuditConstants.AUDIT_FAILED_HTML,
+                            ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL)));
                 }
             }
 
         } catch (DataRetrievalFailureException e) {
             String[] params = {};
             form.setCampusParam("306");
-            GlobalVariables.getMessageMap().putError("planAudit.programParamSeattle", DegreeAuditConstants.NO_SYSTEM_KEY, params);
+            GlobalVariables.getMessageMap().putError("planAudit.programParamSeattle",
+                    DegreeAuditConstants.NO_SYSTEM_KEY, params);
 
         } catch (Exception e) {
             logger.error("Could not complete audit run", e);
             String[] params = {};
-            GlobalVariables.getMessageMap().putError("planAudit.programParamSeattle", DegreeAuditConstants.AUDIT_RUN_FAILED, params);
+            GlobalVariables.getMessageMap().putError("planAudit.programParamSeattle",
+                    DegreeAuditConstants.AUDIT_RUN_FAILED, params);
             Throwable cause = e.getCause();
             if (cause != null) {
                 String message = cause.getMessage();
                 if (message != null) {
                     String errorMessage = getErrorMessageFromXml(message);
-                    String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL), errorMessage);
+                    String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML,
+                            ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL),
+                            errorMessage);
                     form.setAuditHtml(html);
                 }
             }
@@ -384,7 +414,8 @@ public class DegreeAuditController extends UifControllerBase {
 
             for (PlanItemInfo item : planItemInfos) {
                 boolean isCourse = PlanConstants.COURSE_TYPE.equalsIgnoreCase(item.getRefObjectType());
-                boolean isPlanned = AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equalsIgnoreCase(item.getTypeKey());
+                boolean isPlanned =
+                        AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equalsIgnoreCase(item.getTypeKey());
                 if (isCourse && isPlanned) {
                     // Version independent id + term = key
                     String key = item.getRefObjectId() + item.getPlanPeriods().get(0);
@@ -402,10 +433,12 @@ public class DegreeAuditController extends UifControllerBase {
                         choice = choice.build(choiceKey);
                         List<AttributeInfo> list = planItem.getAttributes();
                         list.add(new AttributeInfo(BUCKET, BUCKET_MESSY));
-                        list.add(new AttributeInfo(CREDIT, choice.credit));
                         list.add(new AttributeInfo(CHOICE, choiceKey));
                         list.add(new AttributeInfo(SECTION, choice.section));
                         list.add(new AttributeInfo(SECONDARY_ACTIVITY, choice.secondaryActivity));
+                        if (StringUtils.hasText(choice.credit))  {
+                            planItem.setCredit(Float.valueOf(choice.credit));
+                        }
 
                         getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, CONTEXT_INFO);
                     }
@@ -418,9 +451,11 @@ public class DegreeAuditController extends UifControllerBase {
                     List<AttributeInfo> list = planItem.getAttributes();
 
                     list.add(new AttributeInfo(BUCKET, BUCKET_CLEAN));
-                    list.add(new AttributeInfo(CREDIT, item.getCredit()));
                     list.add(new AttributeInfo(SECTION, item.getSectionCode()));
                     list.add(new AttributeInfo(SECONDARY_ACTIVITY, item.getSecondaryActivityCode()));
+                    if (StringUtils.hasText(item.getCredit()))  {
+                        planItem.setCredit(Float.valueOf(item.getCredit()));
+                    }
 
                     getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, CONTEXT_INFO);
                 }
@@ -441,7 +476,8 @@ public class DegreeAuditController extends UifControllerBase {
         String regid = UserSessionHelper.getStudentRegId();
 
         PlannedTermsHelperBase plannedTermsHelperBase = new PlannedTermsHelperBase();
-        List<PlanItemInfo> itemList = plannedTermsHelperBase.getLatestSnapShotPlanItemsByRefObjType(PlanConstants.COURSE_TYPE, regid);
+        List<PlanItemInfo> itemList =
+                plannedTermsHelperBase.getLatestSnapShotPlanItemsByRefObjType(PlanConstants.COURSE_TYPE, regid);
 
         for (PlanItemInfo item : itemList) {
             String bucketType = BUCKET_IGNORE;
@@ -481,7 +517,8 @@ public class DegreeAuditController extends UifControllerBase {
         logger.info("Started the hand off screen at" + System.currentTimeMillis());
 
         //Processing the Handoff logic and adding the messy and clean courses for plan audit
-        PlanAuditForm form = getDegreeAuditHelper().processHandOff(auditForm.getPlanAudit(), UserSessionHelper.getStudentRegId());
+        PlanAuditForm form = getDegreeAuditHelper().processHandOff(auditForm.getPlanAudit(),
+                UserSessionHelper.getStudentRegId());
 
         if (!form.getMessyItems().isEmpty()) {
             Map<String, String> prevChoices = getPlanItemSnapShots();
@@ -557,7 +594,9 @@ public class DegreeAuditController extends UifControllerBase {
     private String getRecentPlanAudit(String studentId) {
         String recentPlanAuditId = null;
         try {
-            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentId, LEARNING_PLAN_TYPE_PLAN_AUDIT, PlanConstants.CONTEXT_INFO);
+            List<LearningPlanInfo> learningPlanList =
+                    getAcademicPlanService().getLearningPlansForStudentByType(studentId, LEARNING_PLAN_TYPE_PLAN_AUDIT,
+                            PlanConstants.CONTEXT_INFO);
             Collections.reverse(learningPlanList);
             for (LearningPlanInfo learningPlanInfo : learningPlanList) {
                 if (recentPlanAuditId != null) {
@@ -586,7 +625,8 @@ public class DegreeAuditController extends UifControllerBase {
     protected CourseOfferingService getCourseOfferingService() {
         if (this.courseOfferingService == null) {
             //   TODO: Use constants for namespace.
-            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(
+                    new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
         }
         return this.courseOfferingService;
     }
@@ -618,7 +658,8 @@ public class DegreeAuditController extends UifControllerBase {
     public OrganizationService getOrganizationService() {
         if (this.organizationService == null) {
             //   TODO: Use constants for namespace.
-            this.organizationService = (OrganizationService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/organization", "orgService"));
+            this.organizationService = (OrganizationService) GlobalResourceLoader.getService(
+                    new QName("http://student.kuali.org/wsdl/organization", "orgService"));
         }
         return this.organizationService;
     }

@@ -274,7 +274,12 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
     @Override
-    public String runWhatIfAuditAsync(@WebParam(name = "studentId") String studentId, @WebParam(name = "programId") String programId, @WebParam(name = "auditTypeKey") String auditTypeKey, @WebParam(name = "academicPlanId") String academicPlanId, @WebParam(name = "context") ContextInfo context) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+    public String runWhatIfAuditAsync(@WebParam(name = "studentId") String studentId,
+                                      @WebParam(name = "programId") String programId,
+                                      @WebParam(name = "auditTypeKey") String auditTypeKey,
+                                      @WebParam(name = "academicPlanId") String academicPlanId,
+                                      @WebParam(name = "context") ContextInfo context)
+            throws InvalidParameterException, MissingParameterException, OperationFailedException {
 
         String auditId = null;
         DegreeAuditRequest req = new DegreeAuditRequest(studentId, programId);
@@ -284,13 +289,11 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
             List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlan(academicPlanId, context);
             for (PlanItemInfo planItem : planItems) {
-                //
                 boolean isCourse = PlanConstants.COURSE_TYPE.equalsIgnoreCase(planItem.getRefObjectType());
                 boolean isPlanned = AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equalsIgnoreCase(planItem.getTypeKey());
                 if (isCourse && isPlanned) {
 
                     String bucketType = BUCKET_IGNORE;
-                    String credit = "0";
                     String section = "";
                     String secondaryActivity = "";
                     for (AttributeInfo attrib : planItem.getAttributes()) {
@@ -298,8 +301,6 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         String value = attrib.getValue();
                         if (BUCKET.equals(key)) {
                             bucketType = value;
-                        } else if (CREDIT.equals(key)) {
-                            credit = value;
                         } else if (SECTION.equals(key)) {
                             section = value != null ? value : "";
                         } else if (SECONDARY_ACTIVITY.equals(key)) {
@@ -317,7 +318,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                         DegreeAuditCourseRequest course = new DegreeAuditCourseRequest();
                         course.curric = courseInfo.getSubjectArea().trim();
                         course.number = courseInfo.getCourseNumberSuffix().trim();
-                        course.credit = credit;
+                        course.credit = String.valueOf(planItem.getCredit().intValue());
                         course.activity = section;
                         {
                             course.campus = "Seattle";
