@@ -261,7 +261,9 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     }
 
 
-                } else if (planItem.getTypeKey().equals(planItemType) && (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItem.getRefObjectType()) || PlanConstants.PLACE_HOLDER_TYPE.equals(planItem.getRefObjectType()))) {
+                } else if (planItem.getTypeKey().equals(planItemType) &&
+                        (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItem.getRefObjectType()) ||
+                                PlanConstants.PLACE_HOLDER_TYPE.equals(planItem.getRefObjectType()))) {
                     PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
                     PlanItemDataObject planItemData = PlanItemDataObject.build(planItem);
                     plannedCourse.setPlanItemDataObject(planItemData);
@@ -275,14 +277,11 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     }
                     plannedCourse.setPlaceHolderCode(placeHolderValue);
                     plannedCourse.setCourseDetails(new CourseSummaryDetails());
-                    for (AttributeInfo attributeInfo : planItem.getAttributes()) {
-                        if (PlanConstants.PLACE_HOLDER_CREDIT.equals(attributeInfo.getKey())) {
-                            plannedCourse.setPlaceHolderCredit(attributeInfo.getValue());
-                        }
-                    }
+                    plannedCourse.setPlaceHolderCredit(planItem.getCredit() == null ? "" : String.valueOf(planItem.getCredit().intValue()));
                     plannedCoursesList.add(plannedCourse);
 
-                } else if (planItem.getTypeKey().equals(planItemType) && PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
+                } else if (planItem.getTypeKey().equals(planItemType) &&
+                        PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
                     PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
                     PlanItemDataObject planItemData = PlanItemDataObject.build(planItem);
                     plannedCourse.setPlanItemDataObject(planItemData);
@@ -292,11 +291,8 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     }
                     plannedCourse.setPlaceHolderCode(planItem.getRefObjectId());
                     plannedCourse.setCourseDetails(new CourseSummaryDetails());
-                    for (AttributeInfo attributeInfo : planItem.getAttributes()) {
-                        if (PlanConstants.PLACE_HOLDER_CREDIT.equals(attributeInfo.getKey())) {
-                            plannedCourse.setPlaceHolderCredit(attributeInfo.getValue());
-                        }
-                    }
+                    plannedCourse.setPlaceHolderCredit(planItem.getCredit() == null ? "" : String.valueOf(planItem.getCredit().intValue()));
+
                     plannedCoursesList.add(plannedCourse);
 
                 }

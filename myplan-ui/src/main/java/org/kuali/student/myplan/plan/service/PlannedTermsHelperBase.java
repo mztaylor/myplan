@@ -24,7 +24,6 @@ import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 
 import javax.xml.namespace.QName;
@@ -575,12 +574,14 @@ public class PlannedTermsHelperBase {
         ArrayList<String> creditList = new ArrayList<String>();
         try {
 
-            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentID,
+                    PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
             //This should be looping only once as student has only one learning plan of plan type
             for (LearningPlanInfo learningPlan : learningPlanList) {
                 String learningPlanID = learningPlan.getId();
 
-                List<PlanItemInfo> planItemList = getAcademicPlanService().getPlanItemsInPlanByAtp(learningPlanID, termId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.CONTEXT_INFO);
+                List<PlanItemInfo> planItemList = getAcademicPlanService().getPlanItemsInPlanByAtp(learningPlanID,
+                        termId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.CONTEXT_INFO);
                 Map<String, List<String>> courseSectionCreditsMap = new HashMap<String, List<String>>();
                 List<PlanItemInfo> plannedCourses = new ArrayList<PlanItemInfo>();
                 for (PlanItemInfo planItem : planItemList) {
@@ -621,11 +622,11 @@ public class PlannedTermsHelperBase {
                             credit = CreditsFormatter.formatCredits(courseInfo);
                         }
                     } else {
-                        for (AttributeInfo attributeInfo : planItemInfo.getAttributes()) {
-                            if (PlanConstants.PLACE_HOLDER_CREDIT.equals(attributeInfo.getKey())) {
-                                credit = attributeInfo.getValue();
-                                break;
-                            }
+                        if ( (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItemInfo.getRefObjectType()) ||
+                             PlanConstants.PLACE_HOLDER_TYPE.equals(planItemInfo.getRefObjectType()) ||
+                             PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItemInfo.getRefObjectType()) ) &&
+                             planItemInfo.getCredit() != null )   {
+                             credit = String.valueOf(planItemInfo.getCredit().intValue());
                         }
                     }
                     if (hasText(credit)) {

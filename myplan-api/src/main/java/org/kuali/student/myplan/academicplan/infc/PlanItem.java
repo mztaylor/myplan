@@ -44,4 +44,10 @@ public interface PlanItem extends HasId, TypeStateEntity {
      */
     public String getLearningPlanId();
 
+     /**
+     * Credit hours for the Learning Plan Item
+     * @name Credits
+     */
+    public Float getCredit();
+
 }
