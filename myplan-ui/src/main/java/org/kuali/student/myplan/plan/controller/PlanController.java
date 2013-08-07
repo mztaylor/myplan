@@ -270,7 +270,7 @@ public class PlanController extends UifControllerBase {
                                 planForm.setPlaceholder(String.format("%s|%s", planItemInfo.getRefObjectId(),
                                         planItemInfo.getRefObjectType()));
                             }
-                            if ( planItemInfo.getCredit() != null ) {
+                            if (planItemInfo.getCredit() != null) {
                                 planForm.setCredit(String.valueOf(planItemInfo.getCredit().intValue()));
                             }
                         }
@@ -325,14 +325,14 @@ public class PlanController extends UifControllerBase {
                     if (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItem.getRefObjectType())
                             || PlanConstants.PLACE_HOLDER_TYPE.equals(planItem.getRefObjectType())) {
                         planForm.setPlaceholder(planItem.getRefObjectId());
-                        if ( planItem.getCredit() != null ) {
+                        if (planItem.getCredit() != null) {
                             planForm.setCredit(String.valueOf(planItem.getCredit().intValue()));
                         }
                         planForm.setType(PlanConstants.GENERAL_TYPE);
                         return getUIFModelAndView(planForm);
                     } else if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
                         planForm.setCourseCd(planItem.getRefObjectId());
-                        if ( planItem.getCredit() != null ) {
+                        if (planItem.getCredit() != null) {
                             planForm.setCredit(String.valueOf(planItem.getCredit().intValue()));
                         }
                         return getUIFModelAndView(planForm);
@@ -814,13 +814,13 @@ public class PlanController extends UifControllerBase {
             }
         } else {
             courseDetails = new CourseSummaryDetails();
-            if ( planItem.getCredit() != null ) {
+            if (planItem.getCredit() != null) {
                 credit = String.valueOf(planItem.getCredit().intValue());
             }
         }
 
         //  Make sure there isn't a plan item for the same course id in the destination ATP.
-         // unless maybe it's a placeholder? could go either way, but assume user actually wants additional placeholder
+        // unless maybe it's a placeholder? could go either way, but assume user actually wants additional placeholder
         if (!isPlaceHolderType(planItem.getRefObjectType())) {
             PlanItemInfo existingPlanItem = null;
             try {
@@ -828,7 +828,7 @@ public class PlanController extends UifControllerBase {
             } catch (RuntimeException e) {
                 return doOperationFailedError(form, "Query for existing plan item failed.", e);
             }
-    
+
             if (existingPlanItem != null) {
                 String[] params = {courseDetails.getCode(), AtpHelper.atpIdToTermName(newAtpId)};
                 return doErrorPage(form, PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
@@ -1426,7 +1426,7 @@ public class PlanController extends UifControllerBase {
 
 
                 /*Credit update*/
-                if ( !planItemInfo.getCredit().toString().equals(form.getCredit() )) {
+                if (planItemInfo.getCredit() != null && !planItemInfo.getCredit().toString().equals(form.getCredit())) {
                     creditUpdated = true;
                     planItemInfo.setCredit(Float.valueOf(form.getCredit()));
                 }
@@ -2088,7 +2088,7 @@ public class PlanController extends UifControllerBase {
         }
 
         if (isPlaceHolderType(refObjType) && credit != null) {
-             pii.setCredit(Float.parseFloat(credit));
+            pii.setCredit(Float.parseFloat(credit));
         }
 
         try {
@@ -2358,7 +2358,7 @@ public class PlanController extends UifControllerBase {
      * @return
      */
     private Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> makeUpdateTotalCreditsEvent(String atpId,
-                                                                             PlanConstants.JS_EVENT_NAME eventName) {
+                                                                                              PlanConstants.JS_EVENT_NAME eventName) {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         Map<String, String> params = new HashMap<String, String>();
@@ -2459,13 +2459,13 @@ public class PlanController extends UifControllerBase {
             if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
                 planItemShortTitle = planItem.getRefObjectId();
                 planItemLongTitle = planItem.getRefObjectId();
-                if ( planItem.getCredit() != null ) {
+                if (planItem.getCredit() != null) {
                     credit = String.valueOf(planItem.getCredit().intValue());
                 }
             } else {
                 planItemShortTitle = EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), planItem.getRefObjectType());
                 planItemLongTitle = EnumerationHelper.getEnumValueForCodeByType(planItem.getRefObjectId(), planItem.getRefObjectType());
-                if ( planItem.getCredit() != null ) {
+                if (planItem.getCredit() != null) {
                     credit = String.valueOf(planItem.getCredit().intValue());
                 }
             }
