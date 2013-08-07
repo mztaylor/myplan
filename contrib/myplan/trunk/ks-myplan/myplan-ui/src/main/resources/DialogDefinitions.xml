@@ -482,7 +482,7 @@
                                 </property>
                             </bean>
                             <bean parent="planItemNote" p:style="margin: 10px 0 20px;"
-                                  p:label="Note for course or placeholder"/>
+                                  p:label="Notes"/>
                             <bean parent="KSAP-SimpleInputField" p:propertyName="planItemId"
                                   p:hidden="true" p:render="@{#form.planItemId NE null}">
                                 <property name="control">
@@ -1070,7 +1070,7 @@
     <!-- Text input for plan item notes field -->
     <bean id="planItemNote" parent="KSAP-SimpleInputField" p:propertyName="note"
           p:defaultValue="@{#form.planItemId NE null ? #form.note : ''}">
-        <property name="label" value="Note for course"/>
+        <property name="label" value="Notes"/>
         <property name="fieldLabel.render" value="true"/>
         <property name="fieldLabel.cssClasses">
             <list merge="true">
