@@ -104,6 +104,14 @@ function fnUpdatePlanItem(data) {
     });
     truncateField(itemId + "_group", true);
 }
+function fnUpdateNote(data) {
+    var noteId = data.planItemType + "_" + data.atpId + "_" + data.planItemId + "_note";
+    jQuery("#" + noteId).off();
+    var createTooltip = "createTooltip('" + noteId + "', ' <p>" + data.note + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId.replace(/-/g, ".") + " onclick=editNote(jQuery(this),event);>Edit Note</a></p> ', {position:'top',align:'left',alwaysVisible:false,tail:{ align:'left', hidden: false },themePath:'../ks-myplan/jquery-popover/jquerypopover-theme/',themeName:'myplan-help',selectable:true,width:'250px',closingDelay:500,themeMargins:{ total:'17px', difference:'10px' },openingDelay:750}, true, true);";
+    var noteScript = jQuery("input[data-for='" + noteId + "'][data-role='script']")[0];
+    jQuery(noteScript).attr("name", "script").removeAttr("script").val(createTooltip);
+    evalHiddenScript(jQuery(noteScript));
+}
 /*
  #################################################################
  Function: remove course from quarter plan view

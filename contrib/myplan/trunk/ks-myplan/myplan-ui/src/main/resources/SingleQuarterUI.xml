@@ -271,6 +271,8 @@
                 if (data.atpId == '@{dataObject.atpId.replaceAll('\.','-')}' &amp;&amp; data.planItemType != 'wishlist') {
                     myplanRetrieveComponent(data.atpId + '_' + data.planItemType, data.atpId + '_' + data.planItemType, 'start', 'inquiry', {viewId:'SingleTerm-InquiryView', term_atp_id:'@{dataObject.atpId}'}, null, {css:{top:'1px',left:'1px',border:'none',background:'none'},overlayCSS:{backgroundColor: '#fff'}});
                 }
+            }).on('PLAN_ITEM_UPDATED', function(event, data) {
+                fnUpdateNote(data);
             });
         "/>
         <property name="cssClasses">
@@ -878,17 +880,7 @@
                                 </property>
                             </bean>
 
-                            <bean parent="Uif-ImageField" p:render="@{#line.note NE null}"
-                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
-                                  p:title="@{#line.note}"
-                                  p:altText="@{#line.note}">
-                                <property name="style" value="position:relative; top:-2px;"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>itemNote</value>
-                                    </list>
-                                </property>
-                            </bean>
+                            <bean parent="planItemNoteIcon"/>
 
                             <!-- Past quarters -->
                             <bean parent="singleQuarterStudentActions">
