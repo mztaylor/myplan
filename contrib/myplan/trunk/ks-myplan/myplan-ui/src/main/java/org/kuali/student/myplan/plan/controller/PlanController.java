@@ -283,8 +283,10 @@ public class PlanController extends UifControllerBase {
                             }
                         }
                     }
+                } catch (DoesNotExistException e) {
+                    return doPageRefreshError(planForm, "PlanItem with Id:" + planForm.getPlanItemId() + " doesnot exist", e);
                 } catch (Exception e) {
-                    return doPageRefreshError(planForm, "Could not open Quick Add.", null);
+                    return doOperationFailedError(planForm, "Could not open Quick Add.", null);
                 }
             }
             return getUIFModelAndView(planForm);
@@ -435,6 +437,8 @@ public class PlanController extends UifControllerBase {
         PlanItemInfo planItem = null;
         try {
             planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+        } catch (DoesNotExistException e) {
+            return doPageRefreshError(form, "PlanItem with Id:" + planItemId + " doesnot exist", e);
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not fetch plan item.", e);
         }
@@ -533,6 +537,8 @@ public class PlanController extends UifControllerBase {
         PlanItemInfo planItem = null;
         try {
             planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+        } catch (DoesNotExistException e) {
+            return doPageRefreshError(form, "PlanItem with Id:" + planItemId + " doesnot exist", e);
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not fetch plan item.", e);
         }
@@ -645,6 +651,8 @@ public class PlanController extends UifControllerBase {
         try {
             // First load the plan item and retrieve the courseId
             planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+        } catch (DoesNotExistException e) {
+            return doPageRefreshError(form, "PlanItem with Id:" + planItemId + " doesnot exist", e);
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not fetch plan item.", e);
         }
@@ -796,6 +804,8 @@ public class PlanController extends UifControllerBase {
         try {
             // First load the plan item and retrieve the courseId
             planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
+        } catch (DoesNotExistException e) {
+            return doPageRefreshError(form, "PlanItem with Id:" + planItemId + " doesnot exist", e);
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not fetch plan item.", e);
         }
@@ -1337,6 +1347,8 @@ public class PlanController extends UifControllerBase {
                     courseSummaryDetails = getVersionVerifiedCourseDetails(planItemInfo.getRefObjectId());
                 }
 
+            } catch (DoesNotExistException e) {
+                return doPageRefreshError(form, "PlanItem with Id:" + form.getPlanItemId() + " doesnot exist", e);
             } catch (Exception e) {
 
                 return doOperationFailedError(form, "Failed to get PlanItem for planItemId " + form.getPlanItemId(), e);
@@ -1466,6 +1478,8 @@ public class PlanController extends UifControllerBase {
 
             }
 
+        } catch (DoesNotExistException e) {
+            return doPageRefreshError(form, "PlanItem with Id:" + planItemId + " doesnot exist", e);
         } catch (Exception e) {
             return doErrorPage(form, "QuickAdd request to update failed", PlanConstants.UPDATE_FAILED, new String[]{form.getCourseCd() != null ? form.getCourseCd() : EnumerationHelper.getEnumAbbrValForCodeByType(form.getPlaceholder(), PlanConstants.PLACE_HOLDER_ENUM_KEY)}, e);
         }
@@ -2462,7 +2476,7 @@ public class PlanController extends UifControllerBase {
         String note = null;
         if (hasText(planItem.getDescr().getPlain())) {
             try {
-                note = mapper.writeValueAsString(planItem.getDescr().getPlain().replaceAll("\n","<br/>")).replaceAll("^\"|\"$", "");
+                note = mapper.writeValueAsString(planItem.getDescr().getPlain().replaceAll("\n", "<br/>")).replaceAll("^\"|\"$", "");
             } catch (IOException e) {
                 logger.error("Could not add the note to add event");
             }
