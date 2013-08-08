@@ -763,8 +763,7 @@ function fnPopoverSlider(showId, parentId, direction) {
 function clickOutsidePopOver(popoverId, element) {
     jQuery("body").on("click", function (e) {
         var tempTarget = (e.target) ? e.target : e.srcElement;
-        // jQuery(tempTarget).parents("#" + popoverId).length
-        if (jQuery(tempTarget, "#" + popoverId).length === 0) {
+        if (jQuery(tempTarget).parents("#" + popoverId).length === 0) {
             element.RemovePopOver();
             jQuery("body").off("click");
         }

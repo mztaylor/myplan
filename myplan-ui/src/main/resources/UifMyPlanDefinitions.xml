@@ -318,7 +318,8 @@
                 <entry key="align" value="center"/>
                 <entry key="width" value="250px"/>
                 <entry key="tail" value="{ align:'center', hidden: false }"/>
-                <entry key="closingDelay" value="500"/>
+                <entry key="openingDelay" value="750"/>
+                <entry key="closingDelay" value="0"/>
                 <entry key="themeMargins" value="{ total:'18px', difference:'8px' }"/>
                 <entry key="themePath" value="../ks-myplan/jquery-popover/jquerypopover-theme/"/>
                 <entry key="themeName" value="myplan-help"/>
