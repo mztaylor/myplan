@@ -892,7 +892,7 @@
         <property name="toolTip">
             <bean parent="MyPlan-Tooltip-Left">
                 <property name="tooltipContent" value="
-                    &lt;p&gt;@{#line.note NE null ? #line.note : ''}&lt;/p&gt;
+                    &lt;p&gt;@{#line.note NE null ? #line.note.replaceAll('\n','&lt;br&gt;') : ''}&lt;/p&gt;
                     &lt;p&gt;&lt;a data-planitemtype=@{#line.planItemDataObject.planType.split('\.')[3]} data-planitemid=@{#line.planItemDataObject.id} data-atpid=@{#line.planItemDataObject.atp} onclick=editNote(jQuery(this),event);&gt;Edit Note&lt;/a&gt;&lt;/p&gt;
                 "/>
                 <property name="templateOptions">
@@ -905,7 +905,7 @@
                     <list>
                         <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="tooltipContent"
                               p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
-                            <property name="replacement" value="@{#line.note NE null ? #line.note : ''}"/>
+                            <property name="replacement" value="@{#line.note NE null ? #line.note.replaceAll('\n','&lt;br&gt;') : ''}"/>
                         </bean>
                     </list>
                 </property>
