@@ -1138,8 +1138,11 @@ public class PlanController extends UifControllerBase {
                 planItem.setDescr(new RichTextInfo(note, note));
 
                 try {
-
-                    planItem = getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, UserSessionHelper.makeContextInfoInstance());
+                    String oldPlanItemId = planItem.getId();
+                    //New PlanItem
+                    planItem = getAcademicPlanService().createPlanItem(planItem, UserSessionHelper.makeContextInfoInstance());
+                    //delete old wishList item
+                    getAcademicPlanService().deletePlanItem(oldPlanItemId, UserSessionHelper.makeContextInfoInstance());
 
                 } catch (Exception e) {
                     return doOperationFailedError(form, "Could not add new plan item.", e);
