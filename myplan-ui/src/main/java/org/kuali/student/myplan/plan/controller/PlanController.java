@@ -963,10 +963,18 @@ public class PlanController extends UifControllerBase {
 
                         /*Differentiating normal course with course level PlaceHolder*/
                         if (number.matches(PlanConstants.COURSE_PLACEHOLDER_REGEX)) {
-
-                            addPlaceHolder = true;
-                            placeHolderType = PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL;
-                            placeHolderId = String.format("%s %s", subject, number);
+                            // validate the subject
+                            HashMap<String, String> divisionMap = getCourseHelper().fetchCourseDivisions();
+                            ArrayList<String> divisions = new ArrayList<String>();
+                            getCourseHelper().extractDivisions(divisionMap, subject, divisions, false);
+                            if (divisions.size() > 0) {
+                                // subject was found, hence is valid
+                                addPlaceHolder = true;
+                                placeHolderType = PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL;
+                                placeHolderId = String.format("%s %s", divisions.get(0), number);
+                            } else {
+                                return doErrorPage(form, "Curriculum is invalid", PlanConstants.CURRIC_NOT_FOUND, new String[]{subject}, null);
+                            }
 
                         } else {
 
