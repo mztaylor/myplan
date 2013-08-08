@@ -918,7 +918,7 @@
         <property name="id"
                   value="@{#line.planItemDataObject.planType.split('\.')[3]}_@{#line.planItemDataObject.atp.replace('.','-')}_@{#line.planItemDataObject.id}"/>
         <property name="title"
-                  value="@{#line.placeHolder ? #line.placeHolderCode : #line.courseDetails.code} @{#line.sections} '@{#line.placeHolder ? #line.placeHolderCode : #line.courseDetails.courseTitle}'"/>
+                  value="@{#line.placeHolder ? #line.placeHolderCode : #line.courseDetails.code} @{#line.sections} '@{#line.placeHolder ? #line.placeHolderValue : #line.courseDetails.courseTitle}'"/>
         <property name="dataAttributes">
             <map>
                 <entry key="courseid" value="@{#line.courseDetails.courseId}"/>

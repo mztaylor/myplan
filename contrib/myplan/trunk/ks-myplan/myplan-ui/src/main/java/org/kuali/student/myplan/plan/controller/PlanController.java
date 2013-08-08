@@ -52,6 +52,7 @@ import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
+import org.kuali.student.myplan.plan.util.OrgHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -2098,7 +2099,7 @@ public class PlanController extends UifControllerBase {
             throw new DuplicateEntryException("Duplicate plan item exists.");
         }
 
-        if (isPlaceHolderType(refObjType) && credit != null) {
+        if (isPlaceHolderType(refObjType) && hasText(credit)) {
             pii.setCredit(Float.parseFloat(credit));
         }
 
@@ -2469,7 +2470,7 @@ public class PlanController extends UifControllerBase {
         if (placeHolder) {
             if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
                 planItemShortTitle = planItem.getRefObjectId();
-                planItemLongTitle = planItem.getRefObjectId();
+                planItemLongTitle = getCoursePlaceHolderTitle(planItem.getRefObjectId());
                 if (planItem.getCredit() != null) {
                     credit = String.valueOf(planItem.getCredit().intValue());
                 }
@@ -2506,6 +2507,20 @@ public class PlanController extends UifControllerBase {
         }
 
         return events;
+    }
+
+    /**
+     * returns for COM 2xx ---> Communication 200 level
+     *
+     * @param coursePlaceHolder
+     * @return
+     */
+    private String getCoursePlaceHolderTitle(String coursePlaceHolder) {
+        Map<String, String> subjectAreas = OrgHelper.getTrimmedSubjectAreas();
+        DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(coursePlaceHolder);
+        String subjectTitle = subjectAreas.get(courseCode.getSubject());
+        String subjectLevel = courseCode.getNumber().toUpperCase().replace("XX", "00");
+        return String.format("%s %s level", subjectTitle, subjectLevel);
     }
 
 

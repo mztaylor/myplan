@@ -22,6 +22,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.*;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
+import org.kuali.student.myplan.plan.util.OrgHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -164,6 +165,8 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
         List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
 
+        Map<String, String> subjectAreas = OrgHelper.getTrimmedSubjectAreas();
+
         AcademicPlanService academicPlanService = getAcademicPlanService();
         ContextInfo context = CourseSearchConstants.CONTEXT_INFO;
 
@@ -271,11 +274,14 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     if (planItem.getDescr() != null && StringUtils.hasText(planItem.getDescr().getPlain())) {
                         plannedCourse.setNote(planItem.getDescr().getPlain());
                     }
-                    String placeHolderValue = EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), PlanConstants.PLACE_HOLDER_ENUM_KEY);
-                    if (placeHolderValue == null) {
-                        placeHolderValue = EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), PlanConstants.GEN_EDU_ENUM_KEY);
+                    String placeHolderCode = EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), PlanConstants.PLACE_HOLDER_ENUM_KEY);
+                    String placeHolderValue = EnumerationHelper.getEnumValueForCodeByType(planItem.getRefObjectId(), PlanConstants.PLACE_HOLDER_ENUM_KEY);
+                    if (placeHolderCode == null) {
+                        placeHolderCode = EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), PlanConstants.GEN_EDU_ENUM_KEY);
+                        placeHolderValue = EnumerationHelper.getEnumValueForCodeByType(planItem.getRefObjectId(), PlanConstants.GEN_EDU_ENUM_KEY);
                     }
-                    plannedCourse.setPlaceHolderCode(placeHolderValue);
+                    plannedCourse.setPlaceHolderCode(placeHolderCode);
+                    plannedCourse.setPlaceHolderValue(placeHolderValue);
                     plannedCourse.setCourseDetails(new CourseSummaryDetails());
                     plannedCourse.setPlaceHolderCredit(planItem.getCredit() == null ? "" : String.valueOf(planItem.getCredit().intValue()));
                     plannedCoursesList.add(plannedCourse);
@@ -290,6 +296,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                         plannedCourse.setNote(planItem.getDescr().getPlain());
                     }
                     plannedCourse.setPlaceHolderCode(planItem.getRefObjectId());
+                    plannedCourse.setPlaceHolderValue(getCoursePlaceHolderTitle(planItem.getRefObjectId(), subjectAreas));
                     plannedCourse.setCourseDetails(new CourseSummaryDetails());
                     plannedCourse.setPlaceHolderCredit(planItem.getCredit() == null ? "" : String.valueOf(planItem.getCredit().intValue()));
 
@@ -341,6 +348,20 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
             }
         }
         return plannedCoursesList;
+    }
+
+    /**
+     * returns for COM 2xx ---> Communication 200 level
+     *
+     * @param coursePlaceHolder
+     * @param subjectAreas
+     * @return
+     */
+    private String getCoursePlaceHolderTitle(String coursePlaceHolder, Map<String, String> subjectAreas) {
+        DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(coursePlaceHolder);
+        String subjectTitle = subjectAreas.get(courseCode.getSubject());
+        String subjectLevel = courseCode.getNumber().replace("xx", "00");
+        return String.format("%s %s level", subjectTitle, subjectLevel);
     }
 
     /**

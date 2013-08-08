@@ -39,6 +39,8 @@ public class PlannedCourseDataObject implements Comparable {
 
     private String placeHolderCode;
 
+    private String placeHolderValue;
+
     private String placeHolderCredit;
 
     public CourseSummaryDetails getCourseDetails() {
@@ -132,6 +134,14 @@ public class PlannedCourseDataObject implements Comparable {
 
     public void setPlaceHolder(boolean placeHolder) {
         this.placeHolder = placeHolder;
+    }
+
+    public String getPlaceHolderValue() {
+        return placeHolderValue;
+    }
+
+    public void setPlaceHolderValue(String placeHolderValue) {
+        this.placeHolderValue = placeHolderValue;
     }
 
     public String getNote() {

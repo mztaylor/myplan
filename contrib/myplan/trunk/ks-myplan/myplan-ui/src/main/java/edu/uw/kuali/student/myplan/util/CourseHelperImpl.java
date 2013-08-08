@@ -148,23 +148,23 @@ public class CourseHelperImpl implements CourseHelper {
         String activityCd = null;
         if (courseCode.matches(CourseSearchConstants.FORMATTED_COURSE_CODE_REGEX)) {
             String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
-            subject = getDivisionVerifiedSubject(splitStr[0].trim().toUpperCase());
+            subject = getDivisionVerifiedSubject(splitStr[0].trim().toUpperCase()).trim();
             number = splitStr[1].trim();
         } else if (courseCode.matches(CourseSearchConstants.COURSE_CODE_WITH_SECTION_REGEX)) {
             activityCd = courseCode.substring(courseCode.lastIndexOf(" "), courseCode.length()).trim();
             courseCode = courseCode.substring(0, courseCode.lastIndexOf(" ")).trim();
             String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
-            subject = getDivisionVerifiedSubject(splitStr[0].trim().toUpperCase());
+            subject = getDivisionVerifiedSubject(splitStr[0].trim().toUpperCase()).trim();
             number = splitStr[1].trim();
         } else if (courseCode.matches(CourseSearchConstants.UNFORMATTED_COURSE_CODE_REGEX)) {
             String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
-            subject = getDivisionVerifiedSubject(splitStr[0].trim().toUpperCase());
+            subject = getDivisionVerifiedSubject(splitStr[0].trim().toUpperCase()).trim();
             number = splitStr[1].trim();
         } else if (courseCode.matches(CourseSearchConstants.UNFORMATTED_COURSE_PLACE_HOLDER_REGEX)) {
             int size = courseCode.length();
             int splitIndex = size - 3;
-            subject = getDivisionVerifiedSubject(courseCode.substring(0, splitIndex).trim().toUpperCase());
-            number = courseCode.substring(splitIndex, size);
+            subject = getDivisionVerifiedSubject(courseCode.substring(0, splitIndex).trim().toUpperCase()).trim();
+            number = courseCode.substring(splitIndex, size).toLowerCase();
         }
         return new DeconstructedCourseCode(subject, number, activityCd);
     }
