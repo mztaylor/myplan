@@ -839,7 +839,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                         attributeInfos.add(new AttributeInfo("systemKey", systemKey));
                         planItemInfo.setAttributes(attributeInfos);
                     } else {
-                        planItemInfo.getAttributes().add(new AttributeInfo("systemKey", systemKey));
+                        if (!sysKeyExists(planItemInfo.getAttributes())) {
+                            planItemInfo.getAttributes().add(new AttributeInfo("systemKey", systemKey));
+                        }
                     }
                 }
             }
@@ -847,6 +849,21 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         }
 
     }
+
+    /**
+     * returns true if a attribute with key as systemKey exists
+     * @param attributeInfos
+     * @return
+     */
+    private boolean sysKeyExists(List<AttributeInfo> attributeInfos) {
+        for (AttributeInfo attributeInfo : attributeInfos) {
+            if ("systemKey".equalsIgnoreCase(attributeInfo.getKey())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public PersonService getPersonService() {
         if (personService == null) {
