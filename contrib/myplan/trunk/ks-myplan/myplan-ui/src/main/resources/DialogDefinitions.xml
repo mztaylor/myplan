@@ -418,7 +418,8 @@
                                                         </property>
                                                     </bean>
                                                     <bean parent="Uif-InputField" p:propertyName="credit"
-                                                          p:id="creditsCourse" p:hidden="true" p:defaultValue="@{#form.type EQ 'course' AND #form.credit NE null ? #form.credit : ''}">
+                                                          p:id="creditsCourse" p:hidden="true"
+                                                          p:defaultValue="@{#form.type EQ 'course' AND #form.credit NE null ? #form.credit : ''}">
                                                         <property name="control">
                                                             <bean parent="dropdownPlaceholderCredits"/>
                                                         </property>
@@ -470,7 +471,8 @@
                                                         </property>
                                                     </bean>
                                                     <bean parent="KSAP-SimpleInputField" p:propertyName="credit"
-                                                          p:id="creditsGeneral" p:defaultValue="@{#form.type EQ 'general' AND #form.credit NE null ? #form.credit : ''}">
+                                                          p:id="creditsGeneral"
+                                                          p:defaultValue="@{#form.type EQ 'general' AND #form.credit NE null ? #form.credit : ''}">
                                                         <property name="control">
                                                             <bean parent="dropdownPlaceholderCredits"/>
                                                         </property>
@@ -512,7 +514,7 @@
                                                                   value="@{#form.type EQ null OR (#form.type EQ 'course' AND #form.courseCd EQ null) OR (#form.type EQ 'general' AND #form.placeholder EQ null) OR (#form.placeholder EQ 'other' AND #form.note EQ null)}"/>
                                                         <property name="evaluateDisabledOnKeyUp" value="true"/>
                                                         <property name="onDocumentReadyScript" value="
-                                                            jQuery('#actionCoursePlaceholder').on('PLAN_ITEM_ADDED', function(event, data){
+                                                            jQuery('#actionCoursePlaceholder').on('PLAN_ITEM_ADDED PLAN_ITEM_UPDATED', function(event, data){
                                                                 fnCloseAllPopups();
                                                             }).on('ERROR', function(event, data){
                                                                 fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
@@ -576,7 +578,7 @@
                                                             submitPopupForm(additionalFormData, e, false);
                                                         "/>
                                                         <property name="onDocumentReadyScript" value="
-                                                            jQuery('#quickAddCourse').on('PLAN_ITEM_ADDED', function(event, data){
+                                                            jQuery('#quickAddCourse').on('PLAN_ITEM_ADDED PLAN_ITEM_UPDATED', function(event, data){
                                                                 fnCloseAllPopups();
                                                             }).on('ERROR', function(event, data){
                                                                 fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
@@ -611,7 +613,7 @@
                                         <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
                                             <property name="items">
                                                 <list>
-                                                    <bean id="actionSaveNote" p:id="actionCoursePlaceholder"
+                                                    <bean id="actionSaveNote" p:id="actionSaveNote"
                                                           parent="Uif-PrimaryActionButton-Small"
                                                           p:actionLabel="Save">
                                                         <property name="actionScript" value="
@@ -626,7 +628,7 @@
                                                             submitPopupForm(additionalFormData, e, false);
                                                         "/>
                                                         <property name="onDocumentReadyScript" value="
-                                                            jQuery('#actionCoursePlaceholder').on('PLAN_ITEM_ADDED', function(event, data){
+                                                            jQuery('#actionSaveNote').on('PLAN_ITEM_UPDATED', function(event, data){
                                                                 fnCloseAllPopups();
                                                             }).on('ERROR', function(event, data){
                                                                 fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');

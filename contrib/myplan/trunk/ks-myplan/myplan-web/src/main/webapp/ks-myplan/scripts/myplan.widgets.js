@@ -393,7 +393,6 @@ function submitPopupForm(additionalFormData, e, bDialog) {
         var data = {};
         data.message = '<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><div class="message"><span /></div>';
         data.cssClass = "myplan-feedback " + status;
-        elementToBlock.unblock();
         switch (status) {
             case 'success':
                 data.message = data.message.replace("<span />", jQuery("body").data('validationMessages').serverInfo[0]);
@@ -423,13 +422,20 @@ function submitPopupForm(additionalFormData, e, bDialog) {
         css:{
             width:'100%',
             border:'none',
-            backgroundColor:'transparent'
+            backgroundColor:'transparent',
+            width:(elementToBlock.outerWidth() - 2) + "px",
+            height:(elementToBlock.outerHeight() - 2) + "px",
+            lineHeight:(elementToBlock.outerHeight() - 4) + "px"
         },
         overlayCSS:{
             backgroundColor:'#fff',
-            opacity:0.6,
-            padding:'0px 1px',
-            margin:'0px -1px'
+            opacity:0.3,
+            padding:'0px',
+            margin:'0px',
+            top:'-1px',
+            left:'-1px',
+            width:(elementToBlock.outerWidth()) + "px",
+            height:(elementToBlock.outerHeight()) + "px"
         }
     };
     ksapAjaxSubmitForm(additionalFormData, successCallback, elementToBlock, "popupForm", blockOptions);
@@ -466,7 +472,7 @@ function ksapAjaxSubmitForm(data, successCallback, elementToBlock, formId, block
                 }
                 else {
                     var elementBlockingDefaults = {
-                        baseZ:500,
+                        baseZ:100,
                         message:'<img src="../ks-myplan/images/ajaxLoader16.gif" alt="loading..." />',
                         fadeIn:0,
                         fadeOut:0,
@@ -757,7 +763,8 @@ function fnPopoverSlider(showId, parentId, direction) {
 function clickOutsidePopOver(popoverId, element) {
     jQuery("body").on("click", function (e) {
         var tempTarget = (e.target) ? e.target : e.srcElement;
-        if (jQuery(tempTarget).parents("#" + popoverId).length === 0) {
+        // jQuery(tempTarget).parents("#" + popoverId).length
+        if (jQuery(tempTarget, "#" + popoverId).length === 0) {
             element.RemovePopOver();
             jQuery("body").off("click");
         }
