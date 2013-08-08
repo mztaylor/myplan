@@ -2462,7 +2462,7 @@ public class PlanController extends UifControllerBase {
         String note = null;
         if (hasText(planItem.getDescr().getPlain())) {
             try {
-                note = mapper.writeValueAsString(planItem.getDescr().getPlain()).replaceAll("^\"|\"$", "");
+                note = mapper.writeValueAsString(planItem.getDescr().getPlain().replaceAll("\n","<br/>")).replaceAll("^\"|\"$", "");
             } catch (IOException e) {
                 logger.error("Could not add the note to add event");
             }
