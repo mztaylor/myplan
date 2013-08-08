@@ -67,6 +67,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String ERROR_KEY_NO_STUDENT_PROXY_ID = "myplan.text.error.adviser.noStudentId";
     public static final String WARNING_STUDENT_CONTEXT_SWITCH = "myplan.text.warning.adviser.studentSwitch";
 
+    public static final String CURRIC_NOT_FOUND = "myplan.text.error.quickAdd.curriculumNotFound";
     public static final String COURSE_NOT_FOUND = "myplan.text.error.quickAdd.courseNotFound";
     public static final String CREDIT_REQUIRED = "myplan.text.error.quickAdd.creditRequired";
     public static final String NOTE_REQUIRED = "myplan.text.error.quickAdd.noteRequired";
