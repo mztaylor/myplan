@@ -695,11 +695,6 @@ button img.rightArrowSmall {
     vertical-align: -1px;
 }
 
-button.uif-primaryActionButton div.blockElement,
-button.uif-secondaryActionButton div.blockElement {
-
-}
-
 input.myplan-add,
 .uif-imageField.myplan-add img.uif-image {
     width: 16px;
