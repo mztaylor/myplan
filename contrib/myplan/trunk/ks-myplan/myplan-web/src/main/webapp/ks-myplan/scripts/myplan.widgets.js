@@ -758,7 +758,7 @@ function clickOutsidePopOver(popoverId, element) {
     jQuery("body").on("click", function (e) {
         var tempTarget = (e.target) ? e.target : e.srcElement;
         if (jQuery(tempTarget).parents("#" + popoverId).length === 0) {
-            element.HidePopOver();
+            element.RemovePopOver();
             jQuery("body").off("click");
         }
     });
