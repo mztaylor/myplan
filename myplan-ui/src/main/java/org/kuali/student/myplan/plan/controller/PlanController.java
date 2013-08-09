@@ -1449,8 +1449,9 @@ public class PlanController extends UifControllerBase {
                 }
 
 
-                /*Credit update*/
-                if (planItemInfo.getCredit() != null && !planItemInfo.getCredit().toString().equals(form.getCredit())) {
+                /*Credit update: if there was none before and user added credit value OR they changed existing...*/
+                if ((planItemInfo.getCredit() == null &&  form.getCredit() != null && hasText(form.getCredit())) ||
+                    (planItemInfo.getCredit() != null && !planItemInfo.getCredit().toString().equals(form.getCredit()))) {
                     creditUpdated = true;
                     planItemInfo.setCredit(Float.valueOf(form.getCredit()));
                 }
