@@ -1092,6 +1092,7 @@ div.activityAction div.blockElement {
     color: #117bdf;
     text-align: center;
     padding: 0;
+    cursor: pointer;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.alert {

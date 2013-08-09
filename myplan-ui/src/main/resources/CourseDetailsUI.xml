@@ -920,10 +920,10 @@
             tableHead.before('
                 &lt;col style=&quot;width: 62px;&quot;&gt;
                 &lt;col style=&quot;width: 103px;&quot;&gt;
-                &lt;col style=&quot;width: 263px;&quot;&gt;
-                &lt;col style=&quot;width: 57px;&quot;&gt;
+                &lt;col style=&quot;width: 264px;&quot;&gt;
+                &lt;col style=&quot;width: 50px;&quot;&gt;
                 &lt;col style=&quot;width: 103px;&quot;&gt;
-                &lt;col style=&quot;width: 75px;&quot;&gt;
+                &lt;col style=&quot;width: 81px;&quot;&gt;
                 &lt;col style=&quot;width: 45px;&quot;&gt;
             ');
         "/>

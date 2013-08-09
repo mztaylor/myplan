@@ -201,7 +201,7 @@
                 <!--<value>krad/plugins/jstree/jquery.jstree.js</value>-->
                 <value>krad/plugins/validate/additional_validations.js</value>
                 <value>krad/plugins/jqform/jquery.form.js</value>
-                <!--<value>krad/plugins/fancybox/jquery.fancybox.pack.js</value>-->
+                <value>krad/plugins/fancybox/jquery.fancybox.pack.js</value>
                 <!--<value>krad/plugins/easydrag/jquery.easydrag.js</value>-->
                 <!--<value>krad/plugins/easing/jquery.easing-1.3.pack.js</value>-->
                 <value>krad/plugins/json/jquery.json-2.2.js</value>
@@ -218,7 +218,7 @@
                 <value>krad/scripts/krad.actions.js</value>
                 <value>krad/scripts/krad.validate.js</value>
                 <!-- TODO: remove fancybox linkage after https://jira.kuali.org/browse/KULRICE-9396 is resolved -->
-                <value>ks-myplan/plugins/jquery.fancybox.pack.js?2.1.4</value>
+                <!--<value>ks-myplan/plugins/jquery.fancybox.pack.js?2.1.4</value>-->
                 <value>ks-myplan/scripts/myplan.widgets.js?@{#ConfigProperties['myplan.buildNumber']}</value>
                 <value>ks-myplan/scripts/myplan.events.js?@{#ConfigProperties['myplan.buildNumber']}</value>
                 <value>ks-myplan/plugins/polling.js?@{#ConfigProperties['myplan.buildNumber']}</value>

@@ -698,7 +698,7 @@ function truncateField(id, floated) {
             jQuery(this).find(itemSelector + ":not(.myplan-text-ellipsis)").each(function () {
                 fixed = fixed + jQuery(this).outerWidth(true);
             });
-            var available = jQuery(this).width() - ( fixed + ( ellipsisItem.outerWidth(true) - ellipsisItem.width() ) );
+            var available = jQuery(this).width() - ( fixed + ( ellipsisItem.outerWidth(true) - ellipsisItem.width() ) + 1 );
             if (!floated) {
                 ellipsisItem.width(available);
             } else {
