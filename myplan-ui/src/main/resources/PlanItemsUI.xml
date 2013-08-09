@@ -395,22 +395,23 @@
         <property name="onDocumentReadyScript" value="
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, position:'right', align:'top', close:true};
-
-            jQuery('.myplan-carousel-list li .myplan-term-current.open, .myplan-carousel-list li .myplan-term-future.open').find('.myplan-term-planned .uif-stackedCollectionLayout, .myplan-term-backup .uif-stackedCollectionLayout').each(function(){
-            	var atpId = jQuery(this).parents('.myplan-carousel-term').data('atpid');
-            	var backup = jQuery(this).parents('.myplan-carousel-term').data('backupflag');
-            	var size = jQuery(this).parents('.myplan-carousel-term').data('size');
-            	var jQuickAdd = jQuery('&lt;div /&gt;').addClass('addItemAction').html('Add course or placeholder').click(function(e){
-            		var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', atpId:atpId, backup:backup, pageId:'plan_item_add_page'};
-                    openPopup('plan_item_add_page', retrieveData, 'plan', popupStyle, popupOptions, e);
-            	});
-            	if (size &lt; 8) {
-            		jQuery(this).append(jQuickAdd.show());
-            	} else {
-            		jQuery(this).append(jQuickAdd.hide());
-            	}
-            });
-
+            var adviser = @{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()};
+            if(adviser != true){
+                jQuery('.myplan-carousel-list li .myplan-term-current.open, .myplan-carousel-list li .myplan-term-future.open').find('.myplan-term-planned .uif-stackedCollectionLayout, .myplan-term-backup .uif-stackedCollectionLayout').each(function(){
+                    var atpId = jQuery(this).parents('.myplan-carousel-term').data('atpid');
+                    var backup = jQuery(this).parents('.myplan-carousel-term').data('backupflag');
+                    var size = jQuery(this).parents('.myplan-carousel-term').data('size');
+                    var jQuickAdd = jQuery('&lt;div /&gt;').addClass('addItemAction').html('Add course or placeholder').click(function(e){
+                        var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', atpId:atpId, backup:backup, pageId:'plan_item_add_page'};
+                        openPopup('plan_item_add_page', retrieveData, 'plan', popupStyle, popupOptions, e);
+                    });
+                    if (size &lt; 8) {
+                        jQuery(this).append(jQuickAdd.show());
+                    } else {
+                        jQuery(this).append(jQuickAdd.hide());
+                    }
+                });
+            }
             if (jQuery('#planned_courses_detail_list ul:not(.errorLines) li').length > 0) {
                 var iMaxHeight = Math.max.apply(null, jQuery('#planned_courses_detail_list ul:not(.errorLines) li').map(function() {
                     return jQuery(this).height();
