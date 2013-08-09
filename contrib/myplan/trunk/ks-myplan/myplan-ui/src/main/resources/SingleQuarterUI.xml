@@ -369,8 +369,6 @@
             </list>
         </property>
         <property name="onDocumentReadyScript" value="
-            truncateField('@{dataObject.atpId.replace('.','-')}_completed');
-
             var tableHead = jQuery('table#@{dataObject.atpId.replace('.','-')} thead');
             tableHead.before('
                 &lt;col style=&quot;width: 498px;&quot;&gt;
@@ -378,6 +376,7 @@
                 &lt;col style=&quot;width: 65px;&quot;&gt;
             ');
             jQuery('table#@{dataObject.atpId.replace('.','-')} tfoot').remove();
+            truncateField('@{dataObject.atpId.replace('.','-')}_completed');
         "/>
         <property name="render" value="@{dataObject.academicRecord.size() gt 0 AND dataObject.completedTerm}"/>
         <property name="renderAddLine" value="false"/>
@@ -1029,10 +1028,10 @@
                 tableHead.before('
                     &lt;col style=&quot;width: 60px;&quot;&gt;
                     &lt;col style=&quot;width: 84px;&quot;&gt;
-                    &lt;col style=&quot;width: 263px;&quot;&gt;
+                    &lt;col style=&quot;width: 267px;&quot;&gt;
                     &lt;col style=&quot;width: 48px;&quot;&gt;
                     &lt;col style=&quot;width: 74px;&quot;&gt;
-                    &lt;col style=&quot;width: 74px;&quot;&gt;
+                    &lt;col style=&quot;width: 70px;&quot;&gt;
                     &lt;col style=&quot;width: 25px;&quot;&gt;
                 ');
                 tableHead.remove();
