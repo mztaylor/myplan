@@ -208,9 +208,17 @@
             </list>
         </property>
     </bean>
-    <bean id="planNotesCollection" parent="Uif-ListCollectionSection" p:headerText="* NOTES">
+    <bean id="planNotesCollection" parent="Uif-ListCollectionSection" p:headerText="[0] NOTES">
         <property name="header">
-            <bean parent="Uif-HeaderFour"/>
+            <bean parent="Uif-HeaderFour">
+                <property name="inlineComponents">
+                    <list>
+                        <bean parent="Uif-Image"
+                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+                              p:cssClasses="itemNote"/>
+                    </list>
+                </property>
+            </bean>
         </property>
         <property name="validationMessages">
             <null/>
@@ -219,9 +227,14 @@
                   value="org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject"/>
         <property name="propertyName" value="lookupResults"/>
         <property name="layoutManager.lineGroupPrototype.render" value="@{#line.hasNote}"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-full-plan-notes</value>
+            </list>
+        </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-SimpleDataField" p:propertyName="this" p:style="text-align:left;"
+                <bean parent="KSAP-SimpleDataField" p:propertyName="this"
                       p:escapeHtmlInPropertyValue="false">
                     <property name="propertyEditor" ref="plan_notes_formatter"/>
                 </bean>
@@ -465,10 +478,15 @@
                                   p:render="@{#line.placeHolderCredit NE null OR #line.credit NE null}"
                                   p:messageText="(@{#line.placeHolderCredit EQ null ? #line.credit : #line.placeHolderCredit})"
                                   p:style="margin:0;"/>
-                            <bean parent="Uif-MessageField"
+                            <bean parent="Uif-ImageField"
                                   p:render="@{#line.note NE null}"
-                                  p:messageText="*"
-                                  p:style="margin: 0 0 0 2px;"/>
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+                                <property name="cssClasses">
+                                    <list merge="false">
+                                        <value>itemNote</value>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
