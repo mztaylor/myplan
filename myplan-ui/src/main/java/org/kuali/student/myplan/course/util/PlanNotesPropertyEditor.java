@@ -37,10 +37,10 @@ public class PlanNotesPropertyEditor extends PropertyEditorSupport {
                     String code = plannedCourseDataObject.getPlaceHolderCode() != null ? plannedCourseDataObject.getPlaceHolderCode() : plannedCourseDataObject.getCourseDetails().getCode();
                     String credit = plannedCourseDataObject.getPlaceHolderCredit() != null ? plannedCourseDataObject.getPlaceHolderCredit() : plannedCourseDataObject.getCourseDetails().getCredit();
                     if (termNotes.get(plannedTerm.getQtrYear()) != null) {
-                        termNotes.get(plannedTerm.getQtrYear()).add(String.format("<%s>%s (%s): %s</%s>", listType.getListItemElementName(), code, credit, plannedCourseDataObject.getNote(), listType.getListItemElementName()));
+                        termNotes.get(plannedTerm.getQtrYear()).add(String.format("<%s><label>%s</label> (%s): %s</%s>", listType.getListItemElementName(), code, credit, plannedCourseDataObject.getNote(), listType.getListItemElementName()));
                     } else {
                         List<String> displayValues = new ArrayList<String>();
-                        displayValues.add(String.format("<%s>%s (%s): %s</%s>", listType.getListItemElementName(), code, credit, plannedCourseDataObject.getNote(), listType.getListItemElementName()));
+                        displayValues.add(String.format("<%s><label>%s</label> (%s): %s</%s>", listType.getListItemElementName(), code, credit, plannedCourseDataObject.getNote(), listType.getListItemElementName()));
                         termNotes.put(plannedTerm.getQtrYear(), displayValues);
                     }
 
@@ -50,7 +50,7 @@ public class PlanNotesPropertyEditor extends PropertyEditorSupport {
 
         StringBuffer sb = new StringBuffer();
         for (String key : termNotes.keySet()) {
-            sb = sb.append(String.format("<%s><h3>%s</h3>", listType.getListElementName(), key));
+            sb = sb.append(String.format("<%s><h5>%s</h5>", listType.getListElementName(), key));
             for (String element : termNotes.get(key)) {
                 sb = sb.append(element);
             }
