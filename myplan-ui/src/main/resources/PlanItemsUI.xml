@@ -872,9 +872,9 @@
         </property>
     </bean>
     <bean id="planItemCredit" parent="KSAP-MessageField"
-          p:render="@{#line.credit NE null OR #line.placeHolderCredit NE null}">
+          p:render="@{#line.placeHolder ? #line.placeHolderCredit NE '' : #line.credit NE null}">
         <property name="messageText"
-                  value="(@{#line.placeHolderCredit EQ null ? #line.credit : #line.placeHolderCredit})"/>
+                  value="(@{#line.placeHolder ? #line.placeHolderCredit : #line.credit})"/>
         <property name="cssClasses">
             <list merge="false">
                 <value>itemCredit</value>
