@@ -2768,8 +2768,29 @@ label.scheduled {
     margin-bottom: 10px;
 }
 
+.myplan-full-plan-notes .uif-header .itemNote {
+    top: -2px;
+    position: relative;
+}
+
 .myplan-full-plan-notes ul li .uif-boxLayoutVerticalItem {
     margin: 0;
+}
+
+.myplan-full-plan-notes h4.uif-headerText {
+    color: #533e7b;
+    font-family: serif;
+    font-size: 110%;
+    font-weight: 600;
+}
+
+.myplan-full-plan-notes h5 {
+    color: #555555;
+    text-transform: uppercase;
+}
+
+.myplan-full-plan-notes ul li ul li {
+    font-size: 90%;
 }
 
 /* Quarter Detail View ######################################################################################### */
