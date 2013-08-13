@@ -10,8 +10,8 @@ function planItemTemplate(data) {
     var itemGroup = jQuery("<div/>").attr("class", "uif-horizontalBoxLayout");
 
     var item = jQuery("<div/>").attr({
-        "id":itemId + "_group",
-        "class":"uif-verticalBoxGroup uif-collectionItem"
+        "id": itemId + "_group",
+        "class": "uif-verticalBoxGroup uif-collectionItem"
     });
 
     var title = jQuery("<div/>").attr("class", "itemTitle uif-boxLayoutHorizontalItem").append(data.planItemShortTitle);
@@ -28,20 +28,20 @@ function planItemTemplate(data) {
     }
 
     var action = jQuery("<div/>").attr("id", itemId).attr({
-        "title":data.planItemShortTitle + " " + ((data.sections != null && data.sections != "") ? data.sections + " " : "") + "'" + data.planItemLongTitle + "'",
-        "class":"uif-horizontalFieldGroup itemAction uif-tooltip uif-boxLayoutHorizontalItem",
-        "data-atpid":data.atpId.replace(/-/g, "."),
-        "data-planitemid":data.planItemId,
-        "data-placeholder":data.placeHolder,
-        "style":"width:" + ((data.note) ? "99px; padding-right: 16px;" : "115px;")
+        "title": data.planItemShortTitle + " " + ((data.sections != null && data.sections != "") ? data.sections + " " : "") + "'" + data.planItemLongTitle + "'",
+        "class": "uif-horizontalFieldGroup itemAction uif-tooltip uif-boxLayoutHorizontalItem",
+        "data-atpid": data.atpId.replace(/-/g, "."),
+        "data-planitemid": data.planItemId,
+        "data-placeholder": data.placeHolder,
+        "style": "width:" + ((data.note) ? "99px; padding-right: 16px;" : "115px;")
     });
 
     if (data.placeHolder == "true") {
         item.addClass("placeholder");
     } else {
         action.attr({
-            "data-courseid":data.courseId,
-            "data-plannedsections":data.sections
+            "data-courseid": data.courseId,
+            "data-plannedsections": data.sections
         });
     }
 
@@ -49,8 +49,8 @@ function planItemTemplate(data) {
 
     if (data.showAlert == "true") {
         var alert = jQuery("<div/>").attr({
-            "title":data.statusAlert,
-            "class":"itemAlert uif-boxLayoutHorizontalItem"
+            "title": data.statusAlert,
+            "class": "itemAlert uif-boxLayoutHorizontalItem"
         }).append(image.clone().attr("alt", data.statusAlert));
         itemGroup.append(alert);
         item.addClass("alert");
@@ -59,18 +59,18 @@ function planItemTemplate(data) {
     itemGroup.append(action);
 
     var script = jQuery("<input/>").attr({
-        "type":"hidden",
-        "name":"script",
-        "data-role":"script"
+        "type": "hidden",
+        "name": "script",
+        "data-role": "script"
     }).val("jQuery('#" + itemId + "').click(function(e) { openMenu('" + data.planItemId + "_" + data.planItemType + "','" + data.planItemType + "_" + ((data.placeHolder == "true") ? "placeholder" : "course" ) + "_menu','" + data.atpId.replace(/-/g, ".") + "',e,'.uif-collectionItem','fl-container-150 uif-boxLayoutHorizontalItem',{tail:{align:'top'},align:'top',position:'right'},false); });")
 
     if (data.note) {
         var note = jQuery("<div/>").attr({
-            "id":itemId + "_note",
-            "class":"itemNote uif-boxLayoutHorizontalItem uif-tooltip"
+            "id": itemId + "_note",
+            "class": "itemNote uif-boxLayoutHorizontalItem uif-tooltip"
         }).append(image.clone());
         itemGroup.append(note);
-        var createTooltip = " createTooltip('" + itemId + "_note', ' <p>" + data.note + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId.replace(/-/g, ".") + " onclick=editNote(jQuery(this),event);>Edit Note</a></p> ', {position:'top',align:'left',alwaysVisible:false,tail:{ align:'left', hidden: false },themePath:'../ks-myplan/jquery-popover/jquerypopover-theme/',themeName:'myplan-help',selectable:true,width:'250px',closingDelay:500,themeMargins:{ total:'17px', difference:'10px' },openingDelay:750}, true, true);";
+        var createTooltip = " createTooltip('" + itemId + "_note', ' <p>" + data.note + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId.replace(/-/g, ".") + " onclick=editNote(jQuery(this),event);>Edit Note</a></p> ', {position:'top',align:'left',alwaysVisible:false,tail:{align:'left',hidden:false},themePath:'../ks-myplan/jquery-popover/jquerypopover-theme/',themeName:'ksap-notes',selectable:true,width:'250px',openingSpeed:50,closingSpeed:50,openingDelay:500,closingDelay:0,themeMargins:{total:'17px',difference:'10px'},distance:'0px'},true,true);";
         script.val(script.val() + createTooltip);
     }
 
@@ -89,7 +89,7 @@ function fnAddPlanItem(data) {
 
     planItemTemplate(data).prependTo("." + data.atpId + ".myplan-term-" + data.planItemType + " .uif-stackedCollectionLayout");
     runHiddenScripts(itemId + "_group");
-    jQuery("#" + itemId + "_group").css({backgroundColor:"#faf5ca"}).animate({backgroundColor:"#ffffff"}, 1500, "linear", function () {
+    jQuery("#" + itemId + "_group").css({backgroundColor: "#faf5ca"}).animate({backgroundColor: "#ffffff"}, 1500, "linear", function () {
         jQuery(this).removeAttr("style");
     });
     truncateField(itemId + "_group", true);
@@ -99,7 +99,7 @@ function fnUpdatePlanItem(data) {
     var itemId = data.planItemType + "_" + data.atpId + "_" + data.planItemId;
     jQuery("#" + itemId + "_group").replaceWith(planItemTemplate(data));
     runHiddenScripts(itemId + "_group");
-    jQuery("#" + itemId + "_group").css({backgroundColor:"#faf5ca"}).animate({backgroundColor:"#ffffff"}, 1500, "linear", function () {
+    jQuery("#" + itemId + "_group").css({backgroundColor: "#faf5ca"}).animate({backgroundColor: "#ffffff"}, 1500, "linear", function () {
         jQuery(this).removeAttr("style");
     });
     truncateField(itemId + "_group", true);
@@ -107,7 +107,7 @@ function fnUpdatePlanItem(data) {
 function fnUpdateNote(data) {
     var noteId = data.planItemType + "_" + data.atpId + "_" + data.planItemId + "_note";
     jQuery("#" + noteId).off();
-    var createTooltip = "createTooltip('" + noteId + "', ' <p>" + data.note + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId.replace(/-/g, ".") + " onclick=editNote(jQuery(this),event);>Edit Note</a></p> ', {position:'top',align:'left',alwaysVisible:false,tail:{ align:'left', hidden: false },themePath:'../ks-myplan/jquery-popover/jquerypopover-theme/',themeName:'myplan-help',selectable:true,width:'250px',closingDelay:500,themeMargins:{ total:'17px', difference:'10px' },openingDelay:750}, true, true);";
+    var createTooltip = "createTooltip('" + noteId + "', ' <p>" + data.note + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId.replace(/-/g, ".") + " onclick=editNote(jQuery(this),event);>Edit Note</a></p> ', {position:'top',align:'left',alwaysVisible:false,tail:{align:'left',hidden:false},themePath:'../ks-myplan/jquery-popover/jquerypopover-theme/',themeName:'ksap-notes',selectable:true,width:'250px',openingSpeed:50,closingSpeed:50,openingDelay:500,closingDelay:0,themeMargins:{total:'17px',difference:'10px'},distance:'0px'},true,true);";
     var noteScript = jQuery("input[data-for='" + noteId + "'][data-role='script']")[0];
     jQuery(noteScript).attr("name", "script").removeAttr("script").val(createTooltip);
     evalHiddenScript(jQuery(noteScript));
