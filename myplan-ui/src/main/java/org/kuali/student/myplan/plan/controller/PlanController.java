@@ -961,7 +961,7 @@ public class PlanController extends UifControllerBase {
                     addPlaceHolder = true;
 
                     if (PlanConstants.PLACE_HOLDER_OTHER_CODE.equals(placeHolderId) && !hasText(form.getNote())) {
-                        return doErrorPage(form, "Note required", PlanConstants.NOTE_REQUIRED, new String[]{placeHolderCd}, null);
+                        return doErrorPage(form, "Note required", PlanConstants.NOTE_REQUIRED, new String[]{}, null);
                     }
 
                 } else {
@@ -1414,7 +1414,7 @@ public class PlanController extends UifControllerBase {
                     placeHolderType = placeHolder[1];
                     placeHolderCd = EnumerationHelper.getEnumAbbrValForCodeByType(placeHolderId, placeHolderType);
                     if (PlanConstants.PLACE_HOLDER_OTHER_CODE.equals(placeHolderId) && !hasText(form.getNote())) {
-                        return doErrorPage(form, "Note required", PlanConstants.NOTE_REQUIRED, new String[]{placeHolderCd}, null);
+                        return doErrorPage(form, "Note required", PlanConstants.NOTE_REQUIRED, new String[]{}, null);
                     }
                     planItemInfo.setRefObjectId(placeHolderId);
                     planItemInfo.setRefObjectType(placeHolderType);
