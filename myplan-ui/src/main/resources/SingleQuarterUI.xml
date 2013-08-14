@@ -371,9 +371,9 @@
         <property name="onDocumentReadyScript" value="
             var tableHead = jQuery('table#@{dataObject.atpId.replace('.','-')} thead');
             tableHead.before('
-                &lt;col style=&quot;width: 498px;&quot;&gt;
-                &lt;col style=&quot;width: 65px;&quot;&gt;
-                &lt;col style=&quot;width: 65px;&quot;&gt;
+                &lt;col style=&quot;width: 502px;&quot;&gt;
+                &lt;col style=&quot;width: 63px;&quot;&gt;
+                &lt;col style=&quot;width: 63px;&quot;&gt;
             ');
             jQuery('table#@{dataObject.atpId.replace('.','-')} tfoot').remove();
             truncateField('@{dataObject.atpId.replace('.','-')}_completed');
@@ -416,14 +416,14 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-HorizontalFieldGroup" p:width="490px">
+                <bean parent="KSAP-HorizontalFieldGroup" p:width="494px">
                     <property name="fieldLabel.render" value="true"/>
                     <property name="label" value="Courses"/>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="courseCode"
                                   p:style="margin:0 5px 0 0;"/>
-                            <bean parent="Uif-Link" p:linkText="@{#line.courseTitle}" p:style="white-space:nowrap;">
+                            <bean parent="Uif-Link" p:linkText="@{#line.courseTitle}">
                                 <property name="href"
                                           value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}"/>
                                 <property name="cssClasses">
@@ -436,7 +436,7 @@
                     </property>
                 </bean>
 
-                <bean parent="KSAP-SimpleDataField">
+                <bean parent="KSAP-SimpleDataField" p:width="54px">
                     <property name="propertyName" value="credit"/>
                     <property name="fieldLabel.render" value="true"/>
                     <property name="label" value="Credits"/>
@@ -447,7 +447,7 @@
                     </property>
                 </bean>
 
-                <bean parent="KSAP-SimpleDataField">
+                <bean parent="KSAP-SimpleDataField" p:width="54px">
                     <property name="propertyName" value="grade"/>
                     <property name="fieldLabel.render" value="true"/>
                     <property name="label" value="Grade"/>
