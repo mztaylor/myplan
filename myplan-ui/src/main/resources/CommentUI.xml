@@ -781,11 +781,6 @@
                 <value>krad/plugins/rice/datatables/jquery.dataTables.css</value>
             </list>
         </property>-->
-        <property name="additionalScriptFiles">
-            <list>
-                <value>krad/plugins/rice/datatables/jquery.dataTables.js</value>
-            </list>
-        </property>
 
         <property name="items">
             <list>
