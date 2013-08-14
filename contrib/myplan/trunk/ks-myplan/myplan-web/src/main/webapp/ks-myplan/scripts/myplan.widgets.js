@@ -1,16 +1,16 @@
 var popupOptionsDefault = {
-    themePath:"../ks-myplan/jquery-popover/jquerypopover-theme/",
-    manageMouseEvents:true,
-    selectable:true,
-    tail:{align:"middle", hidden:false},
-    position:"left",
-    align:"center",
-    alwaysVisible:false,
-    themeMargins:{total:"20px", difference:"5px"},
-    themeName:"myplan",
-    distance:"0px",
-    openingSpeed:5,
-    closingSpeed:5
+    themePath: "../ks-myplan/jquery-popover/jquerypopover-theme/",
+    manageMouseEvents: true,
+    selectable: true,
+    tail: {align: "middle", hidden: false},
+    position: "left",
+    align: "center",
+    alwaysVisible: false,
+    themeMargins: {total: "20px", difference: "5px"},
+    themeName: "myplan",
+    distance: "0px",
+    openingSpeed: 5,
+    closingSpeed: 5
 };
 
 function readUrlHash(key) {
@@ -158,9 +158,9 @@ function openCourse(courseId, e) {
     if (jQuery(target).parents(".jquerypopover.jquerypopover-myplan").length > 0) {
         window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseId;
     } else {
-        var retrieveData = {action:"plan", viewId:"PlannedCourse-FormView", methodToCall:"startAddPlannedCourseForm", courseId:courseId};
-        var popupStyle = {width:"300px", height:"16px"};
-        var popupOptions = {tail:{align:"left"}, align:"left", position:"bottom", close:true};
+        var retrieveData = {action: "plan", viewId: "PlannedCourse-FormView", methodToCall: "startAddPlannedCourseForm", courseId: courseId};
+        var popupStyle = {width: "300px", height: "16px"};
+        var popupOptions = {tail: {align: "left"}, align: "left", position: "bottom", close: true};
         openPopup("add_remove_course_popover_page", retrieveData, "plan", popupStyle, popupOptions, e);
     }
 }
@@ -181,7 +181,7 @@ function openPopup(getId, retrieveData, formAction, popupStyle, popupOptions, e)
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     var popupItem = (typeof popupOptions.selector == "undefined") ? jQuery(target) : jQuery(target).parents(popupOptions.selector);
 
-    if (!popupItem.HasPopOver()) popupItem.CreatePopOver({manageMouseEvents:false});
+    if (!popupItem.HasPopOver()) popupItem.CreatePopOver({manageMouseEvents: false});
     var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
     var popupHtml = jQuery('<div />').attr("id", "KSAP-Popover");
     if (popupStyle) {
@@ -190,8 +190,8 @@ function openPopup(getId, retrieveData, formAction, popupStyle, popupOptions, e)
         });
     } else {
         popupHtml.css({
-            width:"300px",
-            height:"16px"
+            width: "300px",
+            height: "16px"
         });
     }
     popupSettings.innerHtml = popupHtml.wrap("<div>").parent().clone().html();
@@ -261,7 +261,7 @@ function openMenu(id, getId, atpId, e, selector, popupClasses, popupOptions, clo
 
     fnCloseAllPopups();
 
-    if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents:false});
+    if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents: false});
 
     if (atpId != null) {
         var openForPlanning = jQuery('input[id^="' + atpId + '_plan_status"]').val();
@@ -311,7 +311,7 @@ function openDialog(sText, e, close) {
 
     fnCloseAllPopups();
 
-    if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents:false});
+    if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents: false});
 
     popupOptionsDefault.tail.hidden = true;
     popupOptionsDefault.innerHtml = '<div style="width:300px;">' + sText + '</div>';
@@ -340,20 +340,20 @@ function editNote(obj, e) {
     var planItemType = obj.data("planitemtype");
     jQuery("#" + planItemType + "_" + atpId.replace(/\./g, "-") + "_" + planItemId + "_note").HideBubblePopup();
     var retrieveData = {
-        action:'plan',
-        viewId:'PlannedCourse-FormView',
-        methodToCall:'startAddPlannedCourseForm',
-        planItemId:planItemId,
-        atpId:atpId,
-        pageId:'edit_note_page'
+        action: 'plan',
+        viewId: 'PlannedCourse-FormView',
+        methodToCall: 'startAddPlannedCourseForm',
+        planItemId: planItemId,
+        atpId: atpId,
+        pageId: 'edit_note_page'
     };
     var popupOptions = {
-        tail:{
-            hidden:true
+        tail: {
+            hidden: true
         },
-        align:'top',
-        close:true,
-        selector:"body"
+        align: 'top',
+        close: true,
+        selector: "body"
     };
     openPopup('edit_note_page', retrieveData, 'plan', null, popupOptions, e);
 }
@@ -407,7 +407,7 @@ function submitPopupForm(additionalFormData, e, bDialog) {
             case 'error':
                 data.message = data.message.replace("<span />", jQuery("body").data('validationMessages').serverErrors[0]);
                 if (bDialog) {
-                    var sContent = jQuery("<div />").append(data.message).addClass("myplan-feedback error").css({"background-color":"#fff"});
+                    var sContent = jQuery("<div />").append(data.message).addClass("myplan-feedback error").css({"background-color": "#fff"});
                     var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
                     if (jQuery("body").HasPopOver()) jQuery("body").HidePopOver();
                     openDialog(sHtml.html(), e);
@@ -418,24 +418,24 @@ function submitPopupForm(additionalFormData, e, bDialog) {
         }
     };
     var blockOptions = {
-        message:'<img src="../ks-myplan/images/btnLoader.gif"/>',
-        css:{
-            width:'100%',
-            border:'none',
-            backgroundColor:'transparent',
-            width:(elementToBlock.outerWidth() - 2) + "px",
-            height:(elementToBlock.outerHeight() - 2) + "px",
-            lineHeight:(elementToBlock.outerHeight() - 4) + "px"
+        message: '<img src="../ks-myplan/images/btnLoader.gif"/>',
+        css: {
+            width: '100%',
+            border: 'none',
+            backgroundColor: 'transparent',
+            width: (elementToBlock.outerWidth() - 2) + "px",
+            height: (elementToBlock.outerHeight() - 2) + "px",
+            lineHeight: (elementToBlock.outerHeight() - 4) + "px"
         },
-        overlayCSS:{
-            backgroundColor:'#fff',
-            opacity:0.3,
-            padding:'0px',
-            margin:'0px',
-            top:'-1px',
-            left:'-1px',
-            width:(elementToBlock.outerWidth()) + "px",
-            height:(elementToBlock.outerHeight()) + "px"
+        overlayCSS: {
+            backgroundColor: '#fff',
+            opacity: 0.3,
+            padding: '0px',
+            margin: '0px',
+            top: '-1px',
+            left: '-1px',
+            width: (elementToBlock.outerWidth()) + "px",
+            height: (elementToBlock.outerHeight()) + "px"
         }
     };
     ksapAjaxSubmitForm(additionalFormData, successCallback, elementToBlock, "popupForm", blockOptions);
@@ -450,50 +450,50 @@ function submitPopupForm(additionalFormData, e, bDialog) {
  */
 function ksapAjaxSubmitForm(data, successCallback, elementToBlock, formId, blockingSettings) {
     var submitOptions = {
-        data:data,
-        success:function (response) {
+        data: data,
+        success: function (response) {
             var tempDiv = document.createElement('div');
             tempDiv.innerHTML = response;
             var hasError = checkForIncidentReport(response);
             if (!hasError) successCallback(tempDiv);
             jQuery("#formComplete").empty();
         },
-        error:function (jqXHR, textStatus) {
+        error: function (jqXHR, textStatus) {
             alert("Request failed: " + textStatus);
         }
     };
 
     if (elementToBlock != null && elementToBlock.length) {
         var elementBlockingOptions = {
-            beforeSend:function () {
+            beforeSend: function () {
                 if (elementToBlock.hasClass("unrendered")) {
                     elementToBlock.append('<img src="' + getConfigParam("kradImageLocation") + 'loader.gif" alt="Loading..." /> Loading...');
                     elementToBlock.show();
                 }
                 else {
                     var elementBlockingDefaults = {
-                        baseZ:100,
-                        message:'<img src="../ks-myplan/images/ajaxLoader16.gif" alt="loading..." />',
-                        fadeIn:0,
-                        fadeOut:0,
-                        overlayCSS:{
-                            backgroundColor:'#fff',
-                            opacity:0
+                        baseZ: 100,
+                        message: '<img src="../ks-myplan/images/ajaxLoader16.gif" alt="loading..." />',
+                        fadeIn: 0,
+                        fadeOut: 0,
+                        overlayCSS: {
+                            backgroundColor: '#fff',
+                            opacity: 0
                         },
-                        css:{
-                            border:'none',
-                            width:'16px',
-                            top:'0px',
-                            left:'0px'
+                        css: {
+                            border: 'none',
+                            width: '16px',
+                            top: '0px',
+                            left: '0px'
                         }
                     };
                     elementToBlock.block(jQuery.extend(elementBlockingDefaults, blockingSettings));
                 }
             },
-            complete:function () {
+            complete: function () {
                 elementToBlock.unblock();
             },
-            error:function () {
+            error: function () {
                 if (elementToBlock.hasClass("unrendered")) {
                     elementToBlock.hide();
                 }
@@ -515,7 +515,7 @@ function fnPositionPopUp(popupBoxId) {
         var left = (document.documentElement && document.documentElement.scrollLeft) || document.body.scrollLeft;
         var iTop = ( top + ( jQuery(window).height() / 2 ) ) - ( jQuery("#" + popupBoxId).height() / 2 );
         var iLeft = ( left + ( jQuery(window).width() / 2 ) ) - ( jQuery("#" + popupBoxId).width() / 2 );
-        jQuery("#" + popupBoxId).css({top:iTop + 'px', left:iLeft + 'px'});
+        jQuery("#" + popupBoxId).css({top: iTop + 'px', left: iLeft + 'px'});
     }
 }
 
@@ -562,7 +562,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
         }
 
         if (highlightId) {
-            jQuery("[id^='" + highlightId + "']").animate({backgroundColor:"#faf5ca"}, 1).animate({backgroundColor:"#ffffff"}, 1500, function () {
+            jQuery("[id^='" + highlightId + "']").animate({backgroundColor: "#faf5ca"}, 1).animate({backgroundColor: "#ffffff"}, 1500, function () {
                 jQuery(this).removeAttr("style");
             });
         }
@@ -574,7 +574,7 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
         methodToCall = "search";
     }
 
-    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId:id, skipViewInit:"false"}, elementToBlock, id, elementBlockingSettings);
+    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id, elementBlockingSettings);
     jQuery("form#" + id + "_form").remove();
 }
 /*
@@ -614,12 +614,12 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 
         // change double quotes to single because escaping causes problems on URL
         jsonViewState = jsonViewState.replace(/"/g, "'");
-        jQuery.extend(data, {clientViewState:jsonViewState});
+        jQuery.extend(data, {clientViewState: jsonViewState});
     }
 
     var submitOptions = {
-        data:data,
-        success:function (response) {
+        data: data,
+        success: function (response) {
             var tempDiv = document.createElement('div');
             tempDiv.innerHTML = response;
             var hasError = checkForIncidentReport(response);
@@ -628,42 +628,42 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
             }
             jQuery("#formComplete").empty();
         },
-        error:function (jqXHR, textStatus) {
+        error: function (jqXHR, textStatus) {
             alert("Request failed: " + textStatus);
         }
     };
 
     if (elementToBlock != null && elementToBlock.length) {
         var elementBlockingOptions = {
-            beforeSend:function () {
+            beforeSend: function () {
                 if (elementToBlock.hasClass("unrendered")) {
                     elementToBlock.append('<img src="' + getConfigParam("kradImageLocation") + 'loader.gif" alt="Loading..." /> Loading...');
                     elementToBlock.show();
                 }
                 else {
                     var elementBlockingDefaults = {
-                        baseZ:500,
-                        message:'<img src="../ks-myplan/images/ajaxLoader16.gif" alt="loading..." />',
-                        fadeIn:0,
-                        fadeOut:0,
-                        overlayCSS:{
-                            backgroundColor:'#fff',
-                            opacity:0
+                        baseZ: 500,
+                        message: '<img src="../ks-myplan/images/ajaxLoader16.gif" alt="loading..." />',
+                        fadeIn: 0,
+                        fadeOut: 0,
+                        overlayCSS: {
+                            backgroundColor: '#fff',
+                            opacity: 0
                         },
-                        css:{
-                            border:'none',
-                            width:'16px',
-                            top:'0px',
-                            left:'0px'
+                        css: {
+                            border: 'none',
+                            width: '16px',
+                            top: '0px',
+                            left: '0px'
                         }
                     };
                     elementToBlock.block(jQuery.extend(elementBlockingDefaults, elementBlockingSettings));
                 }
             },
-            complete:function () {
+            complete: function () {
                 elementToBlock.unblock();
             },
-            error:function () {
+            error: function () {
                 if (elementToBlock.hasClass("unrendered")) {
                     elementToBlock.hide();
                 }
@@ -699,6 +699,7 @@ function truncateField(id, floated) {
                 fixed = fixed + jQuery(this).outerWidth(true);
             });
             var available = jQuery(this).width() - ( fixed + ( ellipsisItem.outerWidth(true) - ellipsisItem.width() ) + 1 );
+            ellipsisItem.css("white-space", "nowrap");
             if (!floated) {
                 ellipsisItem.width(available);
             } else {
@@ -751,10 +752,10 @@ function fnPopoverSlider(showId, parentId, direction) {
         newDirection = 'left';
     }
     jQuery("#" + parentId + " > .uif-horizontalBoxLayout > div.uif-boxLayoutHorizontalItem:visible").hide("slide", {
-        direction:direction
+        direction: direction
     }, 100, function () {
         jQuery("#" + parentId + " > .uif-horizontalBoxLayout > div.uif-boxLayoutHorizontalItem").filter("#" + showId).show("slide", {
-            direction:newDirection
+            direction: newDirection
         }, 100, function () {
         });
     });
@@ -912,25 +913,25 @@ var pendingPlanAuditHeadingText = 'We are currently auditing your plan for \'<sp
 var pendingDegreeAuditHeadingText = 'We are currently auditing your degree for \'<span class="programName"></span>\'.';
 
 var blockPendingAuditStyle = {
-    message:'<img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="" class="icon"/><div class="heading"></div>',
-    fadeIn:250,
-    fadeOut:250,
-    css:{
-        padding:'30px 30px 30px 82px',
-        margin:'30px',
-        width:'auto',
-        textAlign:'left',
-        border:'solid 1px #ffd14c',
-        backgroundColor:'#fffdd7',
-        'border-radius':'15px',
-        '-webkit-border-radius':'15px',
-        '-moz-border-radius':'15px'
+    message: '<img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="" class="icon"/><div class="heading"></div>',
+    fadeIn: 250,
+    fadeOut: 250,
+    css: {
+        padding: '30px 30px 30px 82px',
+        margin: '30px',
+        width: 'auto',
+        textAlign: 'left',
+        border: 'solid 1px #ffd14c',
+        backgroundColor: '#fffdd7',
+        'border-radius': '15px',
+        '-webkit-border-radius': '15px',
+        '-moz-border-radius': '15px'
     },
-    overlayCSS:{
-        backgroundColor:'#fff',
-        opacity:0.85,
-        border:'none',
-        cursor:'wait'
+    overlayCSS: {
+        backgroundColor: '#fff',
+        opacity: 0.85,
+        border: 'none',
+        cursor: 'wait'
     }
 };
 
@@ -961,7 +962,7 @@ function fnAddLoadingText(selector, programName, auditType) {
 }
 
 function removeCookie() {
-    jQuery.cookie("myplan_audit_running", null, {expires:new Date().setTime(0)});
+    jQuery.cookie("myplan_audit_running", null, {expires: new Date().setTime(0)});
 }
 
 function setPendingAudit(obj, minutes) {
@@ -978,13 +979,13 @@ function setPendingAudit(obj, minutes) {
         if (data.programId != 'default') {
             changeLoadingMessage('.myplan-audit-report', data.programName, data.auditType);
             jQuery.ajax({
-                url:"/student/myplan/audit/status",
-                data:{"programId":data.programId, "auditId":data.recentAuditId},
-                dataType:"json",
-                beforeSend:null,
-                success:function (response) {
+                url: "/student/myplan/audit/status",
+                data: {"programId": data.programId, "auditId": data.recentAuditId},
+                dataType: "json",
+                beforeSend: null,
+                success: function (response) {
                     if (response.status == "PENDING") {
-                        jQuery.cookie('myplan_audit_running', JSON.stringify(data), {expires:data.expires});
+                        jQuery.cookie('myplan_audit_running', JSON.stringify(data), {expires: data.expires});
                         disabledCheck(obj.attr("id"), 'action', function () {
                             return true;
                         });
@@ -992,7 +993,7 @@ function setPendingAudit(obj, minutes) {
                         setUrlHash('modified', 'true');
                     }
                 },
-                statusCode:{ 500:function () {
+                statusCode: { 500: function () {
                     sessionExpired();
                 } }
             });
@@ -1041,14 +1042,14 @@ function pollPendingAudit(programId, recentAuditId, auditType) {
     jQuery.ajaxPollSettings.interval = 250; // polling interval in milliseconds
 
     jQuery.ajaxPoll({
-        url:"/student/myplan/audit/status",
-        data:{"programId":programId, "auditId":recentAuditId},
-        dataType:"json",
-        beforeSend:null,
-        successCondition:function (response) {
+        url: "/student/myplan/audit/status",
+        data: {"programId": programId, "auditId": recentAuditId},
+        dataType: "json",
+        beforeSend: null,
+        successCondition: function (response) {
             return (response.status == 'DONE' || response.status == 'FAILED' || jQuery.cookie("myplan_audit_running") == null);
         },
-        success:function (response) {
+        success: function (response) {
             var growl = true;
             if (readUrlParam("viewId") == "DegreeAudit-FormView") {
                 growl = jQuery(".myplan-audit-report div.blockUI.blockMsg.blockElement").data("growl");
@@ -1066,8 +1067,8 @@ function pollPendingAudit(programId, recentAuditId, auditType) {
                 var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("myplan_audit_running")));
                 if (growl) showGrowl(data.programName + " " + title + " is ready to view.", title + " Completed", "infoGrowl");
             }
-            jQuery.cookie("myplan_audit_running", null, {expires:new Date().setTime(0)});
-            jQuery.event.trigger("AUDIT_COMPLETE", {"auditType":auditType});
+            jQuery.cookie("myplan_audit_running", null, {expires: new Date().setTime(0)});
+            jQuery.event.trigger("AUDIT_COMPLETE", {"auditType": auditType});
         }
     });
 }
@@ -1097,27 +1098,27 @@ function myplanGetSectionEnrollment(url, retrieveOptions, componentId) {
     var elementToBlock = jQuery(".myplan-enrl-data").parent();
     if (componentId) elementToBlock = jQuery("#" + componentId + " .myplan-enrl-data").parent();
     jQuery.ajax({
-        url:url,
-        data:retrieveOptions,
-        dataType:"json",
-        beforeSend:function () {
+        url: url,
+        data: retrieveOptions,
+        dataType: "json",
+        beforeSend: function () {
             elementToBlock.block({
-                message:'<img src="../ks-myplan/images/ajaxLoader16.gif" alt="Fetching enrollment data..." />',
-                fadeIn:0,
-                fadeOut:0,
-                overlayCSS:{
-                    backgroundColor:'#fff',
-                    opacity:0
+                message: '<img src="../ks-myplan/images/ajaxLoader16.gif" alt="Fetching enrollment data..." />',
+                fadeIn: 0,
+                fadeOut: 0,
+                overlayCSS: {
+                    backgroundColor: '#fff',
+                    opacity: 0
                 },
-                css:{
-                    border:'none',
-                    width:'16px',
-                    top:'0px',
-                    left:'0px'
+                css: {
+                    border: 'none',
+                    width: '16px',
+                    top: '0px',
+                    left: '0px'
                 }
             });
         },
-        error:function () {
+        error: function () {
             elementToBlock.fadeOut(250);
             elementToBlock.each(function () {
                 jQuery(this).css("text-align", "center").find("img.myplan-enrl-data").addClass("alert").attr("alt", "Oops, couldn't fetch the data. Refresh the page.").attr("title", "Oops, couldn't fetch the data. Refresh the page.");
@@ -1125,7 +1126,7 @@ function myplanGetSectionEnrollment(url, retrieveOptions, componentId) {
             elementToBlock.fadeIn(250);
             elementToBlock.unblock();
         },
-        success:function (response) {
+        success: function (response) {
             elementToBlock.fadeOut(250);
             jQuery.each(response, function (sectionId, enrlObject) {
                 var message = "<span class='fl-font-size-120 ksap-text-bold'>--</span><br />";
@@ -1339,19 +1340,19 @@ function buildTooltip(id, content, position, align, delay, speed) {
             break;
     }
     jQuery("#" + id).tooltip({
-        content:content.replace(/\s+/g, " "),
-        tooltipClass:position + align,
-        show:{
-            delay:delay,
-            duration:speed,
-            easing:speed
+        content: content.replace(/\s+/g, " "),
+        tooltipClass: position + align,
+        show: {
+            delay: delay,
+            duration: speed,
+            easing: speed
         },
-        position:{
-            my:my,
-            at:align + ' ' + position,
-            of:jQuery("#" + id)
+        position: {
+            my: my,
+            at: align + ' ' + position,
+            of: jQuery("#" + id)
         },
-        close:function (event, ui) {
+        close: function (event, ui) {
             ui.tooltip.hover(
                 function () {
                     jQuery(this).stop(true).fadeTo(speed, 1);
@@ -1373,10 +1374,10 @@ function buildTooltip(id, content, position, align, delay, speed) {
     };
     $.fn.characterCount = function (options) {
         var oDefaults = {
-            maxLength:999,
-            warningLength:10,
-            classCounter:"counter",
-            classWarning:"warning"
+            maxLength: 999,
+            warningLength: 10,
+            classCounter: "counter",
+            classWarning: "warning"
         };
 
         function calculate(obj, options) {
@@ -1505,7 +1506,7 @@ function setupProgressiveCheck(controlName, disclosureId, baseId, condition, alw
                             refreshDisclosure.parent().show();
                         }
 
-                        refreshDisclosure.animate({backgroundColor:"transparent"}, 6000);
+                        refreshDisclosure.animate({backgroundColor: "transparent"}, 6000);
 
                         //re-enable validation on now shown inputs
                         hiddenInputValidationToggle(disclosureId);
