@@ -2104,6 +2104,7 @@ table.myplan-course-search-results-datatable .blockUI {
     margin: 20px 0px;
     border-spacing: 0px;
     border-collapse: separate;
+    table-layout: fixed;
 }
 
 .myplan-course-sections table.uif-tableCollectionLayout thead tr {
@@ -2195,7 +2196,7 @@ table.myplan-course-search-results-datatable .blockUI {
 }
 
 .myplan-course-sections .meetingdetails .meetingroom {
-    width: 30px;
+    width: 33px;
     margin: 0;
 }
 
