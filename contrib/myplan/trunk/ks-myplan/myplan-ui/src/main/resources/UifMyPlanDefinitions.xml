@@ -194,7 +194,7 @@
                 <value>krad/plugins/dirtyform/jquery.dirtyform.js</value>
                 <value>krad/plugins/scrollto/jquery.scrollTo-1.4.3-min.js</value>
                 <value>krad/plugins/rice/menu/krad.tabMenu.js</value>
-                <!--<value>krad/plugins/rice/datatables/jquery.dataTables.js</value>-->
+                <value>krad/plugins/rice/datatables/jquery.dataTables.js</value>
                 <!--<value>krad/plugins/rice/datatables/ZeroClipboard.js</value>-->
                 <!--<value>krad/plugins/rice/datatables/TableTools.js</value>-->
                 <!--<value>krad/plugins/rice/datatables/jquery.dataTables.rowGrouping.js</value>-->
