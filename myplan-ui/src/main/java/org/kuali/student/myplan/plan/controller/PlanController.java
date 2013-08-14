@@ -15,6 +15,7 @@
  */
 package org.kuali.student.myplan.plan.controller;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -68,6 +69,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -2477,7 +2479,7 @@ public class PlanController extends UifControllerBase {
         String note = null;
         if (hasText(planItem.getDescr().getPlain())) {
             try {
-                note = mapper.writeValueAsString(planItem.getDescr().getPlain().replaceAll("\n", "<br/>")).replaceAll("^\"|\"$", "");
+                note = mapper.writeValueAsString(HtmlUtils.htmlEscape(planItem.getDescr().getPlain().replaceAll("\n", "<br/>"))).replaceAll("^\"|\"$", "");
             } catch (IOException e) {
                 logger.error("Could not add the note to add event");
             }
