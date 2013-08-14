@@ -267,6 +267,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException,
             OperationFailedException, PermissionDeniedException {
 
+        //Adding the system key of student to Learning plan dynamic attributes
+        addSysKeyToLearningPlanAttributes(learningPlan);
+
         LearningPlanEntity lpe = populateLearningPlanEntity(learningPlan, context);
         LearningPlanEntity existing = learningPlanDao.find(lpe.getId());
         if (existing != null) {
@@ -340,9 +343,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                        @WebParam(name = "context") ContextInfo context)
             throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException,
             OperationFailedException, PermissionDeniedException {
-
-        //Add system key to planItem attributes
-        addSysKeyToPlanItemAttributes(planItem);
 
         PlanItemEntity pie = populatePlanItemEntity(planItem, context);
         //  Save the new plan item.
@@ -507,9 +507,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         }
 
         // update credits
-         if ( planItem.getCredit() != null ) {
+        if (planItem.getCredit() != null) {
             planItemEntity.setCredit(planItem.getCredit());
-         }
+        }
 
         return planItemDao.find(updatePlanItemId).toDto();
     }
@@ -820,9 +820,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     /**
      * Adds student system key to plan item attributes
      *
-     * @param planItemInfo
+     * @param learningPlanInfo
      */
-    private void addSysKeyToPlanItemAttributes(PlanItemInfo planItemInfo) {
+    private void addSysKeyToLearningPlanAttributes(LearningPlanInfo learningPlanInfo) {
         String externalIdentifier = ConfigContext.getCurrentContextConfig().getProperty(AcademicPlanServiceConstants.EXTERNAL_IDENTIFIER);
 
         if (StringUtils.hasText(externalIdentifier)) {
@@ -834,13 +834,13 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                 Person person = getPersonService().getPerson(regId);
                 if (person != null && StringUtils.hasText(person.getExternalIdentifiers().get(externalIdentifier))) {
                     String systemKey = person.getExternalIdentifiers().get(externalIdentifier);
-                    if (CollectionUtils.isEmpty(planItemInfo.getAttributes())) {
+                    if (CollectionUtils.isEmpty(learningPlanInfo.getAttributes())) {
                         List<AttributeInfo> attributeInfos = new ArrayList<AttributeInfo>();
                         attributeInfos.add(new AttributeInfo("systemKey", systemKey));
-                        planItemInfo.setAttributes(attributeInfos);
+                        learningPlanInfo.setAttributes(attributeInfos);
                     } else {
-                        if (!sysKeyExists(planItemInfo.getAttributes())) {
-                            planItemInfo.getAttributes().add(new AttributeInfo("systemKey", systemKey));
+                        if (!sysKeyExists(learningPlanInfo.getAttributes())) {
+                            learningPlanInfo.getAttributes().add(new AttributeInfo("systemKey", systemKey));
                         }
                     }
                 }
@@ -852,6 +852,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     /**
      * returns true if a attribute with key as systemKey exists
+     *
      * @param attributeInfos
      * @return
      */
