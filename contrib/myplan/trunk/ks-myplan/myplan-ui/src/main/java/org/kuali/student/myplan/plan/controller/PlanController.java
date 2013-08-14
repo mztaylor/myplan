@@ -1455,7 +1455,11 @@ public class PlanController extends UifControllerBase {
                 if ((planItemInfo.getCredit() == null &&  form.getCredit() != null && hasText(form.getCredit())) ||
                     (planItemInfo.getCredit() != null && !planItemInfo.getCredit().toString().equals(form.getCredit()))) {
                     creditUpdated = true;
-                    planItemInfo.setCredit(Float.valueOf(form.getCredit()));
+                    if (form.getCredit() != null && hasText(form.getCredit()) ) {
+                        planItemInfo.setCredit(Float.valueOf(form.getCredit()));
+                    } else { // placeholder changed from having credit to unspecified
+                        planItemInfo.setCredit(null);
+                    }
                 }
 
                 /*Note update*/
