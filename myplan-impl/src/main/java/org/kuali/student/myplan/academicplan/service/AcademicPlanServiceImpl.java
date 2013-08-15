@@ -507,7 +507,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         }
 
         // update credits
-        if (planItem.getCredit() != null) {
+        if (planItem.getCredit() != planItemEntity.getCredit()) {
             planItemEntity.setCredit(planItem.getCredit());
         }
 
