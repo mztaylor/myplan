@@ -134,7 +134,7 @@ public class PlanForm extends UifFormBase {
     private String credit;
     private String note;
 
-    private String placeholder;
+    private String generalPlaceholder;
 
 
     /**
@@ -376,12 +376,12 @@ public class PlanForm extends UifFormBase {
     }
 
 
-    public String getPlaceholder() {
-        return placeholder;
+    public String getGeneralPlaceholder() {
+        return generalPlaceholder;
     }
 
-    public void setPlaceholder(String placeholder) {
-        this.placeholder = placeholder;
+    public void setGeneralPlaceholder(String generalPlaceholder) {
+        this.generalPlaceholder = generalPlaceholder;
     }
 
     public String getNote() {
@@ -454,7 +454,7 @@ public class PlanForm extends UifFormBase {
     }
 
     public String getPlaceholderCode() {
-        return EnumerationHelper.getEnumAbbrValForCodeByType(placeholder, PlanConstants.PLACE_HOLDER_ENUM_KEY);
+        return EnumerationHelper.getEnumAbbrValForCodeByType(generalPlaceholder, PlanConstants.PLACE_HOLDER_ENUM_KEY);
     }
 
 }

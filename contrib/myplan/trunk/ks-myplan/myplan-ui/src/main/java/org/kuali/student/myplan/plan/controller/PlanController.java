@@ -270,7 +270,7 @@ public class PlanController extends UifControllerBase {
                                 planForm.setCourseCd(planItemInfo.getRefObjectId());
                             } else {
                                 planForm.setType(PlanConstants.GENERAL_TYPE);
-                                planForm.setPlaceholder(String.format("%s|%s", planItemInfo.getRefObjectId(),
+                                planForm.setGeneralPlaceholder(String.format("%s|%s", planItemInfo.getRefObjectId(),
                                         planItemInfo.getRefObjectType()));
                             }
                             if (planItemInfo.getCredit() != null) {
@@ -329,7 +329,7 @@ public class PlanController extends UifControllerBase {
 
                     if (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItem.getRefObjectType())
                             || PlanConstants.PLACE_HOLDER_TYPE.equals(planItem.getRefObjectType())) {
-                        planForm.setPlaceholder(planItem.getRefObjectId());
+                        planForm.setGeneralPlaceholder(planItem.getRefObjectId());
                         if (planItem.getCredit() != null) {
                             planForm.setCredit(String.valueOf(planItem.getCredit().intValue()));
                         }
@@ -942,8 +942,8 @@ public class PlanController extends UifControllerBase {
         String placeHolderId = null;
         String placeHolderType = null;
         String placeHolderCd = null;
-        if (hasText(form.getPlaceholder())) {
-            String[] placeHolder = form.getPlaceholder().split(PlanConstants.CODE_KEY_SEPARATOR);
+        if (hasText(form.getGeneralPlaceholder())) {
+            String[] placeHolder = form.getGeneralPlaceholder().split(PlanConstants.CODE_KEY_SEPARATOR);
             placeHolderId = placeHolder[0];
             placeHolderType = placeHolder[1];
             placeHolderCd = EnumerationHelper.getEnumAbbrValForCodeByType(placeHolderId, placeHolderType);
@@ -1408,8 +1408,8 @@ public class PlanController extends UifControllerBase {
                 boolean creditUpdated = false;
 
                 /*General placeholder/ placeholder type and value update */
-                if (hasText(form.getPlaceholder())) {
-                    String[] placeHolder = form.getPlaceholder().split(PlanConstants.CODE_KEY_SEPARATOR);
+                if (hasText(form.getGeneralPlaceholder())) {
+                    String[] placeHolder = form.getGeneralPlaceholder().split(PlanConstants.CODE_KEY_SEPARATOR);
                     placeHolderId = placeHolder[0];
                     placeHolderType = placeHolder[1];
                     placeHolderCd = EnumerationHelper.getEnumAbbrValForCodeByType(placeHolderId, placeHolderType);
@@ -1452,10 +1452,10 @@ public class PlanController extends UifControllerBase {
 
 
                 /*Credit update: if there was none before and user added credit value OR they changed existing...*/
-                if ((planItemInfo.getCredit() == null &&  form.getCredit() != null && hasText(form.getCredit())) ||
-                    (planItemInfo.getCredit() != null && !planItemInfo.getCredit().toString().equals(form.getCredit()))) {
+                if ((planItemInfo.getCredit() == null && form.getCredit() != null && hasText(form.getCredit())) ||
+                        (planItemInfo.getCredit() != null && !planItemInfo.getCredit().toString().equals(form.getCredit()))) {
                     creditUpdated = true;
-                    if (form.getCredit() != null && hasText(form.getCredit()) ) {
+                    if (form.getCredit() != null && hasText(form.getCredit())) {
                         planItemInfo.setCredit(Float.valueOf(form.getCredit()));
                     } else { // placeholder changed from having credit to unspecified
                         planItemInfo.setCredit(null);
@@ -1488,10 +1488,10 @@ public class PlanController extends UifControllerBase {
         } catch (DoesNotExistException e) {
             return doPageRefreshError(form, "PlanItem with Id:" + planItemId + " doesnot exist", e);
         } catch (Exception e) {
-            return doErrorPage(form, "QuickAdd request to update failed", PlanConstants.UPDATE_FAILED, new String[]{form.getCourseCd() != null ? form.getCourseCd() : EnumerationHelper.getEnumAbbrValForCodeByType(form.getPlaceholder(), PlanConstants.PLACE_HOLDER_ENUM_KEY)}, e);
+            return doErrorPage(form, "QuickAdd request to update failed", PlanConstants.UPDATE_FAILED, new String[]{form.getCourseCd() != null ? form.getCourseCd() : EnumerationHelper.getEnumAbbrValForCodeByType(form.getGeneralPlaceholder(), PlanConstants.PLACE_HOLDER_ENUM_KEY)}, e);
         }
 
-        return doErrorPage(form, "QuickAdd request to update failed", PlanConstants.UPDATE_FAILED, new String[]{form.getCourseCd() != null ? form.getCourseCd() : EnumerationHelper.getEnumAbbrValForCodeByType(form.getPlaceholder(), PlanConstants.PLACE_HOLDER_ENUM_KEY)}, null);
+        return doErrorPage(form, "QuickAdd request to update failed", PlanConstants.UPDATE_FAILED, new String[]{form.getCourseCd() != null ? form.getCourseCd() : EnumerationHelper.getEnumAbbrValForCodeByType(form.getGeneralPlaceholder(), PlanConstants.PLACE_HOLDER_ENUM_KEY)}, null);
     }
 
     /**
