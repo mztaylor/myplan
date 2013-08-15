@@ -134,7 +134,7 @@
                 <!--This page is used for the Move to another quarter Dialog box -->
                 <bean parent="KSAP-PopoverPage" p:id="move_dialog_page" p:headerText="Move to Another Quarter">
                     <property name="instructionalText"
-                              value="Which quarter would you like to move [b]@{placeholder EQ null ? courseCd EQ null ?courseSummaryDetails.code:courseCd : placeholderCode}[/b] to?"/>
+                              value="Which quarter would you like to move [b]@{generalPlaceholder EQ null ? courseCd EQ null ?courseSummaryDetails.code:courseCd : placeholderCode}[/b] to?"/>
                     <property name="items">
                         <list>
                             <ref bean="courseTermsScheduled"/>
@@ -204,7 +204,7 @@
                 <!--This page is used for the Copy to another quarter Dialog box -->
                 <bean parent="KSAP-PopoverPage" p:id="copy_dialog_page" p:headerText="Copy to Another Quarter">
                     <property name="instructionalText"
-                              value="Which quarter would you like to copy [b]@{placeholder EQ null ? courseCd EQ null ?courseSummaryDetails.code:courseCd : placeholderCode}[/b] to?"/>
+                              value="Which quarter would you like to copy [b]@{generalPlaceholder EQ null ? courseCd EQ null ?courseSummaryDetails.code:courseCd : placeholderCode}[/b] to?"/>
                     <property name="items">
                         <list>
                             <ref bean="courseTermsScheduled"/>
@@ -312,9 +312,9 @@
 
                 <!--This page is used for the Delete plan Item Dialog box -->
                 <bean parent="KSAP-PopoverPage" p:id="plan_item_delete_page"
-                      p:headerText="Delete @{placeholder EQ null ? courseCd EQ null ?courseSummaryDetails.code:courseCd : placeholderCode} @{atpId eq null ? 'Bookmark' : 'from the '+shortTerm+' Plan'}">
+                      p:headerText="Delete @{generalPlaceholder EQ null ? courseCd EQ null ?courseSummaryDetails.code:courseCd : placeholderCode} @{atpId eq null ? 'Bookmark' : 'from the '+shortTerm+' Plan'}">
                     <property name="instructionalText"
-                              value="Are you sure that you want to delete [b]@{placeholder EQ null ? courseCd EQ null ?courseSummaryDetails.code:courseCd : placeholderCode}[/b]? Once deleted, you cannot undo."/>
+                              value="Are you sure that you want to delete [b]@{generalPlaceholder EQ null ? courseCd EQ null ?courseSummaryDetails.code:courseCd : placeholderCode}[/b]? Once deleted, you cannot undo."/>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-HorizontalBoxGroup"
@@ -846,7 +846,7 @@
     <!-- Delete from courses list confirmation -->
     <bean id="delete_from_list_confirmation" parent="KSAP-VerticalBoxGroup" p:hidden="true" p:width="300px">
         <property name="instructionalText"
-                  value="Are you sure that you want to delete [b]@{placeholder EQ null ? courseSummaryDetails.code : placeholder}[/b] from the Bookmarked Courses list? Once deleted, you cannot undo."/>
+                  value="Are you sure that you want to delete [b]@{generalPlaceholder EQ null ? courseSummaryDetails.code : generalPlaceholder}[/b] from the Bookmarked Courses list? Once deleted, you cannot undo."/>
         <property name="items">
             <list>
                 <bean parent="KSAP-SimpleInputField" p:propertyName="planItemId"
