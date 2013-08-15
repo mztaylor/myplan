@@ -2,20 +2,20 @@ function collapseReq(obj, onload) {
     var height = 23;
     if (onload) {
         obj.removeClass("expanded").addClass("collapsed").css({
-            height:height + "px"
+            height: height + "px"
         }).children(".header").find(".title").css({
-                whiteSpace:"nowrap",
-                overflow:"hidden",
-                height:height + "px"
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                height: height + "px"
             });
     } else {
         obj.removeClass("expanded").addClass("collapsed").animate({
-            height:height + "px"
+            height: height + "px"
         }, 300, function () {
             jQuery(this).children(".header").find(".title").css({
-                whiteSpace:"nowrap",
-                overflow:"hidden",
-                height:height + "px"
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                height: height + "px"
             });
         });
     }
@@ -25,46 +25,45 @@ function expandReq(obj, onload) {
     var height = obj.data("height");
     if (onload) {
         obj.removeClass("collapsed").addClass("expanded").css({
-            height:"auto"
+            height: "auto"
         }).children(".header").find(".title").css({
-                whiteSpace:"normal",
-                overflow:"auto",
-                height:"auto"
+                whiteSpace: "normal",
+                overflow: "auto",
+                height: "auto"
             });
     } else {
         obj.removeClass("collapsed").addClass("expanded").animate({
-                height:height
+                height: height
             }, 300
         ).children(".header").find(".title").css({
-                whiteSpace:"normal",
-                overflow:"auto",
-                height:"auto"
+                whiteSpace: "normal",
+                overflow: "auto",
+                height: "auto"
             });
     }
 }
 
 function initAuditActions() {
-    /*
-     jQuery(".requirement").each(function () {
-     jQuery(this).data("height", jQuery(this).height());
-     if (jQuery(this).is(".Status_OK")) {
-     collapseReq(jQuery(this), true);
-     } else {
-     expandReq(jQuery(this), true);
-     }
-     });
-     jQuery(".requirement > .header > .toggle, .requirement > .header > .title").click(function (e) {
-     var target = (e.target) ? e.target.nodeName.toLowerCase() : e.srcElement.nodeName.toLowerCase();
-     if (target != "a") {
-     var jRequirement = jQuery(this).parents(".requirement");
-     if (jRequirement.hasClass("expanded") && !jRequirement.hasClass("collapsed")) {
-     collapseReq(jRequirement, false);
-     } else { // if (jRequirement.hasClass("collapsed")) {
-     expandReq(jRequirement, false);
-     }
-     }
-     });
-     */
+    jQuery(".requirement").each(function () {
+        jQuery(this).data("height", jQuery(this).height());
+        if (jQuery(this).is(".Status_OK")) {
+            collapseReq(jQuery(this), true);
+        } else {
+            expandReq(jQuery(this), true);
+        }
+    });
+    jQuery(".requirement > .header > .toggle, .requirement > .header > .title").click(function (e) {
+        var target = (e.target) ? e.target.nodeName.toLowerCase() : e.srcElement.nodeName.toLowerCase();
+        if (target != "a") {
+            var jRequirement = jQuery(this).parents(".requirement");
+            if (jRequirement.hasClass("expanded") && !jRequirement.hasClass("collapsed")) {
+                collapseReq(jRequirement, false);
+            } else { // if (jRequirement.hasClass("collapsed")) {
+                expandReq(jRequirement, false);
+            }
+        }
+    });
+
     jQuery(".control-toolbar #requirement-status").change(function () {
         var data = jQuery(this).val();
 
@@ -102,9 +101,9 @@ function validatePlanAudit(obj) {
     var id = "plan_hand_off_container";
     var getId = "plan_audit_hand_off";
     var retrieveData = {
-        viewId:"PlanAuditHandOff-FormView",
-        methodToCall:"reviewPlanAudit",
-        pageId:"plan_audit_hand_off"
+        viewId: "PlanAuditHandOff-FormView",
+        methodToCall: "reviewPlanAudit",
+        pageId: "plan_audit_hand_off"
     };
 
     obj.addClass("disabled").attr("disabled", true);
@@ -113,21 +112,21 @@ function validatePlanAudit(obj) {
     jQuery("body").append(retrieveForm);
 
     var blockOptions = {
-        message:'<img src="../ks-myplan/images/btnLoader.gif" style="vertical-align:middle; margin-right:10px;"/>Processing request',
-        css:{
-            width:'100%',
-            border:'none',
-            backgroundColor:'transparent',
-            font:'bold 14px museo-sans, Arial, Helvetica, Verdana, sans-serif',
-            padding:'5px'
+        message: '<img src="../ks-myplan/images/btnLoader.gif" style="vertical-align:middle; margin-right:10px;"/>Processing request',
+        css: {
+            width: '100%',
+            border: 'none',
+            backgroundColor: 'transparent',
+            font: 'bold 14px museo-sans, Arial, Helvetica, Verdana, sans-serif',
+            padding: '5px'
         },
-        overlayCSS:{
-            backgroundColor:'#fcf9f0',
-            opacity:1,
-            border:'solid 1px #fcf9f0'
+        overlayCSS: {
+            backgroundColor: '#fcf9f0',
+            opacity: 1,
+            border: 'solid 1px #fcf9f0'
         },
-        fadeIn:50,
-        fadeOut:50
+        fadeIn: 50,
+        fadeOut: 50
     };
 
     var elementToBlock = jQuery("#plan_audit_actions_container");
@@ -153,18 +152,18 @@ function validatePlanAudit(obj) {
 
         if (showHandOffScreen) {
             jQuery.fancybox({
-                helpers:{
-                    overlay:null
+                helpers: {
+                    overlay: null
                 },
-                parent:"form:first",
-                href:"#" + getId,
-                beforeLoad:function () {
+                parent: "form:first",
+                href: "#" + getId,
+                beforeLoad: function () {
                     setFancyboxScrollableGroup(115);
                 },
-                onUpdate:function () {
+                onUpdate: function () {
                     setFancyboxScrollableGroup(115);
                 },
-                afterClose:function () {
+                afterClose: function () {
                     var condition = function () {
                         return ((jQuery.cookie("myplan_audit_running") != null) || (coerceValue("planExists") == false) || (coerceValue("planAudit.campusParam") == "306" && coerceValue("planAudit.programParamSeattle") == "default") || (coerceValue("planAudit.campusParam") == "310" && coerceValue("planAudit.programParamBothell") == "default") || (coerceValue("planAudit.campusParam") == "323" && coerceValue("planAudit.programParamTacoma") == "default"));
                     };
