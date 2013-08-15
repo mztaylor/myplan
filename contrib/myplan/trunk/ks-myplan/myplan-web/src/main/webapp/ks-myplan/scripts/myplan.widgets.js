@@ -1486,7 +1486,7 @@ function setupProgressiveCheck(controlName, disclosureId, baseId, condition, alw
         var eventType = 'change';
 
         if (onKeyUp && (theControl.is("textarea") || theControl.is("input[type='text'], input[type='password']"))) {
-            eventType = 'keyup paste cut contextmenu mouseout blur';
+            eventType = 'ready focus keyup paste cut contextmenu mouseout blur';
         }
 
         theControl.on(eventType, function () {
@@ -1532,5 +1532,9 @@ function setupProgressiveCheck(controlName, disclosureId, baseId, condition, alw
                 }
             }
         });
+
+        if (onKeyUp && (theControl.is("textarea") || theControl.is("input[type='text'], input[type='password']"))) {
+            theControl.trigger("ready");
+        }
     }
 }
