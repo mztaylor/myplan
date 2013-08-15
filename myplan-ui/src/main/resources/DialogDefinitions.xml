@@ -461,7 +461,8 @@
                                               p:progressiveRender="#form.type EQ 'general'">
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="KSAP-SimpleInputField" p:propertyName="placeholder"
+                                                    <bean parent="KSAP-SimpleInputField"
+                                                          p:propertyName="generalPlaceholder"
                                                           p:width="70%">
                                                         <property name="control">
                                                             <bean parent="Uif-DropdownControl" p:style="width:90%;"/>
@@ -511,7 +512,7 @@
                                                             submitPopupForm(additionalFormData, e, false);
                                                         "/>
                                                         <property name="disabled"
-                                                                  value="@{#form.type EQ null OR (#form.type EQ 'course' AND #form.courseCd EQ null) OR (#form.type EQ 'general' AND #form.placeholder EQ null) OR (#form.placeholder EQ 'other' AND #form.note EQ null)}"/>
+                                                                  value="@{#form.type EQ null OR (#form.type EQ 'course' AND #form.courseCd EQ null) OR (#form.type EQ 'general' AND #form.generalPlaceholder EQ null) OR (#form.generalPlaceholder EQ 'uw.academicplan.placeholder.other|uw.academicplan.placeholder' AND #form.note EQ null)}"/>
                                                         <property name="evaluateDisabledOnKeyUp" value="true"/>
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#actionCoursePlaceholder').on('PLAN_ITEM_ADDED PLAN_ITEM_UPDATED', function(event, data){
@@ -1084,7 +1085,7 @@
             <bean parent="Uif-TextAreaControl"
                   p:watermarkText="Enter a short note (500 characters max)" p:maxLength="500"
                   p:style="resize:none; width:97%">
-                <property name="required" value="@{#form.placeholder EQ 'other'}"/>
+                <property name="required" value="@{#form.generalPlaceholder EQ 'other'}"/>
                 <property name="cssClasses">
                     <list merge="true">
                         <value>ksap-characterCount</value>
