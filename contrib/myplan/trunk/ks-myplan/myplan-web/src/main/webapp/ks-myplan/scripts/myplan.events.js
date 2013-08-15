@@ -216,9 +216,9 @@ function fnRestoreDetailsAddButton(courseId) {
  */
 function fnShowHideQuickAddLink(atpId, type, size) {
     if (size < 8) {
-        jQuery("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .quick-add-cell").fadeIn(250);
+        jQuery("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .addItemAction").fadeIn(250);
     } else {
-        jQuery("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .quick-add-cell").fadeOut(250);
+        jQuery("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .addItemAction").fadeOut(250);
     }
 }
 
