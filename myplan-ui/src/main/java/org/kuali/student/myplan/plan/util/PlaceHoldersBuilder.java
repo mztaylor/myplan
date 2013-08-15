@@ -41,6 +41,9 @@ public class PlaceHoldersBuilder extends KeyValuesBase {
             if ( enumValue.getEnumerationKey().equals(PlanConstants.GEN_EDU_ENUM_KEY) ) {
                 value += " - Gen. Ed. Req.";
             }
+            if ( enumValue.getCode().equals(PlanConstants.PLACE_HOLDER_OTHER_CODE) ) {
+                value += " - Enter description in 'Note' below (REQUIRED)";
+            }
             kvList.add(new ConcreteKeyValue(key,value));
         }
 
