@@ -1429,8 +1429,17 @@ public class PlanController extends UifControllerBase {
                         String subject = courseCode.getSubject();
                         String number = courseCode.getNumber();
                         if (number.matches(PlanConstants.COURSE_PLACEHOLDER_REGEX)) {
-                            planItemInfo.setRefObjectId(String.format("%s %s", subject, number));
-                            planItemInfo.setRefObjectType(PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL);
+                            // validate the subject
+                            HashMap<String, String> divisionMap = getCourseHelper().fetchCourseDivisions();
+                            ArrayList<String> divisions = new ArrayList<String>();
+                            getCourseHelper().extractDivisions(divisionMap, subject, divisions, false);
+                            if (divisions.size() > 0) {
+                                planItemInfo.setRefObjectId(String.format("%s %s", divisions.get(0).trim(), number));
+                                planItemInfo.setRefObjectType(PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL);
+                            } else {
+                                return doErrorPage(form, "Curriculum is invalid", PlanConstants.CURRIC_NOT_FOUND, new String[]{subject}, null);
+                            }
+
                         } else {
                             String courseId = getCourseHelper().getCourseId(subject, number);
                             if (!hasText(courseId)) {
@@ -1447,6 +1456,8 @@ public class PlanController extends UifControllerBase {
 
                         }
 
+                    }else {
+                        return doErrorPage(form, "Course not found", PlanConstants.COURSE_NOT_FOUND, new String[]{form.getCourseCd()}, null);
                     }
                 }
 
