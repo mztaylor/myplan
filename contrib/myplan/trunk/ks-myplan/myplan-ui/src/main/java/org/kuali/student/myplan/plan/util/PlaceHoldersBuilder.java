@@ -42,7 +42,7 @@ public class PlaceHoldersBuilder extends KeyValuesBase {
                 value += " - Gen. Ed. Req.";
             }
             if ( enumValue.getCode().equals(PlanConstants.PLACE_HOLDER_OTHER_CODE) ) {
-                value += " - Enter description in 'Note' below (REQUIRED)";
+                value += " - Enter description in 'Notes' below (REQUIRED)";
             }
             kvList.add(new ConcreteKeyValue(key,value));
         }
