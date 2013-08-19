@@ -602,7 +602,7 @@
                 <bean parent="KSAP-PopoverPage" p:id="edit_note_page"
                       p:headerText="Edit Note">
                     <property name="instructionalText"
-                              value="Edit note for [b]@{#form.courseCd}[/b]"/>
+                              value="Edit note for [b]@{#form.courseCd NE null ? #form.courseCd : #form.placeholderCode}[/b]"/>
                     <property name="items">
                         <list>
                             <bean parent="planItemNote">
