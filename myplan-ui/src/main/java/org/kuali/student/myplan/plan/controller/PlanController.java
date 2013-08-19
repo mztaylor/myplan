@@ -272,6 +272,7 @@ public class PlanController extends UifControllerBase {
                                 planForm.setType(PlanConstants.GENERAL_TYPE);
                                 planForm.setGeneralPlaceholder(String.format("%s|%s", planItemInfo.getRefObjectId(),
                                         planItemInfo.getRefObjectType()));
+                                planForm.setPlaceholderCode(EnumerationHelper.getEnumAbbrValForCodeByType(planItemInfo.getRefObjectId(), planItemInfo.getRefObjectType()));
                             }
                             if (planItemInfo.getCredit() != null) {
                                 planForm.setCredit(String.valueOf(planItemInfo.getCredit().intValue()));
@@ -333,6 +334,7 @@ public class PlanController extends UifControllerBase {
                         if (planItem.getCredit() != null) {
                             planForm.setCredit(String.valueOf(planItem.getCredit().intValue()));
                         }
+                        planForm.setPlaceholderCode(EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), planItem.getRefObjectType()));
                         planForm.setType(PlanConstants.GENERAL_TYPE);
                         return getUIFModelAndView(planForm);
                     } else if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
@@ -984,7 +986,7 @@ public class PlanController extends UifControllerBase {
                                 // subject was found, hence is valid
                                 addPlaceHolder = true;
                                 placeHolderType = PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL;
-                                placeHolderId = String.format("%s %s", divisions.get(0), number);
+                                placeHolderId = String.format("%s %s", divisions.get(0).trim(), number);
                             } else {
                                 return doErrorPage(form, "Curriculum is invalid", PlanConstants.CURRIC_NOT_FOUND, new String[]{subject}, null);
                             }
@@ -1456,7 +1458,7 @@ public class PlanController extends UifControllerBase {
 
                         }
 
-                    }else {
+                    } else {
                         return doErrorPage(form, "Course not found", PlanConstants.COURSE_NOT_FOUND, new String[]{form.getCourseCd()}, null);
                     }
                 }
@@ -1474,11 +1476,12 @@ public class PlanController extends UifControllerBase {
                 }
 
                 /*Note update*/
-                RichTextInfo richTextInfo = new RichTextInfo();
-                richTextInfo.setFormatted(form.getNote().trim());
-                richTextInfo.setPlain(form.getNote().trim());
-                planItemInfo.setDescr(richTextInfo);
-
+                if (hasText(form.getNote())) {
+                    RichTextInfo richTextInfo = new RichTextInfo();
+                    richTextInfo.setFormatted(form.getNote().trim());
+                    richTextInfo.setPlain(form.getNote().trim());
+                    planItemInfo.setDescr(richTextInfo);
+                }
                 String[] params = {};
                 planItemInfo = getAcademicPlanService().updatePlanItem(planItemId, planItemInfo, PlanConstants.CONTEXT_INFO);
 
