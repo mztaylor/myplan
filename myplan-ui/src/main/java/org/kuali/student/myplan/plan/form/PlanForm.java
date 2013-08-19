@@ -136,6 +136,7 @@ public class PlanForm extends UifFormBase {
 
     private String generalPlaceholder;
 
+    private String placeholderCode;
 
     /**
      * *******************************************************
@@ -454,7 +455,10 @@ public class PlanForm extends UifFormBase {
     }
 
     public String getPlaceholderCode() {
-        return EnumerationHelper.getEnumAbbrValForCodeByType(generalPlaceholder, PlanConstants.PLACE_HOLDER_ENUM_KEY);
+        return placeholderCode;
     }
 
+    public void setPlaceholderCode(String placeholderCode) {
+        this.placeholderCode = placeholderCode;
+    }
 }
