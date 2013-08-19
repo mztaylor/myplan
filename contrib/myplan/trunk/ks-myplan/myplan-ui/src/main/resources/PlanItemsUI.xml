@@ -902,16 +902,26 @@
                         <entry key="themeName" value="ksap-notes"/>
                     </map>
                 </property>
-                <property name="propertyReplacers">
-                    <list>
-                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="tooltipContent"
-                              p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
-                            <property name="replacement"
-                                      value="@{#line.note NE null ? #line.note.replaceAll('\n','&lt;br&gt;') : ''}"/>
-                        </bean>
-                    </list>
-                </property>
             </bean>
+        </property>
+        <property name="propertyReplacers">
+            <list>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="toolTip"
+                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
+                    <property name="replacement">
+                        <bean parent="MyPlan-Tooltip-Left">
+                            <property name="tooltipContent"
+                                      value="@{#line.note NE null ? #line.note.replaceAll('\n','&lt;br&gt;') : ''}"/>
+                            <property name="templateOptions">
+                                <map merge="true">
+                                    <entry key="themeMargins" value="{ total:'17px', difference:'10px' }"/>
+                                    <entry key="themeName" value="ksap-notes"/>
+                                </map>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+            </list>
         </property>
     </bean>
 
