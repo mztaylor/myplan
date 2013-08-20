@@ -1476,12 +1476,11 @@ public class PlanController extends UifControllerBase {
                 }
 
                 /*Note update*/
-                if (hasText(form.getNote())) {
-                    RichTextInfo richTextInfo = new RichTextInfo();
-                    richTextInfo.setFormatted(form.getNote().trim());
-                    richTextInfo.setPlain(form.getNote().trim());
-                    planItemInfo.setDescr(richTextInfo);
-                }
+                RichTextInfo richTextInfo = new RichTextInfo();
+                String note = hasText(form.getNote()) ? form.getNote().trim() : null;
+                richTextInfo.setFormatted(note);
+                richTextInfo.setPlain(note);
+                planItemInfo.setDescr(richTextInfo);
                 String[] params = {};
                 planItemInfo = getAcademicPlanService().updatePlanItem(planItemId, planItemInfo, PlanConstants.CONTEXT_INFO);
 
