@@ -784,6 +784,7 @@
                         <property name="cssClasses">
                             <list merge="true">
                                 <value>myplan-course-item</value>
+                                <value>@{#line.placeHolder ? 'placeholder':''}</value>
                             </list>
                         </property>
                     </bean>
@@ -821,8 +822,7 @@
                                   p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
                                   p:title="@{#line.alertsAsString}"
                                   p:altText="@{#line.alertsAsString}"
-                                  p:render="@{#line.showAlert}">
-                                <property name="style" value="margin:0 5px 0 0; position:relative; top:-2px;"/>
+                                  p:render="@{#line.showAlert AND !#line.placeHolder}">
                                 <property name="cssClasses">
                                     <list merge="false">
                                         <value>itemAlert</value>
@@ -830,44 +830,46 @@
                                 </property>
                             </bean>
 
-                            <bean parent="KSAP-SimpleDataField" p:propertyName="courseDetails.code"
-                                  p:render="@{#line.courseDetails.code NE null}">
+                            <bean parent="KSAP-MessageField" p:messageText="@{#line.courseDetails.code}">
+                                <property name="render" value="@{!#line.placeHolder}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>ksap-text-bold</value>
+                                        <value>itemCode</value>
                                     </list>
                                 </property>
-                                <property name="style" value="margin:0 5px 0 0;"/>
                             </bean>
 
-                            <bean parent="KSAP-MessageField"
-                                  p:messageText="@{#line.placeHolderCode} (@{#line.placeHolderCredit})"
-                                  p:render="@{#line.placeHolderCode NE null}">
-                                <property name="title" value="@{#line.placeHolderCode}"/>
-                                <property name="style"
-                                          value="margin:0 5px 0 0; font-family: Georgia, serif; font-style: italic; color: #555;"/>
-                            </bean>
-
-                            <!--<bean parent="KSAP-SimpleDataField" p:propertyName="placeHolderCode"
-                                  p:render="@{#line.placeHolderCode NE null}">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>ksap-text-bold</value>
-                                    </list>
-                                </property>
-                                <property name="style" value="margin:0 5px 0 0;"/>
-                            </bean>-->
-
-                            <bean parent="Uif-LinkField"
-                                  p:render="@{#line.courseDetails.courseTitle NE null}">
+                            <bean parent="Uif-LinkField" p:render="@{!#line.placeHolder}">
                                 <property name="linkText" value="@{#line.courseDetails.courseTitle}"/>
                                 <property name="title" value="@{#line.courseDetails.courseTitle}"/>
                                 <property name="href"
                                           value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
-                                <property name="style" value="margin:0 5px 0 0;"/>
                                 <property name="cssClasses">
                                     <list merge="true">
+                                        <value>itemTitle</value>
                                         <value>myplan-text-ellipsis</value>
+                                    </list>
+                                </property>
+                            </bean>
+
+                            <bean parent="KSAP-MessageField" p:messageText="@{#line.placeHolderCode}">
+                                <property name="render" value="@{#line.placeHolder}"/>
+                                <property name="title" value="@{#line.placeHolderValue}"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>itemTitle</value>
+                                    </list>
+                                </property>
+                            </bean>
+
+                            <bean parent="KSAP-MessageField">
+                                <property name="messageText"
+                                          value="(@{#line.placeHolder ? #line.placeHolderCredit : #line.courseDetails.credit})"/>
+                                <property name="render"
+                                          value="@{#line.placeHolder ? (#line.placeHolderCredit EQ null OR #line.placeHolderCredit EQ '' ? false : true) : true}"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>itemCredit</value>
                                     </list>
                                 </property>
                             </bean>

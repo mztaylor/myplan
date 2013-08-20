@@ -605,8 +605,12 @@
                               value="Edit note for [b]@{#form.courseCd NE null ? #form.courseCd : #form.placeholderCode}[/b]"/>
                     <property name="items">
                         <list>
-                            <bean parent="planItemNote">
-                                <property name="fieldLabel.render" value="false"/>
+                            <bean parent="planItemNote"/>
+                            <bean parent="KSAP-SimpleInputField" p:propertyName="generalPlaceholder"
+                                  p:hidden="true" p:render="@{#form.generalPlaceholder NE null}">
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
                             </bean>
                             <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
                                 <property name="items">
@@ -617,6 +621,9 @@
                                                     <bean id="actionSaveNote" p:id="actionSaveNote"
                                                           parent="Uif-PrimaryActionButton-Small"
                                                           p:actionLabel="Save">
+                                                        <property name="disabled"
+                                                                  value="@{#form.generalPlaceholder EQ 'uw.academicplan.placeholder.other|uw.academicplan.placeholder' AND #form.note EQ null}"/>
+                                                        <property name="evaluateDisabledOnKeyUp" value="true"/>
                                                         <property name="actionScript" value="
                                                             var additionalFormData = {
                                                                 viewId: 'PlannedCourse-FormView',
