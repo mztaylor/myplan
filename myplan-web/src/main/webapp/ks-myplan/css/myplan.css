@@ -2988,6 +2988,17 @@ label.scheduled {
     font-weight: bold;
 }
 
+/*
+.myplan-quarter-detail .myplan-course-item .itemCredit:before {
+    content: "(";
+    margin: 0;
+}
+.myplan-quarter-detail .myplan-course-item .itemCredit:after {
+    content: ")";
+    margin: 0;
+}
+*/
+
 .myplan-quarter-detail .myplan-course-item.placeholder .itemTitle,
 .myplan-quarter-detail .myplan-course-item.placeholder .itemCredit {
     font-family: Georgia, serif;
