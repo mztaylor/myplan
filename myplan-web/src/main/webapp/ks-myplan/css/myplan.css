@@ -1181,7 +1181,6 @@ div.activityAction div.blockElement {
 .myplan-quarter-detail .myplan-course-item .itemAlert img,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemNote img,
 .myplan-quarter-detail .myplan-course-item .itemNote img,
-.myplan-full-plan-notes img.itemNote,
 .activityEnrlStatus .alert-icon img {
     border: none;
     width: 18px;
@@ -1197,8 +1196,7 @@ div.activityAction div.blockElement {
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemNote img,
-.myplan-quarter-detail .myplan-course-item .itemNote img,
-.myplan-full-plan-notes img.itemNote {
+.myplan-quarter-detail .myplan-course-item .itemNote img {
     width: 12px;
     height: 12px;
     background-position: -3px -183px;
@@ -1510,7 +1508,6 @@ div.activityAction div.blockElement {
     width: 220px;
     height: 18px;
     background: #fff;
-
 }
 
 .myplan-course-search-panel select {
@@ -1527,7 +1524,7 @@ div.activityAction div.blockElement {
     -webkit-box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
     -moz-box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
     box-shadow: 0px 0px 4px rgba(252, 158, 93, 1);
-    /*    filter: progid:DXImageTransform.Microsoft.Shadow(color='#FC9E5D', Direction=0, Strength=1);*/
+    /* filter: progid:DXImageTransform.Microsoft.Shadow(color='#FC9E5D', Direction=0, Strength=1); */
 }
 
 .myplan-quick-add-text-box input[type='text']:focus {
@@ -2221,6 +2218,10 @@ table.myplan-course-search-results-datatable .blockUI {
     background: url('../images/myplan_backup_section_bkgrd.png') !important;
 }
 
+.myplan-course-sections.myplan-academic-record table {
+    width: 628px;
+}
+
 .myplan-course-sections.myplan-academic-record tr.row td.primary {
     background: #a58dce;
 }
@@ -2239,35 +2240,46 @@ table.myplan-course-search-results-datatable .blockUI {
     background: url('../images/myplan_icon_sprites.png') no-repeat -32px -16px;
 }
 
-/*
-.myplan-course-detail .myplan-course-sections .activityCode {
-    width: 54px;
+.myplan-course-sections.myplan-academic-record .activityAction {
+    width: 16px;
+    max-width: 16px;
 }
 
-.myplan-course-detail .myplan-course-sections .activityType {
-    width: 94px;
+.myplan-course-sections.myplan-academic-record .activityCourseTitle {
+    width: 137px;
+    max-width: 137px;
 }
 
-.myplan-course-detail .myplan-course-sections .activityMeetingData {
+.myplan-course-sections.myplan-academic-record .activityType {
+    width: 51px;
+    max-width: 51px;
+}
+
+.myplan-course-sections.myplan-academic-record .activityMeetingData {
     width: 254px;
+    max-width: 254px;
 }
 
-.myplan-course-detail .myplan-course-sections .activityRegCode {
-    width: 48px;
+.myplan-course-sections.myplan-academic-record .activityInstructor {
+    width: 126px;
+    max-width: 126px;
 }
 
-.myplan-course-detail .myplan-course-sections .activityEnrlRestr {
-    width: 100px;
+.myplan-course-sections.myplan-academic-record .activityAdditionalDetails {
+    width: 367px;
+    max-width: 367px;
 }
 
-.myplan-course-detail .myplan-course-sections .activityEnrlData {
-    width: 60px;
+.myplan-course-sections.myplan-academic-record .activityOther {
+    width: 140px;
+    max-width: 140px;
 }
 
-.myplan-course-detail .myplan-course-sections .activityAction {
-    width: 36px;
+.myplan-course-sections.myplan-academic-record .activityRegCode {
+    width: 70px;
+    max-width: 70px;
 }
-*/
+
 /* MyPlan Section (right side container) ########################################################################### */
 .myplan-widget {
     border: solid 1px #dddddd;
@@ -2729,7 +2741,6 @@ label.scheduled {
 .myplan-full-plan-detail .itemNote img {
     width: 8px;
     height: 8px;
-    background: url('../images/myplan_icon_sprites.png') no-repeat -23px -185px;
 }
 
 .myplan-full-plan-detail .myplan-term > .uif-boxLayout {
@@ -2864,6 +2875,10 @@ label.scheduled {
     background: none;
 }
 
+.myplan-quarter-detail .myplan-course-sections table.uif-tableCollectionLayout {
+    table-layout: fixed;
+}
+
 .myplan-quarter-detail .myplan-course-sections table tr.row td {
     border-top: solid 1px #ddd;
 }
@@ -2955,6 +2970,29 @@ label.scheduled {
     top: 1px !important;
     width: 16px;
     height: 16px;
+}
+
+.myplan-quarter-detail .myplan-course-item .itemAlert,
+.myplan-quarter-detail .myplan-course-item .itemCode,
+.myplan-quarter-detail .myplan-course-item .itemTitle,
+.myplan-quarter-detail .myplan-course-item .itemCredit {
+    margin: 0 5px 0 0;
+}
+
+.myplan-quarter-detail .myplan-course-item .itemAlert {
+    position: relative;
+    top: -2px;
+}
+
+.myplan-quarter-detail .myplan-course-item .itemCode {
+    font-weight: bold;
+}
+
+.myplan-quarter-detail .myplan-course-item.placeholder .itemTitle,
+.myplan-quarter-detail .myplan-course-item.placeholder .itemCredit {
+    font-family: Georgia, serif;
+    font-style: italic;
+    color: #555;
 }
 
 .myplan-quarter-detail .uif-stackedCollectionLayout > .uif-collectionItem.myplan-course-item:first-child {
