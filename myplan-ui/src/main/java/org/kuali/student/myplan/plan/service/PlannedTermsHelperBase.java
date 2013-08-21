@@ -52,7 +52,7 @@ public class PlannedTermsHelperBase {
     private transient CourseHelper courseHelper;
 
 
-    public static List<PlannedTerm> populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String focusAtpId, int futureTerms, boolean fullPlanView) {
+    public static List<PlannedTerm> populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<PlannedCourseDataObject> recommendedCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String focusAtpId, int futureTerms, boolean fullPlanView) {
 
         String globalCurrentAtpId = null;
         globalCurrentAtpId = AtpHelper.getCurrentAtpId();
@@ -154,6 +154,48 @@ public class PlannedTermsHelperBase {
         }
 
         /*
+         * Populating the backup list for the Plans
+        */
+        if (recommendedCoursesList != null && recommendedCoursesList.size() > 0) {
+
+            /*Sorting planned courses and placeHolders*/
+            Collections.sort(recommendedCoursesList, new Comparator<PlannedCourseDataObject>() {
+                @Override
+                public int compare(PlannedCourseDataObject p1, PlannedCourseDataObject p2) {
+                    boolean v1 = p1.isPlaceHolder();
+                    boolean v2 = p2.isPlaceHolder();
+                    return v1 == v2 ? 0 : (v1 ? 1 : -1);
+                }
+            });
+
+
+            int count = plannedTerms.size();
+            for (PlannedCourseDataObject bl : recommendedCoursesList) {
+                String atp = bl.getPlanItemDataObject().getAtp();
+
+                boolean added = false;
+                for (int i = 0; i < count; i++) {
+                    if (atp.equalsIgnoreCase(plannedTerms.get(i).getAtpId())) {
+                        plannedTerms.get(i).getRecommendedList().add(bl);
+                        added = true;
+                    }
+                }
+                if (!added) {
+                    PlannedTerm plannedTerm = new PlannedTerm();
+                    plannedTerm.setAtpId(atp);
+                    StringBuffer str = new StringBuffer();
+                    String[] splitStr = AtpHelper.atpIdToTermNameAndYear(atp);
+                    str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
+                    String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
+                    plannedTerm.setQtrYear(QtrYear);
+                    plannedTerm.getRecommendedList().add(bl);
+                    plannedTerms.add(plannedTerm);
+                    count++;
+                }
+            }
+        }
+
+        /*
         * Used for sorting the planItemDataobjects
         */
         List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
@@ -184,7 +226,7 @@ public class PlannedTermsHelperBase {
             if (plannedTerms.size() > 0) {
                 for (PlannedTerm plannedTerm : plannedTerms) {
                     if (termsList.containsKey(plannedTerm.getAtpId())) {
-                        if (plannedTerm.getPlannedList().size() > 0 || plannedTerm.getBackupList().size() > 0) {
+                        if (plannedTerm.getPlannedList().size() > 0 || plannedTerm.getBackupList().size() > 0 || plannedTerm.getRecommendedList().size() > 0) {
                             termsList.get(plannedTerm.getAtpId());
                             termsList.put(plannedTerm.getAtpId(), plannedTerm);
                         }
@@ -466,7 +508,7 @@ public class PlannedTermsHelperBase {
         } catch (Exception e) {
             logger.error("Could not retrieve the planItems" + e);
         }
-        return populatePlannedTerms(plannedCourseDataObjects, null, null, null, 6, false);
+        return populatePlannedTerms(plannedCourseDataObjects, null, null, null, null, 6, false);
     }
 
 
@@ -622,11 +664,11 @@ public class PlannedTermsHelperBase {
                             credit = CreditsFormatter.formatCredits(courseInfo);
                         }
                     } else {
-                        if ( (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItemInfo.getRefObjectType()) ||
-                             PlanConstants.PLACE_HOLDER_TYPE.equals(planItemInfo.getRefObjectType()) ||
-                             PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItemInfo.getRefObjectType()) ) &&
-                             planItemInfo.getCredit() != null )   {
-                             credit = String.valueOf(planItemInfo.getCredit().intValue());
+                        if ((PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItemInfo.getRefObjectType()) ||
+                                PlanConstants.PLACE_HOLDER_TYPE.equals(planItemInfo.getRefObjectType()) ||
+                                PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItemInfo.getRefObjectType())) &&
+                                planItemInfo.getCredit() != null) {
+                            credit = String.valueOf(planItemInfo.getCredit().intValue());
                         }
                     }
                     if (hasText(credit)) {

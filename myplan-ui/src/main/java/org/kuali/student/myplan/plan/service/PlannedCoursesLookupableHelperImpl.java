@@ -87,8 +87,18 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
         }
 
+        /*************RecommendedCourseList**************/
+        List<PlannedCourseDataObject> recommendedCoursesList = new ArrayList<PlannedCourseDataObject>();
 
-        List<PlannedTerm> perfectPlannedTerms = PlannedTermsHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList, studentCourseRecordInfos, focusAtpId, 6, false);
+        try {
+            recommendedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, studentId, true);
+        } catch (Exception e) {
+            logger.error("Could not load recommendedCourseList", e);
+
+        }
+
+
+        List<PlannedTerm> perfectPlannedTerms = PlannedTermsHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList, recommendedCoursesList, studentCourseRecordInfos, focusAtpId, 6, false);
         return perfectPlannedTerms;
     }
 
