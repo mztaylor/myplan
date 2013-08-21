@@ -68,7 +68,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
         }
 
 
-        List<PlannedTerm> perfectPlannedTerms = PlannedTermsHelperBase.populatePlannedTerms(plannedCoursesList, null, studentCourseRecordInfos, null, 1, true);
+        List<PlannedTerm> perfectPlannedTerms = PlannedTermsHelperBase.populatePlannedTerms(plannedCoursesList, null, null, studentCourseRecordInfos, null, 1, true);
         List<FullPlanItemsDataObject> fullPlanItemsDataObjectList = new ArrayList<FullPlanItemsDataObject>();
         int size = perfectPlannedTerms.size();
         for (int i = 0; size > 0; i++) {
@@ -100,7 +100,6 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
 
     /**
      * Used to know if any of the planned Terms items has a note (Needed for UI rendering)
-     *
      *
      * @param plannedTerms
      * @return

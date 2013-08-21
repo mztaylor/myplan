@@ -638,6 +638,7 @@
             <list>
                 <bean parent="academicRecordCollection"/>
                 <bean parent="plannedCollection"/>
+                <bean parent="recommendedCollection"/>
                 <bean parent="backupCollection"/>
             </list>
         </property>
@@ -1062,6 +1063,35 @@
             </bean>
         </property>
     </bean>
+
+    <bean id="recommendedCollection" parent="plannedCollection" p:headerText="Recommended">
+        <property name="propertyName" value="recommendedList"/>
+        <property name="cssClasses">
+            <list merge="false">
+                <value>myplan-carousel-term</value>
+                <value>@{#line.atpId.replaceAll("\.","-")}</value>
+                <value>myplan-term-backup</value>
+            </list>
+        </property>
+        <property name="dataAttributes">
+            <map>
+                <entry key="backupflag" value="false"/>
+                <entry key="recommendedflag" value="true"/>
+                <entry key="atpId" value="@{#line.atpId}"/>
+                <entry key="size" value="@{#line.recommendedList.size()}"/>
+            </map>
+        </property>
+        <property name="header.rightGroup.items">
+            <list>
+                <bean parent="backup_help_icon"/>
+            </list>
+        </property>
+        <property name="footer">
+            <bean parent="term_no_courses" p:render="@{!#line.openForPlanning AND #line.recommendedList.size() EQ 0}"/>
+        </property>
+    </bean>
+
+
 
     <bean id="backupCollection" parent="plannedCollection" p:headerText="Backup">
         <property name="propertyName" value="backupList"/>

@@ -19,6 +19,7 @@ public class PlannedTerm {
 
     private List<PlannedCourseDataObject> plannedList = null;
     private List<PlannedCourseDataObject> backupList = null;
+    private List<PlannedCourseDataObject> recommendedList = null;
     private List<AcademicRecordDataObject> academicRecord = null;
 
     /*These flags are used for help icons to display*/
@@ -89,6 +90,17 @@ public class PlannedTerm {
 
     public void setBackupList(List<PlannedCourseDataObject> backupList) {
         this.backupList = backupList;
+    }
+
+    public List<PlannedCourseDataObject> getRecommendedList() {
+        if(recommendedList == null){
+            recommendedList = new ArrayList<PlannedCourseDataObject>();
+        }
+        return recommendedList;
+    }
+
+    public void setRecommendedList(List<PlannedCourseDataObject> recommendedList) {
+        this.recommendedList = recommendedList;
     }
 
     private String credits = null;
