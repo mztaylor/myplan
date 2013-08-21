@@ -1260,6 +1260,213 @@ public class PlanController extends UifControllerBase {
     }
 
     /**
+     * Adds a course to plan for requested academic term
+     *
+     * @param form
+     * @param result
+     * @param httprequest
+     * @param httpresponse
+     * @return
+     */
+    @RequestMapping(params = "methodToCall=addRecommendedPlanItem")
+    public ModelAndView addRecommendedPlanItem(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
+                                               HttpServletRequest httprequest, HttpServletResponse httpresponse) {
+        if (!UserSessionHelper.isAdviser()) {
+            return doStudentAccessError(form, "Student Access Denied", null);
+        }
+        /*
+        * ************************************************************************************************************
+        *                                  QuickAdd a course or placeholder to Plan
+        * ************************************************************************************************************
+        */
+
+
+        boolean addPlaceHolder = false;
+
+        CourseSummaryDetails courseDetails = null;
+        String studentId = UserSessionHelper.getStudentRegId();
+
+
+        String quickAddType = form.getType();
+        String courseCd = form.getCourseCd();
+        String placeHolderId = null;
+        String placeHolderType = null;
+        String placeHolderCd = null;
+        if (hasText(form.getGeneralPlaceholder())) {
+            String[] placeHolder = form.getGeneralPlaceholder().split(PlanConstants.CODE_KEY_SEPARATOR);
+            placeHolderId = placeHolder[0];
+            placeHolderType = placeHolder[1];
+            placeHolderCd = EnumerationHelper.getEnumAbbrValForCodeByType(placeHolderId, placeHolderType);
+        }
+
+        if (PlanConstants.RECOMMEND_DIALOG_PAGE.equals(form.getPageId())) {
+            if (hasText(courseCd) || hasText(placeHolderId)) {
+
+                if (PlanConstants.GENERAL_TYPE.equals(quickAddType)) {
+
+                    addPlaceHolder = true;
+
+                    if (PlanConstants.PLACE_HOLDER_OTHER_CODE.equals(placeHolderId) && !hasText(form.getNote())) {
+                        return doErrorPage(form, "Note required", PlanConstants.NOTE_REQUIRED, new String[]{}, null);
+                    }
+
+                } else {
+
+
+                    DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(courseCd);
+
+                    if (courseCode.getSubject() != null && courseCode.getNumber() != null) {
+
+                        String subject = courseCode.getSubject();
+                        String number = courseCode.getNumber();
+
+                        /*Differentiating normal course with course level PlaceHolder*/
+                        if (number.matches(PlanConstants.COURSE_PLACEHOLDER_REGEX)) {
+                            // validate the subject
+                            HashMap<String, String> divisionMap = getCourseHelper().fetchCourseDivisions();
+                            ArrayList<String> divisions = new ArrayList<String>();
+                            getCourseHelper().extractDivisions(divisionMap, subject, divisions, false);
+                            if (divisions.size() > 0) {
+                                // subject was found, hence is valid
+                                addPlaceHolder = true;
+                                placeHolderType = PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL;
+                                placeHolderId = String.format("%s %s", divisions.get(0).trim(), number);
+                            } else {
+                                return doErrorPage(form, "Curriculum is invalid", PlanConstants.CURRIC_NOT_FOUND, new String[]{subject}, null);
+                            }
+
+                        } else {
+
+                            String courseId = getCourseHelper().getCourseId(subject, number);
+                            form.setCourseId(courseId);
+
+                        }
+
+                    }
+
+                    if (form.getCourseId() == null && !addPlaceHolder) {
+                        return doErrorPage(form, "Course not found", PlanConstants.COURSE_NOT_FOUND, new String[]{courseCd}, null);
+                    }
+
+                }
+            } else {
+                return doErrorPage(form, "Empty Search", PlanConstants.EMPTY_SEARCH, new String[]{courseCd}, null);
+            }
+        }
+
+        if (!addPlaceHolder) {
+
+            /* This method needs a Course ID and an ATP ID when Planning a course.*/
+            String courseId = form.getCourseId();
+
+            if (StringUtils.isEmpty(courseId)) {
+                return doOperationFailedError(form, "Course ID was missing.", null);
+            }
+
+            courseDetails = getVersionVerifiedCourseDetails(courseId);
+
+            if (courseDetails == null) {
+                return doOperationFailedError(form, "Unable to retrieve Course Details for courseId " + courseId, null);
+            }
+        }
+
+
+        String newType = PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED;
+
+        String newAtpId = form.getAtpId();
+
+        /*Term is required for this method to complete*/
+        if (!hasText(newAtpId)) {
+            return doOperationFailedError(form, "Missing Term to add course to plan", null);
+        }
+
+        /*Term format validation*/
+        if (!AtpHelper.isAtpIdFormatValid(newAtpId)) {
+            return doOperationFailedError(form, String.format("ATP ID [%s] was not formatted properly.", newAtpId), null);
+        }
+
+        /*Historical term validation*/
+        if (!AtpHelper.isAtpSetToPlanning(newAtpId)) {
+            return doCannotChangeHistoryError(form);
+        }
+
+        LearningPlan plan = getSynchronizedLearningPlan(studentId);
+        if (plan == null) {
+            return doOperationFailedError(form, "Unable to create/retrieve learning plan.", null);
+        }
+
+        /*
+        * ************************************************************************************************************
+        *                                  Adding a course to Plan
+        * ************************************************************************************************************
+        */
+
+        PlanItemInfo planItem = null;
+
+
+        if (!addPlaceHolder) {
+            try {
+
+                planItem = addPlanItem(plan, courseDetails.getVersionIndependentId(), PlanConstants.COURSE_TYPE, newAtpId, newType, form.getNote(), null);
+
+            } catch (DuplicateEntryException e) {
+                return doDuplicatePlanItem(form, newAtpId, courseDetails.getCode());
+            } catch (Exception e) {
+                return doOperationFailedError(form, "Unable to add plan item.", e);
+            }
+        }
+
+
+        /*
+        * *************************************************************************************************************
+        *                   Adding placeholders to the plan
+        * *************************************************************************************************************
+        */
+        else {
+            try {
+
+                planItem = addPlanItem(plan, placeHolderId, placeHolderType, newAtpId, newType, form.getNote(),
+                        form.getCredit());
+
+            } catch (DuplicateEntryException e) {
+                return doDuplicatePlanItem(form, newAtpId, placeHolderCd != null ? placeHolderCd : courseCd);
+            } catch (Exception e) {
+                return doOperationFailedError(form, "Unable to add place Holder item of type." + placeHolderType, e);
+            }
+        }
+
+        /*
+        * *************************************************************************************************************
+        *                   Adding events to the form
+        * *************************************************************************************************************
+        */
+
+
+        /*Create the map of javascript event(s) that should be thrown in the UI.*/
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+
+        String plannedTerm = null;
+        try {
+            if (planItem != null) {
+                plannedTerm = planItem.getPlanPeriods().get(0);
+                events.putAll(makeAddUpdateEvent(planItem, courseDetails, form, false));
+            }
+        } catch (RuntimeException e) {
+            return doOperationFailedError(form, "Unable to create add event.", e);
+        }
+
+        form.setJavascriptEvents(events);
+
+        String[] params = {};
+        if (planItem != null) {
+            params = new String[]{AtpHelper.atpIdToTermName(plannedTerm)};
+        }
+
+        return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_ADDED, params);
+
+    }
+
+    /**
      * Plan Access for Adviser is updated in this method
      *
      * @param form
@@ -1931,6 +2138,15 @@ public class PlanController extends UifControllerBase {
     private ModelAndView doAdviserAccessError(PlanForm form, String errorMessage, Exception e) {
         String[] params = {};
         return doErrorPage(form, errorMessage, PlanConstants.ERROR_KEY_ADVISER_ACCESS, params, e);
+    }
+
+    /**
+     * Blow-up response for all plan item actions for the Adviser.
+     */
+
+    private ModelAndView doStudentAccessError(PlanForm form, String errorMessage, Exception e) {
+        String[] params = {};
+        return doErrorPage(form, errorMessage, PlanConstants.ERROR_KEY_STUDENT_ACCESS, params, e);
     }
 
 
