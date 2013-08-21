@@ -50,6 +50,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String ERROR_KEY_PAGE_RESET_REQUIRED = "myplan.text.error.pageResetRequired";
 
     public static final String ERROR_KEY_ADVISER_ACCESS = "myplan.text.error.adviserAccess";
+    public static final String ERROR_KEY_STUDENT_ACCESS = "myplan.text.error.studentAccess";
     public static final String ERROR_KEY_ILLEGAL_ADVISER_ACCESS = "myplan.text.error.illegalAdviserAccess";
     public static final String ERROR_KEY_OPERATION_FAILED = "myplan.text.error.operationFailed";
     public static final String ERROR_KEY_UNKNOWN_COURSE = "myplan.text.error.unknownCourse";
@@ -98,6 +99,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String DELETE_DIALOG_PAGE = "plan_item_delete_page";
     public static final String QUICK_ADD_DIALOG_PAGE = "quick_add_page";
     public static final String ADD_DIALOG_PAGE = "plan_item_add_page";
+    public static final String RECOMMEND_DIALOG_PAGE = "recommended_add_page";
     public static final String EDIT_NOTE_PAGE = "edit_note_page";
 
     /*Term Names Autumn,Winter,Spring,Summer*/
