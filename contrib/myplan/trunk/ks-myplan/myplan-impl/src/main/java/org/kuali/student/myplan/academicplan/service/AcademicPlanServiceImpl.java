@@ -618,8 +618,8 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         //  TODO: This validation should be implemented in the data dictionary when that possibility manifests.
         //  Make sure a plan period exists if type is planned course.
-        if (planItemInfo.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)
-                || planItemInfo.getTypeKey().equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+        if (AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equals(planItemInfo.getTypeKey())
+                || AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP.equals(planItemInfo.getTypeKey()) || AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
             if (planItemInfo.getPlanPeriods() == null || planItemInfo.getPlanPeriods().size() == 0) {
                 validationResultInfos.add(makeValidationResultInfo(
                         String.format("Plan Item Type was [%s], but no plan periods were defined.", planItemInfo.getTypeKey()),
@@ -688,7 +688,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         List<PlanItemEntity> planItems = this.planItemDao.getLearningPlanItems(planItemId, planItemType);
         for (PlanItemEntity p : planItems) {
             if (p.getRefObjectId().equals(courseId)) {
-                if (planItemType.equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) || planItemType.equals(AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+                if (AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equals(planItemType) || AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP.equals(planItemType) || AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemType)) {
                     for (String atpId : planItem.getPlanPeriods()) {
                         if (p.getPlanPeriods().contains(atpId)) {
                             throw new AlreadyExistsException(String.format("A plan item for plan [%s], course id [%s], and term [%s] already exists.",
