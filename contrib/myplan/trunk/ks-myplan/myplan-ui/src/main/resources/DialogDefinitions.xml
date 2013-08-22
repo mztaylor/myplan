@@ -702,7 +702,7 @@
                                 </property>
                             </bean>
                             <bean parent="planItemNote" p:style="margin: 10px 0 20px;"
-                                  p:label="Describe recommendation reason"/>
+                                  p:label="Describe recommendation reason" p:control.watermarkText="Enter a short description (500 characters max)"/>
                             <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
                                 <property name="items">
                                     <list>
