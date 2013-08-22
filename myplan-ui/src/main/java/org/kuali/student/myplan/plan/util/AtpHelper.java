@@ -775,11 +775,6 @@ public class AtpHelper {
         throw new IllegalArgumentException(quarter + " " + year);
     }
 
-    public static void main(String[] args) {
-        System.out.println(termToYearTerm("Summer 2002").toATP());
-    }
-
-
     /**
      * Return ATP Type Name in display format
      *

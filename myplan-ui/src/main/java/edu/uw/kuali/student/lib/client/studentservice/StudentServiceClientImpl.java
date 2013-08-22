@@ -36,58 +36,6 @@ import java.util.Map;
 public class StudentServiceClientImpl
         implements StudentServiceClient {
 
-
-    //	public static void main( String[] args ) throws Exception {
-//		String baseUrl = "https://ucswseval1.cac.washington.edu/student";
-//		String keyStoreFilename = "/Users/jasonosgood/kuali/main/hemanth/uwkstest.jks";
-//		String keyStorePasswd = "changeit";
-//		String trustStoreFilename = "/Users/jasonosgood/kuali/main/hemanth/uw.jts";
-//		String trustStorePasswd = "secret";
-//		StudentServiceClientImpl impl = new StudentServiceClientImpl( baseUrl, keyStoreFilename, keyStorePasswd, trustStoreFilename, trustStorePasswd );
-//		// https://ucswseval1.cac.washington.edu/student/v4/course/2013,spring,ENGL,131/Z/status.xml
-//		long quick = Long.MAX_VALUE;
-//		long slow = Long.MIN_VALUE;
-//		long zerosecond = 0;
-//		long halfsecond = 0;
-//		long onesecond = 0;
-//		long twosecond = 0;
-//		long threesecond = 0;
-//		int count = 0;;
-//		long start = System.currentTimeMillis();
-//		for( int nth = 0; nth < 10; nth++ ) 
-//		{
-//		String xml = null;
-//		for(char section = 'A'; section != 'Z'; section++ ) {
-//			count++;
-//			String gorp = Character.toString( section );
-//			long kisskiss = System.currentTimeMillis();
-//			xml = impl.getSectionStatus("2013", "spring", "ENGL", "131", gorp);
-//			long bangbang = System.currentTimeMillis() - kisskiss;
-//			quick = Math.min( bangbang, quick );
-//			slow = Math.max( bangbang, slow );
-//			if( bangbang < 500 ) zerosecond++;
-//			if( bangbang > 499 && bangbang < 1000 ) halfsecond++;
-//			if( bangbang > 999 && bangbang < 2000 ) onesecond++;
-//			if( bangbang > 1999 && bangbang < 3000 ) twosecond++;
-//			if( bangbang > 2999 ) threesecond++;
-//			
-//		}
-//		}
-//		long elapsed = System.currentTimeMillis() - start;
-//		System.out.println( "done ");
-//		System.out.println( "elapsed " + elapsed );
-//		System.out.println( "count " + count );
-//		System.out.println( "average " + ( elapsed / count ));
-//		
-//		System.out.println( "quickest " + quick );
-//		System.out.println( "slowest " + slow );
-//		
-//		System.out.println( "zerosecond " + zerosecond );
-//		System.out.println( "halfsecond " + halfsecond );
-//		System.out.println( "onesecond " + onesecond );
-//		System.out.println( "twosecond " + twosecond );
-//		System.out.println( "threesecond " + threesecond );
-//	}
     private static Log logger = LogFactory.getLog(StudentServiceClientImpl.class);
 
     private static final String SERVICE_VERSION = "v4";
@@ -476,7 +424,7 @@ public class StudentServiceClientImpl
             logger.error(msg);
 
         }
-        System.out.println("connect status: " + url + " " + connectionEstablished);
+        logger.debug("connect status: " + url + " " + connectionEstablished);
         return connectionEstablished;
     }
 

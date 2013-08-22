@@ -642,7 +642,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     public static String writeXML(Node doc) throws Exception {
         OutputFormat format = new OutputFormat();
-        format.setExpandEmptyElements(false);
+        format.setExpandEmptyElements(true);
         StringWriter sw = new StringWriter();
         XMLWriter writer = new XMLWriter(sw, format);
 
