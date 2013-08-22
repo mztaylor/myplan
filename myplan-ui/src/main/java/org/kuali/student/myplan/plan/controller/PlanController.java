@@ -249,7 +249,7 @@ public class PlanController extends UifControllerBase {
          * Pre-populating the data for quickAdd view if requested for edit
          *
          */
-        if (PlanConstants.QUICK_ADD_DIALOG_PAGE.equals(form.getPageId()) || PlanConstants.ADD_DIALOG_PAGE.equals(form.getPageId()) || PlanConstants.EDIT_NOTE_PAGE.equals(form.getPageId())) {
+        if (PlanConstants.ADD_DIALOG_PAGE.equals(form.getPageId()) || PlanConstants.EDIT_NOTE_PAGE.equals(form.getPageId()) || PlanConstants.RECOMMEND_DIALOG_PAGE.equals(form.getPageId())) {
 
             if (hasText(planForm.getAtpId())) {
                 String termYear = AtpHelper.atpIdToTermName(planForm.getAtpId());
