@@ -65,21 +65,21 @@
         </property>
     </bean>
 
-    <bean id="planned_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayPlannedHelp ? true : false}">
+    <bean id="planned_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayPlannedHelp}">
         <property name="toolTip">
             <bean parent="MyPlan-Tooltip-Left"
                   p:tooltipContent="MyPlan allows you to add courses to your plan, but does not register you. Check the Time Schedule each quarter to verify whether your planned courses will be offered. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#825&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
-    <bean id="backup_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayBackupHelp ? true : false}">
+    <bean id="backup_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayBackupHelp}">
         <property name="toolTip">
             <bean parent="MyPlan-Tooltip-Left"
                   p:tooltipContent="Courses you are considering in case a planned course is full or unavailable."/>
         </property>
     </bean>
 
-    <bean id="total_credits_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp ? true : false}">
+    <bean id="total_credits_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp}">
         <property name="toolTip">
             <bean parent="MyPlan-Tooltip-Left"
                   p:tooltipContent="@{!#line.openForPlanning ? 'The number of credits registered for a completed quarter. Check your transcript to verify completed credits.' : (#line.academicRecord.size() gt 0 ? ' The total number of credits from your planned and registered courses for the current quarter.' : 'The number of credits you plan to enroll in for future quarter.')}"/>
