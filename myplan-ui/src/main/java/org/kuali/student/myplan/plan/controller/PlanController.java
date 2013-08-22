@@ -2650,8 +2650,8 @@ public class PlanController extends UifControllerBase {
         boolean placeHolder = isPlaceHolderType(planItem.getRefObjectType());
 
         //  Only planned or backup items get an atpId attribute.
-        if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED) ||
-                planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+        if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equals(planItem.getTypeKey()) ||
+                PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP.equals(planItem.getTypeKey()) || PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
 
             String atpId = planItem.getPlanPeriods().get(0);
             String termName = AtpHelper.atpIdToTermName(atpId);
