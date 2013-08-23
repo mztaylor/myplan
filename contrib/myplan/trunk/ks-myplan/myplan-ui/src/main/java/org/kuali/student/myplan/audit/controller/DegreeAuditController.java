@@ -170,7 +170,6 @@ public class DegreeAuditController extends UifControllerBase {
                     copyReportToForm(degreeReport, degreeAuditForm);
                 }
 
-                /*TODO: uncomment once plan Audits are available
                 if (planAuditId == null) {
                     // Grab first plan audit Id
                     planAuditId = getRecentPlanAudit(regId);
@@ -180,13 +179,11 @@ public class DegreeAuditController extends UifControllerBase {
                     planAuditForm.setAuditId(planAuditId);
                     getDegreeAuditHelper().copyCampusToForm(planReport, planAuditForm);
                     copyReportToForm(planReport, planAuditForm);
-                }*/
+                }
 
             }
 
-            /*TODO: uncomment once plan Audits are available
             auditForm.setPlanExists(doesPlannedCourseExist());
-            */
 
         } catch (DataRetrievalFailureException e) {
             logger.error("audit failed", e);
