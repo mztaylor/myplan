@@ -33,7 +33,7 @@
         </property>-->
         <property name="additionalScriptFiles">
             <list>
-                <value>ks-myplan/scripts/myplan.search.js</value>
+                <value>ks-myplan/scripts/myplan.search.js?@{#ConfigProperties['myplan.buildNumber']}</value>
             </list>
         </property>
         <property name="items">

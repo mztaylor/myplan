@@ -54,9 +54,9 @@
 
                 <#--DegreeAudit Page Link-->
                     <#if RequestParameters.viewId=="DegreeAudit-FormView" || RequestParameters.viewId=="PlanAudit-FormView">
-                        <li><a href="audit?methodToCall=audit&viewId=DegreeAudit-FormView" class="active">Audit</a></li>
+                        <li><a href="audit?methodToCall=audit&viewId=PlanAudit-FormView" class="active">Audit</a></li>
                     <#else>
-                        <li><a href="audit?methodToCall=audit&viewId=DegreeAudit-FormView">Audit</a></li>
+                        <li><a href="audit?methodToCall=audit&viewId=PlanAudit-FormView">Audit</a></li>
                     </#if>
                 <#else >
                     <li class="home"><a
