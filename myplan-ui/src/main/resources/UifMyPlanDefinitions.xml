@@ -168,8 +168,8 @@
                 <value>krad/css/ks/fss-theme-krad.css</value>
                 <value>ks-myplan/jquery-popover/jquery.popover.css</value>
                 <value>ks-myplan/jquery-ui/jquery-ui.css</value>
-                <value>ks-myplan/css/myplan.css</value>
-                <value>ks-myplan/css/ksap.css</value>
+                <value>ks-myplan/css/myplan.css?@{#ConfigProperties['myplan.buildNumber']}</value>
+                <value>ks-myplan/css/ksap.css?@{#ConfigProperties['myplan.buildNumber']}</value>
             </list>
         </property>
         <property name="scriptFiles">

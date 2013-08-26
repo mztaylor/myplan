@@ -253,7 +253,10 @@ public class PlanController extends UifControllerBase {
          * Pre-populating the data for quickAdd view if requested for edit
          *
          */
-        if (PlanConstants.ADD_DIALOG_PAGE.equals(form.getPageId()) || PlanConstants.EDIT_NOTE_PAGE.equals(form.getPageId()) || PlanConstants.RECOMMEND_DIALOG_PAGE.equals(form.getPageId())) {
+        if (PlanConstants.ADD_DIALOG_PAGE.equals(form.getPageId()) ||
+                PlanConstants.EDIT_NOTE_PAGE.equals(form.getPageId()) ||
+                PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE.equals(form.getPageId())
+                ) {
 
             if (hasText(planForm.getAtpId())) {
                 String termYear = AtpHelper.atpIdToTermName(planForm.getAtpId());
@@ -291,7 +294,7 @@ public class PlanController extends UifControllerBase {
                         }
                     }
                 } catch (DoesNotExistException e) {
-                    return doPageRefreshError(planForm, "PlanItem with Id:" + planForm.getPlanItemId() + " doesnot exist", e);
+                    return doPageRefreshError(planForm, "PlanItem with Id:" + planForm.getPlanItemId() + " does not exist", e);
                 } catch (Exception e) {
                     return doOperationFailedError(planForm, "Could not open Quick Add.", null);
                 }
@@ -327,6 +330,8 @@ public class PlanController extends UifControllerBase {
                             planForm.setAtpId(planItemAtpId);
                         }
                     }
+
+                 /*planForm.setDateAdded(planItem.getMeta().getCreateTime());*/
 
                     if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP.equalsIgnoreCase(planItem.getTypeKey())) {
                         planForm.setBackup(true);
@@ -1305,7 +1310,7 @@ public class PlanController extends UifControllerBase {
             placeHolderTitle = EnumerationHelper.getEnumValueForCodeByType(placeHolderId, placeHolderType);
         }
 
-        if (PlanConstants.RECOMMEND_DIALOG_PAGE.equals(form.getPageId())) {
+        if (PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE.equals(form.getPageId())) {
             if (hasText(courseCd) || hasText(placeHolderId)) {
 
                 if (PlanConstants.GENERAL_TYPE.equals(quickAddType)) {

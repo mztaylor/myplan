@@ -18,6 +18,7 @@ public class PlanItemDataObject {
     private String refObjId;
     private String refObjType;
     private String term;
+    private String type;
     private String termName;
     private int year;
     private String creditPref;
@@ -40,6 +41,8 @@ public class PlanItemDataObject {
         itemDO.setRefObjId(item.getRefObjectId());
         itemDO.setRefObjType(item.getRefObjectType());
         itemDO.setPlanType(item.getTypeKey());
+
+        itemDO.setType(item.getTypeKey().substring(item.getTypeKey().lastIndexOf(".") + 1));
 
         return itemDO;
     }
@@ -99,6 +102,14 @@ public class PlanItemDataObject {
 
     public String getTerm() {
         return term;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void setTerm(String term) {

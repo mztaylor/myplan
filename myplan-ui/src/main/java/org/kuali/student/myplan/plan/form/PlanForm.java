@@ -26,6 +26,7 @@ import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -133,6 +134,8 @@ public class PlanForm extends UifFormBase {
 
     private String credit;
     private String note;
+
+    private Date dateAdded;
 
     private String generalPlaceholder;
 
@@ -376,6 +379,13 @@ public class PlanForm extends UifFormBase {
         this.type = type;
     }
 
+    public Date getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(Date dateAdded) {
+        this.dateAdded = dateAdded;
+    }
 
     public String getGeneralPlaceholder() {
         return generalPlaceholder;
