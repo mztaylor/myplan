@@ -51,6 +51,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String ERROR_KEY_ADVISER_ACCESS = "myplan.text.error.adviserAccess";
     public static final String ERROR_KEY_STUDENT_ACCESS = "myplan.text.error.studentAccess";
+    public static final String ERROR_KEY_NON_OWNER_ACCESS = "myplan.text.error.nonOwnerAccess";
     public static final String ERROR_KEY_ILLEGAL_ADVISER_ACCESS = "myplan.text.error.illegalAdviserAccess";
     public static final String ERROR_KEY_OPERATION_FAILED = "myplan.text.error.operationFailed";
     public static final String ERROR_KEY_UNKNOWN_COURSE = "myplan.text.error.unknownCourse";
