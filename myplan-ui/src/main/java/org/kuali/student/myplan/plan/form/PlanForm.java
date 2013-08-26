@@ -142,6 +142,16 @@ public class PlanForm extends UifFormBase {
     private String placeholderCode;
 
     /**
+     * ********************************************************
+     * Recommended courses/placeholders properties
+     * *******************************************************
+     */
+
+    private boolean owner;
+
+    private String recommendedBy;
+
+    /**
      * *******************************************************
      * A list of javascript events as:
      * EVENT_NAME
@@ -414,6 +424,21 @@ public class PlanForm extends UifFormBase {
         this.credit = credit;
     }
 
+    public boolean isOwner() {
+        return owner;
+    }
+
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+    }
+
+    public String getRecommendedBy() {
+        return recommendedBy;
+    }
+
+    public void setRecommendedBy(String recommendedBy) {
+        this.recommendedBy = recommendedBy;
+    }
 
     /**
      * Only used in the UI for getting the short Term
