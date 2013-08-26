@@ -333,6 +333,9 @@ public class PlanController extends UifControllerBase {
 
                     planForm.setRecommendedBy(UserSessionHelper.getNameCapitalized(planItem.getMeta().getCreateId()));
                     planForm.setDateAdded(planItem.getMeta().getCreateTime());
+                    if (hasText(planItem.getDescr().getPlain())) {
+                        planForm.setNote(planItem.getDescr().getPlain());
+                    }
 
 
                     if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP.equalsIgnoreCase(planItem.getTypeKey())) {
