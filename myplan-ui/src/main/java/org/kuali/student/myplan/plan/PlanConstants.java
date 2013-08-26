@@ -120,6 +120,8 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String SUSPENDED_ALERT = "Section %s has been suspended. ";
     public static final String COURSE_NOT_SCHEDULE_ALERT = "%s is not scheduled for %s. ";
 
+    public static final String ADD_RECOMMEND_NOTIFICATION_SUBJECT = "%s recommended courses ";
+    public static final String RECOMMENDATION_NOTIFICATION_MESSAGE = "%s,<br><br>%s, %s Adviser, %s recommendations in MyPlan for you.<br><br><b>%s</b><br>%s %s %s<br>%s";
 
     /*Query keys for getting the termInfos from the academic calender*/
     public static final String PLANNING = "PLANNING";

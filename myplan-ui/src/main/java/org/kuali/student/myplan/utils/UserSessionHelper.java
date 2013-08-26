@@ -87,6 +87,16 @@ public class UserSessionHelper {
     }
 
     /**
+     * returns the current User (irrespective of affiliations)
+     *
+     * @return The Id
+     */
+    public synchronized static String getCurrentUserRegId() {
+        UserSession session = GlobalVariables.getUserSession();
+        return session.getPerson().getPrincipalId();
+    }
+
+    /**
      * Returns true if a user is logged in, false means it's a webservice client.
      *
      * @return
