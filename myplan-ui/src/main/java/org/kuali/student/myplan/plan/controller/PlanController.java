@@ -2130,7 +2130,7 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=removeRecommendedItem")
     public ModelAndView removeRecommendedItem(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                               HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if (UserSessionHelper.isStudent()) {
+        if (!UserSessionHelper.isAdviser()) {
             return doStudentAccessError(form, "Student Access Denied", null);
         }
 
