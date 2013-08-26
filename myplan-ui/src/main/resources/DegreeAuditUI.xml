@@ -175,7 +175,7 @@
         </property>
         <property name="additionalCssFiles">
             <list>
-                <value>ks-myplan/css/audit.css</value>
+                <value>ks-myplan/css/audit.css?@{#ConfigProperties['myplan.buildNumber']}</value>
             </list>
         </property>
         <property name="items">
