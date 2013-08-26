@@ -83,9 +83,12 @@ function planItemTemplate(data) {
 
 function fnAddPlanItem(data) {
     var itemId = data.planItemType + "_" + data.atpId + "_" + data.planItemId;
-    var size = parseFloat(jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size")) + 1;
-    jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size", size);
-    fnShowHideQuickAddLink(data.atpId, data.planItemType, size);
+
+    if (jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size") != "false") {
+        var size = parseFloat(jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size")) + 1;
+        jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size", size);
+        fnShowHideQuickAddLink(data.atpId, data.planItemType, size);
+    }
 
     planItemTemplate(data).prependTo("." + data.atpId + ".myplan-term-" + data.planItemType + " .uif-stackedCollectionLayout");
     runHiddenScripts(itemId + "_group");
@@ -120,9 +123,12 @@ function fnUpdateNote(data) {
 function fnRemovePlanItem(data) {
     var itemId = data.planItemType + "_" + data.atpId + "_" + data.planItemId;
     jQuery("#" + itemId).unbind('click');
-    var size = parseFloat(jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size")) - 1;
-    jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size", size);
-    fnShowHideQuickAddLink(data.atpId, data.planItemType, size);
+
+    if (jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size") != "false") {
+        var size = parseFloat(jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size")) - 1;
+        jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size", size);
+        fnShowHideQuickAddLink(data.atpId, data.planItemType, size);
+    }
 
     jQuery("." + data.atpId + ".myplan-term-" + data.planItemType + " #" + itemId + "_group").fadeOut(250, function () {
         jQuery(this).remove();

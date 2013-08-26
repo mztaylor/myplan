@@ -890,7 +890,7 @@
         </property>
     </bean>
     <bean id="planItemNoteIcon" parent="Uif-ImageField"
-          p:id="@{#line.planItemDataObject.planType.split('\.')[3]}_@{#line.planItemDataObject.atp.replace('.','-')}_@{#line.planItemDataObject.id}_note"
+          p:id="@{#line.planItemDataObject.type}_@{#line.planItemDataObject.atp.replace('.','-')}_@{#line.planItemDataObject.id}_note"
           p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
           p:render="@{#line.note NE null}">
         <property name="cssClasses">
@@ -902,7 +902,7 @@
             <bean parent="MyPlan-Tooltip-Left">
                 <property name="tooltipContent" value="
                     &lt;p&gt;@{#line.note NE null ? #line.note.replaceAll('\n','&lt;br&gt;') : ''}&lt;/p&gt;
-                    &lt;p&gt;&lt;a data-planitemtype=@{#line.planItemDataObject.planType.split('\.')[3]} data-planitemid=@{#line.planItemDataObject.id} data-atpid=@{#line.planItemDataObject.atp} onclick=editNote(jQuery(this),event);&gt;Edit Note&lt;/a&gt;&lt;/p&gt;
+                    &lt;p&gt;&lt;a data-planitemtype=@{#line.planItemDataObject.type} data-planitemid=@{#line.planItemDataObject.id} data-atpid=@{#line.planItemDataObject.atp} onclick=editNote(jQuery(this),event);&gt;Edit Note&lt;/a&gt;&lt;/p&gt;
                 "/>
                 <property name="templateOptions">
                     <map merge="true">
@@ -936,7 +936,7 @@
     <bean id="planItemAction" parent="KSAP-HorizontalFieldGroup"
           p:style="width:@{#line.note EQ null ? '115px;' : '99px; padding-right:16px;'}">
         <property name="id"
-                  value="@{#line.planItemDataObject.planType.split('\.')[3]}_@{#line.planItemDataObject.atp.replace('.','-')}_@{#line.planItemDataObject.id}"/>
+                  value="@{#line.planItemDataObject.type}_@{#line.planItemDataObject.atp.replace('.','-')}_@{#line.planItemDataObject.id}"/>
         <property name="title"
                   value="@{#line.placeHolder ? #line.placeHolderCode : #line.courseDetails.code} @{#line.sections} '@{#line.placeHolder ? #line.placeHolderValue : #line.courseDetails.courseTitle}'"/>
         <property name="dataAttributes">
@@ -950,7 +950,7 @@
         <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to swtich menu -->
         <!-- @{#parentLine.openForPlanning ? 'planned_course_menu' : 'completed_planned_backup_menu_items'} -->
         <property name="onClickScript"
-                  value="openMenu('@{#line.planItemDataObject.id}_@{#line.planItemDataObject.planType.split('\.')[3]}','@{#line.planItemDataObject.planType.split('\.')[3]}_@{#line.placeHolder ? 'placeholder':'course'}_menu','@{#line.planItemDataObject.atp}',e,null,'fl-container-150 uif-boxLayoutHorizontalItem',{themeMargins:{total:'20px', difference:'0px'},tail:{align:'top'},align:'top',position:'right'},false);"/>
+                  value="openMenu('@{#line.planItemDataObject.id}_@{#line.planItemDataObject.type}','@{#line.planItemDataObject.type}_@{#line.placeHolder ? 'placeholder':'course'}_menu','@{#line.planItemDataObject.atp}',e,null,'fl-container-150 uif-boxLayoutHorizontalItem',{themeMargins:{total:'20px', difference:'0px'},tail:{align:'top'},align:'top',position:'right'},false);"/>
         <property name="items">
             <list>
                 <bean parent="planItemTitle"/>
@@ -1025,7 +1025,7 @@
             </list>
         </property>
         <property name="layoutManager.lineGroupPrototype.id"
-                  value="@{#line.planItemDataObject.planType.split('\.')[3]}_@{#line.planItemDataObject.atp.replace('.','-')}_@{#line.planItemDataObject.id}_group"/>
+                  value="@{#line.planItemDataObject.type}_@{#line.planItemDataObject.atp.replace('.','-')}_@{#line.planItemDataObject.id}_group"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses"
                   value="uif-verticalBoxGroup uif-collectionItem@{#line.placeHolder ? ' placeholder':''}@{#line.showAlert ? ' alert':''}@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.placeHolder ? ' noAction' : ''}"/>
         <property name="header">
@@ -1072,6 +1072,19 @@
         </property>
     </bean>
 
+    <bean id="recommendedAction" parent="planItemAction">
+        <property name="onClickScript" value="
+            if (@{#line.placeHolder}) {
+                e.preventDefault();
+            } else {
+                var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', courseId:'@{#line.courseDetails.courseId}', atpId:'@{#line.planItemDataObject.atp}', pageId:'recommended_dialog_page'};
+                var popupStyle = {width:'300px', height:'16px'};
+                var popupOptions = {tail:{hidden:true}, position:'right', align:'top', close:true};
+                openPopup('recommended_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
+            }
+        "/>
+    </bean>
+
     <bean id="recommendedCollection" parent="plannedCollection" p:headerText="Recommended">
         <property name="propertyName" value="recommendedList"/>
         <property name="render" value="@{#line NE null ? (T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() ? true : (#parentLine.recommendedList.size() GT 0)) : true}"/>
@@ -1085,12 +1098,31 @@
         <property name="dataAttributes">
             <map>
                 <entry key="atpId" value="@{#line.atpId}"/>
+                <entry key="size" value="false"/>
             </map>
         </property>
         <property name="header.rightGroup.items">
             <list/>
         </property>
         <property name="header.rightGroup.render" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="planItemGroup">
+                    <property name="items">
+                        <list>
+                            <bean parent="planItemAlert"/>
+                            <bean parent="recommendedAction"/>
+                            <bean parent="planItemNoteIcon" p:toolTip.tooltipContent="@{#line.note NE null ? #line.note.replaceAll('\n','&lt;br&gt;') : ''}">
+                                <property name="propertyReplacers"><list/></property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="propertyReplacers">
+            <list/>
+        </property>
         <property name="footer">
             <bean parent="term_no_courses" p:render="@{!#line.openForPlanning AND #line.recommendedList.size() EQ 0}"/>
         </property>
