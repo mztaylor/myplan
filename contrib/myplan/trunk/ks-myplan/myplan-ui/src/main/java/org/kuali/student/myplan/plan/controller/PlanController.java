@@ -15,8 +15,8 @@
  */
 package org.kuali.student.myplan.plan.controller;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -42,6 +42,7 @@ import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.kuali.student.myplan.comment.service.CommentQueryHelper;
+import org.kuali.student.myplan.comment.util.CommentHelper;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
@@ -91,6 +92,9 @@ public class PlanController extends UifControllerBase {
 
     @Autowired
     private transient CourseHelper courseHelper;
+
+    @Autowired
+    private CommentHelper commentHelper;
 
     private PlannedTermsHelperBase plannedTermsHelper;
 
@@ -1292,11 +1296,13 @@ public class PlanController extends UifControllerBase {
         String placeHolderId = null;
         String placeHolderType = null;
         String placeHolderCd = null;
+        String placeHolderTitle = null;
         if (hasText(form.getGeneralPlaceholder())) {
             String[] placeHolder = form.getGeneralPlaceholder().split(PlanConstants.CODE_KEY_SEPARATOR);
             placeHolderId = placeHolder[0];
             placeHolderType = placeHolder[1];
             placeHolderCd = EnumerationHelper.getEnumAbbrValForCodeByType(placeHolderId, placeHolderType);
+            placeHolderTitle = EnumerationHelper.getEnumValueForCodeByType(placeHolderId, placeHolderType);
         }
 
         if (PlanConstants.RECOMMEND_DIALOG_PAGE.equals(form.getPageId())) {
@@ -1331,6 +1337,11 @@ public class PlanController extends UifControllerBase {
                                 addPlaceHolder = true;
                                 placeHolderType = PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL;
                                 placeHolderId = String.format("%s %s", divisions.get(0).trim(), number);
+                                placeHolderCd = placeHolderId;
+                                Map<String, String> subjectAreas = OrgHelper.getTrimmedSubjectAreas();
+                                String subjectTitle = subjectAreas.get(courseCode.getSubject());
+                                String subjectLevel = courseCode.getNumber().toUpperCase().replace("XX", "00");
+                                placeHolderTitle = String.format("%s %s level", subjectTitle, subjectLevel);
                             } else {
                                 return doErrorPage(form, "Curriculum is invalid", PlanConstants.CURRIC_NOT_FOUND, new String[]{subject}, null);
                             }
@@ -1408,6 +1419,7 @@ public class PlanController extends UifControllerBase {
             try {
 
                 planItem = addPlanItem(plan, courseDetails.getVersionIndependentId(), PlanConstants.COURSE_TYPE, newAtpId, newType, form.getNote(), null);
+                sendMessageNotification(AtpHelper.atpIdToTermName(newAtpId), courseDetails.getCode(), courseDetails.getCourseTitle(), courseDetails.getCredit(), form.getNote(), false);
 
             } catch (DuplicateEntryException e) {
                 return doDuplicatePlanItem(form, newAtpId, courseDetails.getCode());
@@ -1427,6 +1439,10 @@ public class PlanController extends UifControllerBase {
 
                 planItem = addPlanItem(plan, placeHolderId, placeHolderType, newAtpId, newType, form.getNote(),
                         form.getCredit());
+
+
+                /*Creating a message*/
+                sendMessageNotification(AtpHelper.atpIdToTermName(newAtpId), placeHolderCd, placeHolderTitle, form.getCredit(), form.getNote(), false);
 
             } catch (DuplicateEntryException e) {
                 return doDuplicatePlanItem(form, newAtpId, placeHolderCd != null ? placeHolderCd : courseCd);
@@ -1581,6 +1597,52 @@ public class PlanController extends UifControllerBase {
         form.setJavascriptEvents(events);
 
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_UPDATED_ITEM, new String[]{});
+    }
+
+
+    /**
+     * Creates a message for Student about recommended course from adviser
+     * Sends a email notification to student about the recommended course from adviser
+     *
+     * @param term
+     * @param courseCd
+     * @param courseTitle
+     * @param credit
+     * @param note
+     * @param removed
+     */
+    private void sendMessageNotification(String term, String courseCd, String courseTitle, String credit, String note, boolean removed) {
+
+        /*TODO: remove hard coded value once we know how to get the adviser department*/
+        String adviserDepartment = "Sociology";
+        String adviserName = UserSessionHelper.getNameCapitalized(UserSessionHelper.getCurrentUserRegId());
+        String studentName = UserSessionHelper.getStudentName();
+        String action = removed ? "deleted" : "added";
+        credit = hasText(credit) ? String.format("(%s)", credit) : "";
+        note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim(), 80, "<br />", true)) : "";
+
+        /*Creating a new Message from Adviser to student*/
+        String subject = String.format(PlanConstants.ADD_RECOMMEND_NOTIFICATION_SUBJECT, adviserName);
+        String message = String.format(PlanConstants.RECOMMENDATION_NOTIFICATION_MESSAGE, studentName, adviserName, adviserDepartment, action, term, courseCd, courseTitle, credit, note);
+        /*String messageText = WordUtils.wrap(message, 80, "<br />", true);
+        messageText = messageText.replace("\n", "<br />");*/
+        String emailMessage = message;
+        if (emailMessage.length() > 100) {
+            emailMessage = emailMessage.substring(0, 100);
+        }
+        try {
+            getCommentHelper().createMessage(subject, message);
+        } catch (Exception e) {
+            logger.error("Error creating message for adviser recommended course", e);
+        }
+
+        /*Sending a email notification to student about the recommended course*/
+        try {
+            getCommentHelper().sendMessageEmailNotification(subject, emailMessage);
+        } catch (Exception e) {
+            logger.error("Error sending message notification for adviser recommended course", e);
+        }
+
     }
 
 
@@ -2891,6 +2953,13 @@ public class PlanController extends UifControllerBase {
         this.courseOfferingService = courseOfferingService;
     }
 
+    public CommentHelper getCommentHelper() {
+        return commentHelper;
+    }
+
+    public void setCommentHelper(CommentHelper commentHelper) {
+        this.commentHelper = commentHelper;
+    }
 
     @Override
     @RequestMapping(method = RequestMethod.GET, params = "methodToCall=performFieldSuggest")
