@@ -306,6 +306,7 @@
                 <bean parent="single_AcademicRecord_Collection_Open"/>
 
                 <bean parent="plannedCoursesList"/>
+                <bean parent="recommendedCoursesList"/>
                 <bean parent="backupCoursesList"/>
             </list>
         </property>
@@ -327,6 +328,29 @@
                         <list>
                             <!-- Plan list is empty -->
                             <bean parent="single_Planned_Collection_Empty"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="recommendedCoursesList" parent="KSAP-VerticalBoxGroup">
+        <property name="id" value="@{dataObject.atpId.replace('.','-')}_recommended"/>
+        <property name="items">
+            <list>
+                <!-- Backup list NOT empty-->
+                <bean parent="single_Recommended_Collection"/>
+            </list>
+        </property>
+        <property name="propertyReplacers">
+            <list>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                      p:condition="dataObject.recommendedList.size() EQ 0">
+                    <property name="replacement">
+                        <list>
+                            <!-- Backup list is empty -->
+                            <bean parent="single_Backup_Collection_Empty"/>
                         </list>
                     </property>
                 </bean>
@@ -991,6 +1015,29 @@
         </property>
     </bean>
 
+    <bean id="single_Recommended_Collection" parent="single_Planned_Collection" p:headerText="Recommended Courses">
+        <property name="propertyName" value="recommendedList"/>
+        <property name="onDocumentReadyScript"
+                  value="truncateField('@{dataObject.atpId.replace('.','-')}_recommended', true);"/>
+        <property name="header.rightGroup">
+            <bean parent="KSAP-HorizontalBoxGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="single_quarter_backup_help_icon"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="footer.render" value="false"/>
+        <property name="render" value="@{dataObject.recommendedList.size() gt 0}"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>uif-subCollection</value>
+                <value>myplan-backup-collection</value>
+            </list>
+        </property>
+    </bean>
+
     <bean id="activityOfferingTableCollection" parent="course_details_activity_data" p:style="">
         <property name="id" value="@{#line.courseDetails.courseId}_sections_collection"/>
         <property name="headerText" value=""/>
@@ -1381,6 +1428,32 @@
         <property name="items">
             <list>
                 <bean parent="KSAP-MessageField" p:messageText="You have no backup courses for this quarter."
+                      p:style="padding:15px; font-size:12px;">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-text-gray</value>
+                            <value>myplan-text-italic</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="single_Recommended_Collection_Empty" parent="single_Collection_Empty" p:headerText="Recommended Courses">
+        <property name="render" value="@{dataObject.recommendedList.size() EQ 0}"/>
+        <property name="header.rightGroup">
+            <bean parent="KSAP-HorizontalBoxGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="single_quarter_backup_help_icon"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-MessageField" p:messageText="You have no recommended courses for this quarter."
                       p:style="padding:15px; font-size:12px;">
                     <property name="cssClasses">
                         <list merge="true">

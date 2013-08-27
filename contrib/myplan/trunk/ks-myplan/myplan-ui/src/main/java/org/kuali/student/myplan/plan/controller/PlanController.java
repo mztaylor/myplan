@@ -2136,14 +2136,8 @@ public class PlanController extends UifControllerBase {
 
 
         String planItemId = form.getPlanItemId();
-        String courseId = form.getCourseId();
-        if (StringUtils.isEmpty(planItemId) && StringUtils.isEmpty(courseId)) {
-            return doOperationFailedError(form, "Plan item id and courseId are missing.", null);
-        }
-
         if (StringUtils.isEmpty(planItemId)) {
-            CourseSummaryDetails course = getCourseDetailsInquiryService().retrieveCourseSummaryById(courseId);
-            planItemId = getPlanIdFromCourseId(course.getVersionIndependentId(), PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST);
+            return doOperationFailedError(form, "Plan item id and courseId are missing.", null);
         }
 
         //  See if the plan item exists.
@@ -2152,6 +2146,7 @@ public class PlanController extends UifControllerBase {
         String code = null;
         String title = null;
         String credit = null;
+        String courseId = null;
         try {
             planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
 
@@ -2200,9 +2195,7 @@ public class PlanController extends UifControllerBase {
 
         try {
             getAcademicPlanService().deletePlanItem(planItem.getId(), UserSessionHelper.makeContextInfoInstance());
-            if (UserSessionHelper.isAdviser()) {
-                sendMessageNotification(term, code, title, credit, form.getNote(), true);
-            }
+            sendMessageNotification(term, code, title, credit, form.getNote(), true);
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not delete plan item", e);
         }

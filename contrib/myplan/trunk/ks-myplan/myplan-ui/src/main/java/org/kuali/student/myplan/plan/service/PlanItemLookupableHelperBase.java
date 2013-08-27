@@ -61,6 +61,11 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
         for (LearningPlanInfo learningPlan : learningPlanList) {
             String learningPlanID = learningPlan.getId();
             List<PlanItemInfo> planItemInfoList = academicPlanService.getPlanItemsInPlan(learningPlanID, CONTEXT_INFO);
+            Collections.sort(planItemInfoList, new Comparator<PlanItemInfo>() {
+                public int compare(PlanItemInfo o1, PlanItemInfo o2) {
+                    return o2.getMeta().getCreateTime().compareTo(o1.getMeta().getCreateTime());
+                }
+            });
             Map<String, List<ActivityOfferingItem>> plannedSections = new HashMap<String, List<ActivityOfferingItem>>();
             Map<String, List<String>> sectionsWithdrawn = new HashMap<String, List<String>>();
             Map<String, List<String>> sectionsSuspended = new HashMap<String, List<String>>();
@@ -95,6 +100,11 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
         for (LearningPlanInfo learningPlan : learningPlanList) {
             String learningPlanID = learningPlan.getId();
             List<PlanItemInfo> planItemInfoList = academicPlanService.getPlanItemsInPlan(learningPlanID, CONTEXT_INFO);
+            Collections.sort(planItemInfoList, new Comparator<PlanItemInfo>() {
+                public int compare(PlanItemInfo o1, PlanItemInfo o2) {
+                    return o2.getMeta().getCreateTime().compareTo(o1.getMeta().getCreateTime());
+                }
+            });
             Map<String, List<ActivityOfferingItem>> plannedSections = new HashMap<String, List<ActivityOfferingItem>>();
             Map<String, List<String>> sectionsWithdrawn = new HashMap<String, List<String>>();
             Map<String, List<String>> sectionsSuspended = new HashMap<String, List<String>>();
