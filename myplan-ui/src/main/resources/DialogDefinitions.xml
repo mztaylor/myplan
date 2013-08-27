@@ -820,6 +820,16 @@
                                           value="@{recommendedBy} said on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(dateAdded.toString())}"/>
                                 <property name="labelPlacement" value="TOP"/>
                                 <property name="fieldLabel.render" value="true"/>
+                                <property name="fieldLabel.cssClasses">
+                                    <list merge="true">
+                                        <value>ksap-text-normal</value>
+                                    </list>
+                                </property>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>myplan-adviser-recommendation</value>
+                                    </list>
+                                </property>
                             </bean>
                             <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
                                 <property name="render" value="@{owner}"/>

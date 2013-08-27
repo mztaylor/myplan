@@ -3029,6 +3029,15 @@ label.scheduled {
     margin: 0 10px 0 0;
 }
 
+.myplan-adviser-recommendation .uif-readOnlyContent {
+    display: block;
+    border: dashed 1px #ccc;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    padding: 10px;
+    color: #666;
+}
 /* Styles for Run Audit Panel ################################################################################## */
 .myplan-audit-tabs {
     border-bottom: solid 4px #f9ac23;

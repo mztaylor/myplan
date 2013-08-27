@@ -201,7 +201,7 @@ a.inlineBlock {
     color: #39275b;
 }
 
-.ksap-text-normal {
+.ksap-text-normal, .ksap-text-normal label {
     font-weight: 500 !important;
 }
 
