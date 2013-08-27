@@ -155,8 +155,18 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
         }
 
+        /*************RecommendedCourseList**************/
+        List<PlannedCourseDataObject> recommendedCoursesList = new ArrayList<PlannedCourseDataObject>();
 
-        PlannedTerm perfectPlannedTerm = SingleQuarterHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList, studentCourseRecordInfos, termAtpId);
+        try {
+            recommendedCoursesList = getPlanItemListByTermId(PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, studentId, termAtpId);
+        } catch (Exception e) {
+            logger.error("Could not load recommendedCourseList", e);
+
+        }
+
+
+        PlannedTerm perfectPlannedTerm = SingleQuarterHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList,recommendedCoursesList, studentCourseRecordInfos, termAtpId);
         return perfectPlannedTerm;
     }
 
@@ -176,6 +186,11 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
         for (LearningPlanInfo learningPlan : learningPlanList) {
             String learningPlanID = learningPlan.getId();
             List<PlanItemInfo> planItemList = academicPlanService.getPlanItemsInPlan(learningPlanID, context);
+            Collections.sort(planItemList, new Comparator<PlanItemInfo>() {
+                public int compare(PlanItemInfo o1, PlanItemInfo o2) {
+                    return o2.getMeta().getCreateTime().compareTo(o1.getMeta().getCreateTime());
+                }
+            });
             Map<String, List<String>> sectionsWithdrawn = new HashMap<String, List<String>>();
             Map<String, List<String>> sectionsSuspended = new HashMap<String, List<String>>();
             Map<String, List<ActivityOfferingItem>> plannedSections = new HashMap<String, List<ActivityOfferingItem>>();

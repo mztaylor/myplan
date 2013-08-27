@@ -10,6 +10,8 @@ import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -31,7 +33,7 @@ public class SingleQuarterHelperBase {
     private static String atpTerm4 = "4";
 
 
-    public static PlannedTerm populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String termAtp) {
+    public static PlannedTerm populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<PlannedCourseDataObject> recommendedCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String termAtp) {
 
 
         String globalCurrentAtpId = AtpHelper.getCurrentAtpId();
@@ -41,6 +43,15 @@ public class SingleQuarterHelperBase {
         PlannedTerm plannedTerm = new PlannedTerm();
         plannedTerm.setAtpId(termAtp);
         plannedTerm.setQtrYear(AtpHelper.atpIdToTermName(termAtp));
+        /*Sorting planned courses and placeHolders*/
+        Collections.sort(plannedCoursesList, new Comparator<PlannedCourseDataObject>() {
+            @Override
+            public int compare(PlannedCourseDataObject p1, PlannedCourseDataObject p2) {
+                boolean v1 = p1.isPlaceHolder();
+                boolean v2 = p2.isPlaceHolder();
+                return v1 == v2 ? 0 : (v1 ? 1 : -1);
+            }
+        });
         for (PlannedCourseDataObject plan : plannedCoursesList) {
             String atp = plan.getPlanItemDataObject().getAtp();
             if (termAtp.equalsIgnoreCase(atp)) {
@@ -53,11 +64,44 @@ public class SingleQuarterHelperBase {
         */
 
         if (backupCoursesList != null) {
-
+            /*Sorting planned courses and placeHolders*/
+            Collections.sort(backupCoursesList, new Comparator<PlannedCourseDataObject>() {
+                @Override
+                public int compare(PlannedCourseDataObject p1, PlannedCourseDataObject p2) {
+                    boolean v1 = p1.isPlaceHolder();
+                    boolean v2 = p2.isPlaceHolder();
+                    return v1 == v2 ? 0 : (v1 ? 1 : -1);
+                }
+            });
             for (PlannedCourseDataObject backup : backupCoursesList) {
                 String atp = backup.getPlanItemDataObject().getAtp();
                 if (termAtp.equalsIgnoreCase(atp)) {
                     plannedTerm.getBackupList().add(backup);
+                }
+            }
+
+
+        }
+
+        /*
+         * Populating the recommended list for the Plans
+        */
+
+        if (recommendedCoursesList != null) {
+            /*Sorting planned courses and placeHolders*/
+            Collections.sort(recommendedCoursesList, new Comparator<PlannedCourseDataObject>() {
+                @Override
+                public int compare(PlannedCourseDataObject p1, PlannedCourseDataObject p2) {
+                    boolean v1 = p1.isPlaceHolder();
+                    boolean v2 = p2.isPlaceHolder();
+                    return v1 == v2 ? 0 : (v1 ? 1 : -1);
+                }
+            });
+
+            for (PlannedCourseDataObject recommended : recommendedCoursesList) {
+                String atp = recommended.getPlanItemDataObject().getAtp();
+                if (termAtp.equalsIgnoreCase(atp)) {
+                    plannedTerm.getRecommendedList().add(recommended);
                 }
             }
 
