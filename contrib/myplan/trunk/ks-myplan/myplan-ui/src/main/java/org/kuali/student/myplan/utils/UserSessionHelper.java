@@ -150,6 +150,47 @@ public class UserSessionHelper {
         }
     }
 
+
+    /**
+     * returns users first name
+     *
+     * @param principleId
+     * @return
+     */
+    public synchronized static String getFirstName(String principleId) {
+        Person person = null;
+        try {
+            person = getPersonService().getPerson(principleId);
+        } catch (Exception e) {
+            logger.error("Could not load the Person Information", e);
+        }
+        if (person != null) {
+            return person.getFirstName();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns users last name
+     *
+     * @param principleId
+     * @return
+     */
+    public synchronized static String getLastName(String principleId) {
+        Person person = null;
+        try {
+            person = getPersonService().getPerson(principleId);
+        } catch (Exception e) {
+            logger.error("Could not load the Person Information", e);
+        }
+        if (person != null) {
+            return person.getLastName();
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Queries the person service to get the name (first last) of a person given a principle ID.
      *

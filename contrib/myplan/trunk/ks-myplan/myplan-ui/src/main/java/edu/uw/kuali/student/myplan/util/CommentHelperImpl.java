@@ -131,8 +131,8 @@ public class CommentHelperImpl implements CommentHelper {
     public void sendMessageEmailNotification(String subjectText, String messageText) throws MissingParameterException {
 
         String studentPrincipleId = UserSessionHelper.getStudentRegId();
-        Person user = GlobalVariables.getUserSession().getPerson();
-        String principleId = user.getPrincipalId();
+        String studentName = UserSessionHelper.getFirstName(studentPrincipleId);
+        String principleId = UserSessionHelper.getCurrentUserRegId();
 
         Properties pro = new Properties();
         InputStream file = getClass().getResourceAsStream(propertiesFilePath);
@@ -141,9 +141,6 @@ public class CommentHelperImpl implements CommentHelper {
         } catch (Exception e) {
             logger.error("Could not find the properties file" + e);
         }
-
-        String studentName = UserSessionHelper.getStudentName();
-        studentName = studentName.substring(0, studentName.indexOf(" ")).trim();
 
         String adviserName = UserSessionHelper.getName(principleId);
 
@@ -189,8 +186,10 @@ public class CommentHelperImpl implements CommentHelper {
     @Override
     public void sendCommentEmailNotification(CommentInfo commentInfo, String comment) throws MissingParameterException {
 
-        Person user = GlobalVariables.getUserSession().getPerson();
-        String principleId = user.getPrincipalId();
+        String studentPrincipleId = UserSessionHelper.getStudentRegId();
+        String studentName = UserSessionHelper.getFirstName(studentPrincipleId);
+        String principleId = UserSessionHelper.getCurrentUserRegId();
+
 
         Properties pro = new Properties();
         InputStream file = getClass().getResourceAsStream(propertiesFilePath);
@@ -205,15 +204,13 @@ public class CommentHelperImpl implements CommentHelper {
         fromId = principleId;
         String messageLink = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.MESSAGE_LINK);
         if (UserSessionHelper.isAdviser()) {
-            toId = UserSessionHelper.getStudentRegId();
-            toName = UserSessionHelper.getStudentName();
-            toName = toName.substring(0, toName.indexOf(" ")).trim();
+            toId = studentPrincipleId;
+            toName = studentName;
 
         } else {
             //  Get the created by user Id from the message.
             toId = commentInfo.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME);
-            toName = UserSessionHelper.getName(toId);
-            toName = toName.substring(0, toName.indexOf(" ")).trim();
+            toName = UserSessionHelper.getFirstName(toId);
             messageLink = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.ADVISER_MESSAGE_LINK) + fromId;
 
         }
