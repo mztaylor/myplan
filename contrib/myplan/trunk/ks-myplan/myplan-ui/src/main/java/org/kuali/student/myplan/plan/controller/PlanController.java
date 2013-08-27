@@ -323,6 +323,9 @@ public class PlanController extends UifControllerBase {
                     if (!CollectionUtils.isEmpty(planItem.getPlanPeriods())) {
                         //Assuming plan Item can only have one plan period
                         planItemAtpId = planItem.getPlanPeriods().get(0);
+                        if (planForm.getAtpId() != null && !planForm.getAtpId().equals(planItemAtpId)) {
+                            return doPageRefreshError(planForm, "Plan item quarter is changed.", null);
+                        }
                         if (planItemAtpId.equalsIgnoreCase(planForm.getAtpId()) && !planForm.isSetToPlanning()) {
                             planForm.setSetToPlanning(AtpHelper.isAtpSetToPlanning(planItemAtpId));
                         }
