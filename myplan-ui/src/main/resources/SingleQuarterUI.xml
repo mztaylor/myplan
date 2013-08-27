@@ -761,9 +761,6 @@
                                   p:linkText="@{#line.activityOfferingItem.registrationCode}">
                                 <property name="href"
                                           value="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.activityOfferingItem.qtryr}&amp;SLN=@{#line.activityOfferingItem.registrationCode}"/>
-                                <!--<property name="actionScript"
-                                          value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.activityOfferingItem.qtryr}&amp;SLN=@{#line.activityOfferingItem.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
-                           -->
                             </bean>
                         </list>
                     </property>
@@ -772,7 +769,187 @@
             </list>
         </property>
         <property name="propertyReplacers">
-            <list></list>
+            <list/>
+        </property>
+    </bean>
+
+    <bean id="singleQuarterItemAlert" parent="Uif-ImageField"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+          p:title="@{#line.alertsAsString}"
+          p:altText="@{#line.alertsAsString}"
+          p:render="@{#line.showAlert AND !#line.placeHolder}">
+        <property name="cssClasses">
+            <list merge="false">
+                <value>itemAlert</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="singleQuarterItemCourseCode" parent="KSAP-MessageField" p:messageText="@{#line.courseDetails.code}">
+        <property name="render" value="@{!#line.placeHolder}"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>itemCode</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="singleQuarterItemCourseLink" parent="Uif-LinkField" p:render="@{!#line.placeHolder}">
+        <property name="linkText" value="@{#line.courseDetails.courseTitle}"/>
+        <property name="title" value="@{#line.courseDetails.courseTitle}"/>
+        <property name="href"
+                  value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>itemTitle</value>
+                <value>myplan-text-ellipsis</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="singleQuarterItemPlaceholderCode" parent="KSAP-MessageField" p:messageText="@{#line.placeHolderCode}">
+        <property name="render" value="@{#line.placeHolder}"/>
+        <property name="title" value="@{#line.placeHolderValue}"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>itemTitle</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="singleQuarterItemCredit" parent="KSAP-MessageField">
+        <property name="messageText"
+                  value="(@{#line.placeHolder ? #line.placeHolderCredit : #line.courseDetails.credit})"/>
+        <property name="render"
+                  value="@{#line.placeHolder ? (#line.placeHolderCredit EQ null OR #line.placeHolderCredit EQ '' ? false : true) : true}"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>itemCredit</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="singleQuarterPlanItemGroup" parent="KSAP-HorizontalFieldGroup">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-course-item-heading</value>
+            </list>
+        </property>
+        <property name="width" value="618px"/>
+        <property name="items">
+            <list>
+                <bean parent="singleQuarterItemAlert"/>
+
+                <bean parent="singleQuarterItemCourseCode"/>
+
+                <bean parent="singleQuarterItemCourseLink"/>
+
+                <bean parent="singleQuarterItemPlaceholderCode"/>
+
+                <bean parent="singleQuarterItemCredit"/>
+
+                <bean parent="planItemNoteIcon"/>
+
+                <!-- Past quarters OR Current Quarter and no Time Schedule OR Time Schedule Open and NOT Scheduled -->
+                <bean parent="singleQuarterStudentActions">
+                    <property name="render" value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND ((dataObject.completedTerm) OR (!#line.timeScheduleOpen AND !dataObject.completedTerm AND dataObject.currentTermForView) OR (#line.timeScheduleOpen AND !#line.sectionsAvailable))}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="singleQuarterMoveCourse"/>
+                            <bean parent="singleQuarterDeleteCourse"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!-- Time Schedule Open and Scheduled -->
+                <bean parent="singleQuarterStudentActions">
+                    <property name="render"
+                              value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND #line.sectionsAvailable}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="singleQuarterSectionsToggle"/>
+                            <bean parent="singleQuarterDeleteCourse"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!-- Future Quarters and no Time Schedule -->
+                <bean parent="singleQuarterStudentActions">
+                    <property name="render"
+                              value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND !#line.timeScheduleOpen AND !dataObject.completedTerm AND !dataObject.currentTermForView}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="singleQuarterCopyCourse"/>
+                            <bean parent="singleQuarterMoveCourse"/>
+                            <bean parent="singleQuarterDeleteCourse"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--For Advisers only-->
+                <bean parent="singleQuarterSectionsToggle">
+                    <property name="style"
+                              value="display:inline-block; font-size:11px; margin:0 0 0 30px; text-align:right; float:right;"/>
+                    <property name="render"
+                              value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND #line.sectionsAvailable}"/>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="singleQuarterRecommendedItemGroup" parent="singleQuarterPlanItemGroup">
+        <property name="items">
+            <list>
+                <bean parent="singleQuarterItemAlert"/>
+
+                <bean parent="singleQuarterItemCourseCode"/>
+
+                <bean parent="singleQuarterItemCourseLink"/>
+
+                <bean parent="singleQuarterItemPlaceholderCode"/>
+
+                <bean parent="singleQuarterItemCredit"/>
+
+                <bean parent="planItemNoteIcon"/>
+
+                <bean parent="singleQuarterSectionsToggle">
+                    <property name="style"
+                              value="display:inline-block; font-size:11px; margin:0 0 0 30px; text-align:right; float:right;"/>
+                    <property name="render"
+                              value="@{#line.timeScheduleOpen AND #line.sectionsAvailable}"/>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="singleQuarterPlanItemActions" parent="KSAP-VerticalFieldGroup">
+        <property name="items">
+            <list>
+                <!--<bean parent="singleQuarterStudentActions">
+                    <property name="render"
+                              value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND !#line.timeScheduleOpen AND !dataObject.completedTerm AND dataObject.currentTermForView}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="singleQuarterMoveCourse"/>
+                            <bean parent="singleQuarterDeleteCourse"/>
+                        </list>
+                    </property>
+                </bean>
+
+
+                <bean parent="singleQuarterStudentActions">
+                    <property name="render"
+                              value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND !#line.sectionsAvailable}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="singleQuarterMoveCourse"/>
+                            <bean parent="singleQuarterDeleteCourse"/>
+                        </list>
+                    </property>
+                </bean>-->
+            </list>
         </property>
     </bean>
 
@@ -831,147 +1008,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-HorizontalFieldGroup">
-                    <property name="onDocumentReadyScript"
-                              value=""/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-course-item-heading</value>
-                        </list>
-                    </property>
-                    <property name="width" value="618px"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-ImageField"
-                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
-                                  p:title="@{#line.alertsAsString}"
-                                  p:altText="@{#line.alertsAsString}"
-                                  p:render="@{#line.showAlert AND !#line.placeHolder}">
-                                <property name="cssClasses">
-                                    <list merge="false">
-                                        <value>itemAlert</value>
-                                    </list>
-                                </property>
-                            </bean>
-
-                            <bean parent="KSAP-MessageField" p:messageText="@{#line.courseDetails.code}">
-                                <property name="render" value="@{!#line.placeHolder}"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>itemCode</value>
-                                    </list>
-                                </property>
-                            </bean>
-
-                            <bean parent="Uif-LinkField" p:render="@{!#line.placeHolder}">
-                                <property name="linkText" value="@{#line.courseDetails.courseTitle}"/>
-                                <property name="title" value="@{#line.courseDetails.courseTitle}"/>
-                                <property name="href"
-                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>itemTitle</value>
-                                        <value>myplan-text-ellipsis</value>
-                                    </list>
-                                </property>
-                            </bean>
-
-                            <bean parent="KSAP-MessageField" p:messageText="@{#line.placeHolderCode}">
-                                <property name="render" value="@{#line.placeHolder}"/>
-                                <property name="title" value="@{#line.placeHolderValue}"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>itemTitle</value>
-                                    </list>
-                                </property>
-                            </bean>
-
-                            <bean parent="KSAP-MessageField">
-                                <property name="messageText"
-                                          value="(@{#line.placeHolder ? #line.placeHolderCredit : #line.courseDetails.credit})"/>
-                                <property name="render"
-                                          value="@{#line.placeHolder ? (#line.placeHolderCredit EQ null OR #line.placeHolderCredit EQ '' ? false : true) : true}"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>itemCredit</value>
-                                    </list>
-                                </property>
-                            </bean>
-
-                            <bean parent="planItemNoteIcon"/>
-
-                            <!-- Past quarters -->
-                            <bean parent="singleQuarterStudentActions">
-                                <property name="render"
-                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND dataObject.completedTerm}"/>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="singleQuarterMoveCourse"/>
-                                        <bean parent="singleQuarterDeleteCourse"/>
-                                    </list>
-                                </property>
-                            </bean>
-
-                            <!-- Time Schedule Open and Scheduled -->
-                            <bean parent="singleQuarterStudentActions">
-                                <property name="render"
-                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND #line.sectionsAvailable}"/>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="singleQuarterSectionsToggle"/>
-                                        <bean parent="singleQuarterDeleteCourse"/>
-                                    </list>
-                                </property>
-                            </bean>
-
-                            <!-- Time Schedule Open and NOT Scheduled -->
-                            <bean parent="singleQuarterStudentActions">
-                                <property name="render"
-                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND !#line.sectionsAvailable}"/>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="singleQuarterMoveCourse"/>
-                                        <bean parent="singleQuarterDeleteCourse"/>
-                                    </list>
-                                </property>
-                            </bean>
-
-                            <!-- Future Quarters and no Time Schedule -->
-                            <bean parent="singleQuarterStudentActions">
-                                <property name="render"
-                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND !#line.timeScheduleOpen AND !dataObject.completedTerm AND !dataObject.currentTermForView}"/>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="singleQuarterCopyCourse"/>
-                                        <bean parent="singleQuarterMoveCourse"/>
-                                        <bean parent="singleQuarterDeleteCourse"/>
-                                    </list>
-                                </property>
-                            </bean>
-
-                            <!-- Current Quarter and no Time Schedule -->
-                            <bean parent="singleQuarterStudentActions">
-                                <property name="render"
-                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND !#line.timeScheduleOpen AND !dataObject.completedTerm AND dataObject.currentTermForView}"/>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="singleQuarterMoveCourse"/>
-                                        <bean parent="singleQuarterDeleteCourse"/>
-                                    </list>
-                                </property>
-                            </bean>
-
-                            <!--For Advisers only-->
-                            <bean parent="singleQuarterSectionsToggle">
-                                <property name="style"
-                                          value="display:inline-block; font-size:11px; margin:0 0 0 30px; text-align:right; float:right;"/>
-                                <property name="render"
-                                          value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND #line.sectionsAvailable}"/>
-                            </bean>
-
-                        </list>
-                    </property>
-                </bean>
+                <bean parent="singleQuarterPlanItemGroup"/>
             </list>
         </property>
         <property name="cssClasses">
@@ -1028,12 +1065,17 @@
                 </property>
             </bean>
         </property>
+        <property name="items">
+            <list>
+                <bean parent="singleQuarterRecommendedItemGroup"/>
+            </list>
+        </property>
         <property name="footer.render" value="false"/>
         <property name="render" value="@{dataObject.recommendedList.size() gt 0}"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>uif-subCollection</value>
-                <value>myplan-backup-collection</value>
+                <value>myplan-recommended-collection</value>
             </list>
         </property>
     </bean>

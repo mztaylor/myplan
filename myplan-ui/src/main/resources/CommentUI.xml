@@ -567,6 +567,10 @@
         <property name="onDocumentReadyScript" value="
             jQuery('#messages_summary').on('MESSAGE_SENT COMMENT_SENT', function(event, data){
                 myplanRetrieveComponent('messages_summary','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
+            }).on('PLAN_ITEM_ADDED PLAN_ITEM_DELETED', function(event, data){
+                if (getConfigParam('adviser') &amp;&amp; data.planItemType === 'recommended') {
+                    myplanRetrieveComponent('messages_summary','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
+                }
             });
         "/>
         <property name="header">
