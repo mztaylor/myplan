@@ -764,7 +764,8 @@
                                 </property>
                             </bean>
                             <bean parent="planItemNote" p:style="margin: 10px 0 20px;"
-                                  p:label="Describe recommendation reason" p:control.watermarkText="Enter a short description (500 characters max)"/>
+                                  p:label="Describe recommendation reason"
+                                  p:control.watermarkText="Enter a short description (500 characters max)"/>
                             <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
                                 <property name="items">
                                     <list>
@@ -807,15 +808,16 @@
                 </bean>
 
                 <!--This page is used for the View Course Recommendation Dialog box -->
-                <bean parent="KSAP-PopoverPage" p:id="recommended_dialog_page" p:headerText="Adviser Recommendation for @{termName}">
+                <bean parent="KSAP-PopoverPage" p:id="recommended_dialog_page"
+                      p:headerText="Adviser Recommendation for @{termName}">
                     <property name="items">
                         <list>
                             <bean parent="courseTitleLink"/>
                             <bean parent="course_details_summary_info"/>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="note">
                                 <property name="render" value="@{note NE '' AND note NE null}"/>
-                                <property name="label" value="Adviser Name said on MM/DD/YYYY"/>
-                               <!-- <property name="label" value="Adviser Name said on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(dateAdded.toString())}"/>-->
+                                <property name="label"
+                                          value="@{recommendedBy} said on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(dateAdded.toString())}"/>
                                 <property name="labelPlacement" value="TOP"/>
                                 <property name="fieldLabel.render" value="true"/>
                             </bean>
@@ -825,31 +827,24 @@
                                         <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
                                             <property name="items">
                                                 <list>
-                                                    <bean id="removeRecommendedItem" p:id="removeRecommendedItem" p:disabled="true"
+                                                    <bean id="removeRecommendedItem" p:id="removeRecommendedItem"
                                                           parent="Uif-PrimaryActionButton-Small"
                                                           p:actionLabel="Delete Recommendation">
-                                                        <property name="render" value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                                                        <property name="render"
+                                                                  value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
                                                         <property name="actionScript" value="
-                                                            var additionalFormData = {
-                                                                viewId: 'PlannedCourse-FormView',
-                                                                methodToCall: 'removeRecommendedPlanItem',
-                                                                atpId: '@{#form.atpId}',
-                                                                pageId: 'recommended_dialog_page'
-                                                            };
-                                                            submitPopupForm(additionalFormData, e, false);
-                                                        "/>
-                                                        <property name="onDocumentReadyScript" value="
-                                                            jQuery('#removeRecommendedItem').on('PLAN_ITEM_DELETED', function(event, data){
-                                                                fnCloseAllPopups();
-                                                            }).on('ERROR', function(event, data){
-                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
-                                                            });
+                                                            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#form.planItemId}', pageId:'recommended_delete_page'};
+                                                            var popupStyle = {width:'300px', height:'16px'};
+                                                            var popupOptions = {tail:{hidden:true}, align:'top', close:true};
+                                                            openPopup('recommended_delete_page', retrieveData, 'plan', popupStyle, popupOptions, e);
                                                         "/>
                                                     </bean>
-                                                    <bean id="acceptRecommendedItem" p:id="acceptRecommendedItem" p:disabled="true"
+                                                    <bean id="acceptRecommendedItem" p:id="acceptRecommendedItem"
+                                                          p:disabled="true"
                                                           parent="Uif-PrimaryActionButton-Small"
                                                           p:actionLabel="Accept Recommendation">
-                                                        <property name="render" value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                                                        <property name="render"
+                                                                  value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
                                                         <property name="actionScript" value="
                                                             var additionalFormData = {
                                                                 viewId: 'PlannedCourse-FormView',
@@ -872,6 +867,43 @@
                                             </property>
                                         </bean>
                                         <bean parent="KSAP-VerticalBoxGroup" p:id="errorPlaceholder" p:hidden="true"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--This page is used for the Delete Recommended plan item -->
+                <bean parent="KSAP-PopoverPage" p:id="recommended_delete_page"
+                      p:headerText="Delete Your Recommendation">
+                    <property name="instructionalText"
+                              value="Are you sure that you want to delete [b]@{generalPlaceholder EQ null ? courseCd EQ null ? courseSummaryDetails.code:courseCd : placeholderCode}[/b] recommendation? Recommendation withdrawal notification will be sent immediately."/>
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-HorizontalBoxGroup">
+                                <property name="items">
+                                    <list>
+                                        <bean p:id="deleteRecommendedItem" parent="Uif-PrimaryActionButton-Small"
+                                              p:actionLabel="Delete">
+                                            <property name="actionScript" value="
+                                                var additionalFormData = {
+                                                    viewId: 'PlannedCourse-FormView',
+                                                    methodToCall: 'removeRecommendedItem',
+                                                    planItemId: '@{planItemId}',
+                                                    pageId: 'recommended_delete_page'
+                                                };
+                                                submitPopupForm(additionalFormData, e, false);
+                                            "/>
+                                            <property name="onDocumentReadyScript" value="
+                                                jQuery('#deleteRecommendedItem').on('PLAN_ITEM_DELETED', function(event, data){
+                                                    fnDisplayMessage(data.message, data.cssClass, 'deleteRecommendedItem', true, true);
+                                                }).on('ERROR', function(event, data) {
+                                                    fnDisplayMessage(data.message, data.cssClass, 'deleteRecommendedItem', true, true);
+                                                });
+                                            "/>
+                                        </bean>
+                                        <bean parent="closePopoverCancel"/>
                                     </list>
                                 </property>
                             </bean>
