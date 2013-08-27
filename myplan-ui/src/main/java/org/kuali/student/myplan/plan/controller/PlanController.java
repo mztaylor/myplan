@@ -522,7 +522,9 @@ public class PlanController extends UifControllerBase {
         events.putAll(removeEvent);
         events.putAll(makeAddUpdateEvent(planItem, courseDetails, form, false));
 
-        addStatusAlertEvents(courseDetails.getCode(), planItemAtpId, events);
+        if (courseDetails != null && hasText(courseDetails.getCode())) {
+            addStatusAlertEvents(courseDetails.getCode(), planItemAtpId, events, false);
+        }
 
         events.putAll(makeUpdateTotalCreditsEvent(planItemAtpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
@@ -625,7 +627,9 @@ public class PlanController extends UifControllerBase {
         events.putAll(removeEvent);
         events.putAll(makeAddUpdateEvent(planItem, courseDetails, form, false));
 
-        addStatusAlertEvents(courseDetails.getCode(), planItemAtpId, events);
+        if (courseDetails != null && hasText(courseDetails.getCode())) {
+            addStatusAlertEvents(courseDetails.getCode(), planItemAtpId, events, false);
+        }
 
         events.putAll(makeUpdateTotalCreditsEvent(planItemAtpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
 
@@ -1578,6 +1582,7 @@ public class PlanController extends UifControllerBase {
                                    HttpServletRequest httprequest, HttpServletResponse httpresponse) {
         PlanItemInfo planItemInfo = null;
         CourseSummaryDetails courseSummaryDetails = null;
+        String atpId = null;
         if (form.getPlanItemId() != null) {
 
             try {
@@ -1586,9 +1591,9 @@ public class PlanController extends UifControllerBase {
                 planItemInfo.getDescr().setPlain(form.getNote());
                 planItemInfo.getDescr().setFormatted(form.getNote());
                 planItemInfo = getAcademicPlanService().updatePlanItem(form.getPlanItemId(), planItemInfo, PlanConstants.CONTEXT_INFO);
-
                 if (!isPlaceHolderType(planItemInfo.getRefObjectType())) {
                     courseSummaryDetails = getVersionVerifiedCourseDetails(planItemInfo.getRefObjectId());
+                    atpId = planItemInfo.getPlanPeriods().get(0);
                 }
 
             } catch (DoesNotExistException e) {
@@ -1609,6 +1614,10 @@ public class PlanController extends UifControllerBase {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         events.putAll(makeAddUpdateEvent(planItemInfo, courseSummaryDetails, form, true));
+
+        if (courseSummaryDetails != null && hasText(courseSummaryDetails.getCode())) {
+            addStatusAlertEvents(courseSummaryDetails.getCode(), atpId, events, true);
+        }
 
         form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
         form.setJavascriptEvents(events);
@@ -1774,6 +1783,10 @@ public class PlanController extends UifControllerBase {
                 Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
                 events.putAll(makeAddUpdateEvent(planItemInfo, courseSummaryDetails, form, true));
 
+                if (courseSummaryDetails != null && hasText(courseSummaryDetails.getCode())) {
+                    addStatusAlertEvents(courseSummaryDetails.getCode(), atpId, events, true);
+                }
+
                 if (creditUpdated && PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equals(planItemInfo.getTypeKey())) {
                     events.putAll(makeUpdateTotalCreditsEvent(atpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
                 }
@@ -1800,9 +1813,10 @@ public class PlanController extends UifControllerBase {
      * @param atpId
      */
 
-    private void addStatusAlertEvents(String courseCode, String atpId, Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events) {
+    private void addStatusAlertEvents(String courseCode, String atpId, Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events, boolean update) {
         //Add additional add events for Activity data if present
         List<ActivityOfferingItem> plannedActivities = getPlannedActivitiesByCourseAndTerm(courseCode, atpId);
+        PlanConstants.JS_EVENT_NAME eventType = update ? PlanConstants.JS_EVENT_NAME.PLAN_ITEM_UPDATED : PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED;
         if (!CollectionUtils.isEmpty(plannedActivities)) {
 
             List<String> plannedActivityCodes = new ArrayList<String>();
@@ -1829,14 +1843,14 @@ public class PlanController extends UifControllerBase {
             String sections = StringUtils.join(plannedActivityCodes.toArray(), ", ");
 
             if (sections != null) {
-                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("sections", sections);
+                events.get(eventType).put("sections", sections);
             }
 
             if (!withdrawnActivityCodes.isEmpty() || !suspendedActivityCodes.isEmpty()) {
 
-                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("showAlert", "true");
+                events.get(eventType).put("showAlert", "true");
 
-                String statusAlert = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).get("statusAlert");
+                String statusAlert = events.get(eventType).get("statusAlert");
 
                 StringBuffer sb = new StringBuffer();
 
@@ -1850,7 +1864,7 @@ public class PlanController extends UifControllerBase {
                     sb = sb.append(String.format(PlanConstants.SUSPENDED_ALERT, StringUtils.join(suspendedActivityCodes.toArray(), ", ")));
                 }
 
-                events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED).put("statusAlert", sb.toString());
+                events.get(eventType).put("statusAlert", sb.toString());
             }
         }
     }
