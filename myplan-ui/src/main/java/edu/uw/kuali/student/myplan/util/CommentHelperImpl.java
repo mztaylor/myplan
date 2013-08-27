@@ -59,8 +59,7 @@ public class CommentHelperImpl implements CommentHelper {
         CommentInfo ci = new CommentInfo();
 
         String studentPrincipleId = UserSessionHelper.getStudentRegId();
-        Person user = GlobalVariables.getUserSession().getPerson();
-        String principleId = user.getPrincipalId();
+        String principleId = UserSessionHelper.getCurrentUserRegId();
 
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put(CommentConstants.SUBJECT_ATTRIBUTE_NAME, subjectText);
@@ -257,6 +256,10 @@ public class CommentHelperImpl implements CommentHelper {
             mailService = (MyPlanMailService) GlobalResourceLoader.getService(MyPlanMailService.SERVICE_NAME);
         }
         return mailService;
+    }
+
+    public void setMailService(MyPlanMailService mailService) {
+        this.mailService = mailService;
     }
 
     public CommentService getCommentService() {
