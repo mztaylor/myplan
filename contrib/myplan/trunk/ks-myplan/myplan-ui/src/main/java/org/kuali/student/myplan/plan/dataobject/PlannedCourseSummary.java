@@ -14,16 +14,17 @@ import java.util.List;
  */
 public class PlannedCourseSummary {
 
- // Plan related information
+    // Plan related information
     private transient List<PlanItemDataObject> plannedList;
     private transient List<PlanItemDataObject> backupList;
+    private transient List<RecommendedItemDataObject> recommendedItemDataObjects;
     private List<AcademicRecordDataObject> acadRecList;
     private List<String> academicTerms;
     private transient String savedItemId;
     private String savedItemDateCreated;
 
 
-   public List<PlanItemDataObject> getPlannedList() {
+    public List<PlanItemDataObject> getPlannedList() {
         if (plannedList == null) {
             plannedList = new ArrayList<PlanItemDataObject>();
         }
@@ -68,8 +69,19 @@ public class PlannedCourseSummary {
         return acadRecList;
     }
 
-   public void setAcadRecList(List<AcademicRecordDataObject> acadRecList) {
+    public void setAcadRecList(List<AcademicRecordDataObject> acadRecList) {
         this.acadRecList = acadRecList;
+    }
+
+    public List<RecommendedItemDataObject> getRecommendedItemDataObjects() {
+        if (recommendedItemDataObjects == null) {
+            recommendedItemDataObjects = new ArrayList<RecommendedItemDataObject>();
+        }
+        return recommendedItemDataObjects;
+    }
+
+    public void setRecommendedItemDataObjects(List<RecommendedItemDataObject> recommendedItemDataObjects) {
+        this.recommendedItemDataObjects = recommendedItemDataObjects;
     }
 
     @JsonIgnore

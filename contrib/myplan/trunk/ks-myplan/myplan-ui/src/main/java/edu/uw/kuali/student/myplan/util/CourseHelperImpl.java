@@ -23,6 +23,7 @@ import org.kuali.student.lum.course.service.CourseService;
 import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.student.lum.lu.service.LuService;
 import org.kuali.student.lum.lu.service.LuServiceConstants;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.controller.QueryTokenizer;
 import org.kuali.student.myplan.course.controller.TokenPairs;
 import org.kuali.student.myplan.course.util.CourseHelper;
@@ -30,7 +31,9 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import javax.xml.namespace.QName;
@@ -40,59 +43,20 @@ import java.util.*;
 public class CourseHelperImpl implements CourseHelper {
 
     private final Logger logger = Logger.getLogger(CourseHelperImpl.class);
+
     private StudentServiceClient studentServiceClient;
 
     private CourseService courseService;
 
     private CourseOfferingService courseOfferingService;
 
-    protected CourseOfferingService getCourseOfferingService() {
-        if (this.courseOfferingService == null) {
-            //   TODO: Use constants for namespace.
-            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
-        }
-        return this.courseOfferingService;
-    }
+    private AcademicPlanService academicPlanService;
 
-    protected synchronized CourseService getCourseService() {
-        if (this.courseService == null) {
-            this.courseService = (CourseService) GlobalResourceLoader
-                    .getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
-        }
-        return this.courseService;
-    }
-
-    public synchronized void setCourseService(CourseService courseService) {
-        this.courseService = courseService;
-    }
-
-    public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
-        this.studentServiceClient = studentServiceClient;
-    }
-
-    public StudentServiceClient getStudentServiceClient() {
-        if (studentServiceClient == null) {
-            studentServiceClient = (StudentServiceClient) GlobalResourceLoader.getService(StudentServiceClient.SERVICE_NAME);
-        }
-        return studentServiceClient;
-    }
+    @Autowired
+    private PlanHelper planHelper;
 
     private LuService luService;
 
-    protected LuService getLuService() {
-        if (luService == null) {
-            luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
-        }
-        return luService;
-    }
-
-    public void setLuService(LuService luService) {
-        this.luService = luService;
-    }
-
-    public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
-        this.courseOfferingService = courseOfferingService;
-    }
 
     private static Document newDocument(String xml) throws DocumentException {
         SAXReader sax = new SAXReader();
@@ -106,13 +70,23 @@ public class CourseHelperImpl implements CourseHelper {
     }};
 
 
-    public static DefaultXPath newXPath(String expr) {
+    private static DefaultXPath newXPath(String expr) {
         DefaultXPath path = new DefaultXPath(expr);
         path.setNamespaceURIs(NAMESPACES);
         return path;
     }
 
-
+    /**
+     * returns back all the section statuses
+     *
+     * @param mapmap
+     * @param yt
+     * @param curric
+     * @param num
+     * @throws ServiceException
+     * @throws DocumentException
+     */
+    @Override
     public void getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt,
                                     String curric, String num) throws ServiceException, DocumentException {
 
@@ -234,6 +208,7 @@ public class CourseHelperImpl implements CourseHelper {
      * @param courseId
      * @return
      */
+    @Override
     public CourseInfo getCourseInfo(String courseId) {
 
         CourseInfo courseInfo = null;
@@ -283,6 +258,7 @@ public class CourseHelperImpl implements CourseHelper {
      * @param list
      * @return
      */
+    @Override
     public String joinStringsByDelimiter(char delimiter, String... list) {
         return StringUtils.join(list, delimiter);
     }
@@ -337,6 +313,7 @@ public class CourseHelperImpl implements CourseHelper {
      * @param activityId
      * @return
      */
+    @Override
     public String getCourseCdFromActivityId(String activityId) {
         ActivityOfferingDisplayInfo activityDisplayInfo = null;
         try {
@@ -378,6 +355,7 @@ public class CourseHelperImpl implements CourseHelper {
      * @param activityId
      * @return
      */
+    @Override
     public String getCodeFromActivityId(String activityId) {
         ActivityOfferingDisplayInfo activityDisplayInfo = null;
         try {
@@ -392,9 +370,16 @@ public class CourseHelperImpl implements CourseHelper {
         }
     }
 
+    /**
+     * UW Implementation checks by breaking down courseOfferingId.
+     * KSAP should use courseOffering service to accomplish the same
+     * @param subjectArea
+     * @param courseNumber
+     * @param courseOfferingIds
+     * @return
+     */
     @Override
     public boolean isCourseInOfferingIds(String subjectArea, String courseNumber, Set<String> courseOfferingIds) {
-        // UW Implementation checks by breaking down courseOfferingId. KSAP should use courseOffering service to accomplish the same
         for (String offeringId : courseOfferingIds) {
             if (offeringId.contains(":" + subjectArea + ":" + courseNumber)) {
                 return true;
@@ -404,7 +389,7 @@ public class CourseHelperImpl implements CourseHelper {
     }
 
     /**
-     * retuns a SLN for given params
+     * returns a SLN for given params
      *
      * @param year
      * @param term
@@ -413,6 +398,7 @@ public class CourseHelperImpl implements CourseHelper {
      * @param activityCd
      * @return
      */
+    @Override
     public String getSLN(String year, String term, String subject, String number, String activityCd) {
         String sln = null;
         String activityId = joinStringsByDelimiter(':', year, term, subject, number, activityCd);
@@ -443,6 +429,7 @@ public class CourseHelperImpl implements CourseHelper {
      * @param activityCd
      * @return
      */
+    @Override
     public String buildActivityRefObjId(String atpId, String subject, String number, String activityCd) {
         AtpHelper.YearTerm yearTerm = AtpHelper.atpToYearTerm(atpId);
         return joinStringsByDelimiter(':', yearTerm.getYearAsString(), yearTerm.getTermAsString(), subject, number, activityCd);
@@ -517,4 +504,72 @@ public class CourseHelperImpl implements CourseHelper {
         }
         return query;
     }
+
+
+    protected LuService getLuService() {
+        if (luService == null) {
+            luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+        }
+        return luService;
+    }
+
+    public void setLuService(LuService luService) {
+        this.luService = luService;
+    }
+
+    public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
+        this.courseOfferingService = courseOfferingService;
+    }
+
+    public AcademicPlanService getAcademicPlanService() {
+        if (academicPlanService == null) {
+            academicPlanService = (AcademicPlanService)
+                    GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
+        }
+        return academicPlanService;
+    }
+
+    public void setAcademicPlanService(AcademicPlanService academicPlanService) {
+        this.academicPlanService = academicPlanService;
+    }
+
+    public PlanHelper getPlanHelper() {
+        return planHelper;
+    }
+
+    public void setPlanHelper(PlanHelper planHelper) {
+        this.planHelper = planHelper;
+    }
+
+    protected CourseOfferingService getCourseOfferingService() {
+        if (this.courseOfferingService == null) {
+            //   TODO: Use constants for namespace.
+            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+        }
+        return this.courseOfferingService;
+    }
+
+    protected synchronized CourseService getCourseService() {
+        if (this.courseService == null) {
+            this.courseService = (CourseService) GlobalResourceLoader
+                    .getService(new QName(CourseServiceConstants.COURSE_NAMESPACE, "CourseService"));
+        }
+        return this.courseService;
+    }
+
+    public synchronized void setCourseService(CourseService courseService) {
+        this.courseService = courseService;
+    }
+
+    public void setStudentServiceClient(StudentServiceClient studentServiceClient) {
+        this.studentServiceClient = studentServiceClient;
+    }
+
+    public StudentServiceClient getStudentServiceClient() {
+        if (studentServiceClient == null) {
+            studentServiceClient = (StudentServiceClient) GlobalResourceLoader.getService(StudentServiceClient.SERVICE_NAME);
+        }
+        return studentServiceClient;
+    }
+
 }
