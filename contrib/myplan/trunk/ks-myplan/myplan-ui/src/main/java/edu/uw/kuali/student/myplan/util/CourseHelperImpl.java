@@ -31,9 +31,7 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import javax.xml.namespace.QName;
@@ -51,9 +49,6 @@ public class CourseHelperImpl implements CourseHelper {
     private CourseOfferingService courseOfferingService;
 
     private AcademicPlanService academicPlanService;
-
-    @Autowired
-    private PlanHelper planHelper;
 
     private LuService luService;
 
@@ -373,6 +368,7 @@ public class CourseHelperImpl implements CourseHelper {
     /**
      * UW Implementation checks by breaking down courseOfferingId.
      * KSAP should use courseOffering service to accomplish the same
+     *
      * @param subjectArea
      * @param courseNumber
      * @param courseOfferingIds
@@ -531,14 +527,6 @@ public class CourseHelperImpl implements CourseHelper {
 
     public void setAcademicPlanService(AcademicPlanService academicPlanService) {
         this.academicPlanService = academicPlanService;
-    }
-
-    public PlanHelper getPlanHelper() {
-        return planHelper;
-    }
-
-    public void setPlanHelper(PlanHelper planHelper) {
-        this.planHelper = planHelper;
     }
 
     protected CourseOfferingService getCourseOfferingService() {
