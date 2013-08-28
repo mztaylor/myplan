@@ -318,6 +318,13 @@ a, a:hover, a:active, a:visited, a:focus {
     margin: 0;
 }
 
+.jquerybubblepopup .jquerybubblepopup-innerHtml {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 300px;
+    min-width: 100px;
+}
+
 .backdoor,
 .adviser-banner {
     width: 930px;
