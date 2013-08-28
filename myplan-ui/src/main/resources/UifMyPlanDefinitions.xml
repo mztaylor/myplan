@@ -316,7 +316,6 @@
             <map merge="true">
                 <entry key="position" value="top"/>
                 <entry key="align" value="center"/>
-                <entry key="width" value="250px"/>
                 <entry key="tail" value="{align:'center', hidden:false}"/>
                 <entry key="openingSpeed" value="50"/>
                 <entry key="closingSpeed" value="50"/>
