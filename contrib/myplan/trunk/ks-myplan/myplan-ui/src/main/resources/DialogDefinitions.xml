@@ -603,7 +603,13 @@
                               value="Edit note for [b]@{#form.courseCd NE null ? #form.courseCd : #form.placeholderCode}[/b]"/>
                     <property name="items">
                         <list>
-                            <bean parent="planItemNote"/>
+                            <bean parent="planItemNote">
+                                <property name="required" value="@{#form.generalPlaceholder EQ 'uw.academicplan.placeholder.other|uw.academicplan.placeholder'}"/>
+                                <property name="fieldLabel.requiredMessagePlacement" value="RIGHT"/>
+                                <property name="fieldLabel.requiredMessage">
+                                    <bean parent="KSAP-Message" p:messageText="(Required)"/>
+                                </property>
+                            </bean>
                             <bean parent="KSAP-SimpleInputField" p:propertyName="generalPlaceholder"
                                   p:hidden="true" p:render="@{#form.generalPlaceholder NE null}">
                                 <property name="control">
