@@ -15,7 +15,7 @@ public interface CourseHelper {
 
 
     public void getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt,
-                                                                                    String curric, String num) throws ServiceException, DocumentException;
+                                    String curric, String num) throws ServiceException, DocumentException;
 
     public DeconstructedCourseCode getCourseDivisionAndNumber(String courseCode);
 
@@ -53,5 +53,4 @@ public interface CourseHelper {
      * @return
      */
     public boolean isCourseInOfferingIds(String subjectArea, String courseNumber, Set<String> courseOfferingIds);
-
 }

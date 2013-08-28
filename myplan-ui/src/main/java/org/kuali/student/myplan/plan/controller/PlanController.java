@@ -55,6 +55,7 @@ import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
+import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -96,6 +97,9 @@ public class PlanController extends UifControllerBase {
     @Autowired
     private CommentHelper commentHelper;
 
+    @Autowired
+    private PlanHelper planHelper;
+
     private PlannedTermsHelperBase plannedTermsHelper;
 
     private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryService;
@@ -107,34 +111,9 @@ public class PlanController extends UifControllerBase {
 
     // Used for getting the term and year from Atp
     private transient AtpHelper atpHelper;
+
     private transient AcademicRecordService academicRecordService;
 
-    public AcademicRecordService getAcademicRecordService() {
-        if (this.academicRecordService == null) {
-            //   TODO: Use constants for namespace.
-            this.academicRecordService = (AcademicRecordService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/academicrecord", "arService"));
-        }
-        return this.academicRecordService;
-    }
-
-    public void setAcademicRecordService(AcademicRecordService academicRecordService) {
-        this.academicRecordService = academicRecordService;
-    }
-
-    public CourseHelper getCourseHelper() {
-        return courseHelper;
-    }
-
-    public void setCourseHelper(CourseHelper courseHelper) {
-        this.courseHelper = courseHelper;
-    }
-
-    public PlannedTermsHelperBase getPlannedTermsHelper() {
-        if (plannedTermsHelper == null) {
-            plannedTermsHelper = new PlannedTermsHelperBase();
-        }
-        return plannedTermsHelper;
-    }
 
     @Override
     protected PlanForm createInitialForm(HttpServletRequest request) {
@@ -482,7 +461,7 @@ public class PlanController extends UifControllerBase {
         //  Validate: Capacity.
         boolean hasCapacity = false;
         try {
-            hasCapacity = isAtpHasCapacity(getLearningPlan(UserSessionHelper.getStudentRegId()),
+            hasCapacity = isAtpHasCapacity(getPlanHelper().getLearningPlan(UserSessionHelper.getStudentRegId()),
                     planItemAtpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
@@ -585,7 +564,7 @@ public class PlanController extends UifControllerBase {
         //  Validate: Capacity.
         boolean hasCapacity = false;
         try {
-            hasCapacity = isAtpHasCapacity(getLearningPlan(UserSessionHelper.getStudentRegId()),
+            hasCapacity = isAtpHasCapacity(getPlanHelper().getLearningPlan(UserSessionHelper.getStudentRegId()),
                     planItemAtpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
@@ -707,7 +686,7 @@ public class PlanController extends UifControllerBase {
         if (!isPlaceHolderType(planItem.getRefObjectType())) {
             PlanItemInfo existingPlanItem = null;
             try {
-                existingPlanItem = getPlannedOrBackupPlanItem(planItem.getRefObjectId(), newAtpId);
+                existingPlanItem = getPlanHelper().getPlannedOrBackupPlanItem(planItem.getRefObjectId(), newAtpId);
             } catch (RuntimeException e) {
                 return doOperationFailedError(form, "Query for existing plan item failed.", null);
             }
@@ -746,7 +725,7 @@ public class PlanController extends UifControllerBase {
         //  Validate: Plan Size exceeded.
         boolean hasCapacity = false;
         try {
-            hasCapacity = isAtpHasCapacity(getLearningPlan(UserSessionHelper.getStudentRegId()), newAtpId, planItem.getTypeKey());
+            hasCapacity = isAtpHasCapacity(getPlanHelper().getLearningPlan(UserSessionHelper.getStudentRegId()), newAtpId, planItem.getTypeKey());
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
@@ -864,7 +843,7 @@ public class PlanController extends UifControllerBase {
         if (!isPlaceHolderType(planItem.getRefObjectType())) {
             PlanItemInfo existingPlanItem = null;
             try {
-                existingPlanItem = getPlannedOrBackupPlanItem(planItem.getRefObjectId(), newAtpId);
+                existingPlanItem = getPlanHelper().getPlannedOrBackupPlanItem(planItem.getRefObjectId(), newAtpId);
             } catch (RuntimeException e) {
                 return doOperationFailedError(form, "Query for existing plan item failed.", e);
             }
@@ -880,7 +859,7 @@ public class PlanController extends UifControllerBase {
         boolean hasCapacity = false;
         LearningPlan learningPlan = null;
         try {
-            learningPlan = getLearningPlan(UserSessionHelper.getStudentRegId());
+            learningPlan = getPlanHelper().getLearningPlan(UserSessionHelper.getStudentRegId());
             hasCapacity = isAtpHasCapacity(learningPlan, newAtpId, planItem.getTypeKey());
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
@@ -1100,7 +1079,7 @@ public class PlanController extends UifControllerBase {
                 }
                 if (activityOfferingItem.getCode().equalsIgnoreCase(form.getSectionCode())) {
                     if (activityOfferingItem.isPrimary()) {
-                        PlanItemInfo coursePlanItem = getPlannedOrBackupPlanItem(courseDetails.getVersionIndependentId(), form.getAtpId());
+                        PlanItemInfo coursePlanItem = getPlanHelper().getPlannedOrBackupPlanItem(courseDetails.getVersionIndependentId(), form.getAtpId());
                         if (coursePlanItem != null) {
                             addCourse = false;
                         }
@@ -1109,14 +1088,14 @@ public class PlanController extends UifControllerBase {
                         form.setPrimaryRegistrationCode(activityOfferingItem.getRegistrationCode());
                         break;
                     } else {
-                        PlanItemInfo primaryPlanItem = getPlannedOrBackupPlanItem(activityOfferingItem.getPrimaryActivityOfferingId(), form.getAtpId());
+                        PlanItemInfo primaryPlanItem = getPlanHelper().getPlannedOrBackupPlanItem(activityOfferingItem.getPrimaryActivityOfferingId(), form.getAtpId());
                         if (primaryPlanItem != null) {
                             addCourse = false;
                         } else {
                             addPrimaryCourse = true;
                             form.setPrimarySectionCode(getCourseHelper().getCodeFromActivityId(activityOfferingItem.getPrimaryActivityOfferingId()));
                             form.setPrimaryRegistrationCode(primaryActivityToRegCode.get(form.getPrimarySectionCode()));
-                            PlanItemInfo coursePlanItem = getPlannedOrBackupPlanItem(courseDetails.getVersionIndependentId(), form.getAtpId());
+                            PlanItemInfo coursePlanItem = getPlanHelper().getPlannedOrBackupPlanItem(courseDetails.getVersionIndependentId(), form.getAtpId());
                             if (coursePlanItem != null) {
                                 addCourse = false;
                             }
@@ -1882,7 +1861,7 @@ public class PlanController extends UifControllerBase {
             try {
                 //  If something goes wrong with the query then a RuntimeException will be thrown. Otherwise, the method
                 //  will return the default plan or null. Having multiple plans will also produce a RuntimeException.
-                plan = getLearningPlan(studentId);
+                plan = getPlanHelper().getLearningPlan(studentId);
             } catch (RuntimeException e) {
                 return null;
             }
@@ -1931,7 +1910,7 @@ public class PlanController extends UifControllerBase {
                 isDuplicate = true;
             }
         } else {
-            if (getPlannedOrBackupPlanItem(refObjId, atpId) != null) {
+            if (getPlanHelper().getPlannedOrBackupPlanItem(refObjId, atpId) != null) {
                 isDuplicate = true;
             }
         }
@@ -2544,49 +2523,6 @@ public class PlanController extends UifControllerBase {
     }
 
     /**
-     * Gets a plan item of a particular type for a particular ATP.
-     *
-     * @param planId       The id of the learning plan
-     * @param courseId     The id of the course
-     * @param atpId        The ATP id
-     * @param planItemType The plan item type key.
-     * @return A "planned" or "backup" plan item. Or 'null' if none exists.
-     * @throws RuntimeException on errors.
-     */
-    private PlanItemInfo getPlanItemByAtpAndType(String planId, String courseId, String atpId, String planItemType) {
-        if (StringUtils.isEmpty(planId)) {
-            throw new RuntimeException("Plan Id was empty.");
-        }
-
-        if (StringUtils.isEmpty(courseId)) {
-            throw new RuntimeException("Course Id was empty.");
-        }
-
-        if (StringUtils.isEmpty(atpId)) {
-            throw new RuntimeException("ATP Id was empty.");
-        }
-
-        List<PlanItemInfo> planItems = null;
-        PlanItemInfo item = null;
-
-        try {
-            planItems = getAcademicPlanService().getPlanItemsInPlanByAtp(planId, atpId, planItemType, PlanConstants.CONTEXT_INFO);
-        } catch (Exception e) {
-            throw new RuntimeException("Could not retrieve plan items.", e);
-        }
-
-        for (PlanItemInfo p : planItems) {
-            if (p.getRefObjectId().equals(courseId) && p.getTypeKey().equals(planItemType)) {
-                item = p;
-                break;
-            }
-        }
-
-        //  A null here means that no plan item exists for the given course and ATP IDs.
-        return item;
-    }
-
-    /**
      * Gets a Plan Item of type "wishlist" for a particular course. There should only ever be one.
      *
      * @param courseId The id of the course.
@@ -2599,7 +2535,7 @@ public class PlanController extends UifControllerBase {
         }
 
         String studentId = UserSessionHelper.getStudentRegId();
-        LearningPlan learningPlan = getLearningPlan(studentId);
+        LearningPlan learningPlan = getPlanHelper().getLearningPlan(studentId);
         if (learningPlan == null) {
             throw new RuntimeException(String.format("Could not find the default plan for [%s].", studentId));
         }
@@ -2624,80 +2560,6 @@ public class PlanController extends UifControllerBase {
 
         //  A null here means that no plan item exists for the given course ID.
         return item;
-    }
-
-
-    /**
-     * Gets a Plan Item of type "planned" or "backup" for a particular course and ATP ID. Since we are enforcing a
-     * data constraint of one "planned" or "backup" plan item per ATP ID this method only returns a single plan item.
-     *
-     * @param courseId
-     * @return A "planned" or "backup" plan item. Or 'null' if none exists.
-     * @throws RuntimeException on errors.
-     */
-    public PlanItemInfo getPlannedOrBackupPlanItem(String courseId, String atpId) {
-        String studentId = UserSessionHelper.getStudentRegId();
-        LearningPlan learningPlan = getLearningPlan(studentId);
-        if (learningPlan == null) {
-            return null;
-        }
-
-        PlanItemInfo planItem = null;
-
-        try {
-            planItem = getPlanItemByAtpAndType(learningPlan.getId(), courseId, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
-        } catch (Exception e) {
-            logger.error("Could not retrieve plan items.", e);
-            throw new RuntimeException("Could not retrieve plan items.", e);
-        }
-
-        if (planItem == null) {
-            try {
-                planItem = getPlanItemByAtpAndType(learningPlan.getId(), courseId, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
-            } catch (Exception e) {
-                logger.error("Could not retrieve plan items.", e);
-                throw new RuntimeException("Could not retrieve plan items.", e);
-            }
-        }
-
-        //  A null here means that no plan item exists for the given course and ATP IDs.
-        return planItem;
-    }
-
-    /**
-     * Retrieve a student's LearningPlan.
-     *
-     * @param studentId
-     * @return A LearningPlan or null on errors.
-     * @throws RuntimeException if the query fails.
-     */
-    private LearningPlan getLearningPlan(String studentId) {
-        /*
-        *  First fetch the student's learning plan.
-        */
-        List<LearningPlanInfo> learningPlans = null;
-        try {
-            learningPlans = getAcademicPlanService().getLearningPlansForStudentByType(studentId,
-                    PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
-        } catch (Exception e) {
-            throw new RuntimeException(String.format("Could not fetch plan for user [%s].", studentId), e);
-        }
-
-        if (learningPlans == null) {
-            throw new RuntimeException(String.format("Could not fetch plan for user [%s]. The query returned null.", studentId));
-        }
-
-        //  There should currently only be a single learning plan. This may change in the future.
-        if (learningPlans.size() > 1) {
-            throw new RuntimeException(String.format("User [%s] has more than one plan.", studentId));
-        }
-
-        LearningPlan learningPlan = null;
-        if (learningPlans.size() != 0) {
-            learningPlan = learningPlans.get(0);
-        }
-
-        return learningPlan;
     }
 
     /**
@@ -3078,6 +2940,41 @@ public class PlanController extends UifControllerBase {
 
     public void setCommentHelper(CommentHelper commentHelper) {
         this.commentHelper = commentHelper;
+    }
+
+    public AcademicRecordService getAcademicRecordService() {
+        if (this.academicRecordService == null) {
+            //   TODO: Use constants for namespace.
+            this.academicRecordService = (AcademicRecordService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/academicrecord", "arService"));
+        }
+        return this.academicRecordService;
+    }
+
+    public void setAcademicRecordService(AcademicRecordService academicRecordService) {
+        this.academicRecordService = academicRecordService;
+    }
+
+    public CourseHelper getCourseHelper() {
+        return courseHelper;
+    }
+
+    public void setCourseHelper(CourseHelper courseHelper) {
+        this.courseHelper = courseHelper;
+    }
+
+    public PlannedTermsHelperBase getPlannedTermsHelper() {
+        if (plannedTermsHelper == null) {
+            plannedTermsHelper = new PlannedTermsHelperBase();
+        }
+        return plannedTermsHelper;
+    }
+
+    public PlanHelper getPlanHelper() {
+        return planHelper;
+    }
+
+    public void setPlanHelper(PlanHelper planHelper) {
+        this.planHelper = planHelper;
     }
 
     @Override

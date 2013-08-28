@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.course.service;
 
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
+import edu.uw.kuali.student.myplan.util.PlanHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -35,11 +36,8 @@ import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.controller.PlanController;
 import org.kuali.student.myplan.plan.dataobject.*;
-import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.*;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
-import org.kuali.student.myplan.plan.util.DateFormatHelper;
-import org.kuali.student.myplan.plan.util.EnumerationHelper;
-import org.kuali.student.myplan.plan.util.OrgHelper;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -50,6 +48,7 @@ import org.kuali.student.r2.core.room.dto.BuildingInfo;
 import org.kuali.student.r2.core.room.dto.RoomInfo;
 import org.kuali.student.r2.core.scheduling.dto.TimeSlotInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -97,51 +96,9 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
     @Autowired
     CourseHelper courseHelper;
 
+    @Autowired
+    PlanHelper planHelper;
 
-    //TODO: These should be changed to an ehCache spring bean
-//    private HashMap<String, Map<String, String>> hashMap;
-
-    private HashMap<String, String> courseComments = new HashMap<String, String>();
-
-    public HashMap<String, String> getCourseComments() {
-        return courseComments;
-    }
-
-    public void setCourseComments(HashMap<String, String> courseComments) {
-        this.courseComments = courseComments;
-    }
-
-    protected LuService getLuService() {
-        if (this.luService == null) {
-            this.luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
-        }
-        return this.luService;
-    }
-
-    private transient CourseLinkBuilder courseLinkBuilder;
-
-    public CourseLinkBuilder getCourseLinkBuilder() {
-        if (courseLinkBuilder == null) {
-            this.courseLinkBuilder = new CourseLinkBuilder();
-        }
-        return courseLinkBuilder;
-    }
-
-    public void setCourseLinkBuilder(CourseLinkBuilder courseLinkBuilder) {
-        this.courseLinkBuilder = courseLinkBuilder;
-    }
-
-
-    public CourseHelper getCourseHelper() {
-        if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
-        }
-        return courseHelper;
-    }
-
-    public void setCourseHelper(CourseHelper courseHelper) {
-        this.courseHelper = courseHelper;
-    }
 
     @Override
     public CourseDetails retrieveDataObject(Map fieldValues) {
@@ -471,9 +428,19 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     plannedCourseSummary.getAcademicTerms().add(str[0] + " " + str[1]);
                 }
             }
+
+
+            /*Getting the recommended items for all quarters*/
+            List<RecommendedItemDataObject> recommendedItemDataObjects = getPlanHelper().getRecommendedItems(course.getVersionInfo().getVersionIndId());
+
+            if (!CollectionUtils.isEmpty(recommendedItemDataObjects)) {
+                plannedCourseSummary.setRecommendedItemDataObjects(recommendedItemDataObjects);
+            }
+
         } catch (Exception e) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
         }
+
 
         return plannedCourseSummary;
 
@@ -1042,8 +1009,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
      */
     public PlanItemInfo getPlanItem(String refObjId, String atpId) {
         try {
-            PlanController planController = new PlanController();
-            PlanItemInfo planItem = planController.getPlannedOrBackupPlanItem(refObjId, atpId);
+            PlanItemInfo planItem = getPlanHelper().getPlannedOrBackupPlanItem(refObjId, atpId);
             if (planItem != null) {
                 return planItem;
             }
@@ -1054,4 +1020,56 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
     }
 
 
+    private HashMap<String, String> courseComments = new HashMap<String, String>();
+
+    public HashMap<String, String> getCourseComments() {
+        return courseComments;
+    }
+
+    public void setCourseComments(HashMap<String, String> courseComments) {
+        this.courseComments = courseComments;
+    }
+
+    protected LuService getLuService() {
+        if (this.luService == null) {
+            this.luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+        }
+        return this.luService;
+    }
+
+    private transient CourseLinkBuilder courseLinkBuilder;
+
+    public CourseLinkBuilder getCourseLinkBuilder() {
+        if (courseLinkBuilder == null) {
+            this.courseLinkBuilder = new CourseLinkBuilder();
+        }
+        return courseLinkBuilder;
+    }
+
+    public void setCourseLinkBuilder(CourseLinkBuilder courseLinkBuilder) {
+        this.courseLinkBuilder = courseLinkBuilder;
+    }
+
+
+    public CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = new CourseHelperImpl();
+        }
+        return courseHelper;
+    }
+
+    public void setCourseHelper(CourseHelper courseHelper) {
+        this.courseHelper = courseHelper;
+    }
+
+    public PlanHelper getPlanHelper() {
+        if (planHelper == null) {
+            planHelper = new PlanHelperImpl();
+        }
+        return planHelper;
+    }
+
+    public void setPlanHelper(PlanHelper planHelper) {
+        this.planHelper = planHelper;
+    }
 }
