@@ -595,6 +595,8 @@ public class CourseSearchController extends UifControllerBase {
                 } else if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)
                         || planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
                     state = CourseSearchItem.PlanState.IN_PLAN;
+                } else if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
+                    state = CourseSearchItem.PlanState.UNPLANNED;
                 } else {
                     throw new RuntimeException("Unknown plan item type.");
                 }
