@@ -391,7 +391,7 @@
     <bean id="planned_courses_detail" parent="KSAP-VerticalBoxGroup" p:width="630px">
         <property name="onDocumentReadyScript" value="
             var popupStyle = {width:'300px', height:'16px'};
-            var popupOptions = {tail:{hidden:true}, position:'right', align:'top', close:true};
+            var popupOptions = {tail:{hidden:true}, position:'right', align:'middle', close:true};
             if ( !getConfigParam('adviser') ) {
                 jQuery('.myplan-carousel-list li .myplan-term-current.open, .myplan-carousel-list li .myplan-term-future.open').find('.myplan-term-planned .uif-stackedCollectionLayout, .myplan-term-backup .uif-stackedCollectionLayout').each(function(){
                     var atpId = jQuery(this).parents('.myplan-carousel-term').data('atpid');
@@ -422,7 +422,7 @@
                 var iMaxHeight = Math.max.apply(null, jQuery('#planned_courses_detail_list ul:not(.errorLines) li').map(function() {
                     return jQuery(this).height();
                 }).get());
-                jQuery('#planned_courses_detail_list ul:not(.errorLines) li').height(iMaxHeight);
+                jQuery('#planned_courses_detail_list ul:not(.errorLines) li').css('min-height', iMaxHeight);
                 var iStart = 0;
                 if (readUrlHash('planView')) {
                     iStart = parseFloat(readUrlHash('planView'));
@@ -441,7 +441,7 @@
                         fnBuildTitle(a);
                         setUrlHash('planView', jQuery(a[0]).index());
                     },
-                    initCallback: function(a) { fnBuildTitle(a); jQuery.unblockUI(); }
+                    initCallback: function(a) { fnBuildTitle(a); jQuery('#planned_courses_detail_list ul:not(.errorLines) li').css('height', 'auto'); jQuery.unblockUI(); }
                 });
             }
         "/>
@@ -1079,7 +1079,7 @@
             } else {
                 var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', courseId:'@{#line.courseDetails.courseId}', atpId:'@{#line.planItemDataObject.atp}', pageId:'recommended_dialog_page'};
                 var popupStyle = {width:'300px', height:'16px'};
-                var popupOptions = {tail:{hidden:true}, position:'right', align:'top', close:true};
+                var popupOptions = {tail:{hidden:true}, position:'right', align:'middle', close:true};
                 openPopup('recommended_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
             }
         "/>
