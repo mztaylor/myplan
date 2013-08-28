@@ -880,8 +880,11 @@ public class PlanController extends UifControllerBase {
 
         PlanItemInfo planItemCopy = null;
         try {
+            /*isRecommended --> true (we are copying the course from recommended section of the qtr to planned section of same qtr)*/
+            String typeKey = form.isRecommended() ? PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED : planItem.getTypeKey();
+            String note = form.isRecommended() ? null : form.getNote();
             planItemCopy = addPlanItem(learningPlan, planItem.getRefObjectId(), planItem.getRefObjectType(),
-                    newAtpId, planItem.getTypeKey(), form.getNote(), credit);
+                    newAtpId, typeKey, note, credit);
         } catch (DuplicateEntryException e) {
             return doDuplicatePlanItem(form, formatAtpIdForUI(newAtpId), courseDetails.getCode());
         } catch (Exception e) {
@@ -901,6 +904,14 @@ public class PlanController extends UifControllerBase {
         }
 
         events.putAll(makeUpdateTotalCreditsEvent(newAtpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
+
+        if (form.isRecommended()) {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("planItemId", planItem.getId());
+            params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
+            params.put("atpId", newAtpId);
+            events.put(PlanConstants.JS_EVENT_NAME.RECOMMENDED_ITEM_DELETED, params);
+        }
 
         //  Populate the form.
         form.setJavascriptEvents(events);
@@ -1957,6 +1968,8 @@ public class PlanController extends UifControllerBase {
         if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
             return (counter >= PlanConstants.BACKUP_PLAN_ITEM_CAPACITY) ? false : true;
         } else if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+            return (counter >= PlanConstants.PLANNED_PLAN_ITEM_CAPACITY) ? false : true;
+        } else if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(typeKey)) {
             return (counter >= PlanConstants.PLANNED_PLAN_ITEM_CAPACITY) ? false : true;
         }
 
