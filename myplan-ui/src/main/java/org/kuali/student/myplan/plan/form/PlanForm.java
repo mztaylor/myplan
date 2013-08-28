@@ -78,6 +78,9 @@ public class PlanForm extends UifFormBase {
     /*Flag used for populating the exact menu items for a course in past,present, future terms */
     private boolean setToPlanning = false;
 
+    //Used as a flag to differentiate courses being planned from recommendations
+    private boolean recommended = false;
+
 
     /**
      * *******************************************************
@@ -438,6 +441,14 @@ public class PlanForm extends UifFormBase {
 
     public void setRecommendedBy(String recommendedBy) {
         this.recommendedBy = recommendedBy;
+    }
+
+    public boolean isRecommended() {
+        return recommended;
+    }
+
+    public void setRecommended(boolean recommended) {
+        this.recommended = recommended;
     }
 
     /**
