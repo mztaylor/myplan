@@ -574,7 +574,7 @@
                                                             submitPopupForm(additionalFormData, e, false);
                                                         "/>
                                                         <property name="disabled"
-                                                                  value="@{#form.type EQ null OR (#form.type EQ 'course' AND #form.courseCd EQ null) OR (#form.type EQ 'general' AND #form.generalPlaceholder EQ null) OR (#form.generalPlaceholder EQ 'uw.academicplan.placeholder.other|uw.academicplan.placeholder' AND #form.note EQ null)}"/>
+                                                                  value="@{#form.type EQ null OR (#form.type EQ 'course' AND #form.courseCd EQ null) OR (#form.type EQ 'general' AND #form.generalPlaceholder EQ null) OR (#form.type EQ 'general' AND #form.generalPlaceholder EQ 'uw.academicplan.placeholder.other|uw.academicplan.placeholder' AND #form.note EQ null)}"/>
                                                         <property name="evaluateDisabledOnKeyUp" value="true"/>
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#actionCoursePlaceholder').on('PLAN_ITEM_ADDED PLAN_ITEM_UPDATED', function(event, data){
@@ -785,7 +785,7 @@
                                                             submitPopupForm(additionalFormData, e, false);
                                                         "/>
                                                         <property name="disabled"
-                                                                  value="@{#form.type EQ null OR (#form.type EQ 'course' AND #form.courseCd EQ null) OR (#form.type EQ 'general' AND #form.generalPlaceholder EQ null) OR (#form.generalPlaceholder EQ 'uw.academicplan.placeholder.other|uw.academicplan.placeholder' AND #form.note EQ null)}"/>
+                                                                  value="@{#form.type EQ null OR (#form.type EQ 'course' AND #form.courseCd EQ null) OR (#form.type EQ 'general' AND #form.generalPlaceholder EQ null) OR (#form.type EQ 'general' AND #form.generalPlaceholder EQ 'uw.academicplan.placeholder.other|uw.academicplan.placeholder' AND #form.note EQ null)}"/>
                                                         <property name="evaluateDisabledOnKeyUp" value="true"/>
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#actionRecommendedItem').on('PLAN_ITEM_ADDED', function(event, data){
