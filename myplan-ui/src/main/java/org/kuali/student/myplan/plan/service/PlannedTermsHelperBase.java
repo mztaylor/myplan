@@ -73,6 +73,8 @@ public class PlannedTermsHelperBase {
             focusQuarterYear[1] = year;
         }
 
+        Set<String> plannedAndBackupItems = new HashSet<String>();
+
         /*
         *  Populating the PlannedTerm List.
         */
@@ -91,6 +93,7 @@ public class PlannedTermsHelperBase {
 
             for (PlannedCourseDataObject plan : plannedCoursesList) {
                 String atp = plan.getPlanItemDataObject().getAtp();
+                plannedAndBackupItems.add(String.format("%s|%s", plan.getPlanItemDataObject().getRefObjId(), atp));
                 boolean exists = false;
                 for (PlannedTerm term : plannedTerms) {
                     if (term.getAtpId().equalsIgnoreCase(atp)) {
@@ -130,7 +133,7 @@ public class PlannedTermsHelperBase {
             int count = plannedTerms.size();
             for (PlannedCourseDataObject bl : backupCoursesList) {
                 String atp = bl.getPlanItemDataObject().getAtp();
-
+                plannedAndBackupItems.add(String.format("%s|%s", bl.getPlanItemDataObject().getRefObjId(), atp));
                 boolean added = false;
                 for (int i = 0; i < count; i++) {
                     if (atp.equalsIgnoreCase(plannedTerms.get(i).getAtpId())) {
@@ -172,7 +175,10 @@ public class PlannedTermsHelperBase {
             int count = plannedTerms.size();
             for (PlannedCourseDataObject bl : recommendedCoursesList) {
                 String atp = bl.getPlanItemDataObject().getAtp();
-
+                /*Not adding the recommended course if it is already planned for the qtr*/
+                if (plannedAndBackupItems.contains(String.format("%s|%s", bl.getPlanItemDataObject().getRefObjId(), atp)) && !UserSessionHelper.isAdviser()) {
+                    continue;
+                }
                 boolean added = false;
                 for (int i = 0; i < count; i++) {
                     if (atp.equalsIgnoreCase(plannedTerms.get(i).getAtpId())) {
