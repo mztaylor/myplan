@@ -20,4 +20,6 @@ public interface CommentHelper {
     public void sendMessageEmailNotification(String subjectText, String messageText) throws MissingParameterException;
 
     public void sendCommentEmailNotification(CommentInfo commentInfo, String message) throws MissingParameterException;
+
+    public void sendRecommendationEmailNotification(String subjectText, String messageText) throws MissingParameterException;
 }

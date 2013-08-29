@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.plan;
 
+import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.student.lum.lu.LUConstants;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -83,8 +84,10 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String TERM_ID_PREFIX = "kuali.uw.atp.";
     public static final String FOCUS_ATP_ID_KEY = "focusAtpId";
 
-    //  {atp} will be replaced by an ATP ID and {label} will be replaced with the link text at runtime.
-    public static final String QUARTER_LINK = "<a href=\"/student/myplan/plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId={atpId}\">{label}</a>";
+    public static final String APP_URL = "appserver.url";
+
+    //  {host} will be replac{atp} will be replaced by an ATP ID and {label} will be replaced with the link text at runtime.
+    public static final String QUARTER_LINK = "<a href=\"" + ConfigContext.getCurrentContextConfig().getProperty(APP_URL) + "/student/myplan/plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId={atpId}\">{label}</a>";
 
     public static final String PLANNED_TYPE = "planned";
     public static final String BACKUP_TYPE = "backup";
@@ -122,9 +125,6 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String SUSPENDED_ALERT = "Section %s has been suspended. ";
     public static final String COURSE_NOT_SCHEDULE_ALERT = "%s is not scheduled for %s. ";
 
-    public static final String ADD_RECOMMEND_NOTIFICATION_SUBJECT = "%s recommended courses ";
-    public static final String RECOMMENDATION_NOTIFICATION_MESSAGE = "%s,<br><br>%s, %s Adviser, %s recommendations in MyPlan for you.<br><br><b>%s</b><br>%s %s %s<br>%s";
-
     /*Query keys for getting the termInfos from the academic calender*/
     public static final String PLANNING = "PLANNING";
     public static final String INPROGRESS = "INPROGRESS";
@@ -136,6 +136,14 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String RANGE = "-";
     public static final String MULTIPLE = ",";
 
+
+    public static final String REMOVED_RECOMMEND_NOTIFICATION_SUBJECT = "%s has removed their course recommendation ";
+    public static final String REMOVED_RECOMMEND_NOTIFICATION_BODY = "%s has removed their recommendation for adding %s to your plan for %s. <br><br>%s%s removed this recommendation on %s. For more information on why this recommendation was removed, contact this adviser directly.<br><br>";
+
+    public static final String ADD_RECOMMEND_NOTIFICATION_SUBJECT = "%s recommended a course for your plan ";
+    public static final String ADD_RECOMMEND_NOTIFICATION_BODY = "%s recommended that you add %s to your plan for %s. <br><br>%sThis recommendation was made on %s. To accept this adviser’s course recommendation, %s.<br><br>";
+
+    public static final String RECOMMENDATION_EMAIL_BODY = "myplan.recommendation.email.body";
 
     /**
      * Names of javascript events that can be scheduled in response to the outcome of a plan item request.

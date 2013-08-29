@@ -77,6 +77,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.springframework.util.StringUtils.hasText;
@@ -1655,23 +1656,24 @@ public class PlanController extends UifControllerBase {
      */
     private void sendMessageNotification(String term, String courseCd, String courseTitle, String credit, String note, boolean removed) {
 
-        /*TODO: remove hard coded value once we know how to get the adviser department*/
-        String adviserDepartment = "Sociology";
         String adviserName = UserSessionHelper.getNameCapitalized(UserSessionHelper.getCurrentUserRegId());
-        String studentName = UserSessionHelper.getStudentName();
-        String action = removed ? "deleted" : "added";
-        credit = hasText(credit) ? String.format("(%s)", credit) : "";
-        note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim(), 80, "<br />", true)) : "";
+        note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim(), 80, "<br /><br />", true)) : "";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        String dateAdded = simpleDateFormat.format(System.currentTimeMillis());
+        String planLink = makeLinkToAtp(AtpHelper.termToYearTerm(term).toATP(), "visit your plan page");
 
         /*Creating a new Message from Adviser to student*/
-        String subject = String.format(PlanConstants.ADD_RECOMMEND_NOTIFICATION_SUBJECT, adviserName);
-        String message = String.format(PlanConstants.RECOMMENDATION_NOTIFICATION_MESSAGE, studentName, adviserName, adviserDepartment, action, term, courseCd, courseTitle, credit, note);
-        /*String messageText = WordUtils.wrap(message, 80, "<br />", true);
-        messageText = messageText.replace("\n", "<br />");*/
-        String emailMessage = message;
-        if (emailMessage.length() > 100) {
-            emailMessage = emailMessage.substring(0, 100);
+        String subject = "";
+        String message = "";
+        if (!removed) {
+            subject = String.format(PlanConstants.ADD_RECOMMEND_NOTIFICATION_SUBJECT, adviserName);
+            message = String.format(PlanConstants.ADD_RECOMMEND_NOTIFICATION_BODY, adviserName, courseCd, term, note, dateAdded, planLink);
+        } else {
+            subject = String.format(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_SUBJECT, adviserName);
+            message = String.format(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_BODY, adviserName, courseCd, term, note, adviserName, dateAdded);
         }
+
+
         try {
             getCommentHelper().createMessage(subject, message);
         } catch (Exception e) {
@@ -1680,7 +1682,7 @@ public class PlanController extends UifControllerBase {
 
         /*Sending a email notification to student about the recommended course*/
         try {
-            getCommentHelper().sendMessageEmailNotification(subject, emailMessage);
+            getCommentHelper().sendRecommendationEmailNotification(subject, message);
         } catch (Exception e) {
             logger.error("Error sending message notification for adviser recommended course", e);
         }
@@ -1926,6 +1928,7 @@ public class PlanController extends UifControllerBase {
      * @return
      */
     private String makeLinkToAtp(String atpId, String text) {
+
         return PlanConstants.QUARTER_LINK.replace("{atpId}", atpId).replace("{label}", text);
     }
 
