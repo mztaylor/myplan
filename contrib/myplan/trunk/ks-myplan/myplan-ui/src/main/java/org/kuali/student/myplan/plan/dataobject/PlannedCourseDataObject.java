@@ -43,6 +43,8 @@ public class PlannedCourseDataObject implements Comparable {
 
     private String placeHolderCredit;
 
+    private String recommendedBy;
+
     public CourseSummaryDetails getCourseDetails() {
         if (courseDetails == null) {
             System.out.println("COURSE DETAILS ARE NULL!!!");
@@ -153,6 +155,14 @@ public class PlannedCourseDataObject implements Comparable {
             note = note.replaceAll("\\u00a0", " ");
         }
         this.note = note;
+    }
+
+    public String getRecommendedBy() {
+        return recommendedBy;
+    }
+
+    public void setRecommendedBy(String recommendedBy) {
+        this.recommendedBy = recommendedBy;
     }
 
     //Used to get the list strings as a single string
