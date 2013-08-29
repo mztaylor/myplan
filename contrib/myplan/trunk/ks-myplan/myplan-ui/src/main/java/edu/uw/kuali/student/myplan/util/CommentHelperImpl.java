@@ -14,6 +14,7 @@ import org.kuali.student.core.comment.dto.CommentInfo;
 import org.kuali.student.core.comment.service.CommentService;
 import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.comment.util.CommentHelper;
+import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.service.MyPlanMailService;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 
@@ -239,6 +240,61 @@ public class CommentHelperImpl implements CommentHelper {
             logger.error(String.format("No e-mail address found for [%s].", toName));
             GlobalVariables.getMessageMap().putErrorForSectionId("comment_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
         }
+    }
+
+    /**
+     * Create an email notification. The from address should always be the system default.
+     *
+     * @param subjectText
+     * @param messageText
+     * @throws MissingParameterException
+     */
+    @Override
+    public void sendRecommendationEmailNotification(String subjectText, String messageText) throws MissingParameterException {
+
+        String studentPrincipleId = UserSessionHelper.getStudentRegId();
+        String studentName = UserSessionHelper.getFirstName(studentPrincipleId);
+        String principleId = UserSessionHelper.getCurrentUserRegId();
+
+        Properties pro = new Properties();
+        InputStream file = getClass().getResourceAsStream(propertiesFilePath);
+        try {
+            pro.load(file);
+        } catch (Exception e) {
+            logger.error("Could not find the properties file" + e);
+        }
+
+        String adviserName = UserSessionHelper.getName(principleId);
+
+        String toAddress = UserSessionHelper.getMailAddress(studentPrincipleId);
+        if (toAddress == null) {
+            throw new MissingParameterException();
+        }
+
+        String fromAddress = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.EMAIL_FROM);
+        String subjectProp = pro.getProperty(CommentConstants.EMAIL_MESSAGE_SUBJECT);
+        String emailBody = pro.getProperty(PlanConstants.RECOMMENDATION_EMAIL_BODY);
+        String subject = String.format(subjectProp, adviserName);
+        String emailSubject = String.format(pro.getProperty(CommentConstants.EMAIL_SUBJECT), subjectText);
+        String body = String.format(emailBody, studentName, emailSubject, messageText);
+
+        if (StringUtils.isNotEmpty(toAddress)) {
+            try {
+                sendMessage(fromAddress, toAddress, subject, body);
+                logger.info("Sent message email (" + messageText + ") to student:" + studentName + "from adviser :" + adviserName);
+
+            } catch (Exception e) {
+                logger.error(String.format("Could not send e-mail from [%s] to [%s].", fromAddress, toAddress), e);
+                GlobalVariables.getMessageMap().putErrorForSectionId("message_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
+            }
+
+        } else {
+
+            logger.error(String.format("No e-mail address found for [%s][%s].", studentName, studentPrincipleId));
+            GlobalVariables.getMessageMap().putErrorForSectionId("message_dialog_response_page", CommentConstants.ERROR_KEY_NOTIFICATION_FAILED);
+
+        }
+
     }
 
 
