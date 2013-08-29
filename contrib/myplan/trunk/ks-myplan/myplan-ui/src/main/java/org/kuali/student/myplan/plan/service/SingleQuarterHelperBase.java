@@ -8,11 +8,9 @@ import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,6 +35,8 @@ public class SingleQuarterHelperBase {
 
 
         String globalCurrentAtpId = AtpHelper.getCurrentAtpId();
+
+        Set<String> plannedAndBackupItems = new HashSet<String>();
         /*
         *  Populating the PlannedTerm List.
         */
@@ -54,6 +54,7 @@ public class SingleQuarterHelperBase {
         });
         for (PlannedCourseDataObject plan : plannedCoursesList) {
             String atp = plan.getPlanItemDataObject().getAtp();
+            plannedAndBackupItems.add(String.format("%s|%s", plan.getPlanItemDataObject().getRefObjId(), atp));
             if (termAtp.equalsIgnoreCase(atp)) {
                 plannedTerm.getPlannedList().add(plan);
             }
@@ -75,6 +76,7 @@ public class SingleQuarterHelperBase {
             });
             for (PlannedCourseDataObject backup : backupCoursesList) {
                 String atp = backup.getPlanItemDataObject().getAtp();
+                plannedAndBackupItems.add(String.format("%s|%s", backup.getPlanItemDataObject().getRefObjId(), atp));
                 if (termAtp.equalsIgnoreCase(atp)) {
                     plannedTerm.getBackupList().add(backup);
                 }
@@ -100,6 +102,10 @@ public class SingleQuarterHelperBase {
 
             for (PlannedCourseDataObject recommended : recommendedCoursesList) {
                 String atp = recommended.getPlanItemDataObject().getAtp();
+                /*Not adding the recommended course if it is already planned for the qtr*/
+                if (plannedAndBackupItems.contains(String.format("%s|%s", recommended.getPlanItemDataObject().getRefObjId(), atp)) && !UserSessionHelper.isAdviser()) {
+                    continue;
+                }
                 if (termAtp.equalsIgnoreCase(atp)) {
                     plannedTerm.getRecommendedList().add(recommended);
                 }
