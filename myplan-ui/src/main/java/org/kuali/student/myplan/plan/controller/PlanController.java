@@ -723,8 +723,10 @@ public class PlanController extends UifControllerBase {
 
         //  Do validations.
         //  Validate: Plan Size exceeded.
+        LearningPlan learningPlan = null;
         boolean hasCapacity = false;
         try {
+            learningPlan = getPlanHelper().getLearningPlan(UserSessionHelper.getStudentRegId());
             hasCapacity = isAtpHasCapacity(getPlanHelper().getLearningPlan(UserSessionHelper.getStudentRegId()), newAtpId, planItem.getTypeKey());
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
@@ -754,6 +756,13 @@ public class PlanController extends UifControllerBase {
 
         //  Make Javascript UI events (delete, add, update credits).
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+
+        /*Adding the recommended events if a recommended item exists for the same refObjId and atp*/
+        PlanItemInfo recommendedItem = getPlanHelper().getPlanItemByAtpAndType(learningPlan.getId(), planItem.getRefObjectId(), newAtpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+        if (recommendedItem != null && hasText(recommendedItem.getId())) {
+            makeRecommendDeleteEvent(recommendedItem, events);
+        }
+
         //  Add events generated for the plan item before it was updated.
         events.putAll(originalRemoveEvents);
         //  Create update total credits on source ATP.
@@ -878,6 +887,9 @@ public class PlanController extends UifControllerBase {
         //  Do not allow diagonal moves .
         //planItem.setTypeKey(newType);
 
+        //  Create the map of javascript event(s) that should be thrown in the UI.
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
+
         PlanItemInfo planItemCopy = null;
         try {
             /*isRecommended --> true (we are copying the course from recommended section of the qtr to planned section of same qtr)*/
@@ -885,6 +897,11 @@ public class PlanController extends UifControllerBase {
             String note = form.isRecommended() ? null : form.getNote();
             planItemCopy = addPlanItem(learningPlan, planItem.getRefObjectId(), planItem.getRefObjectType(),
                     newAtpId, typeKey, note, credit);
+            /*Adding the recommended events if a recommended item exists for the same refObjId and atp*/
+            PlanItemInfo recommendedItem = getPlanHelper().getPlanItemByAtpAndType(learningPlan.getId(), planItemCopy.getRefObjectId(), planItemCopy.getPlanPeriods().get(0), PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+            if (recommendedItem != null && hasText(recommendedItem.getId())) {
+                makeRecommendDeleteEvent(recommendedItem, events);
+            }
         } catch (DuplicateEntryException e) {
             return doDuplicatePlanItem(form, formatAtpIdForUI(newAtpId), courseDetails.getCode());
         } catch (Exception e) {
@@ -894,8 +911,6 @@ public class PlanController extends UifControllerBase {
         //  Set the status of the request for the UI.
         form.setRequestStatus(PlanForm.REQUEST_STATUS.SUCCESS);
 
-        //  Create the map of javascript event(s) that should be thrown in the UI.
-        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
 
         try {
             events.putAll(makeAddUpdateEvent(planItemCopy, courseDetails, form, false));
@@ -904,14 +919,6 @@ public class PlanController extends UifControllerBase {
         }
 
         events.putAll(makeUpdateTotalCreditsEvent(newAtpId, PlanConstants.JS_EVENT_NAME.UPDATE_NEW_TERM_TOTAL_CREDITS));
-
-        if (form.isRecommended()) {
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("planItemId", planItem.getId());
-            params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
-            params.put("atpId", newAtpId);
-            events.put(PlanConstants.JS_EVENT_NAME.RECOMMENDED_ITEM_DELETED, params);
-        }
 
         //  Populate the form.
         form.setJavascriptEvents(events);
@@ -1245,6 +1252,11 @@ public class PlanController extends UifControllerBase {
             if (planItem != null) {
                 plannedTerm = planItem.getPlanPeriods().get(0);
                 events.putAll(makeAddUpdateEvent(planItem, courseDetails, form, false));
+                /*Adding the recommended events if a recommended item exists for the same refObjId and atp*/
+                PlanItemInfo recommendedItem = getPlanHelper().getPlanItemByAtpAndType(plan.getId(), planItem.getRefObjectId(), planItem.getPlanPeriods().get(0), PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+                if (recommendedItem != null && hasText(recommendedItem.getId())) {
+                    makeRecommendDeleteEvent(recommendedItem, events);
+                }
             }
             if (primaryPlanItem != null) {
                 plannedTerm = primaryPlanItem.getPlanPeriods().get(0);
@@ -1613,6 +1625,20 @@ public class PlanController extends UifControllerBase {
         form.setJavascriptEvents(events);
 
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_UPDATED_ITEM, new String[]{});
+    }
+
+    /**
+     * Add events to Delete the recommended item once it is planned
+     *
+     * @param planItem
+     * @param events
+     */
+    private void makeRecommendDeleteEvent(PlanItemInfo planItem, Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("planItemId", planItem.getId());
+        params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
+        params.put("atpId", planItem.getPlanPeriods().get(0));
+        events.put(PlanConstants.JS_EVENT_NAME.RECOMMENDED_ITEM_DELETED, params);
     }
 
 
