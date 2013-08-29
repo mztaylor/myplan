@@ -23,6 +23,7 @@ import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
@@ -188,6 +189,10 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             if (planItemInfo.getDescr() != null && StringUtils.hasText(planItemInfo.getDescr().getPlain())) {
                 plannedCourse.setNote(planItemInfo.getDescr().getPlain());
             }
+
+            if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
+                plannedCourse.setRecommendedBy(UserSessionHelper.getName(planItemInfo.getMeta().getCreateId()));
+            }
             //  If the course info lookup fails just log the error and omit the item.
             try {
                 if (getCourseDetailsInquiryHelper().isCourseIdValid(courseID)) {
@@ -279,7 +284,9 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             plannedCourse.setPlaceHolderValue(placeHolderValue);
             plannedCourse.setCourseDetails(new CourseSummaryDetails());
             plannedCourse.setPlaceHolderCredit(planItemInfo.getCredit() == null ? "" : String.valueOf(planItemInfo.getCredit().intValue()));
-
+            if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
+                plannedCourse.setRecommendedBy(UserSessionHelper.getName(planItemInfo.getMeta().getCreateId()));
+            }
             plannedCourseList.add(plannedCourse);
 
         } else if (addPlaceHolders && planItemInfo.getTypeKey().equals(planItemType) &&
@@ -295,7 +302,9 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             plannedCourse.setPlaceHolderValue(getCoursePlaceHolderTitle(planItemInfo.getRefObjectId(), subjectAreas));
             plannedCourse.setCourseDetails(new CourseSummaryDetails());
             plannedCourse.setPlaceHolderCredit(planItemInfo.getCredit() == null ? "" : String.valueOf(planItemInfo.getCredit().intValue()));
-
+            if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
+                plannedCourse.setRecommendedBy(UserSessionHelper.getName(planItemInfo.getMeta().getCreateId()));
+            }
             plannedCourseList.add(plannedCourse);
 
         }

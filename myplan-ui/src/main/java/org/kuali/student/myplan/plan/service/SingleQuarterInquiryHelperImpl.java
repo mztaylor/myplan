@@ -218,6 +218,10 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                             continue;
                         }
 
+                        if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
+                            plannedCourseDO.setRecommendedBy(UserSessionHelper.getName(planItem.getMeta().getCreateId()));
+                        }
+
                         plannedCoursesList.add(plannedCourseDO);
                     }
                 } else if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
@@ -299,6 +303,9 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     plannedCourse.setPlaceHolderValue(placeHolderValue);
                     plannedCourse.setCourseDetails(new CourseSummaryDetails());
                     plannedCourse.setPlaceHolderCredit(planItem.getCredit() == null ? "" : String.valueOf(planItem.getCredit().intValue()));
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
+                        plannedCourse.setRecommendedBy(UserSessionHelper.getName(planItem.getMeta().getCreateId()));
+                    }
                     plannedCoursesList.add(plannedCourse);
 
                 } else if (planItem.getTypeKey().equals(planItemType) &&
@@ -314,7 +321,9 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     plannedCourse.setPlaceHolderValue(getCoursePlaceHolderTitle(planItem.getRefObjectId(), subjectAreas));
                     plannedCourse.setCourseDetails(new CourseSummaryDetails());
                     plannedCourse.setPlaceHolderCredit(planItem.getCredit() == null ? "" : String.valueOf(planItem.getCredit().intValue()));
-
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
+                        plannedCourse.setRecommendedBy(UserSessionHelper.getName(planItem.getMeta().getCreateId()));
+                    }
                     plannedCoursesList.add(plannedCourse);
 
                 }
