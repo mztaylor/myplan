@@ -40,20 +40,20 @@ public class PlanHelperImpl implements PlanHelper {
     /**
      * Gets a plan item of a particular type for a particular ATP.
      *
-     * @param planId       The id of the learning plan
-     * @param courseId     The id of the course
-     * @param atpId        The ATP id
-     * @param planItemType The plan item type key.
+     * @param learningPlanId The id of the learning plan
+     * @param refObjId       The id of the course
+     * @param atpId          The ATP id
+     * @param planItemType   The plan item type key.
      * @return A "planned" or "backup" plan item. Or 'null' if none exists.
      * @throws RuntimeException on errors.
      */
     @Override
-    public PlanItemInfo getPlanItemByAtpAndType(String planId, String courseId, String atpId, String planItemType) {
-        if (StringUtils.isEmpty(planId)) {
-            throw new RuntimeException("Plan Id was empty.");
+    public PlanItemInfo getPlanItemByAtpAndType(String learningPlanId, String refObjId, String atpId, String planItemType) {
+        if (StringUtils.isEmpty(learningPlanId)) {
+            throw new RuntimeException("Learning Plan Id was empty.");
         }
 
-        if (StringUtils.isEmpty(courseId)) {
+        if (StringUtils.isEmpty(refObjId)) {
             throw new RuntimeException("Course Id was empty.");
         }
 
@@ -65,13 +65,13 @@ public class PlanHelperImpl implements PlanHelper {
         PlanItemInfo item = null;
 
         try {
-            planItems = getAcademicPlanService().getPlanItemsInPlanByAtp(planId, atpId, planItemType, PlanConstants.CONTEXT_INFO);
+            planItems = getAcademicPlanService().getPlanItemsInPlanByAtp(learningPlanId, atpId, planItemType, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
             throw new RuntimeException("Could not retrieve plan items.", e);
         }
 
         for (PlanItemInfo p : planItems) {
-            if (p.getRefObjectId().equals(courseId) && p.getTypeKey().equals(planItemType)) {
+            if (p.getRefObjectId().equals(refObjId) && p.getTypeKey().equals(planItemType)) {
                 item = p;
                 break;
             }
