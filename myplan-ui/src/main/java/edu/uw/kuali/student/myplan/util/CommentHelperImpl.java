@@ -272,15 +272,12 @@ public class CommentHelperImpl implements CommentHelper {
         }
 
         String fromAddress = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.EMAIL_FROM);
-        String subjectProp = pro.getProperty(CommentConstants.EMAIL_MESSAGE_SUBJECT);
         String emailBody = pro.getProperty(PlanConstants.RECOMMENDATION_EMAIL_BODY);
-        String subject = String.format(subjectProp, adviserName);
-        String emailSubject = String.format(pro.getProperty(CommentConstants.EMAIL_SUBJECT), subjectText);
-        String body = String.format(emailBody, studentName, emailSubject, messageText);
+        String body = String.format(emailBody, studentName, messageText);
 
         if (StringUtils.isNotEmpty(toAddress)) {
             try {
-                sendMessage(fromAddress, toAddress, subject, body);
+                sendMessage(fromAddress, toAddress, subjectText, body);
                 logger.info("Sent message email (" + messageText + ") to student:" + studentName + "from adviser :" + adviserName);
 
             } catch (Exception e) {
