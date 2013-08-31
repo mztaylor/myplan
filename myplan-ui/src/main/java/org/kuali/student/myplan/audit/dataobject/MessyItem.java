@@ -86,7 +86,7 @@ public class MessyItem {
     /*Used to set the MessyItem to request and return back a AtpId. Used in the planAuditMessyItems to build the drop downs*/
     public String getAtpAndAddMessyItemToReq() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        request.getSession().setAttribute("studentMessyItem", this);
+        request.setAttribute("studentMessyItem", this);
         return atpId;
     }
 

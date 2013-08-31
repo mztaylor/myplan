@@ -498,6 +498,8 @@
 
     <bean id="crud_message_matrix_formatter" class="org.kuali.student.myplan.course.util.CrudMessageMatrixFormatter"/>
 
+    <bean id="recommendation_formatter" class="org.kuali.student.myplan.course.util.RecommendationsFormatter"/>
+
     <bean id="delete_planned_sections_formatter"
           class="org.kuali.student.myplan.course.util.PlannedSectionsPropertyEditor">
         <property name="deleteDialog" value="true"/>

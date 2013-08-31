@@ -1443,7 +1443,7 @@ public class PlanController extends UifControllerBase {
             try {
 
                 planItem = addPlanItem(plan, courseDetails.getVersionIndependentId(), PlanConstants.COURSE_TYPE, newAtpId, newType, form.getNote(), null);
-                sendMessageNotification(AtpHelper.atpIdToTermName(newAtpId), courseDetails.getCode(), courseDetails.getCourseTitle(), courseDetails.getCredit(), form.getNote(), false);
+                sendRecommendationNotification(AtpHelper.atpIdToTermName(newAtpId), courseDetails.getCode(), courseDetails.getCourseTitle(), courseDetails.getCredit(), form.getNote(), false);
 
             } catch (DuplicateEntryException e) {
                 return doDuplicatePlanItem(form, newAtpId, courseDetails.getCode());
@@ -1466,7 +1466,7 @@ public class PlanController extends UifControllerBase {
 
 
                 /*Creating a message*/
-                sendMessageNotification(AtpHelper.atpIdToTermName(newAtpId), placeHolderCd, placeHolderTitle, form.getCredit(), form.getNote(), false);
+                sendRecommendationNotification(AtpHelper.atpIdToTermName(newAtpId), placeHolderCd, placeHolderTitle, form.getCredit(), form.getNote(), false);
 
             } catch (DuplicateEntryException e) {
                 return doDuplicatePlanItem(form, newAtpId, placeHolderCd != null ? placeHolderCd : courseCd);
@@ -1654,7 +1654,7 @@ public class PlanController extends UifControllerBase {
      * @param note
      * @param removed
      */
-    private void sendMessageNotification(String term, String courseCd, String courseTitle, String credit, String note, boolean removed) {
+    private void sendRecommendationNotification(String term, String courseCd, String courseTitle, String credit, String note, boolean removed) {
 
         String adviserName = UserSessionHelper.getNameCapitalized(UserSessionHelper.getCurrentUserRegId());
         note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim(), 80, "<br /><br />", true)) : "";
@@ -2233,7 +2233,7 @@ public class PlanController extends UifControllerBase {
 
         try {
             getAcademicPlanService().deletePlanItem(planItem.getId(), UserSessionHelper.makeContextInfoInstance());
-            sendMessageNotification(term, code, title, credit, form.getNote(), true);
+            sendRecommendationNotification(term, code, title, credit, form.getNote(), true);
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not delete plan item", e);
         }

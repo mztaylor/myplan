@@ -32,7 +32,7 @@ public class PlanAuditMessyItems extends KeyValuesBase {
         List<KeyValue> bothHWCredits = new ArrayList<KeyValue>();
         List<KeyValue> crNcCredits = new ArrayList<KeyValue>();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        MessyItem messyItem = (MessyItem) request.getSession().getAttribute("studentMessyItem");
+        MessyItem messyItem = (MessyItem) request.getAttribute("studentMessyItem");
         if (messyItem != null) {
             for (String credit : messyItem.getCredits()) {
                 String display = credit.split(":")[3];
