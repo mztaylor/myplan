@@ -434,6 +434,10 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             List<RecommendedItemDataObject> recommendedItemDataObjects = getPlanHelper().getRecommendedItems(course.getVersionInfo().getVersionIndId());
 
             if (!CollectionUtils.isEmpty(recommendedItemDataObjects)) {
+                /*Adding to request session so that the TermsListBuilder can pick up from session and add recommendation info in dropDown list*/
+                HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+                request.setAttribute("recommendedItems", recommendedItemDataObjects);
+
                 plannedCourseSummary.setRecommendedItemDataObjects(recommendedItemDataObjects);
             }
 

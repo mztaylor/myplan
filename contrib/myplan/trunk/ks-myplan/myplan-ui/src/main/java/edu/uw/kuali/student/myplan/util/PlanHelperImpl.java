@@ -172,7 +172,7 @@ public class PlanHelperImpl implements PlanHelper {
 
             if (!CollectionUtils.isEmpty(learningPlans)) {
 
-                //A student should have only one learning plan associated to his Id
+                //A student should have oNly one learning plan associated to his Id
                 LearningPlan learningPlan = learningPlans.get(0);
 
                 List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlanByType(learningPlan.getId(),
