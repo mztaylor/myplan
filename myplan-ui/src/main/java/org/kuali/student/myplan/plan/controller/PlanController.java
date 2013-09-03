@@ -1137,13 +1137,11 @@ public class PlanController extends UifControllerBase {
         String placeHolderId = null;
         String placeHolderType = null;
         String placeHolderCd = null;
-        String placeHolderTitle = null;
         if (hasText(form.getGeneralPlaceholder())) {
             String[] placeHolder = form.getGeneralPlaceholder().split(PlanConstants.CODE_KEY_SEPARATOR);
             placeHolderId = placeHolder[0];
             placeHolderType = placeHolder[1];
             placeHolderCd = EnumerationHelper.getEnumAbbrValForCodeByType(placeHolderId, placeHolderType);
-            placeHolderTitle = EnumerationHelper.getEnumValueForCodeByType(placeHolderId, placeHolderType);
         }
 
         if (PlanConstants.ADD_DIALOG_PAGE.equals(form.getPageId()) || PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE.equals(form.getPageId())) {
@@ -1183,10 +1181,6 @@ public class PlanController extends UifControllerBase {
                                 placeHolderType = PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL;
                                 placeHolderId = String.format("%s %s", divisions.get(0).trim(), number);
                                 placeHolderCd = placeHolderId;
-                                Map<String, String> subjectAreas = OrgHelper.getTrimmedSubjectAreas();
-                                String subjectTitle = subjectAreas.get(courseCode.getSubject());
-                                String subjectLevel = courseCode.getNumber().toUpperCase().replace("XX", "00");
-                                placeHolderTitle = String.format("%s %s level", subjectTitle, subjectLevel);
                             } else {
                                 return doErrorPage(form, "Curriculum is invalid", PlanConstants.CURRIC_NOT_FOUND, new String[]{subject}, null);
                             }
@@ -1339,7 +1333,7 @@ public class PlanController extends UifControllerBase {
                     planItem = addPlanItem(plan, courseDetails.getVersionIndependentId(), PlanConstants.COURSE_TYPE, newAtpId, newType, form.getNote(), null);
 
                     if (isRecommendedItem) {
-                        sendRecommendationNotification(AtpHelper.atpIdToTermName(newAtpId), courseDetails.getCode(), courseDetails.getCourseTitle(), courseDetails.getCredit(), form.getNote(), false);
+                        sendRecommendationNotification(AtpHelper.atpIdToTermName(newAtpId), courseDetails.getCode(), form.getNote(), false);
                     }
 
                 } catch (DuplicateEntryException e) {
@@ -1407,7 +1401,7 @@ public class PlanController extends UifControllerBase {
 
                 if (isRecommendedItem) {
                     /*Creating a message*/
-                    sendRecommendationNotification(AtpHelper.atpIdToTermName(newAtpId), placeHolderCd, placeHolderTitle, form.getCredit(), form.getNote(), false);
+                    sendRecommendationNotification(AtpHelper.atpIdToTermName(newAtpId), placeHolderCd, form.getNote(), false);
                 }
 
             } catch (DuplicateEntryException e) {
@@ -1492,12 +1486,10 @@ public class PlanController extends UifControllerBase {
      *
      * @param term
      * @param courseCd
-     * @param courseTitle
-     * @param credit
      * @param note
      * @param removed
      */
-    private void sendRecommendationNotification(String term, String courseCd, String courseTitle, String credit, String note, boolean removed) {
+    private void sendRecommendationNotification(String term, String courseCd, String note, boolean removed) {
 
         Properties pro = new Properties();
         InputStream file = getClass().getResourceAsStream(PlanConstants.PROPERTIES_FILE_PATH);
@@ -1929,8 +1921,6 @@ public class PlanController extends UifControllerBase {
     private ModelAndView removeItem(PlanForm form) {
         String planItemId = form.getPlanItemId();
         String code = null;
-        String title = null;
-        String credit = null;
         boolean isRecommendedItem = false;
         String courseId = form.getCourseId();
         if (StringUtils.isEmpty(planItemId) && StringUtils.isEmpty(courseId)) {
@@ -1963,8 +1953,6 @@ public class PlanController extends UifControllerBase {
             courseDetail = getCourseDetailsInquiryService().retrieveCourseSummaryById(planItem.getRefObjectId());
             courseId = courseDetail.getCourseId();
             code = courseDetail.getCode();
-            title = courseDetail.getCourseTitle();
-            credit = courseDetail.getCredit();
         } else if (PlanConstants.SECTION_TYPE.equals(planItem.getRefObjectType())) {
             String activityId = planItem.getRefObjectId();
             ActivityOfferingDisplayInfo activityDisplayInfo = null;
@@ -2002,15 +1990,10 @@ public class PlanController extends UifControllerBase {
         } else if ((PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItem.getRefObjectType()) ||
                 PlanConstants.PLACE_HOLDER_TYPE.equals(planItem.getRefObjectType())) && UserSessionHelper.isAdviser()) {
             code = EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), planItem.getRefObjectType());
-            title = EnumerationHelper.getEnumValueForCodeByType(planItem.getRefObjectId(), planItem.getRefObjectType());
 
         } else if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType()) && UserSessionHelper.isAdviser()) {
             DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(planItem.getRefObjectId());
-            Map<String, String> subjectAreas = OrgHelper.getTrimmedSubjectAreas();
-            String subjectTitle = subjectAreas.get(courseCode.getSubject());
-            String subjectLevel = courseCode.getNumber().toUpperCase().replace("XX", "00");
             code = planItem.getRefObjectId();
-            title = String.format("%s %s level", subjectTitle, subjectLevel);
         }
 
 
@@ -2038,7 +2021,7 @@ public class PlanController extends UifControllerBase {
                 }
             }
             if (isRecommendedItem) {
-                sendRecommendationNotification(term, code, title, credit, form.getNote(), true);
+                sendRecommendationNotification(term, code, form.getNote(), true);
             }
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not delete plan item", e);
