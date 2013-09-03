@@ -313,8 +313,8 @@ public class PlanController extends UifControllerBase {
                         }
                         if (planForm.getAtpId() == null) {
                             planForm.setAtpId(planItemAtpId);
-                            planForm.setTermName(AtpHelper.atpIdToTermName(planForm.getAtpId()));
                         }
+                        planForm.setTermName(AtpHelper.atpIdToTermName(planForm.getAtpId()));
                     }
 
                     planForm.setAdviserName(UserSessionHelper.getNameCapitalized(planItem.getMeta().getCreateId()));
