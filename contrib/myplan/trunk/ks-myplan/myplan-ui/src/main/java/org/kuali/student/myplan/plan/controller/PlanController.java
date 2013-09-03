@@ -1297,10 +1297,15 @@ public class PlanController extends UifControllerBase {
         /*Plan capacity validation.*/
         if (addCourse || addPlaceHolder) {
             boolean hasCapacity = false;
-            try {
-                hasCapacity = isAtpHasCapacity(plan, newAtpId, newType);
-            } catch (RuntimeException e) {
-                return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
+            if (isRecommendedItem) {
+                /*Since recommendations has no limit*/
+                hasCapacity = true;
+            } else {
+                try {
+                    hasCapacity = isAtpHasCapacity(plan, newAtpId, newType);
+                } catch (RuntimeException e) {
+                    return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
+                }
             }
 
             if (!hasCapacity) {
