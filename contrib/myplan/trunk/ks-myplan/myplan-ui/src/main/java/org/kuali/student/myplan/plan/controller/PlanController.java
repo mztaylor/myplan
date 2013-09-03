@@ -1404,8 +1404,10 @@ public class PlanController extends UifControllerBase {
                 planItem = addPlanItem(plan, placeHolderId, placeHolderType, newAtpId, newType, form.getNote(),
                         form.getCredit());
 
-                /*Creating a message*/
-                sendRecommendationNotification(AtpHelper.atpIdToTermName(newAtpId), placeHolderCd, placeHolderTitle, form.getCredit(), form.getNote(), false);
+                if (isRecommendedItem) {
+                    /*Creating a message*/
+                    sendRecommendationNotification(AtpHelper.atpIdToTermName(newAtpId), placeHolderCd, placeHolderTitle, form.getCredit(), form.getNote(), false);
+                }
 
             } catch (DuplicateEntryException e) {
                 return doDuplicatePlanItem(form, newAtpId, placeHolderCd != null ? placeHolderCd : courseCd);
