@@ -847,7 +847,7 @@
                             <bean parent="KSAP-SimpleDataField" p:propertyName="note">
                                 <property name="render" value="@{note NE '' AND note NE null}"/>
                                 <property name="label"
-                                          value="@{recommendedBy} said on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(dateAdded.toString())}"/>
+                                          value="@{adviserName} said on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(dateAdded.toString())}"/>
                                 <property name="labelPlacement" value="TOP"/>
                                 <property name="fieldLabel.render" value="true"/>
                                 <property name="fieldLabel.cssClasses">

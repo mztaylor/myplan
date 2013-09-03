@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
-import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -17,7 +16,6 @@ import static org.kuali.student.myplan.plan.util.AtpHelper.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 
 /**
  * Assembles a list of published terms.
@@ -44,7 +42,7 @@ public class TermsListBuilder extends KeyValuesBase {
         List<String> recommendedTerms = new ArrayList<String>();
         if (!CollectionUtils.isEmpty(recommendedItemDataObjects)) {
             for (RecommendedItemDataObject recommendedItemDataObject : recommendedItemDataObjects) {
-                recommendedTerms.add(recommendedItemDataObject.getRecommendedTerm());
+                recommendedTerms.add(recommendedItemDataObject.getAtpId());
             }
         }
         /*TODO Once First and last dates in the Atp table are added change the way of populating the future terms by Using the method AtpService.getAtpsByDates*/

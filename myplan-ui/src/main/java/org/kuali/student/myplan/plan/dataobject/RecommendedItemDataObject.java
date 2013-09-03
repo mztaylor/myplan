@@ -9,47 +9,47 @@ package org.kuali.student.myplan.plan.dataobject;
  */
 public class RecommendedItemDataObject {
 
-    private String recommendedBy;
+    private String adviserName;
 
-    private String recommendedOn;
+    private String recommendedDate;
     
-    private String recommendedTerm;
+    private String atpId;
 
-    private String recommendationNote;
+    private String note;
 
     private boolean isPlanned;
 
-    public String getRecommendedBy() {
-        return recommendedBy;
+    public String getAdviserName() {
+        return adviserName;
     }
 
-    public void setRecommendedBy(String recommendedBy) {
-        this.recommendedBy = recommendedBy;
+    public void setAdviserName(String adviserName) {
+        this.adviserName = adviserName;
     }
 
 
-    public String getRecommendedOn() {
-        return recommendedOn;
+    public String getRecommendedDate() {
+        return recommendedDate;
     }
 
-    public void setRecommendedOn(String recommendedOn) {
-        this.recommendedOn = recommendedOn;
+    public void setRecommendedDate(String recommendedDate) {
+        this.recommendedDate = recommendedDate;
     }
 
-    public String getRecommendationNote() {
-        return recommendationNote;
+    public String getNote() {
+        return note;
     }
 
-    public void setRecommendationNote(String recommendationNote) {
-        this.recommendationNote = recommendationNote;
+    public void setNote(String note) {
+        this.note = note;
     }
 
-    public String getRecommendedTerm() {
-        return recommendedTerm;
+    public String getAtpId() {
+        return atpId;
     }
 
-    public void setRecommendedTerm(String recommendedTerm) {
-        this.recommendedTerm = recommendedTerm;
+    public void setAtpId(String atpId) {
+        this.atpId = atpId;
     }
 
     public boolean isPlanned() {

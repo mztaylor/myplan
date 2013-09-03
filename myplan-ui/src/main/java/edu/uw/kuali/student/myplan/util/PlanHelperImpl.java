@@ -3,7 +3,6 @@ package edu.uw.kuali.student.myplan.util;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
@@ -182,12 +181,12 @@ public class PlanHelperImpl implements PlanHelper {
                     for (PlanItemInfo planItemInfo : planItems) {
                         if (PlanConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType()) && planItemInfo.getRefObjectId().equals(refObjId)) {
                             RecommendedItemDataObject recommendedItemDataObject = new RecommendedItemDataObject();
-                            recommendedItemDataObject.setRecommendedBy(UserSessionHelper.getNameCapitalized(planItemInfo.getMeta().getCreateId()));
+                            recommendedItemDataObject.setAdviserName(UserSessionHelper.getNameCapitalized(planItemInfo.getMeta().getCreateId()));
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
                             String dateAdded = simpleDateFormat.format(planItemInfo.getMeta().getCreateTime());
-                            recommendedItemDataObject.setRecommendedOn(dateAdded);
-                            recommendedItemDataObject.setRecommendationNote(planItemInfo.getDescr().getPlain());
-                            recommendedItemDataObject.setRecommendedTerm(planItemInfo.getPlanPeriods().get(0));
+                            recommendedItemDataObject.setRecommendedDate(dateAdded);
+                            recommendedItemDataObject.setNote(planItemInfo.getDescr().getPlain());
+                            recommendedItemDataObject.setAtpId(planItemInfo.getPlanPeriods().get(0));
                             PlanItemInfo plan = getPlannedOrBackupPlanItem(planItemInfo.getRefObjectId(), planItemInfo.getPlanPeriods().get(0));
                             if (plan != null && plan.getId() != null) {
                                 recommendedItemDataObject.setPlanned(true);
