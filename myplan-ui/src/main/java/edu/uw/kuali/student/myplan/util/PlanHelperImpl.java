@@ -184,7 +184,7 @@ public class PlanHelperImpl implements PlanHelper {
                             recommendedItemDataObject.setAdviserName(UserSessionHelper.getNameCapitalized(planItemInfo.getMeta().getCreateId()));
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
                             String dateAdded = simpleDateFormat.format(planItemInfo.getMeta().getCreateTime());
-                            recommendedItemDataObject.setRecommendedDate(dateAdded);
+                            recommendedItemDataObject.setDateAdded(dateAdded);
                             recommendedItemDataObject.setNote(planItemInfo.getDescr().getPlain());
                             recommendedItemDataObject.setAtpId(planItemInfo.getPlanPeriods().get(0));
                             PlanItemInfo plan = getPlannedOrBackupPlanItem(planItemInfo.getRefObjectId(), planItemInfo.getPlanPeriods().get(0));

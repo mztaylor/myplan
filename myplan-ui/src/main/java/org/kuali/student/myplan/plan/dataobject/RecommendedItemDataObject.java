@@ -11,7 +11,7 @@ public class RecommendedItemDataObject {
 
     private String adviserName;
 
-    private String recommendedDate;
+    private String dateAdded;
     
     private String atpId;
 
@@ -28,12 +28,12 @@ public class RecommendedItemDataObject {
     }
 
 
-    public String getRecommendedDate() {
-        return recommendedDate;
+    public String getDateAdded() {
+        return dateAdded;
     }
 
-    public void setRecommendedDate(String recommendedDate) {
-        this.recommendedDate = recommendedDate;
+    public void setDateAdded(String dateAdded) {
+        this.dateAdded = dateAdded;
     }
 
     public String getNote() {
