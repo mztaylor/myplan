@@ -82,68 +82,8 @@
                         <list>
                             <bean parent="courseTitleLink"/>
                             <bean parent="course_details_summary_info"/>
-                            <bean parent="KSAP-HorizontalBoxGroup">
-                                <property name="render"
-                                          value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
-                                <property name="items">
-                                    <list>
-                                        <!-- If not in plan and not in saved courses and not in academic record list -->
-                                        <bean parent="KSAP-HorizontalBoxGroup"
-                                              p:render="@{(plannedCourseSummary.backupList.size() EQ 0 AND plannedCourseSummary.plannedList.size() EQ 0 AND plannedCourseSummary.savedItemId EQ null AND plannedCourseSummary.academicTerms.size() EQ 0)}">
-                                            <property name="items">
-                                                <list>
-                                                    <ref bean="addToPlanButton"/>
-                                                    <ref bean="addSavedCourseButton"/>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                        <!-- If not in plan and in saved courses and not in academic list-->
-                                        <bean parent="KSAP-HorizontalBoxGroup"
-                                              p:render="@{(plannedCourseSummary.backupList.size() EQ 0 AND plannedCourseSummary.plannedList.size() EQ 0 AND plannedCourseSummary.savedItemId NE null AND plannedCourseSummary.academicTerms.size() EQ 0)}">
-                                            <property name="items">
-                                                <list>
-                                                    <ref bean="addToPlanButton"/>
-                                                    <ref bean="removeSavedCourseButton"/>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                        <!-- If in plan and in saved courses and not in academic record list -->
-                                        <bean parent="KSAP-HorizontalBoxGroup"
-                                              p:render="@{((plannedCourseSummary.backupList.size() GT 0 OR plannedCourseSummary.plannedList.size() GT 0) AND plannedCourseSummary.savedItemId NE null and plannedCourseSummary.academicTerms.size() EQ 0)}">
-                                            <property name="items">
-                                                <list>
-                                                    <ref bean="addToPlanButton"/>
-                                                    <ref bean="removeSavedCourseButton"/>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="KSAP-HorizontalBoxGroup-NoMargin"
-                                  p:render="@{(plannedCourseSummary.backupList.size() GT 0 OR plannedCourseSummary.plannedList.size() GT 0 OR plannedCourseSummary.savedItemId NE null OR plannedCourseSummary.academicTerms.size() GT 0)}">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-status</value>
-                                        <value>info</value>
-                                    </list>
-                                </property>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="MyPlanMessagingIcon"/>
-                                        <bean parent="KSAP-SimpleDataField" p:propertyName="courseAndPlanSummary"
-                                              p:escapeHtmlInPropertyValue="false">
-                                            <property name="propertyEditor" ref="crud_message_matrix_formatter"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>myplan-data-list</value>
-                                                    <value>message</value>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>
+                            <ref bean="course_summary_actions"/>
+                            <ref bean="course_summary_messages"/>
                         </list>
                     </property>
                 </bean>
@@ -842,8 +782,10 @@
                       p:headerText="Adviser Recommendation for @{termName}">
                     <property name="items">
                         <list>
+
                             <bean parent="courseTitleLink"/>
                             <bean parent="course_details_summary_info"/>
+
                             <bean parent="KSAP-SimpleDataField" p:propertyName="note">
                                 <property name="render" value="@{note NE '' AND note NE null}"/>
                                 <property name="label"
@@ -959,11 +901,77 @@
         <property name="items">
             <list>
                 <ref bean="course_details_summary_info"/>
+                <ref bean="course_summary_actions"/>
+                <ref bean="course_summary_messages"/>
             </list>
         </property>
     </bean>
 
-    <bean id="course_details_summary_info" parent="KSAP-VerticalBoxGroup-NoMargin">
+    <bean id="course_summary_actions" parent="KSAP-HorizontalBoxGroup">
+        <property name="render"
+                  value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+        <property name="items">
+            <list>
+                <!-- If not in plan and not in saved courses and not in academic record list -->
+                <bean parent="KSAP-HorizontalBoxGroup"
+                      p:render="@{(plannedCourseSummary.backupList.size() EQ 0 AND plannedCourseSummary.plannedList.size() EQ 0 AND plannedCourseSummary.savedItemId EQ null AND plannedCourseSummary.academicTerms.size() EQ 0)}">
+                    <property name="items">
+                        <list>
+                            <ref bean="addToPlanButton"/>
+                            <ref bean="addSavedCourseButton"/>
+                        </list>
+                    </property>
+                </bean>
+                <!-- If not in plan and in saved courses and not in academic list-->
+                <bean parent="KSAP-HorizontalBoxGroup"
+                      p:render="@{(plannedCourseSummary.backupList.size() EQ 0 AND plannedCourseSummary.plannedList.size() EQ 0 AND plannedCourseSummary.savedItemId NE null AND plannedCourseSummary.academicTerms.size() EQ 0)}">
+                    <property name="items">
+                        <list>
+                            <ref bean="addToPlanButton"/>
+                            <ref bean="removeSavedCourseButton"/>
+                        </list>
+                    </property>
+                </bean>
+                <!-- If in plan and in saved courses and not in academic record list -->
+                <bean parent="KSAP-HorizontalBoxGroup"
+                      p:render="@{((plannedCourseSummary.backupList.size() GT 0 OR plannedCourseSummary.plannedList.size() GT 0) AND plannedCourseSummary.savedItemId NE null and plannedCourseSummary.academicTerms.size() EQ 0)}">
+                    <property name="items">
+                        <list>
+                            <ref bean="addToPlanButton"/>
+                            <ref bean="removeSavedCourseButton"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_summary_messages" parent="KSAP-HorizontalBoxGroup-NoMargin"
+          p:render="@{(plannedCourseSummary.backupList.size() GT 0 OR plannedCourseSummary.plannedList.size() GT 0 OR plannedCourseSummary.savedItemId NE null OR plannedCourseSummary.academicTerms.size() GT 0)}">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-status</value>
+                <value>info</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="MyPlanMessagingIcon"/>
+                <bean parent="KSAP-SimpleDataField" p:propertyName="courseAndPlanSummary"
+                      p:escapeHtmlInPropertyValue="false">
+                    <property name="propertyEditor" ref="crud_message_matrix_formatter"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-data-list</value>
+                            <value>message</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_details_summary_info" parent="KSAP-VerticalBoxGroup-NoMargin" p:render="@{courseSummaryDetails.courseId NE null}">
         <property name="items">
             <list>
                 <!-- List of Scheduled Terms -->
@@ -1236,11 +1244,11 @@
          Popover Common Components  *************************************************************************************
     -->
 
-    <bean id="courseTitleLink" parent="Uif-Link" p:width="280px" p:style="display:block;">
+    <bean id="courseTitleLink" parent="Uif-Link" p:width="280px" p:style="display:block;" p:render="@{courseSummaryDetails.courseId NE null}">
         <property name="linkText"
                   value="@{courseSummaryDetails.code} @{courseSummaryDetails.courseTitle} (@{courseSummaryDetails.credit})"/>
         <property name="title"
-                  value="@{courseSummaryDetails.code.replaceAll(&quot;( )+&quot;, &quot; &quot;)} @{courseSummaryDetails.courseTitle} (@{courseSummaryDetails.credit})"/>
+                  value="@{courseSummaryDetails.code} @{courseSummaryDetails.courseTitle} (@{courseSummaryDetails.credit})"/>
         <property name="href"
                   value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseSummaryDetails.courseId}"/>
         <property name="cssClasses">
@@ -1281,7 +1289,7 @@
 
     <!-- List of terms course is scheduled for -->
     <bean id="courseTermsScheduled" parent="KSAP-SimpleDataField" p:label="Scheduled For"
-          p:propertyName="courseSummaryDetails">
+          p:propertyName="courseSummaryDetails" p:render="@{courseSummaryDetails NE null}">
         <property name="fieldLabel">
             <bean parent="Uif-Label"/>
         </property>

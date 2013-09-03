@@ -191,7 +191,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             }
 
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
-                plannedCourse.setRecommendedBy(UserSessionHelper.getName(planItemInfo.getMeta().getCreateId()));
+                plannedCourse.setAdviserName(UserSessionHelper.getName(planItemInfo.getMeta().getCreateId()));
             }
             //  If the course info lookup fails just log the error and omit the item.
             try {
@@ -285,7 +285,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             plannedCourse.setCourseDetails(new CourseSummaryDetails());
             plannedCourse.setPlaceHolderCredit(planItemInfo.getCredit() == null ? "" : String.valueOf(planItemInfo.getCredit().intValue()));
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
-                plannedCourse.setRecommendedBy(UserSessionHelper.getName(planItemInfo.getMeta().getCreateId()));
+                plannedCourse.setAdviserName(UserSessionHelper.getName(planItemInfo.getMeta().getCreateId()));
             }
             plannedCourseList.add(plannedCourse);
 
@@ -303,7 +303,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             plannedCourse.setCourseDetails(new CourseSummaryDetails());
             plannedCourse.setPlaceHolderCredit(planItemInfo.getCredit() == null ? "" : String.valueOf(planItemInfo.getCredit().intValue()));
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
-                plannedCourse.setRecommendedBy(UserSessionHelper.getName(planItemInfo.getMeta().getCreateId()));
+                plannedCourse.setAdviserName(UserSessionHelper.getName(planItemInfo.getMeta().getCreateId()));
             }
             plannedCourseList.add(plannedCourse);
 

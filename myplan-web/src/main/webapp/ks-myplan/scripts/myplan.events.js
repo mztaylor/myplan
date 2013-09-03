@@ -84,10 +84,12 @@ function planItemTemplate(data) {
 
 function fnAddPlanItem(data) {
     var itemId = data.planItemType + "_" + data.atpId + "_" + data.planItemId;
+    var collection = jQuery("." + data.atpId + ".myplan-term-" + data.planItemType);
 
-    if (jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size") != "false") {
-        var size = parseFloat(jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size")) + 1;
-        jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size", size);
+    var size = parseFloat(collection.attr("data-size")) + 1;
+    collection.attr("data-size", size);
+
+    if (collection.attr("data-limit") != "false") {
         fnShowHideQuickAddLink(data.atpId, data.planItemType, size);
     }
 
@@ -123,17 +125,25 @@ function fnUpdateNote(data) {
  */
 function fnRemovePlanItem(data) {
     var itemId = data.planItemType + "_" + data.atpId + "_" + data.planItemId;
+    var collection = jQuery("." + data.atpId + ".myplan-term-" + data.planItemType);
     jQuery("#" + itemId).unbind('click');
 
-    if (jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size") != "false") {
-        var size = parseFloat(jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size")) - 1;
-        jQuery("." + data.atpId + ".myplan-term-" + data.planItemType).attr("data-size", size);
+    var size = parseFloat(collection.attr("data-size")) - 1;
+    collection.attr("data-size", size);
+
+    if (collection.attr("data-limit") != "false") {
         fnShowHideQuickAddLink(data.atpId, data.planItemType, size);
     }
 
-    jQuery("." + data.atpId + ".myplan-term-" + data.planItemType + " #" + itemId + "_group").fadeOut(250, function () {
+    collection.find("#" + itemId + "_group").fadeOut(250, function () {
         jQuery(this).remove();
     });
+
+    if (size == 0 && collection.attr("data-keep-header") == "false") {
+        collection.fadeOut(250, function () {
+            jQuery(this).remove();
+        });
+    }
 }
 /*
  #################################################################
