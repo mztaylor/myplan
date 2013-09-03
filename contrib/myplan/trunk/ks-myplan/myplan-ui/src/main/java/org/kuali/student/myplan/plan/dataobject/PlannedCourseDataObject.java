@@ -43,7 +43,8 @@ public class PlannedCourseDataObject implements Comparable {
 
     private String placeHolderCredit;
 
-    private String recommendedBy;
+    /*recommended adviser name*/
+    private String adviserName;
 
     public CourseSummaryDetails getCourseDetails() {
         if (courseDetails == null) {
@@ -157,12 +158,12 @@ public class PlannedCourseDataObject implements Comparable {
         this.note = note;
     }
 
-    public String getRecommendedBy() {
-        return recommendedBy;
+    public String getAdviserName() {
+        return adviserName;
     }
 
-    public void setRecommendedBy(String recommendedBy) {
-        this.recommendedBy = recommendedBy;
+    public void setAdviserName(String adviserName) {
+        this.adviserName = adviserName;
     }
 
     //Used to get the list strings as a single string

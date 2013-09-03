@@ -24,7 +24,6 @@ import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.plan.util.EnumerationHelper;
 
 import java.util.Date;
 import java.util.List;
@@ -152,7 +151,7 @@ public class PlanForm extends UifFormBase {
 
     private boolean owner;
 
-    private String recommendedBy;
+    private String adviserName;
 
     /**
      * *******************************************************
@@ -241,6 +240,9 @@ public class PlanForm extends UifFormBase {
     }
 
     public CourseSummaryDetails getCourseSummaryDetails() {
+        if (courseSummaryDetails == null) {
+            courseSummaryDetails = new CourseSummaryDetails();
+        }
         return this.courseSummaryDetails;
     }
 
@@ -435,12 +437,12 @@ public class PlanForm extends UifFormBase {
         this.owner = owner;
     }
 
-    public String getRecommendedBy() {
-        return recommendedBy;
+    public String getAdviserName() {
+        return adviserName;
     }
 
-    public void setRecommendedBy(String recommendedBy) {
-        this.recommendedBy = recommendedBy;
+    public void setAdviserName(String adviserName) {
+        this.adviserName = adviserName;
     }
 
     public boolean isRecommended() {

@@ -4,7 +4,6 @@ import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
-import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
@@ -219,7 +218,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                         }
 
                         if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
-                            plannedCourseDO.setRecommendedBy(UserSessionHelper.getName(planItem.getMeta().getCreateId()));
+                            plannedCourseDO.setAdviserName(UserSessionHelper.getName(planItem.getMeta().getCreateId()));
                         }
 
                         plannedCoursesList.add(plannedCourseDO);
@@ -304,7 +303,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     plannedCourse.setCourseDetails(new CourseSummaryDetails());
                     plannedCourse.setPlaceHolderCredit(planItem.getCredit() == null ? "" : String.valueOf(planItem.getCredit().intValue()));
                     if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
-                        plannedCourse.setRecommendedBy(UserSessionHelper.getName(planItem.getMeta().getCreateId()));
+                        plannedCourse.setAdviserName(UserSessionHelper.getName(planItem.getMeta().getCreateId()));
                     }
                     plannedCoursesList.add(plannedCourse);
 
@@ -322,7 +321,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     plannedCourse.setCourseDetails(new CourseSummaryDetails());
                     plannedCourse.setPlaceHolderCredit(planItem.getCredit() == null ? "" : String.valueOf(planItem.getCredit().intValue()));
                     if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
-                        plannedCourse.setRecommendedBy(UserSessionHelper.getName(planItem.getMeta().getCreateId()));
+                        plannedCourse.setAdviserName(UserSessionHelper.getName(planItem.getMeta().getCreateId()));
                     }
                     plannedCoursesList.add(plannedCourse);
 
