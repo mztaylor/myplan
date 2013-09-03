@@ -246,14 +246,14 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                                     .append(" on ").append(key).append(" ");
                             if (plannedRecommendations.get(atpId) != null) {
                                 RecommendedItemDataObject recommendedItemDataObject = plannedRecommendations.get(atpId);
-                                sb.append(String.format(" as recommended by %s on %s ", recommendedItemDataObject.getAdviserName(), recommendedItemDataObject.getRecommendedDate()));
+                                sb.append(String.format(" as recommended by %s on %s ", recommendedItemDataObject.getAdviserName(), recommendedItemDataObject.getDateAdded()));
                             }
                         } else {
                             sb = sb.append("<dd>").append("This course was also added to ").append("<a href=\"").append(singleQuarterUrl).append(atpId).append("\">").append(planItemsMap.get(key)).append(" plan").append("</a> ")
                                     .append(" on ").append(key).append(" ");
                             if (plannedRecommendations.get(atpId) != null) {
                                 RecommendedItemDataObject recommendedItemDataObject = plannedRecommendations.get(atpId);
-                                sb.append(String.format(" as recommended by %s on %s ", recommendedItemDataObject.getAdviserName(), recommendedItemDataObject.getRecommendedDate()));
+                                sb.append(String.format(" as recommended by %s on %s ", recommendedItemDataObject.getAdviserName(), recommendedItemDataObject.getDateAdded()));
                             }
                         }
                     }
@@ -267,7 +267,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                             String atpId = AtpHelper.termToYearTerm(term).toATP();
                             if (plannedRecommendations.get(atpId) != null) {
                                 RecommendedItemDataObject recommendedItemDataObject = plannedRecommendations.get(atpId);
-                                recommendation = String.format(" as recommended by %s on %s ", recommendedItemDataObject.getAdviserName(), recommendedItemDataObject.getRecommendedDate());
+                                recommendation = String.format(" as recommended by %s on %s ", recommendedItemDataObject.getAdviserName(), recommendedItemDataObject.getDateAdded());
                             }
                             sb = sb.append("<a href=\"").append(singleQuarterUrl).append(atpId).append("\">").append(term).append(" plan").append("</a> ").append(recommendation).append(",");
                         }
@@ -280,7 +280,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                         String recommendation = "";
                         if (plannedRecommendations.get(atpId) != null) {
                             RecommendedItemDataObject recommendedItemDataObject = plannedRecommendations.get(atpId);
-                            recommendation = String.format(" as recommended by %s on %s ", recommendedItemDataObject.getAdviserName(), recommendedItemDataObject.getRecommendedDate());
+                            recommendation = String.format(" as recommended by %s on %s ", recommendedItemDataObject.getAdviserName(), recommendedItemDataObject.getDateAdded());
                         }
                         sb = sb.append(" and ").append("<a href=\"").append(singleQuarterUrl).append(atpId).append("\">").append(planItemsMap.get(key)).append(" plan").append("</a> ")
                                 .append(" on ").append(key).append(recommendation).append(" ");
@@ -299,7 +299,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         }
 
         for (RecommendedItemDataObject recommendedItemDataObject : recommendedItemDataObjects) {
-            sb = sb.append("<dd>").append(String.format("Recommended by %s for <a href=\"inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=%s\">%s</a> on %s", recommendedItemDataObject.getAdviserName(), recommendedItemDataObject.getAtpId(), AtpHelper.atpIdToTermName(recommendedItemDataObject.getAtpId()), recommendedItemDataObject.getRecommendedDate())).append("</dd>");
+            sb = sb.append("<dd>").append(String.format("Recommended by %s for <a href=\"inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=%s\">%s</a> on %s", recommendedItemDataObject.getAdviserName(), recommendedItemDataObject.getAtpId(), AtpHelper.atpIdToTermName(recommendedItemDataObject.getAtpId()), recommendedItemDataObject.getDateAdded())).append("</dd>");
         }
 
         return sb.toString();
