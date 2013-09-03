@@ -1064,8 +1064,10 @@ public class PlanController extends UifControllerBase {
         if (form.getPlanItemId() != null) {
 
             try {
-
                 planItemInfo = getAcademicPlanService().getPlanItem(form.getPlanItemId(), PlanConstants.CONTEXT_INFO);
+                if (PlanConstants.PLACE_HOLDER_OTHER_CODE.equals(planItemInfo.getRefObjectId()) && !hasText(form.getNote())) {
+                    return doErrorPage(form, "Note required", PlanConstants.NOTE_REQUIRED, new String[]{}, null);
+                }
                 planItemInfo.getDescr().setPlain(form.getNote());
                 planItemInfo.getDescr().setFormatted(form.getNote());
                 planItemInfo = getAcademicPlanService().updatePlanItem(form.getPlanItemId(), planItemInfo, PlanConstants.CONTEXT_INFO);
