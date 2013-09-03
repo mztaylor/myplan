@@ -39,9 +39,6 @@ public class CommentHelperImpl implements CommentHelper {
     private CommentService commentService;
 
     private MyPlanMailService mailService;
-
-    private transient String propertiesFilePath = "/org/kuali/student/myplan/KSMyPlan-ApplicationResources.properties";
-
     /**
      * Create a new Message.
      * Advisers can only initiate a new message
@@ -135,7 +132,7 @@ public class CommentHelperImpl implements CommentHelper {
         String principleId = UserSessionHelper.getCurrentUserRegId();
 
         Properties pro = new Properties();
-        InputStream file = getClass().getResourceAsStream(propertiesFilePath);
+        InputStream file = getClass().getResourceAsStream(PlanConstants.PROPERTIES_FILE_PATH);
         try {
             pro.load(file);
         } catch (Exception e) {
@@ -192,7 +189,7 @@ public class CommentHelperImpl implements CommentHelper {
 
 
         Properties pro = new Properties();
-        InputStream file = getClass().getResourceAsStream(propertiesFilePath);
+        InputStream file = getClass().getResourceAsStream(PlanConstants.PROPERTIES_FILE_PATH);
         try {
             pro.load(file);
         } catch (Exception e) {
@@ -257,7 +254,7 @@ public class CommentHelperImpl implements CommentHelper {
         String principleId = UserSessionHelper.getCurrentUserRegId();
 
         Properties pro = new Properties();
-        InputStream file = getClass().getResourceAsStream(propertiesFilePath);
+        InputStream file = getClass().getResourceAsStream(PlanConstants.PROPERTIES_FILE_PATH);
         try {
             pro.load(file);
         } catch (Exception e) {

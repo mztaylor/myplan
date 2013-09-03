@@ -78,6 +78,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -1498,35 +1499,50 @@ public class PlanController extends UifControllerBase {
      */
     private void sendRecommendationNotification(String term, String courseCd, String courseTitle, String credit, String note, boolean removed) {
 
-        String adviserName = UserSessionHelper.getNameCapitalized(UserSessionHelper.getCurrentUserRegId());
-        note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim(), 80, "<br /><br />", true)) : "";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        String dateAdded = simpleDateFormat.format(System.currentTimeMillis());
-        String planLink = makeLinkToAtp(AtpHelper.termToYearTerm(term).toATP(), "visit your plan page");
+        Properties pro = new Properties();
+        InputStream file = getClass().getResourceAsStream(PlanConstants.PROPERTIES_FILE_PATH);
+        try {
+            pro.load(file);
+        } catch (Exception e) {
+            logger.error("Could not find the properties file" + e);
+        }
 
-        /*Creating a new Message from Adviser to student*/
-        String subject = "";
-        String message = "";
-        if (!removed) {
-            subject = String.format(PlanConstants.ADD_RECOMMEND_NOTIFICATION_SUBJECT, adviserName);
-            message = String.format(PlanConstants.ADD_RECOMMEND_NOTIFICATION_BODY, adviserName, courseCd, term, note, dateAdded, planLink);
+        if (pro != null) {
+            String adviserName = UserSessionHelper.getNameCapitalized(UserSessionHelper.getCurrentUserRegId());
+            note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim(), 80, "<br /><br />", true)) : "";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            String dateAdded = simpleDateFormat.format(System.currentTimeMillis());
+            String planLink = makeLinkToAtp(AtpHelper.termToYearTerm(term).toATP(), "visit your plan page");
+
+            /*Creating a new Message from Adviser to student*/
+            String subject = "";
+            String message = "";
+            String emailMessage = "";
+            if (!removed) {
+                subject = String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_SUBJECT), adviserName);
+                message = String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_BODY), adviserName, courseCd, term, note);
+                emailMessage = message + String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_INFO), dateAdded, planLink);
+            } else {
+                subject = String.format((String) pro.get(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_SUBJECT), adviserName);
+                message = String.format((String) pro.get(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_BODY), adviserName, courseCd, term, note);
+                emailMessage = message + String.format((String) pro.get(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_INFO), adviserName, dateAdded);
+            }
+
+
+            try {
+                getCommentHelper().createMessage(subject, message);
+            } catch (Exception e) {
+                logger.error("Error creating message for adviser recommended course", e);
+            }
+
+            /*Sending a email notification to student about the recommended course*/
+            try {
+                getCommentHelper().sendRecommendationEmailNotification(subject, emailMessage);
+            } catch (Exception e) {
+                logger.error("Error sending message notification for adviser recommended course", e);
+            }
         } else {
-            subject = String.format(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_SUBJECT, adviserName);
-            message = String.format(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_BODY, adviserName, courseCd, term, note, adviserName, dateAdded);
-        }
-
-
-        try {
-            getCommentHelper().createMessage(subject, message);
-        } catch (Exception e) {
-            logger.error("Error creating message for adviser recommended course", e);
-        }
-
-        /*Sending a email notification to student about the recommended course*/
-        try {
-            getCommentHelper().sendRecommendationEmailNotification(subject, message);
-        } catch (Exception e) {
-            logger.error("Error sending message notification for adviser recommended course", e);
+            logger.error("Could not find the properties file, failed to create and send message notification");
         }
 
     }
