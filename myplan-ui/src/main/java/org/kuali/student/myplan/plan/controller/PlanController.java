@@ -50,6 +50,7 @@ import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
+import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
@@ -388,6 +389,17 @@ public class PlanController extends UifControllerBase {
          * populating the Plan related Information
          */
         planForm.setPlannedCourseSummary(getCourseDetailsInquiryService().getPlannedCourseSummaryById(planForm.getCourseId(), UserSessionHelper.getStudentRegId()));
+
+
+        /*Setting the atpId to the first recommended unplanned term */
+        if (!CollectionUtils.isEmpty(planForm.getPlannedCourseSummary().getRecommendedItemDataObjects())) {
+            for (RecommendedItemDataObject recommendedItemDataObject : planForm.getPlannedCourseSummary().getRecommendedItemDataObjects()) {
+                if (!recommendedItemDataObject.isPlanned()) {
+                    planForm.setAtpId(recommendedItemDataObject.getRecommendedTerm());
+                    break;
+                }
+            }
+        }
 
 
         /**
