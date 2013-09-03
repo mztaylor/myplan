@@ -34,7 +34,6 @@ import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.plan.controller.PlanController;
 import org.kuali.student.myplan.plan.dataobject.*;
 import org.kuali.student.myplan.plan.util.*;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
@@ -438,7 +437,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 Collections.sort(recommendedItemDataObjects, new Comparator<RecommendedItemDataObject>() {
                     @Override
                     public int compare(RecommendedItemDataObject item1, RecommendedItemDataObject item2) {
-                        return item1.getRecommendedTerm().compareTo(item2.getRecommendedTerm());
+                        return item1.getAtpId().compareTo(item2.getAtpId());
                     }
                 });
 

@@ -395,7 +395,7 @@ public class PlanController extends UifControllerBase {
         if (!CollectionUtils.isEmpty(planForm.getPlannedCourseSummary().getRecommendedItemDataObjects())) {
             for (RecommendedItemDataObject recommendedItemDataObject : planForm.getPlannedCourseSummary().getRecommendedItemDataObjects()) {
                 if (!recommendedItemDataObject.isPlanned()) {
-                    planForm.setAtpId(recommendedItemDataObject.getRecommendedTerm());
+                    planForm.setAtpId(recommendedItemDataObject.getAtpId());
                     break;
                 }
             }

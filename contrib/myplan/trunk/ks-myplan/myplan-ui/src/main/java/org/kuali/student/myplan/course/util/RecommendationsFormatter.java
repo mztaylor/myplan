@@ -8,14 +8,9 @@ import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
-import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
-import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.plan.util.DateFormatHelper;
-import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
@@ -84,16 +79,16 @@ public class RecommendationsFormatter extends PropertyEditorSupport {
 
         int counter = 0;
         for (RecommendedItemDataObject recommendedItemDataObject : plannedRecommendations) {
-            String atpId = recommendedItemDataObject.getRecommendedTerm();
+            String atpId = recommendedItemDataObject.getAtpId();
             if (counter == 0) {
                 sb = sb.append("<dd>").append("Planned for ").append("<a href=\"").append(singleQuarterUrl).append(atpId).append("\">").append(AtpHelper.atpIdToTermName(atpId)).append("</a> ")
-                        .append(String.format(" as recommended by %s ", recommendedItemDataObject.getRecommendedBy()));
+                        .append(String.format(" as recommended by %s ", recommendedItemDataObject.getAdviserName()));
             } else if (counter == recommendedItemDataObjects.size()) {
                 sb = sb.append(" and <a href=\"").append(singleQuarterUrl).append(atpId).append("\">").append(AtpHelper.atpIdToTermName(atpId)).append("</a> ")
-                        .append(String.format(" as recommended by %s ", recommendedItemDataObject.getRecommendedBy()));
+                        .append(String.format(" as recommended by %s ", recommendedItemDataObject.getAdviserName()));
             } else {
                 sb = sb.append(", <a href=\"").append(singleQuarterUrl).append(atpId).append("\">").append(AtpHelper.atpIdToTermName(atpId)).append("</a> ")
-                        .append(String.format(" as recommended by %s ", recommendedItemDataObject.getRecommendedBy()));
+                        .append(String.format(" as recommended by %s ", recommendedItemDataObject.getAdviserName()));
             }
             counter++;
         }
@@ -103,7 +98,7 @@ public class RecommendationsFormatter extends PropertyEditorSupport {
         }
 
         for (RecommendedItemDataObject recommendedItemDataObject : recommendedItemDataObjects) {
-            sb = sb.append("<dd>").append(String.format("Recommended by %s for <a href=\"inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=%s\">%s</a> on %s", recommendedItemDataObject.getRecommendedBy(), recommendedItemDataObject.getRecommendedTerm(), AtpHelper.atpIdToTermName(recommendedItemDataObject.getRecommendedTerm()), recommendedItemDataObject.getRecommendedOn())).append("</dd>");
+            sb = sb.append("<dd>").append(String.format("Recommended by %s for <a href=\"inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=%s\">%s</a> on %s", recommendedItemDataObject.getAdviserName(), recommendedItemDataObject.getAtpId(), AtpHelper.atpIdToTermName(recommendedItemDataObject.getAtpId()), recommendedItemDataObject.getRecommendedDate())).append("</dd>");
         }
 
         return sb.toString();
