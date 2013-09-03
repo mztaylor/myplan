@@ -1482,7 +1482,7 @@ public class PlanController extends UifControllerBase {
         Map<String, String> params = new HashMap<String, String>();
         params.put("planItemId", planItem.getId());
         params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
-        params.put("atpId", planItem.getPlanPeriods().get(0));
+        params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
         events.put(PlanConstants.JS_EVENT_NAME.RECOMMENDED_ITEM_DELETED, params);
     }
 
