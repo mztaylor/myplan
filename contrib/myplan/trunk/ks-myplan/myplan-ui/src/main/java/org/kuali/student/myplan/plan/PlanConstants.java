@@ -137,13 +137,17 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String MULTIPLE = ",";
 
 
-    public static final String REMOVED_RECOMMEND_NOTIFICATION_SUBJECT = "%s has removed their course recommendation ";
-    public static final String REMOVED_RECOMMEND_NOTIFICATION_BODY = "%s has removed their recommendation for adding %s to your plan for %s. <br><br>%s%s removed this recommendation on %s. For more information on why this recommendation was removed, contact this adviser directly.<br><br>";
+    public static final String REMOVED_RECOMMEND_NOTIFICATION_SUBJECT = "myplan.recommendation.remove.notification.subject";
+    public static final String REMOVED_RECOMMEND_NOTIFICATION_BODY = "myplan.recommendation.remove.notification.body";
+    public static final String REMOVED_RECOMMEND_NOTIFICATION_INFO = "myplan.recommendation.remove.email.notification.info.line";
 
-    public static final String ADD_RECOMMEND_NOTIFICATION_SUBJECT = "%s recommended a course for your plan ";
-    public static final String ADD_RECOMMEND_NOTIFICATION_BODY = "%s recommended that you add %s to your plan for %s. <br><br>%sThis recommendation was made on %s. To accept this adviser’s course recommendation, %s.<br><br>";
+    public static final String ADD_RECOMMEND_NOTIFICATION_SUBJECT = "myplan.recommendation.add.notification.subject";
+    public static final String ADD_RECOMMEND_NOTIFICATION_BODY = "myplan.recommendation.add.notification.body";
+    public static final String ADD_RECOMMEND_NOTIFICATION_INFO = "myplan.recommendation.add.email.notification.info.line";
 
     public static final String RECOMMENDATION_EMAIL_BODY = "myplan.recommendation.email.body";
+    
+    public static final String PROPERTIES_FILE_PATH = "/org/kuali/student/myplan/KSMyPlan-ApplicationResources.properties";
 
     /**
      * Names of javascript events that can be scheduled in response to the outcome of a plan item request.
