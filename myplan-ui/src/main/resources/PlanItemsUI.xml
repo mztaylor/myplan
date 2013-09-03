@@ -652,7 +652,7 @@
             truncateField('planned_courses_detail_list', true);
             jQuery('#planned_courses_detail_list').on('PLAN_ITEM_ADDED', function(event, data) {
                 fnAddPlanItem(data);
-            }).on('PLAN_ITEM_DELETED', function(event, data) {
+            }).on('PLAN_ITEM_DELETED RECOMMENDED_ITEM_DELETED', function(event, data) {
                 fnRemovePlanItem(data);
             }).on('PLAN_ITEM_UPDATED', function(event, data) {
                 fnUpdatePlanItem(data);
