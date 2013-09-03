@@ -568,11 +568,12 @@
                     <property name="items">
                         <list>
                             <bean parent="planItemNote">
-                                <property name="required" value="@{#form.generalPlaceholder EQ 'uw.academicplan.placeholder.other|uw.academicplan.placeholder'}"/>
+                                <!--<property name="required" value="@{#form.generalPlaceholder EQ 'uw.academicplan.placeholder.other|uw.academicplan.placeholder'}"/>
                                 <property name="fieldLabel.requiredMessagePlacement" value="RIGHT"/>
                                 <property name="fieldLabel.requiredMessage">
                                     <bean parent="KSAP-Message" p:messageText="(Required)"/>
-                                </property>
+                                </property>-->
+                                <property name="label" value="Notes@{#form.generalPlaceholder EQ 'uw.academicplan.placeholder.other|uw.academicplan.placeholder' ? ' (Required)':''}"/>
                             </bean>
                             <bean parent="KSAP-SimpleInputField" p:propertyName="generalPlaceholder"
                                   p:hidden="true" p:render="@{#form.generalPlaceholder NE null}">
@@ -782,10 +783,9 @@
                       p:headerText="Adviser Recommendation for @{termName}">
                     <property name="items">
                         <list>
-
                             <bean parent="courseTitleLink"/>
                             <bean parent="course_details_summary_info"/>
-
+                            <bean parent="KSAP-Message" p:messageText="Plan [b]'@{placeholderCode}'[/b]" p:render="@{courseSummaryDetails.courseId EQ null}"/>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="note">
                                 <property name="render" value="@{note NE '' AND note NE null}"/>
                                 <property name="label"
@@ -804,7 +804,6 @@
                                 </property>
                             </bean>
                             <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
-                                <property name="render" value="@{owner}"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
@@ -814,7 +813,7 @@
                                                           parent="Uif-PrimaryActionButton-Small"
                                                           p:actionLabel="Delete Recommendation">
                                                         <property name="render"
-                                                                  value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                                                                  value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND owner}"/>
                                                         <property name="actionScript" value="
                                                             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#form.planItemId}', pageId:'recommended_delete_page'};
                                                             var popupStyle = {width:'300px', height:'16px'};
@@ -823,7 +822,6 @@
                                                         "/>
                                                     </bean>
                                                     <bean id="acceptRecommendedItem" p:id="acceptRecommendedItem"
-                                                          p:disabled="true"
                                                           parent="Uif-PrimaryActionButton-Small"
                                                           p:actionLabel="Accept Recommendation">
                                                         <property name="render"
@@ -831,7 +829,9 @@
                                                         <property name="actionScript" value="
                                                             var additionalFormData = {
                                                                 viewId: 'PlannedCourse-FormView',
-                                                                methodToCall: 'acceptRecommendedPlanItem',
+                                                                methodToCall: 'copyPlannedCourse',
+                                                                recommended: true,
+                                                                planItemId:'@{#form.planItemId}',
                                                                 atpId: '@{#form.atpId}',
                                                                 pageId: 'recommended_dialog_page'
                                                             };
@@ -1268,7 +1268,7 @@
                 <bean parent="KSAP-SimpleInputField" p:propertyName="atpId"
                       p:width="120px">
                     <property name="control">
-                        <bean parent="Uif-DropdownControl" p:style="width: 120px;"/>
+                        <bean parent="Uif-DropdownControl" p:width="120px"/>
                     </property>
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.plan.util.TermsListBuilder"/>
@@ -1335,7 +1335,6 @@
             <bean parent="Uif-TextAreaControl"
                   p:watermarkText="Enter a short note (500 characters max)" p:maxLength="500"
                   p:style="resize:none; width:97%">
-                <property name="required" value="@{#form.generalPlaceholder EQ 'other'}"/>
                 <property name="cssClasses">
                     <list merge="true">
                         <value>ksap-characterCount</value>
