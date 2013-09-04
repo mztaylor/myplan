@@ -597,6 +597,15 @@ public class PlannedTermsHelperBase {
         return academicPlanService;
     }
 
+
+    public void setAcademicRecordService(AcademicRecordService academicRecordService) {
+        this.academicRecordService = academicRecordService;
+    }
+
+    public void setAcademicPlanService(AcademicPlanService academicPlanService) {
+        this.academicPlanService = academicPlanService;
+    }
+
     protected CourseOfferingService getCourseOfferingService() {
         if (this.courseOfferingService == null) {
             //   TODO: Use constants for namespace.
