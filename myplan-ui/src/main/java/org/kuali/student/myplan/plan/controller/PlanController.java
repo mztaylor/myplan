@@ -1510,7 +1510,7 @@ public class PlanController extends UifControllerBase {
             logger.error("Could not find the properties file" + e);
         }
 
-        if (pro != null) {
+        if (!CollectionUtils.isEmpty(pro)) {
             String adviserName = getUserSessionHelper().getCapitalizedName(getUserSessionHelper().getCurrentUserId());
             note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim(), 80, "<br /><br />", true)) : "";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -1929,6 +1929,13 @@ public class PlanController extends UifControllerBase {
     }
 
 
+    /**
+     * Method used to remove planItems
+     * Removed course, course placeHolder,  general placeHolder, recommended planItems
+     *
+     * @param form
+     * @return
+     */
     private ModelAndView removeItem(PlanForm form) {
         String planItemId = form.getPlanItemId();
         String code = null;
@@ -1949,6 +1956,11 @@ public class PlanController extends UifControllerBase {
         try {
             planItem = getAcademicPlanService().getPlanItem(planItemId, PlanConstants.CONTEXT_INFO);
             isRecommendedItem = PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey());
+            if (isRecommendedItem) {
+                if (!getUserSessionHelper().getCurrentUserId().equals(planItem.getMeta().getCreateId())) {
+                    return doNonOwnerAccessError(form, "Non Owner Access Denied", null);
+                }
+            }
         } catch (DoesNotExistException e) {
             return doPageRefreshError(form, String.format("No plan item with id [%s] exists.", planItemId), e);
         } catch (Exception e) {
@@ -2825,6 +2837,10 @@ public class PlanController extends UifControllerBase {
         return plannedTermsHelper;
     }
 
+    public void setPlannedTermsHelper(PlannedTermsHelperBase plannedTermsHelper) {
+        this.plannedTermsHelper = plannedTermsHelper;
+    }
+
     public PlanHelper getPlanHelper() {
         return planHelper;
     }
@@ -2834,7 +2850,7 @@ public class PlanController extends UifControllerBase {
     }
 
     public UserSessionHelper getUserSessionHelper() {
-        if(userSessionHelper == null){
+        if (userSessionHelper == null) {
             userSessionHelper = new UserSessionHelperImpl();
         }
         return userSessionHelper;

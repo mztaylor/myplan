@@ -107,4 +107,18 @@
     <param name="uachieveapi.hibernate.use_second_level_cache">false</param>
     <param name="uachieveapi.hibernate.generate_statistics">false</param>
     <param name="uachieveapi.hibernate.use_structured_entries">true</param>
+
+    <!-- The "from" address to use in e-mail notifications -->
+    <param name="myplan.comment.fromAddress">myplan_notification@uw.edu</param>
+    <!-- If 'true' the "to" address will be changed to the address of the logged in user before sending any e-mail notifications -->
+    <param name="myplan.mailService.testMode">true</param>
+
+    <param name="myplan.comment.toAddress">mattmul@uw.edu</param>
+
+    <param name="myplan.message.env.link">${application.url}/myplan/lookup?methodToCall=search&amp;viewId=MessagesDetail-LookupView</param>
+
+    <!-- Default config file location -->
+    <param name="config.location">${user.home}/kuali/main/${environment}/myplan-config.xml</param>
+
+
 </config>

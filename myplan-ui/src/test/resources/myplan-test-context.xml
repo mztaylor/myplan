@@ -73,6 +73,11 @@
         <property name="studentServiceClient" ref="studentServiceClient"/>
     </bean>
 
+    <bean id="academicRecordService" class="edu.uw.kuali.student.service.impl.UwAcademicRecordServiceImpl">
+        <property name="luService" ref="luServiceImpl"/>
+        <property name="studentServiceClient" ref="studentServiceClient"/>
+    </bean>
+
     <bean id="offeringServiceUtils" class="edu.uw.kuali.student.myplan.util.CourseOfferingServiceUtils"/>
 
 
@@ -104,6 +109,9 @@
     <bean id="academicPlanService"
           class="org.kuali.student.myplan.academicplan.service.mock.AcademicPlanServiceMockImpl"/>
 
+    <bean id="orgService"
+          class="org.kuali.student.myplan.service.mock.OrganizationServiceMockImpl"/>
+
 
     <bean id="courseSearchStrategy" class="org.kuali.student.myplan.course.controller.CourseSearchStrategy">
         <property name="luService" ref="luServiceImpl"/>
@@ -131,7 +139,7 @@
         <property name="jobQueueRunDao" ref="uachieveapi.jobQueueRunDao"/>
         <property name="jobQueueListDao" ref="uachieveapi.jobQueueListDao"/>
         <property name="dprogDao" ref="uachieveapi.dprogDao"/>
-        <property name="postAuditRequestURL" value="${uw.studentservice.url}/v5/degreeaudit.xml"/>
+        <!--<property name="postAuditRequestURL" value="${uw.studentservice.url}/v5/degreeaudit.xml"/>-->
         <!--<property name="velocity" ref="velocity"/>-->
     </bean>
 
@@ -143,7 +151,20 @@
     </bean>
 
     <!-- UW's Implementation of User Session Helper -->
-    <bean id="userSessionHelper" class="edu.uw.kuali.student.myplan.util.UserSessionHelperImpl"/>
+    <bean id="userSessionHelper" class="edu.uw.kuali.student.myplan.util.mock.UserSessionHelperMockImpl"/>
+
+    <bean id="commentHelper" class="edu.uw.kuali.student.myplan.util.CommentHelperImpl">
+        <property name="commentService" ref="commentServiceImpl"/>
+        <property name="mailService" ref="mailServiceImpl"/>
+    </bean>
+
+    <bean id="planHelper" class="edu.uw.kuali.student.myplan.util.PlanHelperImpl">
+        <property name="academicPlanService" ref="academicPlanService"/>
+        <property name="courseHelper" ref="courseHelper"/>
+    </bean>
+
+    <bean id="commentServiceImpl" class="org.kuali.student.myplan.service.mock.CommentServiceMockImpl"/>
+    <bean id="mailServiceImpl" class="org.kuali.student.myplan.service.mock.MyplanMailServiceMockImpl"/>
 
 
     <bean id="courseDetailsInquiryViewHelperServiceImpl"
@@ -166,6 +187,15 @@
         <property name="academicPlanService" ref="academicPlanService"/>
         <property name="courseHelper" ref="courseHelper"/>
         <property name="courseDetailsInquiryService" ref="courseDetailsInquiryViewHelperServiceImpl"/>
+        <property name="userSessionHelper" ref="userSessionHelper"/>
+        <property name="plannedTermsHelper" ref="plannedTermsHelper"/>
+    </bean>
+
+    <bean name="plannedTermsHelper" class="org.kuali.student.myplan.plan.service.PlannedTermsHelperBase">
+        <property name="academicPlanService" ref="academicPlanService"/>
+        <property name="academicRecordService" ref="academicRecordService"/>
+        <property name="courseHelper" ref="courseHelper"/>
+        <property name="courseOfferingService" ref="coService"/>
     </bean>
 
 
@@ -205,6 +235,36 @@
         <property name="arguments">
             <list>
                 <ref bean="atpServiceImpl"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.kuali.student.myplan.plan.util.OrgHelper.setOrganizationService"/>
+        <property name="arguments">
+            <list>
+                <ref bean="orgService"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.kuali.student.myplan.plan.util.EnumerationHelper.setEnumService"/>
+        <property name="arguments">
+
+            <list>
+                <ref bean="emServiceImpl"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod"
+                  value="org.kuali.student.myplan.plan.service.PlannedTermsHelperBase.setUserSessionHelper"/>
+        <property name="arguments">
+
+            <list>
+                <ref bean="userSessionHelper"/>
             </list>
         </property>
     </bean>
