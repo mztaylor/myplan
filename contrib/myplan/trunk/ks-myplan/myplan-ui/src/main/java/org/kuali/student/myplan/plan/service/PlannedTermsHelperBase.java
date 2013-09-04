@@ -632,8 +632,7 @@ public class PlannedTermsHelperBase {
     }
 
     public String getTotalCredits(String termId) {
-        Person user = GlobalVariables.getUserSession().getPerson();
-        String studentID = user.getPrincipalId();
+        String studentID = getUserSessionHelper().getStudentId();
         YearTerm yearTerm = AtpHelper.atpToYearTerm(termId);
         ArrayList<String> creditList = new ArrayList<String>();
         try {
