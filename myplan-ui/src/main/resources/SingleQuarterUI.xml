@@ -911,44 +911,35 @@
 
                 <bean parent="singleQuarterItemCredit"/>
 
-                <bean parent="planItemNoteIcon"/>
+                <bean parent="planItemNoteIcon" p:toolTip.tooltipContent="@{#line.note NE null ? '&quot;' + #line.note.replaceAll('\n','&lt;br&gt;') + '&quot; - ' + #line.adviserName : ''}">
+                    <property name="propertyReplacers"><list/></property>
+                </bean>
+
+                <bean parent="singleQuarterStudentActions">
+                    <property name="render"
+                              value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND (#line.sectionsAvailable AND #line.timeScheduleOpen) AND dataObject.openForPlanning}"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="singleQuarterSectionsToggle"/>
+                            <bean parent="singleQuarterAddRecommended"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="singleQuarterAddRecommended">
+                    <property name="style"
+                              value="display:inline-block; font-size:11px; margin:0 0 0 30px; text-align:right; float:right;"/>
+                    <property name="render"
+                              value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND ((!#line.sectionsAvailable AND #line.timeScheduleOpen) OR !#line.timeScheduleOpen) AND dataObject.openForPlanning}"/>
+                </bean>
 
                 <bean parent="singleQuarterSectionsToggle">
                     <property name="style"
                               value="display:inline-block; font-size:11px; margin:0 0 0 30px; text-align:right; float:right;"/>
                     <property name="render"
-                              value="@{#line.timeScheduleOpen AND #line.sectionsAvailable}"/>
+                              value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.sectionsAvailable AND #line.timeScheduleOpen AND dataObject.openForPlanning}"/>
                 </bean>
 
-            </list>
-        </property>
-    </bean>
-
-    <bean id="singleQuarterPlanItemActions" parent="KSAP-VerticalFieldGroup">
-        <property name="items">
-            <list>
-                <!--<bean parent="singleQuarterStudentActions">
-                    <property name="render"
-                              value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND !#line.timeScheduleOpen AND !dataObject.completedTerm AND dataObject.currentTermForView}"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="singleQuarterMoveCourse"/>
-                            <bean parent="singleQuarterDeleteCourse"/>
-                        </list>
-                    </property>
-                </bean>
-
-
-                <bean parent="singleQuarterStudentActions">
-                    <property name="render"
-                              value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.timeScheduleOpen AND !#line.sectionsAvailable}"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="singleQuarterMoveCourse"/>
-                            <bean parent="singleQuarterDeleteCourse"/>
-                        </list>
-                    </property>
-                </bean>-->
             </list>
         </property>
     </bean>
@@ -1383,6 +1374,17 @@
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, position:'left', align:'middle', close:true};
             openPopup('plan_item_delete_page', retrieveData, 'plan', popupStyle, popupOptions, e);
+        "/>
+    </bean>
+
+    <bean id="singleQuarterAddRecommended" parent="Uif-ActionLink" p:actionLabel="Add to Plan"
+          p:style="display:inline-block;">
+        <property name="actionScript" value="
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', pageId:'recommended_dialog_page'};
+            if (!@{#line.placeHolder}) retrieveData.courseId = '@{#line.courseDetails.courseId}';
+            var popupStyle = {width:'300px', height:'16px'};
+            var popupOptions = {tail:{hidden:true}, position:'left', align:'middle', close:true};
+            openPopup('recommended_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
         "/>
     </bean>
 

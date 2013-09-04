@@ -823,7 +823,7 @@
                                                     </bean>
                                                     <bean id="acceptRecommendedItem" p:id="acceptRecommendedItem"
                                                           parent="Uif-PrimaryActionButton-Small"
-                                                          p:actionLabel="Accept Recommendation">
+                                                          p:actionLabel="Add to Plan">
                                                         <property name="render"
                                                                   value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                                                         <property name="actionScript" value="
@@ -1265,10 +1265,9 @@
         <property name="fieldLabel.cssClasses" value="myplan-text-normal"/>
         <property name="items">
             <list>
-                <bean parent="KSAP-SimpleInputField" p:propertyName="atpId"
-                      p:width="120px">
+                <bean parent="KSAP-SimpleInputField" p:propertyName="atpId">
                     <property name="control">
-                        <bean parent="Uif-DropdownControl" p:width="120px"/>
+                        <bean parent="Uif-DropdownControl" p:style="width:115px;"/>
                     </property>
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.plan.util.TermsListBuilder"/>
