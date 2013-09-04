@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.comment.service;
 
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.core.comment.dto.CommentInfo;
 import org.kuali.student.core.comment.service.CommentService;
@@ -8,6 +9,7 @@ import org.kuali.student.myplan.comment.dataobject.CommentDataObject;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.apache.log4j.Logger;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -20,6 +22,9 @@ public class CommentQueryHelper {
     private final Logger logger = Logger.getLogger(CommentQueryHelper.class);
 
     private transient CommentService commentService;
+
+    @Autowired
+    private UserSessionHelper userSessionHelper;
 
     private CommentService getCommentService() {
         if (commentService == null) {
@@ -54,7 +59,7 @@ public class CommentQueryHelper {
         messageDataObject.setCreateDate(commentInfo.getMetaInfo().getCreateTime());
         messageDataObject.setSubject(commentInfo.getAttributes().get(CommentConstants.SUBJECT_ATTRIBUTE_NAME));
         messageDataObject.setBody(commentInfo.getCommentText().getPlain());
-        messageDataObject.setFrom(UserSessionHelper.getName(commentInfo.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME)));
+        messageDataObject.setFrom(getUserSessionHelper().getName(commentInfo.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME)));
         messageDataObject.setMessageId(commentInfo.getId());
 
         //  Pass the id of the message to get the comments associated with this message.
@@ -113,11 +118,22 @@ public class CommentQueryHelper {
             CommentDataObject commentDataObject = new CommentDataObject();
             commentDataObject.setCreateDate(ci.getMetaInfo().getCreateTime());
             commentDataObject.setBody(ci.getCommentText().getPlain());
-            commentDataObject.setFrom(UserSessionHelper.getName(ci.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME)));
+            commentDataObject.setFrom(getUserSessionHelper().getName(ci.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME)));
             comments.add(commentDataObject);
         }
 
         Collections.sort(comments);
         return comments;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
     }
 }

@@ -216,7 +216,7 @@
         <property name="propertyReplacers">
             <list>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
+                      p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
                     <property name="replacement">
                         <list>
                             <ref bean="course_adviser_actions_message"/>
@@ -1050,7 +1050,7 @@
         <property name="propertyReplacers">
             <list>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
+                      p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
                     <property name="replacement">
                         <list>
                             <bean parent="activityCode" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>

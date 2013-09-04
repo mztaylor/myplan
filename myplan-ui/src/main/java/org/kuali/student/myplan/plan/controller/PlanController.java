@@ -15,6 +15,7 @@
  */
 package org.kuali.student.myplan.plan.controller;
 
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
@@ -103,6 +104,9 @@ public class PlanController extends UifControllerBase {
     @Autowired
     private PlanHelper planHelper;
 
+    @Autowired
+    private UserSessionHelper userSessionHelper;
+
     private PlannedTermsHelperBase plannedTermsHelper;
 
     private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryService;
@@ -148,7 +152,7 @@ public class PlanController extends UifControllerBase {
          */
         try {
 
-            plan = getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentRegId(),
+            plan = getAcademicPlanService().getLearningPlansForStudentByType(getUserSessionHelper().getStudentId(),
                     PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
 
             if (!CollectionUtils.isEmpty(plan)) {
@@ -180,7 +184,7 @@ public class PlanController extends UifControllerBase {
 
         try {
             CommentQueryHelper commentQueryHelper = new CommentQueryHelper();
-            messages = commentQueryHelper.getMessages(UserSessionHelper.getStudentRegId());
+            messages = commentQueryHelper.getMessages(getUserSessionHelper().getStudentId());
         } catch (Exception e) {
             throw new RuntimeException("Could not retrieve messages.", e);
         }
@@ -317,7 +321,7 @@ public class PlanController extends UifControllerBase {
                         planForm.setTermName(AtpHelper.atpIdToTermName(planForm.getAtpId()));
                     }
 
-                    planForm.setAdviserName(UserSessionHelper.getNameCapitalized(planItem.getMeta().getCreateId()));
+                    planForm.setAdviserName(getUserSessionHelper().getCapitalizedName(planItem.getMeta().getCreateId()));
                     planForm.setDateAdded(planItem.getMeta().getCreateTime());
                     if (hasText(planItem.getDescr().getPlain())) {
                         planForm.setNote(planItem.getDescr().getPlain());
@@ -329,7 +333,7 @@ public class PlanController extends UifControllerBase {
                     }
 
                     if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
-                        planForm.setOwner(UserSessionHelper.getCurrentUserRegId().equals(planItem.getMeta().getCreateId()));
+                        planForm.setOwner(getUserSessionHelper().getCurrentUserId().equals(planItem.getMeta().getCreateId()));
                     }
 
                     if (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItem.getRefObjectType())
@@ -390,7 +394,7 @@ public class PlanController extends UifControllerBase {
         /**
          * populating the Plan related Information
          */
-        planForm.setPlannedCourseSummary(getCourseDetailsInquiryService().getPlannedCourseSummaryById(planForm.getCourseId(), UserSessionHelper.getStudentRegId()));
+        planForm.setPlannedCourseSummary(getCourseDetailsInquiryService().getPlannedCourseSummaryById(planForm.getCourseId(), getUserSessionHelper().getStudentId()));
 
 
         /*Setting the atpId to the first recommended unplanned term */
@@ -441,7 +445,7 @@ public class PlanController extends UifControllerBase {
     public ModelAndView plannedToBackup(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
-        if (UserSessionHelper.isAdviser()) {
+        if (getUserSessionHelper().isAdviser()) {
             return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
 
@@ -476,7 +480,7 @@ public class PlanController extends UifControllerBase {
         //  Validate: Capacity.
         boolean hasCapacity = false;
         try {
-            hasCapacity = isAtpHasCapacity(getPlanHelper().getLearningPlan(UserSessionHelper.getStudentRegId()),
+            hasCapacity = isAtpHasCapacity(getPlanHelper().getLearningPlan(getUserSessionHelper().getStudentId()),
                     planItemAtpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
@@ -504,7 +508,7 @@ public class PlanController extends UifControllerBase {
         //  Update
         planItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
         try {
-            getAcademicPlanService().updatePlanItem(planItemId, planItem, UserSessionHelper.makeContextInfoInstance());
+            getAcademicPlanService().updatePlanItem(planItemId, planItem, getUserSessionHelper().makeContextInfoInstance());
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not update plan item.", e);
         }
@@ -542,7 +546,7 @@ public class PlanController extends UifControllerBase {
     public ModelAndView backupToPlanned(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                         HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
-        if (UserSessionHelper.isAdviser()) {
+        if (getUserSessionHelper().isAdviser()) {
             return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
 
@@ -579,7 +583,7 @@ public class PlanController extends UifControllerBase {
         //  Validate: Capacity.
         boolean hasCapacity = false;
         try {
-            hasCapacity = isAtpHasCapacity(getPlanHelper().getLearningPlan(UserSessionHelper.getStudentRegId()),
+            hasCapacity = isAtpHasCapacity(getPlanHelper().getLearningPlan(getUserSessionHelper().getStudentId()),
                     planItemAtpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
@@ -609,7 +613,7 @@ public class PlanController extends UifControllerBase {
 
         //  Update
         try {
-            getAcademicPlanService().updatePlanItem(planItemId, planItem, UserSessionHelper.makeContextInfoInstance());
+            getAcademicPlanService().updatePlanItem(planItemId, planItem, getUserSessionHelper().makeContextInfoInstance());
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not update plan item.", e);
         }
@@ -646,7 +650,7 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=movePlannedCourse")
     public ModelAndView movePlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                           HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if (UserSessionHelper.isAdviser()) {
+        if (getUserSessionHelper().isAdviser()) {
             return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
         /**
@@ -723,7 +727,7 @@ public class PlanController extends UifControllerBase {
 
             if (!planItemsToRemove.isEmpty()) {
                 for (String planItemIdToRemove : planItemsToRemove.keySet()) {
-                    getAcademicPlanService().deletePlanItem(planItemIdToRemove, UserSessionHelper.makeContextInfoInstance());
+                    getAcademicPlanService().deletePlanItem(planItemIdToRemove, getUserSessionHelper().makeContextInfoInstance());
                 }
             }
 
@@ -741,8 +745,8 @@ public class PlanController extends UifControllerBase {
         LearningPlan learningPlan = null;
         boolean hasCapacity = false;
         try {
-            learningPlan = getPlanHelper().getLearningPlan(UserSessionHelper.getStudentRegId());
-            hasCapacity = isAtpHasCapacity(getPlanHelper().getLearningPlan(UserSessionHelper.getStudentRegId()), newAtpId, planItem.getTypeKey());
+            learningPlan = getPlanHelper().getLearningPlan(getUserSessionHelper().getStudentId());
+            hasCapacity = isAtpHasCapacity(getPlanHelper().getLearningPlan(getUserSessionHelper().getStudentId()), newAtpId, planItem.getTypeKey());
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
@@ -761,7 +765,7 @@ public class PlanController extends UifControllerBase {
         //planItem.setTypeKey(newType);
 
         try {
-            getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, UserSessionHelper.makeContextInfoInstance());
+            getAcademicPlanService().updatePlanItem(planItem.getId(), planItem, getUserSessionHelper().makeContextInfoInstance());
         } catch (Exception e) {
             return doOperationFailedError(form, "Could not udpate plan item.", e);
         }
@@ -809,7 +813,7 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=copyPlannedCourse")
     public ModelAndView copyPlannedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                           HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if (UserSessionHelper.isAdviser()) {
+        if (getUserSessionHelper().isAdviser()) {
             return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
         /**
@@ -883,7 +887,7 @@ public class PlanController extends UifControllerBase {
         boolean hasCapacity = false;
         LearningPlan learningPlan = null;
         try {
-            learningPlan = getPlanHelper().getLearningPlan(UserSessionHelper.getStudentRegId());
+            learningPlan = getPlanHelper().getLearningPlan(getUserSessionHelper().getStudentId());
             hasCapacity = isAtpHasCapacity(learningPlan, newAtpId, planItem.getTypeKey());
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
@@ -955,7 +959,7 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=addUpdatePlanItem")
     public ModelAndView addUpdatePlanItem(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                           HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if (UserSessionHelper.isAdviser()) {
+        if (getUserSessionHelper().isAdviser()) {
             return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
         /* Should the course be type 'planned' or 'backup'. Default to planned.*/
@@ -975,7 +979,7 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=addRecommendedPlanItem")
     public ModelAndView addRecommendedPlanItem(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                                HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if (!UserSessionHelper.isAdviser()) {
+        if (!getUserSessionHelper().isAdviser()) {
             return doStudentAccessError(form, "Student Access Denied", null);
         }
         return addUpdateItem(form, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
@@ -994,13 +998,13 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=planAccess")
     public ModelAndView planAccess(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                    HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if (UserSessionHelper.isAdviser()) {
+        if (getUserSessionHelper().isAdviser()) {
             String[] params = {};
             return doErrorPage(form, PlanConstants.ERROR_KEY_ADVISER_ACCESS, params);
         }
         List<LearningPlanInfo> plan = new ArrayList<LearningPlanInfo>();
         try {
-            String studentId = UserSessionHelper.getStudentRegId();
+            String studentId = getUserSessionHelper().getStudentId();
             // Synchronized is used to ensure only one learning plan is created for a given student Id
             synchronized (studentId) {
                 plan = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
@@ -1129,7 +1133,7 @@ public class PlanController extends UifControllerBase {
         boolean addSecondaryCourse = false;
         boolean isRecommendedItem = PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(newType);
         CourseSummaryDetails courseDetails = null;
-        String studentId = UserSessionHelper.getStudentRegId();
+        String studentId = getUserSessionHelper().getStudentId();
 
 
         String planItemId = form.getPlanItemId();
@@ -1365,9 +1369,9 @@ public class PlanController extends UifControllerBase {
                 try {
                     String oldPlanItemId = planItem.getId();
                     //New PlanItem
-                    planItem = getAcademicPlanService().createPlanItem(planItem, UserSessionHelper.makeContextInfoInstance());
+                    planItem = getAcademicPlanService().createPlanItem(planItem, getUserSessionHelper().makeContextInfoInstance());
                     //delete old wishList item
-                    getAcademicPlanService().deletePlanItem(oldPlanItemId, UserSessionHelper.makeContextInfoInstance());
+                    getAcademicPlanService().deletePlanItem(oldPlanItemId, getUserSessionHelper().makeContextInfoInstance());
 
                 } catch (Exception e) {
                     return doOperationFailedError(form, "Could not add new plan item.", e);
@@ -1507,7 +1511,7 @@ public class PlanController extends UifControllerBase {
         }
 
         if (pro != null) {
-            String adviserName = UserSessionHelper.getNameCapitalized(UserSessionHelper.getCurrentUserRegId());
+            String adviserName = getUserSessionHelper().getCapitalizedName(getUserSessionHelper().getCurrentUserId());
             note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim(), 80, "<br /><br />", true)) : "";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
             String dateAdded = simpleDateFormat.format(System.currentTimeMillis());
@@ -1874,7 +1878,7 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=addSavedCourse")
     public ModelAndView addSavedCourse(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if (UserSessionHelper.isAdviser()) {
+        if (getUserSessionHelper().isAdviser()) {
             return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
 
@@ -1883,7 +1887,7 @@ public class PlanController extends UifControllerBase {
             return doOperationFailedError(form, "Course ID was missing.", null);
         }
 
-        String studentId = UserSessionHelper.getStudentRegId();
+        String studentId = getUserSessionHelper().getStudentId();
         LearningPlan plan = getSynchronizedLearningPlan(studentId);
         if (plan == null) {
             return doOperationFailedError(form, "Unable to create learning plan.", null);
@@ -1917,7 +1921,7 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=removeItem")
     public ModelAndView removePlanItem(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                        HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if (UserSessionHelper.isAdviser()) {
+        if (getUserSessionHelper().isAdviser()) {
             return doAdviserAccessError(form, "Adviser Access Denied", null);
         }
 
@@ -1995,10 +1999,10 @@ public class PlanController extends UifControllerBase {
                 return doOperationFailedError(form, "Could not delete plan item", null);
             }
         } else if ((PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItem.getRefObjectType()) ||
-                PlanConstants.PLACE_HOLDER_TYPE.equals(planItem.getRefObjectType())) && UserSessionHelper.isAdviser()) {
+                PlanConstants.PLACE_HOLDER_TYPE.equals(planItem.getRefObjectType())) && getUserSessionHelper().isAdviser()) {
             code = EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), planItem.getRefObjectType());
 
-        } else if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType()) && UserSessionHelper.isAdviser()) {
+        } else if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType()) && getUserSessionHelper().isAdviser()) {
             DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(planItem.getRefObjectId());
             code = planItem.getRefObjectId();
         }
@@ -2024,7 +2028,7 @@ public class PlanController extends UifControllerBase {
         try {
             if (planItemsToRemove.size() > 0) {
                 for (String planItemIdToRemove : planItemsToRemove.keySet()) {
-                    getAcademicPlanService().deletePlanItem(planItemIdToRemove, UserSessionHelper.makeContextInfoInstance());
+                    getAcademicPlanService().deletePlanItem(planItemIdToRemove, getUserSessionHelper().makeContextInfoInstance());
                 }
             }
             if (isRecommendedItem) {
@@ -2046,7 +2050,7 @@ public class PlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=removeRecommendedItem")
     public ModelAndView removeRecommendedItem(@ModelAttribute("KualiForm") PlanForm form, BindingResult result,
                                               HttpServletRequest httprequest, HttpServletResponse httpresponse) {
-        if (!UserSessionHelper.isAdviser()) {
+        if (!getUserSessionHelper().isAdviser()) {
             return doStudentAccessError(form, "Student Access Denied", null);
         }
         return removeItem(form);
@@ -2060,7 +2064,7 @@ public class PlanController extends UifControllerBase {
     private List<ActivityOfferingItem> getPlannedActivitiesByCourseAndTerm(String courseCode, String termId) {
         List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
         try {
-            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentRegId(), PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
+            List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(getUserSessionHelper().getStudentId(), PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
             //This should be looping only once as student has only one learning plan of plan type
             for (LearningPlanInfo learningPlan : learningPlanList) {
                 String learningPlanID = learningPlan.getId();
@@ -2365,7 +2369,7 @@ public class PlanController extends UifControllerBase {
         }
 
         try {
-            newPlanItem = getAcademicPlanService().createPlanItem(pii, UserSessionHelper.makeContextInfoInstance());
+            newPlanItem = getAcademicPlanService().createPlanItem(pii, getUserSessionHelper().makeContextInfoInstance());
         } catch (Exception e) {
             logger.error("Could not create plan item.", e);
             throw new RuntimeException("Could not create plan item.", e);
@@ -2386,7 +2390,7 @@ public class PlanController extends UifControllerBase {
             throw new RuntimeException("Course Id was empty.");
         }
 
-        String studentId = UserSessionHelper.getStudentRegId();
+        String studentId = getUserSessionHelper().getStudentId();
         LearningPlan learningPlan = getPlanHelper().getLearningPlan(studentId);
         if (learningPlan == null) {
             throw new RuntimeException(String.format("Could not find the default plan for [%s].", studentId));
@@ -2437,7 +2441,7 @@ public class PlanController extends UifControllerBase {
 
         //  Set the user id in the context used in the web service call.
         ContextInfo context = new ContextInfo();
-        context.setPrincipalId(UserSessionHelper.getStudentRegId());
+        context.setPrincipalId(getUserSessionHelper().getStudentId());
 
         return getAcademicPlanService().createLearningPlan(plan, context);
     }
@@ -2714,7 +2718,7 @@ public class PlanController extends UifControllerBase {
     private boolean isNewUser() {
         boolean isNewUser = false;
         try {
-            String regId = UserSessionHelper.getStudentRegId();
+            String regId = getUserSessionHelper().getStudentId();
             List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
             /*check if any audits are ran ! if no plans found*/
             if (learningPlanList.isEmpty()) {
@@ -2827,6 +2831,17 @@ public class PlanController extends UifControllerBase {
 
     public void setPlanHelper(PlanHelper planHelper) {
         this.planHelper = planHelper;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
     }
 
     @Override

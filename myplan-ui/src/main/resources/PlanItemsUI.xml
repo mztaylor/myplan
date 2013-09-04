@@ -836,7 +836,7 @@
         <property name="propertyReplacers">
             <list>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
+                      p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
                     <property name="replacement">
                         <list>
                             <bean parent="academicRecordGroupAdviser"/>
@@ -915,7 +915,7 @@
         <property name="propertyReplacers">
             <list>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="toolTip"
-                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
+                      p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
                     <property name="replacement">
                         <bean parent="MyPlan-Tooltip-Left">
                             <property name="tooltipContent"
@@ -1028,7 +1028,7 @@
         <property name="layoutManager.lineGroupPrototype.id"
                   value="@{#line.planItemDataObject.type}_@{#line.planItemDataObject.atp.replace('.','-')}_@{#line.planItemDataObject.id}_group"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses"
-                  value="uif-verticalBoxGroup uif-collectionItem@{#line.placeHolder ? ' placeholder':''}@{#line.showAlert ? ' alert':''}@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.placeHolder ? ' noAction' : ''}"/>
+                  value="uif-verticalBoxGroup uif-collectionItem@{#line.placeHolder ? ' placeholder':''}@{#line.showAlert ? ' alert':''}@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.placeHolder ? ' noAction' : ''}"/>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -1050,7 +1050,7 @@
         <property name="propertyReplacers">
             <list>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
+                      p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
                     <property name="replacement">
                         <list>
                             <bean parent="planItemGroupAdviser"/>
@@ -1085,7 +1085,7 @@
 
     <bean id="recommendedCollection" parent="plannedCollection" p:headerText="Recommended">
         <property name="propertyName" value="recommendedList"/>
-        <property name="render" value="@{#line NE null ? (T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() ? true : (#parentLine.recommendedList.size() GT 0)) : true}"/>
+        <property name="render" value="@{#line NE null ? (T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() ? true : (#parentLine.recommendedList.size() GT 0)) : true}"/>
         <property name="cssClasses">
             <list merge="false">
                 <value>myplan-carousel-term</value>
@@ -1098,7 +1098,7 @@
                 <entry key="atpId" value="@{#line.atpId}"/>
                 <entry key="size" value="@{#line.recommendedList.size()}"/>
                 <entry key="limit" value="false"/>
-                <entry key="keep-header" value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                <entry key="keep-header" value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
             </map>
         </property>
         <property name="header.rightGroup.items">

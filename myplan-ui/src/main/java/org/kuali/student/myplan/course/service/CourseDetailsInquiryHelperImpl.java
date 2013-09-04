@@ -2,6 +2,7 @@ package org.kuali.student.myplan.course.service;
 
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import edu.uw.kuali.student.myplan.util.PlanHelperImpl;
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -93,15 +94,18 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
 
     @Autowired
-    CourseHelper courseHelper;
+    private CourseHelper courseHelper;
 
     @Autowired
-    PlanHelper planHelper;
+    private PlanHelper planHelper;
+
+    @Autowired
+    private UserSessionHelper userSessionHelper;
 
 
     @Override
     public CourseDetails retrieveDataObject(Map fieldValues) {
-        String studentId = UserSessionHelper.getStudentRegId();
+        String studentId = getUserSessionHelper().getStudentId();
         boolean loadActivityOffering = false;
         if (fieldValues.get(PlanConstants.PARAM_OFFERINGS_FLAG) != null) {
             loadActivityOffering = Boolean.valueOf(fieldValues.get(PlanConstants.PARAM_OFFERINGS_FLAG).toString());
@@ -885,7 +889,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
      */
 
     protected Map<String, Map<String, PlanItem>> loadStudentsPlanItems() {
-        String studentId = UserSessionHelper.getStudentRegId();
+        String studentId = getUserSessionHelper().getStudentId();
         Map<String, Map<String, PlanItem>> planItemsByTerm = new HashMap<String, Map<String, PlanItem>>();
         try {
             List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(studentId, PlanConstants.LEARNING_PLAN_TYPE_PLAN, CourseSearchConstants.CONTEXT_INFO);
@@ -1082,5 +1086,16 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     public void setPlanHelper(PlanHelper planHelper) {
         this.planHelper = planHelper;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        if (userSessionHelper == null) {
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
     }
 }

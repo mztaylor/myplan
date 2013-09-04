@@ -93,7 +93,7 @@
                     <property name="items">
                         <list>
                             <bean parent="Uif-MessageField" p:label="Prepared for"
-                                  p:messageText="@{T(org.kuali.student.myplan.utils.UserSessionHelper).getStudentName()} (@{T(org.kuali.student.myplan.utils.UserSessionHelper).getStudentNumber() ne null ? T(org.kuali.student.myplan.utils.UserSessionHelper).getStudentNumber() : 'No student number'})">
+                                  p:messageText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentName()} (@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentNumber() ne null ? T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentNumber() : 'No student number'})">
                                 <property name="fieldLabel.cssClasses">
                                     <list merge="true">
                                         <value>myplan-text-normal</value>

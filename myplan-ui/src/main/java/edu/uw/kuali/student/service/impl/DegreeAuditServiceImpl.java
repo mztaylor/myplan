@@ -2,6 +2,7 @@ package edu.uw.kuali.student.service.impl;
 
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.dom4j.*;
 import org.dom4j.io.OutputFormat;
@@ -116,6 +117,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     @Autowired
     CourseHelper courseHelper;
+
+    @Autowired
+    private UserSessionHelper userSessionHelper;
 
 
     public DprogDao getDprogDao() {
@@ -547,11 +551,11 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
                 String name = null;
                 Text preparedFor = (Text) doc.selectSingleNode("//span[contains(@class,'prepared-for-name')]/text()");
-                boolean isUserSession = UserSessionHelper.isUserSession();
+                boolean isUserSession = getUserSessionHelper().isUserSession();
                 String regId = null;
                 if (isUserSession) {
-                    regId = UserSessionHelper.getStudentRegId();
-                    name = UserSessionHelper.getNameCapitalized(regId);
+                    regId = getUserSessionHelper().getStudentId();
+                    name = getUserSessionHelper().getCapitalizedName(regId);
                 } else {
                     String stuno = preparedFor.getText();
                     String syskey = convertMyPlanStunoToSDBSyskey(stuno);
@@ -799,7 +803,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
             // I have no idea what 'instcd' list does
             List<String> instcd = Arrays.asList("");
 
-            String syskey = UserSessionHelper.getStudentSystemKey(studentId);
+            String syskey = getUserSessionHelper().getExternalIdentifier(studentId);
             String stuno = convertSDBSyskeyToMyPlanStuno(syskey);
 
             logger.info("getAuditsForStudentInDateRange syskey " + syskey + "  stuno " + stuno);
@@ -872,7 +876,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     @Override
     public String getAuditStatus(String studentId, String programId, String recentAuditId) {
-        String syskey = UserSessionHelper.getStudentSystemKey();
+        String syskey = getUserSessionHelper().getStudentExternalIdentifier();
         String stuno = convertSDBSyskeyToMyPlanStuno(syskey);
 
         String hql = null;
@@ -937,5 +941,14 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
         this.courseHelper = courseHelper;
     }
 
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
 
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
+    }
 }

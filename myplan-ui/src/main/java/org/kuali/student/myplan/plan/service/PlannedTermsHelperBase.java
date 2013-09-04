@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.plan.service;
 
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -25,6 +26,7 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -50,6 +52,9 @@ public class PlannedTermsHelperBase {
     private transient CourseOfferingService courseOfferingService;
 
     private transient CourseHelper courseHelper;
+
+    @Autowired
+    private static UserSessionHelper userSessionHelper;
 
 
     public static List<PlannedTerm> populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<PlannedCourseDataObject> recommendedCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String focusAtpId, int futureTerms, boolean fullPlanView) {
@@ -176,7 +181,7 @@ public class PlannedTermsHelperBase {
             for (PlannedCourseDataObject bl : recommendedCoursesList) {
                 String atp = bl.getPlanItemDataObject().getAtp();
                 /*Not adding the recommended course if it is already planned for the qtr*/
-                if (plannedAndBackupItems.contains(String.format("%s|%s", bl.getPlanItemDataObject().getRefObjId(), atp)) && !UserSessionHelper.isAdviser()) {
+                if (plannedAndBackupItems.contains(String.format("%s|%s", bl.getPlanItemDataObject().getRefObjId(), atp)) && !getUserSessionHelper().isAdviser()) {
                     continue;
                 }
                 boolean added = false;
@@ -510,7 +515,7 @@ public class PlannedTermsHelperBase {
         List<PlannedCourseDataObject> plannedCourseDataObjects = new ArrayList<PlannedCourseDataObject>();
         String startAtp = AtpHelper.getFirstOpenForPlanTerm();
         try {
-            plannedCourseDataObjects = planItemLookupableHelperBase.getPlannedCoursesFromAtp(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, UserSessionHelper.getStudentRegId(), startAtp, false);
+            plannedCourseDataObjects = planItemLookupableHelperBase.getPlannedCoursesFromAtp(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, getUserSessionHelper().getStudentId(), startAtp, false);
         } catch (Exception e) {
             logger.error("Could not retrieve the planItems" + e);
         }
@@ -613,6 +618,17 @@ public class PlannedTermsHelperBase {
 
     public void setCourseHelper(CourseHelper courseHelper) {
         this.courseHelper = courseHelper;
+    }
+
+    public static UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public static void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        PlannedTermsHelperBase.userSessionHelper = userSessionHelper;
     }
 
     public String getTotalCredits(String termId) {

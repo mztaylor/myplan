@@ -15,6 +15,7 @@
  */
 package org.kuali.student.myplan.comment.controller;
 
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
@@ -57,6 +58,9 @@ public class CommentController extends UifControllerBase {
     @Autowired
     private CommentHelper commentHelper;
 
+    @Autowired
+    private UserSessionHelper userSessionHelper;
+
     @Override
     protected CommentForm createInitialForm(HttpServletRequest request) {
         return new CommentForm();
@@ -69,8 +73,8 @@ public class CommentController extends UifControllerBase {
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
         CommentForm commentForm = (CommentForm) form;
-        commentForm.setStudentName(UserSessionHelper.getStudentName());
-        commentForm.setPersonName(UserSessionHelper.getName(principleId));
+        commentForm.setStudentName(getUserSessionHelper().getStudentName());
+        commentForm.setPersonName(getUserSessionHelper().getName(principleId));
         if (commentForm.getMessageId() != null) {
             MessageDataObject messageDataObject = null;
             try {
@@ -122,7 +126,7 @@ public class CommentController extends UifControllerBase {
             getCommentHelper().createComment(messageInfo.getId(), commentBodyText);
         } catch (Exception e) {
             form.setSubject(messageInfo.getAttributes().get("subject"));
-            form.setFrom(UserSessionHelper.getName(messageInfo.getAttributes().get("createdBy")));
+            form.setFrom(getUserSessionHelper().getName(messageInfo.getAttributes().get("createdBy")));
             form.setBody(messageInfo.getCommentText().getPlain());
             form.setComments(new ArrayList<CommentDataObject>());
             logger.error("Could not add comment ", e);
@@ -160,8 +164,8 @@ public class CommentController extends UifControllerBase {
                                    HttpServletRequest httprequest, HttpServletResponse httpresponse) {
 
         /* Add this int the if condition to check if the user in session and the user for which the message is added are equal.
-         !form.getStudentRegId().equalsIgnoreCase(UserSessionHelper.getStudentRegId())*/
-        if (!UserSessionHelper.isAdviser()) {
+         !form.getStudentRegId().equalsIgnoreCase(getUserSessionHelper().getStudentId())*/
+        if (!getUserSessionHelper().isAdviser()) {
             String[] params = {};
             return doErrorPage(form, CommentConstants.ADVISER_ACCESS_ERROR, params, CommentConstants.MESSAGE_RESPONSE_PAGE, CommentConstants.MESSAGE_RESPONSE_PAGE);
         }
@@ -189,7 +193,7 @@ public class CommentController extends UifControllerBase {
         try {
             getCommentHelper().createMessage(form.getSubject(), bodyText);
         } catch (Exception e) {
-            form.setStudentName(UserSessionHelper.getStudentName());
+            form.setStudentName(getUserSessionHelper().getStudentName());
             String[] params = {};
             return doErrorPage(form, CommentConstants.SPECIAL_CHARACTERS_ERROR, params, CommentConstants.MESSAGE_RESPONSE_PAGE, CommentConstants.MESSAGE_MESSAGE_BOX);
         }
@@ -242,5 +246,16 @@ public class CommentController extends UifControllerBase {
 
     public void setCommentHelper(CommentHelper commentHelper) {
         this.commentHelper = commentHelper;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
     }
 }

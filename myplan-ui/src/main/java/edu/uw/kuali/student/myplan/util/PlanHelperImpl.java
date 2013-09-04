@@ -36,6 +36,9 @@ public class PlanHelperImpl implements PlanHelper {
     @Autowired
     private transient CourseHelper courseHelper;
 
+    @Autowired
+    private transient UserSessionHelper userSessionHelper;
+
     /**
      * Gets a plan item of a particular type for a particular ATP.
      *
@@ -90,7 +93,7 @@ public class PlanHelperImpl implements PlanHelper {
      */
     @Override
     public PlanItemInfo getPlannedOrBackupPlanItem(String courseId, String atpId) {
-        String studentId = UserSessionHelper.getStudentRegId();
+        String studentId = getUserSessionHelper().getStudentId();
         LearningPlan learningPlan = getLearningPlan(studentId);
         if (learningPlan == null) {
             return null;
@@ -166,7 +169,7 @@ public class PlanHelperImpl implements PlanHelper {
 
         List<RecommendedItemDataObject> recommendedItemDataObjects = new ArrayList<RecommendedItemDataObject>();
         try {
-            List<LearningPlanInfo> learningPlans = getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentRegId(),
+            List<LearningPlanInfo> learningPlans = getAcademicPlanService().getLearningPlansForStudentByType(getUserSessionHelper().getStudentId(),
                     PlanConstants.LEARNING_PLAN_TYPE_PLAN, PlanConstants.CONTEXT_INFO);
 
             if (!CollectionUtils.isEmpty(learningPlans)) {
@@ -181,7 +184,7 @@ public class PlanHelperImpl implements PlanHelper {
                     for (PlanItemInfo planItemInfo : planItems) {
                         if (PlanConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType()) && planItemInfo.getRefObjectId().equals(refObjId)) {
                             RecommendedItemDataObject recommendedItemDataObject = new RecommendedItemDataObject();
-                            recommendedItemDataObject.setAdviserName(UserSessionHelper.getNameCapitalized(planItemInfo.getMeta().getCreateId()));
+                            recommendedItemDataObject.setAdviserName(getUserSessionHelper().getCapitalizedName(planItemInfo.getMeta().getCreateId()));
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
                             String dateAdded = simpleDateFormat.format(planItemInfo.getMeta().getCreateTime());
                             recommendedItemDataObject.setDateAdded(dateAdded);
@@ -210,6 +213,17 @@ public class PlanHelperImpl implements PlanHelper {
 
     public void setCourseHelper(CourseHelper courseHelper) {
         this.courseHelper = courseHelper;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
     }
 
     public AcademicPlanService getAcademicPlanService() {

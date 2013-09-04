@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.course.util;
 
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -15,6 +16,7 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
@@ -33,7 +35,11 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
 
     private transient CourseOfferingService courseOfferingService;
 
+    @Autowired
     private CourseHelper courseHelper;
+
+    @Autowired
+    private UserSessionHelper userSessionHelper;
 
 
     public CourseHelper getCourseHelper() {
@@ -45,6 +51,17 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
 
     public void setCourseHelper(CourseHelper courseHelper) {
         this.courseHelper = courseHelper;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
     }
 
     protected CourseOfferingService getCourseOfferingService() {
@@ -103,8 +120,8 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                 String term = withdrawnTerm;
                 String atpId = AtpHelper.termToYearTerm(term).toATP();
                 if (counter == 0) {
-                    if (UserSessionHelper.isAdviser()) {
-                        String user = UserSessionHelper.getStudentName();
+                    if (getUserSessionHelper().isAdviser()) {
+                        String user = getUserSessionHelper().getStudentName();
                         sb = sb.append("<dd>").append(user + " withdrew from this course in ")
                                 .append("<a href=").append(singleQuarterUrl).append(atpId).append(">").append(term).append("</a>");
                     } else {
@@ -129,8 +146,8 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                 if (atpId.compareToIgnoreCase(currentTerm) >= 0) {
                     if (counter2 == 0) {
                         String message = "You are enrolled in ";
-                        if (UserSessionHelper.isAdviser()) {
-                            String user = UserSessionHelper.getStudentName();
+                        if (getUserSessionHelper().isAdviser()) {
+                            String user = getUserSessionHelper().getStudentName();
                             message = user + " is currently enrolled in this course for ";
                         }
                         StringBuffer sec = new StringBuffer();
@@ -156,8 +173,8 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                 } else {
                     if (counter3 == 0) {
                         String message = "You took this course in ";
-                        if (UserSessionHelper.isAdviser()) {
-                            String user = UserSessionHelper.getStudentName();
+                        if (getUserSessionHelper().isAdviser()) {
+                            String user = getUserSessionHelper().getStudentName();
                             message = user + " took this course in ";
                         }
                         sb = sb.append("<dd>").append(message).append("<a href=").append(singleQuarterUrl).append(atpId).append(">").append(term).append("</a>");

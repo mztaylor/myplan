@@ -1,4 +1,4 @@
-<%@ page import="org.kuali.student.myplan.utils.UserSessionHelper" %>
+<%@ page import="org.kuali.student.myplan.plan.util.AtpHelper" %>
 <%--
 
     Copyright 2005-2012 The Kuali Foundation
@@ -20,13 +20,13 @@
     <div id="applicationHeading">
         <div id="applicationLogo">MyPlan</div>
         <div id="applicationUser">
-            <% if (!UserSessionHelper.isAdviser()) { %>
+            <% if (!AtpHelper.getUserSessionHelper().isAdviser()) { %>
             <div class="identity">
                 Welcome, <a class="name"
                             onclick="var retrieveData = {action:'plan', viewId:'StudentAcademicPlanner-FormView', methodToCall:'startPlanAccessForm', pageId:'student_academic_planner_page'}; var popupStyle = {width:'16px', height:'16px'}; var popupOptions = {tail:{align:'right'}, position:'bottom', align:'right', close:true}; openPopup('student_academic_planner_page', retrieveData, 'plan', popupStyle, popupOptions, window.event);">${UserSession.person.firstName}</a>
             </div>
             <% } %>
-            <% if (UserSessionHelper.isAdviser()) { %>
+            <% if (AtpHelper.getUserSessionHelper().isAdviser()) { %>
             <div class="identity">
                 Welcome, <span class="name">${UserSession.person.firstName}</span>
             </div>
@@ -44,12 +44,12 @@
     </div>
 
 
-    <% if (UserSessionHelper.isAdviser()) { %>
+    <% if (AtpHelper.getUserSessionHelper().isAdviser()) { %>
     <div class="adviser-banner">
-        You are viewing <strong><%= UserSessionHelper.getStudentName() %>.</strong>'s MyPlan: functionalities are
+        You are viewing <strong><%= AtpHelper.getUserSessionHelper().getStudentName() %>.</strong>'s MyPlan: functionalities are
         limited except
         <a href="comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page">leaving
-            a message</a> to <%= UserSessionHelper.getStudentName() %>. <a href="#">Learn more about Adviser View</a>
+            a message</a> to <%= AtpHelper.getUserSessionHelper().getStudentName() %>. <a href="#">Learn more about Adviser View</a>
     </div>
     <% } %>
 </div>
