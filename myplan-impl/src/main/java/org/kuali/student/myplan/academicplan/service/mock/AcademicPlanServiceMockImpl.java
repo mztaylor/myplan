@@ -1,19 +1,20 @@
 package org.kuali.student.myplan.academicplan.service.mock;
 
+import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
-import org.kuali.student.myplan.academicplan.infc.LearningPlan;
-import org.kuali.student.myplan.academicplan.infc.PlanItem;
-import org.kuali.student.myplan.academicplan.infc.PlanItemSet;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
-import org.kuali.student.r2.common.datadictionary.dto.DictionaryEntryInfo;
-import org.kuali.student.r2.common.dto.*;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.dto.RichTextInfo;
+import org.kuali.student.r2.common.dto.StatusInfo;
+import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
-import org.kuali.student.core.atp.dto.AtpInfo;
 
 import javax.jws.WebParam;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
@@ -34,8 +35,18 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     @Override
     public PlanItemInfo getPlanItem(@WebParam(name = "planItemId") String planItemId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        PlanItemInfo planItemInfo = null;
+        for (PlanItemInfo planItemInfo1 : getPlanItemInfos()) {
+            if (planItemInfo1.getId().equals(planItemId)) {
+                planItemInfo = planItemInfo1;
+            }
+        }
+        if (planItemInfo == null) {
+            throw new DoesNotExistException();
+        }
+        return planItemInfo;
     }
+
 
     @Override
     public List<PlanItemInfo> getPlanItemsInPlanByType(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "planItemTypeKey") String planItemTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
@@ -137,6 +148,8 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             list.add(plan);
         }
 
+        list.addAll(planItemInfos);
+
         // UnComment next line if testing for empty list and comment out 'return list';
         //return new ArrayList<PlanItem>();
         return list;
@@ -144,7 +157,8 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     @Override
     public List<PlanItemInfo> getPlanItemsInPlanByAtp(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "atpKey") String atpKey, @WebParam(name = "planItemTypeKey") String planItemTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();
+        return planItemInfos;
     }
 
     @Override
@@ -169,6 +183,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
         LearningPlanInfo plan = new LearningPlanInfo();
         plan.setStudentId(studentId);
         plan.setId("learningPlan1");
+        plan.setTypeKey("kuali.academicplan.type.plan");
         list.add(plan);
         return list;
     }
@@ -185,6 +200,12 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     @Override
     public PlanItemInfo createPlanItem(@WebParam(name = "planItem") PlanItemInfo planItem, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        try {
+            validatePlanItem(null, planItem, context);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        planItem.setId(UUIDHelper.genStringUUID());
         planItemInfos.add(planItem);
         return planItem;
     }
@@ -201,7 +222,12 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     @Override
     public PlanItemInfo updatePlanItem(@WebParam(name = "planItemId") String planItemId, @WebParam(name = "planItem") PlanItemInfo planItem, @WebParam(name = "context") ContextInfo context) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        PlanItemInfo planItemInfo = getPlanItem(planItemId, context);
+        planItemInfo.setRefObjectId(planItem.getRefObjectId());
+        planItemInfo.setRefObjectType(planItem.getRefObjectType());
+        planItemInfo.setCredit(planItem.getCredit());
+        planItemInfo.setPlanPeriods(planItem.getPlanPeriods());
+        return planItemInfo;
     }
 
     @Override
@@ -231,8 +257,23 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
     }
 
     @Override
-    public List<ValidationResultInfo> validatePlanItem(@WebParam(name = "validationType") String validationType, @WebParam(name = "planItemInfo") PlanItemInfo planItemInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public List<ValidationResultInfo> validatePlanItem(@WebParam(name = "validationType") String validationType,
+                                                       @WebParam(name = "planItemInfo") PlanItemInfo planItemInfo,
+                                                       @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, AlreadyExistsException {
+
+        List<ValidationResultInfo> validationResultInfos = new ArrayList<ValidationResultInfo>();
+        /*Duplicate check should only be for course and sections not for placeholders*/
+        if (AcademicPlanServiceConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType()) || AcademicPlanServiceConstants.SECTION_TYPE.equals(planItemInfo.getRefObjectType())) {
+            for (PlanItemInfo planItem : getPlanItemInfos()) {
+                if (planItem.getRefObjectId().equals(planItemInfo.getRefObjectId()) && planItem.getRefObjectType().equals(planItemInfo.getRefObjectType()) && planItem.getPlanPeriods().get(0).equals(planItemInfo.getPlanPeriods().get(0))) {
+                    throw new AlreadyExistsException();
+                }
+            }
+        }
+
+
+        return validationResultInfos;
     }
 
     @Override
