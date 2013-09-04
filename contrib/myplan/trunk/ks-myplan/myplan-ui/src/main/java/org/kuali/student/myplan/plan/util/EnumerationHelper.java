@@ -37,6 +37,10 @@ public class EnumerationHelper {
         return enumServiceCache;
     }
 
+    public static void setEnumService(EnumerationManagementService enumService) {
+        EnumerationHelper.enumService = enumService;
+    }
+
     public static void setEnumServiceCache(HashMap<String, List<EnumeratedValueInfo>> enumServiceCache) {
         EnumerationHelper.enumServiceCache = enumServiceCache;
     }
