@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.plan.service;
 
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
@@ -9,6 +10,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -28,6 +30,9 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
     private final Logger logger = Logger.getLogger(PlannedCoursesLookupableHelperImpl.class);
 
     private transient AcademicRecordService academicRecordService;
+
+    @Autowired
+    private UserSessionHelper userSessionHelper;
 
     public AcademicRecordService getAcademicRecordService() {
         if (this.academicRecordService == null) {
@@ -57,7 +62,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
     protected List<PlannedTerm> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String focusAtpId = request.getParameter(PlanConstants.FOCUS_ATP_ID_KEY);
-        String studentId = UserSessionHelper.getStudentRegId();
+        String studentId = getUserSessionHelper().getStudentId();
         /*************PlannedCourseList**************/
         List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
         try {
@@ -102,4 +107,14 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         return perfectPlannedTerms;
     }
 
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
+    }
 }

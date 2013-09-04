@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.plan.service;
 
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
@@ -48,6 +49,9 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     private transient CourseOfferingService courseOfferingService;
     @Autowired
     private CourseHelper courseHelper;
+
+    @Autowired
+    private UserSessionHelper userSessionHelper;
 
     protected List<PlannedCourseDataObject> getPlanItems(String planItemType, String studentId, boolean includePlaceHolders)
             throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
@@ -191,7 +195,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             }
 
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
-                plannedCourse.setAdviserName(UserSessionHelper.getName(planItemInfo.getMeta().getCreateId()));
+                plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
             }
             //  If the course info lookup fails just log the error and omit the item.
             try {
@@ -285,7 +289,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             plannedCourse.setCourseDetails(new CourseSummaryDetails());
             plannedCourse.setPlaceHolderCredit(planItemInfo.getCredit() == null ? "" : String.valueOf(planItemInfo.getCredit().intValue()));
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
-                plannedCourse.setAdviserName(UserSessionHelper.getName(planItemInfo.getMeta().getCreateId()));
+                plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
             }
             plannedCourseList.add(plannedCourse);
 
@@ -303,7 +307,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             plannedCourse.setCourseDetails(new CourseSummaryDetails());
             plannedCourse.setPlaceHolderCredit(planItemInfo.getCredit() == null ? "" : String.valueOf(planItemInfo.getCredit().intValue()));
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
-                plannedCourse.setAdviserName(UserSessionHelper.getName(planItemInfo.getMeta().getCreateId()));
+                plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
             }
             plannedCourseList.add(plannedCourse);
 
@@ -394,5 +398,16 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
 
     public void setCourseHelper(CourseHelper courseHelper) {
         this.courseHelper = courseHelper;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
     }
 }

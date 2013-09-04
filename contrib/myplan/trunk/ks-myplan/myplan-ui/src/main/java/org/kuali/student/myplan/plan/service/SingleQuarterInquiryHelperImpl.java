@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.plan.service;
 
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
@@ -29,6 +30,7 @@ import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -58,70 +60,15 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
     private transient CourseHelper courseHelper;
 
-    public CourseHelper getCourseHelper() {
-        if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
-        }
-        return courseHelper;
-    }
-
-    public void setCourseHelper(CourseHelper courseHelper) {
-        this.courseHelper = courseHelper;
-    }
-
-    public synchronized CourseDetailsInquiryHelperImpl getCourseDetailsInquiryHelper() {
-        if (this.courseDetailsInquiryHelper == null) {
-            this.courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
-        }
-        return courseDetailsInquiryHelper;
-    }
-
-    public void setCourseDetailsInquiryHelper(CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper) {
-        this.courseDetailsInquiryHelper = courseDetailsInquiryHelper;
-    }
-
-    public AcademicPlanService getAcademicPlanService() {
-        if (academicPlanService == null) {
-            academicPlanService = (AcademicPlanService)
-                    GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
-        }
-        return academicPlanService;
-    }
-
-    public void setAcademicPlanService(AcademicPlanService academicPlanService) {
-        this.academicPlanService = academicPlanService;
-    }
-
-    public AcademicRecordService getAcademicRecordService() {
-        if (this.academicRecordService == null) {
-            //   TODO: Use constants for namespace.
-            this.academicRecordService = (AcademicRecordService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/academicrecord", "arService"));
-        }
-        return this.academicRecordService;
-    }
-
-    public void setAcademicRecordService(AcademicRecordService academicRecordService) {
-        this.academicRecordService = academicRecordService;
-    }
-
-    protected CourseOfferingService getCourseOfferingService() {
-        if (this.courseOfferingService == null) {
-            //   TODO: Use constants for namespace.
-            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
-        }
-        return this.courseOfferingService;
-    }
-
-    public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
-        this.courseOfferingService = courseOfferingService;
-    }
+    @Autowired
+    private UserSessionHelper userSessionHelper;
 
 
     @Override
     public PlannedTerm retrieveDataObject(Map fieldValues) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String termAtpId = request.getParameter("term_atp_id");
-        String studentId = UserSessionHelper.getStudentRegId();
+        String studentId = getUserSessionHelper().getStudentId();
 
 
         /*************PlannedCourseList**************/
@@ -165,7 +112,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
         }
 
 
-        PlannedTerm perfectPlannedTerm = SingleQuarterHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList,recommendedCoursesList, studentCourseRecordInfos, termAtpId);
+        PlannedTerm perfectPlannedTerm = SingleQuarterHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList, recommendedCoursesList, studentCourseRecordInfos, termAtpId);
         return perfectPlannedTerm;
     }
 
@@ -218,7 +165,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                         }
 
                         if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
-                            plannedCourseDO.setAdviserName(UserSessionHelper.getName(planItem.getMeta().getCreateId()));
+                            plannedCourseDO.setAdviserName(getUserSessionHelper().getName(planItem.getMeta().getCreateId()));
                         }
 
                         plannedCoursesList.add(plannedCourseDO);
@@ -303,7 +250,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     plannedCourse.setCourseDetails(new CourseSummaryDetails());
                     plannedCourse.setPlaceHolderCredit(planItem.getCredit() == null ? "" : String.valueOf(planItem.getCredit().intValue()));
                     if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
-                        plannedCourse.setAdviserName(UserSessionHelper.getName(planItem.getMeta().getCreateId()));
+                        plannedCourse.setAdviserName(getUserSessionHelper().getName(planItem.getMeta().getCreateId()));
                     }
                     plannedCoursesList.add(plannedCourse);
 
@@ -321,7 +268,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     plannedCourse.setCourseDetails(new CourseSummaryDetails());
                     plannedCourse.setPlaceHolderCredit(planItem.getCredit() == null ? "" : String.valueOf(planItem.getCredit().intValue()));
                     if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
-                        plannedCourse.setAdviserName(UserSessionHelper.getName(planItem.getMeta().getCreateId()));
+                        plannedCourse.setAdviserName(getUserSessionHelper().getName(planItem.getMeta().getCreateId()));
                     }
                     plannedCoursesList.add(plannedCourse);
 
@@ -399,4 +346,72 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
         return getCourseHelper().joinStringsByDelimiter('=', subject, number, atpId);
     }
 
+    public CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = new CourseHelperImpl();
+        }
+        return courseHelper;
+    }
+
+    public void setCourseHelper(CourseHelper courseHelper) {
+        this.courseHelper = courseHelper;
+    }
+
+    public synchronized CourseDetailsInquiryHelperImpl getCourseDetailsInquiryHelper() {
+        if (this.courseDetailsInquiryHelper == null) {
+            this.courseDetailsInquiryHelper = new CourseDetailsInquiryHelperImpl();
+        }
+        return courseDetailsInquiryHelper;
+    }
+
+    public void setCourseDetailsInquiryHelper(CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper) {
+        this.courseDetailsInquiryHelper = courseDetailsInquiryHelper;
+    }
+
+    public AcademicPlanService getAcademicPlanService() {
+        if (academicPlanService == null) {
+            academicPlanService = (AcademicPlanService)
+                    GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
+        }
+        return academicPlanService;
+    }
+
+    public void setAcademicPlanService(AcademicPlanService academicPlanService) {
+        this.academicPlanService = academicPlanService;
+    }
+
+    public AcademicRecordService getAcademicRecordService() {
+        if (this.academicRecordService == null) {
+            //   TODO: Use constants for namespace.
+            this.academicRecordService = (AcademicRecordService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/academicrecord", "arService"));
+        }
+        return this.academicRecordService;
+    }
+
+    public void setAcademicRecordService(AcademicRecordService academicRecordService) {
+        this.academicRecordService = academicRecordService;
+    }
+
+    protected CourseOfferingService getCourseOfferingService() {
+        if (this.courseOfferingService == null) {
+            //   TODO: Use constants for namespace.
+            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+        }
+        return this.courseOfferingService;
+    }
+
+    public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
+        this.courseOfferingService = courseOfferingService;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
+    }
 }

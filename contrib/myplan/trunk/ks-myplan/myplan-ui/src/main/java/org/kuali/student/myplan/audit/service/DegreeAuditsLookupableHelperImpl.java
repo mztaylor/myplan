@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.audit.service;
 
 import edu.uw.kuali.student.myplan.util.DegreeAuditHelperImpl;
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
@@ -12,6 +13,7 @@ import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -24,11 +26,14 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     private DegreeAuditHelper degreeAuditHelper;
 
+    @Autowired
+    private UserSessionHelper userSessionHelper;
+
     @Override
     protected List<DegreeAuditItem> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         List<DegreeAuditItem> degreeAuditItems = new ArrayList<DegreeAuditItem>();
         try {
-            String regId = UserSessionHelper.getStudentRegId();
+            String regId = getUserSessionHelper().getStudentId();
             //  TODO: Calculate dates that make sense.
             Date begin = new Date();
             Date end = new Date();
@@ -80,5 +85,16 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     public void setDegreeAuditHelper(DegreeAuditHelper degreeAuditHelper) {
         this.degreeAuditHelper = degreeAuditHelper;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
     }
 }

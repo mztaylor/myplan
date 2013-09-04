@@ -39,7 +39,7 @@
                             <property name="propertyReplacers">
                                 <list>
                                     <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                                          p:condition="@{#{ T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() }}">
+                                          p:condition="@{#{ T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() }}">
                                         <property name="replacement">
                                             <list>
                                                 <bean parent="Uif-Message" p:style="margin:0; display:none;" p:messageText="Testing" > </bean>
@@ -602,7 +602,7 @@
                 </property>
             </bean>
         </property>
-        <property name="header.render" value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+        <property name="header.render" value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>ksap-module</value>

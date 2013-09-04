@@ -17,6 +17,7 @@ import org.kuali.student.myplan.comment.util.CommentHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.service.MyPlanMailService;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.mail.MessagingException;
 import javax.xml.namespace.QName;
@@ -39,6 +40,10 @@ public class CommentHelperImpl implements CommentHelper {
     private CommentService commentService;
 
     private MyPlanMailService mailService;
+
+    @Autowired
+    private UserSessionHelper userSessionHelper;
+
     /**
      * Create a new Message.
      * Advisers can only initiate a new message
@@ -56,8 +61,8 @@ public class CommentHelperImpl implements CommentHelper {
     public CommentInfo createMessage(String subjectText, String messageText) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         CommentInfo ci = new CommentInfo();
 
-        String studentPrincipleId = UserSessionHelper.getStudentRegId();
-        String principleId = UserSessionHelper.getCurrentUserRegId();
+        String studentPrincipleId = getUserSessionHelper().getStudentId();
+        String principleId = getUserSessionHelper().getCurrentUserId();
 
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put(CommentConstants.SUBJECT_ATTRIBUTE_NAME, subjectText);
@@ -127,9 +132,9 @@ public class CommentHelperImpl implements CommentHelper {
     @Override
     public void sendMessageEmailNotification(String subjectText, String messageText) throws MissingParameterException {
 
-        String studentPrincipleId = UserSessionHelper.getStudentRegId();
-        String studentName = UserSessionHelper.getFirstName(studentPrincipleId);
-        String principleId = UserSessionHelper.getCurrentUserRegId();
+        String studentPrincipleId = getUserSessionHelper().getStudentId();
+        String studentName = getUserSessionHelper().getFirstName(studentPrincipleId);
+        String principleId = getUserSessionHelper().getCurrentUserId();
 
         Properties pro = new Properties();
         InputStream file = getClass().getResourceAsStream(PlanConstants.PROPERTIES_FILE_PATH);
@@ -139,9 +144,9 @@ public class CommentHelperImpl implements CommentHelper {
             logger.error("Could not find the properties file" + e);
         }
 
-        String adviserName = UserSessionHelper.getName(principleId);
+        String adviserName = getUserSessionHelper().getName(principleId);
 
-        String toAddress = UserSessionHelper.getMailAddress(studentPrincipleId);
+        String toAddress = getUserSessionHelper().getMailAddress(studentPrincipleId);
         if (toAddress == null) {
             throw new MissingParameterException();
         }
@@ -183,9 +188,9 @@ public class CommentHelperImpl implements CommentHelper {
     @Override
     public void sendCommentEmailNotification(CommentInfo commentInfo, String comment) throws MissingParameterException {
 
-        String studentPrincipleId = UserSessionHelper.getStudentRegId();
-        String studentName = UserSessionHelper.getFirstName(studentPrincipleId);
-        String principleId = UserSessionHelper.getCurrentUserRegId();
+        String studentPrincipleId = getUserSessionHelper().getStudentId();
+        String studentName = getUserSessionHelper().getFirstName(studentPrincipleId);
+        String principleId = getUserSessionHelper().getCurrentUserId();
 
 
         Properties pro = new Properties();
@@ -200,20 +205,20 @@ public class CommentHelperImpl implements CommentHelper {
 
         fromId = principleId;
         String messageLink = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.MESSAGE_LINK);
-        if (UserSessionHelper.isAdviser()) {
+        if (getUserSessionHelper().isAdviser()) {
             toId = studentPrincipleId;
             toName = studentName;
 
         } else {
             //  Get the created by user Id from the message.
             toId = commentInfo.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME);
-            toName = UserSessionHelper.getFirstName(toId);
+            toName = getUserSessionHelper().getFirstName(toId);
             messageLink = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.ADVISER_MESSAGE_LINK) + fromId;
 
         }
 
-        fromName = UserSessionHelper.getName(fromId);
-        toAddress = UserSessionHelper.getMailAddress(toId);
+        fromName = getUserSessionHelper().getName(fromId);
+        toAddress = getUserSessionHelper().getMailAddress(toId);
         if (toAddress == null) {
             throw new MissingParameterException();
         }
@@ -249,9 +254,9 @@ public class CommentHelperImpl implements CommentHelper {
     @Override
     public void sendRecommendationEmailNotification(String subjectText, String messageText) throws MissingParameterException {
 
-        String studentPrincipleId = UserSessionHelper.getStudentRegId();
-        String studentName = UserSessionHelper.getFirstName(studentPrincipleId);
-        String principleId = UserSessionHelper.getCurrentUserRegId();
+        String studentPrincipleId = getUserSessionHelper().getStudentId();
+        String studentName = getUserSessionHelper().getFirstName(studentPrincipleId);
+        String principleId = getUserSessionHelper().getCurrentUserId();
 
         Properties pro = new Properties();
         InputStream file = getClass().getResourceAsStream(PlanConstants.PROPERTIES_FILE_PATH);
@@ -261,9 +266,9 @@ public class CommentHelperImpl implements CommentHelper {
             logger.error("Could not find the properties file" + e);
         }
 
-        String adviserName = UserSessionHelper.getName(principleId);
+        String adviserName = getUserSessionHelper().getName(principleId);
 
-        String toAddress = UserSessionHelper.getMailAddress(studentPrincipleId);
+        String toAddress = getUserSessionHelper().getMailAddress(studentPrincipleId);
         if (toAddress == null) {
             throw new MissingParameterException();
         }
@@ -322,5 +327,16 @@ public class CommentHelperImpl implements CommentHelper {
 
     public void setCommentService(CommentService commentService) {
         this.commentService = commentService;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
     }
 }

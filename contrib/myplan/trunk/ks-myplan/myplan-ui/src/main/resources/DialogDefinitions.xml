@@ -813,7 +813,7 @@
                                                           parent="Uif-PrimaryActionButton-Small"
                                                           p:actionLabel="Delete Recommendation">
                                                         <property name="render"
-                                                                  value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND owner}"/>
+                                                                  value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND owner}"/>
                                                         <property name="actionScript" value="
                                                             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#form.planItemId}', pageId:'recommended_delete_page'};
                                                             var popupStyle = {width:'300px', height:'16px'};
@@ -825,7 +825,7 @@
                                                           parent="Uif-PrimaryActionButton-Small"
                                                           p:actionLabel="Accept Recommendation">
                                                         <property name="render"
-                                                                  value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                                                                  value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                                                         <property name="actionScript" value="
                                                             var additionalFormData = {
                                                                 viewId: 'PlannedCourse-FormView',
@@ -909,7 +909,7 @@
 
     <bean id="course_summary_actions" parent="KSAP-HorizontalBoxGroup">
         <property name="render"
-                  value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()}"/>
+                  value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
         <property name="items">
             <list>
                 <!-- If not in plan and not in saved courses and not in academic record list -->
@@ -1177,7 +1177,7 @@
                                 <property name="propertyReplacers">
                                     <list>
                                         <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                                              p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
+                                              p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
                                             <property name="replacement">
                                                 <list>
                                                     <bean parent="Uif-Message"

@@ -18,6 +18,7 @@ package org.kuali.student.myplan.audit.controller;
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import edu.uw.kuali.student.myplan.util.DegreeAuditHelperImpl;
 import edu.uw.kuali.student.myplan.util.DegreeAuditHelperImpl.Choice;
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -50,6 +51,7 @@ import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
@@ -94,7 +96,11 @@ public class DegreeAuditController extends UifControllerBase {
 
     private CourseOfferingService courseOfferingService;
 
+    @Autowired
     private CourseHelper courseHelper;
+
+    @Autowired
+    private UserSessionHelper userSessionHelper;
 
     private DegreeAuditHelper degreeAuditHelper;
 
@@ -130,7 +136,7 @@ public class DegreeAuditController extends UifControllerBase {
         }
 
         try {
-            String regId = UserSessionHelper.getStudentRegId();
+            String regId = getUserSessionHelper().getStudentId();
             if (StringUtils.hasText(regId)) {
                 logger.info("audit regId " + regId);
 
@@ -206,7 +212,7 @@ public class DegreeAuditController extends UifControllerBase {
     private boolean doesPlannedCourseExist() {
         try {
             List<LearningPlanInfo> learningPlanList =
-                    getAcademicPlanService().getLearningPlansForStudentByType(UserSessionHelper.getStudentRegId(),
+                    getAcademicPlanService().getLearningPlansForStudentByType(getUserSessionHelper().getStudentId(),
                             LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
 
             for (LearningPlanInfo learningPlanInfo : learningPlanList) {
@@ -274,7 +280,7 @@ public class DegreeAuditController extends UifControllerBase {
                                  HttpServletRequest request, HttpServletResponse response) {
         DegreeAuditForm form = auditForm.getDegreeAudit();
         try {
-            String regid = UserSessionHelper.getStudentRegId();
+            String regid = getUserSessionHelper().getStudentId();
             if (StringUtils.hasText(regid)) {
                 String programId = getDegreeAuditHelper().getFormProgramID(form);
                 if (!programId.equalsIgnoreCase(DegreeAuditConstants.DEFAULT_KEY)) {
@@ -337,7 +343,7 @@ public class DegreeAuditController extends UifControllerBase {
         PlanAuditForm form = auditForm.getPlanAudit();
         // Plan Audit Report Process
         try {
-            String regid = UserSessionHelper.getStudentRegId();
+            String regid = getUserSessionHelper().getStudentId();
             if (StringUtils.hasText(regid)) {
                 String programId = getDegreeAuditHelper().getFormProgramID(form);
                 if (!programId.equals(DegreeAuditConstants.DEFAULT_KEY)) {
@@ -470,7 +476,7 @@ public class DegreeAuditController extends UifControllerBase {
     private Map<String, String> getPlanItemSnapShots() {
         Map<String, String> map = new HashMap<String, String>();
 
-        String regid = UserSessionHelper.getStudentRegId();
+        String regid = getUserSessionHelper().getStudentId();
 
         PlannedTermsHelperBase plannedTermsHelperBase = new PlannedTermsHelperBase();
         List<PlanItemInfo> itemList =
@@ -515,7 +521,7 @@ public class DegreeAuditController extends UifControllerBase {
 
         //Processing the Handoff logic and adding the messy and clean courses for plan audit
         PlanAuditForm form = getDegreeAuditHelper().processHandOff(auditForm.getPlanAudit(),
-                UserSessionHelper.getStudentRegId());
+                getUserSessionHelper().getStudentId());
 
         if (!form.getMessyItems().isEmpty()) {
             Map<String, String> prevChoices = getPlanItemSnapShots();
@@ -550,7 +556,7 @@ public class DegreeAuditController extends UifControllerBase {
     public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
         String programId = request.getParameter("programId").replace("$", " ");
         String auditId = request.getParameter("auditId");
-        String regId = UserSessionHelper.getStudentRegId();
+        String regId = getUserSessionHelper().getStudentId();
 
         try {
             String status = getDegreeAuditService().getAuditStatus(regId, programId, auditId);
@@ -687,6 +693,17 @@ public class DegreeAuditController extends UifControllerBase {
             degreeAuditHelper = new DegreeAuditHelperImpl();
         }
         return degreeAuditHelper;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
     }
 }
 

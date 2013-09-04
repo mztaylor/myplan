@@ -142,6 +142,9 @@
         <property name="courseOfferingService" ref="coService"/>
     </bean>
 
+    <!-- UW's Implementation of User Session Helper -->
+    <bean id="userSessionHelper" class="edu.uw.kuali.student.myplan.util.UserSessionHelperImpl"/>
+
 
     <bean id="courseDetailsInquiryViewHelperServiceImpl"
           class="org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl">

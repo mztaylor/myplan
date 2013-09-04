@@ -852,7 +852,7 @@
 
                 <!-- Past quarters OR Current Quarter and no Time Schedule OR Time Schedule Open and NOT Scheduled -->
                 <bean parent="singleQuarterStudentActions">
-                    <property name="render" value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND ((dataObject.completedTerm) OR (!#line.timeScheduleOpen AND !dataObject.completedTerm AND dataObject.currentTermForView) OR (#line.timeScheduleOpen AND !#line.sectionsAvailable))}"/>
+                    <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND ((dataObject.completedTerm) OR (!#line.timeScheduleOpen AND !dataObject.completedTerm AND dataObject.currentTermForView) OR (#line.timeScheduleOpen AND !#line.sectionsAvailable))}"/>
                     <property name="items">
                         <list>
                             <bean parent="singleQuarterMoveCourse"/>
@@ -864,7 +864,7 @@
                 <!-- Time Schedule Open and Scheduled -->
                 <bean parent="singleQuarterStudentActions">
                     <property name="render"
-                              value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND #line.sectionsAvailable}"/>
+                              value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.timeScheduleOpen AND #line.sectionsAvailable}"/>
                     <property name="items">
                         <list>
                             <bean parent="singleQuarterSectionsToggle"/>
@@ -876,7 +876,7 @@
                 <!-- Future Quarters and no Time Schedule -->
                 <bean parent="singleQuarterStudentActions">
                     <property name="render"
-                              value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND !#line.timeScheduleOpen AND !dataObject.completedTerm AND !dataObject.currentTermForView}"/>
+                              value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND !#line.timeScheduleOpen AND !dataObject.completedTerm AND !dataObject.currentTermForView}"/>
                     <property name="items">
                         <list>
                             <bean parent="singleQuarterCopyCourse"/>
@@ -891,7 +891,7 @@
                     <property name="style"
                               value="display:inline-block; font-size:11px; margin:0 0 0 30px; text-align:right; float:right;"/>
                     <property name="render"
-                              value="@{T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND #line.sectionsAvailable}"/>
+                              value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.timeScheduleOpen AND #line.sectionsAvailable}"/>
                 </bean>
 
             </list>
@@ -929,7 +929,7 @@
             <list>
                 <!--<bean parent="singleQuarterStudentActions">
                     <property name="render"
-                              value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND !#line.timeScheduleOpen AND !dataObject.completedTerm AND dataObject.currentTermForView}"/>
+                              value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND !#line.timeScheduleOpen AND !dataObject.completedTerm AND dataObject.currentTermForView}"/>
                     <property name="items">
                         <list>
                             <bean parent="singleQuarterMoveCourse"/>
@@ -941,7 +941,7 @@
 
                 <bean parent="singleQuarterStudentActions">
                     <property name="render"
-                              value="@{!T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser() AND #line.timeScheduleOpen AND !#line.sectionsAvailable}"/>
+                              value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.timeScheduleOpen AND !#line.sectionsAvailable}"/>
                     <property name="items">
                         <list>
                             <bean parent="singleQuarterMoveCourse"/>
@@ -1209,7 +1209,7 @@
         <property name="propertyReplacers">
             <list>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                      p:condition="T(org.kuali.student.myplan.utils.UserSessionHelper).isAdviser()">
+                      p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
                     <property name="replacement">
                         <list>
                             <bean parent="activityCode" p:rowSpan="1"

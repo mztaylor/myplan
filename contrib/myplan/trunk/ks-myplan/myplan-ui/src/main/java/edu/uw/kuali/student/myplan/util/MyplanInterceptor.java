@@ -6,6 +6,7 @@ import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -34,6 +35,9 @@ public class MyplanInterceptor implements HandlerInterceptor {
     private final Logger logger = Logger.getLogger(HandlerInterceptor.class);
 
     private StudentServiceClient studentServiceClient;
+
+    @Autowired
+    private UserSessionHelper userSessionHelper;
 
 
     private Map<String, List<String>> viewSwsResourceMapping;
@@ -181,9 +185,9 @@ public class MyplanInterceptor implements HandlerInterceptor {
      */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        if (!UserSessionHelper.isAdviser()) {
+        if (!getUserSessionHelper().isAdviser()) {
             try {
-                String systemKey = UserSessionHelper.getStudentSystemKey();
+                String systemKey = getUserSessionHelper().getStudentExternalIdentifier();
             } catch (DataRetrievalFailureException drfe) {
                 logger.info("UNAUTHORIZED Access: " + GlobalVariables.getUserSession().getPerson().getPrincipalId());
                 request.getRequestDispatcher(USER_UNAUTHORIZED).forward(request, response);
@@ -202,5 +206,16 @@ public class MyplanInterceptor implements HandlerInterceptor {
 
     public void setViewSwsResourceMapping(Map<String, List<String>> viewSwsResourceMapping) {
         this.viewSwsResourceMapping = viewSwsResourceMapping;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
     }
 }

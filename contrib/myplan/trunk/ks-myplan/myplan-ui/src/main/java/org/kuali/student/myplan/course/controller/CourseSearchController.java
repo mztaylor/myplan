@@ -17,6 +17,7 @@ package org.kuali.student.myplan.course.controller;
 
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import edu.uw.kuali.student.myplan.util.TermInfoComparator;
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.config.property.ConfigContext;
@@ -108,6 +109,9 @@ public class CourseSearchController extends UifControllerBase {
 
     @Autowired
     private CourseSearchStrategy searcher = new CourseSearchStrategy();
+
+    @Autowired
+    private UserSessionHelper userSessionHelper;
 
 
     private CourseHelper courseHelper;
@@ -334,7 +338,7 @@ public class CourseSearchController extends UifControllerBase {
 
 
         /*populating the CourseSearchItem list*/
-        String user = UserSessionHelper.getStudentRegId();
+        String user = getUserSessionHelper().getStudentId();
         List<CourseSearchItem> courses = courseSearch(form, user);
 
         /*Building the Json String*/
@@ -355,7 +359,7 @@ public class CourseSearchController extends UifControllerBase {
             String label = item.getStatus().getLabel();
             if (label.length() > 0) {
                 status = "<span id=\\\"" + courseId + "_status\\\" class=\\\"" + label.toLowerCase() + "\\\">" + label + "</span>";
-            } else if (UserSessionHelper.isAdviser()) {
+            } else if (getUserSessionHelper().isAdviser()) {
                 status = "<span id=\\\"" + courseId + "_status\\\">" + CourseSearchItem.EMPTY_RESULT_VALUE_KEY + "</span>";
             } else {
                 status = "<span id=\\\"" + courseId + "_status\\\"><input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"/student/ks-myplan/images/pixel.gif\\\" alt=\\\"Bookmark or Add to Plan\\\" class=\\\"uif-field uif-imageField myplan-add\\\" data-courseid= \\\"" + courseId + "\\\"onclick=\\\"openMenu('" + courseId + "_add','add_course_items',null,event,null,'myplan-container-75',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>";
@@ -805,7 +809,16 @@ public class CourseSearchController extends UifControllerBase {
         this.campusSearch = campusSearch;
     }
 
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
 
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
+    }
 }
 
 

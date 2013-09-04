@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.plan.service;
 
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
@@ -9,6 +10,7 @@ import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -20,15 +22,11 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class SingleQuarterHelperBase {
-    /*Count of no of future years to be shown the quarter view */
-    private static int futureTermsCount = 6;
 
     private static final Logger logger = Logger.getLogger(SingleQuarterHelperBase.class);
 
-    private static String atpTerm1 = "1";
-    private static String atpTerm2 = "2";
-    private static String atpTerm3 = "3";
-    private static String atpTerm4 = "4";
+    @Autowired
+    private static UserSessionHelper userSessionHelper;
 
 
     public static PlannedTerm populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<PlannedCourseDataObject> recommendedCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String termAtp) {
@@ -103,7 +101,7 @@ public class SingleQuarterHelperBase {
             for (PlannedCourseDataObject recommended : recommendedCoursesList) {
                 String atp = recommended.getPlanItemDataObject().getAtp();
                 /*Not adding the recommended course if it is already planned for the qtr*/
-                if (plannedAndBackupItems.contains(String.format("%s|%s", recommended.getPlanItemDataObject().getRefObjId(), atp)) && !UserSessionHelper.isAdviser()) {
+                if (plannedAndBackupItems.contains(String.format("%s|%s", recommended.getPlanItemDataObject().getRefObjId(), atp)) && !getUserSessionHelper().isAdviser()) {
                     continue;
                 }
                 if (termAtp.equalsIgnoreCase(atp)) {
@@ -181,5 +179,14 @@ public class SingleQuarterHelperBase {
 
     }
 
+    public static UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
 
+    public static void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        SingleQuarterHelperBase.userSessionHelper = userSessionHelper;
+    }
 }

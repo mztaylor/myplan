@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.plan.util;
 
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
@@ -25,6 +26,7 @@ import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
@@ -61,72 +63,11 @@ public class AtpHelper {
 
     private static transient CourseHelper courseHelper;
 
+    @Autowired
+    private static UserSessionHelper userSessionHelper;
+
     private static Map<String, String> atpCache;
 
-    public static CourseHelper getCourseHelper() {
-        if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
-        }
-        return courseHelper;
-    }
-
-    public static void setCourseHelper(CourseHelper courseHelper) {
-        AtpHelper.courseHelper = courseHelper;
-    }
-
-
-    public static AtpService getAtpService() {
-        if (atpService == null) {
-            atpService = (AtpService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/atp", "AtpService"));
-        }
-        return atpService;
-    }
-
-    public static void setAtpService(AtpService atpService) {
-        AtpHelper.atpService = atpService;
-    }
-
-    private static CourseOfferingService getCourseOfferingService() {
-        if (courseOfferingService == null) {
-            //   TODO: Use constants for namespace.
-            courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
-        }
-        return courseOfferingService;
-    }
-
-    public static AcademicRecordService getAcademicRecordService() {
-        if (academicRecordService == null) {
-            //   TODO: Use constants for namespace.
-            academicRecordService = (AcademicRecordService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/academicrecord", "arService"));
-        }
-        return academicRecordService;
-    }
-
-
-    private static AcademicCalendarService getAcademicCalendarService() {
-        if (academicCalendarService == null) {
-            academicCalendarService = (AcademicCalendarService) GlobalResourceLoader
-                    .getService(new QName(AcademicCalendarServiceConstants.NAMESPACE,
-                            AcademicCalendarServiceConstants.SERVICE_NAME_LOCAL_PART));
-        }
-        return academicCalendarService;
-    }
-
-    public static AcademicPlanService getAcademicPlanService() {
-        if (academicPlanService == null) {
-            academicPlanService = (AcademicPlanService)
-                    GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
-        }
-        return academicPlanService;
-    }
-
-    public static void setAcademicPlanService(AcademicPlanService academicPlanService) {
-        AtpHelper.academicPlanService = academicPlanService;
-    }
-
-    public static void setAcademicCalendarService(AcademicCalendarService academicCalendarService) {
-        AtpHelper.academicCalendarService = academicCalendarService;
-    }
 
     /**
      * Query the Academic Calendar Service, determine the current ATP, and the return the ID.
@@ -828,7 +769,7 @@ public class AtpHelper {
     public static YearTerm getFirstAcademicPlanTermForStudent() {
         List<StudentCourseRecordInfo> studentCourseRecordInfos = null;
         try {
-            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(UserSessionHelper.getStudentRegId(), PlanConstants.CONTEXT_INFO);
+            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(getUserSessionHelper().getStudentId(), PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
         }
@@ -854,7 +795,7 @@ public class AtpHelper {
      */
     public static YearTerm getLastPlannedOrRegisteredTerm() {
         YearTerm lastPlannedTerm = atpToYearTerm(getCurrentAtpId());
-        String regId = UserSessionHelper.getStudentRegId();
+        String regId = getUserSessionHelper().getStudentId();
         try {
 
             List<LearningPlanInfo> learningPlanList = getAcademicPlanService().getLearningPlansForStudentByType(regId, LEARNING_PLAN_TYPE_PLAN, CONTEXT_INFO);
@@ -919,4 +860,79 @@ public class AtpHelper {
 
     }
 
+    public static CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = new CourseHelperImpl();
+        }
+        return courseHelper;
+    }
+
+    public static void setCourseHelper(CourseHelper courseHelper) {
+        AtpHelper.courseHelper = courseHelper;
+    }
+
+
+    public static AtpService getAtpService() {
+        if (atpService == null) {
+            atpService = (AtpService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/atp", "AtpService"));
+        }
+        return atpService;
+    }
+
+    public static void setAtpService(AtpService atpService) {
+        AtpHelper.atpService = atpService;
+    }
+
+    private static CourseOfferingService getCourseOfferingService() {
+        if (courseOfferingService == null) {
+            //   TODO: Use constants for namespace.
+            courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+        }
+        return courseOfferingService;
+    }
+
+    public static AcademicRecordService getAcademicRecordService() {
+        if (academicRecordService == null) {
+            //   TODO: Use constants for namespace.
+            academicRecordService = (AcademicRecordService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/academicrecord", "arService"));
+        }
+        return academicRecordService;
+    }
+
+
+    private static AcademicCalendarService getAcademicCalendarService() {
+        if (academicCalendarService == null) {
+            academicCalendarService = (AcademicCalendarService) GlobalResourceLoader
+                    .getService(new QName(AcademicCalendarServiceConstants.NAMESPACE,
+                            AcademicCalendarServiceConstants.SERVICE_NAME_LOCAL_PART));
+        }
+        return academicCalendarService;
+    }
+
+    public static AcademicPlanService getAcademicPlanService() {
+        if (academicPlanService == null) {
+            academicPlanService = (AcademicPlanService)
+                    GlobalResourceLoader.getService(new QName(PlanConstants.NAMESPACE, PlanConstants.SERVICE_NAME));
+        }
+        return academicPlanService;
+    }
+
+    public static void setAcademicPlanService(AcademicPlanService academicPlanService) {
+        AtpHelper.academicPlanService = academicPlanService;
+    }
+
+    public static void setAcademicCalendarService(AcademicCalendarService academicCalendarService) {
+        AtpHelper.academicCalendarService = academicCalendarService;
+    }
+
+    public static UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
+
+    public static void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        AtpHelper.userSessionHelper = userSessionHelper;
+    }
 }

@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.plan.service;
 
+import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
@@ -11,6 +12,7 @@ import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
@@ -33,6 +35,9 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
 
     private transient AcademicRecordService academicRecordService;
 
+    @Autowired
+    private UserSessionHelper userSessionHelper;
+
     public AcademicRecordService getAcademicRecordService() {
         if (this.academicRecordService == null) {
             //   TODO: Use constants for namespace.
@@ -49,7 +54,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
     protected List<FullPlanItemsDataObject> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
 
 
-        String studentId = UserSessionHelper.getStudentRegId();
+        String studentId = getUserSessionHelper().getStudentId();
         /*************PlannedCourseList**************/
         List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
         try {
@@ -115,5 +120,14 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
         return false;
     }
 
+    public UserSessionHelper getUserSessionHelper() {
+        if(userSessionHelper == null){
+            userSessionHelper = new UserSessionHelperImpl();
+        }
+        return userSessionHelper;
+    }
 
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
+    }
 }
