@@ -1112,7 +1112,7 @@
                         <list>
                             <bean parent="planItemAlert"/>
                             <bean parent="recommendedAction"/>
-                            <bean parent="planItemNoteIcon" p:toolTip.tooltipContent="@{#line.note NE null ? #line.note.replaceAll('\n','&lt;br&gt;') : ''}">
+                            <bean parent="planItemNoteIcon" p:toolTip.tooltipContent="@{#line.note NE null ? '&quot;' + #line.note.replaceAll('\n','&lt;br&gt;') + '&quot; - ' + #line.adviserName : ''}">
                                 <property name="propertyReplacers"><list/></property>
                             </bean>
                         </list>
