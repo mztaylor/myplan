@@ -60,76 +60,99 @@ public class PlanControllerTest {
     @Autowired
     private UserSessionHelper userSessionHelper;
 
-//    @Autowired
-//    private PersonImpl person;
-//
-//    public PersonImpl getPersonImpl() {
-//        return person;
-//    }
-//
-//    public void setPersonImpl(PersonImpl personImpl) {
-//        this.person = personImpl;
-//    }
 
-    /*@Test
+    /*Passing a course Id to build the dialog view*/
+    @Test
     public void startAddPlannedCourseFormTest() {
         PlanForm planForm = new PlanForm();
-        planForm.setCourseId("e8a3fe1f-0592-4515-822c-4f806910775a");
+        String atpId = "kuali.uw.atp.2013.4";
+        String subject = "ENGL";
+        String suffix = "242";
+        String credit = "5";
+        String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
+        addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
+        planForm.setCourseId(courseId);
+        planForm.setAtpId("kuali.uw.atp.2013.4");
         PlanController controller = getPlanController();
         controller.start(planForm, null, null, null);
         assertTrue(planForm.getCourseSummaryDetails() != null);
     }
 
+    /*passing a planItemId to build the dialog view*/
     @Test
-    public void addPlannedCourseTest() {
+    public void startAddPlannedCourseFormTest2() {
         PlanForm planForm = new PlanForm();
         String atpId = "kuali.uw.atp.2013.4";
         String subject = "ENGL";
         String suffix = "242";
+        String credit = "5";
+        String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
+        addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), courseId, PlanConstants.COURSE_TYPE, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        planForm.setPlanItemId(planItemInfo.getId());
+        getPlanController().start(planForm, null, null, null);
+        assertTrue(planForm.getCourseSummaryDetails() != null);
+    }
+
+    /*Adding a new course PlanItem */
+    @Test
+    public void addPlannedCourseTest() {
+        createStudentUserSession();
+        PlanForm planForm = new PlanForm();
+        String atpId = "kuali.uw.atp.2013.4";
+        String subject = "COM";
+        String suffix = "202";
         String credit = "5";
         String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
         planForm.setCourseId(courseId);
         planForm.setAtpId(atpId);
-        *//* planForm.setTerm("autumn");
-        planForm.setYear("2012");*//*
-        //planForm.setTermYear("kuali.uw.atp.2012.1");
-//        person = getPersonImpl();
-
-        planForm.setViewId("PlannedCourse-FormView");
-        PlanController controller = getPlanController();
-        controller.addUpdatePlanItem(planForm, null, null, null);
-        assertTrue(planForm.getPlanItemId() != null);
+        getPlanController().addUpdatePlanItem(planForm, null, null, null);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
+        Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED);
+        assertTrue(StringUtils.hasText(addEvents.get("planItemId")));
     }
 
+    /*Adding a course to bookMark*/
     @Test
     public void addSavedCourseTest() {
+        createStudentUserSession();
         PlanForm planForm = new PlanForm();
         String atpId = "kuali.uw.atp.2013.4";
-        String subject = "ENGL";
-        String suffix = "242";
+        String subject = "COM";
+        String suffix = "401";
         String credit = "5";
         String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
-
-        PlanController controller = getPlanController();
         planForm.setCourseId(courseId);
-        controller.addSavedCourse(planForm, null, null, null);
-        assertTrue(planForm.getPlanItemId() != null);
-
+        planForm.setAtpId(atpId);
+        getPlanController().addSavedCourse(planForm, null, null, null);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
+        Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED);
+        assertTrue(StringUtils.hasText(addEvents.get("planItemId")));
     }
 
 
-    *//*TODO: Fix When removePlanItem() in plan controller is fixed *//*
+    /*Removing a course planItem*/
     @Test
     public void removePlanItemTest() {
+        createStudentUserSession();
+        String atpId = "kuali.uw.atp.2013.4";
+        String subject = "COM";
+        String suffix = "201";
+        String credit = "5";
+        String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
+        addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), courseId, PlanConstants.COURSE_TYPE, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
-//        person = getPersonImpl();
-        PlanController controller = getPlanController();
-        planForm.setPlanItemId("26d19b30-ce60-4405-80d9-153d263d83cb");
-        controller.removePlanItem(planForm, null, null, null);
+        planForm.setPlanItemId(planItemInfo.getId());
+        getPlanController().removePlanItem(planForm, null, null, null);
+        Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
+        Map<String, String> removeEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED);
+        assertTrue(StringUtils.hasText(removeEvents.get("planItemId")) && removeEvents.get("planItemId").equals(planItemInfo.getId()));
+        assertTrue(StringUtils.hasText(removeEvents.get("atpId")) && removeEvents.get("atpId").equals("kuali-uw-atp-2013-4"));
 
-    }*/
+    }
 
 
     /**
@@ -143,7 +166,7 @@ public class PlanControllerTest {
         createStudentUserSession();
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("COM 2xx");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("kuali.uw.atp.2014.2");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
@@ -197,7 +220,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("COM 2xx");
         planForm.setCredit("5");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("kuali.uw.atp.2014.4");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
@@ -226,7 +249,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.elective|uw.academicplan.placeholder");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("kuali.uw.atp.2014.4");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
@@ -256,7 +279,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.other|uw.academicplan.placeholder");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("kuali.uw.atp.2014.2");
         planForm.setNote("This is a test Note");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
@@ -274,7 +297,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.foreignlanguage|uw.academicplan.placeholder");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("kuali.uw.atp.2014.3");
         planForm.setNote("This is a test Note");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
@@ -377,7 +400,7 @@ public class PlanControllerTest {
         createStudentUserSession();
         String atpId = "kuali.uw.atp.2013.4";
         String subject = "COM";
-        String suffix = "201";
+        String suffix = "489";
         String credit = "5";
         String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
@@ -402,8 +425,8 @@ public class PlanControllerTest {
     public void updateCourseToGeneralPlaceHolderTest() {
         createStudentUserSession();
         String atpId = "kuali.uw.atp.2013.4";
-        String subject = "COM";
-        String suffix = "201";
+        String subject = "ENGL";
+        String suffix = "111";
         String credit = "5";
         String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
@@ -526,12 +549,12 @@ public class PlanControllerTest {
         PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
-        planForm.setAtpId("kuali.uw.atp.2014.1");
+        planForm.setAtpId("kuali.uw.atp.2014.3");
         getPlanController().copyPlannedCourse(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED);
         assertTrue(StringUtils.hasText(addEvents.get("planItemId")) && !addEvents.get("planItemId").equals(planItemInfo.getId()));
-        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("kuali-uw-atp-2014-1"));
+        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("kuali-uw-atp-2014-3"));
     }
 
     @Test
@@ -540,12 +563,12 @@ public class PlanControllerTest {
         PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
-        planForm.setAtpId("kuali.uw.atp.2014.1");
+        planForm.setAtpId("kuali.uw.atp.2014.3");
         getPlanController().movePlannedCourse(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED);
         assertTrue(StringUtils.hasText(addEvents.get("planItemId")) && addEvents.get("planItemId").equals(planItemInfo.getId()));
-        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("kuali-uw-atp-2014-1"));
+        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("kuali-uw-atp-2014-3"));
     }
 
     @Test

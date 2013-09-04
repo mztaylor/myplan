@@ -50,7 +50,13 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     @Override
     public List<PlanItemInfo> getPlanItemsInPlanByType(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "planItemTypeKey") String planItemTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return planItemInfos;
+        List<PlanItemInfo> planItemInfoList = new ArrayList<PlanItemInfo>();
+        for (PlanItemInfo planItemInfo : planItemInfos) {
+            if (planItemInfo.getTypeKey().equals(planItemTypeKey)) {
+                planItemInfoList.add(planItemInfo);
+            }
+        }
+        return planItemInfoList;
     }
 
     @Override
