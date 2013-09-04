@@ -174,6 +174,7 @@
         <property name="academicCalendarService" ref="acalService"/>
         <property name="courseService" ref="courseServiceImpl"/>
         <property name="courseHelper" ref="courseHelper"/>
+        <property name="academicPlanService" ref="academicPlanService"/>
     </bean>
 
     <bean id="degreeAuditController" class="org.kuali.student.myplan.audit.controller.DegreeAuditController">
