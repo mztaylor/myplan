@@ -194,7 +194,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                 plannedCourse.setNote(planItemInfo.getDescr().getPlain());
             }
 
-            if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
+            if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey()) || PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED.equals(planItemInfo.getTypeKey())) {
                 plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
             }
             //  If the course info lookup fails just log the error and omit the item.
@@ -288,7 +288,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             plannedCourse.setPlaceHolderValue(placeHolderValue);
             plannedCourse.setCourseDetails(new CourseSummaryDetails());
             plannedCourse.setPlaceHolderCredit(planItemInfo.getCredit() == null ? "" : String.valueOf(planItemInfo.getCredit().intValue()));
-            if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
+            if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey()) || PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED.equals(planItemInfo.getTypeKey())) {
                 plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
             }
             plannedCourseList.add(plannedCourse);
@@ -306,7 +306,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             plannedCourse.setPlaceHolderValue(getCoursePlaceHolderTitle(planItemInfo.getRefObjectId(), subjectAreas));
             plannedCourse.setCourseDetails(new CourseSummaryDetails());
             plannedCourse.setPlaceHolderCredit(planItemInfo.getCredit() == null ? "" : String.valueOf(planItemInfo.getCredit().intValue()));
-            if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
+            if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey()) || PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED.equals(planItemInfo.getTypeKey())) {
                 plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
             }
             plannedCourseList.add(plannedCourse);
@@ -401,7 +401,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     }
 
     public UserSessionHelper getUserSessionHelper() {
-        if(userSessionHelper == null){
+        if (userSessionHelper == null) {
             userSessionHelper = new UserSessionHelperImpl();
         }
         return userSessionHelper;

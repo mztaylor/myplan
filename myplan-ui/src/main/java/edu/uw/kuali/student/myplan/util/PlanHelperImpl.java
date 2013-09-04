@@ -1,6 +1,7 @@
 package edu.uw.kuali.student.myplan.util;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
@@ -10,6 +11,7 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
+import org.kuali.student.myplan.plan.util.DateFormatHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,6 +162,7 @@ public class PlanHelperImpl implements PlanHelper {
 
     /**
      * returns a list of recommended items that are there for a given refObjId (versionIndependentId)
+     * Valid only for courses not for placeholders
      *
      * @param refObjId
      * @return
@@ -180,19 +183,22 @@ public class PlanHelperImpl implements PlanHelper {
                 List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlanByType(learningPlan.getId(),
                         PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, PlanConstants.CONTEXT_INFO);
 
+                planItems.addAll(getAcademicPlanService().getPlanItemsInPlanByType(learningPlan.getId(), PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED, PlanConstants.CONTEXT_INFO));
+
                 if (!CollectionUtils.isEmpty(planItems)) {
                     for (PlanItemInfo planItemInfo : planItems) {
                         if (PlanConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType()) && planItemInfo.getRefObjectId().equals(refObjId)) {
                             RecommendedItemDataObject recommendedItemDataObject = new RecommendedItemDataObject();
                             recommendedItemDataObject.setAdviserName(getUserSessionHelper().getCapitalizedName(planItemInfo.getMeta().getCreateId()));
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-                            String dateAdded = simpleDateFormat.format(planItemInfo.getMeta().getCreateTime());
+                            String dateAdded = DateFormatHelper.getDateFomatted(planItemInfo.getMeta().getCreateTime().toString());
                             recommendedItemDataObject.setDateAdded(dateAdded);
                             recommendedItemDataObject.setNote(planItemInfo.getDescr().getPlain());
                             recommendedItemDataObject.setAtpId(planItemInfo.getPlanPeriods().get(0));
-                            PlanItemInfo plan = getPlannedOrBackupPlanItem(planItemInfo.getRefObjectId(), planItemInfo.getPlanPeriods().get(0));
-                            if (plan != null && plan.getId() != null) {
-                                recommendedItemDataObject.setPlanned(true);
+                            if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED.equals(planItemInfo.getTypeKey())) {
+                                PlanItemInfo plan = getPlannedOrBackupPlanItem(planItemInfo.getRefObjectId(), planItemInfo.getPlanPeriods().get(0));
+                                if (plan != null && plan.getId() != null) {
+                                    recommendedItemDataObject.setPlanned(true);
+                                }
                             }
                             recommendedItemDataObjects.add(recommendedItemDataObject);
                         }
@@ -216,7 +222,7 @@ public class PlanHelperImpl implements PlanHelper {
     }
 
     public UserSessionHelper getUserSessionHelper() {
-        if(userSessionHelper == null){
+        if (userSessionHelper == null) {
             userSessionHelper = new UserSessionHelperImpl();
         }
         return userSessionHelper;

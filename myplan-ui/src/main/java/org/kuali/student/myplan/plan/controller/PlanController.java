@@ -54,10 +54,7 @@ import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
-import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.plan.util.EnumerationHelper;
-import org.kuali.student.myplan.plan.util.OrgHelper;
-import org.kuali.student.myplan.plan.util.PlanHelper;
+import org.kuali.student.myplan.plan.util.*;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -332,7 +329,7 @@ public class PlanController extends UifControllerBase {
                         planForm.setBackup(true);
                     }
 
-                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey()) || PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED.equals(planItem.getTypeKey())) {
                         planForm.setOwner(getUserSessionHelper().getCurrentUserId().equals(planItem.getMeta().getCreateId()));
                     }
 
@@ -775,12 +772,12 @@ public class PlanController extends UifControllerBase {
 
         //  Make Javascript UI events (delete, add, update credits).
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
-
-        /*Adding the recommended events if a recommended item exists for the same refObjId and atp*/
-        PlanItemInfo recommendedItem = getPlanHelper().getPlanItemByAtpAndType(learningPlan.getId(), planItem.getRefObjectId(), newAtpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
-        if (recommendedItem != null && hasText(recommendedItem.getId())) {
-            makeRecommendDeleteEvent(recommendedItem, events);
+        /*Recommended item updated to accepted if a course or placeholder added from recommended dialog
+                or only for courses added, moved or copied from other qtr's*/
+        if (PlanConstants.COURSE_TYPE.equals(planItem.getRefObjectType())) {
+            updateRecommendedItem(planItem, learningPlan, events);
         }
+
 
         //  Add events generated for the plan item before it was updated.
         events.putAll(originalRemoveEvents);
@@ -913,13 +910,13 @@ public class PlanController extends UifControllerBase {
         try {
             /*isRecommended --> true (we are copying the course from recommended section of the qtr to planned section of same qtr)*/
             String typeKey = form.isRecommended() ? PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED : planItem.getTypeKey();
-            String note = form.isRecommended() ? null : form.getNote();
+            String note = form.isRecommended() ? null : planItem.getDescr().getPlain();
             planItemCopy = addPlanItem(learningPlan, planItem.getRefObjectId(), planItem.getRefObjectType(),
                     newAtpId, typeKey, note, credit);
-            /*Adding the recommended events if a recommended item exists for the same refObjId and atp*/
-            PlanItemInfo recommendedItem = getPlanHelper().getPlanItemByAtpAndType(learningPlan.getId(), planItemCopy.getRefObjectId(), planItemCopy.getPlanPeriods().get(0), PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
-            if (recommendedItem != null && hasText(recommendedItem.getId())) {
-                makeRecommendDeleteEvent(recommendedItem, events);
+            /*Recommended item updated to accepted if a course or placeholder added from recommended dialog
+            or only for courses added, moved or copied from other qtr's*/
+            if (form.isRecommended() || PlanConstants.COURSE_TYPE.equals(planItemCopy.getRefObjectType())) {
+                updateRecommendedItem(planItemCopy, learningPlan, events);
             }
         } catch (DuplicateEntryException e) {
             return doDuplicatePlanItem(form, formatAtpIdForUI(newAtpId), courseDetails.getCode());
@@ -1441,10 +1438,10 @@ public class PlanController extends UifControllerBase {
             if (planItem != null) {
                 plannedTerm = planItem.getPlanPeriods().get(0);
                 events.putAll(makeAddUpdateEvent(planItem, courseDetails, form, false));
-                /*Adding the recommended events if a recommended item exists for the same refObjId and atp*/
-                PlanItemInfo recommendedItem = getPlanHelper().getPlanItemByAtpAndType(plan.getId(), planItem.getRefObjectId(), planItem.getPlanPeriods().get(0), PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
-                if (recommendedItem != null && hasText(recommendedItem.getId())) {
-                    makeRecommendDeleteEvent(recommendedItem, events);
+                /*Recommended item updated to accepted if a course or placeholder added from recommended dialog
+                or only for courses added, moved or copied from other qtr's*/
+                if (PlanConstants.COURSE_TYPE.equals(planItem.getRefObjectType())) {
+                    updateRecommendedItem(planItem, plan, events);
                 }
             }
             if (primaryPlanItem != null) {
@@ -1473,6 +1470,30 @@ public class PlanController extends UifControllerBase {
         }
 
         return doPlanActionSuccess(form, PlanConstants.SUCCESS_KEY_PLANNED_ITEM_ADDED, params);
+    }
+
+    /**
+     * Recommended Item updated to accepted if a course or placeholder added from recommended dialog
+     * or only for courses added, moved or copied from other qtr's
+     * Also adds the delete recommendation event to the form events.
+     *
+     * @param planItem
+     * @param learningPlan
+     * @param events
+     */
+    private void updateRecommendedItem(PlanItemInfo planItem, LearningPlan learningPlan, Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events) {
+        /*Adding the recommended events if a recommended item exists for the same refObjId and atp*/
+        PlanItemInfo recommendedItem = getPlanHelper().getPlanItemByAtpAndType(learningPlan.getId(), planItem.getRefObjectId(), planItem.getPlanPeriods().get(0), PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+        if (recommendedItem != null && hasText(recommendedItem.getId())) {
+            makeRecommendDeleteEvent(recommendedItem, events);
+        }
+        try {
+            recommendedItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED);
+            getAcademicPlanService().updatePlanItem(recommendedItem.getId(), recommendedItem, PlanConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+
+        }
+
     }
 
 
@@ -1513,8 +1534,7 @@ public class PlanController extends UifControllerBase {
         if (!CollectionUtils.isEmpty(pro)) {
             String adviserName = getUserSessionHelper().getCapitalizedName(getUserSessionHelper().getCurrentUserId());
             note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim(), 80, "<br /><br />", true)) : "";
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-            String dateAdded = simpleDateFormat.format(System.currentTimeMillis());
+            String dateAdded = DateFormatHelper.getDateFomatted(String.valueOf(System.currentTimeMillis()));
             String planLink = makeLinkToAtp(AtpHelper.termToYearTerm(term).toATP(), "visit your plan page");
 
             /*Creating a new Message from Adviser to student*/

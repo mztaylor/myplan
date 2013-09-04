@@ -106,6 +106,9 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
         try {
             recommendedCoursesList = getPlanItemListByTermId(PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, studentId, termAtpId);
+            if (getUserSessionHelper().isAdviser()) {
+                recommendedCoursesList.addAll(getPlanItemListByTermId(PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED, studentId, termAtpId));
+            }
         } catch (Exception e) {
             logger.error("Could not load recommendedCourseList", e);
 
@@ -164,7 +167,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                             continue;
                         }
 
-                        if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
+                        if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey()) || PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED.equals(planItem.getTypeKey())) {
                             plannedCourseDO.setAdviserName(getUserSessionHelper().getName(planItem.getMeta().getCreateId()));
                         }
 
@@ -249,7 +252,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     plannedCourse.setPlaceHolderValue(placeHolderValue);
                     plannedCourse.setCourseDetails(new CourseSummaryDetails());
                     plannedCourse.setPlaceHolderCredit(planItem.getCredit() == null ? "" : String.valueOf(planItem.getCredit().intValue()));
-                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey()) || PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED.equals(planItem.getTypeKey())) {
                         plannedCourse.setAdviserName(getUserSessionHelper().getName(planItem.getMeta().getCreateId()));
                     }
                     plannedCoursesList.add(plannedCourse);
@@ -267,7 +270,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     plannedCourse.setPlaceHolderValue(getCoursePlaceHolderTitle(planItem.getRefObjectId(), subjectAreas));
                     plannedCourse.setCourseDetails(new CourseSummaryDetails());
                     plannedCourse.setPlaceHolderCredit(planItem.getCredit() == null ? "" : String.valueOf(planItem.getCredit().intValue()));
-                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey()) || PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED.equals(planItem.getTypeKey())) {
                         plannedCourse.setAdviserName(getUserSessionHelper().getName(planItem.getMeta().getCreateId()));
                     }
                     plannedCoursesList.add(plannedCourse);
