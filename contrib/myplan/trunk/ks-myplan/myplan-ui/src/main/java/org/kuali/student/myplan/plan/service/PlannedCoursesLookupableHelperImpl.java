@@ -97,18 +97,20 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
         try {
             recommendedCoursesList = getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, studentId, true);
+            if (getUserSessionHelper().isAdviser()) {
+                recommendedCoursesList.addAll(getPlanItems(PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED, studentId, true));
+            }
         } catch (Exception e) {
             logger.error("Could not load recommendedCourseList", e);
 
         }
-
 
         List<PlannedTerm> perfectPlannedTerms = PlannedTermsHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList, recommendedCoursesList, studentCourseRecordInfos, focusAtpId, 6, false);
         return perfectPlannedTerms;
     }
 
     public UserSessionHelper getUserSessionHelper() {
-        if(userSessionHelper == null){
+        if (userSessionHelper == null) {
             userSessionHelper = new UserSessionHelperImpl();
         }
         return userSessionHelper;
