@@ -190,9 +190,11 @@ public class PlanHelperImpl implements PlanHelper {
                             recommendedItemDataObject.setDateAdded(dateAdded);
                             recommendedItemDataObject.setNote(planItemInfo.getDescr().getPlain());
                             recommendedItemDataObject.setAtpId(planItemInfo.getPlanPeriods().get(0));
-                            PlanItemInfo plan = getPlannedOrBackupPlanItem(planItemInfo.getRefObjectId(), planItemInfo.getPlanPeriods().get(0));
-                            if (plan != null && plan.getId() != null) {
-                                recommendedItemDataObject.setPlanned(true);
+                            if (PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(planItemInfo.getStateKey())) {
+                                PlanItemInfo plan = getPlannedOrBackupPlanItem(planItemInfo.getRefObjectId(), planItemInfo.getPlanPeriods().get(0));
+                                if (plan != null && plan.getId() != null) {
+                                    recommendedItemDataObject.setPlanned(true);
+                                }
                             }
                             recommendedItemDataObjects.add(recommendedItemDataObject);
                         }

@@ -453,6 +453,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             planItemEntity.setAttributes(attributeEntities);
         }
 
+        //Update state
+        planItemEntity.setState(planItem.getStateKey());
+
         //  Update text entity.
         planItemEntity.setDescr(new PlanItemRichTextEntity(planItem.getDescr()));
 
@@ -758,6 +761,8 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
             throw new InvalidParameterException(String.format("Unknown plan item type id [%s].", planItem.getTypeKey()));
         }
         pie.setLearningPlanItemType(planItemTypeEntity);
+
+        pie.setState(planItem.getStateKey());
 
         //  Convert the List of plan periods to a Set.
         pie.setPlanPeriods(new HashSet<String>(planItem.getPlanPeriods()));

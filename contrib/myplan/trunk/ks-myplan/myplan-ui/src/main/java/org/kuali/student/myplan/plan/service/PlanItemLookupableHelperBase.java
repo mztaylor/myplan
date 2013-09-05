@@ -75,6 +75,12 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             Map<String, List<String>> sectionsWithdrawn = new HashMap<String, List<String>>();
             Map<String, List<String>> sectionsSuspended = new HashMap<String, List<String>>();
             for (PlanItemInfo planItemInfo : planItemInfoList) {
+
+                /*Accepted recommended courses are hidden from student view*/
+                if (!getUserSessionHelper().isAdviser() && PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemType) && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(planItemInfo.getStateKey())) {
+                    continue;
+                }
+
                 populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn, subjectAreas, includePlaceHolders);
 
             }
@@ -114,6 +120,10 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             Map<String, List<String>> sectionsWithdrawn = new HashMap<String, List<String>>();
             Map<String, List<String>> sectionsSuspended = new HashMap<String, List<String>>();
             for (PlanItemInfo planItemInfo : planItemInfoList) {
+                /*Accepted recommended courses are hidden from student view*/
+                if (!getUserSessionHelper().isAdviser() && PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemType) && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(planItemInfo.getStateKey())) {
+                    continue;
+                }
                 if (planItemInfo.getTypeKey().equalsIgnoreCase(planItemType) && planItemInfo.getPlanPeriods().get(0).compareTo(startAtp) >= 0) {
                     populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn, subjectAreas, addPlaceHolders);
                 }

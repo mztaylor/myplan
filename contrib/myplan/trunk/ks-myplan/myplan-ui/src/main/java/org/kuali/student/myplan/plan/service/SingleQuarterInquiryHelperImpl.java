@@ -141,6 +141,11 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
             Map<String, List<String>> sectionsSuspended = new HashMap<String, List<String>>();
             Map<String, List<ActivityOfferingItem>> plannedSections = new HashMap<String, List<ActivityOfferingItem>>();
             for (PlanItemInfo planItem : planItemList) {
+                /*Accepted recommended courses are hidden from student view*/
+                if (!getUserSessionHelper().isAdviser() && PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemType) && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(planItem.getStateKey())) {
+                    continue;
+                }
+
                 if (planItem.getPlanPeriods() != null && planItem.getPlanPeriods().size() > 0 && planItem.getPlanPeriods().get(0).equalsIgnoreCase(termId) && planItem.getTypeKey().equalsIgnoreCase(planItemType) && planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
                     PlannedCourseDataObject plannedCourseDO = new PlannedCourseDataObject();
                     if (planItem.getDescr() != null && StringUtils.hasText(planItem.getDescr().getPlain())) {
