@@ -1,7 +1,6 @@
 package edu.uw.kuali.student.myplan.util;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import javax.xml.namespace.QName;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -183,8 +181,6 @@ public class PlanHelperImpl implements PlanHelper {
                 List<PlanItemInfo> planItems = getAcademicPlanService().getPlanItemsInPlanByType(learningPlan.getId(),
                         PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, PlanConstants.CONTEXT_INFO);
 
-                planItems.addAll(getAcademicPlanService().getPlanItemsInPlanByType(learningPlan.getId(), PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED, PlanConstants.CONTEXT_INFO));
-
                 if (!CollectionUtils.isEmpty(planItems)) {
                     for (PlanItemInfo planItemInfo : planItems) {
                         if (PlanConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType()) && planItemInfo.getRefObjectId().equals(refObjId)) {
@@ -194,11 +190,9 @@ public class PlanHelperImpl implements PlanHelper {
                             recommendedItemDataObject.setDateAdded(dateAdded);
                             recommendedItemDataObject.setNote(planItemInfo.getDescr().getPlain());
                             recommendedItemDataObject.setAtpId(planItemInfo.getPlanPeriods().get(0));
-                            if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED.equals(planItemInfo.getTypeKey())) {
-                                PlanItemInfo plan = getPlannedOrBackupPlanItem(planItemInfo.getRefObjectId(), planItemInfo.getPlanPeriods().get(0));
-                                if (plan != null && plan.getId() != null) {
-                                    recommendedItemDataObject.setPlanned(true);
-                                }
+                            PlanItemInfo plan = getPlannedOrBackupPlanItem(planItemInfo.getRefObjectId(), planItemInfo.getPlanPeriods().get(0));
+                            if (plan != null && plan.getId() != null) {
+                                recommendedItemDataObject.setPlanned(true);
                             }
                             recommendedItemDataObjects.add(recommendedItemDataObject);
                         }
