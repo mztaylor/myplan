@@ -916,7 +916,7 @@ public class PlanController extends UifControllerBase {
             /*Recommended item updated to accepted if a course or placeholder added from recommended dialog
             or only for courses added, moved or copied from other qtr's*/
             if (form.isRecommended() || PlanConstants.COURSE_TYPE.equals(planItemCopy.getRefObjectType())) {
-                updateRecommendedItem(planItemCopy, learningPlan, events);
+                updateRecommendedItem(planItem, learningPlan, events);
             }
         } catch (DuplicateEntryException e) {
             return doDuplicatePlanItem(form, formatAtpIdForUI(newAtpId), courseDetails.getCode());
@@ -1440,7 +1440,7 @@ public class PlanController extends UifControllerBase {
                 events.putAll(makeAddUpdateEvent(planItem, courseDetails, form, false));
                 /*Recommended item updated to accepted if a course or placeholder added from recommended dialog
                 or only for courses added, moved or copied from other qtr's*/
-                if (PlanConstants.COURSE_TYPE.equals(planItem.getRefObjectType())) {
+                if (!PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey()) && PlanConstants.COURSE_TYPE.equals(planItem.getRefObjectType())) {
                     updateRecommendedItem(planItem, plan, events);
                 }
             }
@@ -1487,12 +1487,12 @@ public class PlanController extends UifControllerBase {
         if (recommendedItem != null && hasText(recommendedItem.getId())) {
             makeRecommendDeleteEvent(recommendedItem, events);
         }
-        /*try {
+        try {
             recommendedItem.setStateKey(PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY);
             getAcademicPlanService().updatePlanItem(recommendedItem.getId(), recommendedItem, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
-
-        }*/
+            logger.error("Unable to update the recommended Item state", e);
+        }
 
     }
 
@@ -2380,7 +2380,7 @@ public class PlanController extends UifControllerBase {
         pii.setRefObjectType(refObjType);
         pii.setRefObjectId(refObjId);
 
-        pii.setStateKey(PlanConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
+        pii.setStateKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemType) ? PlanConstants.LEARNING_PLAN_ITEM_PROPOSED_STATE_KEY : PlanConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
 
         RichTextInfo rti = new RichTextInfo();
         rti.setFormatted(hasText(note) ? note : "");
