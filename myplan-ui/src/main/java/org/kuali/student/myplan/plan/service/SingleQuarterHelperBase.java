@@ -34,6 +34,7 @@ public class SingleQuarterHelperBase {
 
         String globalCurrentAtpId = AtpHelper.getCurrentAtpId();
 
+        Set<String> plannedAndBackupItems = new HashSet<String>();
         /*
         *  Populating the PlannedTerm List.
         */
@@ -51,6 +52,7 @@ public class SingleQuarterHelperBase {
         });
         for (PlannedCourseDataObject plan : plannedCoursesList) {
             String atp = plan.getPlanItemDataObject().getAtp();
+            plannedAndBackupItems.add(String.format("%s|%s", plan.getPlanItemDataObject().getRefObjId(), atp));
             if (termAtp.equalsIgnoreCase(atp)) {
                 plannedTerm.getPlannedList().add(plan);
             }
@@ -72,6 +74,7 @@ public class SingleQuarterHelperBase {
             });
             for (PlannedCourseDataObject backup : backupCoursesList) {
                 String atp = backup.getPlanItemDataObject().getAtp();
+                plannedAndBackupItems.add(String.format("%s|%s", backup.getPlanItemDataObject().getRefObjId(), atp));
                 if (termAtp.equalsIgnoreCase(atp)) {
                     plannedTerm.getBackupList().add(backup);
                 }
@@ -97,6 +100,10 @@ public class SingleQuarterHelperBase {
 
             for (PlannedCourseDataObject recommended : recommendedCoursesList) {
                 String atp = recommended.getPlanItemDataObject().getAtp();
+                /*Not adding the recommended course if it is already planned for the qtr*/
+                if (plannedAndBackupItems.contains(String.format("%s|%s", recommended.getPlanItemDataObject().getRefObjId(), atp)) && !getUserSessionHelper().isAdviser()) {
+                    continue;
+                }
                 if (termAtp.equalsIgnoreCase(atp)) {
                     plannedTerm.getRecommendedList().add(recommended);
                 }
