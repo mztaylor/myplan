@@ -329,7 +329,7 @@ public class PlanController extends UifControllerBase {
                         planForm.setBackup(true);
                     }
 
-                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey()) || PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED.equals(planItem.getTypeKey())) {
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
                         planForm.setOwner(getUserSessionHelper().getCurrentUserId().equals(planItem.getMeta().getCreateId()));
                     }
 
@@ -1487,12 +1487,12 @@ public class PlanController extends UifControllerBase {
         if (recommendedItem != null && hasText(recommendedItem.getId())) {
             makeRecommendDeleteEvent(recommendedItem, events);
         }
-        try {
-            recommendedItem.setTypeKey(PlanConstants.LEARNING_PLAN_ITEM_TYPE_ACCEPTED);
+        /*try {
+            recommendedItem.setStateKey(PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY);
             getAcademicPlanService().updatePlanItem(recommendedItem.getId(), recommendedItem, PlanConstants.CONTEXT_INFO);
         } catch (Exception e) {
 
-        }
+        }*/
 
     }
 
