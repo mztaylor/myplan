@@ -2607,6 +2607,11 @@ public class PlanController extends UifControllerBase {
                 }
 
             }
+
+            if (getUserSessionHelper().isAdviser()) {
+                params.put("adviserName", getUserSessionHelper().getCapitalizedName(getUserSessionHelper().getCurrentUserId()));
+            }
+
             params.put("showAlert", String.valueOf(showAlert));
             params.put("statusAlert", statusAlert.toString());
 
