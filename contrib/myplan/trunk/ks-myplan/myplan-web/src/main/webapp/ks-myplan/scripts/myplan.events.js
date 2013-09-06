@@ -129,10 +129,15 @@ function fnUpdatePlanItem(data) {
 function fnUpdateNote(data) {
     var noteId = data.planItemType + "_" + data.atpId + "_" + data.planItemId + "_note";
     jQuery("#" + noteId).off();
-    var createTooltip = "createTooltip('" + noteId + "', ' <p>" + data.note + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId.replace(/-/g, ".") + " onclick=editNote(jQuery(this),event);>Edit Note</a></p> ', {position:'top',align:'left',alwaysVisible:false,tail:{align:'left',hidden:false},themePath:'../ks-myplan/jquery-popover/jquerypopover-theme/',themeName:'ksap-notes',selectable:true,width:'250px',openingSpeed:50,closingSpeed:50,openingDelay:500,closingDelay:0,themeMargins:{total:'17px',difference:'10px'},distance:'0px'},true,true);";
-    var noteScript = jQuery("input[data-for='" + noteId + "'][data-role='script']")[0];
-    jQuery(noteScript).attr("name", "script").removeAttr("script").val(createTooltip);
-    evalHiddenScript(jQuery(noteScript));
+    if (data.note) {
+        var decoded = jQuery("<div/>").html(data.note).text();
+        var createTooltip = "createTooltip('" + noteId + "', ' <p>" + decoded + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId.replace(/-/g, ".") + " onclick=editNote(jQuery(this),event);>Edit Note</a></p> ', {position:'top',align:'left',alwaysVisible:false,tail:{align:'left',hidden:false},themePath:'../ks-myplan/jquery-popover/jquerypopover-theme/',themeName:'ksap-notes',selectable:true,width:'250px',openingSpeed:50,closingSpeed:50,openingDelay:500,closingDelay:0,themeMargins:{total:'17px',difference:'10px'},distance:'0px'},true,true);";
+        var noteScript = jQuery("input[data-for='" + noteId + "'][data-role='script']")[0];
+        jQuery(noteScript).attr("name", "script").removeAttr("script").val(createTooltip);
+        evalHiddenScript(jQuery(noteScript));
+    } else {
+        jQuery("#" + noteId).remove();
+    }
 }
 /*
  #################################################################
