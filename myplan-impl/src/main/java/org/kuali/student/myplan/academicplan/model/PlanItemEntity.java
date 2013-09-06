@@ -2,6 +2,7 @@ package org.kuali.student.myplan.academicplan.model;
 
 import com.sun.istack.NotNull;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.entity.AttributeOwner;
 import org.kuali.student.r2.common.entity.MetaEntity;
@@ -188,7 +189,8 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
         dto.setRefObjectId(this.getRefObjectId());
         dto.setRefObjectType(this.getRefObjectTypeKey());
         dto.setTypeKey(this.getLearningPlanItemType().getId());
-        dto.setStateKey(this.getState());
+        /*TODO: remove this check and make it defaulted to the state once all the states in planItem table are having active state instead of null*/
+        dto.setStateKey(this.getState()!=null ? this.getState() : AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
         dto.setCredit(this.getCredit());
 
         if (this.getDescr() != null) {
