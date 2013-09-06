@@ -85,7 +85,7 @@ function planItemTemplate(data) {
         if (!getConfigParam("adviser")) {
             noteContent = "<p>" + decoded + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId.replace(/-/g, ".") + " onclick=editNote(jQuery(this),event);>Edit Note</a></p>";
         } else {
-            noteContent = '&quot;' + decoded + '&quot; - ' + 'Adviser Name';
+            noteContent = '&quot;' + decoded + '&quot; - ' + data.adviserName;
         }
         var createTooltip = " createTooltip('" + itemId + "_note', '" + noteContent + "', {position:'top',align:'left',alwaysVisible:false,tail:{align:'left',hidden:false},themePath:'../ks-myplan/jquery-popover/jquerypopover-theme/',themeName:'ksap-notes',selectable:true,openingSpeed:50,closingSpeed:50,openingDelay:500,closingDelay:0,themeMargins:{total:'17px',difference:'10px'},distance:'0px'},true,true);";
         script.val(script.val() + createTooltip);
