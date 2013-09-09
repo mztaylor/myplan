@@ -762,13 +762,13 @@
                         <list>
                             <bean parent="courseTitleLink"/>
                             <bean parent="course_details_summary_info"/>
-                            <bean parent="KSAP-Message" p:messageText="Plan [b]'@{placeholderCode NE null ? placeholderCode : courseCd}'[/b]" p:render="@{courseSummaryDetails.courseId EQ null}"/>
+                            <bean parent="KSAP-Message" p:messageText="[b]@{placeholderCode NE null ? placeholderCode : courseCd} '@{placeholderTitle}' [/b]" p:render="@{courseSummaryDetails.courseId EQ null AND credit EQ null}"/>
+                            <bean parent="KSAP-Message" p:messageText="[b]@{placeholderCode NE null ? placeholderCode : courseCd} '@{placeholderTitle}' (@{credit NE null ? credit : ''}) [/b]" p:render="@{courseSummaryDetails.courseId EQ null AND credit NE null}"/>
+                            <bean parent="KSAP-Message" p:messageText="@{adviserName} recommended this @{courseSummaryDetails.courseId EQ null ? 'placeholder' : 'course'} on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(dateAdded.toString())}"/>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="note">
                                 <property name="render" value="@{note NE '' AND note NE null}"/>
-                                <property name="label"
-                                          value="@{adviserName} said on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(dateAdded.toString())}"/>
                                 <property name="labelPlacement" value="TOP"/>
-                                <property name="fieldLabel.render" value="true"/>
+                                <property name="fieldLabel.render" value="false"/>
                                 <property name="fieldLabel.cssClasses">
                                     <list merge="true">
                                         <value>ksap-text-normal</value>

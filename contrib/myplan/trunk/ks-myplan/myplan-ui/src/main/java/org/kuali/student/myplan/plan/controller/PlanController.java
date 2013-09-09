@@ -340,10 +340,16 @@ public class PlanController extends UifControllerBase {
                             planForm.setCredit(String.valueOf(planItem.getCredit().intValue()));
                         }
                         planForm.setPlaceholderCode(EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), planItem.getRefObjectType()));
+                        planForm.setPlaceholderTitle(EnumerationHelper.getEnumValueForCodeByType(planItem.getRefObjectId(), planItem.getRefObjectType()));
                         planForm.setType(PlanConstants.GENERAL_TYPE);
                         return getUIFModelAndView(planForm);
                     } else if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
                         planForm.setCourseCd(planItem.getRefObjectId());
+                        DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(planItem.getRefObjectId());
+                        Map<String, String> subjectAreas = OrgHelper.getTrimmedSubjectAreas();
+                        String subjectTitle = subjectAreas.get(courseCode.getSubject());
+                        String subjectLevel = courseCode.getNumber().toUpperCase().replace("XX", "00");
+                        planForm.setPlaceholderTitle(String.format("%s %s level", subjectTitle, subjectLevel));
                         if (planItem.getCredit() != null) {
                             planForm.setCredit(String.valueOf(planItem.getCredit().intValue()));
                         }
