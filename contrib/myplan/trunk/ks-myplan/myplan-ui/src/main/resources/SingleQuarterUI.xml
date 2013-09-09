@@ -803,9 +803,9 @@
         </property>
     </bean>
 
-    <bean id="singleQuarterItemPlaceholderCode" parent="KSAP-MessageField" p:messageText="@{#line.placeHolderCode}">
+    <bean id="singleQuarterItemPlaceholderCode" parent="KSAP-MessageField" p:messageText="@{#line.placeHolderCode} '@{#line.placeHolderValue}'">
         <property name="render" value="@{#line.placeHolder}"/>
-        <property name="title" value="@{#line.placeHolderValue}"/>
+        <property name="title" value="@{#line.placeHolderCode} @{#line.placeHolderValue}"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>itemTitle</value>
