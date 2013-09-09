@@ -25,26 +25,26 @@ public class PlaceHoldersBuilder extends KeyValuesBase {
     public List<KeyValue> getKeyValues() {
         String value, key;
         List<KeyValue> kvList = new ArrayList<KeyValue>();
-
-        List<EnumeratedValueInfo> enums =  EnumerationHelper.getEnumsByContext(
+        kvList.add(new ConcreteKeyValue(PlanConstants.DEFAULT_KEY, PlanConstants.DEFAULT_SELECT));
+        List<EnumeratedValueInfo> enums = EnumerationHelper.getEnumsByContext(
                 CourseSearchConstants.ENUM_CONTEXT_KEY_SEARCH_PLACEHOLDER_KEY);
 
         for (EnumeratedValueInfo enumValue : enums) {
-            key   = String.format("%s|%s",   enumValue.getCode(), enumValue.getEnumerationKey());
+            key = String.format("%s|%s", enumValue.getCode(), enumValue.getEnumerationKey());
             // arbitrarily, we sometimes use both AbbrevValue and Value, sometimes not
             if (enumValue.getAbbrevValue().equals(enumValue.getValue()) ||
-                enumValue.getAbbrevValue().equals("Elective") ) {
+                    enumValue.getAbbrevValue().equals("Elective")) {
                 value = String.format("%s", enumValue.getAbbrevValue());
-            }  else {
+            } else {
                 value = String.format("%s (%s)", enumValue.getAbbrevValue(), enumValue.getValue());
             }
-            if ( enumValue.getEnumerationKey().equals(PlanConstants.GEN_EDU_ENUM_KEY) ) {
+            if (enumValue.getEnumerationKey().equals(PlanConstants.GEN_EDU_ENUM_KEY)) {
                 value += " - Gen. Ed. Req.";
             }
-            if ( enumValue.getCode().equals(PlanConstants.PLACE_HOLDER_OTHER_CODE) ) {
+            if (enumValue.getCode().equals(PlanConstants.PLACE_HOLDER_OTHER_CODE)) {
                 value += " - Enter description in 'Notes' below (REQUIRED)";
             }
-            kvList.add(new ConcreteKeyValue(key,value));
+            kvList.add(new ConcreteKeyValue(key, value));
         }
 
         return kvList;

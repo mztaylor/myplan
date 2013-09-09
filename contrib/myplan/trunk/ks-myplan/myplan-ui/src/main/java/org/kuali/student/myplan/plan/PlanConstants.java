@@ -74,6 +74,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String COURSE_NOT_FOUND = "myplan.text.error.quickAdd.courseNotFound";
     public static final String CREDIT_REQUIRED = "myplan.text.error.quickAdd.creditRequired";
     public static final String NOTE_REQUIRED = "myplan.text.error.quickAdd.noteRequired";
+    public static final String DEFAULT_PLACEHOLDER_ERROR = "myplan.text.error.default.placeholder";
     public static final String UPDATE_FAILED = "myplan.text.error.quickAdd.updateFailed";
     public static final String EMPTY_SEARCH = "myplan.text.error.quickAdd.emptySearch";
     public static final String ACCESS_DENIED = "myplan.text.error.permissionDenied";
@@ -148,6 +149,9 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String RECOMMENDATION_EMAIL_BODY = "myplan.recommendation.email.body";
     
     public static final String PROPERTIES_FILE_PATH = "/org/kuali/student/myplan/KSMyPlan-ApplicationResources.properties";
+
+    public static final String DEFAULT_KEY = "default";
+    public static final String DEFAULT_SELECT = "Select Placeholder";
 
     /**
      * Names of javascript events that can be scheduled in response to the outcome of a plan item request.
