@@ -104,40 +104,4 @@ public class RecommendationsFormatter extends PropertyEditorSupport {
         return sb.toString();
     }
 
-    /**
-     * returns the section links string for given courseId and term in the form
-     * ("<a href="http://localhost:8080/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=60325fa8-7307-454a-be73-3cc1c642122d#kuali-uw-atp-2013-1-19889"> Section (SLN) </a>")
-     *
-     * @param courseDetails
-     * @param term
-     * @return
-     */
-    private List<String> getSections(CourseDetails courseDetails, String term) {
-        AtpHelper.YearTerm yearTerm = AtpHelper.termToYearTerm(term);
-        List<String> sections = new ArrayList<String>();
-        List<String> sectionAndSln = new ArrayList<String>();
-        for (AcademicRecordDataObject acr : courseDetails.getPlannedCourseSummary().getAcadRecList()) {
-            if (acr.getAtpId().equalsIgnoreCase(AtpHelper.getAtpIdFromTermYear(term)) && StringUtils.hasText(acr.getActivityCode())) {
-                sections.add(acr.getActivityCode());
-            }
-        }
-        for (String section : sections) {
-            String sln = getCourseHelper().getSLN(yearTerm.getYearAsString(), yearTerm.getTermAsString(), courseDetails.getCourseSummaryDetails().getSubjectArea(), courseDetails.getCourseSummaryDetails().getCourseNumber(), section);
-            String sectionSln = String.format("Section %s (%s)", section, sln);
-            String sec = null;
-            CourseDetailsInquiryHelperImpl courseHelper = new CourseDetailsInquiryHelperImpl();
-            List<String> terms = new ArrayList<String>();
-            terms.add(term);
-            List<CourseOfferingInstitution> courseOfferingInstitutions = courseHelper.getCourseOfferingInstitutionsById(courseDetails.getCourseSummaryDetails().getCourseId(), terms);
-            if (AtpHelper.getPublishedTerms().contains(yearTerm.toATP()) && courseOfferingInstitutions != null && courseOfferingInstitutions.size() > 0) {
-                sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=" + AtpHelper.getAtpIdFromTermYear(term), sectionSln);
-            } else {
-                sec = sectionSln;
-            }
-
-            sectionAndSln.add(sec);
-        }
-        return sectionAndSln;
-    }
-
 }
