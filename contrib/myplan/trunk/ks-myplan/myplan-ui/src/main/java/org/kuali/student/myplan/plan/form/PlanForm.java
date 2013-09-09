@@ -496,6 +496,13 @@ public class PlanForm extends UifFormBase {
         return courseDetails;
     }
 
+    /**
+     * Added this for using in the recommendations property editor
+     */
+    public CourseDetails getCoursePlanSummary() {
+        return getCourseAndPlanSummary();
+    }
+
     /*Added this because the List<?> is not accepted by the property editors.*/
     /*TODO: KUALI-RICE: Remove this once 6286 Upgrade to list with rice 2.2.1 and replace the prop name in definition*/
     public PlanForm getThis() {

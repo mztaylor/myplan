@@ -129,30 +129,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-HorizontalBoxGroup-NoMargin"
-                                  p:render="@{plannedCourseSummary.recommendedItemDataObjects.size() GT 0}">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-status</value>
-                                        <value>info</value>
-                                    </list>
-                                </property>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="MyPlanMessagingIcon"/>
-                                        <bean parent="KSAP-SimpleDataField" p:propertyName="courseAndPlanSummary"
-                                              p:escapeHtmlInPropertyValue="false">
-                                            <property name="propertyEditor" ref="recommendation_formatter"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>myplan-data-list</value>
-                                                    <value>message</value>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>
+                            <ref bean="recommendation_info"/>
                         </list>
                     </property>
                 </bean>
@@ -785,7 +762,7 @@
                         <list>
                             <bean parent="courseTitleLink"/>
                             <bean parent="course_details_summary_info"/>
-                            <bean parent="KSAP-Message" p:messageText="Plan [b]'@{placeholderCode}'[/b]" p:render="@{courseSummaryDetails.courseId EQ null}"/>
+                            <bean parent="KSAP-Message" p:messageText="Plan [b]'@{placeholderCode NE null ? placeholderCode : courseCd}'[/b]" p:render="@{courseSummaryDetails.courseId EQ null}"/>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="note">
                                 <property name="render" value="@{note NE '' AND note NE null}"/>
                                 <property name="label"
@@ -811,7 +788,7 @@
                                                 <list>
                                                     <bean id="removeRecommendedItem" p:id="removeRecommendedItem"
                                                           parent="Uif-PrimaryActionButton-Small"
-                                                          p:actionLabel="Delete Recommendation">
+                                                          p:actionLabel="Remove Recommendation">
                                                         <property name="render"
                                                                   value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND owner}"/>
                                                         <property name="actionScript" value="
@@ -845,7 +822,7 @@
                                                             });
                                                         "/>
                                                     </bean>
-                                                    <bean parent="closePopoverCancel" p:actionLabel="Close"/>
+                                                    <bean parent="closePopoverCancel" p:actionLabel="Cancel"/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -1086,6 +1063,32 @@
                                 </property>
                             </bean>
                             <bean parent="errorPlaceholder"/>
+                            <ref bean="recommendation_info"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="recommendation_info"  parent="KSAP-HorizontalBoxGroup-NoMargin"
+          p:render="@{plannedCourseSummary.recommendedItemDataObjects.size() GT 0}" p:style="margin-top: 10px;">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-status</value>
+                <value>info</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="MyPlanMessagingIcon"/>
+                <bean parent="KSAP-SimpleDataField" p:propertyName="coursePlanSummary"
+                      p:escapeHtmlInPropertyValue="false">
+                    <property name="propertyEditor" ref="recommendation_formatter"/>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-data-list</value>
+                            <value>message</value>
                         </list>
                     </property>
                 </bean>
