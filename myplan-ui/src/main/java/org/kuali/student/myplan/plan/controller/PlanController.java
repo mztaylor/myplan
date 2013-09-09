@@ -1148,6 +1148,9 @@ public class PlanController extends UifControllerBase {
         String placeHolderCd = null;
         String placeHolderTitle = null;
         if (hasText(form.getGeneralPlaceholder())) {
+            if (PlanConstants.DEFAULT_KEY.equals(form.getGeneralPlaceholder())) {
+                return doErrorPage(form, "Select a placeHolder", PlanConstants.DEFAULT_PLACEHOLDER_ERROR, new String[]{}, null);
+            }
             String[] placeHolder = form.getGeneralPlaceholder().split(PlanConstants.CODE_KEY_SEPARATOR);
             placeHolderId = placeHolder[0];
             placeHolderType = placeHolder[1];
