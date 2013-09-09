@@ -118,7 +118,6 @@ public class CommentController extends UifControllerBase {
         }
 
 
-
         try {
             getCommentHelper().createComment(messageInfo.getId(), commentBodyText);
         } catch (Exception e) {
@@ -246,7 +245,7 @@ public class CommentController extends UifControllerBase {
     }
 
     public UserSessionHelper getUserSessionHelper() {
-        if(userSessionHelper == null){
+        if (userSessionHelper == null) {
             userSessionHelper = new UserSessionHelperImpl();
         }
         return userSessionHelper;
