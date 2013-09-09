@@ -169,8 +169,8 @@ public class UserSessionHelperImpl implements UserSessionHelper {
             logger.error("Could not load the Person Information", e);
         }
         if (person != null) {
-            String firstName = WordUtils.capitalizeFully(person.getFirstName());
-            String lastName = WordUtils.capitalizeFully(person.getLastName());
+            String firstName = WordUtils.capitalize(person.getFirstName());
+            String lastName = WordUtils.capitalize(person.getLastName());
             return String.format("%s %s", firstName, lastName);
         } else {
             return null;
