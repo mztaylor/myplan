@@ -116,10 +116,7 @@ public class CommentController extends UifControllerBase {
             logger.error(String.format("Query for comment [%s] failed.", form.getMessageId()), e);
             return null;
         }
-        if (StringUtils.isEmpty(commentBodyText)) {
-            String[] params = {};
-            return doErrorPage(form, CommentConstants.EMPTY_COMMENT, params, CommentConstants.COMMENT_MESSAGE_BOX, CommentConstants.COMMENT_RESPONSE_PAGE);
-        }
+
 
 
         try {
