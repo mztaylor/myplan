@@ -135,6 +135,7 @@ public class PlanForm extends UifFormBase {
     private String type = "course";
 
     private String credit;
+
     private String note;
 
     private Date dateAdded;
@@ -142,6 +143,8 @@ public class PlanForm extends UifFormBase {
     private String generalPlaceholder;
 
     private String placeholderCode;
+
+    private String placeholderTitle;
 
     /**
      * ********************************************************
@@ -451,6 +454,14 @@ public class PlanForm extends UifFormBase {
 
     public void setRecommended(boolean recommended) {
         this.recommended = recommended;
+    }
+
+    public String getPlaceholderTitle() {
+        return placeholderTitle;
+    }
+
+    public void setPlaceholderTitle(String placeholderTitle) {
+        this.placeholderTitle = placeholderTitle;
     }
 
     /**
