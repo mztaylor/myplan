@@ -151,7 +151,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String PROPERTIES_FILE_PATH = "/org/kuali/student/myplan/KSMyPlan-ApplicationResources.properties";
 
     public static final String DEFAULT_KEY = "default";
-    public static final String DEFAULT_SELECT = "Select Placeholder";
+    public static final String DEFAULT_SELECT = "Select a placeholder";
 
     /**
      * Names of javascript events that can be scheduled in response to the outcome of a plan item request.
