@@ -346,7 +346,7 @@
                     <property name="replacement">
                         <list>
                             <!-- Backup list is empty -->
-                            <bean parent="single_Backup_Collection_Empty"/>
+                            <bean parent="single_Recommended_Collection_Empty"/>
                         </list>
                     </property>
                 </bean>
