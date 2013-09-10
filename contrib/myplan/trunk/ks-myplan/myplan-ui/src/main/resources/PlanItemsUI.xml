@@ -791,7 +791,8 @@
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
         <property name="propertyName" value="academicRecord"/>
-        <property name="render" value="@{#line NE null ? (#line.completedTerm OR #line.currentTermForView OR #line.academicRecord.size() GT 0) : true}"/>
+        <property name="render"
+                  value="@{#line NE null ? (#line.completedTerm OR #line.currentTermForView OR #line.academicRecord.size() GT 0) : true}"/>
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="layoutManager.lineGroupPrototype.id"
                   value="record_@{#line.atpId.replace('.','-')}_@{#line.uuid}_group"/>
@@ -1085,7 +1086,8 @@
 
     <bean id="recommendedCollection" parent="plannedCollection" p:headerText="Recommended">
         <property name="propertyName" value="recommendedList"/>
-        <property name="render" value="@{#line NE null ? (T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() ? true : (#parentLine.recommendedList.size() GT 0)) : true}"/>
+        <property name="render"
+                  value="@{#line NE null ? (T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() ? true : (#parentLine.recommendedList.size() GT 0)) : true}"/>
         <property name="cssClasses">
             <list merge="false">
                 <value>myplan-carousel-term</value>
@@ -1098,7 +1100,8 @@
                 <entry key="atpId" value="@{#line.atpId}"/>
                 <entry key="size" value="@{#line.recommendedList.size()}"/>
                 <entry key="limit" value="false"/>
-                <entry key="keep-header" value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+                <entry key="keep-header"
+                       value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
             </map>
         </property>
         <property name="header.rightGroup.items">
@@ -1112,8 +1115,11 @@
                         <list>
                             <bean parent="planItemAlert"/>
                             <bean parent="recommendedAction"/>
-                            <bean parent="planItemNoteIcon" p:toolTip.tooltipContent="@{#line.note NE null ? '&quot;' + #line.note.replaceAll('\n','&lt;br&gt;') + '&quot; - ' + #line.adviserName : ''}">
-                                <property name="propertyReplacers"><list/></property>
+                            <bean parent="planItemNoteIcon"
+                                  p:toolTip.tooltipContent="@{#line.note NE null ? '&quot;' + #line.note.replaceAll('\n','&lt;br&gt;') + '&quot; - ' + #line.adviserName : ''}">
+                                <property name="propertyReplacers">
+                                    <list/>
+                                </property>
                             </bean>
                         </list>
                     </property>
@@ -1124,10 +1130,24 @@
             <list/>
         </property>
         <property name="footer">
-            <bean parent="term_no_courses" p:render="@{!#line.openForPlanning AND #line.recommendedList.size() EQ 0}"/>
+            <bean parent="term_no_courses" p:render="@{!#line.openForPlanning AND #line.recommendedList.size() EQ 0}">
+                <property name="items">
+                    <list>
+                        <bean parent="KSAP-Message" p:messageText="No recommendations">
+                            <property name="style"
+                                      value="margin-top:1px; font-size:0.8462em; height:25px; line-height:25px; padding:0 5px; display:block; text-align:center;"/>
+                            <property name="cssClasses">
+                                <list merge="true">
+                                    <value>fl-text-gray</value>
+                                    <value>myplan-text-italic</value>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
-
 
 
     <bean id="backupCollection" parent="plannedCollection" p:headerText="Backup">
