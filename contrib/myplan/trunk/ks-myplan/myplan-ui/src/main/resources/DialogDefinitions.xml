@@ -815,7 +815,7 @@
                                                             submitPopupForm(additionalFormData, e, false);
                                                         "/>
                                                         <property name="onDocumentReadyScript" value="
-                                                            jQuery('#removeRecommendedItem').on('PLAN_ITEM_ADDED', function(event, data){
+                                                            jQuery('#acceptRecommendedItem').on('PLAN_ITEM_ADDED', function(event, data){
                                                                 fnCloseAllPopups();
                                                             }).on('ERROR', function(event, data){
                                                                 fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
