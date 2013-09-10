@@ -415,8 +415,9 @@ public class PlanController extends UifControllerBase {
          * Populating the planActivities (Activity Offerings which are planned)
          */
         if (activitiesRequiredPages.contains(form.getPageId()) && planItemAtpId != null) {
-            if (planForm.getCourseSummaryDetails() != null && planForm.getCourseSummaryDetails().getCode() != null) {
-                planForm.setPlanActivities(getPlannedActivitiesByCourseAndTerm(planForm.getCourseSummaryDetails().getCode(), planItem.getPlanPeriods().get(0)));
+            String atpId = CollectionUtils.isEmpty(planItem.getPlanPeriods()) ? null : planItem.getPlanPeriods().get(0);
+            if (planForm.getCourseSummaryDetails() != null && planForm.getCourseSummaryDetails().getCode() != null && !AtpHelper.isAtpCompletedTerm(atpId)) {
+                planForm.setPlanActivities(getPlannedActivitiesByCourseAndTerm(planForm.getCourseSummaryDetails().getCode(), atpId));
             }
         }
 
@@ -1547,7 +1548,7 @@ public class PlanController extends UifControllerBase {
         if (!CollectionUtils.isEmpty(pro)) {
             String adviserName = getUserSessionHelper().getCapitalizedName(getUserSessionHelper().getCurrentUserId());
             note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim(), 80, "<br /><br />", true)) : "";
-            String dateAdded = DateFormatHelper.getDateFomatted(String.valueOf(System.currentTimeMillis()));
+            String dateAdded = DateFormatHelper.getDateFomatted(new Date(System.currentTimeMillis()).toString());
             String planLink = makeLinkToAtp(AtpHelper.termToYearTerm(term).toATP(), "visit your plan page");
             courseCd = title != null ? String.format("%s '%s' placeHolder", courseCd, title) : courseCd;
 
