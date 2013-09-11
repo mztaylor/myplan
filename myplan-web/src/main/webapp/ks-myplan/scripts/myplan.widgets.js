@@ -273,7 +273,11 @@ function openMenu(id, getId, atpId, e, selector, popupClasses, popupOptions, clo
             }
         }
     }
-    var popupHtml = jQuery('<div />').attr("id", id + "_popup").attr("class", popupClasses).html(jQuery("#" + getId).html());
+    var backup = false;
+    if(getId == "backup_placeholder_menu" || getId == "backup_course_menu"){
+       backup = true;
+    }
+    var popupHtml = jQuery('<div />').attr("id", id + "_popup").attr("class", popupClasses).attr("data-backup", backup).html(jQuery("#" + getId).html());
 
     var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
     popupSettings.innerHtml = popupHtml.wrap("<div>").parent().clone().html();
