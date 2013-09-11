@@ -652,8 +652,10 @@
             truncateField('planned_courses_detail_list', true);
             jQuery('#planned_courses_detail_list').on('PLAN_ITEM_ADDED', function(event, data) {
                 fnAddPlanItem(data);
-            }).on('PLAN_ITEM_DELETED RECOMMENDED_ITEM_DELETED', function(event, data) {
+            }).on('PLAN_ITEM_DELETED', function(event, data) {
                 fnRemovePlanItem(data);
+            }).on('RECOMMENDED_ITEM_UPDATED', function(event, data) {
+                fnUpdateRecommendedItem(data);
             }).on('PLAN_ITEM_UPDATED', function(event, data) {
                 fnUpdatePlanItem(data);
             }).on('UPDATE_NEW_TERM_TOTAL_CREDITS', function(event, data) {
@@ -864,7 +866,7 @@
     </bean>
     <bean id="planItemTitle" parent="KSAP-MessageField">
         <property name="messageText"
-                  value="@{#line.placeHolderCode eq null ? #line.courseDetails.code : #line.placeHolderCode}"/>
+                  value="@{#line.proposed ? '[b]' : ''}@{#line.placeHolderCode eq null ? #line.courseDetails.code : #line.placeHolderCode}@{#line.proposed ? '[/b]' : ''}"/>
         <property name="cssClasses">
             <list merge="false">
                 <value>itemTitle</value>
@@ -883,7 +885,7 @@
     <bean id="planItemCredit" parent="KSAP-MessageField"
           p:render="@{#line.placeHolder ? #line.placeHolderCredit NE '' : #line.credit NE null}">
         <property name="messageText"
-                  value="(@{#line.placeHolder ? #line.placeHolderCredit : #line.credit})"/>
+                  value="@{#line.proposed ? '[b]' : ''}(@{#line.placeHolder ? #line.placeHolderCredit : #line.credit})@{#line.proposed ? '[/b]' : ''}"/>
         <property name="cssClasses">
             <list merge="false">
                 <value>itemCredit</value>

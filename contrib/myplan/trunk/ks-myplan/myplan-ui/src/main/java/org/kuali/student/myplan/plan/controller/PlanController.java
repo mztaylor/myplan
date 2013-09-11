@@ -1533,7 +1533,7 @@ public class PlanController extends UifControllerBase {
         params.put("planItemId", planItem.getId());
         params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
         params.put("atpId", formatAtpIdForUI(planItem.getPlanPeriods().get(0)));
-        events.put(PlanConstants.JS_EVENT_NAME.RECOMMENDED_ITEM_DELETED, params);
+        events.put(PlanConstants.JS_EVENT_NAME.RECOMMENDED_ITEM_UPDATED, params);
     }
 
 

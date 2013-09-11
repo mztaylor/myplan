@@ -14,7 +14,12 @@ function planItemTemplate(data) {
         "class": "uif-verticalBoxGroup uif-collectionItem"
     });
 
-    var title = jQuery("<div/>").attr("class", "itemTitle uif-boxLayoutHorizontalItem").append(data.planItemShortTitle);
+    var shortTitle = data.planItemShortTitle;
+    if(data.planItemType == 'recommended'){
+        shortTitle = '<b>'+shortTitle+'</b>';
+    }
+    
+    var title = jQuery("<div/>").attr("class", "itemTitle uif-boxLayoutHorizontalItem").append(shortTitle);
     actionGroup.append(title);
 
     if (data.sections != null && data.sections != "") {
@@ -23,17 +28,21 @@ function planItemTemplate(data) {
     }
 
     if (data.credit != null && data.credit != "") {
-        var credit = jQuery("<div/>").attr("class", "itemCredit uif-boxLayoutHorizontalItem").append("(" + data.credit + ")");
+        var itemCredit = "(" + data.credit + ")";
+        if(data.planItemType == 'recommended'){
+            itemCredit = '<b>'+itemCredit+'</b>';
+        }
+        var credit = jQuery("<div/>").attr("class", "itemCredit uif-boxLayoutHorizontalItem").append(itemCredit);
         actionGroup.append(credit);
     }
 
     var action = jQuery("<div/>").attr("id", itemId).attr({
-        "title": ((data.placeHolder == "true" && data.planItemShortTitle == data.planItemLongTitle) ? "" : data.planItemShortTitle) + " " + ((data.sections != null && data.sections != "") ? data.sections + " " : "") + "'" + data.planItemLongTitle + "'" + ((data.placeHolder == "true") ? " placeholder":""),
-        "class": "uif-horizontalFieldGroup itemAction uif-tooltip uif-boxLayoutHorizontalItem",
-        "data-atpid": data.atpId.replace(/-/g, "."),
-        "data-planitemid": data.planItemId,
-        "data-placeholder": data.placeHolder,
-        "style": "width:" + ((data.note) ? "99px; padding-right: 16px;" : "115px;")
+        "title":((data.placeHolder == "true" && data.planItemShortTitle == data.planItemLongTitle) ? "" : data.planItemShortTitle) + " " + ((data.sections != null && data.sections != "") ? data.sections + " " : "") + "'" + data.planItemLongTitle + "'" + ((data.placeHolder == "true") ? " placeholder" : ""),
+        "class":"uif-horizontalFieldGroup itemAction uif-tooltip uif-boxLayoutHorizontalItem",
+        "data-atpid":data.atpId.replace(/-/g, "."),
+        "data-planitemid":data.planItemId,
+        "data-placeholder":data.placeHolder,
+        "style":"width:" + ((data.note) ? "99px; padding-right: 16px;" : "115px;")
     });
 
     if (data.placeHolder == "true") {
@@ -49,8 +58,8 @@ function planItemTemplate(data) {
 
     if (data.showAlert == "true") {
         var alert = jQuery("<div/>").attr({
-            "title": data.statusAlert,
-            "class": "itemAlert uif-boxLayoutHorizontalItem"
+            "title":data.statusAlert,
+            "class":"itemAlert uif-boxLayoutHorizontalItem"
         }).append(image.clone().attr("alt", data.statusAlert));
         itemGroup.append(alert);
         item.addClass("alert");
@@ -308,4 +317,24 @@ function fnUpdateQuarterViewCredits(termCredits) {
             jQuery(this).text(termCredits).fadeIn(250);
         });
     }
+}
+
+/*
+ #################################################################
+ Function: update style from recommended item
+ #################################################################
+ */
+function fnUpdateRecommendedItem(data) {
+    var itemId = data.planItemType + "_" + data.atpId + "_" + data.planItemId;
+    var title = jQuery('#' + itemId + ' .itemTitle').html();
+    var credit = jQuery('#' + itemId + ' .itemCredit').html();
+    if(title.indexOf('<b>') > 0){
+        title = title.replace("<b>","").replace("</b>","");
+        jQuery('#' + itemId + ' .itemTitle').html(title);
+    }
+    if(credit != undefined && credit.indexOf('<b>') > 0){
+        credit = credit.replace("<b>","").replace("</b>","");
+        jQuery('#' + itemId + ' .itemCredit').html(credit);
+    }
+
 }
