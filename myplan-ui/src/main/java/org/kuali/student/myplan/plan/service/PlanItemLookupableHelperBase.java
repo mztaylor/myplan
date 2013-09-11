@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.plan.service;
 
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
+import edu.uw.kuali.student.myplan.util.PlanHelperImpl;
 import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -24,6 +25,7 @@ import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
+import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -53,6 +55,9 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     @Autowired
     private UserSessionHelper userSessionHelper;
 
+    @Autowired
+    private PlanHelper planHelper;
+
     protected List<PlannedCourseDataObject> getPlanItems(String planItemType, String studentId, boolean includePlaceHolders)
             throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException {
 
@@ -75,11 +80,6 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             Map<String, List<String>> sectionsWithdrawn = new HashMap<String, List<String>>();
             Map<String, List<String>> sectionsSuspended = new HashMap<String, List<String>>();
             for (PlanItemInfo planItemInfo : planItemInfoList) {
-
-                /*Accepted recommended courses are hidden from student view*/
-                if (!getUserSessionHelper().isAdviser() && PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemType) && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(planItemInfo.getStateKey())) {
-                    continue;
-                }
 
                 populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn, subjectAreas, includePlaceHolders);
 
@@ -120,10 +120,6 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             Map<String, List<String>> sectionsWithdrawn = new HashMap<String, List<String>>();
             Map<String, List<String>> sectionsSuspended = new HashMap<String, List<String>>();
             for (PlanItemInfo planItemInfo : planItemInfoList) {
-                /*Accepted recommended courses are hidden from student view*/
-                if (!getUserSessionHelper().isAdviser() && PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemType) && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(planItemInfo.getStateKey())) {
-                    continue;
-                }
                 if (planItemInfo.getTypeKey().equalsIgnoreCase(planItemType) && planItemInfo.getPlanPeriods().get(0).compareTo(startAtp) >= 0) {
                     populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn, subjectAreas, addPlaceHolders);
                 }
@@ -206,6 +202,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
 
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
                 plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
+                plannedCourse.setProposed(PlanConstants.LEARNING_PLAN_ITEM_PROPOSED_STATE_KEY.equals(planItemInfo.getStateKey()));
             }
             //  If the course info lookup fails just log the error and omit the item.
             try {
@@ -300,6 +297,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             plannedCourse.setPlaceHolderCredit(planItemInfo.getCredit() == null ? "" : String.valueOf(planItemInfo.getCredit().intValue()));
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
                 plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
+                plannedCourse.setProposed(PlanConstants.LEARNING_PLAN_ITEM_PROPOSED_STATE_KEY.equals(planItemInfo.getStateKey()));
             }
             plannedCourseList.add(plannedCourse);
 
@@ -318,6 +316,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             plannedCourse.setPlaceHolderCredit(planItemInfo.getCredit() == null ? "" : String.valueOf(planItemInfo.getCredit().intValue()));
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
                 plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
+                plannedCourse.setProposed(PlanConstants.LEARNING_PLAN_ITEM_PROPOSED_STATE_KEY.equals(planItemInfo.getStateKey()));
             }
             plannedCourseList.add(plannedCourse);
 
@@ -411,7 +410,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     }
 
     public UserSessionHelper getUserSessionHelper() {
-        if(userSessionHelper == null){
+        if (userSessionHelper == null) {
             userSessionHelper = new UserSessionHelperImpl();
         }
         return userSessionHelper;
@@ -419,5 +418,16 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
 
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
+    }
+
+    public PlanHelper getPlanHelper() {
+        if (planHelper == null) {
+            planHelper = new PlanHelperImpl();
+        }
+        return planHelper;
+    }
+
+    public void setPlanHelper(PlanHelper planHelper) {
+        this.planHelper = planHelper;
     }
 }
