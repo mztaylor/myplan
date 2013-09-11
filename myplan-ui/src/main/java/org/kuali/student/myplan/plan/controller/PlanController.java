@@ -251,6 +251,13 @@ public class PlanController extends UifControllerBase {
             if (hasText(planForm.getPlanItemId())) {
                 try {
                     PlanItemInfo planItemInfo = getAcademicPlanService().getPlanItem(planForm.getPlanItemId(), PlanConstants.CONTEXT_INFO);
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP.equalsIgnoreCase(planItemInfo.getTypeKey()) && !planForm.isBackup()) {
+                        return doPageRefreshError(planForm, "Plan item not found.", null);
+                    }
+
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equalsIgnoreCase(planItemInfo.getTypeKey()) && planForm.isBackup()) {
+                        return doPageRefreshError(planForm, "Plan item not found.", null);
+                    }
                     if (hasText(planItemInfo.getDescr().getPlain())) {
                         planForm.setNote(planItemInfo.getDescr().getPlain());
                     }
@@ -325,8 +332,12 @@ public class PlanController extends UifControllerBase {
                     }
 
 
-                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP.equalsIgnoreCase(planItem.getTypeKey())) {
-                        planForm.setBackup(true);
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP.equalsIgnoreCase(planItem.getTypeKey()) && !planForm.isBackup()) {
+                        return doPageRefreshError(planForm, "Plan item not found.", null);
+                    }
+
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equalsIgnoreCase(planItem.getTypeKey()) && planForm.isBackup()) {
+                        return doPageRefreshError(planForm, "Plan item not found.", null);
                     }
 
                     if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
@@ -2669,7 +2680,7 @@ public class PlanController extends UifControllerBase {
         String note = null;
         if (hasText(planItem.getDescr().getPlain())) {
             try {
-                note = mapper.writeValueAsString(HtmlUtils.htmlEscape(planItem.getDescr().getPlain().replace("\n", "<br/>").replace("'","\\'"))).replaceAll("^\"|\"$", "");
+                note = mapper.writeValueAsString(HtmlUtils.htmlEscape(planItem.getDescr().getPlain().replace("\n", "<br/>").replace("'", "\\'"))).replaceAll("^\"|\"$", "");
             } catch (IOException e) {
                 logger.error("Could not add the note to add event");
             }
