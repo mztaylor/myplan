@@ -9,12 +9,12 @@ import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
+import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
-import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -54,7 +54,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
     }
 
     public UserSessionHelper getUserSessionHelper() {
-        if(userSessionHelper == null){
+        if (userSessionHelper == null) {
             userSessionHelper = new UserSessionHelperImpl();
         }
         return userSessionHelper;
