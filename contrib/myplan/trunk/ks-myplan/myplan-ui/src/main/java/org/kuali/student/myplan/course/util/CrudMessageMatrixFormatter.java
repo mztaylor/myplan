@@ -250,7 +250,13 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                     if (planItemsMap.get(key).contains(",")) {
                         String[] terms = planItemsMap.get(key).split(",");
                         for (String term : terms) {
-                            sb = startsSub.append("<a href=\"").append(singleQuarterUrl).append(AtpHelper.termToYearTerm(term).toATP()).append("\">").append(term).append(" plan").append("</a>").append(", ");
+                            String recommendation = "";
+                            String atpId = AtpHelper.termToYearTerm(term).toATP();
+                            if (plannedRecommendations.get(atpId) != null) {
+                                RecommendedItemDataObject recommendedItemDataObject = plannedRecommendations.get(atpId);
+                                recommendation = String.format(" as recommended by %s on %s ", recommendedItemDataObject.getAdviserName(), recommendedItemDataObject.getDateAdded());
+                            }
+                            sb = startsSub.append("<a href=\"").append(singleQuarterUrl).append(atpId).append("\">").append(term).append(" plan").append("</a>").append(recommendation).append(", ");
                         }
                         String formattedString = sb.substring(0, sb.lastIndexOf(","));
                         StringBuffer formattedSubBuf = new StringBuffer();
