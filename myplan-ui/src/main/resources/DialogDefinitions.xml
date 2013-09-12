@@ -780,7 +780,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
+                            <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup" p:render="@{setToPlanning}">
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
