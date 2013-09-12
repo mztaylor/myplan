@@ -1561,7 +1561,7 @@ public class PlanController extends UifControllerBase {
             note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim(), 80, "<br />", true)) : "";
             String dateAdded = DateFormatHelper.getDateFomatted(new Date(System.currentTimeMillis()).toString());
             String planLink = makeLinkToAtp(AtpHelper.termToYearTerm(term).toATP(), "visit your plan page");
-            courseCd = title != null ? String.format("%s '%s' placeHolder", courseCd, title) : courseCd;
+            courseCd = title != null ? (title.equals(courseCd) ? String.format("'%s' placeholder", courseCd) : String.format("%s '%s' placeholder", courseCd, title)) : courseCd;
 
             /*Creating a new Message from Adviser to student*/
             String subject = "";
