@@ -19,6 +19,8 @@ public interface PlanHelper {
 
     public PlanItemInfo getPlannedOrBackupPlanItem(String courseId, String atpId);
 
+    public List<PlanItemInfo> getPlanItemsByTypes(String studentId, List<String> planItemTypes);
+
     public LearningPlan getLearningPlan(String studentId);
 
     public List<RecommendedItemDataObject> getRecommendedItems(String refObjId);

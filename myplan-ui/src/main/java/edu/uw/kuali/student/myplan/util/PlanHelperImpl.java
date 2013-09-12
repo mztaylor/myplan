@@ -13,6 +13,10 @@ import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
@@ -119,6 +123,26 @@ public class PlanHelperImpl implements PlanHelper {
 
         //  A null here means that no plan item exists for the given course and ATP IDs.
         return planItem;
+    }
+
+
+    /**
+     * returns List of planItemInfo's for given planItem Types.
+     *
+     * @param studentId
+     * @param planItemTypes
+     * @return
+     */
+    public List<PlanItemInfo> getPlanItemsByTypes(String studentId, List<String> planItemTypes) {
+        List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();
+        for (String planItemType : planItemTypes) {
+            try {
+                planItemInfos.addAll(getAcademicPlanService().getPlanItemsInPlanByType(getLearningPlan(studentId).getId(), planItemType, PlanConstants.CONTEXT_INFO));
+            } catch (Exception e) {
+                logger.error("Could not load planItems for student with regId" + studentId);
+            }
+        }
+        return planItemInfos;
     }
 
     /**
