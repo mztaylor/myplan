@@ -1558,7 +1558,7 @@ public class PlanController extends UifControllerBase {
 
         if (!CollectionUtils.isEmpty(pro)) {
             String adviserName = getUserSessionHelper().getCapitalizedName(getUserSessionHelper().getCurrentUserId());
-            note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim(), 80, "<br /><br />", true)) : "";
+            note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim(), 80, "<br />", true)) : "";
             String dateAdded = DateFormatHelper.getDateFomatted(new Date(System.currentTimeMillis()).toString());
             String planLink = makeLinkToAtp(AtpHelper.termToYearTerm(term).toATP(), "visit your plan page");
             courseCd = title != null ? String.format("%s '%s' placeHolder", courseCd, title) : courseCd;
@@ -1573,8 +1573,8 @@ public class PlanController extends UifControllerBase {
                 emailMessage = message + String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_INFO), dateAdded, planLink);
             } else {
                 subject = String.format((String) pro.get(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_SUBJECT), adviserName);
-                message = String.format((String) pro.get(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_BODY), adviserName, courseCd, term, note);
-                emailMessage = message + String.format((String) pro.get(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_INFO), adviserName, dateAdded);
+                message = String.format((String) pro.get(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_INFO), adviserName, courseCd, term, dateAdded, note);
+                emailMessage = message;
             }
 
 
