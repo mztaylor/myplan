@@ -720,6 +720,10 @@
                             <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="headerText"
                                   p:condition="#form.planAudit.messyItems.size() EQ 0"
                                   p:replacement="@{#form.planAudit.cleanList.size() EQ 0 ? 'No Plan Audit Available' : ' '}"/>
+                            <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="headerText"
+                                  p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()"
+                                  p:replacement="View details about @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getFirstName( T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentId()  )}'s plan"/>
+
                         </list>
                     </property>
                     <property name="instructionalMessage">
