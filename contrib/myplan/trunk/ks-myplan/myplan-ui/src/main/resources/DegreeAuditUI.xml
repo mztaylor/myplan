@@ -288,7 +288,9 @@
                       p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
                     <property name="replacement">
                         <list>
-                            <ref bean="audit_adviser_actions_message"/>
+                            <!--<ref bean="audit_adviser_actions_message"/>-->
+                            <bean parent="audit_tabs"/>
+                            <bean parent="run_degree_audits"/>
                             <ref bean="audit_section"/>
                         </list>
                     </property>
