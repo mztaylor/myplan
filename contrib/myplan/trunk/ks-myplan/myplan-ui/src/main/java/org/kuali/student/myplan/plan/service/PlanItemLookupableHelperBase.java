@@ -138,7 +138,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     private void addActivitiesToPlannedCourseList(List<PlannedCourseDataObject> plannedCourseList, Map<String, List<ActivityOfferingItem>> plannedSections, Map<String, List<String>> sectionsSuspended, Map<String, List<String>> sectionsWithdrawn) {
         List<String> publishedTerms = AtpHelper.getPublishedTerms();
         for (PlannedCourseDataObject plannedCourse : plannedCourseList) {
-            if (!plannedCourse.isPlaceHolder()) {
+            if (!plannedCourse.isPlaceHolder() && !PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(plannedCourse.getPlanItemDataObject().getPlanType())) {
                 String key = generateKey(plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp());
                 List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(key);
                 if (activityOfferingItems != null && activityOfferingItems.size() > 0) {
