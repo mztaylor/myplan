@@ -82,7 +82,7 @@
                         <list>
                             <bean parent="courseTitleLink"/>
                             <bean parent="course_details_summary_info"/>
-                            <ref bean="course_summary_actions"/>
+                            <!--<ref bean="course_summary_actions"/>-->
                             <ref bean="course_summary_messages"/>
                         </list>
                     </property>
