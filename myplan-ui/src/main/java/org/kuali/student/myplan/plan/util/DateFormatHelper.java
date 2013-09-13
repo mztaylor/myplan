@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.plan.util;
 
 import org.apache.log4j.Logger;
+import org.springframework.util.StringUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,18 +17,21 @@ public class DateFormatHelper {
     private static final Logger logger = Logger.getLogger(DateFormatHelper.class);
 
     /*Formats Date in format 2012-05-01 11:21:29.496 to 01/05/2012*/
-    public static String getDateFomatted(String date){
-        String dateStr = date.substring(0, 10);
-        DateFormat dfYMD =
-                new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat dfDMY =
-                new SimpleDateFormat("MM/dd/yyyy");
+    public static String getDateFomatted(String date) {
+        if (StringUtils.hasText(date)) {
+            String dateStr = date.substring(0, 10);
+            DateFormat dfYMD =
+                    new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat dfDMY =
+                    new SimpleDateFormat("MM/dd/yyyy");
 
-        try {
-            dateStr = dfDMY.format(dfYMD.parse(dateStr));
-        } catch (Exception e) {
-            logger.error(e);
+            try {
+                dateStr = dfDMY.format(dfYMD.parse(dateStr));
+            } catch (Exception e) {
+                logger.error(e);
+            }
+            return dateStr;
         }
-        return dateStr;
+        return null;
     }
 }

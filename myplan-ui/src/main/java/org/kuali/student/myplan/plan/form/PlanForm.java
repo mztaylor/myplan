@@ -23,6 +23,7 @@ import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
+import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 
 import java.util.Date;
@@ -505,6 +506,19 @@ public class PlanForm extends UifFormBase {
         courseDetails.setCourseSummaryDetails(this.getCourseSummaryDetails());
         courseDetails.setPlannedCourseSummary(this.getPlannedCourseSummary());
         return courseDetails;
+    }
+
+
+    /**
+     * returns the recommended item data object for the term given.
+     */
+    public RecommendedItemDataObject getTermRecommendation() {
+        for (RecommendedItemDataObject recommendedItem : getPlannedCourseSummary().getRecommendedItemDataObjects()) {
+            if (recommendedItem.getAtpId().equals(getAtpId())) {
+                return recommendedItem;
+            }
+        }
+        return new RecommendedItemDataObject();
     }
 
     /**
