@@ -35,6 +35,8 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
 
     private transient CourseOfferingService courseOfferingService;
 
+    private boolean excludeRecommendations;
+
     @Autowired
     private CourseHelper courseHelper;
 
@@ -76,6 +78,14 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         this.courseOfferingService = courseOfferingService;
     }
 
+    public boolean isExcludeRecommendations() {
+        return excludeRecommendations;
+    }
+
+    public void setExcludeRecommendations(boolean excludeRecommendations) {
+        this.excludeRecommendations = excludeRecommendations;
+    }
+
     @Override
     public void setValue(Object value) {
         super.setValue(value);
@@ -87,7 +97,6 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         CourseDetails courseDetails = (CourseDetails) super.getValue();
         StringBuffer sb = new StringBuffer();
         String singleQuarterUrl = "inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=";
-        String oneYearPlanUrl = "plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId=";
         boolean currentTermRegistered = false;
 
         /*When academic terms are not null then populating message
@@ -193,11 +202,13 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
 
         Map<String, RecommendedItemDataObject> plannedRecommendations = new HashMap<String, RecommendedItemDataObject>();
         List<RecommendedItemDataObject> recommendedItemDataObjects = new ArrayList<RecommendedItemDataObject>();
-        for (RecommendedItemDataObject recommendedItemDataObject : courseDetails.getPlannedCourseSummary().getRecommendedItemDataObjects()) {
-            if (recommendedItemDataObject.isPlanned()) {
-                plannedRecommendations.put(recommendedItemDataObject.getAtpId(), recommendedItemDataObject);
-            } else {
-                recommendedItemDataObjects.add(recommendedItemDataObject);
+        if (!isExcludeRecommendations()) {
+            for (RecommendedItemDataObject recommendedItemDataObject : courseDetails.getPlannedCourseSummary().getRecommendedItemDataObjects()) {
+                if (recommendedItemDataObject.isPlanned()) {
+                    plannedRecommendations.put(recommendedItemDataObject.getAtpId(), recommendedItemDataObject);
+                } else {
+                    recommendedItemDataObjects.add(recommendedItemDataObject);
+                }
             }
         }
 

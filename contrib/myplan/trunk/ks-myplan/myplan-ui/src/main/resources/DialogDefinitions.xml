@@ -83,7 +83,9 @@
                             <bean parent="courseTitleLink"/>
                             <bean parent="course_details_summary_info"/>
                             <!--<ref bean="course_summary_actions"/>-->
-                            <ref bean="course_summary_messages"/>
+                            <ref bean="course_summary_recommended_note"/>
+                            <ref bean="course_summary_excluded_recommended_messages"/>
+                            <!--<ref bean="course_summary_messages"/>-->
                         </list>
                     </property>
                 </bean>
@@ -941,6 +943,51 @@
                         <list merge="true">
                             <value>myplan-data-list</value>
                             <value>message</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_summary_excluded_recommended_messages" parent="course_summary_messages">
+        <property name="items">
+            <list>
+                <bean parent="MyPlanMessagingIcon"/>
+                <bean parent="KSAP-SimpleDataField" p:propertyName="courseAndPlanSummary"
+                      p:escapeHtmlInPropertyValue="false">
+                    <property name="propertyEditor" >
+                         <bean parent="crud_message_matrix_formatter">
+                             <property name="excludeRecommendations" value="true"/>
+                         </bean>
+                    </property>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-data-list</value>
+                            <value>message</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_summary_recommended_note" parent="KSAP-VerticalBoxGroup-NoMargin" p:render="@{termRecommendation.adviserName NE null}">
+        <property name="items">
+            <list>
+                <bean parent="KSAP-Message" p:messageText="@{termRecommendation.adviserName} recommended this course for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termRecommendation.atpId)} on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(termRecommendation.dateAdded)}"/>
+                <bean parent="KSAP-SimpleDataField" p:propertyName="termRecommendation.note">
+                    <property name="render" value="@{termRecommendation.note NE '' AND termRecommendation.note NE null}"/>
+                    <property name="labelPlacement" value="TOP"/>
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="fieldLabel.cssClasses">
+                        <list merge="true">
+                            <value>ksap-text-normal</value>
+                        </list>
+                    </property>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-adviser-recommendation</value>
                         </list>
                     </property>
                 </bean>
