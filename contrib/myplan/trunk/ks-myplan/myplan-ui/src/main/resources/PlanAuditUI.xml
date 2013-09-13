@@ -735,6 +735,10 @@
                                     <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="messageText"
                                           p:condition="#form.planAudit.messyItems.size() EQ 0"
                                           p:replacement="@{#form.planAudit.cleanList.size() GT 0 ? ' ' : 'We are unable to generate a Plan Audit. [0]'}"/>
+                                    <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="messageText"
+                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()"
+                                          p:replacement="To run a plan audit, @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getFirstName( T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentId()  )} provided details for the following course(s)"/>
+
                                 </list>
                             </property>
                             <property name="inlineComponents">
@@ -942,6 +946,27 @@
                             </property>
                         </bean>
                     </property>
+
+                    <property name="propertyReplacers">
+                        <list>
+                            <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="control"
+                                  p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
+                                <property name="replacement">
+                                    <bean parent="Uif-DropdownControl" p:disabled="true">
+                                        <property name="onChangeScript"
+                                                  value="buttonState('plan_audit_messy_items', 'submit_plan_audit');"/>
+                                        <property name="cssClasses">
+                                            <list merge="true">
+                                                <value>myplan-required</value>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+
+
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.course.util.PlanAuditMessyItems"/>
                     </property>
