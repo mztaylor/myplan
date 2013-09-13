@@ -359,7 +359,7 @@ public class PlanController extends UifControllerBase {
                         DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(planItem.getRefObjectId());
                         Map<String, String> subjectAreas = OrgHelper.getTrimmedSubjectAreas();
                         String subjectTitle = subjectAreas.get(courseCode.getSubject());
-                        String subjectLevel = courseCode.getNumber().toUpperCase().replace("XX", "00");
+                        String subjectLevel = courseCode.getNumber().toUpperCase().replace(CourseSearchConstants.COURSE_LEVEL_XX, CourseSearchConstants.COURSE_LEVEL_ZERO);
                         planForm.setPlaceholderTitle(String.format("%s %s level", subjectTitle, subjectLevel));
                         if (planItem.getCredit() != null) {
                             planForm.setCredit(String.valueOf(planItem.getCredit().intValue()));
@@ -1208,7 +1208,12 @@ public class PlanController extends UifControllerBase {
                                 placeHolderType = PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL;
                                 placeHolderId = String.format("%s %s", divisions.get(0).trim(), number);
                                 placeHolderCd = placeHolderId;
-                                placeHolderTitle = String.format("%s %s level", subjectAreas.get(courseCode.getSubject()), courseCode.getNumber().toUpperCase().replace("XX", "00"));
+                                String subjectTitle = subjectAreas.get(courseCode.getSubject());
+                                String subjectLevel = courseCode.getNumber().toUpperCase().replace(CourseSearchConstants.COURSE_LEVEL_XX, CourseSearchConstants.COURSE_LEVEL_ZERO);
+                                if(!getCourseHelper().isValidCourseLevel(courseCode.getSubject(), subjectLevel)){
+                                    return doErrorPage(form, "Course level not found", PlanConstants.COURSE_LEVEL_NOT_FOUND, new String[]{courseCd}, null);
+                                }
+                                placeHolderTitle = String.format("%s %s level", subjectTitle, subjectLevel);
                             } else {
                                 return doErrorPage(form, "Curriculum is invalid", PlanConstants.CURRIC_NOT_FOUND, new String[]{subject}, null);
                             }
@@ -1658,6 +1663,10 @@ public class PlanController extends UifControllerBase {
                             if (divisions.size() > 0) {
                                 planItemInfo.setRefObjectId(String.format("%s %s", divisions.get(0).trim(), number));
                                 planItemInfo.setRefObjectType(PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL);
+                                String subjectLevel = number.toUpperCase().replace(CourseSearchConstants.COURSE_LEVEL_XX, CourseSearchConstants.COURSE_LEVEL_ZERO);
+                                if(!getCourseHelper().isValidCourseLevel(courseCode.getSubject(), subjectLevel)){
+                                    return doErrorPage(form, "Course level not found", PlanConstants.COURSE_LEVEL_NOT_FOUND, new String[]{form.getCourseCd()}, null);
+                                }
                             } else {
                                 return doErrorPage(form, "Curriculum is invalid", PlanConstants.CURRIC_NOT_FOUND, new String[]{subject}, null);
                             }
@@ -2067,7 +2076,7 @@ public class PlanController extends UifControllerBase {
             DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(code);
             Map<String, String> subjectAreas = OrgHelper.getTrimmedSubjectAreas();
             String subjectTitle = subjectAreas.get(courseCode.getSubject());
-            String subjectLevel = courseCode.getNumber().toUpperCase().replace("XX", "00");
+            String subjectLevel = courseCode.getNumber().toUpperCase().replace(CourseSearchConstants.COURSE_LEVEL_XX, CourseSearchConstants.COURSE_LEVEL_ZERO);
             title = String.format("%s %s level", subjectTitle, subjectLevel);
         }
 
@@ -2737,7 +2746,7 @@ public class PlanController extends UifControllerBase {
         Map<String, String> subjectAreas = OrgHelper.getTrimmedSubjectAreas();
         DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(coursePlaceHolder);
         String subjectTitle = subjectAreas.get(courseCode.getSubject());
-        String subjectLevel = courseCode.getNumber().toUpperCase().replace("XX", "00");
+        String subjectLevel = courseCode.getNumber().toUpperCase().replace(CourseSearchConstants.COURSE_LEVEL_XX, CourseSearchConstants.COURSE_LEVEL_ZERO);
         return String.format("%s %s level", subjectTitle, subjectLevel);
     }
 

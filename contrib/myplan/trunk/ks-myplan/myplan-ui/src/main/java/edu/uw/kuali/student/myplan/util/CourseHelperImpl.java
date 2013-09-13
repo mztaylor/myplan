@@ -501,6 +501,30 @@ public class CourseHelperImpl implements CourseHelper {
         return query;
     }
 
+    /**
+     * Checks to see if the division and level exists
+     * @param division
+     * @param level
+     * @return true if for the given division and level courses exists else false
+     */
+    public boolean isValidCourseLevel(String division, String level) {
+        List<SearchRequest> requests = new ArrayList<SearchRequest>();
+        SearchRequest request = new SearchRequest(CourseSearchConstants.COURSE_SEARCH_FOR_DIVISION_LEVELS);
+        request.addParam(CourseSearchConstants.SEARCH_REQUEST_SUBJECT_PARAM, division.trim());
+        request.addParam(CourseSearchConstants.SEARCH_REQUEST_NUMBER_PARAM, level.trim());
+        requests.add(request);
+        SearchResult searchResult = new SearchResult();
+        try {
+            searchResult = getLuService().search(request);
+        } catch (org.kuali.student.common.exceptions.MissingParameterException e) {
+            logger.error("Could not get courses by division and level", e);
+        }
+        if (!CollectionUtils.isEmpty(searchResult.getRows())) {
+            return true;
+        }
+        return false;
+    }
+
 
     protected LuService getLuService() {
         if (luService == null) {

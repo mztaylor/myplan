@@ -55,9 +55,15 @@ public class CourseSearchConstants {
 
     public static final String COURSE_SEARCH_FOR_COURSE_ID = "myplan.course.getcluid";
 
+    public static final String COURSE_SEARCH_FOR_DIVISION_LEVELS = "myplan.clu.division.level";
+
     public static final String SEARCH_REQUEST_SUBJECT_PARAM = "subject";
 
-    public static final String SEARCH_REQUEST_NUMBER_PARAM = "number";
+    public static final String SEARCH_REQUEST_NUMBER_PARAM = "number"; 
+    
+    public static final String COURSE_LEVEL_XX = "XX";
+    
+    public static final String COURSE_LEVEL_ZERO = "00";
 
     public static final String SEARCH_REQUEST_LAST_SCHEDULED_PARAM = "lastScheduledTerm";
 

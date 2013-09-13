@@ -78,6 +78,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String UPDATE_FAILED = "myplan.text.error.quickAdd.updateFailed";
     public static final String EMPTY_SEARCH = "myplan.text.error.quickAdd.emptySearch";
     public static final String ACCESS_DENIED = "myplan.text.error.permissionDenied";
+    public static final String COURSE_LEVEL_NOT_FOUND = "myplan.text.error.quickAdd.courseLevelNotFound";
 
     //  Global context info for use in service methods which need caching, but don't use the context argument.
     public static final ContextInfo CONTEXT_INFO = new ContextInfo();

@@ -164,6 +164,20 @@
         </search:searchCriteriaTypeInfo>
     </search:searchType>
 
+    <search:searchType id="myplan.clu.division.level">
+        <search:searchResultTypeInfo>
+            <search:name/>
+            <search:desc/>
+            <search:resultColumns>
+                <ref bean="courseCode"/>
+            </search:resultColumns>
+        </search:searchResultTypeInfo>
+        <search:searchCriteriaTypeInfo>
+            <search:queryParams>
+            </search:queryParams>
+        </search:searchCriteriaTypeInfo>
+    </search:searchType>
+
     <search:searchType id="myplan.lu.search.fulltext">
         <search:searchResultTypeInfo>
             <search:name/>
@@ -764,6 +778,15 @@
                         FROM KSLU_CLU clu
                         WHERE clu.id = :courseId OR (clu.ver_ind_id = :courseId) AND clu.EXP_FIRST_ATP = (select min(c.EXP_FIRST_ATP)
                         FROM KSLU_CLU c where c.ver_ind_id = clu.ver_ind_id and c.LAST_ATP >= :lastScheduledTerm group by c.ver_ind_id )
+                    </value>
+                </entry>
+
+                <entry key="myplan.clu.division.level">
+                    <value>NATIVE:
+                        SELECT ident.CD
+                        FROM KSLU_CLU_IDENT ident
+                        WHERE TRIM(ident.DIVISION) = :subject and ident.LVL = :number
+                        ORDER BY ident.SUFX_CD
                     </value>
                 </entry>
 
