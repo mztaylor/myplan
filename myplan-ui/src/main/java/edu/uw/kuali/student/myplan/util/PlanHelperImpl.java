@@ -13,10 +13,6 @@ import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.kuali.student.r2.common.exceptions.DoesNotExistException;
-import org.kuali.student.r2.common.exceptions.InvalidParameterException;
-import org.kuali.student.r2.common.exceptions.MissingParameterException;
-import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 

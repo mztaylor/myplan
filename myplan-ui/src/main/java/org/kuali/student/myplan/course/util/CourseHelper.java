@@ -53,4 +53,6 @@ public interface CourseHelper {
      * @return
      */
     public boolean isCourseInOfferingIds(String subjectArea, String courseNumber, Set<String> courseOfferingIds);
+    
+    public boolean isValidCourseLevel(String division, String level);
 }
