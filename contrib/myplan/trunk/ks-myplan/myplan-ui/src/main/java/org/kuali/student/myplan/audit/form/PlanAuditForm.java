@@ -2,6 +2,7 @@ package org.kuali.student.myplan.audit.form;
 
 import org.kuali.student.myplan.audit.dataobject.CourseItem;
 import org.kuali.student.myplan.audit.dataobject.IgnoreTermDataObject;
+import org.kuali.student.myplan.audit.dataobject.MessyItem;
 import org.kuali.student.myplan.audit.dataobject.MessyTermDataObject;
 
 import java.util.ArrayList;
@@ -73,5 +74,21 @@ public class PlanAuditForm extends DegreeAuditForm {
     public void setShowHandOffScreen(boolean showHandOffScreen) {
         this.showHandOffScreen = showHandOffScreen;
     }
+
+
+    /**
+     * Checks to see if there is a user selected value available for all Messy Items for every term.
+     *
+     * @return true: if all messy items have a credit value selected, else returns false.
+     */
+   public boolean isAllMessyItemsSelected() {
+       for(MessyTermDataObject mtd : messyItems) {
+           for(MessyItem item : mtd.getMessyItemList()) {
+               if(null == item.getSelectedCredit()) return false;
+           }
+       }
+
+       return true;
+   }
 
 }
