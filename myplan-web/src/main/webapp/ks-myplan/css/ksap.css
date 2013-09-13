@@ -481,6 +481,13 @@ a.inlineBlock {
     background-image: url('../images/iconWarning16.png');
 }
 
+.ksap-messageGroup-error {
+    color: #cc0000;
+    border-color: #fcd5e4;
+    background-color: #fce9f1;
+}
+
+
 .ksap-messageGroup .uif-header .uif-headerText {
     text-transform: uppercase;
     font-weight: 700;

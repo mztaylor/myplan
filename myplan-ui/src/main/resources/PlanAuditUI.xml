@@ -761,6 +761,29 @@
                     </property>
                     <property name="items">
                         <list>
+
+                            <!-- Adviser with null credit selection -->
+                            <bean parent="KSAP-HorizontalFieldGroup"
+                                  p:render="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND
+                                              !#form.planAudit.allMessyItemsSelected}">
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>ksap-messageGroup</value>
+                                        <value>ksap-messageGroup-error</value>
+                                    </list>
+                                </property>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="MyPlanErrorIcon"/>
+                                        <bean parent="KSAP-MessageField">
+                                            <property name="messageText"
+                                                      value="Sorry, we are unable to generate a plan review because incomplete details for planned courses below. Contact @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentName( )} to add details."/>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+
+
                             <bean p:id="showHandOffScreen" parent="KSAP-SimpleInputField" p:hidden="true"
                                   p:propertyName="planAudit.showHandOffScreen">
                                 <property name="control">
@@ -789,6 +812,8 @@
                                     </list>
                                 </property>
                             </bean>
+
+                            <!-- Plan Submit button for student's and for advisers (when all student choices are specified) -->
                             <bean parent="KSAP-HorizontalBoxGroup" p:style="margin: 10px 0px 0px;">
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -800,20 +825,32 @@
                                 <property name="items">
                                     <list>
                                         <bean id="submit_plan_audit" parent="Uif-PrimaryActionButton" p:disabled="true"
-                                              p:style="margin:0px 20px 0px 0px;">
+                                              p:style="margin:0px 20px 0px 0px;"
+                                              p:render="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() OR
+                                              #form.planAudit.allMessyItemsSelected}">
                                             <property name="actionLabel"
                                                       value="@{#form.planAudit.messyItems.size() EQ 0 ? 'Ok, proceed' : 'Submit'}"/>
                                             <property name="actionScript" value="runPlanAudit('plan_audit_run');"/>
                                             <property name="onDocumentReadyScript"
                                                       value="buttonState('plan_audit_messy_items', 'submit_plan_audit');"/>
                                         </bean>
-                                        <bean parent="Uif-ActionLink" p:style="margin:0; line-height: 30px;">
+                                        <bean parent="Uif-ActionLink" p:style="margin:0; line-height: 30px;"
+                                              p:render="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() OR
+                                              #form.planAudit.allMessyItemsSelected}">
                                             <property name="actionLabel" value="Cancel"/>
+                                            <property name="actionScript" value="jQuery.fancybox.close(true);"/>
+                                        </bean>
+                                        <bean parent="Uif-PrimaryActionButton" p:style="margin:0px 20px 0px 0px;"
+                                              p:render="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND
+                                              !#form.planAudit.allMessyItemsSelected}">
+                                            <property name="actionLabel" value="Ok, I get it"/>
                                             <property name="actionScript" value="jQuery.fancybox.close(true);"/>
                                         </bean>
                                     </list>
                                 </property>
                             </bean>
+
+
                             <bean parent="KSAP-HorizontalBoxGroup" p:style="margin: 10px 0px 0px;">
                                 <property name="cssClasses">
                                     <list merge="true">
@@ -920,18 +957,49 @@
                     <property name="messageText"
                               value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.atpAndAddMessyItemToReq)}"/>
                 </bean>
-                <bean parent="Uif-LinkField">
-                    <property name="linkText" value="@{#line.courseCode} @{#line.courseTitle}"/>
-                    <property name="title" value="@{#line.courseCode} @{#line.courseTitle}"/>
-                    <property name="href"
-                              value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}"/>
+
+
+                <bean parent="KSAP-VerticalFieldGroup">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>ksap-noMargin</value>
+                            <value>@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()
+                                AND #line.selectedCredit EQ null? 'ksap-messageGroup' : ''}
+                            </value>
+                            <value>@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()
+                                AND #line.selectedCredit EQ null? 'ksap-messageGroup-error' : ''}
+                            </value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-LinkField">
+                                <property name="linkText" value="@{#line.courseCode} @{#line.courseTitle}"/>
+                                <property name="title" value="@{#line.courseCode} @{#line.courseTitle}"/>
+                                <property name="href"
+                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}"/>
+                            </bean>
+
+                            <!-- Adviser with null credit selection -->
+                            <bean parent="KSAP-HorizontalFieldGroup"
+                                  p:render="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.selectedCredit EQ null}">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="MyPlanErrorIcon"/>
+                                        <bean parent="KSAP-MessageField">
+                                            <property name="messageText"
+                                                      value="This course needs further specification."/>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
-                <bean id="messy_credits" parent="Uif-InputField" p:propertyName="selectedCredit">
+
+
+                <bean id="messy_credits" parent="Uif-InputField" p:propertyName="selectedCredit"
+                      p:render="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() OR #line.selectedCredit NE null}">
                     <property name="validationMessages">
                         <null/>
                     </property>
@@ -976,6 +1044,8 @@
                         </list>
                     </property>
                 </bean>
+
+
                 <bean p:id="hidden_version_independent_id" parent="KSAP-SimpleInputField"
                       p:propertyName="versionIndependentId"
                       p:hidden="true">
