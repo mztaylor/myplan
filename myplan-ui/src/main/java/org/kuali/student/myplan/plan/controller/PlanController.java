@@ -1210,7 +1210,7 @@ public class PlanController extends UifControllerBase {
                                 placeHolderCd = placeHolderId;
                                 String subjectTitle = subjectAreas.get(courseCode.getSubject());
                                 String subjectLevel = courseCode.getNumber().toUpperCase().replace(CourseSearchConstants.COURSE_LEVEL_XX, CourseSearchConstants.COURSE_LEVEL_ZERO);
-                                if(!getCourseHelper().isValidCourseLevel(courseCode.getSubject(), subjectLevel)){
+                                if (!getCourseHelper().isValidCourseLevel(courseCode.getSubject(), subjectLevel)) {
                                     return doErrorPage(form, "Course level not found", PlanConstants.COURSE_LEVEL_NOT_FOUND, new String[]{courseCd}, null);
                                 }
                                 placeHolderTitle = String.format("%s %s level", subjectTitle, subjectLevel);
@@ -1566,18 +1566,22 @@ public class PlanController extends UifControllerBase {
             note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim(), 80, "<br />", true)) : "";
             String dateAdded = DateFormatHelper.getDateFomatted(new java.sql.Date(System.currentTimeMillis()).toString());
             String planLink = makeLinkToAtp(AtpHelper.termToYearTerm(term).toATP(), "visit your plan page");
+            String code = courseCd;
             courseCd = title != null ? (title.equals(courseCd) ? String.format("'%s' placeholder", courseCd) : String.format("%s '%s' placeholder", courseCd, title)) : courseCd;
 
             /*Creating a new Message from Adviser to student*/
+            String emailSubject = "";
             String subject = "";
             String message = "";
             String emailMessage = "";
             if (!removed) {
-                subject = String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_SUBJECT), adviserName);
+                subject = String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_MESSAGE_SUBJECT), code);
+                emailSubject = String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_SUBJECT), adviserName);
                 message = String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_BODY), adviserName, courseCd, term, note);
                 emailMessage = message + String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_INFO), dateAdded, planLink);
             } else {
-                subject = String.format((String) pro.get(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_SUBJECT), adviserName);
+                subject = String.format((String) pro.get(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_MESSAGE_SUBJECT), code);
+                emailSubject = String.format((String) pro.get(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_SUBJECT), adviserName);
                 message = String.format((String) pro.get(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_INFO), adviserName, courseCd, term, dateAdded, note);
                 emailMessage = message;
             }
@@ -1591,7 +1595,7 @@ public class PlanController extends UifControllerBase {
 
             /*Sending a email notification to student about the recommended course*/
             try {
-                getCommentHelper().sendRecommendationEmailNotification(subject, emailMessage);
+                getCommentHelper().sendRecommendationEmailNotification(emailSubject, emailMessage);
             } catch (Exception e) {
                 logger.error("Error sending message notification for adviser recommended course", e);
             }
@@ -1664,7 +1668,7 @@ public class PlanController extends UifControllerBase {
                                 planItemInfo.setRefObjectId(String.format("%s %s", divisions.get(0).trim(), number));
                                 planItemInfo.setRefObjectType(PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL);
                                 String subjectLevel = number.toUpperCase().replace(CourseSearchConstants.COURSE_LEVEL_XX, CourseSearchConstants.COURSE_LEVEL_ZERO);
-                                if(!getCourseHelper().isValidCourseLevel(courseCode.getSubject(), subjectLevel)){
+                                if (!getCourseHelper().isValidCourseLevel(courseCode.getSubject(), subjectLevel)) {
                                     return doErrorPage(form, "Course level not found", PlanConstants.COURSE_LEVEL_NOT_FOUND, new String[]{form.getCourseCd()}, null);
                                 }
                             } else {

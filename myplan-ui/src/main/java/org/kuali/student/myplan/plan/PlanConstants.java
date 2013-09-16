@@ -140,10 +140,12 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
 
     public static final String REMOVED_RECOMMEND_NOTIFICATION_SUBJECT = "myplan.recommendation.remove.notification.subject";
+    public static final String REMOVED_RECOMMEND_NOTIFICATION_MESSAGE_SUBJECT = "myplan.recommendation.remove.notification.message.subject";
     public static final String REMOVED_RECOMMEND_NOTIFICATION_BODY = "myplan.recommendation.remove.notification.body";
     public static final String REMOVED_RECOMMEND_NOTIFICATION_INFO = "myplan.recommendation.remove.email.notification.info.line";
 
     public static final String ADD_RECOMMEND_NOTIFICATION_SUBJECT = "myplan.recommendation.add.notification.subject";
+    public static final String ADD_RECOMMEND_NOTIFICATION_MESSAGE_SUBJECT = "myplan.recommendation.add.notification.message.subject";
     public static final String ADD_RECOMMEND_NOTIFICATION_BODY = "myplan.recommendation.add.notification.body";
     public static final String ADD_RECOMMEND_NOTIFICATION_INFO = "myplan.recommendation.add.email.notification.info.line";
 
