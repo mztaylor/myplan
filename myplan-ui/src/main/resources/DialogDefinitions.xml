@@ -552,7 +552,8 @@
                                 <property name="fieldLabel.requiredMessage">
                                     <bean parent="KSAP-Message" p:messageText="(Required)"/>
                                 </property>-->
-                                <property name="label" value="Notes@{#form.generalPlaceholder EQ 'uw.academicplan.placeholder.other|uw.academicplan.placeholder' ? ' (Required)':''}"/>
+                                <property name="label"
+                                          value="Notes@{#form.generalPlaceholder EQ 'uw.academicplan.placeholder.other|uw.academicplan.placeholder' ? ' (Required)':''}"/>
                             </bean>
                             <bean parent="KSAP-SimpleInputField" p:propertyName="generalPlaceholder"
                                   p:hidden="true" p:render="@{#form.generalPlaceholder NE null}">
@@ -762,73 +763,13 @@
                       p:headerText="Adviser Recommendation for @{termName}">
                     <property name="items">
                         <list>
-                            <bean parent="courseTitleLink"/>
-                            <bean parent="course_details_summary_info"/>
-                            <bean parent="KSAP-Message" p:messageText="[b]@{placeholderCode NE null ? placeholderCode : courseCd} '@{placeholderTitle}' [/b]" p:render="@{courseSummaryDetails.courseId EQ null AND credit EQ null}"/>
-                            <bean parent="KSAP-Message" p:messageText="[b]@{placeholderCode NE null ? placeholderCode : courseCd} '@{placeholderTitle}' (@{credit NE null ? credit : ''}) [/b]" p:render="@{courseSummaryDetails.courseId EQ null AND credit NE null}"/>
-                            <bean parent="KSAP-Message" p:messageText="@{adviserName} recommended this @{courseSummaryDetails.courseId EQ null ? 'placeholder' : 'course'} on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(dateAdded.toString())}"/>
-                            <bean parent="KSAP-SimpleDataField" p:propertyName="note">
-                                <property name="render" value="@{note NE '' AND note NE null}"/>
-                                <property name="labelPlacement" value="TOP"/>
-                                <property name="fieldLabel.render" value="false"/>
-                                <property name="fieldLabel.cssClasses">
-                                    <list merge="true">
-                                        <value>ksap-text-normal</value>
-                                    </list>
-                                </property>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-adviser-recommendation</value>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup" p:render="@{setToPlanning}">
+                            <bean id="recommended_popover_group" parent="KSAP-HorizontalBoxGroup-NoMargin" p:width="300px">
                                 <property name="items">
                                     <list>
-                                        <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
-                                            <property name="items">
-                                                <list>
-                                                    <bean id="removeRecommendedItem" p:id="removeRecommendedItem"
-                                                          parent="Uif-PrimaryActionButton-Small"
-                                                          p:actionLabel="Remove Recommendation">
-                                                        <property name="render"
-                                                                  value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND owner}"/>
-                                                        <property name="actionScript" value="
-                                                            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#form.planItemId}', pageId:'recommended_delete_page'};
-                                                            var popupStyle = {width:'300px', height:'16px'};
-                                                            var popupOptions = {tail:{hidden:true}, align:'top', close:true};
-                                                            openPopup('recommended_delete_page', retrieveData, 'plan', popupStyle, popupOptions, e);
-                                                        "/>
-                                                    </bean>
-                                                    <bean id="acceptRecommendedItem" p:id="acceptRecommendedItem"
-                                                          parent="Uif-PrimaryActionButton-Small"
-                                                          p:actionLabel="Add to Plan">
-                                                        <property name="render"
-                                                                  value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
-                                                        <property name="actionScript" value="
-                                                            var additionalFormData = {
-                                                                viewId: 'PlannedCourse-FormView',
-                                                                methodToCall: 'copyPlannedCourse',
-                                                                recommended: true,
-                                                                planItemId:'@{#form.planItemId}',
-                                                                atpId: '@{#form.atpId}',
-                                                                pageId: 'recommended_dialog_page'
-                                                            };
-                                                            submitPopupForm(additionalFormData, e, false);
-                                                        "/>
-                                                        <property name="onDocumentReadyScript" value="
-                                                            jQuery('#acceptRecommendedItem').on('PLAN_ITEM_ADDED', function(event, data){
-                                                                fnCloseAllPopups();
-                                                            }).on('ERROR', function(event, data){
-                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
-                                                            });
-                                                        "/>
-                                                    </bean>
-                                                    <bean parent="closePopoverCancel" p:actionLabel="Cancel"/>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                        <bean parent="KSAP-VerticalBoxGroup" p:id="errorPlaceholder" p:hidden="true"/>
+                                        <!-- Recommended View and Actions -->
+                                        <ref bean="recommended_item"/>
+                                        <!-- Add to Plan Form fields -->
+                                        <ref bean="add_planned_course_fields"/>
                                     </list>
                                 </property>
                             </bean>
@@ -869,6 +810,92 @@
                                     </list>
                                 </property>
                             </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="recommended_item" parent="KSAP-VerticalBoxGroup">
+        <property name="items">
+            <list>
+                <bean parent="courseTitleLink"/>
+                <bean parent="course_details_summary_info"/>
+                <bean parent="KSAP-Message"
+                      p:messageText="[b]@{placeholderCode NE null ? placeholderCode : courseCd} '@{placeholderTitle}' [/b]"
+                      p:render="@{courseSummaryDetails.courseId EQ null AND credit EQ null}"/>
+                <bean parent="KSAP-Message"
+                      p:messageText="[b]@{placeholderCode NE null ? placeholderCode : courseCd} '@{placeholderTitle}' (@{credit NE null ? credit : ''}) [/b]"
+                      p:render="@{courseSummaryDetails.courseId EQ null AND credit NE null}"/>
+                <bean parent="KSAP-Message"
+                      p:messageText="@{adviserName} recommended this @{courseSummaryDetails.courseId EQ null ? 'placeholder' : 'course'} on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(dateAdded.toString())}"/>
+                <bean parent="KSAP-SimpleDataField" p:propertyName="note">
+                    <property name="render" value="@{note NE '' AND note NE null}"/>
+                    <property name="labelPlacement" value="TOP"/>
+                    <property name="fieldLabel.render" value="false"/>
+                    <property name="fieldLabel.cssClasses">
+                        <list merge="true">
+                            <value>ksap-text-normal</value>
+                        </list>
+                    </property>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>myplan-adviser-recommendation</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="KSAP-VerticalBoxGroup-NoMargin">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-HorizontalBoxGroup-NoMargin">
+                                <property name="items">
+                                    <list>
+                                        <bean id="removeRecommendedItem" p:id="removeRecommendedItem"
+                                              parent="Uif-PrimaryActionButton-Small"
+                                              p:actionLabel="Remove Recommendation">
+                                            <property name="render"
+                                                      value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND owner}"/>
+                                            <property name="actionScript" value="
+                                                                    var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#form.planItemId}', pageId:'recommended_delete_page'};
+                                                                    var popupStyle = {width:'300px', height:'16px'};
+                                                                    var popupOptions = {tail:{hidden:true}, align:'top', close:true};
+                                                                    openPopup('recommended_delete_page', retrieveData, 'plan', popupStyle, popupOptions, e);
+                                                                "/>
+                                        </bean>
+                                        <bean parent="addToPlanButton" p:render="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND !setToPlanning}">
+                                            <property name="actionScript"
+                                                              value="fnPopoverSlider('add_planned_course_fields', 'recommended_popover_group', 'left');"/>
+                                        </bean>
+                                        <bean id="acceptRecommendedItem" p:id="acceptRecommendedItem"
+                                              parent="Uif-PrimaryActionButton-Small"
+                                              p:actionLabel="Add to Plan">
+                                            <property name="render"
+                                                      value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND setToPlanning}"/>
+                                            <property name="actionScript" value="
+                                                                    var additionalFormData = {
+                                                                        viewId: 'PlannedCourse-FormView',
+                                                                        methodToCall: 'copyPlannedCourse',
+                                                                        recommended: true,
+                                                                        planItemId:'@{#form.planItemId}',
+                                                                        atpId: '@{#form.atpId}',
+                                                                        pageId: 'recommended_dialog_page'
+                                                                    };
+                                                                    submitPopupForm(additionalFormData, e, false);
+                                                                "/>
+                                            <property name="onDocumentReadyScript" value="
+                                                                    jQuery('#acceptRecommendedItem').on('PLAN_ITEM_ADDED', function(event, data){
+                                                                        fnCloseAllPopups();
+                                                                    }).on('ERROR', function(event, data){
+                                                                        fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
+                                                                    });
+                                                                "/>
+                                        </bean>
+                                        <bean parent="closePopoverCancel" p:actionLabel="Cancel"/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="KSAP-VerticalBoxGroup" p:id="errorPlaceholder" p:hidden="true"/>
                         </list>
                     </property>
                 </bean>
@@ -956,10 +983,10 @@
                 <bean parent="MyPlanMessagingIcon"/>
                 <bean parent="KSAP-SimpleDataField" p:propertyName="courseAndPlanSummary"
                       p:escapeHtmlInPropertyValue="false">
-                    <property name="propertyEditor" >
-                         <bean parent="crud_message_matrix_formatter">
-                             <property name="excludeRecommendations" value="true"/>
-                         </bean>
+                    <property name="propertyEditor">
+                        <bean parent="crud_message_matrix_formatter">
+                            <property name="excludeRecommendations" value="true"/>
+                        </bean>
                     </property>
                     <property name="cssClasses">
                         <list merge="true">
@@ -972,12 +999,15 @@
         </property>
     </bean>
 
-    <bean id="course_summary_recommended_note" parent="KSAP-VerticalBoxGroup-NoMargin" p:render="@{termRecommendation.adviserName NE null}">
+    <bean id="course_summary_recommended_note" parent="KSAP-VerticalBoxGroup-NoMargin"
+          p:render="@{termRecommendation.adviserName NE null}">
         <property name="items">
             <list>
-                <bean parent="KSAP-Message" p:messageText="@{termRecommendation.adviserName} recommended this course for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termRecommendation.atpId)} on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(termRecommendation.dateAdded)}"/>
+                <bean parent="KSAP-Message"
+                      p:messageText="@{termRecommendation.adviserName} recommended this course for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termRecommendation.atpId)} on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(termRecommendation.dateAdded)}"/>
                 <bean parent="KSAP-SimpleDataField" p:propertyName="termRecommendation.note">
-                    <property name="render" value="@{termRecommendation.note NE '' AND termRecommendation.note NE null}"/>
+                    <property name="render"
+                              value="@{termRecommendation.note NE '' AND termRecommendation.note NE null}"/>
                     <property name="labelPlacement" value="TOP"/>
                     <property name="fieldLabel.render" value="false"/>
                     <property name="fieldLabel.cssClasses">
@@ -995,7 +1025,8 @@
         </property>
     </bean>
 
-    <bean id="course_details_summary_info" parent="KSAP-VerticalBoxGroup-NoMargin" p:render="@{courseSummaryDetails.courseId NE null}">
+    <bean id="course_details_summary_info" parent="KSAP-VerticalBoxGroup-NoMargin"
+          p:render="@{courseSummaryDetails.courseId NE null}">
         <property name="items">
             <list>
                 <!-- List of Scheduled Terms -->
@@ -1118,7 +1149,7 @@
         </property>
     </bean>
 
-    <bean id="recommendation_info"  parent="KSAP-HorizontalBoxGroup-NoMargin"
+    <bean id="recommendation_info" parent="KSAP-HorizontalBoxGroup-NoMargin"
           p:render="@{plannedCourseSummary.recommendedItemDataObjects.size() GT 0}" p:style="margin-top: 10px;">
         <property name="cssClasses">
             <list merge="true">
@@ -1294,7 +1325,8 @@
          Popover Common Components  *************************************************************************************
     -->
 
-    <bean id="courseTitleLink" parent="Uif-Link" p:width="280px" p:style="display:block;" p:render="@{courseSummaryDetails.courseId NE null}">
+    <bean id="courseTitleLink" parent="Uif-Link" p:width="280px" p:style="display:block;"
+          p:render="@{courseSummaryDetails.courseId NE null}">
         <property name="linkText"
                   value="@{courseSummaryDetails.code} @{courseSummaryDetails.courseTitle} (@{courseSummaryDetails.credit})"/>
         <property name="title"
