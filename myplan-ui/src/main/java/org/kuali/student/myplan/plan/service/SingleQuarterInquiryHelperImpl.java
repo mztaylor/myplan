@@ -331,7 +331,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
     private String getCoursePlaceHolderTitle(String coursePlaceHolder, Map<String, String> subjectAreas) {
         DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(coursePlaceHolder);
         String subjectTitle = subjectAreas.get(courseCode.getSubject());
-        String subjectLevel = courseCode.getNumber().replace(CourseSearchConstants.COURSE_LEVEL_XX, CourseSearchConstants.COURSE_LEVEL_ZERO);
+        String subjectLevel = courseCode.getNumber().toUpperCase().replace(CourseSearchConstants.COURSE_LEVEL_XX, CourseSearchConstants.COURSE_LEVEL_ZERO);
         return String.format("%s %s level", subjectTitle, subjectLevel);
     }
 
