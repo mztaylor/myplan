@@ -339,19 +339,6 @@
                 <bean parent="single_Recommended_Collection"/>
             </list>
         </property>
-        <property name="propertyReplacers">
-            <list>
-                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                      p:condition="dataObject.recommendedList.size() EQ 0">
-                    <property name="replacement">
-                        <list>
-                            <!-- Backup list is empty -->
-                            <bean parent="single_Recommended_Collection_Empty"/>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
     </bean>
 
     <bean id="backupCoursesList" parent="KSAP-VerticalBoxGroup">
