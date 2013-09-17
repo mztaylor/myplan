@@ -476,7 +476,7 @@
                                   p:labelPlacement="TOP">
                                 <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
                                 <property name="message">
-                                    <bean parent="Uif-Message" p:messageText="This course has no description."/>
+                                    <bean parent="Uif-Message" p:messageText="This course has no description in the Course Catalog. Please contact the department for more details."/>
                                 </property>
                                 <property name="render"
                                           value="@{#line.courseDetails.courseDescription ne null ? false : true}"/>
