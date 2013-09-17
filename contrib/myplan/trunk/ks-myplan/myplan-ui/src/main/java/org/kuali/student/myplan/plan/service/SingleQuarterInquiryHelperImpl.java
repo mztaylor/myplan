@@ -172,6 +172,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
                         if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
                             plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
+                            plannedCourse.setProposed(PlanConstants.LEARNING_PLAN_ITEM_PROPOSED_STATE_KEY.equals(planItemInfo.getStateKey()));
                         } else {
                             String atpId = planItemInfo.getPlanPeriods().get(0);
                             PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
@@ -261,6 +262,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     plannedCourse.setPlaceHolderCredit(planItemInfo.getCredit() == null ? "" : String.valueOf(planItemInfo.getCredit().intValue()));
                     if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
                         plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
+                        plannedCourse.setProposed(PlanConstants.LEARNING_PLAN_ITEM_PROPOSED_STATE_KEY.equals(planItemInfo.getStateKey()));
                     } else {
                         String atpId = planItemInfo.getPlanPeriods().get(0);
                         PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
@@ -283,6 +285,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     plannedCourse.setPlaceHolderCredit(planItemInfo.getCredit() == null ? "" : String.valueOf(planItemInfo.getCredit().intValue()));
                     if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
                         plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
+                        plannedCourse.setProposed(PlanConstants.LEARNING_PLAN_ITEM_PROPOSED_STATE_KEY.equals(planItemInfo.getStateKey()));
                     } else {
                         String atpId = planItemInfo.getPlanPeriods().get(0);
                         PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
