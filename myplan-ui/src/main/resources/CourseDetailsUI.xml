@@ -333,7 +333,7 @@
                                                     </bean>
                                                     <!-- If Course Description is empty-->
                                                     <bean parent="Uif-Message"
-                                                          p:messageText="This course has no description.">
+                                                          p:messageText="This course has no description in the Course Catalog. Please contact the department for more details.">
                                                         <property name="render"
                                                                   value="@{dataObject.courseSummaryDetails.courseDescription ne null and dataObject.courseSummaryDetails.courseDescription.length() gt 0 ? false : true}"/>
                                                     </bean>
