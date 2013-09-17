@@ -1150,7 +1150,7 @@
     </bean>
 
     <bean id="recommendation_info" parent="KSAP-HorizontalBoxGroup-NoMargin"
-          p:render="@{plannedCourseSummary.recommendedItemDataObjects.size() GT 0}" p:style="margin-top: 10px;">
+          p:render="@{plannedCourseSummary NE null AND plannedCourseSummary.recommendedItemDataObjects.size() GT 0}" p:style="margin-top: 10px;">
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-status</value>

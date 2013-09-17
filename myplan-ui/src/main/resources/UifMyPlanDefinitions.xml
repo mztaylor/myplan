@@ -373,10 +373,6 @@
         </property>
     </bean>
 
-    <bean id="MyPlanErrorIcon" parent="Uif-Image"
-          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}iconError16.png">
-    </bean>
-
     <bean id="UifMyPlan-HorizontalStackedSubCollection-WithinSection"
           parent="Uif-StackedSubCollection-WithinSection-parentBean">
         <property name="layoutManager">

@@ -763,21 +763,27 @@
                         <list>
 
                             <!-- Adviser with null credit selection -->
-                            <bean parent="KSAP-HorizontalFieldGroup"
+                            <bean parent="KSAP-HorizontalFieldGroup" p:style="line-height: 18px;"
                                   p:render="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND
                                               !#form.planAudit.allMessyItemsSelected}">
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>ksap-messageGroup</value>
+                                        <value>ksap-messageGroupMin</value>
                                         <value>ksap-messageGroup-error</value>
                                     </list>
                                 </property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="MyPlanErrorIcon"/>
-                                        <bean parent="KSAP-MessageField">
+                                        <bean parent="MyPlanMessagingIcon"/>
+                                        <bean parent="KSAP-MessageField" p:width="95%">
                                             <property name="messageText"
                                                       value="Sorry, we are unable to generate a plan review because incomplete details for planned courses below. Contact @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentName( )} to add details."/>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>ksap-noMargin</value>
+                                                </list>
+                                            </property>
                                         </bean>
                                     </list>
                                 </property>
@@ -849,7 +855,6 @@
                                     </list>
                                 </property>
                             </bean>
-
 
                             <bean parent="KSAP-HorizontalBoxGroup" p:style="margin: 10px 0px 0px;">
                                 <property name="cssClasses">
@@ -964,10 +969,7 @@
                         <list merge="true">
                             <value>ksap-noMargin</value>
                             <value>@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()
-                                AND #line.selectedCredit EQ null? 'ksap-messageGroup' : ''}
-                            </value>
-                            <value>@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()
-                                AND #line.selectedCredit EQ null? 'ksap-messageGroup-error' : ''}
+                                AND #line.selectedCredit EQ null? 'ksap-messageGroup ksap-messageGroupMin ksap-messageGroup-error' : ''}
                             </value>
                         </list>
                     </property>
@@ -978,14 +980,19 @@
                                 <property name="title" value="@{#line.courseCode} @{#line.courseTitle}"/>
                                 <property name="href"
                                           value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}"/>
+                                <property name="cssClasses">
+                                    <list merge="true">
+                                        <value>ksap-noMargin</value>
+                                    </list>
+                                </property>
                             </bean>
 
                             <!-- Adviser with null credit selection -->
-                            <bean parent="KSAP-HorizontalFieldGroup"
+                            <bean parent="KSAP-HorizontalFieldGroup-NoMargin" p:style="line-height: 18px;"
                                   p:render="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.selectedCredit EQ null}">
                                 <property name="items">
                                     <list>
-                                        <bean parent="MyPlanErrorIcon"/>
+                                        <bean parent="MyPlanMessagingIcon"/>
                                         <bean parent="KSAP-MessageField">
                                             <property name="messageText"
                                                       value="This course needs further specification."/>
