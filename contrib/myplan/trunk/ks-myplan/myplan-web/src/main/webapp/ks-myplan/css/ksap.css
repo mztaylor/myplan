@@ -68,7 +68,7 @@ input[type="text"], input[type="password"], textarea, select {
 }
 
 .uif-pageValidationMessages-warning ul {
-    background-image: url('../images/iconWarning16.png');
+    background-image: url('../icons/16/warning.png');
 }
 
 .uif-pageValidationMessages-error {
@@ -78,7 +78,7 @@ input[type="text"], input[type="password"], textarea, select {
 }
 
 .uif-pageValidationMessages-error ul {
-    background-image: url('../images/iconError16.png');
+    background-image: url('../icons/16/cancel.png');
 }
 
 .uif-pageValidationMessages ul li {
@@ -473,20 +473,33 @@ a.inlineBlock {
     background-repeat: no-repeat;
     background-position: 10px 10px;
 }
+.ksap-messageGroupMin {
+    background-image: none !important;
+    padding: 10px;
+}
+
+.ksap-messageGroup .uif-image.icon {
+    width: 16px;
+    height: 16px;
+}
 
 .ksap-messageGroup-warning {
     color: #000;
     border-color: #feea49;
     background-color: #faf5ca;
-    background-image: url('../images/iconWarning16.png');
+    background-image: url('../icons/16/warning.png');
 }
 
 .ksap-messageGroup-error {
     color: #cc0000;
     border-color: #fcd5e4;
     background-color: #fce9f1;
+    background-image: url('../icons/16/delete.png');
 }
 
+.ksap-messageGroup-error .icon {
+    background: url('../icons/16/delete.png') no-repeat;
+}
 
 .ksap-messageGroup .uif-header .uif-headerText {
     text-transform: uppercase;

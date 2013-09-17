@@ -15,9 +15,6 @@ function planItemTemplate(data) {
     });
 
     var shortTitle = data.planItemShortTitle;
-    if(data.planItemType == 'recommended'){
-        shortTitle = '<b>'+shortTitle+'</b>';
-    }
     
     var title = jQuery("<div/>").attr("class", "itemTitle uif-boxLayoutHorizontalItem").append(shortTitle);
     actionGroup.append(title);
@@ -29,9 +26,6 @@ function planItemTemplate(data) {
 
     if (data.credit != null && data.credit != "") {
         var itemCredit = "(" + data.credit + ")";
-        if(data.planItemType == 'recommended'){
-            itemCredit = '<b>'+itemCredit+'</b>';
-        }
         var credit = jQuery("<div/>").attr("class", "itemCredit uif-boxLayoutHorizontalItem").append(itemCredit);
         actionGroup.append(credit);
     }
