@@ -203,6 +203,10 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
                 plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
                 plannedCourse.setProposed(PlanConstants.LEARNING_PLAN_ITEM_PROPOSED_STATE_KEY.equals(planItemInfo.getStateKey()));
+            }else {
+                String atpId = planItemInfo.getPlanPeriods().get(0);
+                PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(),planItemInfo.getRefObjectId(),atpId,PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+                plannedCourse.setAdviserRecommended(recommendedPlanItem!=null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
             }
             //  If the course info lookup fails just log the error and omit the item.
             try {
@@ -298,6 +302,10 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
                 plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
                 plannedCourse.setProposed(PlanConstants.LEARNING_PLAN_ITEM_PROPOSED_STATE_KEY.equals(planItemInfo.getStateKey()));
+            }else {
+                String atpId = planItemInfo.getPlanPeriods().get(0);
+                PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(),planItemInfo.getRefObjectId(),atpId,PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+                plannedCourse.setAdviserRecommended(recommendedPlanItem!=null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
             }
             plannedCourseList.add(plannedCourse);
 
@@ -317,6 +325,10 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
                 plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
                 plannedCourse.setProposed(PlanConstants.LEARNING_PLAN_ITEM_PROPOSED_STATE_KEY.equals(planItemInfo.getStateKey()));
+            }else {
+                String atpId = planItemInfo.getPlanPeriods().get(0);
+                PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(),planItemInfo.getRefObjectId(),atpId,PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+                plannedCourse.setAdviserRecommended(recommendedPlanItem!=null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
             }
             plannedCourseList.add(plannedCourse);
 

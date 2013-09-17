@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.plan.service;
 
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
+import edu.uw.kuali.student.myplan.util.PlanHelperImpl;
 import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -23,6 +24,7 @@ import org.kuali.student.myplan.plan.dataobject.*;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
+import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -62,6 +64,9 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
     @Autowired
     private UserSessionHelper userSessionHelper;
+
+    @Autowired
+    private PlanHelper planHelper;
 
 
     @Override
@@ -140,43 +145,47 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
             Map<String, List<String>> sectionsWithdrawn = new HashMap<String, List<String>>();
             Map<String, List<String>> sectionsSuspended = new HashMap<String, List<String>>();
             Map<String, List<ActivityOfferingItem>> plannedSections = new HashMap<String, List<ActivityOfferingItem>>();
-            for (PlanItemInfo planItem : planItemList) {
+            for (PlanItemInfo planItemInfo : planItemList) {
 
-                if (planItem.getPlanPeriods() != null && planItem.getPlanPeriods().size() > 0 && planItem.getPlanPeriods().get(0).equalsIgnoreCase(termId) && planItem.getTypeKey().equalsIgnoreCase(planItemType) && planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
-                    PlannedCourseDataObject plannedCourseDO = new PlannedCourseDataObject();
-                    if (planItem.getDescr() != null && StringUtils.hasText(planItem.getDescr().getPlain())) {
-                        plannedCourseDO.setNote(planItem.getDescr().getPlain());
+                if (planItemInfo.getPlanPeriods() != null && planItemInfo.getPlanPeriods().size() > 0 && planItemInfo.getPlanPeriods().get(0).equalsIgnoreCase(termId) && planItemInfo.getTypeKey().equalsIgnoreCase(planItemType) && planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
+                    PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
+                    if (planItemInfo.getDescr() != null && StringUtils.hasText(planItemInfo.getDescr().getPlain())) {
+                        plannedCourse.setNote(planItemInfo.getDescr().getPlain());
                     }
-                    String courseID = planItem.getRefObjectId();
+                    String courseID = planItemInfo.getRefObjectId();
                     //  Only create a data object for the specified type.
-                    if (planItem.getTypeKey().equals(planItemType)) {
+                    if (planItemInfo.getTypeKey().equals(planItemType)) {
 
-                        plannedCourseDO.setPlanItemDataObject(PlanItemDataObject.build(planItem));
+                        plannedCourse.setPlanItemDataObject(PlanItemDataObject.build(planItemInfo));
 
                         //  If the course info lookup fails just log the error and omit the item.
                         try {
 
-                            plannedCourseDO.setCourseDetails(getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID));
+                            plannedCourse.setCourseDetails(getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID));
 
                             // TODO: Add Plan activities to this view
 
                         } catch (Exception e) {
-                            logger.error(String.format("Unable to retrieve course info for plan item [%s].", planItem.getId()), e);
+                            logger.error(String.format("Unable to retrieve course info for plan item [%s].", planItemInfo.getId()), e);
                             continue;
                         }
 
-                        if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
-                            plannedCourseDO.setAdviserName(getUserSessionHelper().getName(planItem.getMeta().getCreateId()));
+                        if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
+                            plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
+                        } else {
+                            String atpId = planItemInfo.getPlanPeriods().get(0);
+                            PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+                            plannedCourse.setAdviserRecommended(recommendedPlanItem != null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
                         }
 
-                        plannedCoursesList.add(plannedCourseDO);
+                        plannedCoursesList.add(plannedCourse);
                     }
-                } else if (planItem.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
-                    List<String> planPeriods = planItem.getPlanPeriods();
+                } else if (planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.SECTION_TYPE)) {
+                    List<String> planPeriods = planItemInfo.getPlanPeriods();
                     String term = !planPeriods.isEmpty() ? planPeriods.get(0) : null;
                     if (null != term && AtpHelper.isAtpSetToPlanning(term)) {
                         List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
-                        String activityOfferingId = planItem.getRefObjectId();
+                        String activityOfferingId = planItemInfo.getRefObjectId();
                         ActivityOfferingDisplayInfo activityDisplayInfo = null;
                         try {
                             activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityOfferingId, PlanConstants.CONTEXT_INFO);
@@ -201,7 +210,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                                 continue;
                             }
 
-                            ActivityOfferingItem activityOfferingItem = getCourseDetailsInquiryHelper().getActivityItem(activityDisplayInfo, courseOfferingInfo, !AtpHelper.isAtpSetToPlanning(term), term, planItem.getId());
+                            ActivityOfferingItem activityOfferingItem = getCourseDetailsInquiryHelper().getActivityItem(activityDisplayInfo, courseOfferingInfo, !AtpHelper.isAtpSetToPlanning(term), term, planItemInfo.getId());
                             activityOfferingItems.add(activityOfferingItem);
                             String key = generateKey(courseOfferingInfo.getSubjectArea(), courseOfferingInfo.getCourseNumberSuffix(), term);
                             if (plannedSections.containsKey(key)) {
@@ -230,46 +239,54 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                     }
 
 
-                } else if (planItem.getTypeKey().equals(planItemType) &&
-                        (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItem.getRefObjectType()) ||
-                                PlanConstants.PLACE_HOLDER_TYPE.equals(planItem.getRefObjectType()))) {
+                } else if (planItemInfo.getTypeKey().equals(planItemType) &&
+                        (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItemInfo.getRefObjectType()) ||
+                                PlanConstants.PLACE_HOLDER_TYPE.equals(planItemInfo.getRefObjectType()))) {
                     PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
-                    PlanItemDataObject planItemData = PlanItemDataObject.build(planItem);
+                    PlanItemDataObject planItemData = PlanItemDataObject.build(planItemInfo);
                     plannedCourse.setPlanItemDataObject(planItemData);
                     plannedCourse.setPlaceHolder(true);
-                    if (planItem.getDescr() != null && StringUtils.hasText(planItem.getDescr().getPlain())) {
-                        plannedCourse.setNote(planItem.getDescr().getPlain());
+                    if (planItemInfo.getDescr() != null && StringUtils.hasText(planItemInfo.getDescr().getPlain())) {
+                        plannedCourse.setNote(planItemInfo.getDescr().getPlain());
                     }
-                    String placeHolderCode = EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), PlanConstants.PLACE_HOLDER_ENUM_KEY);
-                    String placeHolderValue = EnumerationHelper.getEnumValueForCodeByType(planItem.getRefObjectId(), PlanConstants.PLACE_HOLDER_ENUM_KEY);
+                    String placeHolderCode = EnumerationHelper.getEnumAbbrValForCodeByType(planItemInfo.getRefObjectId(), PlanConstants.PLACE_HOLDER_ENUM_KEY);
+                    String placeHolderValue = EnumerationHelper.getEnumValueForCodeByType(planItemInfo.getRefObjectId(), PlanConstants.PLACE_HOLDER_ENUM_KEY);
                     if (placeHolderCode == null) {
-                        placeHolderCode = EnumerationHelper.getEnumAbbrValForCodeByType(planItem.getRefObjectId(), PlanConstants.GEN_EDU_ENUM_KEY);
-                        placeHolderValue = EnumerationHelper.getEnumValueForCodeByType(planItem.getRefObjectId(), PlanConstants.GEN_EDU_ENUM_KEY);
+                        placeHolderCode = EnumerationHelper.getEnumAbbrValForCodeByType(planItemInfo.getRefObjectId(), PlanConstants.GEN_EDU_ENUM_KEY);
+                        placeHolderValue = EnumerationHelper.getEnumValueForCodeByType(planItemInfo.getRefObjectId(), PlanConstants.GEN_EDU_ENUM_KEY);
                     }
                     plannedCourse.setPlaceHolderCode(placeHolderCode);
                     plannedCourse.setPlaceHolderValue(placeHolderValue);
                     plannedCourse.setCourseDetails(new CourseSummaryDetails());
-                    plannedCourse.setPlaceHolderCredit(planItem.getCredit() == null ? "" : String.valueOf(planItem.getCredit().intValue()));
-                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
-                        plannedCourse.setAdviserName(getUserSessionHelper().getName(planItem.getMeta().getCreateId()));
+                    plannedCourse.setPlaceHolderCredit(planItemInfo.getCredit() == null ? "" : String.valueOf(planItemInfo.getCredit().intValue()));
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
+                        plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
+                    } else {
+                        String atpId = planItemInfo.getPlanPeriods().get(0);
+                        PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+                        plannedCourse.setAdviserRecommended(recommendedPlanItem != null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
                     }
                     plannedCoursesList.add(plannedCourse);
 
-                } else if (planItem.getTypeKey().equals(planItemType) &&
-                        PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItem.getRefObjectType())) {
+                } else if (planItemInfo.getTypeKey().equals(planItemType) &&
+                        PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItemInfo.getRefObjectType())) {
                     PlannedCourseDataObject plannedCourse = new PlannedCourseDataObject();
-                    PlanItemDataObject planItemData = PlanItemDataObject.build(planItem);
+                    PlanItemDataObject planItemData = PlanItemDataObject.build(planItemInfo);
                     plannedCourse.setPlanItemDataObject(planItemData);
                     plannedCourse.setPlaceHolder(true);
-                    if (planItem.getDescr() != null && StringUtils.hasText(planItem.getDescr().getPlain())) {
-                        plannedCourse.setNote(planItem.getDescr().getPlain());
+                    if (planItemInfo.getDescr() != null && StringUtils.hasText(planItemInfo.getDescr().getPlain())) {
+                        plannedCourse.setNote(planItemInfo.getDescr().getPlain());
                     }
-                    plannedCourse.setPlaceHolderCode(planItem.getRefObjectId());
-                    plannedCourse.setPlaceHolderValue(getCoursePlaceHolderTitle(planItem.getRefObjectId(), subjectAreas));
+                    plannedCourse.setPlaceHolderCode(planItemInfo.getRefObjectId());
+                    plannedCourse.setPlaceHolderValue(getCoursePlaceHolderTitle(planItemInfo.getRefObjectId(), subjectAreas));
                     plannedCourse.setCourseDetails(new CourseSummaryDetails());
-                    plannedCourse.setPlaceHolderCredit(planItem.getCredit() == null ? "" : String.valueOf(planItem.getCredit().intValue()));
-                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
-                        plannedCourse.setAdviserName(getUserSessionHelper().getName(planItem.getMeta().getCreateId()));
+                    plannedCourse.setPlaceHolderCredit(planItemInfo.getCredit() == null ? "" : String.valueOf(planItemInfo.getCredit().intValue()));
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
+                        plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
+                    } else {
+                        String atpId = planItemInfo.getPlanPeriods().get(0);
+                        PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+                        plannedCourse.setAdviserRecommended(recommendedPlanItem != null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
                     }
                     plannedCoursesList.add(plannedCourse);
 
@@ -406,7 +423,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
     }
 
     public UserSessionHelper getUserSessionHelper() {
-        if(userSessionHelper == null){
+        if (userSessionHelper == null) {
             userSessionHelper = new UserSessionHelperImpl();
         }
         return userSessionHelper;
@@ -414,5 +431,16 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
+    }
+
+    public PlanHelper getPlanHelper() {
+        if (planHelper == null) {
+            planHelper = new PlanHelperImpl();
+        }
+        return planHelper;
+    }
+
+    public void setPlanHelper(PlanHelper planHelper) {
+        this.planHelper = planHelper;
     }
 }

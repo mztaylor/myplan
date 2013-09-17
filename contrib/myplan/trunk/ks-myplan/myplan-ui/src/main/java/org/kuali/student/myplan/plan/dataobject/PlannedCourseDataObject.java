@@ -49,6 +49,10 @@ public class PlannedCourseDataObject implements Comparable {
     /*recommended item planned*/
     private boolean proposed;
 
+    /*Boolean for planned or backup Items to know
+    if they are added from adviser recommendation*/
+    private boolean adviserRecommended;
+
     public CourseSummaryDetails getCourseDetails() {
         if (courseDetails == null) {
             System.out.println("COURSE DETAILS ARE NULL!!!");
@@ -175,6 +179,14 @@ public class PlannedCourseDataObject implements Comparable {
 
     public void setProposed(boolean proposed) {
         this.proposed = proposed;
+    }
+
+    public boolean isAdviserRecommended() {
+        return adviserRecommended;
+    }
+
+    public void setAdviserRecommended(boolean adviserRecommended) {
+        this.adviserRecommended = adviserRecommended;
     }
 
     //Used to get the list strings as a single string
