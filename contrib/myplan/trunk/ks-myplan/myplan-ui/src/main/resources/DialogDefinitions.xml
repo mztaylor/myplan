@@ -769,7 +769,7 @@
                                         <!-- Recommended View and Actions -->
                                         <ref bean="recommended_item"/>
                                         <!-- Add to Plan Form fields -->
-                                        <ref bean="add_planned_course_fields"/>
+                                        <bean p:id="add_planned_course_fields" parent="add_planned_course_fields" p:render="@{!setToPlanning}"/>
                                     </list>
                                 </property>
                             </bean>
@@ -1102,10 +1102,10 @@
     <!-- Group for "Add Plan Item" inputs -->
     <bean id="add_planned_course_fields" parent="KSAP-VerticalBoxGroup" p:width="300px" p:hidden="true">
         <property name="instructionalText"
-                  value="Which quarter would you like to add [b]@{courseSummaryDetails.code}[/b] to?"/>
+                  value="Which quarter would you like to add [b]@{courseSummaryDetails.code NE null ? courseSummaryDetails.code : courseCd NE null ? courseCd : placeholderCode}[/b] to?"/>
         <property name="items">
             <list>
-                <bean parent="courseTermsScheduled"/>
+                <bean parent="courseTermsScheduled" p:render="@{courseSummaryDetails.code NE null}"/>
                 <bean parent="courseTermSelection"/>
                 <!-- TODO: plan item note is 1.5 functionality, do not commit to 1.4 -->
                 <bean parent="planItemNote"/>
