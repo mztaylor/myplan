@@ -1031,7 +1031,7 @@
         <property name="layoutManager.lineGroupPrototype.id"
                   value="@{#line.planItemDataObject.type}_@{#line.planItemDataObject.atp.replace('.','-')}_@{#line.planItemDataObject.id}_group"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses"
-                  value="uif-verticalBoxGroup uif-collectionItem@{#line.placeHolder ? ' placeholder':''}@{#line.showAlert ? ' alert':''}@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.placeHolder ? ' noAction' : ''}"/>
+                  value="uif-verticalBoxGroup uif-collectionItem@{#line.planItemDataObject.type EQ 'recommended' ? (!#line.proposed ? ' accepted' : ' proposed') : (#line.adviserRecommended ? ' accepted':'')}@{#line.placeHolder ? ' placeholder':''}@{#line.showAlert ? ' alert':''}@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.placeHolder ? ' noAction' : ''}"/>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
@@ -1076,6 +1076,16 @@
         </property>
     </bean>
 
+    <bean id="recommendedAccepted" parent="Uif-ImageField"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+          p:render="@{!#line.proposed}">
+        <property name="cssClasses">
+            <list merge="false">
+                <value>itemAccepted</value>
+            </list>
+        </property>
+    </bean>
+
     <bean id="recommendedAction" parent="planItemAction">
         <property name="onClickScript" value="
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', pageId:'recommended_dialog_page'};
@@ -1115,12 +1125,23 @@
                 <bean parent="planItemGroup">
                     <property name="items">
                         <list>
-                            <bean parent="planItemAlert"/>
+                            <bean parent="recommendedAccepted"/>
+                            <bean parent="planItemAlert" p:render="@{#line.showAlert AND #line.proposed}"/>
                             <bean parent="recommendedAction"/>
-                            <bean parent="planItemNoteIcon"
-                                  p:toolTip.tooltipContent="@{#line.note NE null ? '&quot;' + #line.note.replaceAll('\n','&lt;br&gt;') + '&quot; - ' + #line.adviserName : ''}">
+                            <bean parent="planItemNoteIcon">
                                 <property name="propertyReplacers">
                                     <list/>
+                                </property>
+                                <property name="toolTip">
+                                    <bean parent="MyPlan-Tooltip-Left">
+                                        <property name="tooltipContent" value="@{#line.note NE null ? '&quot;' + #line.note.replaceAll('\n','&lt;br&gt;') + '&quot; - ' + #line.adviserName : ''}"/>
+                                        <property name="templateOptions">
+                                            <map merge="true">
+                                                <entry key="themeMargins" value="{ total:'17px', difference:'10px' }"/>
+                                                <entry key="themeName" value="ksap-adviser"/>
+                                            </map>
+                                        </property>
+                                    </bean>
                                 </property>
                             </bean>
                         </list>
