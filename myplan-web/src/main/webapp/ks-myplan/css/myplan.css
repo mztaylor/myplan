@@ -1008,7 +1008,7 @@ div.activityAction div.blockElement {
 .myplan-carousel-list ul li .uif-header {
     padding: 0 10px;
     height: 25px;
-    line-height: 25px;
+    line-height: 24px;
     background-color: #F5F5F5;
     background-image: -ms-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
     background-image: -moz-linear-gradient(center top, #F5F5F5 0%, #EBEBEB 100%);
@@ -1021,6 +1021,17 @@ div.activityAction div.blockElement {
     border-top: solid 1px #e2e2e2;
     border-bottom: solid 1px #e2e2e2;
     margin-bottom: -1px;
+}
+
+.myplan-carousel-list ul li .myplan-term-recommended .uif-header {
+    background-color: #d5edd5;
+    background-image: -ms-linear-gradient(top, #d5edd5 0%, #c7e1c7 100%);
+    background-image: -moz-linear-gradient(center top, #d5edd5 0%, #c7e1c7 100%);
+    background-image: -o-linear-gradient(top, #d5edd5 0%, #c7e1c7 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #d5edd5), color-stop(1, #c7e1c7));
+    background-image: -webkit-linear-gradient(top, #d5edd5 0%, #c7e1c7 100%);
+    background-image: linear-gradient(to bottom, #d5edd5 0%, #c7e1c7 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d5edd5', endColorstr='#c7e1c7');
 }
 
 .myplan-carousel-list ul li .uif-header h6.uif-headerText {
@@ -1102,13 +1113,18 @@ div.activityAction div.blockElement {
     cursor: pointer;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.alert {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.alert,
+.myplan-carousel-list ul li .myplan-carousel-term.myplan-term-recommended .uif-stackedCollectionLayout .uif-collectionItem.accepted{
     padding: 0 4px;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.placeholder {
     font-family: Georgia, serif;
     font-style: italic;
+}
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.accepted,
+.myplan-quarter-detail .myplan-course-item.accepted .itemCode {
+    color: #008A00;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem:hover,
@@ -1178,6 +1194,10 @@ div.activityAction div.blockElement {
     line-height: 12px;
 }
 
+.myplan-carousel-list ul li .myplan-carousel-term.myplan-term-recommended .uif-stackedCollectionLayout .uif-collectionItem .itemNote {
+    top: 4px;
+}
+
 .myplan-quarter-detail .myplan-course-item .itemNote {
     line-height: 12px;
     position: relative;
@@ -1202,11 +1222,25 @@ div.activityAction div.blockElement {
     background-position: -54px -115px;
 }
 
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemAccepted img,
+.myplan-quarter-detail .myplan-course-item .itemAccepted img {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    background: url('../images/myplan_icon_sprites.png') no-repeat -56px -180px;
+}
+
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemNote img,
 .myplan-quarter-detail .myplan-course-item .itemNote img {
     width: 12px;
     height: 12px;
     background-position: -3px -183px;
+}
+.myplan-carousel-list ul li .myplan-carousel-term.myplan-term-recommended .uif-stackedCollectionLayout .uif-collectionItem .itemNote img,
+.myplan-quarter-detail .myplan-recommended-collection .myplan-course-item .itemNote img {
+    width: 16px;
+    height: 16px;
+    background-position: -37px -181px;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemNote:hover img {
@@ -2926,6 +2960,17 @@ label.scheduled {
     background-image: -webkit-linear-gradient(top, #e7e7e7 0%, #dfdfdf 100%);
     background-image: linear-gradient(to bottom, #e7e7e7 0%, #dfdfdf 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e7e7e7', endColorstr='#dfdfdf');
+}
+
+.myplan-quarter-detail .uif-collectionGroup.myplan-recommended-collection .uif-header {
+    background-color: #d5edd5;
+    background-image: -ms-linear-gradient(top, #d5edd5 0%, #caddca 100%);
+    background-image: -moz-linear-gradient(center top, #d5edd5 0%, #caddca 100%);
+    background-image: -o-linear-gradient(top, #d5edd5 0%, #caddca 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #d5edd5), color-stop(1, #caddca));
+    background-image: -webkit-linear-gradient(top, #d5edd5 0%, #caddca 100%);
+    background-image: linear-gradient(to bottom, #d5edd5 0%, #caddca 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d5edd5', endColorstr='#caddca');
 }
 
 .myplan-quarter-detail h4 {

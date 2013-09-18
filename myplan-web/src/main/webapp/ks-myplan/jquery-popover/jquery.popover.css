@@ -224,24 +224,43 @@
 }
 
 .jquerypopover-ksap-notes .jquerypopover-innerHtml,
-.jquerybubblepopup-ksap-notes .jquerybubblepopup-innerHtml {
+.jquerybubblepopup-ksap-notes .jquerybubblepopup-innerHtml,
+.jquerypopover-ksap-adviser .jquerypopover-innerHtml,
+.jquerybubblepopup-ksap-adviser .jquerybubblepopup-innerHtml {
     font-size: 11px;
     line-height: 1.5em;
     padding: 5px;
+}
+
+.jquerypopover-ksap-notes .jquerypopover-innerHtml,
+.jquerybubblepopup-ksap-notes .jquerybubblepopup-innerHtml {
     background: #f4effd;
+}
+
+.jquerypopover-ksap-adviser .jquerypopover-innerHtml,
+.jquerybubblepopup-ksap-adviser .jquerybubblepopup-innerHtml {
+    background: #ebf9eb;
 }
 
 .jquerypopover-ksap-notes .jquerypopover-top-middle,
 .jquerypopover-ksap-notes .jquerypopover-bottom-middle,
 .jquerybubblepopup-ksap-notes .jquerybubblepopup-top-middle,
-.jquerybubblepopup-ksap-notes .jquerybubblepopup-bottom-middle {
+.jquerybubblepopup-ksap-notes .jquerybubblepopup-bottom-middle,
+.jquerypopover-ksap-adviser .jquerypopover-top-middle,
+.jquerypopover-ksap-adviser .jquerypopover-bottom-middle,
+.jquerybubblepopup-ksap-adviser .jquerybubblepopup-top-middle,
+.jquerybubblepopup-ksap-adviser .jquerybubblepopup-bottom-middle {
     height: 16px;
 }
 
 .jquerypopover-ksap-notes .jquerypopover-middle-left,
 .jquerypopover-ksap-notes .jquerypopover-middle-right,
 .jquerybubblepopup-ksap-notes .jquerybubblepopup-middle-left,
-.jquerybubblepopup-ksap-notes .jquerybubblepopup-middle-right {
+.jquerybubblepopup-ksap-notes .jquerybubblepopup-middle-right,
+.jquerypopover-ksap-adviser .jquerypopover-middle-left,
+.jquerypopover-ksap-adviser .jquerypopover-middle-right,
+.jquerybubblepopup-ksap-adviser .jquerybubblepopup-middle-left,
+.jquerybubblepopup-ksap-adviser .jquerybubblepopup-middle-right {
     width: 16px;
 }
 
@@ -252,12 +271,22 @@
 .jquerybubblepopup-ksap-notes .jquerybubblepopup-top-left,
 .jquerybubblepopup-ksap-notes .jquerybubblepopup-top-right,
 .jquerybubblepopup-ksap-notes .jquerybubblepopup-bottom-left,
-.jquerybubblepopup-ksap-notes .jquerybubblepopup-bottom-right {
+.jquerybubblepopup-ksap-notes .jquerybubblepopup-bottom-right,
+.jquerypopover-ksap-adviser .jquerypopover-top-left,
+.jquerypopover-ksap-adviser .jquerypopover-top-right,
+.jquerypopover-ksap-adviser .jquerypopover-bottom-left,
+.jquerypopover-ksap-adviser .jquerypopover-bottom-right,
+.jquerybubblepopup-ksap-adviser .jquerybubblepopup-top-left,
+.jquerybubblepopup-ksap-adviser .jquerybubblepopup-top-right,
+.jquerybubblepopup-ksap-adviser .jquerybubblepopup-bottom-left,
+.jquerybubblepopup-ksap-adviser .jquerybubblepopup-bottom-right{
     width: 16px;
     height: 16px;
 }
 
 .jquerypopover-ksap-notes .jquerypopover-innerHtml a,
-.jquerybubblepopup-ksap-notes .jquerybubblepopup-innerHtml a {
+.jquerybubblepopup-ksap-notes .jquerybubblepopup-innerHtml a,
+.jquerypopover-ksap-adviser .jquerypopover-innerHtml a,
+.jquerybubblepopup-ksap-adviser .jquerybubblepopup-innerHtml a {
     text-decoration: underline;
 }
