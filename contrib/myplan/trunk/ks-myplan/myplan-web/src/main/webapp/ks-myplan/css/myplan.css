@@ -3025,6 +3025,7 @@ label.scheduled {
     height: 16px;
 }
 
+.myplan-quarter-detail .myplan-course-item .itemAccepted,
 .myplan-quarter-detail .myplan-course-item .itemAlert,
 .myplan-quarter-detail .myplan-course-item .itemCode,
 .myplan-quarter-detail .myplan-course-item .itemTitle,
