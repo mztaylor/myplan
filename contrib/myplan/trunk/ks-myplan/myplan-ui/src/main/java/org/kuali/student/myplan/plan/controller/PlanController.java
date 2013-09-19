@@ -818,6 +818,7 @@ public class PlanController extends UifControllerBase {
 
     /**
      * Copy a course planned to requested term
+     * And also used for adding the Recommend Item from recommended Dialog
      *
      * @param form
      * @param result
