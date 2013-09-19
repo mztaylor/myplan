@@ -1179,6 +1179,7 @@ div.activityAction div.blockElement {
     margin: 0 4px;
 }
 
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemAccepted,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemAlert,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemTitle,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemActivities {
@@ -1227,7 +1228,7 @@ div.activityAction div.blockElement {
     width: 18px;
     height: 18px;
     vertical-align: middle;
-    background: url('../images/myplan_icon_sprites.png') no-repeat -56px -180px;
+    background: url('../images/myplan_icon_sprites.png') no-repeat -54px -180px;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemNote img,
