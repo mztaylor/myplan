@@ -412,9 +412,9 @@ public class PlanController extends UifControllerBase {
 
 
         /*Setting the atpId to the first recommended unplanned term */
-        if (!CollectionUtils.isEmpty(planForm.getPlannedCourseSummary().getRecommendedItemDataObjects())) {
+        if (!CollectionUtils.isEmpty(planForm.getPlannedCourseSummary().getRecommendedItemDataObjects()) && !PlanConstants.RECOMMENDED_DIALOG_PAGE.equals(planForm.getPageId())) {
             for (RecommendedItemDataObject recommendedItemDataObject : planForm.getPlannedCourseSummary().getRecommendedItemDataObjects()) {
-                if (!recommendedItemDataObject.isPlanned()) {
+                if (!recommendedItemDataObject.isPlanned() && AtpHelper.isAtpSetToPlanning(recommendedItemDataObject.getAtpId())) {
                     planForm.setAtpId(recommendedItemDataObject.getAtpId());
                     break;
                 }
