@@ -11,7 +11,7 @@ function planItemTemplate(data) {
 
     var item = jQuery("<div/>").attr({
         "id": itemId + "_group",
-        "class": "uif-verticalBoxGroup uif-collectionItem"
+        "class": "uif-verticalBoxGroup uif-collectionItem" + ((data.adviserRecommended == "true") ? " accepted" : "")
     });
 
     var shortTitle = data.planItemShortTitle;

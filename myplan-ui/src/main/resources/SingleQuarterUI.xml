@@ -263,7 +263,7 @@
                 if (data.atpId == '@{dataObject.atpId.replaceAll('\.','-')}') {
                     fnUpdateQuarterViewCredits(data.totalCredits);
                 }
-            }).on('PLAN_ITEM_ADDED PLAN_ITEM_DELETED', function(event, data) {
+            }).on('PLAN_ITEM_ADDED PLAN_ITEM_DELETED RECOMMENDED_ITEM_UPDATED', function(event, data) {
                 if (data.atpId == '@{dataObject.atpId.replaceAll('\.','-')}' &amp;&amp; data.planItemType != 'wishlist') {
                     myplanRetrieveComponent(data.atpId + '_' + data.planItemType, data.atpId + '_' + data.planItemType, 'start', 'inquiry', {viewId:'SingleTerm-InquiryView', term_atp_id:'@{dataObject.atpId}'}, null, {css:{top:'1px',left:'1px',border:'none',background:'none'},overlayCSS:{backgroundColor: '#fff'}});
                 }
