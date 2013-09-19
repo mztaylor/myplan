@@ -320,15 +320,13 @@ function fnUpdateQuarterViewCredits(termCredits) {
  */
 function fnUpdateRecommendedItem(data) {
     var itemId = data.planItemType + "_" + data.atpId + "_" + data.planItemId;
-    var title = jQuery('#' + itemId + ' .itemTitle').html();
-    var credit = jQuery('#' + itemId + ' .itemCredit').html();
-    if(title.indexOf('<b>') > 0){
-        title = title.replace("<b>","").replace("</b>","");
-        jQuery('#' + itemId + ' .itemTitle').html(title);
-    }
-    if(credit != undefined && credit.indexOf('<b>') > 0){
-        credit = credit.replace("<b>","").replace("</b>","");
-        jQuery('#' + itemId + ' .itemCredit').html(credit);
-    }
-
+    jQuery("#" + itemId + "_group").removeClass("proposed").addClass("accepted");
+    var image = jQuery("<img/>").attr("src", "/student/ks-myplan/images/pixel.gif");
+    var accepted = jQuery("<div/>").attr({
+        "class":"itemAccepted uif-boxLayoutHorizontalItem"
+    }).append(image.clone());
+    jQuery("#" + itemId).before(accepted);
+    jQuery("#" + itemId + "_group").css({backgroundColor: "#faf5ca"}).animate({backgroundColor: "#ffffff"}, 1500, "linear", function () {
+        jQuery(this).removeAttr("style");
+    });
 }

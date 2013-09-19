@@ -615,7 +615,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-VerticalBoxGroup" p:width="318px">
+                <bean parent="KSAP-VerticalBoxGroup" p:headerText="Will your plan meet your program requirements?" p:width="318px">
                     <property name="style" value="margin-right:20px; height:215px;"/>
                     <property name="header">
                         <bean parent="Uif-HeaderFive"/>
@@ -629,9 +629,7 @@
                         <list>
                             <bean parent="Uif-Message">
                                 <property name="messageText"
-                                          value="Will your plan meet your program requirements?
-                                          [br/][br/]
-                                          Plan Audit compares planned courses and your academic record with your requirements to give you an idea of what will be needed to complete your degree.
+                                          value="Plan Audit compares planned courses and your academic record with your requirements to give you an idea of what will be needed to complete your degree.
                                           [br/][br/]
                                           This Audit is meant as a planning tool and is not an official evaluation of academic progress. Work with your adviser to ensure that your planned courses will meet your degree or program requirements.
                                           "/>
@@ -639,7 +637,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="KSAP-VerticalBoxGroup" p:width="318px">
+                <bean parent="KSAP-VerticalBoxGroup" p:headerText="What do you need to do?" p:width="318px">
                     <property name="style" value="height:215px;"/>
                     <property name="header">
                         <bean parent="Uif-HeaderFive"/>
@@ -654,9 +652,7 @@
                         <list>
                             <bean parent="Uif-Message">
                                 <property name="messageText"
-                                          value="What do you need to do?
-                                          [br/][br/]
-                                          Make sure that you have added courses to your plan for future quarters, then select your program from the menu above and run a Plan Audit to see if you are on the right track. "/>
+                                          value="Make sure that you have added courses to your plan for future quarters, then select your program from the menu above and run a Plan Audit to see if you are on the right track. "/>
                             </bean>
                         </list>
                     </property>
