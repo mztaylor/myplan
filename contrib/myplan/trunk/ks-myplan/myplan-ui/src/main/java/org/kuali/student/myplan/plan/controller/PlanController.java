@@ -346,7 +346,7 @@ public class PlanController extends UifControllerBase {
 
                     if (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItem.getRefObjectType())
                             || PlanConstants.PLACE_HOLDER_TYPE.equals(planItem.getRefObjectType())) {
-                        planForm.setGeneralPlaceholder(planItem.getRefObjectId());
+                        planForm.setGeneralPlaceholder(String.format("%s|%s", planItem.getRefObjectId(),planItem.getRefObjectType()));
                         if (planItem.getCredit() != null) {
                             planForm.setCredit(String.valueOf(planItem.getCredit().intValue()));
                         }
@@ -1170,7 +1170,7 @@ public class PlanController extends UifControllerBase {
             placeHolderTitle = EnumerationHelper.getEnumValueForCodeByType(placeHolderId, placeHolderType);
         }
 
-        if (PlanConstants.ADD_DIALOG_PAGE.equals(form.getPageId()) || PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE.equals(form.getPageId())) {
+        if (PlanConstants.ADD_DIALOG_PAGE.equals(form.getPageId()) || PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE.equals(form.getPageId()) || PlanConstants.RECOMMENDED_DIALOG_PAGE.equals(form.getPageId())) {
             if (hasText(courseCd) || hasText(placeHolderId)) {
                 /*Updating the plan item from quickAdd*/
                 if (hasText(planItemId)) {
@@ -2659,6 +2659,13 @@ public class PlanController extends UifControllerBase {
 
             params.put("showAlert", String.valueOf(showAlert));
             params.put("statusAlert", statusAlert.toString());
+            boolean adviserRecommended = false;
+            if (!PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItem.getTypeKey())) {
+                PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItem.getLearningPlanId(), planItem.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+                adviserRecommended = recommendedPlanItem != null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey());
+            }
+
+            params.put("adviserRecommended", String.valueOf(adviserRecommended));
 
             if (PlanConstants.SECTION_TYPE.equals(planItem.getRefObjectType())) {
                 params.put("SectionCode", planForm.getSectionCode());

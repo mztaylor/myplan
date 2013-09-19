@@ -1119,7 +1119,7 @@
                                         <bean p:id="addUpdatePlanItem" parent="Uif-PrimaryActionButton-Small"
                                               p:actionLabel="Add To Plan">
                                             <property name="actionScript" value="
-                                                var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', courseId:'@{courseSummaryDetails.courseId}'};
+                                                var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', courseId:'@{courseSummaryDetails.courseId}', courseCd: '@{courseCd NE null ? courseCd : null}',generalPlaceholder: '@{generalPlaceholder NE null ? generalPlaceholder : null}', type: '@{type}' ,pageId: '@{(generalPlaceholder NE null OR courseCd NE null) ? 'recommended_dialog_page' : null}'};
                                                 submitPopupForm(additionalFormData, e, false);
                                             "/>
                                             <property name="onDocumentReadyScript" value="
