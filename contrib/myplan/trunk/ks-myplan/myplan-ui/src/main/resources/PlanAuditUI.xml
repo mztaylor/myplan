@@ -723,7 +723,7 @@
                         </list>
                     </property>
                     <property name="instructionalMessage">
-                        <bean parent="KSAP-NoSpanMessage">
+                        <bean parent="KSAP-Message">
                             <property name="messageText"
                                       value="To run your Plan Audit, MyPlan needs more information for the following course(s)"/>
                             <property name="propertyReplacers">
@@ -749,7 +749,6 @@
                                     <value>ksap-getHeight</value>
                                 </list>
                             </property>
-                            <property name="generateSpan" value="true"/>
                         </bean>
                     </property>
                     <property name="layoutManager">
@@ -764,6 +763,7 @@
                                               !#form.planAudit.allMessyItemsSelected}">
                                 <property name="cssClasses">
                                     <list merge="true">
+                                        <value>ksap-getHeight</value>
                                         <value>ksap-messageGroup</value>
                                         <value>ksap-messageGroupMin</value>
                                         <value>ksap-messageGroup-error</value>
