@@ -1000,6 +1000,15 @@
                     </property>
                 </bean>
 
+                <!--This hidden selected credit is used in adviser view to pass selected credit value to the form,
+                 as the dropDown  control is disabled the value will not be passed to form-->
+                <bean p:id="hidden_selected_credit" parent="KSAP-SimpleInputField"
+                      p:propertyName="selectedCredit"
+                      p:hidden="true" p:render="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.selectedCredit NE null}">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
 
                 <bean id="messy_credits" parent="Uif-InputField" p:propertyName="selectedCredit"
                       p:render="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() OR #line.selectedCredit NE null}">
