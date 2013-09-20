@@ -33,6 +33,7 @@ import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
@@ -120,7 +121,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             Map<String, List<String>> sectionsWithdrawn = new HashMap<String, List<String>>();
             Map<String, List<String>> sectionsSuspended = new HashMap<String, List<String>>();
             for (PlanItemInfo planItemInfo : planItemInfoList) {
-                if (planItemInfo.getTypeKey().equalsIgnoreCase(planItemType) && planItemInfo.getPlanPeriods().get(0).compareTo(startAtp) >= 0) {
+                if (!CollectionUtils.isEmpty(planItemInfo.getPlanPeriods()) && planItemInfo.getTypeKey().equalsIgnoreCase(planItemType) && planItemInfo.getPlanPeriods().get(0).compareTo(startAtp) >= 0) {
                     populatePlannedCourseList(planItemInfo, planItemType, plannedCourseList, plannedSections, sectionsSuspended, sectionsWithdrawn, subjectAreas, addPlaceHolders);
                 }
             }
@@ -203,10 +204,12 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
                 plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
                 plannedCourse.setProposed(PlanConstants.LEARNING_PLAN_ITEM_PROPOSED_STATE_KEY.equals(planItemInfo.getStateKey()));
-            }else {
-                String atpId = planItemInfo.getPlanPeriods().get(0);
-                PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(),planItemInfo.getRefObjectId(),atpId,PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
-                plannedCourse.setAdviserRecommended(recommendedPlanItem!=null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
+            } else {
+                if (!CollectionUtils.isEmpty(planItemInfo.getPlanPeriods())) {
+                    String atpId = planItemInfo.getPlanPeriods().get(0);
+                    PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+                    plannedCourse.setAdviserRecommended(recommendedPlanItem != null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
+                }
             }
             //  If the course info lookup fails just log the error and omit the item.
             try {
@@ -302,10 +305,12 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
                 plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
                 plannedCourse.setProposed(PlanConstants.LEARNING_PLAN_ITEM_PROPOSED_STATE_KEY.equals(planItemInfo.getStateKey()));
-            }else {
-                String atpId = planItemInfo.getPlanPeriods().get(0);
-                PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(),planItemInfo.getRefObjectId(),atpId,PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
-                plannedCourse.setAdviserRecommended(recommendedPlanItem!=null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
+            } else {
+                if (!CollectionUtils.isEmpty(planItemInfo.getPlanPeriods())) {
+                    String atpId = planItemInfo.getPlanPeriods().get(0);
+                    PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+                    plannedCourse.setAdviserRecommended(recommendedPlanItem != null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
+                }
             }
             plannedCourseList.add(plannedCourse);
 
@@ -325,10 +330,12 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemInfo.getTypeKey())) {
                 plannedCourse.setAdviserName(getUserSessionHelper().getName(planItemInfo.getMeta().getCreateId()));
                 plannedCourse.setProposed(PlanConstants.LEARNING_PLAN_ITEM_PROPOSED_STATE_KEY.equals(planItemInfo.getStateKey()));
-            }else {
-                String atpId = planItemInfo.getPlanPeriods().get(0);
-                PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(),planItemInfo.getRefObjectId(),atpId,PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
-                plannedCourse.setAdviserRecommended(recommendedPlanItem!=null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
+            } else {
+                if (!CollectionUtils.isEmpty(planItemInfo.getPlanPeriods())) {
+                    String atpId = planItemInfo.getPlanPeriods().get(0);
+                    PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+                    plannedCourse.setAdviserRecommended(recommendedPlanItem != null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
+                }
             }
             plannedCourseList.add(plannedCourse);
 
