@@ -667,6 +667,7 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
             for (LearningPlanInfo learningPlanInfo : learningPlanList) {
                 PlanAuditItem planAuditItem = new PlanAuditItem();
                 String auditId = null;
+                
                 for (AttributeInfo attributeInfo : learningPlanInfo.getAttributes()) {
                     String key = attributeInfo.getKey();
                     String value = attributeInfo.getValue();
@@ -676,6 +677,10 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
                         planAuditItem.setTotalAuditedCredit(value);
                     } else if ("forQuarter".equalsIgnoreCase(key)) {
                         planAuditItem.setAuditedQuarterUpTo(value);
+                    } else if("isAdviser".equalsIgnoreCase(key)) {
+                        planAuditItem.setRunByAdviser(Boolean.valueOf(value));
+                    } else if("requestedBy".equalsIgnoreCase(key)) {
+                       planAuditItem.setRequestedBy(value);
                     } else if ("auditId".equalsIgnoreCase(key)) {
                         auditId = value;
                     }
