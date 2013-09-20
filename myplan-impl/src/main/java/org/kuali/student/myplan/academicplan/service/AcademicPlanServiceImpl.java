@@ -49,7 +49,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     private CourseService courseService;
     private AtpService atpService;
     private LuService luService;
-    private PersonService personService;
+    private PersonService personService;    
 
     /**
      * This method provides a way to manually provide a CourseService implementation during testing.
@@ -296,13 +296,15 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
         //  replacing the type key for above learningPlanInfo with new type key
         dto.setTypeKey(planTypeKey);
-        Person user = GlobalVariables.getUserSession().getPerson();
+        UserSession userSession = GlobalVariables.getUserSession();
+        Person user = userSession.getPerson();
         List<AttributeInfo> attributeInfos = new ArrayList<AttributeInfo>();
         attributeInfos.add(new AttributeInfo("auditId", ""));
         attributeInfos.add(new AttributeInfo("forCourses", ""));
         attributeInfos.add(new AttributeInfo("forCredits", ""));
         attributeInfos.add(new AttributeInfo("forQuarter", ""));
         attributeInfos.add(new AttributeInfo("requestedBy", user.getName().toUpperCase()));
+        attributeInfos.add(new AttributeInfo("isAdviser", String.valueOf(userSession.retrieveObject(AcademicPlanServiceConstants.SESSION_KEY_IS_ADVISER) != null)));
         dto.setAttributes(attributeInfos);
 
         //  Creating a new LearningPlanEntity from above learningPLanInfo with new PlanTypeKey

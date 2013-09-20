@@ -11,6 +11,8 @@ public class PlanAuditItem extends DegreeAuditItem{
     private String auditedCoursesCount;
     private String totalAuditedCredit;
     private String auditedQuarterUpTo;
+    private boolean runByAdviser;
+    private String requestedBy;
 
     public String getAuditedCoursesCount() {
         return auditedCoursesCount;
@@ -34,5 +36,21 @@ public class PlanAuditItem extends DegreeAuditItem{
 
     public void setAuditedQuarterUpTo(String auditedQuarterUpTo) {
         this.auditedQuarterUpTo = auditedQuarterUpTo;
+    }
+
+    public boolean isRunByAdviser() {
+        return runByAdviser;
+    }
+
+    public void setRunByAdviser(boolean runByAdviser) {
+        this.runByAdviser = runByAdviser;
+    }
+
+    public String getRequestedBy() {
+        return requestedBy;
+    }
+
+    public void setRequestedBy(String requestedBy) {
+        this.requestedBy = requestedBy;
     }
 }
