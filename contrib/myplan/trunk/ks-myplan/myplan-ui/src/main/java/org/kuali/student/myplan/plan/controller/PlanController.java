@@ -865,6 +865,8 @@ public class PlanController extends UifControllerBase {
         if (planItem == null) {
             return doOperationFailedError(form, String.format("Could not fetch plan item."), null);
         }
+        /*isRecommended --> true (we are copying the course from recommended section of the qtr to planned section of same qtr)*/
+        String planType = form.isRecommended() ? PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED : planItem.getTypeKey();
 
         String credit = null;
         //  Lookup course details as they will be needed for errors.
@@ -904,12 +906,12 @@ public class PlanController extends UifControllerBase {
         LearningPlan learningPlan = null;
         try {
             learningPlan = getPlanHelper().getLearningPlan(getUserSessionHelper().getStudentId());
-            hasCapacity = isAtpHasCapacity(learningPlan, newAtpId, planItem.getTypeKey());
+            hasCapacity = isAtpHasCapacity(learningPlan, newAtpId, planType);
         } catch (RuntimeException e) {
             return doOperationFailedError(form, "Could not validate capacity for new plan item.", e);
         }
         if (!hasCapacity) {
-            return doPlanCapacityExceededError(form, planItem.getTypeKey());
+            return doPlanCapacityExceededError(form, planType);
         }
 
         //  Validate: Adding to historical term.
@@ -927,11 +929,9 @@ public class PlanController extends UifControllerBase {
 
         PlanItemInfo planItemCopy = null;
         try {
-            /*isRecommended --> true (we are copying the course from recommended section of the qtr to planned section of same qtr)*/
-            String typeKey = form.isRecommended() ? PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED : planItem.getTypeKey();
             String note = form.isRecommended() ? null : planItem.getDescr().getPlain();
             planItemCopy = addPlanItem(learningPlan, planItem.getRefObjectId(), planItem.getRefObjectType(),
-                    newAtpId, typeKey, note, credit);
+                    newAtpId, planType, note, credit);
             /*Recommended item updated to accepted if a course or placeholder added from recommended dialog
             or only for courses added, moved or copied from other qtr's*/
             if (form.isRecommended() || PlanConstants.COURSE_TYPE.equals(planItemCopy.getRefObjectType())) {
