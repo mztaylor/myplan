@@ -3083,15 +3083,65 @@ label.scheduled {
     margin: 0 10px 0 0;
 }
 
-.myplan-adviser-recommendation .uif-readOnlyContent {
-    display: block;
-    border: dashed 1px #ccc;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    padding: 10px;
-    color: #666;
+.myplan-recommendation-message {
+    margin: 10px 0 10px 0;
 }
+
+.myplan-recommendation-message .uif-readOnlyContent {
+	position: relative;
+	padding: 15px;
+    font-size: 11px;
+	border: 1px solid #D6EED7;
+	color: #555;
+	font-style: italic;
+	background: #F9FFF9;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+    display: block;
+    width: 268px;
+}
+
+.myplan-recommendation-message .uif-readOnlyContent.left {
+	margin-left: 30px;
+}
+
+.myplan-recommendation-message .uif-readOnlyContent.right {
+	margin-right: 30px;
+}
+
+.myplan-recommendation-message .uif-readOnlyContent:before {
+	content: "";
+	position: absolute;
+	bottom: -13px; /* value = - border-top-width - border-bottom-width */
+	right: 29px; /* controls horizontal position */
+    border-width: 13px 10px 0;
+	border-style: solid;
+    border-color: #D6EED7 transparent;
+    display: block;
+    width: 0;
+}
+
+.myplan-recommendation-message .uif-readOnlyContent:after {
+	content: "";
+	position: absolute;
+	bottom: -11px; /* value = - border-top-width - border-bottom-width */
+    right: 31px; /* value = (:before left) + (:before border-left) - (:after border-left) */
+	border-width: 11px 8px 0;
+	border-style: solid;
+	border-color: #F9FFF9 transparent;
+    display: block;
+    width: 0;
+}
+
+.myplan-recommendation-meta {
+	font-size: 10px;
+	color: #008A00;
+	line-height: 16px;
+	margin: 0 0 1.5em 0;
+}
+
+
 /* Styles for Run Audit Panel ################################################################################## */
 .myplan-audit-tabs {
     border-bottom: solid 4px #f9ac23;
