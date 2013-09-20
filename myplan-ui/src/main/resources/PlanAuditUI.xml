@@ -774,7 +774,7 @@
                                         <bean parent="MyPlanMessagingIcon"/>
                                         <bean parent="KSAP-MessageField" p:width="95%">
                                             <property name="messageText"
-                                                      value="Sorry, we are unable to generate a plan review because incomplete details for planned courses below. Contact @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentName( )} to add details."/>
+                                                      value="Sorry, we are unable to generate a plan review because of incomplete details for planned courses below. Contact @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentName( )} to add details."/>
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>ksap-noMargin</value>
