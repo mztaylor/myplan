@@ -733,7 +733,7 @@
                                           p:replacement="@{#form.planAudit.cleanList.size() GT 0 ? ' ' : 'We are unable to generate a Plan Audit. [0]'}"/>
                                     <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="messageText"
                                           p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #form.planAudit.messyItems.size() GT 0"
-                                          p:replacement="To run a plan audit, @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getFirstName( T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentId()  )} provided details for the following course(s)"/>
+                                          p:replacement="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getFirstName( T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentId()  )} chose the following course options for their Plan Audit:"/>
 
                                 </list>
                             </property>
@@ -772,12 +772,19 @@
                                 <property name="items">
                                     <list>
                                         <bean parent="MyPlanMessagingIcon"/>
-                                        <bean parent="KSAP-MessageField" p:width="95%">
+                                        <bean parent="KSAP-Message" p:width="95%">
                                             <property name="messageText"
-                                                      value="Sorry, we are unable to generate a plan review because of incomplete details for planned courses below. Contact @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentName( )} to add details."/>
+                                                      value="We are unable to generate a Plan Audit because more information is needed from @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentName( )}. [0]"/>
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>ksap-noMargin</value>
+                                                </list>
+                                            </property>
+                                            <property name="inlineComponents">
+                                                <list>
+                                                    <bean parent="Uif-Link"
+                                                          p:href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/')"
+                                                          p:linkText="Learn more."/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -991,7 +998,7 @@
                                         <bean parent="MyPlanMessagingIcon"/>
                                         <bean parent="KSAP-MessageField">
                                             <property name="messageText"
-                                                      value="This course needs further specification."/>
+                                                      value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentName()} must provide more details about this course."/>
                                         </bean>
                                     </list>
                                 </property>
@@ -1108,16 +1115,15 @@
         </property>
         <property name="headerText" value="Excluded Courses"/>
         <property name="instructionalMessage">
-            <bean parent="KSAP-NoSpanMessage"
-                  p:messageText="The following course(s) are not included in your Plan Audit because they may not be offered in the quarter planned. [0]">
-                <property name="generateSpan" value="true"/>
-                <property name="inlineComponents">
+            <bean parent="KSAP-Message"
+                  p:messageText="The following course(s) are not included in the Plan Audit because they may not be offered in the quarter planned.">
+                <!--<property name="inlineComponents">
                     <list>
                         <bean parent="Uif-Link"
                               p:href="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView"
                               p:linkText="View your plan."/>
                     </list>
-                </property>
+                </property>-->
             </bean>
         </property>
         <property name="items">
