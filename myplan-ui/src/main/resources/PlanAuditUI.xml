@@ -869,7 +869,7 @@
                                         <bean parent="Uif-PrimaryActionButton" p:style="margin:0px 20px 0px 0px;"
                                               p:render="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND
                                               !#form.planAudit.allMessyItemsSelected}">
-                                            <property name="actionLabel" value="Ok, I get it"/>
+                                            <property name="actionLabel" value="OK"/>
                                             <property name="actionScript" value="jQuery.fancybox.close(true);"/>
                                         </bean>
                                     </list>
@@ -887,7 +887,7 @@
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-PrimaryActionButton" p:style="margin:0px;">
-                                            <property name="actionLabel" value="Ok, I get it"/>
+                                            <property name="actionLabel" value="OK"/>
                                             <property name="actionScript" value="jQuery.fancybox.close(true);"/>
                                         </bean>
                                     </list>
