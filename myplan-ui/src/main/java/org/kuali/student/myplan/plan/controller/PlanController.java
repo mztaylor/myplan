@@ -427,7 +427,7 @@ public class PlanController extends UifControllerBase {
          */
         if (activitiesRequiredPages.contains(form.getPageId()) && planItemAtpId != null) {
             String atpId = CollectionUtils.isEmpty(planItem.getPlanPeriods()) ? null : planItem.getPlanPeriods().get(0);
-            if (planForm.getCourseSummaryDetails() != null && planForm.getCourseSummaryDetails().getCode() != null && !AtpHelper.isAtpCompletedTerm(atpId)) {
+            if (planForm.getCourseSummaryDetails() != null && planForm.getCourseSummaryDetails().getCode() != null && AtpHelper.isAtpSetToPlanning(atpId)) {
                 planForm.setPlanActivities(getPlannedActivitiesByCourseAndTerm(planForm.getCourseSummaryDetails().getCode(), atpId));
             }
         }
