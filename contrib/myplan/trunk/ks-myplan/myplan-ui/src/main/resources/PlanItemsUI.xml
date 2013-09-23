@@ -698,7 +698,7 @@
         </property>
     </bean>
 
-    <bean id="academicRecordAction" parent="KSAP-HorizontalFieldGroup" p:style="width:99px; padding-right:16px;">
+    <bean id="academicRecordAction" parent="KSAP-HorizontalFieldGroup" p:style="width:103px; padding-right:15px;">
         <property name="id" value="record_@{#line.atpId.replace('.','-')}_@{#line.uuid}"/>
         <property name="title" value="@{#line.courseTitle}"/>
         <property name="onClickScript"
@@ -771,6 +771,7 @@
     </bean>
 
     <bean id="academicRecordGroup" parent="KSAP-HorizontalFieldGroup">
+        <property name="group.cssClasses" value=""/>
         <property name="items">
             <list>
                 <bean parent="academicRecordAction"/>
@@ -780,6 +781,7 @@
     </bean>
 
     <bean id="academicRecordGroupAdviser" parent="KSAP-HorizontalFieldGroup">
+        <property name="group.cssClasses" value=""/>
         <property name="items">
             <list>
                 <bean parent="academicRecordActionAdviser"/>
@@ -937,7 +939,7 @@
     </bean>
 
     <bean id="planItemAction" parent="KSAP-HorizontalFieldGroup"
-          p:style="width:@{#line.note EQ null ? '115px;' : '99px; padding-right:16px;'}">
+          p:style="width:@{#line.note EQ null ? '118px;' : '103px; padding-right:15px;'}">
         <property name="id"
                   value="@{#line.planItemDataObject.type}_@{#line.planItemDataObject.atp.replace('.','-')}_@{#line.planItemDataObject.id}"/>
         <property name="title"

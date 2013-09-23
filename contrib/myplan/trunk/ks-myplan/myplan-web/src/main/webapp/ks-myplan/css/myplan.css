@@ -1100,7 +1100,7 @@ div.activityAction div.blockElement {
     font-family: Helvetica, Arial, Verdana, sans-serif;
     height: 25px;
     line-height: 25px;
-    padding: 0 4px 0 26px;
+    padding: 0 3px 0 24px;
     color: #000;
     position: relative;
 }
@@ -1115,7 +1115,7 @@ div.activityAction div.blockElement {
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.alert,
 .myplan-carousel-list ul li .myplan-carousel-term.myplan-term-recommended .uif-stackedCollectionLayout .uif-collectionItem.accepted{
-    padding: 0 4px;
+    padding: 0 3px;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.placeholder {
@@ -1169,6 +1169,7 @@ div.activityAction div.blockElement {
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemCredit {
     color: #888;
+    font-size: 0.909em;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemGrade {
@@ -1176,19 +1177,19 @@ div.activityAction div.blockElement {
     font-weight: bold;
     position: absolute;
     right: 0px;
-    margin: 0 4px;
+    margin: 0 3px;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemAccepted,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemAlert,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemTitle,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemActivities {
-    margin-right: 4px;
+    margin-right: 3px;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemNote {
     position: absolute;
-    right: 4px;
+    right: 3px;
     top: 6px;
     margin: 0;
     padding: 0px;
