@@ -109,7 +109,8 @@
     <bean id="menuOptionCourseSummary" parent="Uif-Link" p:linkText="View Course Summary"
           p:title="View Course Summary">
         <property name="onClickScript" value="
-            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:jQuery(this).data('courseid'),backup:jQuery(this).closest('.uif-boxLayoutHorizontalItem').data('backup'), pageId:'course_summary_dialog_page'};
+            var backupFlag = jQuery(this).data('type')=='backup';
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:jQuery(this).data('courseid'),backup:backupFlag, pageId:'course_summary_dialog_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
             openPopup('course_summary_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
@@ -119,7 +120,8 @@
     <bean id="menuOptionPlanItemSummary" parent="Uif-Link" p:linkText="View Course Summary"
           p:title="View Course Summary">
         <property name="onClickScript" value="
-            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'),backup:jQuery(this).closest('.uif-boxLayoutHorizontalItem').data('backup'), pageId:'course_summary_dialog_page'};
+            var backupFlag = jQuery(this).data('type')=='backup';
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'),backup:backupFlag, pageId:'course_summary_dialog_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
             openPopup('course_summary_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
@@ -129,7 +131,8 @@
     <bean id="menuOptionEditPlanItemCourse" parent="Uif-Link" p:linkText="Edit Course/Note"
           p:title="Edit Course/Note">
         <property name="onClickScript" value="
-            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'),backup:jQuery(this).closest('.uif-boxLayoutHorizontalItem').data('backup'), pageId:'plan_item_add_page'};
+            var backupFlag = jQuery(this).data('type')=='backup';
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'),backup:backupFlag, pageId:'plan_item_add_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
             openPopup('plan_item_add_page', retrieveData, 'plan', popupStyle, popupOptions, e);
@@ -139,7 +142,8 @@
     <bean id="menuOptionEditPlanItemPlaceholder" parent="Uif-Link" p:linkText="Edit Placeholder/Note"
           p:title="Edit Placeholder/Note">
         <property name="onClickScript" value="
-            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'),backup:jQuery(this).closest('.uif-boxLayoutHorizontalItem').data('backup'), pageId:'plan_item_add_page'};
+            var backupFlag = jQuery(this).data('type')=='backup';
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'),backup:backupFlag, pageId:'plan_item_add_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
             openPopup('plan_item_add_page', retrieveData, 'plan', popupStyle, popupOptions, e);
@@ -193,7 +197,8 @@
     <bean id="menuOptionMove" parent="Uif-Link" p:linkText="Move to Another Quarter"
           p:title="Move to Another Quarter">
         <property name="onClickScript" value="
-            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'), backup:jQuery(this).closest('.uif-boxLayoutHorizontalItem').data('backup'), pageId:'move_dialog_page'};
+            var backupFlag = jQuery(this).data('type')=='backup';
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'), backup:backupFlag, pageId:'move_dialog_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
             openPopup('move_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
@@ -203,7 +208,8 @@
     <bean id="menuOptionCopyPlanItem" parent="Uif-Link" p:linkText="Copy to Another Quarter"
           p:title="Copy to Another Quarter">
         <property name="onClickScript" value="
-            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'),backup:jQuery(this).closest('.uif-boxLayoutHorizontalItem').data('backup'), pageId:'copy_dialog_page'};
+            var backupFlag = jQuery(this).data('type')=='backup';
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'),backup:backupFlag, pageId:'copy_dialog_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
             openPopup('copy_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
@@ -213,7 +219,8 @@
     <bean id="menuOptionCopyCourse" parent="Uif-Link" p:linkText="Copy to Another Quarter"
           p:title="Copy to Another Quarter">
         <property name="onClickScript" value="
-            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:jQuery(this).data('courseid'), atpId:jQuery(this).data('atpid'),backup:jQuery(this).closest('.uif-boxLayoutHorizontalItem').data('backup'), pageId:'copy_dialog_page'};
+            var backupFlag = jQuery(this).data('type')=='backup';
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:jQuery(this).data('courseid'), atpId:jQuery(this).data('atpid'),backup:backupFlag, pageId:'copy_dialog_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
             openPopup('copy_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
@@ -228,7 +235,8 @@
             </list>
         </property>
         <property name="onClickScript" value="
-            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'),backup:jQuery(this).closest('.uif-boxLayoutHorizontalItem').data('backup'), pageId:'plan_item_delete_page'};
+            var backupFlag = jQuery(this).data('type')=='backup';
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'),backup:backupFlag, pageId:'plan_item_delete_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
             openPopup('plan_item_delete_page', retrieveData, 'plan', popupStyle, popupOptions, e);
@@ -950,6 +958,7 @@
                 <entry key="planitemid" value="@{#line.planItemDataObject.id}"/>
                 <entry key="atpid" value="@{#line.planItemDataObject.atp}"/>
                 <entry key="plannedsections" value="@{#line.sections}"/>
+                <entry key="type" value="@{#line.planItemDataObject.type}"/>
             </map>
         </property>
         <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to swtich menu -->
