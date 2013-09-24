@@ -29,7 +29,7 @@ input[type="text"], input[type="password"], textarea, select {
     margin: 0;
 }
 
-.uif-pageValidationMessages {
+.uif-pageValidationMessages, .ksap-validationMessages {
     border: solid 1px transparent;
     background: none;
     line-height: 18px;
@@ -41,51 +41,51 @@ input[type="text"], input[type="password"], textarea, select {
     margin: 0 0 10px 0;
 }
 
-.uif-pageValidationMessages h3 {
+.uif-pageValidationMessages h3, .ksap-validationMessages h3 {
     display: none;
 }
 
-.uif-pageValidationMessages ul,
-.uif-pageValidationMessages ul li {
+.uif-pageValidationMessages ul, .ksap-validationMessages ul,
+.uif-pageValidationMessages ul li, .ksap-validationMessages ul li {
     display: block;
     list-style: none;
 }
 
-.uif-pageValidationMessages ul li:before {
+.uif-pageValidationMessages ul li:before, .ksap-validationMessages ul li:before {
     content: '';
 }
 
-.uif-pageValidationMessages ul {
+.uif-pageValidationMessages ul, .ksap-validationMessages ul {
     padding: 0 0 0 20px;
     background-repeat: no-repeat;
     margin: 0;
 }
 
-.uif-pageValidationMessages-warning {
+.uif-pageValidationMessages-warning, .ksap-validationMessages-warning {
     color: #000;
     border-color: #feea49;
     background-color: #faf5ca;
 }
 
-.uif-pageValidationMessages-warning ul {
+.uif-pageValidationMessages-warning ul, .ksap-validationMessages-warning ul {
     background-image: url('../icons/16/warning.png');
 }
 
-.uif-pageValidationMessages-error {
+.uif-pageValidationMessages-error, .ksap-validationMessages-error {
     color: #cc0000;
     border-color: #fcd5e4;
     background-color: #fce9f1;
 }
 
-.uif-pageValidationMessages-error ul {
+.uif-pageValidationMessages-error ul, .ksap-validationMessages-error ul {
     background-image: url('../icons/16/cancel.png');
 }
 
-.uif-pageValidationMessages ul li {
+.uif-pageValidationMessages ul li, .ksap-validationMessages ul li {
     margin: 1em 0 0 0;
 }
 
-.uif-pageValidationMessages ul li:first-child {
+.uif-pageValidationMessages ul li:first-child, .ksap-validationMessages ul li:first-child {
     margin: 0;
 }
 
