@@ -516,6 +516,8 @@ public class DegreeAuditController extends UifControllerBase {
         PlanAuditForm form = getDegreeAuditHelper().processHandOff(auditForm.getPlanAudit(),
                 getUserSessionHelper().getStudentId());
 
+        int selectionsNeeded = 0;
+
         if (!form.getMessyItems().isEmpty()) {
             Map<String, String> prevChoices = getPlanItemSnapShots();
 
@@ -526,6 +528,8 @@ public class DegreeAuditController extends UifControllerBase {
                     if (prevChoices.containsKey(key)) {
                         String choice = prevChoices.get(key);
                         messy.setSelectedCredit(choice);
+                    } else {
+                        selectionsNeeded++;
                     }
                 }
             }
@@ -535,6 +539,12 @@ public class DegreeAuditController extends UifControllerBase {
         boolean showHandOffScreen = !(form.getMessyItems().isEmpty() && form.getIgnoreList().isEmpty());
         form.setShowHandOffScreen(showHandOffScreen);
         logger.info("Ended the hand off screen at" + System.currentTimeMillis());
+
+        /*Log used to know how many selection a adviser needed from student and also to know
+            at what rate are the advisers seeing this screen for selections from students*/
+        if (getUserSessionHelper().isAdviser() && selectionsNeeded > 0) {
+            logger.info(String.format("Adviser needs %s selections from student to run the Plan Audit", selectionsNeeded));
+        }
         return getUIFModelAndView(auditForm);
 
     }
