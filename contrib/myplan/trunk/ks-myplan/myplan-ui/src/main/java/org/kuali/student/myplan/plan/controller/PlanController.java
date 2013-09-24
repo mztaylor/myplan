@@ -489,7 +489,7 @@ public class PlanController extends UifControllerBase {
 
         //  Verify that the plan item type is "planned".
         if (!PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equals(planItem.getTypeKey())) {
-            return doOperationFailedError(form, "Move planned item was not type planned.", null);
+            return doPageRefreshError(form, "Move planned item was not type planned.", null);
         }
 
         //  Validate: Capacity.
@@ -592,7 +592,7 @@ public class PlanController extends UifControllerBase {
 
         //  Verify that the plan item type is "backup".
         if (!PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP.equals(planItem.getTypeKey())) {
-            return doOperationFailedError(form, "Move planned item was not type backup.", null);
+            return doPageRefreshError(form, "Move planned item was not type backup.", null);
         }
 
         //  Validate: Capacity.
