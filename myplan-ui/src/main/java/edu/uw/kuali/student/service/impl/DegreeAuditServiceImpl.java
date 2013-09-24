@@ -524,7 +524,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
         AuditReportInfo auditReportInfo = new AuditReportInfo();
         auditReportInfo.setAuditId(auditId);
-        String answer = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, ConfigContext.getCurrentContextConfig().getProperty(DegreeAuditConstants.APPLICATION_URL), DegreeAuditConstants.AUDIT_STATUS_ERROR_MSG);
+        String answer = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, DegreeAuditConstants.AUDIT_STATUS_ERROR_MSG);
         try {
             JobQueueRunHibernateDao dao = (JobQueueRunHibernateDao) getJobQueueRunDao();
             String sql = "SELECT report.report, run.stuno, run.dprog, run.webtitle FROM JobQueueRun run, JobQueueReport report  WHERE run.intSeqNo = report.jobqSeqNo AND run.jobid = ? AND run.reportType = 'HTM'";
