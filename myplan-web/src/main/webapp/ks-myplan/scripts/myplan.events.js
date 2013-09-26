@@ -11,11 +11,11 @@ function planItemTemplate(data) {
 
     var item = jQuery("<div/>").attr({
         "id": itemId + "_group",
-        "class": "uif-verticalBoxGroup uif-collectionItem" + ((data.adviserRecommended == "true") ? " accepted" : "")
+        "class": "uif-verticalBoxGroup uif-collectionItem" + ((data.adviserRecommended == "true") ? " accepted" : ((data.planItemType == "recommended") ? " proposed" : ""))
     });
 
     var shortTitle = data.planItemShortTitle;
-    
+
     var title = jQuery("<div/>").attr("class", "itemTitle uif-boxLayoutHorizontalItem").append(shortTitle);
     actionGroup.append(title);
 
@@ -31,13 +31,13 @@ function planItemTemplate(data) {
     }
 
     var action = jQuery("<div/>").attr("id", itemId).attr({
-        "title":((data.placeHolder == "true" && data.planItemShortTitle == data.planItemLongTitle) ? "" : data.planItemShortTitle) + " " + ((data.sections != null && data.sections != "") ? data.sections + " " : "") + "'" + data.planItemLongTitle + "'" + ((data.placeHolder == "true") ? " placeholder" : ""),
-        "class":"uif-horizontalFieldGroup itemAction uif-tooltip uif-boxLayoutHorizontalItem",
-        "data-atpid":data.atpId.replace(/-/g, "."),
-        "data-planitemid":data.planItemId,
-        "data-placeholder":data.placeHolder,
-        "data-type":data.planItemType,
-        "style":"width:" + ((data.note) ? "99px; padding-right: 16px;" : "115px;")
+        "title": ((data.placeHolder == "true" && data.planItemShortTitle == data.planItemLongTitle) ? "" : data.planItemShortTitle) + " " + ((data.sections != null && data.sections != "") ? data.sections + " " : "") + "'" + data.planItemLongTitle + "'" + ((data.placeHolder == "true") ? " placeholder" : ""),
+        "class": "uif-horizontalFieldGroup itemAction uif-tooltip uif-boxLayoutHorizontalItem",
+        "data-atpid": data.atpId.replace(/-/g, "."),
+        "data-planitemid": data.planItemId,
+        "data-placeholder": data.placeHolder,
+        "data-type": data.planItemType,
+        "style": "width:" + ((data.note) ? "103px; padding-right:15px;" : "118px;")
     });
 
     if (data.placeHolder == "true") {
@@ -53,8 +53,8 @@ function planItemTemplate(data) {
 
     if (data.showAlert == "true") {
         var alert = jQuery("<div/>").attr({
-            "title":data.statusAlert,
-            "class":"itemAlert uif-boxLayoutHorizontalItem"
+            "title": data.statusAlert,
+            "class": "itemAlert uif-boxLayoutHorizontalItem"
         }).append(image.clone().attr("alt", data.statusAlert));
         itemGroup.append(alert);
         item.addClass("alert");
@@ -91,7 +91,7 @@ function planItemTemplate(data) {
         } else {
             noteContent = '&quot;' + decoded + '&quot; - ' + data.adviserName;
         }
-        var createTooltip = " createTooltip('" + itemId + "_note', '" + noteContent + "', {position:'top',align:'left',alwaysVisible:false,tail:{align:'left',hidden:false},themePath:'../ks-myplan/jquery-popover/jquerypopover-theme/',themeName:'ksap-notes',selectable:true,openingSpeed:50,closingSpeed:50,openingDelay:500,closingDelay:0,themeMargins:{total:'17px',difference:'10px'},distance:'0px'},true,true);";
+        var createTooltip = " createTooltip('" + itemId + "_note', '" + noteContent + "', {position:'top',align:'left',alwaysVisible:false,tail:{align:'left',hidden:false},themePath:'../ks-myplan/jquery-popover/jquerypopover-theme/',themeName:'ksap-" + ((data.planItemType == "recommended") ? "adviser" : "notes") + "',selectable:true,openingSpeed:50,closingSpeed:50,openingDelay:500,closingDelay:0,themeMargins:{total:'17px',difference:'10px'},distance:'0px'},true,true);";
         script.val(script.val() + createTooltip);
     }
 
@@ -322,11 +322,11 @@ function fnUpdateQuarterViewCredits(termCredits) {
 function fnUpdateRecommendedItem(data) {
     var itemId = data.planItemType + "_" + data.atpId + "_" + data.planItemId;
     jQuery("#" + itemId + "_group").removeClass("proposed").addClass("accepted");
-    var image = jQuery("<img/>").attr("src", "/student/ks-myplan/images/pixel.gif");
-    var accepted = jQuery("<div/>").attr({
-        "class":"itemAccepted uif-boxLayoutHorizontalItem"
-    }).append(image.clone());
-    jQuery("#" + itemId).before(accepted);
+    /*var image = jQuery("<img/>").attr("src", "/student/ks-myplan/images/pixel.gif");
+     var accepted = jQuery("<div/>").attr({
+     "class": "itemAccepted uif-boxLayoutHorizontalItem"
+     }).append(image.clone());
+     jQuery("#" + itemId).before(accepted);*/
     jQuery("#" + itemId + "_group").css({backgroundColor: "#faf5ca"}).animate({backgroundColor: "#ffffff"}, 1500, "linear", function () {
         jQuery(this).removeAttr("style");
     });

@@ -763,13 +763,15 @@
                       p:headerText="Adviser Recommendation for @{termName}">
                     <property name="items">
                         <list>
-                            <bean id="recommended_popover_group" parent="KSAP-HorizontalBoxGroup-NoMargin" p:width="300px">
+                            <bean id="recommended_popover_group" parent="KSAP-HorizontalBoxGroup-NoMargin"
+                                  p:width="300px">
                                 <property name="items">
                                     <list>
                                         <!-- Recommended View and Actions -->
                                         <ref bean="recommended_item"/>
                                         <!-- Add to Plan Form fields -->
-                                        <bean p:id="add_planned_course_fields" parent="add_planned_course_fields" p:render="@{!setToPlanning}"/>
+                                        <bean p:id="add_planned_course_fields" parent="add_planned_course_fields"
+                                              p:render="@{!setToPlanning}"/>
                                     </list>
                                 </property>
                             </bean>
@@ -863,9 +865,10 @@
                                                                     openPopup('recommended_delete_page', retrieveData, 'plan', popupStyle, popupOptions, e);
                                                                 "/>
                                         </bean>
-                                        <bean parent="addToPlanButton" p:render="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND !setToPlanning}">
+                                        <bean parent="addToPlanButton"
+                                              p:render="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND !setToPlanning}">
                                             <property name="actionScript"
-                                                              value="fnPopoverSlider('add_planned_course_fields', 'recommended_popover_group', 'left');"/>
+                                                      value="fnPopoverSlider('add_planned_course_fields', 'recommended_popover_group', 'left');"/>
                                         </bean>
                                         <bean id="acceptRecommendedItem" p:id="acceptRecommendedItem"
                                               parent="Uif-PrimaryActionButton-Small"
@@ -1150,7 +1153,8 @@
     </bean>
 
     <bean id="recommendation_info" parent="KSAP-HorizontalBoxGroup-NoMargin"
-          p:render="@{plannedCourseSummary NE null AND plannedCourseSummary.recommendedItemDataObjects.size() GT 0}" p:style="margin-top: 10px;">
+          p:render="@{plannedCourseSummary NE null AND plannedCourseSummary.recommendedItemDataObjects.size() GT 0}"
+          p:style="margin-top: 10px;">
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-status</value>
@@ -1280,12 +1284,15 @@
                                                       p:cssClasses="myplan-text-gray fl-font-size-80"
                                                       p:messageText="&quot;Shared&quot; plans are viewable by all UW advisers. &quot;Private&quot; plans are only viewable by you."/>
                                             </property>
-                                            <property name="onChangeScript" value="
-                                                myplanWriteHiddenToForm('methodToCall', 'planAccess', 'popupForm');
-                                                jQuery('#popupForm').ajaxSubmit();
-                                            "/>
                                             <property name="control">
                                                 <bean parent="Uif-VerticalRadioControl">
+                                                    <property name="onDocumentReadyScript" value="
+                                                        jQuery('input[name=enableAdviserView]').on('change', function(e) {
+                                                            var form = jQuery('#popupForm');
+                                                            myplanWriteHiddenToForm('methodToCall', 'planAccess', form.attr('id'));
+                                                            form.ajaxSubmit({headers: { 'cache-control': 'no-cache' }});
+                                                        });
+                                                    "/>
                                                     <property name="options">
                                                         <list>
                                                             <bean parent="Uif-KeyLabelPair" p:key="true"

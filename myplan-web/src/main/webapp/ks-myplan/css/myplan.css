@@ -1113,8 +1113,7 @@ div.activityAction div.blockElement {
     cursor: pointer;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.alert,
-.myplan-carousel-list ul li .myplan-carousel-term.myplan-term-recommended .uif-stackedCollectionLayout .uif-collectionItem.accepted{
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.alert {
     padding: 0 3px;
 }
 
@@ -1122,9 +1121,16 @@ div.activityAction div.blockElement {
     font-family: Georgia, serif;
     font-style: italic;
 }
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.accepted,
+
+.myplan-carousel-list ul li .myplan-carousel-term.myplan-term-recommended .uif-stackedCollectionLayout .uif-collectionItem.proposed .itemTitle,
+.myplan-quarter-detail .myplan-recommended-collection .myplan-course-item.proposed .itemCode {
+    font-weight: 700;
+}
+
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.accepted .itemTitle,
 .myplan-quarter-detail .myplan-course-item.accepted .itemCode {
     color: #008A00;
+    font-weight: 500;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem:hover,
@@ -1238,6 +1244,7 @@ div.activityAction div.blockElement {
     height: 12px;
     background-position: -3px -183px;
 }
+
 .myplan-carousel-list ul li .myplan-carousel-term.myplan-term-recommended .uif-stackedCollectionLayout .uif-collectionItem .itemNote img,
 .myplan-quarter-detail .myplan-recommended-collection .myplan-course-item .itemNote img {
     width: 16px;
@@ -3039,11 +3046,10 @@ label.scheduled {
     top: -2px;
 }
 
+/*
 .myplan-quarter-detail .myplan-course-item .itemCode {
     font-weight: bold;
 }
-
-/*
 .myplan-quarter-detail .myplan-course-item .itemCredit:before {
     content: "(";
     margin: 0;
@@ -3089,59 +3095,58 @@ label.scheduled {
 }
 
 .myplan-recommendation-message .uif-readOnlyContent {
-	position: relative;
-	padding: 15px;
+    position: relative;
+    padding: 5px 10px;
     font-size: 11px;
-	border: 1px solid #D6EED7;
-	color: #555;
-	font-style: italic;
-	background: #F9FFF9;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	border-radius: 10px;
+    border: 1px solid #D6EED7;
+    color: #555;
+    font-style: italic;
+    background: #F9FFF9;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
     display: block;
     width: 268px;
 }
 
 .myplan-recommendation-message .uif-readOnlyContent.left {
-	margin-left: 30px;
+    margin-left: 30px;
 }
 
 .myplan-recommendation-message .uif-readOnlyContent.right {
-	margin-right: 30px;
+    margin-right: 30px;
 }
 
 .myplan-recommendation-message .uif-readOnlyContent:before {
-	content: "";
-	position: absolute;
-	bottom: -13px; /* value = - border-top-width - border-bottom-width */
-	right: 29px; /* controls horizontal position */
+    content: "";
+    position: absolute;
+    bottom: -13px; /* value = - border-top-width - border-bottom-width */
+    right: 19px; /* controls horizontal position */
     border-width: 13px 10px 0;
-	border-style: solid;
+    border-style: solid;
     border-color: #D6EED7 transparent;
     display: block;
     width: 0;
 }
 
 .myplan-recommendation-message .uif-readOnlyContent:after {
-	content: "";
-	position: absolute;
-	bottom: -11px; /* value = - border-top-width - border-bottom-width */
-    right: 31px; /* value = (:before left) + (:before border-left) - (:after border-left) */
-	border-width: 11px 8px 0;
-	border-style: solid;
-	border-color: #F9FFF9 transparent;
+    content: "";
+    position: absolute;
+    bottom: -11px; /* value = - border-top-width - border-bottom-width */
+    right: 21px; /* value = (:before left) + (:before border-left) - (:after border-left) */
+    border-width: 11px 8px 0;
+    border-style: solid;
+    border-color: #F9FFF9 transparent;
     display: block;
     width: 0;
 }
 
 .myplan-recommendation-meta {
-	font-size: 10px;
-	color: #008A00;
-	line-height: 16px;
-	margin: 0 0 1.5em 0;
+    font-size: 10px;
+    color: #008A00;
+    line-height: 16px;
+    margin: 0 0 1.5em 0;
 }
-
 
 /* Styles for Run Audit Panel ################################################################################## */
 .myplan-audit-tabs {

@@ -886,9 +886,9 @@
     <bean id="singleQuarterRecommendedItemGroup" parent="singleQuarterPlanItemGroup">
         <property name="items">
             <list>
-                <bean parent="singleQuarterItemAlert" p:render="@{#line.showAlert AND #line.proposed}"/>
+                <bean parent="singleQuarterItemAlert"/>
 
-                <bean parent="recommendedAccepted"/>
+                <!--<bean parent="recommendedAccepted"/>-->
 
                 <bean parent="singleQuarterItemCourseCode"/>
 
@@ -904,7 +904,8 @@
                     </property>
                     <property name="toolTip">
                         <bean parent="MyPlan-Tooltip-Left">
-                            <property name="tooltipContent" value="@{#line.note NE null ? '&quot;' + #line.note.replaceAll('\n','&lt;br&gt;') + '&quot; - ' + #line.adviserName : ''}"/>
+                            <property name="tooltipContent"
+                                      value="@{#line.note NE null ? '&quot;' + #line.note.replaceAll('\n','&lt;br&gt;') + '&quot; - ' + #line.adviserName : ''}"/>
                             <property name="templateOptions">
                                 <map merge="true">
                                     <entry key="themeMargins" value="{ total:'17px', difference:'10px' }"/>
@@ -959,7 +960,9 @@
                             <list merge="true">
                                 <value>myplan-course-item</value>
                                 <value>@{#line.placeHolder ? 'placeholder':''}</value>
-                                <value>@{#line.planItemDataObject.type EQ 'recommended' ? (!#line.proposed ? 'accepted' : 'proposed') : (#line.adviserRecommended ? 'accepted':'')}</value>
+                                <value>@{#line.planItemDataObject.type EQ 'recommended' ? (!#line.proposed ? 'accepted'
+                                    : 'proposed') : (#line.adviserRecommended ? 'accepted':'')}
+                                </value>
                             </list>
                         </property>
                     </bean>

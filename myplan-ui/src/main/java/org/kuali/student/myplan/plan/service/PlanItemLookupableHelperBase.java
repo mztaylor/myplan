@@ -139,7 +139,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     private void addActivitiesToPlannedCourseList(List<PlannedCourseDataObject> plannedCourseList, Map<String, List<ActivityOfferingItem>> plannedSections, Map<String, List<String>> sectionsSuspended, Map<String, List<String>> sectionsWithdrawn) {
         List<String> publishedTerms = AtpHelper.getPublishedTerms();
         for (PlannedCourseDataObject plannedCourse : plannedCourseList) {
-            if (!plannedCourse.isPlaceHolder() && !PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(plannedCourse.getPlanItemDataObject().getPlanType())) {
+            if (!plannedCourse.isPlaceHolder()) {
                 String key = generateKey(plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp());
                 List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(key);
                 if (activityOfferingItems != null && activityOfferingItems.size() > 0) {
@@ -161,22 +161,26 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                     statusAlerts.add(String.format(PlanConstants.COURSE_NOT_SCHEDULE_ALERT, plannedCourse.getCourseDetails().getCode(), plannedCourse.getPlanItemDataObject().getTermName()));
                     plannedCourse.setSectionsAvailable(false);
                 }
-                if (sectionsWithdrawn.containsKey(key)) {
-                    List<String> sectionList = sectionsWithdrawn.get(key);
-                    String[] sections = sectionList.toArray(new String[sectionList.size()]);
-                    statusAlerts.add(String.format(PlanConstants.WITHDRAWN_ALERT, getCourseHelper().joinStringsByDelimiter(',', sections)));
-                    plannedCourse.setShowAlert(true);
+
+                if (!PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(plannedCourse.getPlanItemDataObject().getPlanType())) {
+                    if (sectionsWithdrawn.containsKey(key)) {
+                        List<String> sectionList = sectionsWithdrawn.get(key);
+                        String[] sections = sectionList.toArray(new String[sectionList.size()]);
+                        statusAlerts.add(String.format(PlanConstants.WITHDRAWN_ALERT, getCourseHelper().joinStringsByDelimiter(',', sections)));
+                        plannedCourse.setShowAlert(true);
+                    }
+                    if (sectionsSuspended.containsKey(key)) {
+                        List<String> sectionList = sectionsSuspended.get(key);
+                        String[] sections = sectionList.toArray(new String[sectionList.size()]);
+                        statusAlerts.add(String.format(PlanConstants.SUSPENDED_ALERT, getCourseHelper().joinStringsByDelimiter(',', sections)));
+                        plannedCourse.setShowAlert(true);
+                    }
+                    if (!statusAlerts.isEmpty()) {
+                        plannedCourse.setStatusAlerts(statusAlerts);
+                    }
+                    plannedCourse.setPlanActivities(activityOfferingItems);
                 }
-                if (sectionsSuspended.containsKey(key)) {
-                    List<String> sectionList = sectionsSuspended.get(key);
-                    String[] sections = sectionList.toArray(new String[sectionList.size()]);
-                    statusAlerts.add(String.format(PlanConstants.SUSPENDED_ALERT, getCourseHelper().joinStringsByDelimiter(',', sections)));
-                    plannedCourse.setShowAlert(true);
-                }
-                if (!statusAlerts.isEmpty()) {
-                    plannedCourse.setStatusAlerts(statusAlerts);
-                }
-                plannedCourse.setPlanActivities(activityOfferingItems);
+
             }
         }
     }

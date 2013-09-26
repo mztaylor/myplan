@@ -101,6 +101,19 @@ if (readUrlHash("modified")) {
     window.location.assign(url.split("#")[0] + ((aHash.length > 0) ? "#" + aHash.join("&") : ""));
 }
 
+window.onpageshow = function (event) {
+    if (event.persisted) {
+        if (readUrlHash("modified")) {
+            var url = window.location.href;
+            var aHash = window.location.href.split("#")[1].replace("#", "").split("&");
+            aHash.splice(aHash.indexOf("modified=true"), 1);
+            window.location.assign(url.split("#")[0] + ((aHash.length > 0) ? "#" + aHash.join("&") : ""));
+        } else {
+            window.location.reload();
+        }
+    }
+};
+
 jQuery(document).ready(function () {
     jQuery("head").append('<!--[if ie 9]><style type="text/css" media="screen"> \
         button.uif-primaryActionButton,button.uif-secondaryActionButton, \
@@ -453,6 +466,7 @@ function submitPopupForm(additionalFormData, e, bDialog) {
 function ksapAjaxSubmitForm(data, successCallback, elementToBlock, formId, blockingSettings) {
     var submitOptions = {
         data: data,
+        headers: { "cache-control": "no-cache" },
         success: function (response) {
             var tempDiv = document.createElement('div');
             tempDiv.innerHTML = response;
@@ -621,6 +635,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
 
     var submitOptions = {
         data: data,
+        headers: { "cache-control": "no-cache" },
         success: function (response) {
             var tempDiv = document.createElement('div');
             tempDiv.innerHTML = response;

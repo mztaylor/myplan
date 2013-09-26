@@ -1136,8 +1136,8 @@
                 <bean parent="planItemGroup">
                     <property name="items">
                         <list>
-                            <bean parent="recommendedAccepted"/>
-                            <bean parent="planItemAlert" p:render="@{#line.showAlert AND #line.proposed}"/>
+                            <!--<bean parent="recommendedAccepted"/>-->
+                            <bean parent="planItemAlert"/>
                             <bean parent="recommendedAction"/>
                             <bean parent="planItemNoteIcon">
                                 <property name="propertyReplacers">
@@ -1145,7 +1145,8 @@
                                 </property>
                                 <property name="toolTip">
                                     <bean parent="MyPlan-Tooltip-Left">
-                                        <property name="tooltipContent" value="@{#line.note NE null ? '&quot;' + #line.note.replaceAll('\n','&lt;br&gt;') + '&quot; - ' + #line.adviserName : ''}"/>
+                                        <property name="tooltipContent"
+                                                  value="@{#line.note NE null ? '&quot;' + #line.note.replaceAll('\n','&lt;br&gt;') + '&quot; - ' + #line.adviserName : ''}"/>
                                         <property name="templateOptions">
                                             <map merge="true">
                                                 <entry key="themeMargins" value="{ total:'17px', difference:'10px' }"/>
