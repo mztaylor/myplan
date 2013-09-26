@@ -36,6 +36,7 @@ function planItemTemplate(data) {
         "data-atpid":data.atpId.replace(/-/g, "."),
         "data-planitemid":data.planItemId,
         "data-placeholder":data.placeHolder,
+        "data-type":data.planItemType,
         "style":"width:" + ((data.note) ? "99px; padding-right: 16px;" : "115px;")
     });
 
