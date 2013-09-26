@@ -350,25 +350,13 @@
         </property>
     </bean>
 
-    <bean id="KSAP-FacetGroup" parent="Uif-Disclosure-VerticalBoxSubSection">
+    <bean id="facet_quarter" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Quarter">
         <property name="validationMessages">
             <null/>
         </property>
         <property name="header">
             <bean parent="Uif-HeaderSix"/>
         </property>
-        <property name="disclosure.collapseImageSrc"
-                      value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"/>
-        <property name="disclosure.expandImageSrc"
-                  value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-facets-group</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="facet_quarter" parent="KSAP-FacetGroup" p:headerText="Quarter">
         <property name="header.rightGroup">
             <bean parent="Uif-HorizontalBoxGroup">
                 <property name="validationMessages">
@@ -381,6 +369,11 @@
                 </property>
             </bean>
         </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+            </list>
+        </property>
         <property name="onDocumentReadyScript" value="
             jQuery('#facet_quarter').on('GENERATE_FACETS', function(event){
                 fnGenerateFacetGroup(6, jQuery(this), terms);
@@ -389,8 +382,18 @@
             });
         "/>
     </bean>
-
-    <bean id="facet_genedureq" parent="KSAP-FacetGroup" p:headerText="Gen. Edu. Req.">
+    <bean id="facet_genedureq" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Gen. Edu. Req.">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+            </list>
+        </property>
         <property name="onDocumentReadyScript" value="
             jQuery('#facet_genedureq').on('GENERATE_FACETS', function(event){
                 fnGenerateFacetGroup(7, jQuery(this), alpha);
@@ -399,8 +402,18 @@
             });
         "/>
     </bean>
-
-    <bean id="facet_credits" parent="KSAP-FacetGroup" p:headerText="Credits">
+    <bean id="facet_credits" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Credits">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+            </list>
+        </property>
         <property name="onDocumentReadyScript" value="
             jQuery('#facet_credits').on('GENERATE_FACETS', function(event){
                 fnGenerateFacetGroup(8, jQuery(this), numeric);
@@ -409,8 +422,18 @@
             });
         "/>
     </bean>
-
-    <bean id="facet_level" parent="KSAP-FacetGroup" p:headerText="Course Level">
+    <bean id="facet_level" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Course Level">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+            </list>
+        </property>
         <property name="onDocumentReadyScript" value="
             jQuery('#facet_level').on('GENERATE_FACETS', function(event){
                 fnGenerateFacetGroup(9, jQuery(this), numeric);
@@ -419,8 +442,18 @@
             });
         "/>
     </bean>
-
-    <bean id="facet_curriculum" parent="KSAP-FacetGroup" p:headerText="Course Prefix">
+    <bean id="facet_curriculum" parent="Uif-Disclosure-VerticalBoxSubSection" p:headerText="Course Prefix">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="header">
+            <bean parent="Uif-HeaderSix"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-facets-group</value>
+            </list>
+        </property>
         <property name="onDocumentReadyScript" value="
             jQuery('#facet_curriculum').on('GENERATE_FACETS', function(event){
                 fnGenerateFacetGroup(10, jQuery(this), alpha);

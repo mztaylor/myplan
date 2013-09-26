@@ -35,8 +35,7 @@
                 <value>myplan-view</value>
             </list>
         </property>
-        <property name="items">
-            <list>
+        <property name="page">
                 <bean parent="Uif-Page" p:id="single_planned_courses_detail_page">
                     <property name="validationMessages">
                         <null/>
@@ -221,7 +220,6 @@
                         </list>
                     </property>
                 </bean>
-            </list>
         </property>
         <property name="footer.render" value="false"/>
     </bean>

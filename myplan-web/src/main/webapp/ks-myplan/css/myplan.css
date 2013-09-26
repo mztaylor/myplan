@@ -11,6 +11,10 @@ body {
     padding: 0 !important;
 }
 
+form {
+    margin: 0;
+}
+
 strong {
     font-weight: 700;
 }
@@ -28,6 +32,11 @@ strong {
     z-index: 200 !important;
 }
 
+.uif-viewHeader .uif-headerText .uif-headerText-span {
+    font-size: inherit;
+    padding: 0;
+}
+
 .myplan-view h1, .fancybox-wrap h1,
 .myplan-view h2, .fancybox-wrap h2,
 .myplan-view h3, .fancybox-wrap h3,
@@ -37,6 +46,7 @@ strong {
     font-weight: 500;
     font-family: "museo-sans", Arial, Helvetica, Verdana, sans-serif;
     text-transform: none;
+    margin: 0;
 }
 
 .myplan-view h1.uif-headerText,
@@ -114,10 +124,63 @@ a, a:hover, a:active, a:visited, a:focus {
     color: #b4b4b4 !important;
 }
 
+.fl-text-align-right {
+    text-align: right;
+}
+
+.fl-font-size-80,
+.fl-font-size-80 body,
+.fl-font-size-80 input,
+.fl-font-size-80 select,
+.fl-font-size-80 textarea {font-size:0.8em; line-height:1.1em;}
+
+.fl-font-size-90,
+.fl-font-size-90 body,
+.fl-font-size-90 input,
+.fl-font-size-90 select,
+.fl-font-size-90 textarea {font-size:0.9em; line-height:1.2em;}
+
+.fl-font-size-100,
+.fl-font-size-100 body,
+.fl-font-size-100 input,
+.fl-font-size-100 select,
+.fl-font-size-100 textarea {font-size:1em; line-height:1.3em;}
+
+.fl-font-size-110,
+.fl-font-size-110 body,
+.fl-font-size-110 input,
+.fl-font-size-110 select,
+.fl-font-size-110 textarea {font-size:1.1em; line-height:1.4em;}
+
+.fl-font-size-120,
+.fl-font-size-120 body,
+.fl-font-size-120 input,
+.fl-font-size-120 select,
+.fl-font-size-120 textarea {font-size:1.2em; line-height:1.5em;}
+
+.fl-font-size-130,
+.fl-font-size-130 body,
+.fl-font-size-130 input,
+.fl-font-size-130 select,
+.fl-font-size-130 textarea {font-size:1.3em; line-height:1.6em;}
+
+.fl-font-size-140,
+.fl-font-size-140 body,
+.fl-font-size-140 input,
+.fl-font-size-140 select,
+.fl-font-size-140 textarea {font-size:1.4em; line-height:1.7em;}
+
+.fl-font-size-150,
+.fl-font-size-150 body,
+.fl-font-size-150 input,
+.fl-font-size-150 select,
+.fl-font-size-150 textarea {font-size:1.5em; line-height:1.8em;}
+
 .uif-pageContentWrapper,
 .uif-viewHeader,
 .uif-header {
     margin: 0;
+    padding: 0;
 }
 
 .uif-application,
@@ -870,7 +933,7 @@ div.activityAction div.blockElement {
     margin: 0 5px;
 }
 
-.myplan-carousel-list ul li > .uif-group > .uif-header {
+.myplan-carousel-list ul li > .uif-group > .uif-header-contentWrapper > .uif-header {
     margin: 0;
     padding: 0;
     height: auto;
@@ -880,7 +943,7 @@ div.activityAction div.blockElement {
 }
 
 /* 1 Year Plan Header Future styling  */
-.myplan-carousel-list ul li > .uif-group > .uif-header h4 {
+.myplan-carousel-list ul li > .uif-group > .uif-header-contentWrapper > .uif-header h4 {
     display: block;
     white-space: nowrap;
     text-align: center;
@@ -900,7 +963,7 @@ div.activityAction div.blockElement {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ede1c1', endColorstr='#efd89e');
 }
 
-.myplan-carousel-list ul li > .uif-group > .uif-header h4 .uif-headerText-span {
+.myplan-carousel-list ul li > .uif-group > .uif-header-contentWrapper > .uif-header h4 .uif-headerText-span {
     color: #555;
     font-size: 13px;
     text-transform: uppercase;
@@ -908,7 +971,7 @@ div.activityAction div.blockElement {
 }
 
 /* 1 Year Plan Header Future Hover styling */
-.myplan-carousel-list ul li > .uif-group > .uif-header:hover h4 {
+.myplan-carousel-list ul li > .uif-group > .uif-header-contentWrapper > .uif-header:hover h4 {
     background-color: #f5d170;
     background-image: -ms-linear-gradient(top, #f5d170 0%, #f8dd96 100%);
     background-image: -moz-linear-gradient(center top, #f5d170 0%, #f8dd96 100%);
@@ -920,12 +983,12 @@ div.activityAction div.blockElement {
     cursor: pointer;
 }
 
-.myplan-carousel-list ul li > .uif-group > .uif-header:hover h4 .uif-headerText-span {
+.myplan-carousel-list ul li > .uif-group > .uif-header-contentWrapper > .uif-header:hover h4 .uif-headerText-span {
     color: #161616;
 }
 
 /* 1 Year Plan Header Past styling  */
-.myplan-carousel-list ul li > .uif-group.myplan-term-past > .uif-header h4 {
+.myplan-carousel-list ul li > .uif-group.myplan-term-past > .uif-header-contentWrapper > .uif-header h4 {
     border: solid 1px #cccccc;
     background-color: #dedede;
     background-image: -ms-linear-gradient(top, #dedede 0%, #cccccc 100%);
@@ -938,7 +1001,7 @@ div.activityAction div.blockElement {
 }
 
 /* 1 Year Plan Header Past Hover styling  */
-.myplan-carousel-list ul li > .uif-group.myplan-term-past > .uif-header:hover h4 {
+.myplan-carousel-list ul li > .uif-group.myplan-term-past > .uif-header-contentWrapper > .uif-header:hover h4 {
     background-color: #b1b1b1;
     background-image: -ms-linear-gradient(top, #b1b1b1 0%, #cbcbcb 100%);
     background-image: -moz-linear-gradient(center top, #b1b1b1 0%, #cbcbcb 100%);
@@ -950,12 +1013,12 @@ div.activityAction div.blockElement {
     cursor: pointer;
 }
 
-.myplan-carousel-list ul li > .uif-group.myplan-term-past > .uif-header:hover h4 .uif-headerText-span {
+.myplan-carousel-list ul li > .uif-group.myplan-term-past > .uif-header-contentWrapper > .uif-header:hover h4 .uif-headerText-span {
     color: #000;
 }
 
 /* 1 Year Plan Header Current styling  */
-.myplan-carousel-list ul li > .uif-group.myplan-term-current > .uif-header h4 {
+.myplan-carousel-list ul li > .uif-group.myplan-term-current > .uif-header-contentWrapper > .uif-header h4 {
     border: solid 1px #432f69;
     background-color: #5c428e;
     background-image: -ms-linear-gradient(top, #5c428e 0%, #3b295f 100%);
@@ -967,13 +1030,13 @@ div.activityAction div.blockElement {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#5c428e', endColorstr='#3b295f');
 }
 
-.myplan-carousel-list ul li > .uif-group.myplan-term-current > .uif-header h4 .uif-headerText-span {
+.myplan-carousel-list ul li > .uif-group.myplan-term-current > .uif-header-contentWrapper > .uif-header h4 .uif-headerText-span {
     color: #f9f7f7;
     text-shadow: 0px 1px 0px #000;
 }
 
 /* 1 Year Plan Header Current Hover styling  */
-.myplan-carousel-list ul li > .uif-group.myplan-term-current > .uif-header:hover h4 {
+.myplan-carousel-list ul li > .uif-group.myplan-term-current > .uif-header-contentWrapper > .uif-header:hover h4 {
     background-color: #7962a5;
     background-image: -ms-linear-gradient(top, #7962a5 0%, #5d438f 100%);
     background-image: -moz-linear-gradient(center top, #7962a5 0%, #5d438f 100%);
@@ -985,11 +1048,11 @@ div.activityAction div.blockElement {
     cursor: pointer;
 }
 
-.myplan-carousel-list ul li > .uif-group.myplan-term-current > .uif-header:hover h4 .uif-headerText-span {
+.myplan-carousel-list ul li > .uif-group.myplan-term-current > .uif-header-contentWrapper > .uif-header:hover h4 .uif-headerText-span {
     color: #fff;
 }
 
-.myplan-carousel-list ul li > .uif-group > .uif-boxLayout {
+.myplan-carousel-list ul li > .uif-group > .uif-verticalBoxLayout {
     background: url('../images/bkgrdDotted.gif');
     min-height: 519px;
     border: solid 1px #dfdfdf;
@@ -1113,7 +1176,8 @@ div.activityAction div.blockElement {
     cursor: pointer;
 }
 
-.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.alert {
+.myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.ksap-alert,
+.myplan-carousel-list ul li .myplan-carousel-term.myplan-term-recommended .uif-stackedCollectionLayout .uif-collectionItem.accepted{
     padding: 0 3px;
 }
 

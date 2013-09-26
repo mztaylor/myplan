@@ -33,8 +33,7 @@
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
         <property name="singlePageView" value="true"/>
-        <property name="items">
-            <list>
+        <property name="page">
                 <bean parent="Uif-Page" p:id="course_sections_page">
                     <property name="layoutManager">
                         <bean parent="Uif-VerticalBoxLayout"/>
@@ -310,7 +309,6 @@
                         </list>
                     </property>
                 </bean>
-            </list>
         </property>
     </bean>
 

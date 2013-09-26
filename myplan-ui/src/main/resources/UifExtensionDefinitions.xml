@@ -44,13 +44,21 @@
     <bean id="Uif-TabbedCollectionGroup" parent="Uif-TabbedCollectionGroup-parentBean"/>
     <bean id="Uif-TabbedCollectionGroup-parentBean" abstract="true"
           class="org.kuali.rice.krad.uif.container.extension.TabCollectionGroup"
-          parent="Uif-ListCollectionGroup-parentBean">
+          parent="Uif-StackedCollectionGroup-parentBean" scope="prototype">
         <property name="layoutManager">
             <bean parent="Uif-TabbedCollectionLayout"/>
         </property>
         <property name="tabsWidget">
-            <bean parent="Uif-Tabs"/>
+            <bean parent="Uif-KSAPTabs"/>
         </property>
+    </bean>
+
+
+    <bean id="Uif-KSAPTabs" parent="Uif-KSAPTabs-parentBean"/>
+    <bean id="Uif-KSAPTabs-parentBean" abstract="true" class="org.kuali.rice.krad.uif.widget.extension.KSAPTabs" scope="prototype"
+          parent="Uif-WidgetBase">
+        <property name="template" value="/krad/WEB-INF/ftl/components/widget/tabs.ftl"/>
+        <property name="templateName" value="uif_tabs"/>
     </bean>
 
 

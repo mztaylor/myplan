@@ -553,7 +553,11 @@
 
         <!-- Not Displaying any criteria -->
         <property name="criteriaGroup">
-            <bean parent="KSAP-VerticalBoxGroup"/>
+            <bean parent="KSAP-VerticalBoxGroup">
+                <property name="footer">
+                    <bean parent="KSAP-EmptyLookupCriteriaFooter"/>
+        </property>
+            </bean>
         </property>
         <property name="resultsGroup">
             <bean id="messages_summary" parent="messages_summary_list"/>
@@ -785,9 +789,7 @@
                 <value>krad/plugins/rice/datatables/jquery.dataTables.css</value>
             </list>
         </property>-->
-
-        <property name="items">
-            <list>
+        <property name="page">
                 <bean parent="Uif-LookupPage" p:id="messages_detail_page" p:headerText="Messages &amp; Comments">
                     <property name="validationMessages">
                         <null/>
@@ -802,7 +804,6 @@
                         </list>
                     </property>
                 </bean>
-            </list>
         </property>
 
         <property name="criteriaFields">
@@ -810,6 +811,13 @@
         </property>
         <property name="resultFields">
             <list/>
+        </property>
+        <property name="criteriaGroup">
+            <bean parent="KSAP-VerticalBoxGroup">
+                <property name="footer">
+                    <bean parent="KSAP-EmptyLookupCriteriaFooter"/>
+                </property>
+            </bean>
         </property>
     </bean>
 
@@ -835,7 +843,7 @@
         <property name="propertyName" value="lookupResults"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
-        <property name="collectionLookup.quickfinderAction.render" value="false"/>
+        <!--<property name="collectionLookup.quickfinderAction.render" value="false"/>-->
         <property name="layoutManager.renderSequenceField" value="false"/>
         <property name="header.render" value="false"/>
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
@@ -877,6 +885,7 @@
                        }"/>
             </map>
         </property>
+
         <property name="items">
             <list>
                 <bean p:id="@{#line.messageId}_subject" parent="Uif-VerticalFieldGroup" p:label="Subject">

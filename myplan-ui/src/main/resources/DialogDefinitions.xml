@@ -1354,9 +1354,10 @@
         <property name="fieldLabel.cssClasses" value="myplan-text-normal"/>
         <property name="items">
             <list>
-                <bean parent="KSAP-SimpleInputField" p:propertyName="atpId">
+                <bean parent="KSAP-SimpleInputField" p:propertyName="atpId"
+                      p:width="120px">
                     <property name="control">
-                        <bean parent="Uif-DropdownControl" p:style="width:115px;"/>
+                        <bean parent="Uif-DropdownControl" p:style="width: 120px;"/>
                     </property>
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.plan.util.TermsListBuilder"/>

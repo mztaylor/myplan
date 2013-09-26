@@ -40,7 +40,7 @@ public class ListDataField extends DataField {
      * @param list readonly list content to be displayed as a HTML definition list
      */
     @Override
-    protected void generateReadOnlyListDisplayReplacement(List<?> list) {
+    protected String generateReadOnlyListDisplayReplacement(List<?> list) {
         StringBuffer generatedHtml = new StringBuffer();
 
         //Default to delimited if nothing is set
@@ -108,5 +108,7 @@ public class ListDataField extends DataField {
             //this must be done or the ftl will skip and throw error
             this.setReadOnlyDisplayReplacement("&nbsp;");
         }
+
+        return generatedHtml.toString();
     }
 }
