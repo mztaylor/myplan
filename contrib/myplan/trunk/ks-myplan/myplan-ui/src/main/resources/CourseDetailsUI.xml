@@ -35,9 +35,8 @@
         <property name="header">
             <ref bean="course_details_back_link"/>
         </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-Page" p:id="course_details_page"
+        <property name="page">
+            <bean parent="Uif-Page" id="course_details_page"
                       p:headerText="@{dataObject.courseSummaryDetails.code} @{dataObject.courseSummaryDetails.courseTitle} (@{dataObject.courseSummaryDetails.credit})">
                     <property name="validationMessages">
                         <null/>
@@ -52,7 +51,6 @@
                         </list>
                     </property>
                 </bean>
-            </list>
         </property>
     </bean>
 
@@ -227,7 +225,7 @@
         </property>
     </bean>
 
-    <bean id="course_details_overview" parent="Uif-GridGroup" p:headerText="Course Overview">
+    <bean id="course_details_overview" parent="KSAP-VerticalBoxGroup" p:headerText="Course Overview">
         <property name="header">
             <bean parent="Uif-HeaderThree">
                 <property name="cssClasses">
@@ -238,15 +236,11 @@
             </bean>
         </property>
         <property name="header.rightGroup">
-            <bean parent="Uif-HorizontalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
-                </property>
+            <bean parent="KSAP-HorizontalBoxGroup">
                 <property name="items">
                     <list>
                         <bean parent="Uif-DataField" p:propertyName="courseSummaryDetails.abbrGenEdRequirements"
-                              p:escapeHtmlInPropertyValue="false"
-                              p:render="@{dataObject.courseSummaryDetails.abbrGenEdRequirements.size() gt 0}">
+                              p:escapeHtmlInPropertyValue="false">
                             <property name="fieldLabel.render" value="false"/>
                             <property name="cssClasses">
                                 <list merge="true">
@@ -256,51 +250,24 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean parent="Uif-MessageField"
-                              p:fieldLabel.render="false"
-                              p:render="@{dataObject.courseSummaryDetails.abbrGenEdRequirements.size() eq 0}">
-                            <property name="message">
-                                <bean parent="Uif-Message" p:messageText=""/>
-                            </property>
-                        </bean>
                     </list>
                 </property>
             </bean>
         </property>
         <property name="header.rightGroup.render"
-                  value="@{dataObject.courseSummaryDetails.abbrGenEdRequirements.size() gt 0 ? true : false}"/>
+                  value="@{dataObject.courseSummaryDetails.abbrGenEdRequirements.size() gt 0}"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-course-details</value>
             </list>
         </property>
-        <property name="layoutManager.numberOfColumns" value="2"/>
-        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-VerticalBoxGroup">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-course-details</value>
-                        </list>
-                    </property>
-                    <property name="items">
-                        <list>
                             <!--Course Description-->
-                            <bean parent="Uif-HorizontalFieldGroup">
-                                <property name="fieldLabel.renderColon" value="false"/>
-                                <property name="group.validationMessages">
-                                    <null/>
-                                </property>
+                <bean parent="KSAP-HorizontalFieldGroup">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                            <property name="validationMessages">
-                                                <null/>
-                                            </property>
+                            <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>myplan-course-detail-label</value>
@@ -313,10 +280,7 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                            <property name="validationMessages">
-                                                <null/>
-                                            </property>
+                            <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>myplan-course-detail-field</value>
@@ -332,7 +296,7 @@
                                                                   value="@{dataObject.courseSummaryDetails.courseDescription ne null and dataObject.courseSummaryDetails.courseDescription.length() gt 0 ? true : false}"/>
                                                     </bean>
                                                     <!-- If Course Description is empty-->
-                                                    <bean parent="Uif-Message"
+                                        <bean parent="KSAP-Message"
                                                           p:messageText="This course has no description in the Course Catalog. Please contact the department for more details.">
                                                         <property name="render"
                                                                   value="@{dataObject.courseSummaryDetails.courseDescription ne null and dataObject.courseSummaryDetails.courseDescription.length() gt 0 ? false : true}"/>
@@ -346,17 +310,10 @@
                             </bean>
 
                             <!--Course Requisites-->
-                            <bean parent="Uif-HorizontalFieldGroup">
-                                <property name="fieldLabel.renderColon" value="false"/>
-                                <property name="group.validationMessages">
-                                    <null/>
-                                </property>
+                <bean parent="KSAP-HorizontalFieldGroup">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                            <property name="validationMessages">
-                                                <null/>
-                                            </property>
+                            <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>myplan-course-detail-label</value>
@@ -364,16 +321,14 @@
                                             </property>
                                             <property name="items">
                                                 <list>
+                                        <ref bean="course_requisite_help_icon"/>
                                                     <bean parent="Uif-Label" p:labelText="Course Requisites"
                                                           p:renderColon="false"/>
-                                                    <ref bean="course_requisite_help_icon"/>
+
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                            <property name="validationMessages">
-                                                <null/>
-                                            </property>
+                            <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>myplan-course-detail-field</value>
@@ -392,14 +347,13 @@
                                                             </list>
                                                         </property>
                                                     </bean>
-                                                    <bean parent="Uif-MessageField"
-                                                          p:fieldLabel.render="false"
+                                        <bean parent="KSAP-MessageField"
                                                           p:render="@{dataObject.courseSummaryDetails.requisites.size() eq 0}">
                                                         <property name="message">
-                                                            <bean parent="Uif-Message" p:messageText="None"/>
+                                                <bean parent="KSAP-Message" p:messageText="None"/>
                                                         </property>
                                                     </bean>
-                                                    <bean parent="Uif-Message" p:messageText="(Source: Course Catalog)"
+                                        <bean parent="KSAP-Message" p:messageText="(Source: Course Catalog)"
                                                           p:style="line-height: 20px;">
                                                         <property name="cssClasses">
                                                             <list merge="true">
@@ -414,18 +368,12 @@
                                     </list>
                                 </property>
                             </bean>
+
                             <!--Quarters-->
-                            <bean parent="Uif-HorizontalFieldGroup">
-                                <property name="fieldLabel.renderColon" value="false"/>
-                                <property name="group.validationMessages">
-                                    <null/>
-                                </property>
+                <bean parent="KSAP-HorizontalFieldGroup">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                            <property name="validationMessages">
-                                                <null/>
-                                            </property>
+                            <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>myplan-course-detail-label</value>
@@ -439,10 +387,7 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-VerticalBoxGroup">
-                                            <property name="validationMessages">
-                                                <null/>
-                                            </property>
+                            <bean parent="KSAP-VerticalBoxGroup">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>myplan-course-detail-field</value>
@@ -450,10 +395,7 @@
                                             </property>
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="Uif-HorizontalBoxGroup">
-                                                        <property name="validationMessages">
-                                                            <null/>
-                                                        </property>
+                                        <bean parent="KSAP-HorizontalBoxGroup">
                                                         <property name="items">
                                                             <list>
                                                                 <bean parent="Uif-DataField" p:label="Scheduled For"
@@ -470,11 +412,11 @@
                                                                         </list>
                                                                     </property>
                                                                 </bean>
-                                                                <bean parent="Uif-Message" p:style="line-height: 20px;"
+                                                    <bean parent="KSAP-Message" p:style="line-height: 20px;"
                                                                       p:messageText="Not Currently Scheduled"
                                                                       p:render="@{dataObject.courseSummaryDetails.scheduledTerms.size() eq 0}">
                                                                 </bean>
-                                                                <bean parent="Uif-Message" p:style="line-height: 20px;"
+                                                    <bean parent="KSAP-Message" p:style="line-height: 20px;"
                                                                       p:messageText="(Source: Time Schedule)">
                                                                     <property name="cssClasses">
                                                                         <list merge="true">
@@ -486,11 +428,8 @@
                                                             </list>
                                                         </property>
                                                     </bean>
-                                                    <bean parent="Uif-VerticalBoxGroup" p:style="margin:0;"
+                                        <bean parent="KSAP-VerticalBoxGroup" p:style="margin:0;"
                                                           p:render="@{dataObject.courseSummaryDetails.scheduledTerms.size() gt 0 ? false : true}">
-                                                        <property name="validationMessages">
-                                                            <null/>
-                                                        </property>
                                                         <property name="items">
                                                             <list>
                                                                 <bean parent="Uif-DataField"
@@ -503,10 +442,7 @@
                                                             </list>
                                                         </property>
                                                     </bean>
-                                                    <bean parent="Uif-HorizontalBoxGroup" p:style="margin:0;">
-                                                        <property name="validationMessages">
-                                                            <null/>
-                                                        </property>
+                                        <bean parent="KSAP-HorizontalBoxGroup" p:style="margin:0;">
                                                         <property name="items">
                                                             <list>
                                                                 <bean parent="Uif-DataField"
@@ -522,7 +458,7 @@
                                                                         </list>
                                                                     </property>
                                                                 </bean>
-                                                                <bean parent="Uif-MessageField"
+                                                    <bean parent="KSAP-MessageField"
                                                                       p:label="Projected Quarter Info"
                                                                       p:render="@{dataObject.courseSummaryDetails.termsOffered.size() eq 0}">
                                                                     <property name="fieldLabel.cssClasses"
@@ -532,7 +468,7 @@
                                                                               p:messageText="Check with the department or your adviser for more information about this course."/>
                                                                     </property>
                                                                 </bean>
-                                                                <bean parent="Uif-Message" p:style="line-height: 20px;"
+                                                    <bean parent="KSAP-Message" p:style="line-height: 20px;"
                                                                       p:messageText="(Source: Course Catalog)">
                                                                     <property name="cssClasses">
                                                                         <list merge="true">
@@ -552,17 +488,10 @@
                             </bean>
 
                             <!--Genedu-->
-                            <bean parent="Uif-HorizontalFieldGroup">
-                                <property name="fieldLabel.renderColon" value="false"/>
-                                <property name="group.validationMessages">
-                                    <null/>
-                                </property>
+                <bean parent="KSAP-HorizontalFieldGroup">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                            <property name="validationMessages">
-                                                <null/>
-                                            </property>
+                            <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>myplan-course-detail-label</value>
@@ -576,10 +505,7 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                            <property name="validationMessages">
-                                                <null/>
-                                            </property>
+                            <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>myplan-course-detail-field</value>
@@ -598,11 +524,10 @@
                                                             </list>
                                                         </property>
                                                     </bean>
-                                                    <bean parent="Uif-MessageField"
-                                                          p:fieldLabel.render="false"
+                                        <bean parent="KSAP-MessageField"
                                                           p:render="@{dataObject.courseSummaryDetails.genEdRequirements.size() eq 0}">
                                                         <property name="message">
-                                                            <bean parent="Uif-Message" p:messageText="None"/>
+                                                <bean parent="KSAP-Message" p:messageText="None"/>
                                                         </property>
                                                     </bean>
                                                 </list>
@@ -613,17 +538,10 @@
                             </bean>
 
                             <!--Curriculum-->
-                            <bean parent="Uif-HorizontalFieldGroup">
-                                <property name="fieldLabel.renderColon" value="false"/>
-                                <property name="group.validationMessages">
-                                    <null/>
-                                </property>
+                <bean parent="KSAP-HorizontalFieldGroup">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                            <property name="validationMessages">
-                                                <null/>
-                                            </property>
+                            <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>myplan-course-detail-label</value>
@@ -636,10 +554,7 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="Uif-HorizontalBoxGroup">
-                                            <property name="validationMessages">
-                                                <null/>
-                                            </property>
+                            <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>myplan-course-detail-field</value>
@@ -652,7 +567,7 @@
                                                         <property name="fieldLabel.renderColon" value="false"/>
                                                         <property name="fieldLabel.render" value="false"/>
                                                     </bean>
-                                                    <bean parent="Uif-Message" p:messageText=", "
+                                        <bean parent="KSAP-Message" p:messageText=", "
                                                           p:style="margin-right:0.33em;"
                                                           p:render="@{dataObject.courseSummaryDetails.campusLocations.size() gt 0 ? true : false}"/>
                                                     <bean parent="Uif-DataField" p:style="margin-right:0.33em;"
@@ -666,14 +581,12 @@
                                                             </list>
                                                         </property>
                                                     </bean>
-                                                    <bean parent="Uif-MessageField"
-                                                          p:fieldLabel.render="false"
-                                                          p:render="@{dataObject.courseSummaryDetails.campusLocations.size() eq 0}">
+                                        <bean parent="KSAP-MessageField" p:render="@{dataObject.courseSummaryDetails.campusLocations.size() eq 0}">
                                                         <property name="message">
-                                                            <bean parent="Uif-Message" p:messageText="None"/>
+                                                <bean parent="KSAP-Message" p:messageText="None"/>
                                                         </property>
                                                     </bean>
-                                                    <bean parent="Uif-Message" p:messageText="Campus"
+                                        <bean parent="KSAP-Message" p:messageText="Campus"
                                                           p:render="@{dataObject.courseSummaryDetails.campusLocations.size() gt 0 ? true : false}"/>
                                                 </list>
                                             </property>
@@ -684,9 +597,6 @@
                         </list>
                     </property>
                 </bean>
-            </list>
-        </property>
-    </bean>
 
     <bean id="meeting_building_link_formatter"
           class="org.kuali.student.myplan.course.util.MeetingDetailsPropertyEditor">
@@ -1582,8 +1492,7 @@
             <bean parent="MyPlanRetrievedTheme"/>
         </property>
         <property name="onLoadScript" value=""/>
-        <property name="items">
-            <list>
+        <property name="page">
                 <bean parent="Uif-Page" p:id="course_details_sections_page">
                     <property name="layoutManager">
                         <bean parent="Uif-VerticalBoxLayout"/>
@@ -1626,7 +1535,6 @@
                         </list>
                     </property>
                 </bean>
-            </list>
         </property>
 
     </bean>

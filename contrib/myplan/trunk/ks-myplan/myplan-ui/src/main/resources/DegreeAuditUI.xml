@@ -48,7 +48,11 @@
 
         <!-- Not Displaying any criteria -->
         <property name="criteriaGroup">
-            <bean parent="Uif-VerticalBoxGroup"/>
+            <bean parent="KSAP-VerticalBoxGroup">
+                <property name="footer">
+                    <bean parent="KSAP-EmptyLookupCriteriaFooter"/>
+        </property>
+            </bean>
         </property>
         <property name="resultsGroup">
             <bean id="degree_audits_summary" parent="degree_audits_summary_list"/>
@@ -187,7 +191,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="degree_audit_block"/>
+                            <bean id="degree_audit_block_item" parent="degree_audit_block"/>
                             <bean parent="KSAP-RightPane" p:width="240px">
                                 <property name="items">
                                     <list>

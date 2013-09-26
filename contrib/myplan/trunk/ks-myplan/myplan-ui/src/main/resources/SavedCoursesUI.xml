@@ -48,9 +48,9 @@
 
         <!-- Not Displaying any criteria -->
         <property name="criteriaGroup">
-            <bean parent="Uif-VerticalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
+            <bean parent="KSAP-VerticalBoxGroup">
+                <property name="footer">
+                    <bean parent="KSAP-EmptyLookupCriteriaFooter"/>
                 </property>
             </bean>
         </property>
@@ -206,13 +206,14 @@
         <property name="singlePageView" value="true"/>
         <property name="page.header.render" value="false"/>
         <property name="header.render" value="false"/>
+        <property name="renderSearchButtons" value="false"/>
+        <property name="renderLookupCriteria" value="false"/>
         <property name="cssClasses">
             <list merge="true">
                 <value>myplan-view</value>
             </list>
         </property>
-        <property name="items">
-            <list>
+        <property name="page">
                 <bean parent="Uif-LookupPage" p:id="saved_courses_detail_page" p:headerText="Bookmarked Courses">
                     <property name="validationMessages">
                         <null/>
@@ -240,7 +241,6 @@
                         </list>
                     </property>
                 </bean>
-            </list>
         </property>
 
         <property name="criteriaFields">

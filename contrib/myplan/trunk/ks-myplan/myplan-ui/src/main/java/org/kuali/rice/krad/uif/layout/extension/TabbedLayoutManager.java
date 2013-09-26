@@ -2,9 +2,11 @@ package org.kuali.rice.krad.uif.layout.extension;
 
 import org.apache.commons.lang.StringUtils;
 import org.kuali.rice.krad.service.KRADServiceLocatorWeb;
+import org.kuali.rice.krad.uif.UifPropertyPaths;
 import org.kuali.rice.krad.uif.container.Group;
 import org.kuali.rice.krad.uif.layout.StackedLayoutManager;
 import org.kuali.rice.krad.uif.util.ObjectPropertyUtils;
+import org.kuali.rice.krad.uif.view.View;
 
 /**
  * kmuthu Don't forget to add comment
@@ -35,10 +37,10 @@ public class TabbedLayoutManager extends StackedLayoutManager {
     * @return String header text for line
     */
     @Override
-    protected String buildLineHeaderText(Object line, Group lineGroup) {
+     protected String buildLineHeaderText(View view, Object line, Group lineGroup) {
         // check for expression on summary title
-        if (KRADServiceLocatorWeb.getExpressionEvaluatorService().containsElPlaceholder(getSummaryTitle())) {
-            lineGroup.getPropertyExpressions().put("title", getSummaryTitle());
+        if (view.getViewHelperService().getExpressionEvaluator().containsElPlaceholder(getSummaryTitle())) {
+            lineGroup.getPropertyExpressions().put(UifPropertyPaths.HEADER_TEXT, getSummaryTitle());
             return null;
         }
 

@@ -116,11 +116,11 @@
         <jaxws.version>2.1.5</jaxws.version>
         <jetty.version>6.1.6</jetty.version>
         <junit.version>4.10</junit.version>
-        <kuali.rice.version>2.2.1</kuali.rice.version>
+        <kuali.rice.version>2.3.0</kuali.rice.version>
         <log4j.version>1.2.16</log4j.version>
         <log4j.javadoc.version>1.2</log4j.javadoc.version>
         <metro.version>1.4</metro.version>
-        <spring.version>3.1.0.RELEASE</spring.version>
+        <spring.version>3.2.3.RELEASE</spring.version>
         <spring.security.version>3.1.0.RELEASE</spring.security.version>
         <spring.security-cas.version>3.1.0.RELEASE</spring.security-cas.version>
         <spring.security.javadoc.version>3.1.0.RELEASE</spring.security.javadoc.version>
@@ -224,6 +224,9 @@
                     <configuration>
                         <server>${project.artifactId}</server>
                         <warDirectory>${project.build.directory}/${project.artifactId}-webapp</warDirectory>
+                        <webAppConfig>
+                            <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>
+                        </webAppConfig>
                         <stopKey/>
                         <stopPort/>
                     </configuration>
