@@ -2448,6 +2448,9 @@ public class PlanController extends UifControllerBase {
 
         try {
             newPlanItem = getAcademicPlanService().createPlanItem(pii, getUserSessionHelper().makeContextInfoInstance());
+        } catch (AlreadyExistsException e) {
+            logger.error("Could not create plan item.", e);
+            throw new DuplicateEntryException("plan Item already exists", e);
         } catch (Exception e) {
             logger.error("Could not create plan item.", e);
             throw new RuntimeException("Could not create plan item.", e);
