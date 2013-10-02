@@ -1312,7 +1312,8 @@
                                     <list>
                                         <bean parent="Uif-Link" p:linkText="Help">
                                             <property name="href"
-                                                      value="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/');"/>
+                                                      value="http://depts.washington.edu/myplan/help-site/"/>
+                                            <property name="target" value="_blank"/>
                                         </bean>
                                         <bean parent="Uif-Link" p:linkText="Log out">
                                             <property name="href"
