@@ -17,7 +17,7 @@
                     .</span>
                 </div>
                 <div class="logout">
-                    <a href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/');">Help</a>
+                    <a href="http://depts.washington.edu/myplan/help-site/" target="_blank">Help</a>
                     |
                     <a href="/${ConfigProperties['app.code']}/logout.do">Log out</a>
                 </div>
