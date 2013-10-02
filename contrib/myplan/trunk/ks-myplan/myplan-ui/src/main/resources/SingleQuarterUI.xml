@@ -1337,7 +1337,8 @@
     <bean id="singleQuarterMoveCourse" parent="Uif-ActionLink" p:actionLabel="Move"
           p:style="display:inline-block;">
         <property name="actionScript" value="
-            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', pageId:'move_dialog_page'};
+            var backupFlag = '@{#line.planItemDataObject.type}'=='backup';
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', backup:backupFlag, pageId:'move_dialog_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, position:'left', align:'middle', close:true};
             openPopup('move_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
@@ -1347,7 +1348,8 @@
     <bean id="singleQuarterCopyCourse" parent="Uif-ActionLink" p:actionLabel="Copy"
           p:style="display:inline-block;">
         <property name="actionScript" value="
-            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', pageId:'copy_dialog_page'};
+            var backupFlag = '@{#line.planItemDataObject.type}'=='backup';
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', backup:backupFlag, pageId:'copy_dialog_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, position:'left', align:'middle', close:true};
             openPopup('copy_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
@@ -1357,7 +1359,8 @@
     <bean id="singleQuarterDeleteCourse" parent="Uif-ActionLink" p:actionLabel="Delete"
           p:style="display:inline-block;">
         <property name="actionScript" value="
-            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', pageId:'plan_item_delete_page'};
+            var backupFlag = '@{#line.planItemDataObject.type}'=='backup';
+            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', backup:backupFlag, pageId:'plan_item_delete_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, position:'left', align:'middle', close:true};
             openPopup('plan_item_delete_page', retrieveData, 'plan', popupStyle, popupOptions, e);
