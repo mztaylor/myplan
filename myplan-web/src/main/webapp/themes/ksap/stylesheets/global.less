@@ -1,0 +1,82 @@
+body {
+    background: #A4A4A4;
+}
+
+form {
+    margin: 0;
+}
+
+.uif-application {
+    border-top: solid 5px #39275b;
+    background-image: url('../images/appheader_bkgrd.png');
+    background-repeat: repeat-x;
+    background-color: @white;
+    padding: 0 0 @paddingLarge 0;
+}
+
+form#kualiForm {
+    margin: 0 auto;
+    width: 950px;
+}
+
+/*.backdoor {
+    padding: 8px 35px 8px 14px;
+    margin-bottom: @baseLineHeight;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
+    background-color: @infoBackground;
+    border: 1px solid @infoBorder;
+    color: @infoText;
+}*/
+
+.uif-boxLayoutVerticalItem {
+    margin: @marginDefault 0 0 0;
+}
+
+.uif-boxLayoutHorizontalItem {
+    margin: 0 0 0 @marginDefault;
+    float: left;
+}
+
+.uif-boxLayoutVerticalItem:first-child, .uif-boxLayoutHorizontalItem:first-child {
+    margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: @headingsFontFamily;
+    font-weight: @headingsFontWeight;
+}
+
+h1 {
+    font-size: @baseFontSize *2.308;
+    /*line-height: 1.333em;*/
+}
+
+h2 {
+    font-size: @baseFontSize *1.846;
+    /*line-height: 1.667em;*/
+}
+
+h3 {
+    font-size: @baseFontSize *1.385;
+    /*line-height: 1.111em;*/
+}
+
+h4 {
+    font-size: @baseFontSize *1.154;
+    /*line-height: 1.333em;*/
+}
+
+h5 {
+    font-size: @baseFontSize;
+    /*line-height: 1.538em;*/
+}
+
+h6 {
+    font-size: @baseFontSize *0.923;
+    /*line-height: 1.538em;*/
+}
+
+.ellipsisItem {
+    display: block;
+    .text-overflow();
+}

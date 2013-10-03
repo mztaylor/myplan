@@ -1071,7 +1071,7 @@ div.activityAction div.blockElement {
 .myplan-carousel-list ul li .uif-header {
     padding: 0 10px;
     height: 25px;
-    line-height: 24px;
+    line-height: 25px;
     background-color: #F5F5F5;
     background-image: -ms-linear-gradient(top, #F5F5F5 0%, #EBEBEB 100%);
     background-image: -moz-linear-gradient(center top, #F5F5F5 0%, #EBEBEB 100%);
@@ -1163,7 +1163,7 @@ div.activityAction div.blockElement {
     font-family: Helvetica, Arial, Verdana, sans-serif;
     height: 25px;
     line-height: 25px;
-    padding: 0 3px 0 24px;
+    padding: 0 4px 0 26px;
     color: #000;
     position: relative;
 }
@@ -1178,7 +1178,7 @@ div.activityAction div.blockElement {
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.ksap-alert,
 .myplan-carousel-list ul li .myplan-carousel-term.myplan-term-recommended .uif-stackedCollectionLayout .uif-collectionItem.accepted{
-    padding: 0 3px;
+    padding: 0 4px;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem.placeholder {
@@ -1247,19 +1247,19 @@ div.activityAction div.blockElement {
     font-weight: bold;
     position: absolute;
     right: 0px;
-    margin: 0 3px;
+    margin: 0 4px;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemAccepted,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemAlert,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemTitle,
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemActivities {
-    margin-right: 3px;
+    margin-right: 4px;
 }
 
 .myplan-carousel-list ul li .myplan-carousel-term .uif-stackedCollectionLayout .uif-collectionItem .itemNote {
     position: absolute;
-    right: 3px;
+    right: 4px;
     top: 6px;
     margin: 0;
     padding: 0px;
@@ -3110,10 +3110,11 @@ label.scheduled {
     top: -2px;
 }
 
-/*
 .myplan-quarter-detail .myplan-course-item .itemCode {
     font-weight: bold;
 }
+
+/*
 .myplan-quarter-detail .myplan-course-item .itemCredit:before {
     content: "(";
     margin: 0;

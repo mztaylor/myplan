@@ -44,7 +44,7 @@
                     <property name="items">
                         <list>
                             <ref bean="planned_mock_detail"/>
-                            <bean parent="KSAP-RightPane" p:width="310px">
+                            <bean parent="KSAP-RightPane" p:width="230px">
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-ModuleContainer" p:headerText="Messages">
@@ -76,7 +76,7 @@
         <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
     </bean>
 
-    <bean id="planned_mock_detail" parent="KSAP-VerticalBoxGroup" p:width="630px"
+    <bean id="planned_mock_detail" parent="KSAP-VerticalBoxGroup" p:width="710px"
           p:style="min-height:400px;">
         <property name="cssClasses">
             <list merge="true">
@@ -394,7 +394,7 @@
     </bean>
 
     <!-- Single term view that lists planned course, total credits and backup courses -->
-    <bean id="planned_courses_detail" parent="KSAP-VerticalBoxGroup" p:width="630px">
+    <bean id="planned_courses_detail" parent="KSAP-VerticalBoxGroup" p:width="710px">
         <property name="onDocumentReadyScript" value="
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, position:'right', align:'middle', close:true};
@@ -584,7 +584,7 @@
                     <bean parent="KSAP-VerticalBoxGroup">
                         <property name="headerText" value="@{#line.qtrYear}"/>
                         <property name="header">
-                            <bean parent="Uif-HeaderFour">
+                            <bean parent="KSAP-HeaderBase">
                                 <property name="onClickScript"
                                           value="window.location.assign('inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{#line.atpId}');"/>
                             </bean>
@@ -704,7 +704,7 @@
         </property>
     </bean>
 
-    <bean id="academicRecordAction" parent="KSAP-HorizontalFieldGroup" p:style="width:103px; padding-right:15px;">
+    <bean id="academicRecordAction" parent="KSAP-HorizontalFieldGroup" p:style="width:99px; padding-right:16px;">
         <property name="id" value="record_@{#line.atpId.replace('.','-')}_@{#line.uuid}"/>
         <property name="title" value="@{#line.courseTitle}"/>
         <property name="onClickScript"
@@ -777,7 +777,6 @@
     </bean>
 
     <bean id="academicRecordGroup" parent="KSAP-HorizontalFieldGroup">
-        <property name="group.cssClasses" value=""/>
         <property name="items">
             <list>
                 <bean parent="academicRecordAction"/>
@@ -787,7 +786,6 @@
     </bean>
 
     <bean id="academicRecordGroupAdviser" parent="KSAP-HorizontalFieldGroup">
-        <property name="group.cssClasses" value=""/>
         <property name="items">
             <list>
                 <bean parent="academicRecordActionAdviser"/>
@@ -816,7 +814,7 @@
             </list>
         </property>
         <property name="header">
-            <bean parent="Uif-HeaderSix"/>
+            <bean parent="KSAP-HeaderBase"/>
         </property>
         <property name="header.rightGroup">
             <bean parent="KSAP-HorizontalBoxGroup">
@@ -945,7 +943,7 @@
     </bean>
 
     <bean id="planItemAction" parent="KSAP-HorizontalFieldGroup"
-          p:style="width:@{#line.note EQ null ? '118px;' : '103px; padding-right:15px;'}">
+          p:style="width:@{#line.note EQ null ? '115px;' : '99px; padding-right:16px;'}">
         <property name="id"
                   value="@{#line.planItemDataObject.type}_@{#line.planItemDataObject.atp.replace('.','-')}_@{#line.planItemDataObject.id}"/>
         <property name="title"
@@ -1042,7 +1040,7 @@
         <property name="layoutManager.lineGroupPrototype.cssClasses"
                   value="uif-verticalBoxGroup uif-collectionItem@{#line.planItemDataObject.type EQ 'recommended' ? (!#line.proposed ? ' accepted' : ' proposed') : (#line.adviserRecommended ? ' accepted':'')}@{#line.placeHolder ? ' placeholder':''}@{#line.showAlert ? ' alert':''}@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.placeHolder ? ' noAction' : ''}"/>
         <property name="header">
-            <bean parent="Uif-HeaderSix"/>
+            <bean parent="KSAP-HeaderBase"/>
         </property>
         <property name="header.rightGroup">
             <bean parent="KSAP-HorizontalBoxGroup">

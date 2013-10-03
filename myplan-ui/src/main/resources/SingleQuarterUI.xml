@@ -1053,9 +1053,6 @@
                 <value>myplan-recommended-collection</value>
             </list>
         </property>
-        <property name="subCollections">
-            <list/>
-        </property>
     </bean>
 
     <bean id="activityOfferingTableCollection" parent="course_details_activity_data" p:style="">
