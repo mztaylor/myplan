@@ -53,8 +53,11 @@ public class DegreeAuditAtpHelper {
         return academicCalendarService;
     }
 
+    public static void setAcademicCalendarService(AcademicCalendarService academicCalendarService) {
+        DegreeAuditAtpHelper.academicCalendarService = academicCalendarService;
+    }
 
-  /**
+    /**
     * Query the Academic Calendar Service for terms that have offering's published, determine the last ATP, and return its ID.
     *
     * EXCEPTION FOR SUMMER: Change summer last published date to 3 weeks prior to registration for summer quarter to

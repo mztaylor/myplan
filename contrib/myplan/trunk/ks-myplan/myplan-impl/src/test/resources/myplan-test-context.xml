@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+
+
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <context:annotation-config/>
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.kuali.rice.core.impl.config.property.ConfigInitializer.initialize"/>
+        <property name="arguments">
+            <list>
+                <ref bean="bootstrapConfig"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="bootstrapConfig" class="org.kuali.rice.core.impl.config.property.ConfigFactoryBean">
+        <property name="configLocations">
+            <list>
+                <value>classpath:META-INF/ks-myplan-test-config.xml</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod"
+                  value="org.kuali.student.myplan.util.DegreeAuditAtpHelper.setAcademicCalendarService"/>
+        <property name="arguments">
+            <list>
+                <ref bean="acalService"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod"
+                  value="org.kuali.student.myplan.util.CourseLinkBuilder.setLuService"/>
+        <property name="arguments">
+            <list>
+                <ref bean="luServiceImpl"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="acalService" class="org.kuali.student.myplan.service.mock.AcademicCalenderServiceMockImpl">
+
+    </bean>
+
+    <!--<bean id="personImpl" class="org.kuali.student.myplan.service.mock.PersonMockImpl"/>-->
+    <bean id="academicPlanService"
+          class="org.kuali.student.myplan.academicplan.service.mock.AcademicPlanServiceMockImpl"/>
+
+
+    <bean id="courseLinkBuilder" class="org.kuali.student.myplan.util.CourseLinkBuilder">
+    </bean>
+
+    <bean id="luServiceImpl" class="org.kuali.student.myplan.service.mock.LuServiceMockImpl">
+
+    </bean>
+
+
+
+</beans>
