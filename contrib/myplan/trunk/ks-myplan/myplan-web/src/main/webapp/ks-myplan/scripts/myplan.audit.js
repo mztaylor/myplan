@@ -178,7 +178,7 @@ function validatePlanAudit(obj) {
 
     };
 
-    ksapAjaxSubmitForm(retrieveData, successCallback, elementToBlock, "retrieveForm", blockOptions);
+    ksapAjaxSubmitForm(retrieveData, successCallback, elementToBlock, "retrieveForm");
     jQuery("form#retrieveForm").remove();
 }
 

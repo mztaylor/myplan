@@ -31,7 +31,7 @@
                   value="try{Typekit.load();}catch(e){} setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});"/>
         <property name="header">
             <bean parent="Uif-ViewHeader">
-                <property name="headerLevel" value="h2"/>
+                <property name="headerLevel" value="h1"/>
             </bean>
         </property>
     </bean>
@@ -53,14 +53,10 @@
             <bean parent="MyPlanTheme"/>
         </property>
         <property name="applicationHeader">
-            <bean parent="Uif-HeaderOne" p:id="ks-banner"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl"
-                  p:cssClasses="fl-container-flex" p:templateName="myplan_app_header"/>
+            <bean parent="KSAP-GlobalApplicationHeader"/>
         </property>
         <property name="applicationFooter">
-            <bean parent="Uif-FooterBase" p:id="ks-footer"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
-                  p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_footer"/>
+            <bean parent="KSAP-GlobalApplicationFooter"/>
         </property>
     </bean>
 
@@ -80,14 +76,10 @@
             <bean parent="MyPlanTheme"/>
         </property>
         <property name="applicationHeader">
-            <bean parent="Uif-HeaderOne" p:id="ks-banner"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl"
-                  p:cssClasses="fl-container-flex" p:templateName="myplan_app_header"/>
+            <bean parent="KSAP-GlobalApplicationHeader"/>
         </property>
         <property name="applicationFooter">
-            <bean parent="Uif-FooterBase" p:id="ks-footer"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
-                  p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_footer"/>
+            <bean parent="KSAP-GlobalApplicationFooter"/>
         </property>
     </bean>
 
@@ -107,14 +99,10 @@
             <bean parent="MyPlanTheme"/>
         </property>
         <property name="applicationHeader">
-            <bean parent="Uif-HeaderOne" p:id="ks-banner"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl"
-                  p:cssClasses="fl-container-flex" p:templateName="myplan_app_header"/>
+            <bean parent="KSAP-GlobalApplicationHeader"/>
         </property>
         <property name="applicationFooter">
-            <bean parent="Uif-FooterBase" p:id="ks-footer"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
-                  p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_footer"/>
+            <bean parent="KSAP-GlobalApplicationFooter"/>
         </property>
     </bean>
 
@@ -134,22 +122,24 @@
         </property>
         <property name="footer" ref="MyPlanFooterDocument"/>
         <property name="applicationHeader">
-            <bean parent="Uif-HeaderOne" p:id="ks-banner"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl"
-                  p:cssClasses="fl-container-flex" p:templateName="myplan_app_header"/>
+            <bean parent="KSAP-GlobalApplicationHeader"/>
         </property>
         <property name="applicationFooter">
-            <bean parent="Uif-FooterBase" p:id="ks-footer"
-                  p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl"
-                  p:cssClasses="fl-container-flex ks-page-bottom" p:templateName="myplan_app_header"/>
+            <bean parent="KSAP-GlobalApplicationFooter"/>
         </property>
     </bean>
 
     <!-- THEMES ######################################################################################## -->
 
     <bean id="MyPlanTheme" parent="MyPlanTheme-parentBean"/>
-    <bean id="MyPlanTheme-parentBean" parent="Uif-KbootTheme" name="ksap">
-        <property name="cssFiles">
+    <bean id="MyPlanTheme-parentBean" parent="Uif-KbootTheme" p:name="ksap"
+          p:minVersionSuffix="@{#ConfigProperties['myplan.version']}">
+        <property name="scriptFiles">
+            <list>
+                <value>http://use.typekit.net/jpx3dug.js</value>
+            </list>
+        </property>
+        <!--<property name="cssFiles">
             <list merge="true">
                 <value>ks-myplan/jquery-popover/jquery.popover.css?@{#ConfigProperties['myplan.buildNumber']}</value>
                 <value>ks-myplan/jquery-ui/jquery-ui.css?@{#ConfigProperties['myplan.buildNumber']}</value>
@@ -159,14 +149,13 @@
         </property>
         <property name="scriptFiles">
             <list merge="true">
-                <value>https://use.typekit.net/jpx3dug.js</value>
                 <value>ks-myplan/scripts/myplan.widgets.js?@{#ConfigProperties['myplan.buildNumber']}</value>
                 <value>ks-myplan/scripts/myplan.events.js?@{#ConfigProperties['myplan.buildNumber']}</value>
                 <value>ks-myplan/plugins/polling.js?@{#ConfigProperties['myplan.buildNumber']}</value>
                 <value>ks-myplan/jquery-popover/jquery.popover.js?@{#ConfigProperties['myplan.buildNumber']}</value>
                 <value>ks-myplan/scripts/myplan.google.js?@{#ConfigProperties['myplan.buildNumber']}</value>
             </list>
-        </property>
+        </property>-->
     </bean>
 
     <!--Myplan theme with different view-->
@@ -189,6 +178,12 @@
             <list merge="false"/>
         </property>
     </bean>
+
+    <bean id="KSAP-GlobalApplicationHeader" parent="Uif-GlobalApplicationHeader" p:templateName="ksap_app_header"
+          p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl" p:render="true"/>
+
+    <bean id="KSAP-GlobalApplicationFooter" parent="Uif-GlobalApplicationFooter" p:templateName="ksap_app_footer"
+          p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl" p:render="true"/>
 
     <bean id="MyPlanFooterDocument" parent="Uif-FooterBase">
         <property name="items">
@@ -240,7 +235,7 @@
         </property>
     </bean>
 
-    <bean id="MyPlanHeader_Empty" parent="Uif-HeaderOne">
+    <bean id="MyPlanHeader_Empty" parent="KSAP-HeaderOne">
         <property name="items">
             <list/>
         </property>
@@ -362,22 +357,25 @@
 
     <bean id="KSAP-ModuleContainer" parent="KSAP-VerticalBoxGroup">
         <property name="header">
-            <bean parent="Uif-HeaderFive"/>
+            <bean parent="KSAP-HeaderBase">
+                <property name="cssClasses" value="moduleContainer__header"/>
+                <property name="headerTagCssClasses" value="moduleContainer__headerText"/>
+            </bean>
         </property>
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-moduleContainer</value>
+                <value>moduleContainer</value>
             </list>
         </property>
     </bean>
 
     <bean id="KSAP-Module" parent="KSAP-VerticalBoxGroup">
         <property name="header">
-            <bean parent="Uif-HeaderSix"/>
+            <bean parent="KSAP-ModuleHeader"/>
         </property>
         <property name="cssClasses">
             <list merge="true">
-                <value>ksap-module</value>
+                <value>module</value>
             </list>
         </property>
     </bean>
@@ -432,7 +430,7 @@
             </list>
         </property>
         <property name="header">
-            <bean parent="Uif-HeaderSix"/>
+            <bean parent="KSAP-HeaderSix"/>
         </property>
         <property name="instructionalText" value="No recent audits found."/>
     </bean>-->
@@ -845,13 +843,52 @@
             <null/>
         </property>
         <property name="header">
-            <bean parent="Uif-HeaderSix"/>
+            <bean parent="KSAP-HeaderSix"/>
         </property>
         <property name="width" value="300px"/>
     </bean>
 
+    <bean id="KSAP-HeaderBase" abstract="true" parent="Uif-HeaderBase-parentBean">
+        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/element/header.ftl"/>
+    </bean>
+
+    <bean id="KSAP-HeaderOne" parent="KSAP-HeaderOne-parentBean"/>
+    <bean id="KSAP-HeaderOne-parentBean" abstract="true" parent="KSAP-HeaderBase">
+        <property name="headerLevel" value="h1"/>
+    </bean>
+
+    <bean id="KSAP-HeaderTwo" parent="KSAP-HeaderTwo-parentBean"/>
+    <bean id="KSAP-HeaderTwo-parentBean" abstract="true" parent="KSAP-HeaderBase">
+        <property name="headerLevel" value="h2"/>
+    </bean>
+
+    <bean id="KSAP-HeaderThree" parent="KSAP-HeaderThree-parentBean"/>
+    <bean id="KSAP-HeaderThree-parentBean" abstract="true" parent="KSAP-HeaderBase">
+        <property name="headerLevel" value="h3"/>
+    </bean>
+
+    <bean id="KSAP-HeaderFour" parent="KSAP-HeaderFour-parentBean"/>
+    <bean id="KSAP-HeaderFour-parentBean" abstract="true" parent="KSAP-HeaderBase">
+        <property name="headerLevel" value="h4"/>
+    </bean>
+
+    <bean id="KSAP-HeaderFive" parent="KSAP-HeaderFive-parentBean"/>
+    <bean id="KSAP-HeaderFive-parentBean" abstract="true" parent="KSAP-HeaderBase">
+        <property name="headerLevel" value="h5"/>
+    </bean>
+
+    <bean id="KSAP-HeaderSix" parent="KSAP-HeaderSix-parentBean"/>
+    <bean id="KSAP-HeaderSix-parentBean" abstract="true" parent="KSAP-HeaderBase">
+        <property name="headerLevel" value="h6"/>
+    </bean>
+
     <bean id="KSAP-Suggest" parent="Uif-Suggest-parentBean">
         <property name="template" value="/ks-myplan/WEB-INF/ftl/components/widget/suggest.ftl"/>
+    </bean>
+
+    <bean id="KSAP-ModuleHeader" parent="KSAP-HeaderBase">
+        <property name="cssClasses" value="module__header"/>
+        <property name="headerTagCssClasses" value="module__headerText"/>
     </bean>
 
 </beans>

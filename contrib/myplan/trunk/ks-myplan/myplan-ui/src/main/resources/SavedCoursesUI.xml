@@ -64,7 +64,7 @@
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="propertyName" value="lookupResults"/>
         <property name="header">
-            <bean parent="Uif-HeaderSix"/>
+            <bean parent="KSAP-ModuleHeader"/>
         </property>
         <property name="header.rightGroup">
             <bean parent="KSAP-HorizontalBoxGroup">
@@ -75,12 +75,9 @@
                 </property>
             </bean>
         </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>ksap-module</value>
-                <value>ksap-noMargin</value>
-            </list>
-        </property>
+        <property name="header.rightGroup.cssClasses" value="module__headerRightGroup"/>
+        <property name="cssClasses" value="module"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="module__item"/>
         <property name="filters">
             <list>
                 <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 7"/>
@@ -111,16 +108,11 @@
         <property name="instructionalMessage">
             <bean parent="Uif-Message"
                   p:messageText="You have no bookmarked courses. [0] and add them to your bookmarked list.">
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>ksap-emptyCollection</value>
-                    </list>
-                </property>
+                <property name="cssClasses" value="module__empty"/>
                 <property name="inlineComponents">
                     <list>
-                        <bean parent="Uif-Link"
-                              p:href="course?methodToCall=start&amp;viewId=CourseSearch-FormView"
-                              p:linkText="Find courses"/>
+                        <bean parent="Uif-Link" p:linkText="Find courses"
+                              p:href="course?methodToCall=start&amp;viewId=CourseSearch-FormView"/>
                     </list>
                 </property>
             </bean>
@@ -129,54 +121,27 @@
         <property name="items">
             <list>
                 <bean parent="KSAP-HorizontalFieldGroup">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>ksap-noMargin</value>
-                        </list>
-                    </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message" p:messageText="@{#line.courseDetails.code}">
-                                <property name="style" value="margin-right:5px;"/>
+                            <bean parent="KSAP-Message" p:messageText="@{#line.courseDetails.code}"/>
+                            <bean parent="KSAP-Message" p:messageText="@{#line.courseDetails.courseTitle}">
+                                <property name="cssClasses" value="module--compact module--gray ellipsisItem"/>
                             </bean>
-                            <bean parent="Uif-Message" p:messageText="@{#line.courseDetails.courseTitle}">
-                                <property name="style" value="margin-right:5px;"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-text-ellipsis</value>
-                                        <value>ksap-text-gray</value>
-                                    </list>
-                                </property>
+                            <bean parent="KSAP-Message" p:messageText="(@{#line.courseDetails.credit})">
+                                <property name="cssClasses" value="module--compact module--gray"/>
                             </bean>
-                            <bean parent="Uif-Message" p:messageText="(@{#line.courseDetails.credit})">
-                                <property name="style" value="margin-right:0px;"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>ksap-text-gray</value>
                                     </list>
                                 </property>
                             </bean>
                         </list>
                     </property>
-                </bean>
-            </list>
-        </property>
         <property name="footer">
             <bean parent="KSAP-VerticalBoxGroup">
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>uif-footer</value>
-                    </list>
-                </property>
+                <property name="cssClasses" value="module__footer"/>
+                <property name="layoutManager.cssClasses" value="module__footer--right"/>
                 <property name="items">
                     <list>
                         <bean parent="Uif-Link">
-                            <property name="cssClasses">
-                                <list merge="true">
-                                    <value>fl-text-align-right</value>
-                                    <value>ksap-noMargin</value>
-                                </list>
-                            </property>
                             <property name="linkText"
                                       value="View @{(lookupResults eq null or lookupResults.size() lt 2) ? 'course' : 'all '+lookupResults.size()+' courses'} in full details"/>
                             <property name="title"

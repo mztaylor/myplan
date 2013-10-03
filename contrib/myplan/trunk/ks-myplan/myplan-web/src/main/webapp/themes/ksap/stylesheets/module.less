@@ -1,0 +1,200 @@
+.moduleContainer {
+    border: @baseBorderStyle;
+    .border-radius(@baseBorderRadius);
+}
+
+.moduleContainer__header {
+    padding: 8px 10px;
+    .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+    #gradient > .vertical(#efefef, #d5d5d5);
+}
+
+.moduleContainer__headerText {
+    text-transform: uppercase;
+    vertical-align: middle;
+    color: @black;
+    font-size: @fontSizeLarge;
+    text-shadow: 0px 1px 0px #efefef;
+}
+
+.module {
+    margin: 0;
+    min-height: 18px;
+}
+
+.module__header {
+    border-top: @baseBorderStyle;
+    border-bottom: @baseBorderStyle;
+    padding: @paddingMini @paddingDefault;
+    #gradient > .vertical(#f7f7f7, #efefef);
+}
+
+.module__headerText {
+    display: inline;
+    vertical-align: middle;
+    font-size: @fontSizeSmall;
+}
+
+.module__headerRightGroup {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 0 0 @marginSmall;
+}
+
+.module__headerLowerGroup {
+    border-bottom: @baseBorderStyle;
+}
+
+.module__item {
+    cursor: pointer;
+    padding: @paddingSmall;
+    border-top: @dottedBorderStyle;
+    font-size: @fontSizeSmall;
+    font-family: @sansFontFamily;
+}
+
+.module__item:first-child {
+    border-top: none;
+}
+
+.module__item .uif-boxLayoutVerticalItem {
+    margin: 0;
+}
+
+.module__item:hover {
+    background-color: @itemHover;
+}
+
+.module__footer {
+    border-top: @dottedBorderStyle;
+    padding: @paddingMini @paddingDefault @paddingDefault;
+    margin: 0;
+}
+
+.module__footer--right {
+    text-align: right;
+}
+
+.module__itemLabel > label {
+    display: inline;
+    margin: 0;
+    font-size: @fontSizeSmall;
+    font-weight: 500;
+    color: @textColorLight;
+}
+
+.module--gray {
+    color: @textColorLight;
+}
+
+.module--small {
+    font-size: @fontSizeMini;
+}
+
+.module--compact {
+    margin: 0 0 0 @marginMini;
+}
+
+.module__empty {
+    display: block;
+    text-align: center;
+    padding: @paddingLarge;
+}
+
+.module__view {
+    display: none;
+}
+
+.viewing .module__view {
+    display: block;
+}
+
+.module__timestampBadge {
+    text-align: center;
+    background-color: @grayLighter;
+    padding: @paddingSmall;
+    margin: 0 @marginSmall 0 0;
+    .border-radius(@baseBorderRadius);
+}
+
+.viewing .module__timestampBadge {
+    background-color: #fbf1cd;
+}
+
+.module__timestampBadge .month,
+.module__timestampBadge .time,
+.ksap-auditData .ksap-bottomLabel,
+.ksap-auditDataGroup .uif-instructionalMessage {
+    font-size: @fontSizeMin;
+}
+
+.module__timestampBadge .month {
+    text-transform: uppercase;
+}
+
+.module__timestampBadge .date {
+    font-size: @fontSizeMax;
+}
+
+.ksap-auditData {
+    text-align: center;
+}
+
+.ksap-auditData .uif-readOnlyContent,
+.ksap-auditData .ksap-bottomLabel {
+    display: block;
+    clear: both;
+}
+
+.ksap-auditData .uif-readOnlyContent {
+    font-size: 1.3em;
+}
+
+.ksap-auditDataGroup .uif-instructionalMessage {
+    text-transform: uppercase;
+}
+
+.ksap-auditData .ksap-bottomLabel {
+    text-transform: uppercase;
+}
+
+
+
+
+
+
+.ksap-module .uif-stackedCollectionLayout .uif-collectionItem.pending:hover {
+    background-color: transparent;
+    cursor: default;
+}
+
+.ksap-module .uif-stackedCollectionLayout .uif-collectionItem.pending .icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.ksap-module .uif-stackedCollectionLayout .uif-collectionItem.pending .title {
+    vertical-align: middle;
+    color: #777;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    width: 177px;
+}
+
+.ksap-module .uif-stackedCollectionLayout .uif-collectionItem.pending .program {
+    color: #333;
+}
+
+
+.ksap-moduleContainer .blockElement {
+    left: auto !important;
+    top: 1px !important;
+    right: 0px !important;
+    border: none;
+    width: 16px;
+    background: transparent;
+}

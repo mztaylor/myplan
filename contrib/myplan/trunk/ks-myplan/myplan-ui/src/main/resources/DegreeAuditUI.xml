@@ -64,7 +64,7 @@
         <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
         <property name="propertyName" value="lookupResults"/>
         <property name="header">
-            <bean parent="Uif-HeaderSix"/>
+            <bean parent="KSAP-ModuleHeader"/>
         </property>
         <property name="header.rightGroup">
             <bean parent="KSAP-HorizontalBoxGroup">
@@ -75,12 +75,9 @@
                 </property>
             </bean>
         </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>ksap-module</value>
-                <value>ksap-noMargin</value>
-            </list>
-        </property>
+        <property name="header.rightGroup.cssClasses" value="module__headerRightGroup"/>
+        <property name="cssClasses" value="module"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="module__item"/>
         <property name="onDocumentReadyScript" value="
             getPendingAudit('degree_audits_summary', 'degree');
             if (readUrlParam('viewId') == 'DegreeAudit-FormView') {
@@ -102,22 +99,13 @@
         </property>
         <property name="instructionalMessage">
             <bean parent="Uif-Message" p:messageText="No recent Degree Audits found.">
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>ksap-emptyCollection</value>
-                    </list>
-                </property>
+                <property name="cssClasses" value="module__empty"/>
             </bean>
         </property>
         <property name="instructionalMessage.render" value="@{lookupResults EQ null OR lookupResults.size() EQ 0}"/>
         <property name="items">
             <list>
                 <bean parent="KSAP-VerticalFieldGroup">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>ksap-noMargin</value>
-                        </list>
-                    </property>
                     <property name="onDocumentReadyScript" value="
                         if (@{#line.recentAudit}) jQuery('button#degree_audit_run').data('recentauditid', '@{#line.report.auditId}');
                     "/>
@@ -125,29 +113,12 @@
                         <list>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="programTitle" p:label="View">
                                 <property name="fieldLabel.render" value="true"/>
-                                <property name="fieldLabel.cssClasses">
-                                    <list merge="true">
-                                        <value>uif-label</value>
-                                        <value>ksap-text-normal</value>
-                                        <value>ksap-text-gray</value>
-                                    </list>
-                                </property>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>ksap-noMargin</value>
-                                    </list>
-                                </property>
+                                <property name="fieldLabel.cssClasses" value="module__itemLabel"/>
                             </bean>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="report.runDate"
                                   p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>ksap-noMargin</value>
-                                        <value>ksap-text-gray</value>
-                                        <value>fl-font-size-90</value>
-                                    </list>
-                                </property>
+                                <property name="cssClasses" value="module--small module--gray"/>
                             </bean>
                         </list>
                     </property>

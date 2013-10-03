@@ -64,7 +64,7 @@
         <property name="collectionObjectClass" value="org.kuali.student.myplan.audit.dataobject.PlanAuditItem"/>
         <property name="propertyName" value="lookupResults"/>
         <property name="header">
-            <bean parent="Uif-HeaderSix"/>
+            <bean parent="KSAP-ModuleHeader"/>
         </property>
         <property name="header.rightGroup">
             <bean parent="KSAP-HorizontalBoxGroup">
@@ -75,12 +75,9 @@
                 </property>
             </bean>
         </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>ksap-module</value>
-                <value>ksap-noMargin</value>
-            </list>
-        </property>
+        <property name="header.rightGroup.cssClasses" value="module__headerRightGroup"/>
+        <property name="cssClasses" value="module"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="module__item"/>
         <property name="onDocumentReadyScript" value="
             getPendingAudit('plan_audits_summary', 'plan');
             if (readUrlParam('viewId') == 'PlanAudit-FormView') {
@@ -120,35 +117,19 @@
         </property>
         <property name="instructionalMessage">
             <bean parent="Uif-Message" p:messageText="No recent Plan Audits found.">
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>ksap-emptyCollection</value>
-                    </list>
-                </property>
+                <property name="cssClasses" value="module__empty"/>
             </bean>
         </property>
         <property name="instructionalMessage.render" value="@{lookupResults EQ null OR lookupResults.size() EQ 0}"/>
         <property name="items">
             <list>
                 <bean parent="KSAP-HorizontalFieldGroup">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>ksap-noMargin</value>
-                        </list>
-                    </property>
                     <property name="onDocumentReadyScript"
                               value="if (@{#line.recentAudit}) jQuery('button#plan_audit_validate').data('recentauditid', '@{#line.report.auditId}');"/>
                     <property name="group.instructionalMessage">
                         <bean parent="Uif-Message">
                             <property name="messageText" value="You are viewing"/>
-                            <property name="cssClasses">
-                                <list merge="true">
-                                    <value>uif-instructionalMessage</value>
-                                    <value>view</value>
-                                    <value>ksap-noMargin</value>
-                                    <value>ksap-text-gray</value>
-                                </list>
-                            </property>
+                            <property name="cssClasses" value="module__view module--gray"/>
                         </bean>
                     </property>
                     <property name="items">
@@ -158,7 +139,7 @@
                                 <property name="propertyEditor" ref="plan_audit_timestamp_formatter"/>
                                 <property name="cssClasses">
                                     <list merge="true">
-                                        <value>ksap-timestampBadge</value>
+                                        <value>module__timestampBadge</value>
                                     </list>
                                 </property>
                             </bean>
@@ -233,21 +214,12 @@
         </property>
         <property name="footer">
             <bean parent="KSAP-VerticalBoxGroup">
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>uif-footer</value>
-                    </list>
-                </property>
+                <property name="cssClasses" value="module__footer"/>
+                <property name="layoutManager.cssClasses" value="module__footer--right"/>
                 <property name="items">
                     <list>
                         <bean id="plan_audit_toggle_link" parent="Uif-ActionLink"
                               p:actionLabel="Show @{lookupResults.size() GT 7 ? '5' : (lookupResults.size() - 2)} additional Plan Audit(s)">
-                            <property name="cssClasses">
-                                <list merge="true">
-                                    <value>fl-text-align-right</value>
-                                    <value>ksap-noMargin</value>
-                                </list>
-                            </property>
                             <property name="actionScript"
                                       value="toggleComponentContent(this, 'plan_audits_summary', '.collapsible', 'Show @{lookupResults.size() GT 7 ? '5' : (lookupResults.size() - 2)} additional Plan Audit(s)', 'Hide @{lookupResults.size() GT 7 ? '5' : (lookupResults.size() - 2)} additional Plan Audit(s)');"/>
                         </bean>
@@ -745,7 +717,7 @@
                         </list>
                     </property>
                     <property name="instructionalMessage">
-                        <bean parent="KSAP-Message">
+                        <bean parent="KSAP-NoSpanMessage">
                             <property name="messageText"
                                       value="To run your Plan Audit, MyPlan needs more information for the following course(s)"/>
                             <property name="propertyReplacers">
@@ -771,6 +743,7 @@
                                     <value>ksap-getHeight</value>
                                 </list>
                             </property>
+                            <property name="generateSpan" value="true"/>
                         </bean>
                     </property>
                     <property name="layoutManager">

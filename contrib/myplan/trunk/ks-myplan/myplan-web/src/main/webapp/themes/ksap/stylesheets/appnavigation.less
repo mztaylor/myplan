@@ -1,0 +1,46 @@
+.appnavigation {
+    margin: 0 0 @marginLarge 0;
+}
+
+.appnavigation ul,
+.appnavigation ul li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.appnavigation ul li {
+    display: inline-block;
+    margin: 0 0 0 60px;
+}
+
+.appnavigation ul li:first-child {
+    margin: 0;
+}
+
+.appnavigation ul li a {
+    font-family: @serifFontFamily;
+    font-size: @fontSizeExtraLarge;
+    line-height: 30px;
+    border-bottom: solid 4px transparent;
+    padding: 0 5px;
+    text-decoration: none;
+    display: block;
+    height: 30px;
+    color: @navbarLinkColor;
+}
+
+.appnavigation ul li a:hover {
+    text-decoration: none;
+    border-bottom-color: @navbarLinkColorHover;
+}
+
+.appnavigation ul li.appnavigation__item--home a {
+    background: url('../images/appnavigation_icon_home.png') no-repeat 5px 5px;
+    padding-left: 27px;
+}
+
+.appnavigation ul li a.appnavigation__item--active {
+    border-bottom-color: @navbarLinkColorActive;
+    font-weight: 700;
+}
