@@ -551,7 +551,7 @@
             <bean parent="KSAP-VerticalBoxGroup">
                 <property name="footer">
                     <bean parent="KSAP-EmptyLookupCriteriaFooter"/>
-        </property>
+                </property>
             </bean>
         </property>
         <property name="resultsGroup">
@@ -601,7 +601,8 @@
                 </property>
             </bean>
         </property>
-        <property name="header.render" value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+        <property name="header.render"
+                  value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
         <property name="cssClasses" value="module"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses" value="module__item"/>
         <property name="filters">
@@ -626,15 +627,15 @@
                         <list>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="subject">
                                 <property name="cssClasses" value="ellipsisItem"/>
-                                        </bean>
+                            </bean>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="from">
-                                <property name="cssClasses" value="module--small module--gray ellipsisItem"/>
-                                                        <property name="label" value="From"/>
+                                <property name="cssClasses" value="module--mini module--gray ellipsisItem"/>
+                                <property name="label" value="From"/>
                                 <property name="labelPlacement" value="LEFT"/>
-                                                        <property name="fieldLabel.render" value="true"/>
+                                <property name="fieldLabel.render" value="true"/>
                                 <property name="fieldLabel.renderColon" value="true"/>
                                 <property name="fieldLabel.cssClasses" value="module__itemLabel"/>
-                                                    </bean>
+                            </bean>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="createDate">
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
                                 <property name="escapeHtmlInPropertyValue" value="false"/>
@@ -643,7 +644,7 @@
                                 <property name="fieldLabel.render" value="true"/>
                                 <property name="fieldLabel.renderColon" value="true"/>
                                 <property name="fieldLabel.cssClasses" value="module__itemLabel"/>
-                                <property name="cssClasses" value="module--small module--gray"/>
+                                <property name="cssClasses" value="module--mini module--gray"/>
                             </bean>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="lastCommentDate">
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
@@ -653,7 +654,7 @@
                                 <property name="fieldLabel.render" value="true"/>
                                 <property name="fieldLabel.renderColon" value="true"/>
                                 <property name="fieldLabel.cssClasses" value="module__itemLabel"/>
-                                <property name="cssClasses" value="module--small module--gray"/>
+                                <property name="cssClasses" value="module--mini module--gray"/>
                             </bean>
                             <!--<bean parent="KSAP-MessageField"
                                   p:messageText="@{#line.comments.size()}">
@@ -712,20 +713,20 @@
             </list>
         </property>-->
         <property name="page">
-                <bean parent="Uif-LookupPage" p:id="messages_detail_page" p:headerText="Messages &amp; Comments">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="layoutManager">
-                        <bean parent="Uif-HorizontalBoxLayout"/>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean parent="messages_detail" p:width="710px"/>
-                            <bean parent="KSAP-RightPane" p:width="230px"/>
-                        </list>
-                    </property>
-                </bean>
+            <bean parent="Uif-LookupPage" p:id="messages_detail_page" p:headerText="Messages &amp; Comments">
+                <property name="validationMessages">
+                    <null/>
+                </property>
+                <property name="layoutManager">
+                    <bean parent="Uif-HorizontalBoxLayout"/>
+                </property>
+                <property name="items">
+                    <list>
+                        <bean parent="messages_detail" p:width="710px"/>
+                        <bean parent="KSAP-RightPane" p:width="230px"/>
+                    </list>
+                </property>
+            </bean>
         </property>
 
         <property name="criteriaFields">

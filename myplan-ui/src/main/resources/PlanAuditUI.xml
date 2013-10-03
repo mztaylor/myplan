@@ -51,7 +51,7 @@
             <bean parent="KSAP-VerticalBoxGroup">
                 <property name="footer">
                     <bean parent="KSAP-EmptyLookupCriteriaFooter"/>
-        </property>
+                </property>
             </bean>
 
         </property>
@@ -144,20 +144,10 @@
                                 </property>
                             </bean>
                             <bean parent="KSAP-HorizontalBoxGroup" p:width="164px">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>ksap-noMargin</value>
-                                        <value>ksap-auditDataGroup</value>
-                                    </list>
-                                </property>
                                 <property name="instructionalMessage">
                                     <bean parent="Uif-Message">
                                         <property name="messageText" value="Plan Includes"/>
-                                        <property name="cssClasses">
-                                            <list merge="true">
-                                                <value>uif-instructionalMessage</value>
-                                            </list>
-                                        </property>
+                                        <property name="cssClasses" value="module--min module--uppercase"/>
                                     </bean>
                                 </property>
                                 <property name="items">
@@ -177,14 +167,7 @@
                                                 <bean parent="KSAP-SimpleDataField" p:propertyName="programTitle"
                                                       p:width="100%">
                                                     <property name="escapeHtmlInPropertyValue" value="false"/>
-                                                    <property name="cssClasses">
-                                                        <list merge="true">
-                                                            <value>ksap-text-bold</value>
-                                                            <value>fl-font-size-90</value>
-                                                            <value>myplan-text-ellipsis</value>
-                                                            <value>ksap-noMargin</value>
-                                                        </list>
-                                                    </property>
+                                                    <property name="cssClasses" value="module--bold"/>
                                                 </bean>
                                             </list>
                                         </property>
@@ -195,19 +178,11 @@
                     </property>
                 </bean>
 
-                <bean parent="KSAP-SimpleDataField" p:propertyName="requestedBy" p:label="RUN BY" p:render="@{#line.runByAdviser}" p:style="margin-top: 10px;">
+                <bean parent="KSAP-SimpleDataField" p:propertyName="requestedBy" p:label="RUN BY"
+                      p:render="@{!#line.runByAdviser}">
                     <property name="labelPlacement" value="LEFT"/>
                     <property name="fieldLabel.render" value="true"/>
-                    <property name="fieldLabel.cssClasses">
-                        <list merge="true">
-                            <value>fl-font-size-80</value>
-                        </list>
-                    </property>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-font-size-90</value>
-                        </list>
-                    </property>
+                    <property name="fieldLabel.cssClasses" value="module__planAuditLabel"/>
                 </bean>
 
             </list>
@@ -233,17 +208,8 @@
     <bean id="planAuditData" parent="KSAP-SimpleDataField" p:width="33%">
         <property name="labelPlacement" value="RIGHT"/>
         <property name="fieldLabel.render" value="true"/>
-        <property name="fieldLabel.cssClasses">
-            <list merge="true">
-                <value>ksap-bottomLabel</value>
-            </list>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>ksap-auditData</value>
-                <value>ksap-noMargin</value>
-            </list>
-        </property>
+        <property name="fieldLabel.cssClasses" value="module__planAuditLabel"/>
+        <property name="cssClasses" value="module__planAuditData"/>
     </bean>
 
     <bean id="PlanAudit-FormView" parent="MyPlanFormView">
