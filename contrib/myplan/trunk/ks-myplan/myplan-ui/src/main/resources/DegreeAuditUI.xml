@@ -51,7 +51,7 @@
             <bean parent="KSAP-VerticalBoxGroup">
                 <property name="footer">
                     <bean parent="KSAP-EmptyLookupCriteriaFooter"/>
-        </property>
+                </property>
             </bean>
         </property>
         <property name="resultsGroup">
@@ -118,7 +118,7 @@
                             <bean parent="KSAP-SimpleDataField" p:propertyName="report.runDate"
                                   p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="timestamp_formatter"/>
-                                <property name="cssClasses" value="module--small module--gray"/>
+                                <property name="cssClasses" value="module--mini module--gray"/>
                             </bean>
                         </list>
                     </property>

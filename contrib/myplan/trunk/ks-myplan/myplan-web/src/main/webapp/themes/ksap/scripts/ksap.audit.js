@@ -120,7 +120,7 @@ function getPendingAudit(id, type) {
         if (type == data.auditType) {
             var component = jQuery("#" + id + " .uif-stackedCollectionLayout");
             if (data) {
-                var item = jQuery("<div />").addClass("uif-collectionItem pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span class="title">Auditing <span class="program">' + data.programName + '</span></span>');
+                var item = jQuery("<div />").addClass("module__item module__item--pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span>Auditing</span> ' + data.programName);
                 component.prepend(item);
                 pollPendingAudit(data.programId, data.recentAuditId, data.auditType);
             }

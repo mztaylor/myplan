@@ -1,13 +1,30 @@
 .moduleContainer {
     border: @baseBorderStyle;
-    .border-radius(@baseBorderRadius);
-}
+
+.
+
+border-radius
+(
+@baseBorderRadius);
+    }
 
 .moduleContainer__header {
     padding: 8px 10px;
-    .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
-    #gradient > .vertical(#efefef, #d5d5d5);
-}
+
+.
+
+border-radius
+(
+@baseBorderRadius @baseBorderRadius 0 0);
+#gradient > .
+
+vertical
+(
+#efefef, #d5d5d5
+
+)
+;
+    }
 
 .moduleContainer__headerText {
     text-transform: uppercase;
@@ -26,7 +43,7 @@
     border-top: @baseBorderStyle;
     border-bottom: @baseBorderStyle;
     padding: @paddingMini @paddingDefault;
-    #gradient > .vertical(#f7f7f7, #efefef);
+    #gradient > . vertical(#f7f7f7, #efefef);
 }
 
 .module__headerText {
@@ -83,23 +100,42 @@
     color: @textColorLight;
 }
 
+.module--bold {
+    font-weight: 700;
+}
+
 .module--gray {
     color: @textColorLight;
 }
 
-.module--small {
+.module--mini {
     font-size: @fontSizeMini;
+}
+
+.module--min {
+    font-size: @fontSizeMin;
 }
 
 .module--compact {
     margin: 0 0 0 @marginMini;
 }
 
+.module--uppercase {
+    text-transform: uppercase;
+}
+
+.module--center {
+    text-align: center;
+}
+
 .module__empty {
     display: block;
-    text-align: center;
     padding: @paddingLarge;
-}
+
+.module--center
+
+;
+    }
 
 .module__view {
     display: none;
@@ -110,91 +146,95 @@
 }
 
 .module__timestampBadge {
-    text-align: center;
     background-color: @grayLighter;
     padding: @paddingSmall;
     margin: 0 @marginSmall 0 0;
-    .border-radius(@baseBorderRadius);
-}
+
+.
+
+border-radius
+(
+@baseBorderRadius);
+.module--center
+
+;
+    }
 
 .viewing .module__timestampBadge {
     background-color: #fbf1cd;
 }
 
-.module__timestampBadge .month,
-.module__timestampBadge .time,
-.ksap-auditData .ksap-bottomLabel,
-.ksap-auditDataGroup .uif-instructionalMessage {
-    font-size: @fontSizeMin;
+.module__timestampBadge dl,
+.module__timestampBadge dl dd {
+    margin: 0;
 }
 
-.module__timestampBadge .month {
-    text-transform: uppercase;
-}
+.module__timestampBadge .month,
+.module__timestampBadge .time {
+
+.module--min
+
+;
+.module--uppercase
+
+;
+    }
 
 .module__timestampBadge .date {
     font-size: @fontSizeMax;
 }
 
-.ksap-auditData {
-    text-align: center;
-}
+.module__planAuditLabel > label {
+    font-weight: 500;
+    display: inline;
 
-.ksap-auditData .uif-readOnlyContent,
-.ksap-auditData .ksap-bottomLabel {
+.module--min
+
+;
+.module--uppercase
+
+;
+
+    }
+
+.module__planAuditData {
+    margin: 0;
+    font-size: @fontSizeLarge;
+
+.module--center
+
+;
+    }
+
+.module__planAuditData > span {
     display: block;
-    clear: both;
-}
 
-.ksap-auditData .uif-readOnlyContent {
-    font-size: 1.3em;
-}
+.module--center
 
-.ksap-auditDataGroup .uif-instructionalMessage {
-    text-transform: uppercase;
-}
+;
+    }
 
-.ksap-auditData .ksap-bottomLabel {
-    text-transform: uppercase;
-}
+.module__item--pending {
 
+.
 
+text-overflow
+(
+)
+;
+    }
 
-
-
-
-.ksap-module .uif-stackedCollectionLayout .uif-collectionItem.pending:hover {
+.module__item--pending:hover {
     background-color: transparent;
     cursor: default;
 }
 
-.ksap-module .uif-stackedCollectionLayout .uif-collectionItem.pending .icon {
+.module__item--pending .icon {
     width: 16px;
     height: 16px;
-    vertical-align: middle;
-    margin-right: 5px;
+    margin-right: @marginSmall;
 }
 
-.ksap-module .uif-stackedCollectionLayout .uif-collectionItem.pending .title {
-    vertical-align: middle;
-    color: #777;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    display: inline-block;
-    width: 177px;
-}
-
-.ksap-module .uif-stackedCollectionLayout .uif-collectionItem.pending .program {
-    color: #333;
-}
-
-
-.ksap-moduleContainer .blockElement {
-    left: auto !important;
-    top: 1px !important;
-    right: 0px !important;
-    border: none;
-    width: 16px;
-    background: transparent;
+.module__item--pending span {
+    color: @textColorLight;
 }
