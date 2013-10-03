@@ -734,7 +734,14 @@
         <property name="resultFields">
             <list/>
         </property>
+        <property name="criteriaGroup">
+            <bean parent="KSAP-VerticalBoxGroup">
+                <property name="footer">
+                    <bean parent="KSAP-EmptyLookupCriteriaFooter"/>
+                </property>
             </bean>
+        </property>
+    </bean>
 
     <bean id="messages_detail" parent="Uif-VerticalBoxSubSection">
         <property name="validationMessages">
@@ -758,7 +765,7 @@
         <property name="propertyName" value="lookupResults"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
-        <property name="collectionLookup.quickfinderAction.render" value="false"/>
+        <!--<property name="collectionLookup.quickfinderAction.render" value="false"/>-->
         <property name="layoutManager.renderSequenceField" value="false"/>
         <property name="header.render" value="false"/>
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
