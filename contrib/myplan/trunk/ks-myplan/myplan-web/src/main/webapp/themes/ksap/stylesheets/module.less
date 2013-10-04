@@ -1,30 +1,13 @@
 .moduleContainer {
     border: @baseBorderStyle;
-
-.
-
-border-radius
-(
-@baseBorderRadius);
-    }
+    .border-radius(@baseBorderRadius);
+}
 
 .moduleContainer__header {
     padding: 8px 10px;
-
-.
-
-border-radius
-(
-@baseBorderRadius @baseBorderRadius 0 0);
-#gradient > .
-
-vertical
-(
-#efefef, #d5d5d5
-
-)
-;
-    }
+    .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+    #gradient > .vertical(#efefef, #d5d5d5);
+}
 
 .moduleContainer__headerText {
     text-transform: uppercase;
@@ -131,11 +114,8 @@ vertical
 .module__empty {
     display: block;
     padding: @paddingLarge;
-
-.module--center
-
-;
-    }
+    .module--center;
+}
 
 .module__view {
     display: none;
@@ -149,16 +129,9 @@ vertical
     background-color: @grayLighter;
     padding: @paddingSmall;
     margin: 0 @marginSmall 0 0;
-
-.
-
-border-radius
-(
-@baseBorderRadius);
-.module--center
-
-;
-    }
+    .border-radius(@baseBorderRadius);
+    .module--center;
+}
 
 .viewing .module__timestampBadge {
     background-color: #fbf1cd;
@@ -171,14 +144,9 @@ border-radius
 
 .module__timestampBadge .month,
 .module__timestampBadge .time {
-
-.module--min
-
-;
-.module--uppercase
-
-;
-    }
+    .module--min;
+    .module--uppercase;
+}
 
 .module__timestampBadge .date {
     font-size: @fontSizeMax;
@@ -187,42 +155,24 @@ border-radius
 .module__planAuditLabel > label {
     font-weight: 500;
     display: inline;
-
-.module--min
-
-;
-.module--uppercase
-
-;
-
-    }
+    .module--min;
+    .module--uppercase;
+}
 
 .module__planAuditData {
     margin: 0;
     font-size: @fontSizeLarge;
-
-.module--center
-
-;
-    }
+    .module--center;
+}
 
 .module__planAuditData > span {
     display: block;
-
-.module--center
-
-;
-    }
+    .module--center;
+}
 
 .module__item--pending {
-
-.
-
-text-overflow
-(
-)
-;
-    }
+    .text-overflow();
+}
 
 .module__item--pending:hover {
     background-color: transparent;
