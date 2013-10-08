@@ -629,7 +629,7 @@
         <property name="header.render" value="@{#form.planAudit.auditHtml NE null}"/>
         <property name="items">
             <list>
-                <bean p:id="@{planAudit.auditId}" parent="KSAP-Message" p:messageText="@{planAudit.auditHtml}"
+                <bean p:id="@{planAudit.auditId NE null ? planAudit.auditId : 'empty_audit_html'}" parent="KSAP-Message" p:messageText="@{planAudit.auditHtml}"
                       p:style="display:block;" p:cssClasses="planAudit auditHtml"/>
             </list>
         </property>
