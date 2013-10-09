@@ -76,3 +76,49 @@ h6 {
     display: block;
     .text-overflow();
 }
+
+label {
+    display: inline;
+    margin: 0;
+}
+
+.bold() {
+    font-weight: 700;
+}
+
+.normal() {
+    font-weight: 500;
+}
+
+.termBadge dl,
+.termBadge dd {
+    margin: 0;
+    padding: 0;
+}
+
+.termBadge .scheduled dl dd,
+.termBadge dl.scheduled dd {
+    .border-radius(@borderRadiusSmall);
+    .bold();
+    font-size: @fontSizeMin;
+    padding: 0 @paddingSmall;
+    margin: 0 @marginMini 0 0;
+    line-height: @fontSizeLarge;
+    display: inline-block;
+}
+
+.AU {
+    background: #FFCCCC !important;
+}
+
+.WI {
+    background: #CCDDFF !important;
+}
+
+.SP {
+    background: #CCFFCC !important;
+}
+
+.SU {
+    background: #FCF990 !important;
+}

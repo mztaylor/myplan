@@ -44,48 +44,56 @@
 
 // Typography
 // -------------------------
-@sansFontFamily:        Arial, Helvetica, Verdana, sans-serif;
+@sansFontFamily:        Helvetica, Arial, Verdana, sans-serif;
 @serifFontFamily:       "museo-slab", Georgia, "Times New Roman", Times, serif;
 @monoFontFamily:        Monaco, Menlo, Consolas, "Courier New", monospace;
 
 @baseFontSize:          13px;
 @baseFontFamily:        "museo-sans", Helvetica, Arial, Verdana, sans-serif;
 @baseLineHeight:        20px;
-@altFontFamily:         Helvetica, Arial, Verdana, sans-serif;
+@altFontFamily:         Arial, Helvetica, Verdana, sans-serif;
 
 @headingsFontFamily:    "museo-sans", Arial, Helvetica, Verdana, sans-serif; // empty to use BS default, @baseFontFamily
 @headingsFontWeight:    500;    // instead of browser default, bold
 @headingsColor:         inherit; // empty to use BS default, @textColor
 
-@logoFontFamily:    "pragmatica-web", @sansFontFamily;
+@logoFontFamily:        "pragmatica-web", @sansFontFamily;
 
 
 // Component sizing
 // -------------------------
 // Based on 13px font-size and 20px line-height
 
-@fontSizeMax:           @baseFontSize * 1.846; // 24px
-@fontSizeExtraLarge:    @baseFontSize * 1.385; // 18px
-@fontSizeLarge:         @baseFontSize * 1.231; // 16px
-@fontSizeSmall:         @baseFontSize * 0.923; // 12px
-@fontSizeMini:          @baseFontSize * 0.846; // 11px
-@fontSizeTiny:          @baseFontSize * 0.769; // 10px
-@fontSizeMin:           @baseFontSize * 0.692; // 9px
+@fontSizeMax:               @baseFontSize * 1.846; // 24px
+@fontSizeExtraLarge:        @baseFontSize * 1.385; // 18px
+@fontSizeLarge:             @baseFontSize * 1.231; // 16px
+@fontSizeSmall:             @baseFontSize * 0.923; // 12px
+@fontSizeMini:              @baseFontSize * 0.846; // 11px
+@fontSizeTiny:              @baseFontSize * 0.769; // 10px
+@fontSizeMin:               @baseFontSize * 0.692; // 9px
 
-@paddingDefault:        10px;
-@paddingLarge:          20px;
-@paddingSmall:          5px;
-@paddingMini:           3px;
+@sizeDefault:               10px;
+@sizeMini:                  @sizeDefault * 0.3;
+@sizeSmall:                 @sizeDefault * 0.5;
+@sizeLarge:                 @sizeDefault * 1.5;
+@sizeExtraLarge:            @sizeDefault * 2;
 
-@marginDefault:        @paddingDefault;
-@marginLarge:          @paddingLarge;
-@marginSmall:          @paddingSmall;
-@marginMini:           @paddingMini;
+@paddingDefault:            @sizeDefault;
+@paddingMini:               @sizeDefault * 0.3;
+@paddingSmall:              @sizeDefault * 0.5;
+@paddingLarge:              @sizeDefault * 2;
+@paddingExtraLarge:         @sizeDefault * 3;
 
-@baseBorderRadius:      5px;
-@borderRadiusLarge:     10px;
-@borderRadiusSmall:     3px;
+@marginDefault:             @paddingDefault;
+@marginMini:                @paddingMini;
+@marginSmall:               @paddingSmall;
+@marginLarge:               @paddingLarge;
+@marginExtraLarge:          @paddingExtraLarge;
 
+@baseBorderRadius:          @sizeSmall;
+@borderRadiusSmall:         @baseBorderRadius * 0.6;
+@borderRadiusLarge:         @baseBorderRadius * 2;
+@borderRadiusExtraLarge:    @baseBorderRadius * 3;
 
 // Tables
 // -------------------------
@@ -96,12 +104,24 @@
 
 // Buttons
 // -------------------------
+@btnDisabledBackground:             #eeeeee;
+@btnDisabledBackgroundHighlight:    #d9d9d9;
+@btnDisabledBorder:                 #d5d5d5;
+@btnDisabledText:                   #adadad;
+
+@btnPrimaryBackground:              #fedb71;
+@btnPrimaryBackgroundHighlight:     #febc4a;
+@btnPrimaryBorder:                  #e6ac48;
+@btnPrimaryText:                    @purple;
+
+@btnSecondaryBackground:            #f4ebd6;
+@btnSecondaryBackgroundHighlight:   #ebdbb4;
+@btnSecondaryBorder:                #d0c19d;
+@btnSecondaryText:                  @purple;
+
 @btnBackground:                     @white;
 @btnBackgroundHighlight:            darken(@white, 10%);
 @btnBorder:                         #ccc;
-
-@btnPrimaryBackground:              @linkColor;
-@btnPrimaryBackgroundHighlight:     spin(@btnPrimaryBackground, 20%);
 
 @btnInfoBackground:                 #5bc0de;
 @btnInfoBackgroundHighlight:        #2f96b4;
@@ -123,11 +143,15 @@
 @appnavigationFocus:        #fea931;
 @appnavigationHover:        #fdd704;
 
+@searchPanelBackground:     #fcf9f0;
+
 @baseBorderStyle:           solid 1px #e1e1e0;
 @dottedBorderStyle:         dotted 1px #e1e1e0;
 
 @itemHover:                 #e3f0fe;
 @itemHighlight:             yellow;
+
+@fieldFocusColor:           rgba(252, 158, 93, .8);
 
 
 // Forms

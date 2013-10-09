@@ -145,7 +145,8 @@ jQuery.fn.iterateSorted = function (sorter, print) {
 }(jQuery));
 
 function searchForCourses(id, parentId) {
-    var results = jQuery("#" + parentId); // course_search_results_panel
+    window.location.replace('#');
+    var results = jQuery("#" + parentId + " > .uif-horizontalBoxLayout"); // course_search_results_panel
     results.fadeOut("fast");
     var sQuery = jQuery("input[name='searchQuery']").val();
     var sTerm = jQuery("select[name='searchTerm']").val();
@@ -162,10 +163,10 @@ function searchForCourses(id, parentId) {
         aLengthMenu: [20, 50, 100],
         aaSorting: [],
         aoColumns: [
-            {'sTitle': 'Code', 'bSortable': true, 'bSearchable': false, 'sClass': 'myplan-text-nowrap sortable', 'sWidth': '73px', 'sType': 'string'},
-            {'sTitle': 'Course Name', 'bSortable': true, 'bSearchable': false, 'sClass': 'sortable', 'sWidth': '170px'},
+            {'sTitle': 'Code', 'bSortable': true, 'bSearchable': false, 'sClass': 'courseResults__tableHeader--sortable', 'sWidth': '73px', 'sType': 'string'},
+            {'sTitle': 'Course Name', 'bSortable': true, 'bSearchable': false, 'sClass': 'courseResults__tableHeader--sortable', 'sWidth': '181px'},
             {'sTitle': 'Credits', 'bSortable': false, 'bSearchable': false, 'sWidth': '36px'},
-            {'sTitle': 'Quarter Offered', 'bSortable': false, 'bSearchable': false, 'sClass': 'myplan-data-list', 'sWidth': '80px'},
+            {'sTitle': 'Quarter Offered', 'bSortable': false, 'bSearchable': false, 'sClass': 'termBadge', 'sWidth': '80px'},
             {'sTitle': 'Gen Edu Req', 'bSortable': false, 'bSearchable': false, 'sWidth': '69px'},
             {'sTitle': '', 'bSortable': false, 'bSearchable': false, 'sClass': 'myplan-status-column', 'sWidth': '69px'},
             {'bVisible': false},
@@ -185,13 +186,13 @@ function searchForCourses(id, parentId) {
         iCookieDuration: 0,
         iDisplayLength: iDisplayLength,
         iDisplayStart: iDisplayStart,
-        fnDrawCallback: function () {
-            if (Math.ceil((this.fnSettings().fnRecordsDisplay()) / this.fnSettings()._iDisplayLength) > 1) {
+        fnDrawCallback: function (oSettings) {
+            if (Math.ceil((oSettings.fnRecordsDisplay()) / oSettings._iDisplayLength) > 1) {
                 jQuery(".dataTables_paginate .ui-button").not(".first, .last").show();
             } else {
                 jQuery(".dataTables_paginate .ui-button").hide();
             }
-            fnSaveState(id);
+            fnSaveState(id, oSettings);
         },
         fnInitComplete: function (oSettings, json) {
             //oTable.fnDraw(); //Clears the iDisplayStart from being initially set.
@@ -205,7 +206,6 @@ function searchForCourses(id, parentId) {
                     jQuery('html,body').animate({scrollTop: targetOffset}, 200);
                 }
             });
-            results.find("table#" + id).width(533);
             jQuery(".myplan-facets-group .uif-disclosureContent .uif-boxLayout").each(function () {
                 jQuery(this).empty();
             });
@@ -226,20 +226,31 @@ function searchForCourses(id, parentId) {
                     }
                 },
                 beforeSend: function () {
-                    jQuery.blockUI({
+                    jQuery("#" + parentId).block({
+                        message:  'Please wait...',
+                        centerY: false,
                         css: {
+                            width: '30%',
+                            left: '35%',
+                            textAlign: 'center',
+                            top: '40px',
                             border: 'none',
-                            padding: '15px',
+                            padding: '15px 0px',
                             backgroundColor: '#000',
                             '-webkit-border-radius': '10px',
                             '-moz-border-radius': '10px',
                             opacity: .5,
                             color: '#fff'
+                        },
+                        overlayCSS:  {
+                            backgroundColor: '#000',
+                            opacity:         0.6,
+                            cursor:          'wait'
                         }
                     });
                 },
                 complete: function () {
-                    jQuery.unblockUI();
+                    jQuery("#" + parentId).unblock();
                 }
             });
         },
@@ -252,14 +263,15 @@ function searchForCourses(id, parentId) {
             "sZeroRecords": "0 results found"
         },
         sAjaxSource: '/student/myplan/course/search?queryText=' + escape(sQuery) + '&termParam=' + sTerm + '&campusParam=' + aCampus + '&time=' + new Date().getTime(),
-        sCookiePrefix: "myplan_",
+        sCookiePrefix: "course_search_",
         sDom: "ilrtSp",
-        sPaginationType: "full_numbers"
+        sPaginationType: "full_numbers",
     });
 }
 
 function fnGenerateFacetGroup(iColumn, obj, sorter) {
-    if (oTable.fnSettings().aoColumns[iColumn].bSearchable) {
+    var oTableSettings = oTable.fnSettings();
+    if (oTableSettings.aoColumns[iColumn].bSearchable) {
         oTable.fnGetColumnData(iColumn, true, false);
         fnCreateFacetList(oFacets[iColumn], iColumn, obj, sorter);
     }
@@ -267,10 +279,12 @@ function fnGenerateFacetGroup(iColumn, obj, sorter) {
 
 function fnCreateFacetList(oData, i, obj, sorter) {
     var aSelections = [];
-    var jFacets = obj.find(".uif-disclosureContent .uif-boxLayout");
+    var oTableSettings = oTable.fnSettings();
+    var jFacets = obj.find(".uif-disclosureContent .uif-verticalBoxLayout");
+    jFacets.empty();
     if (Object.size(oData) > 1) {
-        jFacets.append(jQuery('<div class="all"><ul /></div>'));
-        var allClass = 'checked';
+        jFacets.append(jQuery('<div class="courseResults__facetAll"><ul /></div>'));
+        var allClass = 'courseResults__facet--checked';
         for (var key in oData) {
             if (oData.hasOwnProperty(key)) {
                 if (oData[key].checked === true) {
@@ -279,12 +293,12 @@ function fnCreateFacetList(oData, i, obj, sorter) {
                 }
             }
         }
-        var jAll = jQuery('<li />').attr("title", "All").addClass("all " + allClass).html('<a href="#">All</a>').click(function (e) {
+        var jAll = jQuery('<li />').attr("title", "All").addClass(allClass).html('<a href="#">All</a>').click(function (e) {
             fnFacetFilter('All', i, e);
         });
-        jFacets.find(".all ul").append(jAll);
+        jFacets.find(".courseResults__facetAll ul").append(jAll);
     }
-    jFacets.append(jQuery('<div class="facets"><ul /></div>'));
+    jFacets.append(jQuery('<div class="courseResults__facetList"><ul /></div>'));
     jQuery(oData).iterateSorted(sorter, function (key) {
         var title = "";
         if (key in oGenEduNames) {
@@ -293,14 +307,14 @@ function fnCreateFacetList(oData, i, obj, sorter) {
         var jItem = jQuery('<li />').html('<a href="#"' + title + '>' + key + '</a><span>(' + oData[key].count + ')</span>').click(function (e) {
             fnFacetFilter(key, i, e);
         });
-        if (oData[key].checked) jItem.addClass("checked");
-        if (Object.size(oData) == 1) jItem.addClass("static");
-        jFacets.find(".facets ul").append(jItem);
+        if (oData[key].checked) jItem.addClass("courseResults__facet--checked");
+        if (Object.size(oData) == 1) jItem.addClass("courseResults__facet--static");
+        jFacets.find(".courseResults__facetList ul").append(jItem);
     });
     if (aSelections.length > 0) {
         oTable.fnFilter(aSelections.join("|"), i, true, false);
         if (readUrlHash("start")) {
-            oTable.fnSettings()._iDisplayStart = parseFloat(readUrlHash("start"));
+            oTableSettings._iDisplayStart = parseFloat(readUrlHash("start"));
             oTable.fnDraw(false);
         }
     }
@@ -311,11 +325,11 @@ function fnUpdateFacetList(n, i, obj) {
         oTable.fnGetColumnData(i);
     }
     // Update the style (checked/not checked) on facet links and the count view
-    obj.find("li").not(".all").each(function () {
+    obj.find(".courseResults__facetList li").each(function () {
         if (oFacets[i][jQuery(this).find("a").text()].checked) {
-            jQuery(this).addClass("checked");
+            jQuery(this).addClass("courseResults__facet--checked");
         } else {
-            jQuery(this).removeClass("checked");
+            jQuery(this).removeClass("courseResults__facet--checked");
         }
         jQuery(this).find("span").text("(" + oFacets[i][jQuery(this).find("a").text()].count + ")");
     });
@@ -329,16 +343,16 @@ function fnUpdateFacetList(n, i, obj) {
         }
     }
     if (bAll) {
-        obj.find("ul li.all").addClass("checked");
+        obj.find(".courseResults__facetAll li").addClass("courseResults__facet--checked");
     } else {
-        obj.find("ul li.all").removeClass("checked");
+        obj.find(".courseResults__facetAll li").removeClass("courseResults__facet--checked");
     }
 }
 
 function fnFacetFilter(sFilter, i, e) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
-    if (!jQuery(target).is('.disabled') && !jQuery(target).is('.static')) {
+    if (!jQuery(target).is('.courseResults__facet--disabled') && !jQuery(target).is('.courseResults__facet--static')) {
         if (sFilter === 'All') {
             // Set all facets within column to checked false
             for (var key in oFacets[i]) {
@@ -370,11 +384,11 @@ function fnFacetFilter(sFilter, i, e) {
     }
 }
 
-function fnSaveState(id) {
+function fnSaveState(id, oSettings) {
     jQuery("#" + id + "_length select").change(function () {
-        setUrlHash("show", oTable.fnSettings()._iDisplayLength);
+        setUrlHash("show", oSettings._iDisplayLength);
     });
     jQuery("#" + id + "_paginate a.ui-button").click(function (e) {
-        setUrlHash("start", oTable.fnSettings()._iDisplayStart);
+        setUrlHash("start", oSettings._iDisplayStart);
     });
 }

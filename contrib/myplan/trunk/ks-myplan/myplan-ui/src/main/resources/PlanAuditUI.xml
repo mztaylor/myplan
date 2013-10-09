@@ -179,7 +179,7 @@
                 </bean>
 
                 <bean parent="KSAP-SimpleDataField" p:propertyName="requestedBy" p:label="RUN BY"
-                      p:render="@{!#line.runByAdviser}">
+                      p:render="@{#line.runByAdviser}">
                     <property name="labelPlacement" value="LEFT"/>
                     <property name="fieldLabel.render" value="true"/>
                     <property name="fieldLabel.cssClasses" value="module__planAuditLabel"/>

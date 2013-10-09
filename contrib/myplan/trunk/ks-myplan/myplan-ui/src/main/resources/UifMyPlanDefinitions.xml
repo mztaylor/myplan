@@ -342,7 +342,7 @@
     </bean>
 
 
-    <bean id="KSAP-RightPane" parent="KSAP-VerticalBoxGroup">
+    <bean id="KSAP-RightPane" parent="KSAP-VerticalBoxGroup" p:width="230px">
         <property name="cssClasses">
             <list merge="true">
                 <value>ksap-noMargin</value>
@@ -391,7 +391,6 @@
     </bean>
 
     <bean id="KSAP-MessagesList" parent="KSAP-Module" p:headerText="Messages" p:id="KSAP-MessagesList">
-        <property name="header.render" value="false"/>
         <property name="onDocumentReadyScript" value="
             myplanRetrieveComponent('KSAP-MessagesList','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
         "/>
@@ -762,9 +761,9 @@
 
     <!-- KSAP Fmpty footer for lookup criteria -->
     <bean id="KSAP-EmptyLookupCriteriaFooter" parent="Uif-FooterBase">
-         <property name="items">
-             <list merge="false"/>
-         </property>
+        <property name="items">
+            <list merge="false"/>
+        </property>
     </bean>
 
     <bean id="KSAP-VerticalBoxGroup-NoMargin" parent="KSAP-VerticalBoxGroup">
@@ -848,8 +847,14 @@
         <property name="width" value="300px"/>
     </bean>
 
-    <bean id="KSAP-HeaderBase" abstract="true" parent="Uif-HeaderBase-parentBean">
+    <bean id="KSAP-HeaderBase" parent="Uif-HeaderBase">
         <property name="template" value="/ks-myplan/WEB-INF/ftl/components/element/header.ftl"/>
+        <property name="cssClasses">
+            <list merge="false"/>
+        </property>
+        <property name="headerTagCssClasses">
+            <list merge="false"/>
+        </property>
     </bean>
 
     <bean id="KSAP-HeaderOne" parent="KSAP-HeaderOne-parentBean"/>
@@ -889,6 +894,54 @@
     <bean id="KSAP-ModuleHeader" parent="KSAP-HeaderBase">
         <property name="cssClasses" value="module__header"/>
         <property name="headerTagCssClasses" value="module__headerText"/>
+    </bean>
+
+    <bean id="KSAP-HeaderDiv" parent="KSAP-HeaderBase">
+        <property name="cssClasses" value=""/>
+        <property name="headerTagCssClasses" value=""/>
+    </bean>
+
+    <bean id="KSAP-Action" parent="Uif-Action">
+        <property name="cssClasses">
+            <list merge="false">
+                <value>btn</value>
+            </list>
+        </property>
+        <property name="libraryCssClasses">
+            <list merge="false"/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-PrimaryActionButton" parent="KSAP-Action">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>btn-primary</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-SecondaryActionButton" parent="KSAP-Action">
+        <property name="cssClasses">
+            <list merge="false">
+                <value>btn-secondary</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-PrimaryActionButton-Small" parent="KSAP-PrimaryActionButton">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>btn-small</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-SecondaryActionButton-Small" parent="KSAP-SecondaryActionButton">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>btn-small</value>
+            </list>
+        </property>
     </bean>
 
 </beans>
