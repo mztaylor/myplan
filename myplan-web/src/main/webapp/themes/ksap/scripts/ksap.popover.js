@@ -1,5 +1,5 @@
 var popupOptionsDefault = {
-    themePath: "../ks-myplan/jquery-popover/jquerypopover-theme/",
+    themePath: "../themes/ksap/images/popover-theme/",
     manageMouseEvents: true,
     selectable: true,
     tail: {align: "middle", hidden: false},
@@ -7,7 +7,7 @@ var popupOptionsDefault = {
     align: "center",
     alwaysVisible: false,
     themeMargins: {total: "20px", difference: "5px"},
-    themeName: "myplan",
+    themeName: "default",
     distance: "0px",
     openingSpeed: 5,
     closingSpeed: 5

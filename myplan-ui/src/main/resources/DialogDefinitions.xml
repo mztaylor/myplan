@@ -1496,7 +1496,7 @@
         <property name="actionScript"
                   value="fnPopoverSlider('add_planned_course_fields', 'course_popover_group', 'left');"/>
         <property name="actionImage">
-            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif">
                 <property name="cssClasses">
                     <list merge="true">
                         <value>rightArrowSmall</value>

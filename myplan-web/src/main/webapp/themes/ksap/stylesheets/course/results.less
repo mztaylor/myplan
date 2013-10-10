@@ -176,20 +176,23 @@ li.courseResults__facet--checked {
     width: 181px;
 }
 
+td.courseResults__item--right {
+    text-align: right;
+    padding: 0 @paddingSmall 0 0;
+}
+
 .courseResults__table .planned,
 .courseResults__table .bookmarked{
-    text-align: right;
-    padding: 0 @paddingDefault 0 0;
     font-size: @fontSizeTiny;
     font-style: italic;
 }
 
 .courseResults__table .planned {
-    color: #06c;
+    color: @blueDark;
 }
 
 .courseResults__table .bookmarked {
-    color: #060;
+    color: @green;
 }
 
 .courseResults__table .odd {
@@ -202,6 +205,18 @@ li.courseResults__facet--checked {
 
 .courseResults__table tbody tr:hover {
     background-color: @itemHover;
+}
+
+.courseResults__itemAdd {
+    width: 16px;
+    height: 16px;
+    background: url('../images/icon_sprite.png') no-repeat 0px 0px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.courseResults__itemAdd:hover {
+    background-position: -16px 0px;
 }
 
 .courseResults__table tbody tr:hover td.dataTables_empty {
