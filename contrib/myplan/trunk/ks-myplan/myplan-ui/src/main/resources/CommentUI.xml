@@ -196,7 +196,7 @@
         <property name="items">
             <list>
                 <bean parent="Uif-ImageField"
-                      p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+                      p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif">
                     <property name="cssClasses">
                         <list merge="true">
                             <value>icon</value>

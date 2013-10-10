@@ -168,7 +168,7 @@ function searchForCourses(id, parentId) {
             {'sTitle': 'Credits', 'bSortable': false, 'bSearchable': false, 'sWidth': '36px'},
             {'sTitle': 'Quarter Offered', 'bSortable': false, 'bSearchable': false, 'sClass': 'termBadge', 'sWidth': '80px'},
             {'sTitle': 'Gen Edu Req', 'bSortable': false, 'bSearchable': false, 'sWidth': '69px'},
-            {'sTitle': '', 'bSortable': false, 'bSearchable': false, 'sClass': 'myplan-status-column', 'sWidth': '69px'},
+            {'sTitle': '', 'bSortable': false, 'bSearchable': false, 'sClass':'courseResults__item--right', 'sWidth': '69px'},
             {'bVisible': false},
             {'bVisible': false},
             {'bVisible': false},

@@ -14,32 +14,10 @@ form {
     padding: 0 0 @paddingLarge 0;
 }
 
-form#kualiForm {
-    margin: 0 auto;
-    width: 950px;
-}
-
-.backdoor {
-    .alert;
-    .alert-info;
-}
-
-.uif-boxLayoutVerticalItem {
-    margin: @marginDefault 0 0 0;
-}
-
-.uif-boxLayoutHorizontalItem {
-    margin: 0 0 0 @marginDefault;
-    float: left;
-}
-
-.uif-boxLayoutVerticalItem:first-child, .uif-boxLayoutHorizontalItem:first-child {
-    margin: 0;
-}
-
 h1, h2, h3, h4, h5, h6 {
     font-family: @headingsFontFamily;
     font-weight: @headingsFontWeight;
+    margin: 0;
 }
 
 h1 {
@@ -72,22 +50,13 @@ h6 {
     /*line-height: 1.538em;*/
 }
 
+.viewHeader {
+    margin: @marginDefault 0;
+}
+
 .ellipsisItem {
     display: block;
     .text-overflow();
-}
-
-label {
-    display: inline;
-    margin: 0;
-}
-
-.bold() {
-    font-weight: 700;
-}
-
-.normal() {
-    font-weight: 500;
 }
 
 .termBadge dl,
@@ -101,6 +70,7 @@ label {
     .border-radius(@borderRadiusSmall);
     .bold();
     font-size: @fontSizeMin;
+    font-family: @sansFontFamily;
     padding: 0 @paddingSmall;
     margin: 0 @marginMini 0 0;
     line-height: @fontSizeLarge;
@@ -121,4 +91,18 @@ label {
 
 .SU {
     background: #FCF990 !important;
+}
+
+.bold() {
+    font-weight: 700;
+}
+
+.normal() {
+    font-weight: 500;
+}
+
+.rightGroup() {
+    position: absolute;
+    top: 0px;
+    right: 0px;
 }

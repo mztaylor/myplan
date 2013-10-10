@@ -17,21 +17,10 @@
     <bean id="CourseSearch-FormView" parent="MyPlanFormView">
         <property name="id" value="CourseSearch-FormView"/>
         <property name="entryPageId" value="course_search"/>
-        <!--<property name="additionalScriptFiles">
-            <list>
-                <value>themes/ksap/scripts/ksap.search.js</value>
-            </list>
-        </property>-->
-        <property name="header">
-            <bean parent="KSAP-HeaderOne" p:headerText="Find Courses"/>
-        </property>
+        <property name="headerText" value="Find Courses"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="course_search">
-                    <property name="header.render" value="false"/>
-                    <property name="layoutManager">
-                        <bean parent="Uif-HorizontalBoxLayout"/>
-                    </property>
+                <bean parent="KSAP-Page" p:id="course_search">
                     <property name="instructionalMessage">
                         <bean parent="KSAP-Message">
                             <property name="messageText"
@@ -244,7 +233,7 @@
                     {'sTitle':'Credits','bSortable':false, 'bSearchable':false, 'sWidth':'36px'},
                     {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'termBadge', 'sWidth':'80px'},
                     {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'69px'},
-                    {'sTitle':'', 'bSortable':false, 'bSearchable':false, 'sClass':'myplan-status-column', 'sWidth':'69px'},
+                    {'sTitle':'', 'bSortable':false, 'bSearchable':false, 'sClass':'courseResults__item--right', 'sWidth':'69px'},
                     {'sTitle':'facetQuarter', 'bVisible':false},
                     {'sTitle':'facetGenEduReq', 'bVisible':false},
                     {'sTitle':'facetCredits', 'bVisible':false},

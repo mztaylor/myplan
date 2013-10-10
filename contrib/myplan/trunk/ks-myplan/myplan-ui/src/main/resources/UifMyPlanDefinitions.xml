@@ -52,6 +52,9 @@
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
+        <property name="header">
+            <bean parent="KSAP-ViewHeader"/>
+        </property>
         <property name="applicationHeader">
             <bean parent="KSAP-GlobalApplicationHeader"/>
         </property>
@@ -74,6 +77,9 @@
     <bean id="MyPlanLookupView" abstract="true" parent="MyPlanBaseLookupView">
         <property name="theme">
             <bean parent="MyPlanTheme"/>
+        </property>
+        <property name="header">
+            <bean parent="KSAP-ViewHeader"/>
         </property>
         <property name="applicationHeader">
             <bean parent="KSAP-GlobalApplicationHeader"/>
@@ -98,6 +104,9 @@
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
+        <property name="header">
+            <bean parent="KSAP-ViewHeader"/>
+        </property>
         <property name="applicationHeader">
             <bean parent="KSAP-GlobalApplicationHeader"/>
         </property>
@@ -119,6 +128,9 @@
     <bean id="MyPlanMaintenanceView" abstract="true" parent="MyPlanBaseMaintenanceView">
         <property name="theme">
             <bean parent="MyPlanTheme"/>
+        </property>
+        <property name="header">
+            <bean parent="KSAP-ViewHeader"/>
         </property>
         <property name="footer" ref="MyPlanFooterDocument"/>
         <property name="applicationHeader">
@@ -242,7 +254,7 @@
     </bean>
 
     <bean id="MyPlanHelpImage" parent="Uif-HelpImage"
-          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}iconHelp.png" p:altText="" p:title="">
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/icon_help.png" p:altText="" p:title="">
     </bean>
 
     <bean id="MyPlan-Tooltip" parent="Uif-Tooltip">
@@ -258,8 +270,8 @@
                 <entry key="openingDelay" value="500"/>
                 <entry key="closingDelay" value="0"/>
                 <entry key="themeMargins" value="{total:'18px', difference:'8px'}"/>
-                <entry key="themePath" value="../ks-myplan/jquery-popover/jquerypopover-theme/"/>
-                <entry key="themeName" value="myplan-help"/>
+                <entry key="themePath" value="../themes/ksap/images/popover-theme/"/>
+                <entry key="themeName" value="help"/>
                 <entry key="distance" value="0px"/>
             </map>
         </property>
@@ -285,7 +297,7 @@
     </bean>
 
     <bean id="MyPlanRegistrationStatusIcon" parent="Uif-Image"
-          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif">
         <property name="cssClasses">
             <list merge="true">
                 <value>@{#parentLine.completedTerm ? 'locked' : (#parentLine.openForPlanning ? 'unlocked' : 'locked')}
@@ -296,7 +308,7 @@
     </bean>
 
     <bean id="MyPlanMessagingIcon" parent="Uif-Image"
-          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif">
         <property name="cssClasses">
             <list merge="true">
                 <value>icon</value>
@@ -589,8 +601,7 @@
           p:style="margin:0;">
         <property name="actionImage">
             <bean parent="Uif-Image" p:style="margin:0;"
-                  p:source="../ks-myplan/images/pixel.gif"/>
-            <!--p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"/>-->
+                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
         </property>
         <property name="cssClasses">
             <list merge="true">
@@ -922,7 +933,7 @@
 
     <bean id="KSAP-SecondaryActionButton" parent="KSAP-Action">
         <property name="cssClasses">
-            <list merge="false">
+            <list merge="true">
                 <value>btn-secondary</value>
             </list>
         </property>
@@ -941,6 +952,19 @@
             <list merge="true">
                 <value>btn-small</value>
             </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-ViewHeader" parent="Uif-ViewHeader">
+        <property name="cssClasses" value="viewHeader"/>
+        <property name="headerTagCssClasses" value=""/>
+        <property name="headerLevel" value="h2"/>
+    </bean>
+
+    <bean id="KSAP-Page" parent="Uif-Page">
+        <property name="header.render" value="false"/>
+        <property name="layoutManager">
+            <bean parent="Uif-HorizontalBoxLayout"/>
         </property>
     </bean>
 

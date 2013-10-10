@@ -407,7 +407,7 @@
                 <property name="items">
                     <list>
                         <bean parent="Uif-Image"
-                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif">
                             <property name="cssClasses">
                                 <list merge="true">
                                     <value>locked</value>
@@ -523,7 +523,7 @@
                 <property name="items">
                     <list>
                         <bean parent="Uif-Image"
-                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif">
+                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif">
                             <property name="cssClasses">
                                 <list merge="true">
                                     <value>unlocked</value>
@@ -541,7 +541,7 @@
                       p:colSpan="1" p:rowSpan="1" p:width="16px">
                     <property name="id" value="button_@{#line.uuid}"/>
                     <property name="source"
-                              value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"/>
+                              value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
                     <property name="onDocumentReadyScript" value="
                         var row = jQuery('#button_@{#line.uuid}').parents('tr');
                         var cell = jQuery('#button_@{#line.uuid}').parents('td');
@@ -755,7 +755,7 @@
     </bean>
 
     <bean id="singleQuarterItemAlert" parent="Uif-ImageField"
-          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"
           p:title="@{#line.alertsAsString}"
           p:altText="@{#line.alertsAsString}"
           p:render="@{#line.showAlert AND !#line.placeHolder}">
@@ -907,7 +907,7 @@
                             <property name="templateOptions">
                                 <map merge="true">
                                     <entry key="themeMargins" value="{ total:'17px', difference:'10px' }"/>
-                                    <entry key="themeName" value="ksap-adviser"/>
+                                    <entry key="themeName" value="adviser"/>
                                 </map>
                             </property>
                         </bean>

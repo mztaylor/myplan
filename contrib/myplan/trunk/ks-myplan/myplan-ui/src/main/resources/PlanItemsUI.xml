@@ -860,7 +860,7 @@
     </bean>
 
     <bean id="planItemAlert" parent="Uif-ImageField"
-          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"
           p:title="@{#line.alertsAsString}"
           p:altText="@{#line.alertsAsString}"
           p:render="@{#line.showAlert}">
@@ -900,7 +900,7 @@
     </bean>
     <bean id="planItemNoteIcon" parent="Uif-ImageField"
           p:id="@{#line.planItemDataObject.type}_@{#line.planItemDataObject.atp.replace('.','-')}_@{#line.planItemDataObject.id}_note"
-          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"
           p:render="@{#line.note NE null}">
         <property name="cssClasses">
             <list merge="false">
@@ -916,7 +916,7 @@
                 <property name="templateOptions">
                     <map merge="true">
                         <entry key="themeMargins" value="{ total:'17px', difference:'10px' }"/>
-                        <entry key="themeName" value="ksap-notes"/>
+                        <entry key="themeName" value="note"/>
                     </map>
                 </property>
             </bean>
@@ -932,7 +932,7 @@
                             <property name="templateOptions">
                                 <map merge="true">
                                     <entry key="themeMargins" value="{ total:'17px', difference:'10px' }"/>
-                                    <entry key="themeName" value="ksap-notes"/>
+                                    <entry key="themeName" value="note"/>
                                 </map>
                             </property>
                         </bean>
@@ -1084,7 +1084,7 @@
     </bean>
 
     <bean id="recommendedAccepted" parent="Uif-ImageField"
-          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}pixel.gif"
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"
           p:render="@{!#line.proposed}">
         <property name="cssClasses">
             <list merge="false">
@@ -1146,7 +1146,7 @@
                                         <property name="templateOptions">
                                             <map merge="true">
                                                 <entry key="themeMargins" value="{ total:'17px', difference:'10px' }"/>
-                                                <entry key="themeName" value="ksap-adviser"/>
+                                                <entry key="themeName" value="adviser"/>
                                             </map>
                                         </property>
                                     </bean>

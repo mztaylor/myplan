@@ -214,7 +214,7 @@
                 <property name="inlineComponents">
                     <list>
                         <bean parent="Uif-Image"
-                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}iconNote12.png"
+                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/iconNote12.png"
                               p:cssClasses="itemNote"/>
                     </list>
                 </property>
@@ -480,7 +480,7 @@
                                   p:style="margin:0;"/>
                             <bean parent="Uif-ImageField"
                                   p:render="@{#line.note NE null}"
-                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}iconNote8.png">
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/iconNote8.png">
                                 <property name="cssClasses">
                                     <list merge="false">
                                         <value>itemNote</value>
