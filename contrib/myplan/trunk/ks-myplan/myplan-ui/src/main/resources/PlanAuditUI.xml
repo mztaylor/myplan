@@ -799,7 +799,7 @@
                                               p:render="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() OR
                                               #form.planAudit.allMessyItemsSelected}">
                                             <property name="actionLabel"
-                                                      value="@{#form.planAudit.messyItems.size() EQ 0 ? 'Ok, proceed' : 'Submit'}"/>
+                                                      value="@{#form.planAudit.messyItems.size() EQ 0 ? 'Continue' : 'Submit'}"/>
                                             <property name="actionScript" value="runPlanAudit('plan_audit_run');"/>
                                             <property name="onDocumentReadyScript"
                                                       value="buttonState('plan_audit_messy_items', 'submit_plan_audit');"/>
@@ -813,7 +813,7 @@
                                         <bean parent="Uif-PrimaryActionButton" p:style="margin:0px 20px 0px 0px;"
                                               p:render="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND
                                               !#form.planAudit.allMessyItemsSelected}">
-                                            <property name="actionLabel" value="OK"/>
+                                            <property name="actionLabel" value="Ok"/>
                                             <property name="actionScript" value="jQuery.fancybox.close(true);"/>
                                         </bean>
                                     </list>
@@ -831,7 +831,7 @@
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-PrimaryActionButton" p:style="margin:0px;">
-                                            <property name="actionLabel" value="OK"/>
+                                            <property name="actionLabel" value="Ok"/>
                                             <property name="actionScript" value="jQuery.fancybox.close(true);"/>
                                         </bean>
                                     </list>
