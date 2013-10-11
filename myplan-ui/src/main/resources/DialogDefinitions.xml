@@ -830,15 +830,7 @@
                 <bean parent="KSAP-Message"
                       p:messageText="[b]@{placeholderCode NE null ? placeholderCode : courseCd} '@{placeholderTitle}' (@{credit NE null ? credit : ''}) [/b]"
                       p:render="@{courseSummaryDetails.courseId EQ null AND credit NE null}"/>
-                <bean parent="KSAP-SimpleDataField" p:propertyName="note">
-                    <property name="render" value="@{note NE '' AND note NE null}"/>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-recommendation-message</value>
-                        </list>
-                    </property>
-                </bean>
+                <bean parent="recommended_item_note"/>
                 <bean parent="KSAP-Message"
                       p:messageText="@{adviserName} recommended this @{courseSummaryDetails.courseId EQ null ? 'placeholder' : 'course'} on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(dateAdded.toString())}">
                     <property name="cssClasses">
@@ -1111,7 +1103,8 @@
                 <bean parent="courseTermsScheduled" p:render="@{courseSummaryDetails.code NE null}"/>
                 <bean parent="courseTermSelection"/>
                 <!-- TODO: plan item note is 1.5 functionality, do not commit to 1.4 -->
-                <bean parent="planItemNote"/>
+                <bean parent="planItemNote" p:render="@{!recommended}"/>
+                <bean parent="recommended_item_note" p:render="@{recommended}"/>
                 <bean parent="courseMarkAsBackup"/>
                 <bean parent="KSAP-VerticalBoxGroup-NoMargin" p:id="actionButtonsGroup">
                     <property name="items">
@@ -1441,6 +1434,17 @@
                     </list>
                 </property>
             </bean>
+        </property>
+    </bean>
+
+    <!--Recommended Item Readable Note -->
+    <bean id="recommended_item_note" parent="KSAP-SimpleDataField" p:propertyName="note">
+        <property name="render" value="@{note NE '' AND note NE null}"/>
+        <property name="fieldLabel.render" value="false"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>myplan-recommendation-message</value>
+            </list>
         </property>
     </bean>
 
