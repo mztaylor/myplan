@@ -157,6 +157,9 @@ public class PlanForm extends UifFormBase {
 
     private String adviserName;
 
+    /*Used only on the past recommended courses*/
+    private String adviserNote;
+
     /**
      * *******************************************************
      * A list of javascript events as:
@@ -423,6 +426,14 @@ public class PlanForm extends UifFormBase {
             note = note.replaceAll("\\u00a0", " ");
         }
         this.note = note;
+    }
+
+    public String getAdviserNote() {
+        return adviserNote;
+    }
+
+    public void setAdviserNote(String adviserNote) {
+        this.adviserNote = adviserNote;
     }
 
     public String getCredit() {
