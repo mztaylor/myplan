@@ -327,9 +327,6 @@ public class PlanController extends UifControllerBase {
 
                     planForm.setAdviserName(getUserSessionHelper().getCapitalizedName(planItem.getMeta().getCreateId()));
                     planForm.setDateAdded(planItem.getMeta().getCreateTime());
-                    if (hasText(planItem.getDescr().getPlain())) {
-                        planForm.setNote(planItem.getDescr().getPlain());
-                    }
 
 
                     if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP.equalsIgnoreCase(planItem.getTypeKey()) && !planForm.isBackup()) {
@@ -345,9 +342,15 @@ public class PlanController extends UifControllerBase {
                         planForm.setRecommended(true);
                     }
 
+                    if (hasText(planItem.getDescr().getPlain()) && !planForm.isSetToPlanning() && planForm.isRecommended()) {
+                        planForm.setAdviserNote(planItem.getDescr().getPlain());
+                    } else {
+                        planForm.setNote(planItem.getDescr().getPlain());
+                    }
+
                     if (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItem.getRefObjectType())
                             || PlanConstants.PLACE_HOLDER_TYPE.equals(planItem.getRefObjectType())) {
-                        planForm.setGeneralPlaceholder(String.format("%s|%s", planItem.getRefObjectId(),planItem.getRefObjectType()));
+                        planForm.setGeneralPlaceholder(String.format("%s|%s", planItem.getRefObjectId(), planItem.getRefObjectType()));
                         if (planItem.getCredit() != null) {
                             planForm.setCredit(String.valueOf(planItem.getCredit().intValue()));
                         }
