@@ -14,3 +14,31 @@
     color: @textColorLight;
 }
 
+.courseDetails__fieldLabel {
+    width: 150px;
+}
+
+.courseDetails__fieldLabel label {
+    .bold();
+}
+
+.courseDetails__fieldLabel > .uif-horizontalBoxLayout {
+    float: right;
+}
+
+.courseDetails__field {
+    width: 515px;
+    margin: 0 0 0 @marginLarge !important;
+}
+
+.courseDetails__field .termBadge .scheduled {
+    vertical-align: 2px;
+    margin: 0 0 0 @marginMini;
+}
+
+.courseDetails__field .uif-boxLayoutHorizontalItem {
+    margin: 0 0 0 @marginSmall;
+    &:first-child {
+        margin: 0;
+    }
+}

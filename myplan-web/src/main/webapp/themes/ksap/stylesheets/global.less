@@ -59,14 +59,17 @@ h6 {
     .text-overflow();
 }
 
-.termBadge dl,
-.termBadge dd {
+.termBadge dl {
     margin: 0;
     padding: 0;
+    display: inline-block;
 }
 
-.termBadge .scheduled dl dd,
-.termBadge dl.scheduled dd {
+.termBadge dl dl {
+    display: block;
+}
+
+.termBadge .scheduled dd {
     .border-radius(@borderRadiusSmall);
     .bold();
     font-size: @fontSizeMin;
@@ -93,6 +96,26 @@ h6 {
     background: #FCF990 !important;
 }
 
+.alert-float {
+    float: left;
+}
+
+.tinyLightText {
+    font-size: @fontSizeTiny;
+    color: @textColorLight;
+}
+.normalLightText {
+    color: @textColorLight;
+    .normal();
+}
+.inlineElement.uif-boxLayoutHorizontalItem {
+    display: inline !important;
+    float: none;
+}
+.removeMargin.uif-boxLayoutHorizontalItem,
+.removeMargin.uif-boxLayoutVerticalItem {
+    margin: 0;
+}
 .bold() {
     font-weight: 700;
 }
