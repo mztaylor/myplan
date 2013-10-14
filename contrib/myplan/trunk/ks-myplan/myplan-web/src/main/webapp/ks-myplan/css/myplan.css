@@ -1689,15 +1689,7 @@ div.activityAction div.blockElement {
 }
 
 .myplan-facets-panel .uif-header.primary {
-    -webkit-box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
-    -moz-box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
-    box-shadow: inset 0px 1px 1px 0px rgba(242, 237, 220, 1);
-    border-bottom: solid 1px #ddd;
-    background: #efe8d3;
-    padding: 10px;
-    border-radius: 5px 5px 0 0;
-    -webkit-border-radius: 5px 5px 0 0;
-    -moz-border-radius: 5px 5px 0 0;
+
 }
 
 .myplan-facets-panel .uif-header .uif-header-rightGroup {

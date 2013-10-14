@@ -41,14 +41,14 @@ public class CourseSectionDetailsLayoutManager extends TableLayoutManager {
             List<String> rowCss = getRowCssClasses();
             rowCss.remove(rowCss.size() - 1); // super adds a row, remove it
             StringBuilder r1css = new StringBuilder();
-            r1css.append("row");
-            r1css.append(aoi.isPrimary() ? " primary" : " secondary");
-            r1css.append(aoi.getPlanItemId() != null ? " myplan-section-planned" : "");
+            //r1css.append("start");
+            r1css.append(aoi.isPrimary() ? " courseActivities--primary" : " courseActivities--secondary");
+            r1css.append(aoi.getPlanItemId() != null ? " courseActivities--planned" : "");
             // TODO:  MYPLAN-2139 Update after mapping is changed
             //if (!LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY.equals(aoi.getStateKey()))
             boolean offered = "active".equals(aoi.getStateKey());
             if (!offered) {
-                r1css.append(" fl-text-lightgray");
+                r1css.append(" courseActivities--inactive");
             }
 
             rowCss.add(r1css.toString());

@@ -968,4 +968,8 @@
         </property>
     </bean>
 
+    <bean id="KSAP-Messaging" parent="KSAP-VerticalBoxGroup">
+        <property name="cssClasses" value="alert alert-info alert-float"/>
+    </bean>
+
 </beans>

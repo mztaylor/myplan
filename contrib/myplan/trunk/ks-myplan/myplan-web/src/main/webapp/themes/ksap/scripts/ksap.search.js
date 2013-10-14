@@ -164,11 +164,11 @@ function searchForCourses(id, parentId) {
         aaSorting: [],
         aoColumns: [
             {'sTitle': 'Code', 'bSortable': true, 'bSearchable': false, 'sClass': 'courseResults__tableHeader--sortable', 'sWidth': '73px', 'sType': 'string'},
-            {'sTitle': 'Course Name', 'bSortable': true, 'bSearchable': false, 'sClass': 'courseResults__tableHeader--sortable', 'sWidth': '181px'},
+            {'sTitle': 'Course Name', 'bSortable': true, 'bSearchable': false, 'sClass': 'courseResults__tableHeader--sortable', 'sWidth': '188px'},
             {'sTitle': 'Credits', 'bSortable': false, 'bSearchable': false, 'sWidth': '36px'},
             {'sTitle': 'Quarter Offered', 'bSortable': false, 'bSearchable': false, 'sClass': 'termBadge', 'sWidth': '80px'},
             {'sTitle': 'Gen Edu Req', 'bSortable': false, 'bSearchable': false, 'sWidth': '69px'},
-            {'sTitle': '', 'bSortable': false, 'bSearchable': false, 'sClass':'courseResults__item--right', 'sWidth': '69px'},
+            {'sTitle': '', 'bSortable': false, 'bSearchable': false, 'sClass':'courseResults__item--right', 'sWidth': '62px'},
             {'bVisible': false},
             {'bVisible': false},
             {'bVisible': false},
