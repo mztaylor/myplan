@@ -137,7 +137,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
      * @param plannedSections
      */
     private void addActivitiesToPlannedCourseList(List<PlannedCourseDataObject> plannedCourseList, Map<String, List<ActivityOfferingItem>> plannedSections, Map<String, List<String>> sectionsSuspended, Map<String, List<String>> sectionsWithdrawn) {
-        List<String> publishedTerms = AtpHelper.getPublishedTerms();
+
         for (PlannedCourseDataObject plannedCourse : plannedCourseList) {
             if (!plannedCourse.isPlaceHolder()) {
                 String key = generateKey(plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp());
@@ -150,8 +150,9 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                         }
                     });
                 }
+                List<String> publishedTermsForCampus = AtpHelper.getPublishedTermsForCampus(plannedCourse.getCourseDetails().getCampusCd());
                 boolean scheduled = AtpHelper.isCourseOfferedInTerm(plannedCourse.getPlanItemDataObject().getAtp(), plannedCourse.getCourseDetails().getCode());
-                boolean timeScheduleOpen = publishedTerms.contains(plannedCourse.getPlanItemDataObject().getAtp());
+                boolean timeScheduleOpen = publishedTermsForCampus.contains(plannedCourse.getPlanItemDataObject().getAtp());
                 if (timeScheduleOpen) {
                     plannedCourse.setShowAlert(!scheduled);
                 }

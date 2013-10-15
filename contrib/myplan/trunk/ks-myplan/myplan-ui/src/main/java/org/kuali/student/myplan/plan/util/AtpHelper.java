@@ -373,6 +373,26 @@ public class AtpHelper {
         return publishedTerms;
     }
 
+
+    /**
+     * returns published terms for a campus
+     *
+     * @return
+     */
+    public static List<String> getPublishedTermsForCampus(String campusCd) {
+        List<String> publishedTerms = new ArrayList<String>();
+        try {
+            List<TermInfo> termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", String.format("%s|%s", PlanConstants.PUBLISHED, campusCd))), CourseSearchConstants.CONTEXT_INFO);
+            for (TermInfo term : termInfos) {
+                publishedTerms.add(term.getId());
+            }
+        } catch (Exception e) {
+            logger.error("Web service call failed.", e);
+            publishedTerms.add(getCurrentAtpIdFromCalender());
+        }
+        return publishedTerms;
+    }
+
     public static List<YearTerm> getPublishedYearTermList() {
         List<YearTerm> publishedTerms = new ArrayList<YearTerm>();
         try {
@@ -927,7 +947,7 @@ public class AtpHelper {
     }
 
     public static UserSessionHelper getUserSessionHelper() {
-        if(userSessionHelper == null){
+        if (userSessionHelper == null) {
             userSessionHelper = new UserSessionHelperImpl();
         }
         return userSessionHelper;

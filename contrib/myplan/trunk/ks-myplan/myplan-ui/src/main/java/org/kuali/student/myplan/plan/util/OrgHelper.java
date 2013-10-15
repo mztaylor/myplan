@@ -13,6 +13,7 @@ import org.kuali.student.core.organization.service.OrganizationService;
 import org.kuali.student.myplan.course.util.CampusSearch;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -135,5 +136,22 @@ public class OrgHelper {
         }
         return orgInfoList;
 
+    }
+
+    /**
+     * returns the name of the campus for the given campus code.
+     *
+     * @param campusCode
+     * @return
+     */
+    public static String getCampusName(String campusCode) {
+        if (StringUtils.hasText(campusCode)) {
+            for (OrgInfo orgInfo : getAvailableCampuses()) {
+                if (campusCode.equals(orgInfo.getId())) {
+                    return orgInfo.getLongName();
+                }
+            }
+        }
+        return null;
     }
 }
