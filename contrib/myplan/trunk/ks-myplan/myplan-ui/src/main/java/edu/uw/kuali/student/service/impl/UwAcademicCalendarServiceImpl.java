@@ -395,71 +395,110 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
                         ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear()));
             }
 
+
+            if (PlanConstants.PUBLISHED.equals(str)) {
+
             /*
             *  Query the term service and determine which terms are published.
             */
 
-            for (short i = 0; i < PUBLISHED_QUARTER_COUNT; i++) {
+                for (short i = 0; i < PUBLISHED_QUARTER_COUNT; i++) {
+                    try {
+                        logger.info(String.format("Querying the Student Term Service for quarter [%s/%s] year [%s] to determine if section information as been published.",
+                                ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear()));
+                        responseText = studentServiceClient.getTermInfo(String.valueOf(ccl.getYear()), ccl.getQuarterName());
+                    } catch (ServiceException e) {
+                        logger.error("Call to Student Term Service failed.", e);
+                        break;
+                    }
+
+                    Document sectionDocument = null;
+                    try {
+                        SAXReader reader = new SAXReader();
+                        termDocument = reader.read(new StringReader(responseText));
+                    } catch (Exception e) {
+                        logger.error("Could not parse reply from the Student Term Service.", e);
+                        break;
+                    }
+
+                    //  If the time schedule for any campus is published then create a TermInfo and continue.
+                    //  Otherwise, stop processing.
+                    Element timeSchedulePublished = termDocument.getRootElement().element("TimeSchedulePublished");
+                    if ((StringUtils.hasText(campus) && isTrue(timeSchedulePublished.element(campus).getText())) || (!StringUtils.hasText(campus) && (isTrue(timeSchedulePublished.element("Bothell").getText())
+                            || isTrue(timeSchedulePublished.element("Seattle").getText())
+                            || isTrue(timeSchedulePublished.element("Tacoma").getText())))) {
+
+                        String lastDropDayStr = termDocument.getRootElement().element("LastDropDay").getTextTrim();
+
+                        TermInfo ti = new TermInfo();
+                        //  Create the ATP ID.
+                        ti.setId(TERM_KEY_PREFIX + ccl.getYear() + "." + ccl.getQuarterNumber());
+                        ti.setName(ccl.getQuarterName() + " " + ccl.getYear());
+
+                        List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
+                        AttributeInfo lastDropAttr = new AttributeInfo();
+                        lastDropAttr.setKey(AtpHelper.LAST_ADD_DAY);
+                        lastDropAttr.setValue(lastDropDayStr);
+
+                        AttributeInfo priorityOneRegStAttr = new AttributeInfo();
+                        priorityOneRegStAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_START);
+                        priorityOneRegStAttr.setValue(getPriorityOneRegistrationStartDate(termDocument));
+
+                        AttributeInfo priorityOneRegEndAttr = new AttributeInfo();
+                        priorityOneRegEndAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_END);
+                        priorityOneRegEndAttr.setValue(getPriorityOneRegistrationEndDate(termDocument));
+
+                        attributes.add(lastDropAttr);
+                        attributes.add(priorityOneRegStAttr);
+                        attributes.add(priorityOneRegEndAttr);
+                        ti.setAttributes(attributes);
+                        termInfos.add(ti);
+
+                        ccl.incrementQuarter();
+                    } else {
+                        break;
+                    }
+
+                }
+            } else if (PlanConstants.PLANNING.equals(str)) {
                 try {
                     logger.info(String.format("Querying the Student Term Service for quarter [%s/%s] year [%s] to determine if section information as been published.",
                             ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear()));
                     responseText = studentServiceClient.getTermInfo(String.valueOf(ccl.getYear()), ccl.getQuarterName());
                 } catch (ServiceException e) {
                     logger.error("Call to Student Term Service failed.", e);
-                    break;
                 }
-
                 Document sectionDocument = null;
                 try {
                     SAXReader reader = new SAXReader();
                     termDocument = reader.read(new StringReader(responseText));
                 } catch (Exception e) {
                     logger.error("Could not parse reply from the Student Term Service.", e);
-                    break;
                 }
+                String lastDropDayStr = termDocument.getRootElement().element("LastDropDay").getTextTrim();
+                TermInfo ti = new TermInfo();
+                //  Create the ATP ID.
+                ti.setId(TERM_KEY_PREFIX + ccl.getYear() + "." + ccl.getQuarterNumber());
+                ti.setName(ccl.getQuarterName() + " " + ccl.getYear());
 
-                //  If the time schedule for any campus is published then create a TermInfo and continue.
-                //  Otherwise, stop processing.
-                Element timeSchedulePublished = termDocument.getRootElement().element("TimeSchedulePublished");
-                if ((StringUtils.hasText(campus) && isTrue(timeSchedulePublished.element(campus).getText())) || (!StringUtils.hasText(campus) && (isTrue(timeSchedulePublished.element("Bothell").getText())
-                        || isTrue(timeSchedulePublished.element("Seattle").getText())
-                        || isTrue(timeSchedulePublished.element("Tacoma").getText())))) {
+                List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
+                AttributeInfo lastDropAttr = new AttributeInfo();
+                lastDropAttr.setKey(AtpHelper.LAST_ADD_DAY);
+                lastDropAttr.setValue(lastDropDayStr);
 
-                    String lastDropDayStr = termDocument.getRootElement().element("LastDropDay").getTextTrim();
+                AttributeInfo priorityOneRegStAttr = new AttributeInfo();
+                priorityOneRegStAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_START);
+                priorityOneRegStAttr.setValue(getPriorityOneRegistrationStartDate(termDocument));
 
-                    TermInfo ti = new TermInfo();
-                    //  Create the ATP ID.
-                    ti.setId(TERM_KEY_PREFIX + ccl.getYear() + "." + ccl.getQuarterNumber());
-                    ti.setName(ccl.getQuarterName() + " " + ccl.getYear());
+                AttributeInfo priorityOneRegEndAttr = new AttributeInfo();
+                priorityOneRegEndAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_END);
+                priorityOneRegEndAttr.setValue(getPriorityOneRegistrationEndDate(termDocument));
 
-                    List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
-                    AttributeInfo lastDropAttr = new AttributeInfo();
-                    lastDropAttr.setKey(AtpHelper.LAST_ADD_DAY);
-                    lastDropAttr.setValue(lastDropDayStr);
-
-                    AttributeInfo priorityOneRegStAttr = new AttributeInfo();
-                    priorityOneRegStAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_START);
-                    priorityOneRegStAttr.setValue(getPriorityOneRegistrationStartDate(termDocument));
-
-                    AttributeInfo priorityOneRegEndAttr = new AttributeInfo();
-                    priorityOneRegEndAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_END);
-                    priorityOneRegEndAttr.setValue(getPriorityOneRegistrationEndDate(termDocument));
-
-                    attributes.add(lastDropAttr);
-                    attributes.add(priorityOneRegStAttr);
-                    attributes.add(priorityOneRegEndAttr);
-                    ti.setAttributes(attributes);
-
-                    termInfos.add(ti);
-                    if (str.equalsIgnoreCase(PlanConstants.PLANNING)) {
-                        break;
-                    }
-
-                    ccl.incrementQuarter();
-                } else {
-                    break;
-                }
-
+                attributes.add(lastDropAttr);
+                attributes.add(priorityOneRegStAttr);
+                attributes.add(priorityOneRegEndAttr);
+                ti.setAttributes(attributes);
+                termInfos.add(ti);
             }
         }
         return termInfos;
