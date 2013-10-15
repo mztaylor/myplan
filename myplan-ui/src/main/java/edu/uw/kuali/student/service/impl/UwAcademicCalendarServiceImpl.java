@@ -9,16 +9,21 @@ import org.dom4j.io.SAXReader;
 import org.joda.time.DateTime;
 import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
+import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.enrollment.acal.dto.*;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.EnumerationHelper;
+import org.kuali.student.myplan.plan.util.OrgHelper;
 import org.kuali.student.r2.common.dto.*;
 import org.kuali.student.r2.common.exceptions.*;
 
 import org.apache.log4j.Logger;
 import org.kuali.student.r2.core.state.dto.StateInfo;
 import org.kuali.student.r2.core.type.dto.TypeInfo;
+import org.springframework.util.StringUtils;
 
 import javax.jws.WebParam;
 import java.io.StringReader;
@@ -315,7 +320,12 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
         Predicate p = criteria.getPredicate();
         String str = p.toString();
         str = str.substring(CRITERIA_LENGTH, str.length() - 1);
-
+        String campus = null;
+        if (str.contains("|")) {
+            String[] arr = str.split(PlanConstants.CODE_KEY_SEPARATOR);
+            str = arr[0];
+            campus = OrgHelper.getCampusName(arr[1]);
+        }
 
         List<TermInfo> termInfos = new ArrayList<TermInfo>();
 
@@ -411,9 +421,9 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
                 //  If the time schedule for any campus is published then create a TermInfo and continue.
                 //  Otherwise, stop processing.
                 Element timeSchedulePublished = termDocument.getRootElement().element("TimeSchedulePublished");
-                if (isTrue(timeSchedulePublished.element("Bothell").getText())
+                if ((StringUtils.hasText(campus) && isTrue(timeSchedulePublished.element(campus).getText())) || (!StringUtils.hasText(campus) && (isTrue(timeSchedulePublished.element("Bothell").getText())
                         || isTrue(timeSchedulePublished.element("Seattle").getText())
-                        || isTrue(timeSchedulePublished.element("Tacoma").getText())) {
+                        || isTrue(timeSchedulePublished.element("Tacoma").getText())))) {
 
                     String lastDropDayStr = termDocument.getRootElement().element("LastDropDay").getTextTrim();
 

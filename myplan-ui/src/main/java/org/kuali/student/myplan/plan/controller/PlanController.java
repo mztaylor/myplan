@@ -2646,7 +2646,7 @@ public class PlanController extends UifControllerBase {
             StringBuffer statusAlert = new StringBuffer();
             if (!placeHolder) {
                 // event for alert Icon
-                List<String> publishedTerms = AtpHelper.getPublishedTerms();
+                List<String> publishedTerms = AtpHelper.getPublishedTermsForCampus(courseDetails.getCampusCd());
                 boolean scheduled = AtpHelper.isCourseOfferedInTerm(atpId, courseDetails.getCode());
                 boolean timeScheduleOpen = publishedTerms.contains(atpId);
 

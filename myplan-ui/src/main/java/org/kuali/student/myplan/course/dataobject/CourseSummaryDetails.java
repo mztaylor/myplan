@@ -13,6 +13,7 @@ public class CourseSummaryDetails {
     private String courseId;
     private String versionIndependentId;
     private String code;
+    private String campusCd;
 
     private String subjectArea;
     private String courseNumber;
@@ -184,5 +185,13 @@ public class CourseSummaryDetails {
 
     public void setScheduledTerms(List<String> scheduledTerms) {
         this.scheduledTerms = scheduledTerms;
+    }
+
+    public String getCampusCd() {
+        return campusCd;
+    }
+
+    public void setCampusCd(String campusCd) {
+        this.campusCd = campusCd;
     }
 }

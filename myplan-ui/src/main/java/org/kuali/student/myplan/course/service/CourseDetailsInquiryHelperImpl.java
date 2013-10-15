@@ -157,6 +157,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         courseDetails.setCourseTitle(course.getCourseTitle());
         courseDetails.setSubjectArea(subject);
         courseDetails.setCourseNumber(course.getCourseNumberSuffix());
+        courseDetails.setCampusCd(course.getAttributes().get(CourseSearchConstants.CAMPUS_LOCATION_COURSE_ATTRIBUTE));
 
         // -- Curriculum  Title
         Map<String, String> subjectAreaMap = OrgHelper.getTrimmedSubjectAreas();

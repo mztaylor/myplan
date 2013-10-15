@@ -194,6 +194,13 @@ public class StudentServiceClientMockImpl implements StudentServiceClient {
     @Override
     public String getAllSectionsStatus(String year, String quarter, String abbrev, String num) throws ServiceException {
         return null;
-    };
+    }
+
+    @Override
+    public String getCurriculumForSubject(String year, String quarter, String abbrev) throws ServiceException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+
 
 }

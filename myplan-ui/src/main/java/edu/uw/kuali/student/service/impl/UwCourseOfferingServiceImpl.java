@@ -108,24 +108,31 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             YearTerm yt = AtpHelper.atpToYearTerm(termId);
             String year = yt.getYearAsString();
             String term = yt.getTermAsID();
-            String responseText = studentServiceClient.getSectionInfo(year, term, subjectArea);
 
-            Document document = offeringServiceUtils.newDocument(responseText);
+            String response = studentServiceClient.getCurriculumForSubject(year, term, subjectArea);
+            int count = Integer.parseInt(offeringServiceUtils.newXPath("//s:SearchResults/s:TotalCount").selectSingleNode(offeringServiceUtils.newDocument(response)).getText());
+            if (count > 0) {
+                String responseText = studentServiceClient.getSectionInfo(year, term, subjectArea);
 
-            DefaultXPath xpath = offeringServiceUtils.newXPath("//s:Section");
-            List sections = xpath.selectNodes(document);
+                Document document = offeringServiceUtils.newDocument(responseText);
 
-            Set<String> offeringIds = new HashSet<String>(sections.size());
-            for (Object node : sections) {
-                Element section = (Element) node;
-                String number = section.elementText("CourseNumber");
-                String ca = section.elementText("CurriculumAbbreviation");
-                String sec = section.elementText("SectionID");
-                String offeringId = getCourseHelper().joinStringsByDelimiter(':', yt.getYearAsString(), yt.getTermAsString(), ca, number, sec);
-                offeringIds.add(offeringId);
+                DefaultXPath xpath = offeringServiceUtils.newXPath("//s:Section");
+                List sections = xpath.selectNodes(document);
+
+                Set<String> offeringIds = new HashSet<String>(sections.size());
+                for (Object node : sections) {
+                    Element section = (Element) node;
+                    String number = section.elementText("CourseNumber");
+                    String ca = section.elementText("CurriculumAbbreviation");
+                    String sec = section.elementText("SectionID");
+                    String offeringId = getCourseHelper().joinStringsByDelimiter(':', yt.getYearAsString(), yt.getTermAsString(), ca, number, sec);
+                    offeringIds.add(offeringId);
+                }
+
+                return new ArrayList<String>(offeringIds);
+            } else {
+                return new ArrayList<String>();
             }
-
-            return new ArrayList<String>(offeringIds);
 
         } catch (Exception e) {
             throw new OperationFailedException("Call to the student service failed.", e);
@@ -675,36 +682,41 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
             String curric = courseInfo.getSubjectArea().trim();
             String num = courseInfo.getCourseNumberSuffix();
 
-            String xml = studentServiceClient.getSections(year, quarter, curric, num);
+            String response = studentServiceClient.getCurriculumForSubject(year, quarter, curric);
+            int count = Integer.parseInt(offeringServiceUtils.newXPath("//s:SearchResults/s:TotalCount").selectSingleNode(offeringServiceUtils.newDocument(response)).getText());
+            if (count > 0) {
+                String xml = studentServiceClient.getSections(year, quarter, curric, num);
 
-            DefaultXPath sectionPath = offeringServiceUtils.newXPath("/s:SearchResults/s:Sections/s:Section");
-            DefaultXPath primarySectionPath = offeringServiceUtils.newXPath("/s:Section/s:PrimarySection");
+                DefaultXPath sectionPath = offeringServiceUtils.newXPath("/s:SearchResults/s:Sections/s:Section");
+                DefaultXPath primarySectionPath = offeringServiceUtils.newXPath("/s:Section/s:PrimarySection");
 
-            Document doc = offeringServiceUtils.newDocument(xml);
+                Document doc = offeringServiceUtils.newDocument(xml);
 
-            List sections = sectionPath.selectNodes(doc);
-            for (Object object : sections) {
-                Element primarySectionNode = (Element) object;
-                String primarySectionID = primarySectionNode.elementText("SectionID");
-                Document secondaryDoc;
-                try {
-                    String secondaryXML = studentServiceClient.getSecondarySections(year, quarter, curric, num, primarySectionID);
-                    secondaryDoc = offeringServiceUtils.newDocument(secondaryXML);
-                } catch (ServiceException e) {
-                    logger.warn(e);
-                    // Skip this section ID if it fails
-                    continue;
-                }
-                Element primarySectionElement = (Element) primarySectionPath.selectSingleNode(secondaryDoc);
-                String primaryID = primarySectionElement.elementText("SectionID");
-                if (primarySectionID.equals(primaryID)) {
-                    CourseOfferingInfo info = offeringServiceUtils.buildCourseOfferingInfo(secondaryDoc, courseInfo);
-                    if (info != null) {
-                        list.add(info);
+                List sections = sectionPath.selectNodes(doc);
+                for (Object object : sections) {
+                    Element primarySectionNode = (Element) object;
+                    String primarySectionID = primarySectionNode.elementText("SectionID");
+                    Document secondaryDoc;
+                    try {
+                        String secondaryXML = studentServiceClient.getSecondarySections(year, quarter, curric, num, primarySectionID);
+                        secondaryDoc = offeringServiceUtils.newDocument(secondaryXML);
+                    } catch (ServiceException e) {
+                        logger.warn(e);
+                        // Skip this section ID if it fails
+                        continue;
+                    }
+                    Element primarySectionElement = (Element) primarySectionPath.selectSingleNode(secondaryDoc);
+                    String primaryID = primarySectionElement.elementText("SectionID");
+                    if (primarySectionID.equals(primaryID)) {
+                        CourseOfferingInfo info = offeringServiceUtils.buildCourseOfferingInfo(secondaryDoc, courseInfo);
+                        if (info != null) {
+                            list.add(info);
+                        }
                     }
                 }
             }
             return list;
+
 
         } catch (Exception e) {
             logger.error(e);
