@@ -206,7 +206,7 @@ function searchForCourses(id, parentId) {
                     jQuery('html,body').animate({scrollTop: targetOffset}, 200);
                 }
             });
-            jQuery(".myplan-facets-group .uif-disclosureContent .uif-boxLayout").each(function () {
+            jQuery(".courseResults__facet .uif-disclosureContent .uif-verticalBoxLayout").each(function () {
                 jQuery(this).empty();
             });
             if (oSettings.fnRecordsDisplay() > 0) {
@@ -227,25 +227,27 @@ function searchForCourses(id, parentId) {
                 },
                 beforeSend: function () {
                     jQuery("#" + parentId).block({
-                        message:  'Please wait...',
+                        centerX: true,
                         centerY: false,
-                        css: {
-                            width: '30%',
-                            left: '35%',
-                            textAlign: 'center',
-                            top: '40px',
-                            border: 'none',
-                            padding: '15px 0px',
-                            backgroundColor: '#000',
-                            '-webkit-border-radius': '10px',
-                            '-moz-border-radius': '10px',
-                            opacity: .5,
-                            color: '#fff'
+                        message: '<p><img src="../themes/ksap/images/loader/ajax_large.gif" alt="loading..." /></p><p>Please wait while we are search courses...</p>',
+                        fadeIn: 0,
+                        fadeOut: 0,
+                        overlayCSS: {
+                            backgroundColor: '#fff',
+                            opacity: 0,
+                            cursor: 'wait'
                         },
-                        overlayCSS:  {
-                            backgroundColor: '#000',
-                            opacity:         0.6,
-                            cursor:          'wait'
+                        css: {
+                            top: '20px',
+                            color: '#c09853',
+                            backgroundColor: '#fcf8e3',
+                            border: 'solid 1px #fbeed5',
+                            borderRadius: '15px',
+                            '-webkit-border-radius': '15px',
+                            '-moz-border-radius': '15px',
+                            width: '230px',
+                            textAlign: 'center',
+                            padding: '20px'
                         }
                     });
                 },

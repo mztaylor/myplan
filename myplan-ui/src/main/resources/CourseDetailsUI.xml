@@ -50,8 +50,13 @@
         <property name="items">
             <list>
                 <ref bean="course_details_actions"/>
-                <bean parent="KSAP-Messaging" p:style="margin-top:20px;"
+                <bean parent="KSAP-InfoMessage" p:style="margin-top:20px;"
                       p:render="@{(dataObject.plannedCourseSummary.backupList.size() gt 0 or dataObject.plannedCourseSummary.plannedList.size() gt 0 or dataObject.plannedCourseSummary.academicTerms.size() gt 0) ? true : false}">
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>alert-inline</value>
+                        </list>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="details" p:escapeHtmlInPropertyValue="false">
@@ -467,7 +472,7 @@
                         <null/>
                     </property>
                     <property name="onDocumentReadyScript" value="
-                        myplanRetrieveComponent('course_details_sections_list_container','course_details_sections_list','start','inquiry',{viewId:'CourseDetailsSections-InquiryView',courseId:'@{dataObject.courseSummaryDetails.courseId}', loadActivityOffering:'true'}, null, {message:'&lt;p&gt;&lt;img src=&quot;../ks-myplan/images/ajaxAuditRunning32.gif&quot; alt=&quot;loading...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching sections...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{backgroundColor:'#fffdd7', border:'solid 1px #ffd14c', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
+                        myplanRetrieveComponent('course_details_sections_list_container','course_details_sections_list','start','inquiry',{viewId:'CourseDetailsSections-InquiryView',courseId:'@{dataObject.courseSummaryDetails.courseId}', loadActivityOffering:'true'}, null, {centerX:true, message:'&lt;p&gt;&lt;img src=&quot;../themes/ksap/images/loader/ajax_large.gif&quot; alt=&quot;loading...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching sections...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{backgroundColor:'#fffdd7', border:'solid 1px #ffd14c', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
                     "/>
                 </bean>
             </list>
@@ -720,7 +725,8 @@
                 <bean parent="activityEnrlStatus" p:render="@{#line.stateKey NE 'active'}"/>
 
                 <bean id="activityActionGroup" parent="KSAP-VerticalFieldGroup" p:valign="TOP"
-                      p:render="@{#line.primary AND #line.stateKey EQ 'active'}" p:rowSpan="3" p:colSpan="1">
+                      p:render="@{#line.primary AND #line.stateKey EQ 'active'}" p:rowSpan="3" p:colSpan="1"
+                      p:cssClasses="courseActivities__action">
                     <property name="label" value="Add"/>
                     <property name="items">
                         <list>
@@ -772,7 +778,7 @@
 
                             <bean id="activityActionsCDPAdvisor" parent="KSAP-VerticalFieldGroup" p:valign="TOP"
                                   p:render="@{#line.primary AND #line.stateKey EQ 'active'}" p:rowSpan="3"
-                                  p:colSpan="1">
+                                  p:colSpan="1" p:cssClasses="courseActivities__action">
                                 <property name="label" value="Add"/>
                                 <property name="items">
                                     <list>
@@ -908,26 +914,25 @@
         <property name="fieldLabel.render" value="true"/>
         <property name="cssClasses">
             <list merge="false">
-                <value>activityEnrlStatus</value>
-                <value>fl-text-bold</value>
-                <value>fl-text-align-center</value>
+                <value>courseActivities__enrlStatus</value>
             </list>
         </property>
-        <property name="style" value="text-transform:capitalize;"/>
         <property name="items">
             <list>
-                <bean parent="Uif-ImageField" p:style="margin: 0 0 2px 0;"
-                      p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"
-                      p:altText="Section @{#line.code} is @{#line.stateKey}"
-                      p:render="@{#line.stateKey NE 'active'}">
+                <bean parent="KSAP-WarningMessage">
                     <property name="cssClasses">
                         <list merge="true">
-                            <value>alert-icon</value>
+                            <value>alert-unboxed</value>
+                        </list>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-NoSpanMessage" p:messageText="@{#line.stateKey}">
+                                <property name="style" value="text-transform:capitalize;"/>
+                            </bean>
                         </list>
                     </property>
                 </bean>
-                <bean parent="KSAP-NoSpanMessage"
-                      p:messageText="@{#line.stateKey}"/>
             </list>
         </property>
     </bean>
@@ -938,9 +943,7 @@
         <property name="fieldLabel.render" value="true"/>
         <property name="cssClasses" value="courseActivities__enrlData"/>
         <property name="items">
-            <list>
-                <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
-            </list>
+            <list/>
         </property>
     </bean>
 
@@ -1023,7 +1026,7 @@
 
     <bean id="activityActionLink" parent="Uif-LinkField">
         <property name="fieldLabel.render" value="false"/>
-        <property name="cssClasses" value="courseActivities__action"/>
+        <property name="cssClasses" value=""/>
         <property name="link">
             <bean parent="Uif-Link" p:target="">
                 <property name="linkText" value="Added"/>
@@ -1037,10 +1040,8 @@
     </bean>
 
     <bean id="activityActionButton" parent="section_button">
-        <property name="fieldLabel.render" value="false"/>
-        <property name="altText" value="Add"/>
-        <property name="cssClasses" value="courseActivities__action courseActivities__itemAdd"/>
-        <property name="onClickScript" value="
+        <property name="cssClasses" value="courseActivities__itemAdd"/>
+        <property name="actionScript" value="
             var additionalFormData = {
                 viewId: 'PlannedCourse-FormView',
                 methodToCall: 'addUpdatePlanItem',
@@ -1054,11 +1055,12 @@
         "/>
     </bean>
 
-    <bean id="section_button" parent="Uif-ImageField">
+    <bean id="section_button" parent="Uif-ActionImage">
         <property name="id" value="button_@{#line.atpId.replace('.','-')}_@{#line.registrationCode}"/>
-        <property name="source" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+        <property name="actionImage">
+            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+        </property>
         <property name="onMouseOverScript" value="buildHoverText(jQuery(this));"/>
-        <property name="label" value=""/>
         <property name="dataAttributes">
             <map>
                 <entry key="courseid" value="@{#line.courseId}"/>
@@ -1102,32 +1104,30 @@
                 </property>
                 <property name="items">
                     <list>
-                        <bean id="course_details_sections_list" parent="Uif-VerticalBoxGroup">
+                        <bean id="course_details_sections_list" parent="KSAP-VerticalBoxGroup">
                             <property name="onDocumentReadyScript" value="
-                                    jQuery('a.ksap-lightBoxLink').each(function() {
+                                    jQuery('a.courseActivities--lightBoxLink').each(function() {
                                     	createLightBoxLink(jQuery(this).attr('id'), {helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, false);
                                     });
                                     jQuery('body').on('SECTION_ITEM_ADDED', function(event, data){
-                                        var link = '&lt;a href=&quot;inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=' + data.atpId.replace(/-/g,'.') + '&quot;&gt;Added&lt;/a&gt;';
-                                        jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).attr('title', data.SectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
-                                        fnDisplayMessage(link, 'fl-font-size-80 fl-text-align-center', 'button_' + data.atpId + '_' + data.RegistrationCode, false);
-                                        var row = jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).parents('tr.row');
-                                        row.addClass('myplan-section-planned');
+                                        var link = jQuery('&lt;a/&gt;').text('Added').attr({
+                                            href: 'inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=' + data.atpId.replace(/-/g,'.'),
+                                            title: data.SectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.'
+                                        });
+                                        jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).parents('tr').addClass('courseActivities--planned');
+                                        replaceAction('button_' + data.atpId + '_' + data.RegistrationCode, link);
                                         if (data.ItemsToUpdate != null) {
                                             var items = data.ItemsToUpdate.split(',');
                                             jQuery.each(items, function (index, value) {
-                                                jQuery('#button_' + data.atpId + '_' + items[index]).attr('title', data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.').unbind('click');
-                                                fnDisplayMessage(link, 'fl-font-size-80 fl-text-align-center', 'button_' + data.atpId + '_' + items[index], false);
-                                                var row = jQuery('#button_' + data.atpId + '_' + items[index]).parents('tr.row');
-                                                row.addClass('myplan-section-planned');
+                                                link.attr('title', data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.');
+                                                jQuery('#button_' + data.atpId + '_' + items[index]).parents('tr').addClass('courseActivities--planned');
+                                                replaceAction('button_' + data.atpId + '_' + items[index], link);
+
                                             });
                                         }
-                                        });
-                                    myplanGetSectionEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}'});
+                                    });
+                                    getActivityEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}'});
                                 "/>
-                            <property name="validationMessages">
-                                <null/>
-                            </property>
                             <property name="items">
                                 <list>
                                     <ref bean="course_details_institution_data_single"/>
@@ -1139,8 +1139,6 @@
                 </property>
             </bean>
         </property>
-
     </bean>
-
 
 </beans>

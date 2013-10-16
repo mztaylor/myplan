@@ -122,20 +122,24 @@ li.courseResults__facet--checked {
     vertical-align: middle;
 }
 
-.courseResults__facet--disabled,
-.courseResults__facet--disabled:hover {
-    text-decoration: none;
+li.courseResults__facet--disabled,
+li.courseResults__facet--disabled:hover {
     cursor: default;
     opacity: 0.33;
 }
+li.courseResults__facet--disabled:hover a {
+    text-decoration: none;
+    cursor: default;
+}
 
-.courseResults__facet--static,
-.courseResults__facet--static:hover,
-.courseResults__facet--static a,
-.courseResults__facet--static a:hover {
+li.courseResults__facet--static,
+li.courseResults__facet--static:hover {
     background-position: 0px -82px;
     cursor: default;
+}
+li.courseResults__facet--static:hover a {
     text-decoration: none;
+    cursor: default;
 }
 
 .courseResults .dataTables_wrapper {

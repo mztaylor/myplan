@@ -969,7 +969,37 @@
     </bean>
 
     <bean id="KSAP-Messaging" parent="KSAP-VerticalBoxGroup">
-        <property name="cssClasses" value="alert alert-info alert-float"/>
+        <property name="cssClasses">
+            <list merge="false">
+                <value>alert</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-InfoMessage" parent="KSAP-Messaging">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>alert-info</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-WarningMessage" parent="KSAP-Messaging"/>
+
+    <bean id="KSAP-SuccessMessage" parent="KSAP-Messaging">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>alert-success</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="KSAP-ErrorMessage" parent="KSAP-Messaging">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>alert-error</value>
+            </list>
+        </property>
     </bean>
 
 </beans>
