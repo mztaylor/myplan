@@ -29,13 +29,12 @@ function submitPopupForm(additionalFormData, e, bDialog) {
     var successCallback = function (htmlContent) {
         var pageId = jQuery("#pageId", htmlContent).val();
         var status = jQuery.trim(jQuery("#requestStatus", htmlContent).text().toLowerCase());
-        eval(jQuery("input[data-role='dataScript'][data-for='" + pageId + "']", htmlContent).val().replace("#" + pageId, "body"));
         var data = {};
-        data.message = '<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><div class="message"><span /></div>';
-        data.cssClass = "myplan-feedback " + status;
+        data.messages = jQuery("#" + pageId, htmlContent).data("validation_messages");
+        data.cssClass = "alert alert-" + status;
         switch (status) {
             case 'success':
-                data.message = data.message.replace("<span />", jQuery("body").data('validationMessages').serverInfo[0]);
+                data.message = data.messages.serverInfo[0];
                 var json = jQuery.parseJSON(jQuery.trim(jQuery("#jsonEvents", htmlContent).text()));
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
@@ -45,9 +44,9 @@ function submitPopupForm(additionalFormData, e, bDialog) {
                 setUrlHash('modified', 'true');
                 break;
             case 'error':
-                data.message = data.message.replace("<span />", jQuery("body").data('validationMessages').serverErrors[0]);
+                data.message = data.messages.serverErrors[0];
                 if (bDialog) {
-                    var sContent = jQuery("<div />").append(data.message).addClass("myplan-feedback error").css({"background-color": "#fff"});
+                    var sContent = jQuery("<div />").append(data.message).addClass("alert alert-error").css({"background-color": "#fff"});
                     var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
                     if (jQuery("body").HasPopOver()) jQuery("body").HidePopOver();
                     openDialog(sHtml.html(), e);
@@ -58,7 +57,7 @@ function submitPopupForm(additionalFormData, e, bDialog) {
         }
     };
     var blockOptions = {
-        message: '<img src="../ks-myplan/images/btnLoader.gif"/>',
+        message: '<img src="../themes/ksap/images/loader/ajax_small.gif"/>',
         css: {
             width: '100%',
             border: 'none',
@@ -113,7 +112,7 @@ function ksapAjaxSubmitForm(data, successCallback, elementToBlock, formId, block
                 else {
                     var elementBlockingDefaults = {
                         baseZ: 100,
-                        message: '<img src="../ks-myplan/images/ajaxLoader16.gif" alt="loading..." />',
+                        message: '<img src="../themes/ksap/images/loader/ajax_refresh.gif" alt="loading..." />',
                         fadeIn: 0,
                         fadeOut: 0,
                         overlayCSS: {
@@ -271,8 +270,10 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
                 }
                 else {
                     var elementBlockingDefaults = {
-                        baseZ: 500,
-                        message: '<img src="../ks-myplan/images/ajaxLoader16.gif" alt="loading..." />',
+                        baseZ: 100,
+                        centerY: false,
+                        centerX: false,
+                        message: '<img src="../themes/ksap/images/loader/ajax_refresh.gif" alt="loading..." />',
                         fadeIn: 0,
                         fadeOut: 0,
                         overlayCSS: {
@@ -283,7 +284,7 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
                             border: 'none',
                             width: '16px',
                             top: '0px',
-                            left: '0px'
+                            right: '0px'
                         }
                     };
                     elementToBlock.block(jQuery.extend(elementBlockingDefaults, elementBlockingSettings));
@@ -312,16 +313,16 @@ function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, ele
     form.ajaxSubmit(submitOptions);
 }
 
-function myplanGetSectionEnrollment(url, retrieveOptions, componentId) {
-    var elementToBlock = jQuery(".myplan-enrl-data").parent();
-    if (componentId) elementToBlock = jQuery("#" + componentId + " .myplan-enrl-data").parent();
+function getActivityEnrollment(url, retrieveOptions, componentId) {
+    var elementToBlock = jQuery(".courseActivities__enrlData");
+    if (componentId) elementToBlock = jQuery("#" + componentId + ".courseActivities__enrlData");
     jQuery.ajax({
         url: url,
         data: retrieveOptions,
         dataType: "json",
         beforeSend: function () {
             elementToBlock.block({
-                message: '<img src="../ks-myplan/images/ajaxLoader16.gif" alt="Fetching enrollment data..." />',
+                message: '<img src="../themes/ksap/images/loader/ajax_refresh.gif" alt="Fetching enrollment data..." />',
                 fadeIn: 0,
                 fadeOut: 0,
                 overlayCSS: {
@@ -339,7 +340,12 @@ function myplanGetSectionEnrollment(url, retrieveOptions, componentId) {
         error: function () {
             elementToBlock.fadeOut(250);
             elementToBlock.each(function () {
-                jQuery(this).css("text-align", "center").find("img.myplan-enrl-data").addClass("alert").attr("alt", "Oops, couldn't fetch the data. Refresh the page.").attr("title", "Oops, couldn't fetch the data. Refresh the page.");
+                var image = jQuery("<img/>").attr({
+                    'src': "../themes/ksap/images/icons/warning.png",
+                    'alt': "Oops, couldn't fetch the data. Refresh the page.",
+                    'title': "Oops, couldn't fetch the data. Refresh the page."
+                });
+                jQuery(this).css("text-align", "center").html(image);
             });
             elementToBlock.fadeIn(250);
             elementToBlock.unblock();
@@ -347,24 +353,23 @@ function myplanGetSectionEnrollment(url, retrieveOptions, componentId) {
         success: function (response) {
             elementToBlock.fadeOut(250);
             jQuery.each(response, function (sectionId, enrlObject) {
-                var message = "<span class='fl-font-size-120 ksap-text-bold'>--</span><br />";
                 if (enrlObject.status) {
-                    if (enrlObject.status == "open") {
-                        message = "<span class='fl-text-green fl-font-size-120 ksap-text-bold'>Open</span><br />";
-                    }
-                    else if (enrlObject.status == "closed") {
-                        message = "<span class='fl-font-size-120 ksap-text-bold'>Closed</span><br />";
-                    }
+                    jQuery("#" + sectionId + ".courseActivities__enrlData").html('<div class="courseActivities__enrlData--' + enrlObject.status + '">' + enrlObject.status + '</div>');
+                } else {
+                    jQuery("#" + sectionId + ".courseActivities__enrlData").html('<div>--</div>');
                 }
-                message += "<strong>" + enrlObject.enrollCount + "</strong> / " + enrlObject.enrollMaximum;
+                var message = "<strong>" + enrlObject.enrollCount + "</strong> / " + enrlObject.enrollMaximum;
                 var title = enrlObject.enrollCount + " enrolled out of " + enrlObject.enrollMaximum;
                 if (enrlObject.enrollEstimate) {
                     message += "E";
                     title += " estimated";
                 }
-                title += " limit. Updated few minutes ago."
-                var data = jQuery("<span />").addClass("myplan-enrl-data").attr("title", title).html(message);
-                jQuery("#" + sectionId + " .myplan-enrl-data").replaceWith(data);
+                title += " limit. Updated few minutes ago.";
+                var data = jQuery("<div />").attr({
+                    'title': title,
+                    'class': 'courseActivities__enrlData--light'
+                }).html(message);
+                jQuery("#" + sectionId + ".courseActivities__enrlData").append(data);
             });
             elementToBlock.fadeIn(250);
             elementToBlock.unblock();

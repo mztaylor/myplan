@@ -1081,7 +1081,7 @@
             var selected = @{#line.planActivities.size()};
 
             if (selected &gt; 0) {
-                myplanGetSectionEnrollment('/student/myplan/plan/enroll', {'courseId':'@{#line.courseDetails.courseId}', 'atpId':'@{dataObject.atpId}'}, '@{#line.courseDetails.courseId}_sections_collection');
+                getActivityEnrollment('/student/myplan/plan/enroll', {'courseId':'@{#line.courseDetails.courseId}', 'atpId':'@{dataObject.atpId}'}, '@{#line.courseDetails.courseId}_sections_collection');
 
                 var tableHead = jQuery('table#@{#line.courseDetails.courseId}_sections thead');
                 tableHead.before('
