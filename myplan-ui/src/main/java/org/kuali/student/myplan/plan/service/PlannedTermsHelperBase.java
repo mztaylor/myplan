@@ -62,7 +62,7 @@ public class PlannedTermsHelperBase {
         String globalCurrentAtpId = null;
         globalCurrentAtpId = AtpHelper.getCurrentAtpId();
         if (StringUtils.isEmpty(focusAtpId)) {
-            focusAtpId = AtpHelper.getFirstOpenForPlanTerm();
+            focusAtpId = AtpHelper.getFirstPlanTerm();
         }
 
         String[] focusQuarterYear = new String[2];
@@ -506,7 +506,7 @@ public class PlannedTermsHelperBase {
     public static List<PlannedTerm> getPlannedTermsFromStartAtp() {
         PlanItemLookupableHelperBase planItemLookupableHelperBase = new PlanItemLookupableHelperBase();
         List<PlannedCourseDataObject> plannedCourseDataObjects = new ArrayList<PlannedCourseDataObject>();
-        String startAtp = AtpHelper.getFirstOpenForPlanTerm();
+        String startAtp = AtpHelper.getFirstPlanTerm();
         try {
             plannedCourseDataObjects = planItemLookupableHelperBase.getPlannedCoursesFromAtp(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, getUserSessionHelper().getStudentId(), startAtp, false);
         } catch (Exception e) {

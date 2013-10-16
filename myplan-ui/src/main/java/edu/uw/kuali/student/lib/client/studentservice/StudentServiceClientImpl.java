@@ -301,6 +301,7 @@ public class StudentServiceClientImpl
 
     @Override
     public String getCurriculumForSubject(String year, String quarter, String abbrev) throws ServiceException {
+        abbrev = urlEscape(abbrev);
         String url = String.format("%s/%s/public/curriculum.xml?year=%s&quarter=%s&department_abbreviation=%s",getBaseUrl(),getServiceVersion(), year, quarter, abbrev);
         return sendQuery(url);
     }

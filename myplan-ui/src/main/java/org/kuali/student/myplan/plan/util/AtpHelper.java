@@ -455,23 +455,6 @@ public class AtpHelper {
         return publishedTerms;
     }
 
-
-    /**
-     * returns the  starting atpId which is open for planning and a published term
-     *
-     * @return
-     */
-    public static String getFirstOpenForPlanTerm() {
-        String startAtp = null;
-        for (String term : getPublishedTerms()) {
-            if (isAtpSetToPlanning(term)) {
-                startAtp = term;
-                break;
-            }
-        }
-        return startAtp;
-    }
-
     /**
      * Checks with the atpService if the atpid exists.
      *
