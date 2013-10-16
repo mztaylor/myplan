@@ -307,7 +307,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                             }
                         });
                     }
-                    List<String> publishedTerms = AtpHelper.getPublishedTerms();
+                    List<String> publishedTerms = AtpHelper.getPublishedTermsForCampus(plannedCourse.getCourseDetails().getCampusCd());
                     boolean scheduled = AtpHelper.isCourseOfferedInTerm(plannedCourse.getPlanItemDataObject().getAtp(), plannedCourse.getCourseDetails().getCode());
                     boolean timeScheduleOpen = publishedTerms.contains(plannedCourse.getPlanItemDataObject().getAtp());
                     if (timeScheduleOpen) {
