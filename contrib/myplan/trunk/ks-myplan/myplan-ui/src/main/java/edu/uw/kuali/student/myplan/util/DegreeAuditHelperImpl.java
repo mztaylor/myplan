@@ -182,7 +182,7 @@ public class DegreeAuditHelperImpl implements DegreeAuditHelper {
 
         List<AtpHelper.YearTerm> publishedTerms = AtpHelper.getPublishedYearTermList();
 
-        String startAtpId = AtpHelper.getFirstOpenForPlanTerm();
+        String startAtpId = AtpHelper.getFirstPlanTerm();
 
         Map<String, List<PlanItemInfo>> planItemsMap = populatePlanItemsMap(studentId);
         logger.info("Retrieved planned courses in " + System.currentTimeMillis());
