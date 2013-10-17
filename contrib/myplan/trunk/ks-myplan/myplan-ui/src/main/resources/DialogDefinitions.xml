@@ -1298,7 +1298,7 @@
                                                     <property name="onDocumentReadyScript" value="
                                                         jQuery('input[name=enableAdviserView]').on('change', function(e) {
                                                             var form = jQuery('#popupForm');
-                                                            myplanWriteHiddenToForm('methodToCall', 'planAccess', form.attr('id'));
+                                                            addHiddenDataToForm('methodToCall', 'planAccess', form.attr('id'));
                                                             form.ajaxSubmit({headers: { 'cache-control': 'no-cache' }});
                                                         });
                                                     "/>

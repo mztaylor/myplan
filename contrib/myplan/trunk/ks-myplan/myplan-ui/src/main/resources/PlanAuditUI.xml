@@ -84,7 +84,7 @@
                 indicateViewingAudit('plan_audits_summary', 'planAudit');
             }
             jQuery('#plan_audits_summary').on('REFRESH_AUDITS AUDIT_COMPLETE', function(event, data) {
-                if( data.auditType == 'plan' ) myplanRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
+                if( data.auditType == 'plan' ) customRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
             });
         "/>
         <property name="filters">

@@ -1,3 +1,5 @@
+
+
 function readUrlHash(key) {
     if (window.location.href.split("#")[1]) {
         var aHash = window.location.href.split("#")[1].replace('#', '').split('&');

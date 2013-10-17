@@ -2,11 +2,11 @@
     border-bottom: solid 2px #f2e4b7;
     position: relative;
     margin: @marginLarge 0;
-}
 
-.courseDetails__header h3 {
-    .bold();
-    line-height: 1.25em;
+    & h3 {
+        .bold();
+        line-height: 1.25em;
+    }
 }
 
 .courseDetails__headerGroup--right {
@@ -16,29 +16,28 @@
 
 .courseDetails__fieldLabel {
     width: 150px;
-}
-
-.courseDetails__fieldLabel label {
-    .bold();
-}
-
-.courseDetails__fieldLabel > .uif-horizontalBoxLayout {
-    float: right;
+    & label {
+        .bold();
+    }
+    & > .uif-horizontalBoxLayout {
+        float: right;
+    }
 }
 
 .courseDetails__field {
     width: 515px;
     margin: 0 0 0 @marginLarge !important;
-}
 
-.courseDetails__field .termBadge .scheduled {
-    vertical-align: 2px;
-    margin: 0 0 0 @marginMini;
-}
+    & .termBadge .scheduled {
+        vertical-align: 2px;
+        margin: 0 0 0 @marginMini;
+    }
 
-.courseDetails__field .uif-boxLayoutHorizontalItem {
-    margin: 0 0 0 @marginSmall;
-    &:first-child {
-        margin: 0;
+    & .uif-boxLayoutHorizontalItem {
+        margin: 0 0 0 @marginSmall;
+
+        &:first-child {
+            margin: 0;
+        }
     }
 }

@@ -565,10 +565,10 @@
         <property name="propertyName" value="lookupResults"/>
         <property name="onDocumentReadyScript" value="
             jQuery('#messages_summary').on('MESSAGE_SENT COMMENT_SENT', function(event, data){
-                myplanRetrieveComponent('messages_summary','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
+                customRetrieveComponent('messages_summary','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
             }).on('PLAN_ITEM_ADDED PLAN_ITEM_DELETED', function(event, data){
                 if (getConfigParam('adviser') &amp;&amp; data.planItemType === 'recommended') {
-                    myplanRetrieveComponent('messages_summary','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
+                    customRetrieveComponent('messages_summary','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
                 }
             });
         "/>
@@ -772,7 +772,7 @@
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
         <property name="onDocumentReadyScript" value="
             jQuery('#messages_detail_list').on('COMMENT_SENT', function(event, data){
-                myplanRetrieveComponent('messages_detail_list','messages_detail_list','search','lookup',{viewId:'MessagesDetail-LookupView'});
+                customRetrieveComponent('messages_detail_list','messages_detail_list','search','lookup',{viewId:'MessagesDetail-LookupView'});
             });
         "/>
         <property name="layoutManager.richTable.templateOptions">

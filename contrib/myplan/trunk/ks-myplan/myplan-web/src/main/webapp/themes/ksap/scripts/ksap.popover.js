@@ -22,7 +22,7 @@ var popupOptionsDefault = {
 function openCourse(courseId, e) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
-    if (jQuery(target).parents(".jquerypopover.jquerypopover-myplan").length > 0) {
+    if (jQuery(target).parents(".jquerypopover.jquerypopover-default").length > 0) {
         window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseId;
     } else {
         var retrieveData = {action: "plan", viewId: "PlannedCourse-FormView", methodToCall: "startAddPlannedCourseForm", courseId: courseId};
@@ -251,7 +251,7 @@ function fnCloseAllPopups() {
         jQuery("body").HidePopOver();
         jQuery("body").RemovePopOver();
     }
-    jQuery("div.jquerypopover.jquerypopover-myplan").remove();
+    jQuery("div.jquerypopover[id^='jquerypopover']").remove();
     jQuery("body").off("click");
 }
 
@@ -262,6 +262,7 @@ function editNote(obj, e) {
     var planItemId = obj.data("planitemid");
     var atpId = obj.data("atpid");
     var planItemType = obj.data("planitemtype");
+    var backupFlag = (planItemType == "backup");
     jQuery("#" + planItemType + "_" + atpId.replace(/\./g, "-") + "_" + planItemId + "_note").HideBubblePopup();
     var retrieveData = {
         action: 'plan',
@@ -269,6 +270,7 @@ function editNote(obj, e) {
         methodToCall: 'startAddPlannedCourseForm',
         planItemId: planItemId,
         atpId: atpId,
+        backup: backupFlag,
         pageId: 'edit_note_page'
     };
     var popupOptions = {

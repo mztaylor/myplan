@@ -220,16 +220,17 @@ function searchForCourses(id, parentId) {
                 url: sSource,
                 data: aoData,
                 success: fnCallback,
-                statusCode: {
-                    500: function () {
-                        sessionExpired();
-                    }
+                error: function(jqXHR, textStatus, errorThrown) {
+                    var tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = jqXHR.responseText;
+                    var isSessionExpired = (jQuery("title", tempDiv).text() == "Session Expired");
+                    if (isSessionExpired) sessionExpired();
                 },
                 beforeSend: function () {
                     jQuery("#" + parentId).block({
                         centerX: true,
                         centerY: false,
-                        message: '<p><img src="../themes/ksap/images/loader/ajax_large.gif" alt="loading..." /></p><p>Please wait while we are search courses...</p>',
+                        message: '<p><img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_large.gif" alt="Please wait while we are digging up courses..." /></p><p>Please wait while we are digging up courses...</p>',
                         fadeIn: 0,
                         fadeOut: 0,
                         overlayCSS: {

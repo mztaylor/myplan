@@ -87,14 +87,14 @@
             truncateField('saved_courses_summary');
             jQuery('#saved_courses_summary').on('PLAN_ITEM_DELETED', function(event, data){
                 if( data.planItemType === 'wishlist' ) {
-                    myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
-                    jQuery('div.jquerypopover.jquerypopover-myplan .jquerypopover-tail').fadeOut(250, function() {
+                    customRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
+                    jQuery('div.jquerypopover .jquerypopover-tail').fadeOut(250, function() {
                         jQuery(this).remove();
                     });
                 }
             }).on('PLAN_ITEM_ADDED', function(event, data){
                 if( data.planItemType === 'wishlist' ) {
-                    myplanRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'}, data.planItemId);
+                    customRetrieveComponent('saved_courses_summary','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'},'link_'+data.planItemId),{css:{right:'0px',top:'0px',width:'16px',border:'none'}};
                 }
             });
         "/>

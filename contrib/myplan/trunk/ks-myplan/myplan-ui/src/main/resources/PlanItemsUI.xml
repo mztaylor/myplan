@@ -102,7 +102,7 @@
             } else {
                 retrieveOptions = {viewId:'PlannedCourses-LookupView'};
             }
-            myplanRetrieveComponent('planned_mock_detail','planned_courses_detail','search','lookup', retrieveOptions, null, {message:'&lt;p&gt;&lt;img src=&quot;../ks-myplan/images/ajaxAuditRunning32.gif&quot; alt=&quot;loading...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching your plan...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{backgroundColor:'#fffdd7', border:'solid 1px #ffd14c', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
+            customRetrieveComponent('planned_mock_detail','planned_courses_detail','search','lookup', retrieveOptions, null, {centerX:true, centerY:false, message:'&lt;p&gt;&lt;img src=&quot;../themes/ksap/images/loader/ajax_large.gif&quot; alt=&quot;Please wait while we are fetching your plan...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching your plan...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{color:'#c09853', backgroundColor:'#fcf8e3', border:'solid 1px #fbeed5', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
         "/>
     </bean>
 
