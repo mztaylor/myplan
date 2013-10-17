@@ -62,6 +62,7 @@
             <list>
                 <ref bean="course_search_panel"/>
                 <ref bean="course_search_results_panel"/>
+                <ref bean="add_course_items"/>
             </list>
         </property>
     </bean>
@@ -138,7 +139,6 @@
                     <property name="actionScript" value="
                         searchForCourses('course_search_results','course_search_results_panel');
                     "/>
-
                 </bean>
             </list>
         </property>
@@ -184,7 +184,7 @@
     <bean id="course_search_results_panel" parent="KSAP-HorizontalBoxGroup">
         <property name="onDocumentReadyScript" value="
             if (readUrlHash('searchQuery')) {
-                jQuery('button.courseSearch__submit').attr('disabled', false);
+                jQuery('button.courseSearch__submit').prop('disabled', false).removeClass('disabled');
                 searchForCourses('course_search_results','course_search_results_panel');
             }
         "/>
@@ -287,7 +287,6 @@
                 <ref bean="facet_credits"/>
                 <ref bean="facet_level"/>
                 <ref bean="facet_curriculum"/>
-                <ref bean="add_course_items"/>
             </list>
         </property>
     </bean>
@@ -366,29 +365,19 @@
     </bean>
 
     <!--Add Course Menu-->
-    <bean id="add_course_items" parent="Uif-VerticalBoxSubSection" p:cssClasses="myplan-container-75"
-          p:style="margin: 0;">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="hidden" value="true"/>
+    <bean id="add_course_items" parent="KSAP-VerticalBoxGroup" p:width="75px" p:hidden="true" p:cssClasses="popover__menu">
         <property name="items">
             <list>
-                <bean parent="Uif-Link" p:target="" p:href="#"
-                      p:linkText="Add to Plan"
-                      p:title="Add to Plan">
-                    <property name="onClickScript" value="
+                <bean parent="Uif-ActionLink" p:actionLabel="Add to Plan" p:title="Add to Plan">
+                    <property name="actionScript" value="
                         var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:jQuery(this).data('courseid'), pageId:'add_dialog_page'};
                         var popupStyle = {width:'300px', height:'16px'};
                         var popupOptions = {tail:{hidden:true}, align:'top', close:true};
                         openPopup('add_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
                     "/>
                 </bean>
-                <bean parent="Uif-Link" p:target="" p:href="#"
-                      p:linkText="Bookmark"
-                      p:title="Bookmark"
-                      p:style="margin:0;">
-                    <property name="onClickScript" value="
+                <bean parent="Uif-ActionLink" p:actionLabel="Bookmark" p:title="Bookmark">
+                    <property name="actionScript" value="
                         var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:jQuery(this).data('courseid')};
                         submitHiddenForm('plan', additionalFormData, e);
                     "/>

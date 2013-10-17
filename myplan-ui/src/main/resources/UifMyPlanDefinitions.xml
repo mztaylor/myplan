@@ -27,8 +27,11 @@
         <property name="persistFormToSession" value="false"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
-        <property name="onLoadScript"
-                  value="try{Typekit.load();}catch(e){} setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});"/>
+        <property name="onLoadScript" value="
+                    try{Typekit.load();}catch(e){}
+                    setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
+                    setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+        "/>
         <property name="header">
             <bean parent="Uif-ViewHeader">
                 <property name="headerLevel" value="h1"/>
@@ -44,8 +47,11 @@
         <property name="persistFormToSession" value="false"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
-        <property name="onLoadScript"
-                  value="try{Typekit.load();}catch(e){} setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});"/>
+        <property name="onLoadScript" value="
+                    try{Typekit.load();}catch(e){}
+                    setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
+                    setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+        "/>
     </bean>
 
     <bean id="MyPlanFormView" abstract="true" parent="MyPlanBaseFormView">
@@ -70,8 +76,11 @@
         <property name="persistFormToSession" value="false"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
-        <property name="onLoadScript"
-                  value="try{Typekit.load();}catch(e){} setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});"/>
+        <property name="onLoadScript" value="
+                    try{Typekit.load();}catch(e){}
+                    setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
+                    setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+        "/>
     </bean>
 
     <bean id="MyPlanLookupView" abstract="true" parent="MyPlanBaseLookupView">
@@ -96,8 +105,11 @@
         <property name="persistFormToSession" value="false"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
-        <property name="onLoadScript"
-                  value="try{Typekit.load();}catch(e){} setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});"/>
+        <property name="onLoadScript" value="
+                    try{Typekit.load();}catch(e){}
+                    setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
+                    setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+        "/>
     </bean>
 
     <bean id="MyPlanInquiryView" abstract="true" parent="MyPlanBaseInquiryView">
@@ -121,8 +133,11 @@
         </property>
         <property name="breadcrumbs.render" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
-        <property name="onLoadScript"
-                  value="try{Typekit.load();}catch(e){} setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});"/>
+        <property name="onLoadScript" value="
+                    try{Typekit.load();}catch(e){}
+                    setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
+                    setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+        "/>
     </bean>
 
     <bean id="MyPlanMaintenanceView" abstract="true" parent="MyPlanBaseMaintenanceView">
@@ -404,27 +419,27 @@
 
     <bean id="KSAP-MessagesList" parent="KSAP-Module" p:headerText="Messages" p:id="KSAP-MessagesList">
         <property name="onDocumentReadyScript" value="
-            myplanRetrieveComponent('KSAP-MessagesList','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'});
+            customRetrieveComponent('KSAP-MessagesList','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
         "/>
     </bean>
 
 
     <bean id="KSAP-BookmarkList" parent="KSAP-Module" p:headerText="Bookmarked Courses" p:id="KSAP-BookmarkList">
         <property name="onDocumentReadyScript" value="
-            myplanRetrieveComponent('KSAP-BookmarkList','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'});
+            customRetrieveComponent('KSAP-BookmarkList','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
         "/>
     </bean>
 
     <bean id="KSAP-DegreeAuditList" parent="KSAP-Module" p:headerText="Recent Degree Audits (DARS)"
           p:id="KSAP-DegreeAuditList">
         <property name="onDocumentReadyScript" value="
-            myplanRetrieveComponent('KSAP-DegreeAuditList','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+            customRetrieveComponent('KSAP-DegreeAuditList','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
         "/>
     </bean>
 
     <bean id="KSAP-PlanAuditList" parent="KSAP-Module" p:headerText="Recent Plan Audits" p:id="KSAP-PlanAuditList">
         <property name="onDocumentReadyScript" value="
-            myplanRetrieveComponent('KSAP-PlanAuditList','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
+            customRetrieveComponent('KSAP-PlanAuditList','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
         "/>
     </bean>
 

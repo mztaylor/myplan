@@ -263,7 +263,7 @@
                 }
             }).on('PLAN_ITEM_ADDED PLAN_ITEM_DELETED RECOMMENDED_ITEM_UPDATED', function(event, data) {
                 if (data.atpId == '@{dataObject.atpId.replaceAll('\.','-')}' &amp;&amp; data.planItemType != 'wishlist') {
-                    myplanRetrieveComponent(data.atpId + '_' + data.planItemType, data.atpId + '_' + data.planItemType, 'start', 'inquiry', {viewId:'SingleTerm-InquiryView', term_atp_id:'@{dataObject.atpId}'}, null, {css:{top:'1px',left:'1px',border:'none',background:'none'},overlayCSS:{backgroundColor: '#fff'}});
+                    customRetrieveComponent(data.atpId + '_' + data.planItemType, data.atpId + '_' + data.planItemType, 'start', 'inquiry', {viewId:'SingleTerm-InquiryView', term_atp_id:'@{dataObject.atpId}'}, null, {css:{top:'1px',left:'1px',border:'none',background:'none'},overlayCSS:{backgroundColor: '#fff'}});
                 }
             }).on('PLAN_ITEM_UPDATED', function(event, data) {
                 fnUpdateNote(data);
@@ -1321,7 +1321,7 @@
         <property name="actionScript"
                   value="
                        jQuery('#@{#line.courseDetails.courseId}_sections_collection').css('min-height','17px');
-                       myplanRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}',loadActivityOffering:'true'});
+                       customRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}',loadActivityOffering:'true'});
                        switchFetchAction('@{#line.courseDetails.courseId}_toggle', '@{#line.courseDetails.courseId}_sections_collection');
                   "/>
         <property name="dataAttributes">

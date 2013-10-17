@@ -57,7 +57,9 @@ function submitPopupForm(additionalFormData, e, bDialog) {
         }
     };
     var blockOptions = {
-        message: '<img src="../themes/ksap/images/loader/ajax_small.gif"/>',
+        centerX: true,
+        centerY: true,
+        message: '<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_small.gif"/>',
         css: {
             width: '100%',
             border: 'none',
@@ -94,7 +96,9 @@ function ksapAjaxSubmitForm(data, successCallback, elementToBlock, formId, block
             var tempDiv = document.createElement('div');
             tempDiv.innerHTML = response;
             var hasError = checkForIncidentReport(response);
+            var isSessionExpired = (jQuery("title", tempDiv).text() == "Session Expired");
             if (!hasError) successCallback(tempDiv);
+            if (isSessionExpired) sessionExpired();
             jQuery("#formComplete").empty();
         },
         error: function (jqXHR, textStatus) {
@@ -112,7 +116,9 @@ function ksapAjaxSubmitForm(data, successCallback, elementToBlock, formId, block
                 else {
                     var elementBlockingDefaults = {
                         baseZ: 100,
-                        message: '<img src="../themes/ksap/images/loader/ajax_refresh.gif" alt="loading..." />',
+                        centerY: false,
+                        centerX: false,
+                        message: '<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_refresh.gif" alt="loading..." />',
                         fadeIn: 0,
                         fadeOut: 0,
                         overlayCSS: {
@@ -148,7 +154,7 @@ function ksapAjaxSubmitForm(data, successCallback, elementToBlock, formId, block
 }
 
 
-function myplanWriteHiddenToForm(propertyName, propertyValue, formId) {
+function addHiddenDataToForm(propertyName, propertyValue, formId) {
     //removing because of performFinalize bug
     jQuery('input[name="' + escapeName(propertyName) + '"]').remove();
 
@@ -165,7 +171,7 @@ function myplanWriteHiddenToForm(propertyName, propertyValue, formId) {
  Function: Retrieve component content through ajax
  ######################################################################################
  */
-function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOptions, highlightId, elementBlockingSettings) {
+function customRetrieveComponent(id, getId, methodToCall, action, retrieveOptions, highlightId, elementBlockingSettings) {
     var tempForm = '<form id="' + id + '_form" action="' + action + '" method="post" style="display:none;">';
     jQuery.each(retrieveOptions, function (name, value) {
         tempForm += '<input type="hidden" name="' + name + '" value="' + value + '" />';
@@ -198,119 +204,25 @@ function myplanRetrieveComponent(id, getId, methodToCall, action, retrieveOption
         elementToBlock.unblock();
     };
 
-    if (!methodToCall) {
-        methodToCall = "search";
-    }
-
-    myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id, elementBlockingSettings);
-    jQuery("form#" + id + "_form").remove();
-}
-/*
- ######################################################################################
- Function:   KRAD's ajax submit function modified to allow submission of a form
- other then the kuali form
- ######################################################################################
- */
-function myplanAjaxSubmitForm(methodToCall, successCallback, additionalData, elementToBlock, formId, elementBlockingSettings) {
-    var data = {};
-
-    // methodToCall checks
-    if (methodToCall == null) {
-        var methodToCallInput = jQuery("input[name='methodToCall']");
-        if (methodToCallInput.length > 0) {
-            methodToCall = jQuery("input[name='methodToCall']").val();
-        }
-    }
-
-    // check to see if methodToCall is still null
-    if (methodToCall != null || methodToCall !== "") {
-        data.methodToCall = methodToCall;
-    }
-
-    data.renderFullView = false;
-
-    // remove this since the methodToCall was passed in or extracted from the page, to avoid issues
-    jQuery("input[name='methodToCall']").remove();
-
-    if (additionalData != null) {
-        jQuery.extend(data, additionalData);
-    }
+    var data = {
+        'methodToCall': methodToCall,
+        'renderFullView': false,
+        'reqComponentId': id,
+        'skipViewInit': "false"
+    };
 
     var viewState = jQuery(document).data(kradVariables.VIEW_STATE);
     if (!jQuery.isEmptyObject(viewState)) {
         var jsonViewState = jQuery.toJSON(viewState);
-
         // change double quotes to single because escaping causes problems on URL
         jsonViewState = jsonViewState.replace(/"/g, "'");
         jQuery.extend(data, {clientViewState: jsonViewState});
     }
 
-    var submitOptions = {
-        data: data,
-        success: function (response) {
-            var tempDiv = document.createElement('div');
-            tempDiv.innerHTML = response;
-            var hasError = checkForIncidentReport(response);
-            if (!hasError) {
-                successCallback(tempDiv);
-            }
-            jQuery("#formComplete").empty();
-        },
-        error: function (jqXHR, textStatus) {
-            alert("Request failed: " + textStatus);
-        }
-    };
+    ksapAjaxSubmitForm(data, updateRefreshableComponentCallback, elementToBlock, id + "_form", elementBlockingSettings);
 
-    if (elementToBlock != null && elementToBlock.length) {
-        var elementBlockingOptions = {
-            beforeSend: function () {
-                if (elementToBlock.hasClass("unrendered")) {
-                    elementToBlock.append('<img src="' + getConfigParam("kradImageLocation") + 'loader.gif" alt="Loading..." /> Loading...');
-                    elementToBlock.show();
-                }
-                else {
-                    var elementBlockingDefaults = {
-                        baseZ: 100,
-                        centerY: false,
-                        centerX: false,
-                        message: '<img src="../themes/ksap/images/loader/ajax_refresh.gif" alt="loading..." />',
-                        fadeIn: 0,
-                        fadeOut: 0,
-                        overlayCSS: {
-                            backgroundColor: '#fff',
-                            opacity: 0
-                        },
-                        css: {
-                            border: 'none',
-                            width: '16px',
-                            top: '0px',
-                            right: '0px'
-                        }
-                    };
-                    elementToBlock.block(jQuery.extend(elementBlockingDefaults, elementBlockingSettings));
-                }
-            },
-            complete: function () {
-                elementToBlock.unblock();
-            },
-            error: function () {
-                if (elementToBlock.hasClass("unrendered")) {
-                    elementToBlock.hide();
-                }
-                else {
-                    elementToBlock.unblock();
-                }
-            }
-        };
-    }
-    jQuery.extend(submitOptions, elementBlockingOptions);
-    var form;
-    if (formId) {
-        form = jQuery("#" + formId + "_form");
-    } else {
-        form = jQuery("#kualiForm");
-    }
-    form.ajaxSubmit(submitOptions);
+    //myplanAjaxSubmitForm(methodToCall, updateRefreshableComponentCallback, {reqComponentId: id, skipViewInit: "false"}, elementToBlock, id, elementBlockingSettings);
+    jQuery("form#" + id + "_form").remove();
 }
 
 function getActivityEnrollment(url, retrieveOptions, componentId) {
@@ -322,7 +234,7 @@ function getActivityEnrollment(url, retrieveOptions, componentId) {
         dataType: "json",
         beforeSend: function () {
             elementToBlock.block({
-                message: '<img src="../themes/ksap/images/loader/ajax_refresh.gif" alt="Fetching enrollment data..." />',
+                message: '<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_refresh.gif" alt="Fetching enrollment data..." />',
                 fadeIn: 0,
                 fadeOut: 0,
                 overlayCSS: {
@@ -341,7 +253,7 @@ function getActivityEnrollment(url, retrieveOptions, componentId) {
             elementToBlock.fadeOut(250);
             elementToBlock.each(function () {
                 var image = jQuery("<img/>").attr({
-                    'src': "../themes/ksap/images/icons/warning.png",
+                    'src': getConfigParam("ksapImageLocation") + "icons/warning.png",
                     'alt': "Oops, couldn't fetch the data. Refresh the page.",
                     'title': "Oops, couldn't fetch the data. Refresh the page."
                 });

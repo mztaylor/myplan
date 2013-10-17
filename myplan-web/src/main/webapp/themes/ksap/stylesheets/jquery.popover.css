@@ -7,7 +7,7 @@
     position: absolute;
     border: 0px;
     z-index: 100;
-    text-align: center;
+    text-align: left;
     background-color: transparent;
 }
 
@@ -75,6 +75,7 @@
     position: relative;
     display: block;
     min-height: 26px;
+    overflow: hidden;
 }
 
 .jquerypopover-top-left, .jquerypopover-top-middle, .jquerypopover-top-right {
@@ -126,8 +127,8 @@
 .jquerypopover-yellow .jquerypopover-innerHtml,
 .jquerypopover-default .jquerypopover-innerHtml {
     font-weight: normal;
-    color: #000000;
     background-color: #FFFFFF;
+    padding: 5px;
 }
 
 .jquerypopover-all-azure  .jquerypopover-innerHtml,
@@ -140,6 +141,7 @@
 .jquerypopover-all-yellow .jquerypopover-innerHtml {
     font-weight: normal;
     color: #FFFFFF;
+    padding: 5px;
 }
 
 .jquerypopover-all-azure  .jquerypopover-innerHtml {

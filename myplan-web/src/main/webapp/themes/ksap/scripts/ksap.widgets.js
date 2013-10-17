@@ -410,7 +410,7 @@ function disabledCheck(disableCompId, disableCompType, condition) {
  */
 function planItemTemplate(data) {
     var itemId = data.planItemType + "_" + data.atpId + "_" + data.planItemId;
-    var image = jQuery("<img/>").attr("src", "../themes/ksap/images/pixel.gif");
+    var image = jQuery("<img/>").attr("src", getConfigParam("ksapImageLocation") + "pixel.gif");
     var actionGroup = jQuery("<div/>").attr("class", "uif-horizontalBoxLayout");
     var itemGroup = jQuery("<div/>").attr("class", "uif-horizontalBoxLayout");
 
@@ -604,9 +604,9 @@ function fnDisplayMessage(message, cssClass, targetId, button, full, sameBlock, 
     }
 }
 
-function replaceAction(actionId, replacement) {
-    jQuery("#" + actionId).parent("div").fadeOut(250, function() {
-        jQuery(this).html(replacement).fadeIn(250);
+function replaceAction(actionId, replacementHtml, replacementId, cssClasses) {
+    jQuery("#" + actionId).wrap("<div />").fadeOut(250, function() {
+        jQuery(this).html(replacementHtml).fadeIn(250);
     });
 }
 /*
@@ -615,10 +615,10 @@ function replaceAction(actionId, replacement) {
  #################################################################
  */
 function fnRestoreSearchAddButton(courseId) {
-    var oTable = jQuery('.myplan-course-search-results-datatable.uif-dataTable').dataTable();
+    var oTable = jQuery('.courseResults__table').dataTable();
     var oNodes = oTable.fnGetNodes();
     jQuery(oNodes).find("#" + courseId + "_status").fadeOut(250, function () {
-        jQuery(this).removeClass().html('<input type="image" title="Bookmark or Add to Plan" src="../themes/ksap/images/pixel.gif" alt="Bookmark or Add to Plan" class="uif-field uif-imageField myplan-add" data-courseid="' + courseId + '" onclick="openMenu(\'' + courseId + '_add\',\'add_course_items\',null,event,null,\'myplan-container-75\',{tail:{align:\'middle\'},align:\'middle\',position:\'right\'},false);" />');
+        jQuery(this).removeClass().html('<input type="image" title="Bookmark or Add to Plan" src="' + getConfigParam("ksapImageLocation") + 'pixel.gif" alt="Bookmark or Add to Plan" class="uif-field uif-imageField myplan-add" data-courseid="' + courseId + '" onclick="openMenu(\'' + courseId + '_add\',\'add_course_items\',null,event,null,\'popover__menu popover__menu--small\',{tail:{align:\'middle\'},align:\'middle\',position:\'right\'},false);" />');
         jQuery(this).fadeIn(250);
     });
 }

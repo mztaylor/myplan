@@ -84,7 +84,7 @@
                 indicateViewingAudit('degree_audits_summary','degreeAudit');
             }
             jQuery('#degree_audits_summary').on('REFRESH_AUDITS AUDIT_COMPLETE', function(event, data){
-                if( data.auditType == 'degree' ) myplanRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+                if( data.auditType == 'degree' ) customRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
             });
         "/>
         <property name="layoutManager.lineGroupPrototype.id" value="link_@{#line.report.auditId}"/>
