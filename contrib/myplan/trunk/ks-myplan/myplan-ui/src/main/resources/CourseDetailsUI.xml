@@ -73,12 +73,12 @@
     <bean id="course_details_actions" parent="KSAP-HorizontalBoxGroup">
         <property name="onDocumentReadyScript" value="
             jQuery('#course_details_actions').on('PLAN_ITEM_ADDED', function(event, data){
-                if (data.planItemType === 'wishlist') {
-                    fnDisplayMessage(data.message, data.cssClass, data.courseId + '_addSavedCourse', true, null, false, '@{dataObject.courseSummaryDetails.courseId}_bookmarked');
+                if (data.planItemType === 'wishlist' &amp;&amp; data.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
+                    actionFeedback(data.courseId + '_addSavedCourse', true, '@{dataObject.courseSummaryDetails.courseId}_bookmarked', data.cssClasses + ' alert-unboxed alert-replace-btn uif-boxLayoutHorizontalItem', data.message)
                 }
             }).on('PLAN_ITEM_DELETED', function(event, data){
                 if (data.planItemType === 'wishlist' &amp;&amp; data.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
-                    fnRestoreDetailsAddButton(data.courseId);
+                    restoreDetailsBookmarkButton(data.courseId);
                 }
             });
         "/>
@@ -103,45 +103,20 @@
                 <bean parent="KSAP-SecondaryActionButton" p:actionLabel="Bookmark Course"
                       p:id="@{dataObject.courseSummaryDetails.courseId}_addSavedCourse"
                       p:render="@{!dataObject.plannedCourseSummary.inSavedCourseList}">
-                    <property name="onDocumentReadyScript" value="
-                        jQuery('#@{dataObject.courseSummaryDetails.courseId}_addSavedCourse').on('PLAN_ITEM_ADDED', function(event, data){
-                            if (data.planItemType === 'wishlist') {
-                                fnDisplayMessage(data.message, data.cssClass, data.courseId + '_addSavedCourse', true, null, false, '@{dataObject.courseSummaryDetails.courseId}_bookmarked');
-                            }
-                        }).on('PLAN_ITEM_DELETED', function(event, data){
-                            if (data.planItemType === 'wishlist' &amp;&amp; data.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
-                                fnRestoreDetailsAddButton(data.courseId);
-                            }
-                    });"/>
                     <property name="actionScript" value="
                         var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:'@{dataObject.courseSummaryDetails.courseId}'};
                         submitHiddenForm('plan', additionalFormData, e);
                     "/>
                 </bean>
-                <bean parent="Uif-LinkGroup" p:id="@{dataObject.courseSummaryDetails.courseId}_bookmarked"
-                      p:render="@{dataObject.plannedCourseSummary.savedItemId ne null AND dataObject.plannedCourseSummary.plannedList.size() eq 0 AND dataObject.plannedCourseSummary.backupList.size() eq 0 AND dataObject.plannedCourseSummary.academicTerms.size() eq 0}"
-                      p:groupBeginDelimiter="" p:groupEndDelimiter="" p:linkSeparator="">
-                    <!--<property name="onDocumentReadyScript"
-                              value="jQuery('#@{dataObject.courseSummaryDetails.courseId}_bookmarked').on('PLAN_ITEM_DELETED', function(event, data){
-                                  if (data.planItemType === 'wishlist' &amp;&amp; data.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
-                                      fnRestoreDetailsAddButton(data.courseId);
-                                  }
-                              });"/>-->
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-status</value>
-                            <value>info</value>
-                        </list>
-                    </property>
-                    <property name="items">
+                <bean parent="KSAP-Message">
+                    <property name="id" value="@{dataObject.courseSummaryDetails.courseId}_bookmarked"/>
+                    <property name="messageText" value="[0] on @{dataObject.plannedCourseSummary.savedItemDateCreated}"/>
+                    <property name="cssClasses" value="alert alert-success alert-unboxed alert-replace-btn"/>
+                    <property name="render" value="@{dataObject.plannedCourseSummary.savedItemId ne null AND dataObject.plannedCourseSummary.plannedList.size() eq 0 AND dataObject.plannedCourseSummary.backupList.size() eq 0 AND dataObject.plannedCourseSummary.academicTerms.size() eq 0}"/>
+                    <property name="inlineComponents">
                         <list>
-                            <bean parent="Uif-Link" p:linkText="Bookmarked"
-                                  p:href="lookup?methodToCall=search&amp;viewId=SavedCoursesDetail-LookupView"
-                                  p:title="Bookmarked" p:target="" p:style="margin: 0px;"/>
-                            <bean parent="Uif-Message"
-                                  p:messageText="on @{dataObject.plannedCourseSummary.savedItemDateCreated}">
-                            </bean>
-
+                            <bean parent="Uif-Link" p:linkText="Bookmarked" p:title="Bookmarked" p:target="" p:cssClasses=""
+                                  p:href="lookup?methodToCall=search&amp;viewId=SavedCoursesDetail-LookupView"/>
                         </list>
                     </property>
                 </bean>
@@ -1107,14 +1082,13 @@
                                             title: data.SectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.'
                                         });
                                         jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).parents('tr').addClass('courseActivities--planned');
-                                        replaceAction('button_' + data.atpId + '_' + data.RegistrationCode, link);
+                                        actionFeedback('button_' + data.atpId + '_' + data.RegistrationCode, true, 'button_' + data.atpId + '_' + data.RegistrationCode, null, link);
                                         if (data.ItemsToUpdate != null) {
                                             var items = data.ItemsToUpdate.split(',');
                                             jQuery.each(items, function (index, value) {
                                                 link.attr('title', data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.');
                                                 jQuery('#button_' + data.atpId + '_' + items[index]).parents('tr').addClass('courseActivities--planned');
-                                                replaceAction('button_' + data.atpId + '_' + items[index], link);
-
+                                                actionFeedback('button_' + data.atpId + '_' + items[index], true, 'button_' + data.atpId + '_' + items[index], null, link);
                                             });
                                         }
                                     });

@@ -26,7 +26,7 @@
         <#else>
         <div class="appHeader__identity">
             Welcome, <a class="appHeader__person"
-                        onclick="var retrieveData = {action:'plan', viewId:'StudentAcademicPlanner-FormView', methodToCall:'startPlanAccessForm', pageId:'student_academic_planner_page'}; var popupStyle = {width:'16px', height:'16px'}; var popupOptions = {tail:{align:'right'}, position:'bottom', align:'right', close:true}; openPopup('student_academic_planner_page', retrieveData, 'plan', popupStyle, popupOptions, window.event);">${UserSession.person.firstName?cap_first} ${UserSession.person.lastName?substring(0,1)?capitalize}
+                        onclick="var retrieveData = {action:'plan', viewId:'StudentAcademicPlanner-FormView', methodToCall:'startPlanAccessForm', pageId:'student_academic_planner_page'}; var popupStyle = {width:'16px', height:'16px'}; var popupOptions = {tail:{align:'right'}, position:'bottom', align:'right', close:true}; openPopup('student_academic_planner_page', retrieveData, 'plan', popupStyle, popupOptions, ((event) ? event : window.event));">${UserSession.person.firstName?cap_first} ${UserSession.person.lastName?substring(0,1)?capitalize}
                 .</a>
             </div>
         </#if>

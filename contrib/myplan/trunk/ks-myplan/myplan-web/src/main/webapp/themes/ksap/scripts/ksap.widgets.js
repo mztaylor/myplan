@@ -604,9 +604,21 @@ function fnDisplayMessage(message, cssClass, targetId, button, full, sameBlock, 
     }
 }
 
-function replaceAction(actionId, replacementHtml, replacementId, cssClasses) {
-    jQuery("#" + actionId).wrap("<div />").fadeOut(250, function() {
-        jQuery(this).html(replacementHtml).fadeIn(250);
+function actionFeedback(targetId, needsParent, replacementId, cssClasses, replacementHtml) {
+    jQuery("#" + targetId).fadeOut(250, function() {
+        if (needsParent) {
+            var container = jQuery("<div />").attr({
+                "id": replacementId
+            });
+            jQuery(this).replaceWith(container);
+            jQuery("#" + replacementId).attr({
+                "class": cssClasses,
+                "style": "display: none;"
+            });
+            targetId = replacementId;
+        }
+        if (cssClasses) jQuery("#" + targetId).addClass(cssClasses);
+        jQuery("#" + targetId).html(replacementHtml).fadeIn(250);
     });
 }
 /*
@@ -614,11 +626,20 @@ function replaceAction(actionId, replacementHtml, replacementId, cssClasses) {
  Function: restore add button for saving courses in search results
  #################################################################
  */
-function fnRestoreSearchAddButton(courseId) {
+function restoreSearchAddButton(courseId) {
     var oTable = jQuery('.courseResults__table').dataTable();
     var oNodes = oTable.fnGetNodes();
+    var button = jQuery("<input />").attr({
+        "type": "image",
+        "title": "Bookmark or Add to Plan",
+        "alt": "Bookmark or Add to Plan",
+        "src": getConfigParam("ksapImageLocation") + "pixel.gif",
+        "class": "courseResults__itemAdd",
+        "data-courseid": courseId,
+        "onclick": "openMenu('" + courseId + "_add','add_course_items',null,event,null,'popover__menu popover__menu--small',{tail:{align:'middle'},align:'middle',position:'right'},false);"
+    });
     jQuery(oNodes).find("#" + courseId + "_status").fadeOut(250, function () {
-        jQuery(this).removeClass().html('<input type="image" title="Bookmark or Add to Plan" src="' + getConfigParam("ksapImageLocation") + 'pixel.gif" alt="Bookmark or Add to Plan" class="uif-field uif-imageField myplan-add" data-courseid="' + courseId + '" onclick="openMenu(\'' + courseId + '_add\',\'add_course_items\',null,event,null,\'popover__menu popover__menu--small\',{tail:{align:\'middle\'},align:\'middle\',position:\'right\'},false);" />');
+        jQuery(this).removeClass().html(button);
         jQuery(this).fadeIn(250);
     });
 }
@@ -627,13 +648,22 @@ function fnRestoreSearchAddButton(courseId) {
  Function: restore add button for saving courses on course details
  #################################################################
  */
-function fnRestoreDetailsAddButton(courseId) {
-    jQuery("#" + courseId + "_bookmarked").wrap("<div></div>");
-    jQuery("#" + courseId + "_bookmarked").parent("div").fadeOut(250, function () {
-        jQuery(this).html('<button id="' + courseId + '_addSavedCourse" class="uif-action uif-secondaryActionButton uif-boxLayoutHorizontalItem" onclick="var additionalFormData = {viewId:\'PlannedCourse-FormView\', methodToCall:\'addSavedCourse\', courseId:\'' + courseId + '\'}; submitHiddenForm(\'plan\', additionalFormData, event);">Bookmark Course</button>');
-        jQuery(this).siblings("input[data-role='script']").removeAttr("script").attr("name", "script").val("jQuery(document).ready(function () {jQuery('#" + courseId + "_addSavedCourse').on('PLAN_ITEM_ADDED', function (event, data) {if (data.planItemType === 'wishlist') {fnDisplayMessage(data.message, data.cssClass, data.courseId + '_addSavedCourse', true, false,false);}});});");
-        runHiddenScripts();
-        jQuery(this).fadeIn(250);
+function restoreDetailsBookmarkButton(courseId) {
+    var button = jQuery("<button />").attr({
+        "id": courseId + "_addSavedCourse",
+        "class": "btn btn-secondary uif-boxLayoutHorizontalItem",
+        "data-onclick": "e.preventDefault();if(jQuery(this).hasClass('disabled')){ return false; } var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:'" + courseId + "'}; submitHiddenForm('plan', additionalFormData, e);",
+        "data-loadingmessage": "Loading...",
+        "data-cleardirtyonaction": "false",
+        "data-dirtyonaction": "false",
+        "data-disableblocking": "false",
+        "data-ajaxsubmit": "true",
+        "data-submit_data": "{&quot;focusId&quot;:&quot;" + courseId + "_addSavedCourse&quot;,&quot;jumpToId&quot;:&quot;" + courseId + "_addSavedCourse&quot;}",
+        "data-validate": "false"
+    }).html("Bookmark Course");
+    jQuery("#" + courseId + "_bookmarked").fadeOut(250, function (){
+        jQuery(this).replaceWith(button);
+        jQuery("#" + courseId + "_addSavedCourse").fadeIn(250);
     });
 }
 
