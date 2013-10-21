@@ -83,9 +83,8 @@ function openPopup(getId, retrieveData, formAction, popupStyle, popupOptions, e)
             component = jQuery("#" + getId, htmlContent).wrap(popupForm).parent();
         } else {
             var pageId = jQuery("#pageId", htmlContent).val();
-            eval(jQuery("input[data-role='dataScript'][data-for='" + pageId + "']", htmlContent).val().replace("#" + pageId, "body"));
-            var errorMessage = '<img src="/student/ks-myplan/images/pixel.gif" alt="" class="icon"><div class="message">' + jQuery("body").data("validationMessages").serverErrors[0] + '</div>';
-            component = jQuery("<div />").addClass("myplan-feedback error").html(errorMessage);
+            var errorMessage = jQuery("#" + pageId, htmlContent).data("validation_messages").serverErrors[0];
+            component = jQuery("<div />").addClass("alert alert-error alert-unboxed").html(errorMessage);
         }
         if (jQuery("#KSAP-Popover").length) {
             popupItem.SetPopOverInnerHtml(component);
