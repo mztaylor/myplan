@@ -31,7 +31,7 @@ function submitPopupForm(additionalFormData, e, bDialog) {
         var status = jQuery.trim(jQuery("#requestStatus", htmlContent).text().toLowerCase());
         var data = {};
         data.messages = jQuery("#" + pageId, htmlContent).data("validation_messages");
-        data.cssClass = "alert alert-" + status;
+        data.cssClasses = "alert alert-" + status;
         switch (status) {
             case 'success':
                 data.message = data.messages.serverInfo[0];
@@ -46,7 +46,7 @@ function submitPopupForm(additionalFormData, e, bDialog) {
             case 'error':
                 data.message = data.messages.serverErrors[0];
                 if (bDialog) {
-                    var sContent = jQuery("<div />").append(data.message).addClass("alert alert-error").css({"background-color": "#fff"});
+                    var sContent = jQuery("<div />").append(data.message).addClass(data.cssClasses + " alert-unboxed");
                     var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
                     if (jQuery("body").HasPopOver()) jQuery("body").HidePopOver();
                     openDialog(sHtml.html(), e);

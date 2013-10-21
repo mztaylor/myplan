@@ -207,19 +207,15 @@
         <property name="onDocumentReadyScript" value="
             jQuery('#course_search_results').on('PLAN_ITEM_DELETED', function(event, data){
                 if (data.planItemType === 'wishlist') {
-                    fnRestoreSearchAddButton(data.courseId);
+                    restoreSearchAddButton(data.courseId);
                 }
             }).on('PLAN_ITEM_ADDED', function(event, data){
                 if (data.planItemType === 'wishlist') {
-                    fnDisplayMessage('Bookmarked', 'bookmarked', data.courseId + '_status', false);
+                    actionFeedback(data.courseId + '_status', false, null, 'bookmarked', 'Bookmarked');
                 }
             }).on('PLAN_ITEM_ADDED', function(event, data){
-                if (data.planItemType === 'planned') {
-                    fnDisplayMessage('Planned', 'planned', data.courseId + '_status', false);
-                }
-            }).on('PLAN_ITEM_ADDED', function(event, data){
-                if (data.planItemType === 'backup') {
-                    fnDisplayMessage('Planned', 'planned', data.courseId + '_status', false);
+                if (data.planItemType === 'planned' || data.planItemType === 'backup') {
+                    actionFeedback(data.courseId + '_status', false, null, 'planned', 'Planned');
                 }
             });
         "/>
