@@ -1,0 +1,66 @@
+.planNavigation__button {
+    font-size: @fontSizeSmall;
+    margin: 0 !important;
+}
+
+.planNavigation__button--previous,
+.planNavigation__button--next {
+    line-height: 14px;
+    height: 14px;
+    width: 9px;
+    padding: 7px 12px;
+}
+
+.planNavigation__button--first,
+.planNavigation__button--last {
+    line-height: 16px;
+    height: 16px;
+    padding: 6px 12px;
+}
+
+.planNavigation__button--previous,
+.planNavigation__button--first {
+    border-right: none;
+    .border-radius(4px 0 0 4px);
+}
+
+.planNavigation__button--next,
+.planNavigation__button--last {
+    .border-radius(0 4px 4px 0);
+}
+
+.planNavigation__image {
+    width: 9px;
+    height: 14px;
+    background: url('../images/icon_sprite.png') no-repeat;
+}
+
+.planNavigation__button--previous {
+    & .planNavigation__image {
+        background-position: -1px -164px;
+    }
+    &.disabled .planNavigation__image, &[disabled] .planNavigation__image {
+        background-position: -25px -164px;
+    }
+}
+
+.planNavigation__button--next {
+    & .planNavigation__image {
+        background-position: -14px -164px;
+    }
+    &.disabled .planNavigation__image, &[disabled] .planNavigation__image {
+        background-position: -38px -164px;
+    }
+}
+
+.planNavigation__header {
+    text-align: center;
+    & h2 {
+        line-height: 30px;
+    }
+}
+
+.planNavigation__printable {
+    font-size: @fontSizeTiny;
+    float: right;
+}

@@ -626,7 +626,7 @@
                     <property name="items">
                         <list>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="subject">
-                                <property name="cssClasses" value="ellipsisItem"/>
+                                <property name="cssClasses" value="module--bold ellipsisItem"/>
                             </bean>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="from">
                                 <property name="cssClasses" value="module--mini module--gray ellipsisItem"/>

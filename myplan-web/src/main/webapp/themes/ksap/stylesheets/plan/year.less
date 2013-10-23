@@ -1,0 +1,150 @@
+.planYear__carousel {
+    width: 708px;
+    margin: @marginDefault auto 0;
+    overflow: hidden;
+    & ul {
+        width: 20000em;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    & li {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        float: left;
+        width: 167px;
+        padding: 0 5px;
+    }
+}
+
+.planYear__term {
+    & .uif-boxLayoutVerticalItem {
+        margin: 0 !important;
+    }
+}
+
+.planYear__term--past {
+    & .planYear__termHeader {
+        #gradient > .vertical(#dedede, #ccc);
+        border-color: #ccc;
+        color: @gray;
+        &:hover {
+            #gradient > .vertical(#b1b1b1, #cbcbcb);
+            color: @black;
+        }
+    }
+    & .planItem__title {
+        color: @gray;
+    }
+}
+
+.planYear__term--current {
+    & .planYear__termHeader {
+        #gradient > .vertical(#5c428e, #3b295f);
+        border-color: #432f69;
+        color: #f9f7f7;
+        text-shadow: 0px 1px 0px #000;
+        &:hover {
+            #gradient > .vertical(#7962a5, #5d438f);
+            color: #fff;
+        }
+    }
+}
+
+.planYear__term--future {
+    & .planYear__termHeader {
+        #gradient > .vertical(#ede1c1, #efd89e);
+        border-color: #dcca9d;
+        color: @gray;
+        &:hover {
+            #gradient > .vertical(#f5d170, #f8dd96);
+            color: #161616;
+        }
+    }
+}
+
+.planYear__term--open {
+
+}
+
+.planYear__term--closed {
+
+}
+
+.planYear__termHeader {
+    padding: 9px 0;
+    border: @baseBorderStyle;
+    border-bottom: none;
+    .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+    display: block;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 0px 1px 0px #fcffff;
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+.planYear__termContainer {
+    min-height: 519px;
+    border: @baseBorderStyle;
+    border-top: none;
+    .border-radius(0 0 @baseBorderRadius @baseBorderRadius);
+    background: url('../images/dotted_bkgrd.gif');
+}
+
+.planYear__typeHeader {
+    padding: 0 @paddingDefault;
+    height: 25px;
+    line-height: 25px;
+    #gradient > .vertical(#f5f5f5, #ebebeb);
+    margin-bottom: -1px;
+    border-top: @baseBorderStyle;
+    border-bottom: @baseBorderStyle;
+    position: relative;
+    & .planYear__typeHeaderText {
+        display: inline-block;
+        vertical-align: middle;
+        color: @textColorMin;
+        font-size: @fontSizeSmall;
+    }
+    & .planYear__typeHeaderGroup--right {
+        display: inline-block;
+        margin: 0 0 0 @marginSmall;
+        vertical-align: middle;
+        position: relative;
+        top: -1px;
+    }
+}
+
+.planYear__items--fixed {
+    height: 208px;
+    overflow: hidden;
+}
+
+.planYear__creditTotal {
+    background: #f6ebcd;
+    color: @purple;
+    font-size: @fontSizeSmall;
+    height: 26px;
+    line-height: 26px;
+    padding: 0 @paddingDefault;
+
+    & .uif-boxLayoutHorizontalItem {
+        display: inline-block;
+        margin: 0 0 0 @marginDefault;
+        vertical-align: middle;
+        float: none;
+    }
+
+    & .uif-boxLayoutHorizontalItem:first-child {
+        margin: 0;
+    }
+}
+
+.planYear__creditValue {
+    float: right !important;
+    font-size: @baseFontSize + 1px;
+}

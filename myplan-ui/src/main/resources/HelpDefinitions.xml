@@ -19,92 +19,92 @@
      limitations under the License.
     -->
 
-    <bean id="quarter_facet_help_icon" parent="MyPlanHelpImage">
+    <bean id="quarter_facet_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="Projected courses indicate which quarter the course might be offered next. Contact the department for verification. Scheduled courses appear in the current Time Schedule. &lt;br&gt; &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#820&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
 
-    <bean id="bookmarks_help_icon" parent="MyPlanHelpImage">
+    <bean id="bookmarks_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Right"
+            <bean parent="KSAP-TooltipRight"
                   p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you've added it to your Plan or deleted it. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#821&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
 
-    <bean id="recent_degree_audits_help_icon" parent="MyPlanHelpImage">
+    <bean id="recent_degree_audits_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Right"
+            <bean parent="KSAP-TooltipRight"
                   p:tooltipContent="Recent Degree Audits (DARS) displays the last seven Degree Audits run through MyPlan. Degree Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#822&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
-    <bean id="recent_plan_audits_help_icon" parent="MyPlanHelpImage">
+    <bean id="recent_plan_audits_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Right"
+            <bean parent="KSAP-TooltipRight"
                   p:tooltipContent="Recent Plan Audits displays up to the last seven Plan Audits run in MyPlan. Plan Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#822&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
-    <bean id="completed_help_icon" parent="MyPlanHelpImage"
+    <bean id="completed_help_icon" parent="KSAP-HelpImage"
           p:render="@{#parentLine.completedTerm and #parentLine.displayCompletedHelp ? true : false}">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="Courses that you registered for in a quarter that is now complete."/>
         </property>
     </bean>
 
-    <bean id="registered_help_icon" parent="MyPlanHelpImage"
+    <bean id="registered_help_icon" parent="KSAP-HelpImage"
           p:render="@{!#parentLine.completedTerm and (#parentLine.academicRecord.size() gt 0 or !#parentLine.openForPlanning) and #parentLine.displayRegisteredHelp ? true : false}">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="Courses you are enrolled in for the current or a future academic quarter. To update this information, go to the &lt;a target=_blank href=&quot;https://sdb.admin.washington.edu/students/uwnetid/register.asp&quot;&gt;Registration&lt;/a&gt; page."/>
         </property>
     </bean>
 
-    <bean id="planned_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayPlannedHelp}">
+    <bean id="planned_help_icon" parent="KSAP-HelpImage" p:render="@{#line.displayPlannedHelp}">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="MyPlan allows you to add courses to your plan, but does not register you. Check the Time Schedule each quarter to verify whether your planned courses will be offered. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#825&quot;);&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
-    <bean id="backup_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayBackupHelp}">
+    <bean id="backup_help_icon" parent="KSAP-HelpImage" p:render="@{#line.displayBackupHelp}">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="Courses you are considering in case a planned course is full or unavailable."/>
         </property>
     </bean>
 
-    <bean id="total_credits_help_icon" parent="MyPlanHelpImage" p:render="@{#line.displayCreditsHelp}">
+    <bean id="total_credits_help_icon" parent="KSAP-HelpImage" p:render="@{#line.displayCreditsHelp}">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="@{!#line.openForPlanning ? 'The number of credits registered for a completed quarter. Check your transcript to verify completed credits.' : (#line.academicRecord.size() gt 0 ? ' The total number of credits from your planned and registered courses for the current quarter.' : 'The number of credits you plan to enroll in for future quarter.')}"/>
         </property>
     </bean>
 
-    <bean id="course_requisite_help_icon" parent="MyPlanHelpImage">
+    <bean id="course_requisite_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="&lt;strong&gt;Prerequisite&lt;/strong&gt; - a course that must be completed satisfactorily before you can take the course in question. &lt;/br&gt; &lt;/br&gt;
                                     &lt;strong&gt;Co-requisite&lt;/strong&gt; - a course that must be taken at the same time as the course in question.Co-requisites are sometimes listed in the Time Schedule as &quot;concurrent registration required in....&quot;"/>
         </property>
     </bean>
 
-    <bean id="course_quarter_help_icon" parent="MyPlanHelpImage">
+    <bean id="course_quarter_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="Projected courses indicate which quarter the course might be offered next. Contact the department for verification. Scheduled courses appear in the current Time Schedule. &lt;br&gt;
                                     &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site#820');&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
-    <bean id="course_credits_help_icon" parent="MyPlanHelpImage">
+    <bean id="course_credits_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="&lt;strong&gt;Variable Credits&lt;/strong&gt; &lt;/br&gt;
                                     &lt;strong&gt;(1-5)-&lt;/strong&gt; You can enroll for any number of credits in the range that's given. These are typically independent study courses that you and the professor decide on the number of credits.&lt;/br&gt;&lt;/br&gt;
                                     &lt;strong&gt;(3/5) -&lt;/strong&gt; A course you can enroll in for either 3 or 5 credits.&lt;/br&gt;
@@ -112,9 +112,9 @@
         </property>
     </bean>
 
-    <bean id="course_gened_help_icon" parent="MyPlanHelpImage">
+    <bean id="course_gened_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="&lt;strong&gt;General Education Requirements&lt;/strong&gt; &lt;/br&gt;
                                     &lt;strong&gt;C&lt;/strong&gt; - English Composition&lt;/br&gt;
                                     &lt;strong&gt;W&lt;/strong&gt; - Additional Writing&lt;/br&gt;
@@ -127,9 +127,9 @@
         </property>
     </bean>
 
-    <bean id="course_sections_help_icon" parent="MyPlanHelpImage">
+    <bean id="course_sections_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Right"
+            <bean parent="KSAP-TooltipRight"
                   p:tooltipContent="&lt;strong&gt;ENRL/LIMIT&lt;/strong&gt; = section enrollment and overall enrollment limit&lt;/br&gt;
                   &lt;strong&gt;ENRL. RESTR.&lt;/strong&gt; = applicable enrollment restrictions for each section&lt;/br&gt;
                   &lt;strong&gt;OTHER&lt;/strong&gt; = additional information for each section&lt;/br&gt;
@@ -140,37 +140,37 @@
         </property>
     </bean>
 
-    <bean id="single_quarter_credits_help_icon" parent="MyPlanHelpImage">
+    <bean id="single_quarter_credits_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="@{!dataObject.openForPlanning ? 'The number of credits registered for a completed quarter. Check your transcript to verify completed credits.' : (dataObject.academicRecord.size() gt 0 ? ' The total number of credits from your planned and registered courses for the current quarter.' : 'The number of credits you plan to enroll in for future quarter.')}"/>
         </property>
     </bean>
 
-    <bean id="single_quarter_registered_help_icon" parent="MyPlanHelpImage">
+    <bean id="single_quarter_registered_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="The courses and sections you are enrolled in for the current or future academic quarter(s). To update this information, go to the &lt;a target=_blank href=&quot;https://sdb.admin.washington.edu/students/uwnetid/register.asp&quot;&gt;Registration&lt;/a&gt; page."/>
         </property>
     </bean>
 
-    <bean id="single_quarter_planned_help_icon" parent="MyPlanHelpImage">
+    <bean id="single_quarter_planned_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="Courses and sections you are planning to enroll in for each quarter. MyPlan allows you to add courses listed in the Course Catalog and course sections listed in the published Time Schedule(s) to your plan. MyPlan will alert you when a course you've planned does not appear in that quarter's published Time Schedule."/>
         </property>
     </bean>
 
-    <bean id="single_quarter_backup_help_icon" parent="MyPlanHelpImage">
+    <bean id="single_quarter_backup_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="Courses and sections you are considering in case the ones you have planned are full or unavailable. To designate a course as a backup, search for and add a course as a backup from the Find Courses page."/>
         </property>
     </bean>
 
-    <bean id="single_quarter_completed_help_icon" parent="MyPlanHelpImage">
+    <bean id="single_quarter_completed_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
-            <bean parent="MyPlan-Tooltip-Left"
+            <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="Courses that you registered for in a quarter that is now complete."/>
         </property>
     </bean>
