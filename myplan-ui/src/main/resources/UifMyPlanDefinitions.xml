@@ -370,11 +370,7 @@
 
 
     <bean id="KSAP-RightPane" parent="KSAP-VerticalBoxGroup" p:width="230px">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>ksap-noMargin</value>
-            </list>
-        </property>
+        <property name="cssClasses" value=""/>
         <property name="items">
             <list>
                 <bean parent="KSAP-YourStuff"/>
