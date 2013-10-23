@@ -59,28 +59,13 @@ function indicateViewingAudit(id, type) {
  Function:   Build Term Plan View heading
  ######################################################################################
  */
-function fnBuildTitle(aView) {
+function buildPlanHeader(aView, selector) {
     var sText = 'Academic Year';
-    var aFirst = jQuery.trim(jQuery(aView[0]).find("div:hidden[id^='plan_base_atpId']").text()).split(".");
-    var aLast = jQuery.trim(jQuery(aView[aView.length - 1]).find("div:hidden[id^='plan_base_atpId']").text()).split(".");
-    jQuery("#planned_courses_detail .myplan-plan-header").html(sText + ' ' + aFirst[3] + '-' + aLast[3]);
-    var navigationAtpId = jQuery.trim(jQuery(aView[0]).find("div:hidden[id^='single_quarter_atpId']").text());
-    //fnQuarterNavigation(navigationAtpId, 'single_quarter_button', 'planned_courses_detail');
-    var quarterLink = "inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=" + navigationAtpId;
+    var aFirst = jQuery(aView[0]).find(".planYear__term").data("atpid").split(".");
+    var aLast = jQuery(aView[aView.length - 1]).find(".planYear__term").data("atpid").split(".");
+    var quarterLink = "inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=" + jQuery(aView[0]).find(".planYear__term").data("single-quarter-atpid");
+    jQuery(selector).html(sText + ' ' + aFirst[3] + '-' + aLast[3]);
     jQuery("#single_quarter_button").attr("href", quarterLink);
-}
-
-/*
- ######################################################################################
- Function:   Dynamically Builds the Quarter Button Action
- ######################################################################################
- */
-function fnQuarterNavigation(atpId, component) {
-    if (atpId == "") {
-        jQuery("#" + component).attr("href", "#").addClass('disabled').click(function (e) {
-            e.preventDefault();
-        });
-    }
 }
 /*
  ######################################################################################

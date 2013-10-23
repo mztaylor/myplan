@@ -901,7 +901,7 @@
                         <list/>
                     </property>
                     <property name="toolTip">
-                        <bean parent="MyPlan-Tooltip-Left">
+                        <bean parent="KSAP-TooltipLeft">
                             <property name="tooltipContent"
                                       value="@{#line.note NE null ? '&quot;' + #line.note.replaceAll('\n','&lt;br&gt;') + '&quot; - ' + #line.adviserName : ''}"/>
                             <property name="templateOptions">

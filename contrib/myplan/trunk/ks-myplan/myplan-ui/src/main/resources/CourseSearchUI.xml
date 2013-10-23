@@ -17,7 +17,9 @@
     <bean id="CourseSearch-FormView" parent="MyPlanFormView">
         <property name="id" value="CourseSearch-FormView"/>
         <property name="entryPageId" value="course_search"/>
+        <property name="formClass" value="org.kuali.student.myplan.course.form.CourseSearchForm"/>
         <property name="headerText" value="Find Courses"/>
+        <property name="footer.render" value="false"/>
         <property name="items">
             <list>
                 <bean parent="KSAP-Page" p:id="course_search">
@@ -42,10 +44,7 @@
                 </bean>
             </list>
         </property>
-        <property name="footer.render" value="false"/>
-        <property name="formClass" value="org.kuali.student.myplan.course.form.CourseSearchForm"/>
     </bean>
-
 
     <!-- Layout for Empty Course Search Form Page  -->
     <bean id="course_search_section" parent="KSAP-VerticalBoxGroup" p:width="710px">
