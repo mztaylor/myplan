@@ -537,14 +537,13 @@
             </list>
         </property>
         <property name="instructionalMessage">
-            <bean parent="KSAP-Message">
+            <bean parent="KSAP-Message" p:cssClasses="">
                 <property name="messageText"
                           value="Create your plan by finding and adding courses and their sections to any quarter. [0]"/>
                 <property name="inlineComponents">
                     <list>
-                        <bean parent="Uif-Link"
-                              p:href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#824')"
-                              p:linkText="Learn more"/>
+                        <bean parent="Uif-Link" p:linkText="Learn more"
+                              p:href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#824')"/>
                     </list>
                 </property>
             </bean>
