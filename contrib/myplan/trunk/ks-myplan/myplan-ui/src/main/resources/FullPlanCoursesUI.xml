@@ -53,7 +53,7 @@
                                         <bean parent="Uif-ActionLink" p:actionLabel="Back to Plan page">
                                             <property name="actionScript" value="parent.jQuery.fancybox.close(true);"/>
                                         </bean>
-                                        <bean parent="Uif-PrimaryActionButton-Small" p:actionLabel="Print"
+                                        <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Print"
                                               p:style="float:right; margin:0;">
                                             <property name="actionScript" value="window.print();"/>
                                         </bean>

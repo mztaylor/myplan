@@ -119,6 +119,33 @@
     }
 }
 
+.planYear__recommended {
+    & .planYear__typeHeader {
+        #gradient > .vertical(#d5edd5, #c7e1c7);
+        border-top: solid 1px #c6dec7;
+        border-bottom: solid 1px #c6dec7;
+        & .planYear__typeHeaderText {
+            color: #899b8b;
+        }
+    }
+
+    & .planItem__action {
+        &.planItem__action--hasNote {
+            width: 117px;
+            padding: 0 19px 0 0;
+        }
+    }
+
+    & .planItem__note {
+        width: 16px;
+        & img {
+            width: 16px;
+            height: 16px;
+            background-position: -37px -181px;
+        }
+    }
+}
+
 .planYear__items--fixed {
     height: 208px;
     overflow: hidden;

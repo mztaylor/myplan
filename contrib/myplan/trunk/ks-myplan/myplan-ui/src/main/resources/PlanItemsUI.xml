@@ -148,10 +148,10 @@
         "/>
     </bean>
 
-    <bean id="menuTextBackup" parent="KSAP-Message" p:messageText="Will be moved below the Total Credit line">
+    <bean id="menuTextBackup" parent="KSAP-Message" p:messageText="Will be moved below the Total Credit line" p:cssClasses="popover__infoText">
     </bean>
 
-    <bean id="menuTextPlanned" parent="KSAP-Message" p:messageText="Will be moved above the Total Credit line">
+    <bean id="menuTextPlanned" parent="KSAP-Message" p:messageText="Will be moved above the Total Credit line" p:cssClasses="popover__infoText">
     </bean>
 
     <bean id="menuOptionMove" parent="Uif-ActionLink" p:actionLabel="Move to Another Quarter"
@@ -198,7 +198,7 @@
         "/>
     </bean>
 
-    <bean id="menuTextDelete" parent="KSAP-Message" p:messageText="Cannot Undo">
+    <bean id="menuTextDelete" parent="KSAP-Message" p:messageText="Cannot Undo" p:cssClasses="popover__infoText">
     </bean>
 
     <!--Planned Menu Items-->
@@ -581,6 +581,7 @@
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="render"
                   value="@{#line NE null ? (#line.completedTerm OR #line.currentTermForView OR #line.academicRecord.size() GT 0) : true}"/>
+        <property name="id" value="academicRecord-@{#line.atpId.replaceAll('\.','-')}"/>
         <property name="cssClasses" value="planYear__academicRecord"/>
         <property name="header">
             <bean parent="KSAP-HeaderBase"
@@ -603,7 +604,7 @@
                   value="planYear__items @{#line.openForPlanning ? '' : 'planYear__items--fixed'}"/>
         <property name="layoutManager.lineGroupPrototype">
             <bean parent="Uif-CollectionHorizontalBoxItem">
-                <property name="id" value="record-@{#line.atpId.replace('.','-')}-@{#line.uuid}-group"/>
+                <property name="id" value="academicRecord-@{#line.atpId.replace('.','-')}-@{#line.uuid}-group"/>
                 <property name="cssClasses" value="planItem @{#line.courseId EQ null ? 'planItem--actionless' : ''}"/>
                 <property name="footer.render" value="false"/>
                 <property name="validationMessages">
@@ -826,7 +827,7 @@
     </bean>
 
     <bean id="academicRecordAction" parent="KSAP-HorizontalFieldGroup">
-        <property name="id" value="record_@{#line.atpId.replace('.','-')}_@{#line.uuid}"/>
+        <property name="id" value="academicRecord-@{#line.atpId.replace('.','-')}-@{#line.uuid}"/>
         <property name="title" value="@{#line.courseTitle}"/>
         <property name="onClickScript"
                   value="e.preventDefault();"/>
@@ -856,7 +857,7 @@
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="onClickScript"
                       p:condition="#line.courseId NE null">
                     <property name="replacement"
-                              value="openMenu('@{#line.uuid}_record','completed_courses_menu_items','@{#line.atpId}',e,null,'fl-container-150 uif-boxLayoutHorizontalItem',{themeMargins:{total:'20px', difference:'0px'},tail:{align:'top'},align:'top',position:'right'},false);"/>
+                              value="openMenu('@{#line.uuid}_record','completed_courses_menu_items','@{#line.atpId}',e,null,'popover__menu popover__menu--large',{themeMargins:{total:'20px', difference:'0px'},tail:{align:'top'},align:'top',position:'right'},false);"/>
                 </bean>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="cssClasses"
                       p:condition="#line.courseId NE null">
@@ -968,7 +969,7 @@
 
     <bean id="planItemAction" parent="KSAP-HorizontalFieldGroup">
         <property name="id"
-                  value="@{#line.planItemDataObject.type}_@{#line.planItemDataObject.atp.replace('.','-')}_@{#line.planItemDataObject.id}"/>
+                  value="@{#line.planItemDataObject.type}-@{#line.planItemDataObject.atp.replace('.','-')}-@{#line.planItemDataObject.id}"/>
         <property name="title"
                   value="@{#line.placeHolder ? (#line.placeHolderCode NE #line.placeHolderValue ? #line.placeHolderCode : '') : #line.courseDetails.code} @{#line.sections} '@{#line.placeHolder ? #line.placeHolderValue : #line.courseDetails.courseTitle}' @{#line.placeHolder ? 'placeholder':''}"/>
         <property name="dataAttributes">
@@ -983,7 +984,7 @@
         <!-- TODO: after M2 upgrade : add SpEL for page name in openMenu param to swtich menu -->
         <!-- @{#parentLine.openForPlanning ? 'planned_course_menu' : 'completed_planned_backup_menu_items'} -->
         <property name="onClickScript"
-                  value="openMenu('@{#line.planItemDataObject.id}_@{#line.planItemDataObject.type}','@{#line.planItemDataObject.type}_@{#line.placeHolder ? 'placeholder':'course'}_menu','@{#line.planItemDataObject.atp}',e,null,'fl-container-150 uif-boxLayoutHorizontalItem',{themeMargins:{total:'20px', difference:'0px'},tail:{align:'top'},align:'top',position:'right'},false);"/>
+                  value="openMenu('@{#line.planItemDataObject.id}_@{#line.planItemDataObject.type}','@{#line.planItemDataObject.type}_@{#line.placeHolder ? 'placeholder':'course'}_menu','@{#line.planItemDataObject.atp}',e,null,'popover__menu popover__menu--large',{themeMargins:{total:'20px', difference:'0px'},tail:{align:'top'},align:'top',position:'right'},false);"/>
         <property name="items">
             <list>
                 <bean parent="planItemTitle"/>

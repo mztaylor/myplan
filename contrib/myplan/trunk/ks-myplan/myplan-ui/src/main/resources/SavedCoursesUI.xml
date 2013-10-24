@@ -462,7 +462,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-PrimaryActionButton-Small" p:actionLabel="Add to Plan">
+                            <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Add to Plan">
                                 <property name="actionScript" value="
                                     var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:'@{#line.courseDetails.courseId}', pageId:'add_dialog_page'};
                                     var popupStyle = {width:'300px', height:'16px'};
@@ -470,7 +470,7 @@
                                     openPopup('add_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
                                 "/>
                             </bean>
-                            <bean parent="Uif-SecondaryActionButton-Small" p:actionLabel="Delete">
+                            <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Delete">
                                 <property name="actionScript" value="
                                     var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', pageId:'plan_item_delete_page'};
                                     var popupStyle = {width:'300px', height:'16px'};

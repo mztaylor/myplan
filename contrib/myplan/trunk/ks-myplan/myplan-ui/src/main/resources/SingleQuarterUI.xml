@@ -59,7 +59,7 @@
                                                         </property>
                                                         <property name="items">
                                                             <list>
-                                                                <bean id="previous_quarter_button"
+                                                                <!--<bean id="previous_quarter_button"
                                                                       parent="MyPlan-NavLink"
                                                                       p:title="Previous Quarter">
                                                                     <property name="linkText"
@@ -91,7 +91,7 @@
                                                                     <property name="onDocumentReadyScript" value="
                                                                         fnQuarterNavigation('@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}', 'next_quarter_button');
                                                                     "/>
-                                                                </bean>
+                                                                </bean>-->
                                                                 <!--<bean id="previous_quarter_button"
                                                                       parent="MyPlan-NavButton"
                                                                       p:title="Previous Quarter">
@@ -135,7 +135,7 @@
                                                         </property>
                                                         <property name="items">
                                                             <list>
-                                                                <bean parent="MyPlan-NavLink">
+                                                                <!--<bean parent="MyPlan-NavLink">
                                                                     <property name="id" value="single_quarter_button"/>
                                                                     <property name="linkText" value="Quarter"/>
                                                                     <property name="title" value="Quarter"/>
@@ -160,8 +160,8 @@
                                                                             <value>last</value>
                                                                         </list>
                                                                     </property>
-                                                                </bean>
-                                                                <!--<bean id="single_quarter_button" parent="Uif-SecondaryActionButton-Small"
+                                                                </bean>-->
+                                                                <!--<bean id="single_quarter_button" parent="KSAP-SecondaryActionButton-Small"
                                                                       p:actionLabel="Quarter" p:title="Quarter"
                                                                       p:style="margin:0;" p:actionScript="">
                                                                     <property name="cssClasses">
@@ -171,7 +171,7 @@
                                                                         </list>
                                                                     </property>
                                                                 </bean>
-                                                                <bean id="one_year_button" parent="Uif-SecondaryActionButton-Small"
+                                                                <bean id="one_year_button" parent="KSAP-SecondaryActionButton-Small"
                                                                       p:actionLabel="1 Year" p:title="1 Year"
                                                                       p:style="margin:0;" p:actionScript="">
                                                                     <property name="cssClasses">

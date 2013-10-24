@@ -89,8 +89,8 @@ function openPopup(getId, retrieveData, formAction, popupStyle, popupOptions, e)
         if (jQuery("#KSAP-Popover").length) {
             popupItem.SetPopOverInnerHtml(component);
             fnPositionPopUp(popupId);
-            if (popupOptions.close || typeof popupOptions.close === 'undefined') jQuery("#" + popupId + " .jquerypopover-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
-            jQuery("#" + popupId + " img.myplan-popup-close").on('click', function () {
+            if (popupOptions.close || typeof popupOptions.close === 'undefined') jQuery("#" + popupId + " .jquerypopover-innerHtml").append('<img src="' + getConfigParam("ksapImageLocation") + 'icons/close.png" class="popover__close"/>');
+            jQuery("#" + popupId + " img.popover__close").on('click', function () {
                 popupItem.HidePopOver();
                 fnCloseAllPopups();
             });

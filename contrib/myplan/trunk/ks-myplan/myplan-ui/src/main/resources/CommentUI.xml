@@ -161,7 +161,7 @@
                             <ref bean="comment_dialog_comments_list"/>
                             <ref bean="comment_dialog_message"/>
                             <ref bean="comment_dialog_message_count"/>
-                            <bean id="postCommentButton" p:id="postCommentButton" parent="Uif-PrimaryActionButton"
+                            <bean id="postCommentButton" p:id="postCommentButton" parent="KSAP-PrimaryActionButton"
                                   p:actionLabel="Post a Comment" p:methodToCall="addComment"
                                   p:style="margin:0 0 0 100px;" p:disabled="true"
                                   p:focusOnIdAfterSubmit="commenting_textbox_control">
@@ -510,11 +510,11 @@
     <bean id="message_actions" parent="Uif-HorizontalBoxSubSection">
         <property name="items">
             <list>
-                <bean id="leaveMessageButton" p:id="leaveMessageButton" parent="Uif-PrimaryActionButton"
+                <bean id="leaveMessageButton" p:id="leaveMessageButton" parent="KSAP-PrimaryActionButton"
                       p:disabled="true" p:style="margin:0 0 0 100px;"
                       p:actionLabel="Leave a Message" p:methodToCall="addMessage" p:render="@{!#form.feedBackMode}">
                 </bean>
-                <bean p:id="cancelMessage" parent="Uif-PrimaryActionButton" p:actionLabel="Cancel"
+                <bean p:id="cancelMessage" parent="KSAP-PrimaryActionButton" p:actionLabel="Cancel"
                       p:style="margin: 0 0 0 20px;" p:render="@{!#form.feedBackMode}">
                     <property name="actionScript"
                               value="e.preventDefault();closeLightbox();return false;actionInvokeHandler(this);"/>
@@ -583,7 +583,7 @@
                         </property>
                         <property name="items">
                             <list>
-                                <bean id="leave_message_button" parent="Uif-PrimaryActionButton-Small"
+                                <bean id="leave_message_button" parent="KSAP-PrimaryActionButton-Small"
                                       p:actionLabel="Leave a Message">
                                     <property name="cssClasses">
                                         <list merge="true">
