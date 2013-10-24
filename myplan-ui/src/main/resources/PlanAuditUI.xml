@@ -461,7 +461,7 @@
         </property>
     </bean>
 
-    <bean id="plan_audit_validate" parent="Uif-PrimaryActionButton" p:actionLabel="Audit Your Plan"
+    <bean id="plan_audit_validate" parent="KSAP-PrimaryActionButton" p:actionLabel="Audit Your Plan"
           p:title="Audit Your Plan">
         <property name="disabled"
                   value="@{(#form.planExists EQ false) OR (#form.planAudit.campusParam EQ '306' AND #form.planAudit.programParamSeattle EQ 'default') OR (#form.planAudit.campusParam EQ '310' AND #form.planAudit.programParamBothell EQ 'default') OR (#form.planAudit.campusParam EQ '323' AND #form.planAudit.programParamTacoma EQ 'default')}"/>
@@ -488,7 +488,7 @@
         </property>
     </bean>
 
-    <bean id="plan_audit_run" parent="Uif-PrimaryActionButton" p:methodToCall="runPlanAudit" p:hidden="true"
+    <bean id="plan_audit_run" parent="KSAP-PrimaryActionButton" p:methodToCall="runPlanAudit" p:hidden="true"
           p:disabled="false" p:refreshId="plan_audit_section" p:focusOnIdAfterSubmit="plan_audits_summary"
           p:actionLabel="Audit Plan">
         <property name="onClickScript" value="
@@ -794,7 +794,7 @@
                                           value="@{#form.planAudit.cleanList.size() + #form.planAudit.messyItems.size() GT 0}"/>
                                 <property name="items">
                                     <list>
-                                        <bean id="submit_plan_audit" parent="Uif-PrimaryActionButton" p:disabled="true"
+                                        <bean id="submit_plan_audit" parent="KSAP-PrimaryActionButton" p:disabled="true"
                                               p:style="margin:0px 20px 0px 0px;"
                                               p:render="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() OR
                                               #form.planAudit.allMessyItemsSelected}">
@@ -810,7 +810,7 @@
                                             <property name="actionLabel" value="Cancel"/>
                                             <property name="actionScript" value="jQuery.fancybox.close(true);"/>
                                         </bean>
-                                        <bean parent="Uif-PrimaryActionButton" p:style="margin:0px 20px 0px 0px;"
+                                        <bean parent="KSAP-PrimaryActionButton" p:style="margin:0px 20px 0px 0px;"
                                               p:render="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND
                                               !#form.planAudit.allMessyItemsSelected}">
                                             <property name="actionLabel" value="Ok"/>
@@ -830,7 +830,7 @@
                                           value="@{#form.planAudit.cleanList.size() + #form.planAudit.messyItems.size() EQ 0}"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-PrimaryActionButton" p:style="margin:0px;">
+                                        <bean parent="KSAP-PrimaryActionButton" p:style="margin:0px;">
                                             <property name="actionLabel" value="Ok"/>
                                             <property name="actionScript" value="jQuery.fancybox.close(true);"/>
                                         </bean>

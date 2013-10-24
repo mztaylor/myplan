@@ -71,11 +71,12 @@
     display: inline;
 }
 
-.jquerypopover-innerHtml {
+.jquerypopover-innerHtml, .jquerybubblepopup-innerHtml {
     position: relative;
     display: block;
-    min-height: 26px;
+    min-height: 20px;
     overflow: hidden;
+    padding: 5px !important;
 }
 
 .jquerypopover-top-left, .jquerypopover-top-middle, .jquerypopover-top-right {
@@ -128,7 +129,6 @@
 .jquerypopover-default .jquerypopover-innerHtml {
     font-weight: normal;
     background-color: #FFFFFF;
-    padding: 5px;
 }
 
 .jquerypopover-all-azure  .jquerypopover-innerHtml,
@@ -141,7 +141,6 @@
 .jquerypopover-all-yellow .jquerypopover-innerHtml {
     font-weight: normal;
     color: #FFFFFF;
-    padding: 5px;
 }
 
 .jquerypopover-all-azure  .jquerypopover-innerHtml {
@@ -176,20 +175,9 @@
     background-color: #FFCC00;
 }
 
-.jquerypopover-heading {
-    font-size: 115%;
-    font-weight: bold;
-    line-height: 24px;
-    height: 24px;
-    margin-bottom: 1em;
-}
-
 .jquerypopover-help .jquerypopover-innerHtml,
 .jquerybubblepopup-help .jquerybubblepopup-innerHtml {
     color: #fff;
-    font-size: 11px;
-    line-height: 1.5em;
-    padding: 5px;
     background: #565656;
 }
 
@@ -226,15 +214,6 @@
 }
 
 .jquerypopover-note .jquerypopover-innerHtml,
-.jquerybubblepopup-note .jquerybubblepopup-innerHtml,
-.jquerypopover-adviser .jquerypopover-innerHtml,
-.jquerybubblepopup-adviser .jquerybubblepopup-innerHtml {
-    font-size: 11px;
-    line-height: 1.5em;
-    padding: 5px;
-}
-
-.jquerypopover-note .jquerypopover-innerHtml,
 .jquerybubblepopup-note .jquerybubblepopup-innerHtml {
     background: #f4effd;
 }
@@ -253,6 +232,7 @@
 .jquerybubblepopup-adviser .jquerybubblepopup-top-middle,
 .jquerybubblepopup-adviser .jquerybubblepopup-bottom-middle {
     height: 16px;
+    line-height: 16px;
 }
 
 .jquerypopover-note .jquerypopover-middle-left,
@@ -284,6 +264,7 @@
 .jquerybubblepopup-adviser .jquerybubblepopup-bottom-right{
     width: 16px;
     height: 16px;
+    line-height: 16px;
 }
 
 .jquerypopover-note .jquerypopover-innerHtml a,
@@ -291,4 +272,67 @@
 .jquerypopover-adviser .jquerypopover-innerHtml a,
 .jquerybubblepopup-adviser .jquerybubblepopup-innerHtml a {
     text-decoration: underline;
+}
+
+.jquerypopover-top-left,
+.jquerybubblepopup-top-left {
+    background-position: right bottom;
+    text-align: right;
+    vertical-align: bottom;
+}
+.jquerypopover-top-middle,
+.jquerybubblepopup-top-middle {
+    background-position: center bottom;
+    vertical-align: bottom;
+}
+.jquerypopover-top-right,
+.jquerybubblepopup-top-right {
+    background-position: left bottom;
+    text-align: left;
+    vertical-align: bottom;
+}
+.jquerypopover-bottom-left,
+.jquerybubblepopup-bottom-left {
+    background-position: right top;
+    text-align: right;
+    vertical-align: top;
+}
+.jquerypopover-bottom-middle,
+.jquerybubblepopup-bottom-middle {
+    background-position: center top;
+    vertical-align: top;
+}
+.jquerypopover-bottom-right,
+.jquerybubblepopup-bottom-right {
+    background-position: left top;
+    text-align: left;
+    vertical-align: top;
+}
+.jquerypopover-middle-left,
+.jquerybubblepopup-middle-left {
+    background-position: right center;
+    text-align: right;
+}
+.jquerypopover-middle-right,
+.jquerybubblepopup-middle-right {
+    background-position: left center;
+    text-align: left;
+}
+
+.jquerypopover-top-left .jquerypopover-tail,
+.jquerypopover-top-right .jquerypopover-tail,
+.jquerypopover-top-middle .jquerypopover-tail,
+.jquerybubblepopup-top-left .jquerybubblepopup-tail,
+.jquerybubblepopup-top-right .jquerybubblepopup-tail,
+.jquerybubblepopup-top-middle .jquerybubblepopup-tail {
+    vertical-align: bottom;
+}
+
+.jquerypopover-bottom-left .jquerypopover-tail,
+.jquerypopover-bottom-right .jquerypopover-tail,
+.jquerypopover-bottom-middle .jquerypopover-tail,
+.jquerybubblepopup-bottom-left .jquerybubblepopup-tail,
+.jquerybubblepopup-bottom-right .jquerybubblepopup-tail,
+.jquerybubblepopup-bottom-middle .jquerybubblepopup-tail{
+    vertical-align: top;
 }

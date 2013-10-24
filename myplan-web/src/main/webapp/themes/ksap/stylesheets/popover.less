@@ -1,7 +1,16 @@
 .popover__menu {
+    font-size: @fontSizeSmall;
     & a {
         display: block;
     }
+}
+
+.popover__infoText {
+    font-size: @fontSizeMini;
+    color: @textColorLight;
+    margin: 0 !important;
+    line-height: @fontSizeLarge;
+    display: inline-block;
 }
 
 .popover__menu--small {
@@ -10,4 +19,26 @@
 
 .popover__menu--large {
     width: 150px;
+}
+
+.popover__close {
+    cursor: pointer;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+.jquerybubblepopup .jquerybubblepopup-innerHtml {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 300px;
+    min-width: 100px;
+}
+
+.jquerypopover-help .jquerypopover-innerHtml,
+.jquerybubblepopup-help .jquerybubblepopup-innerHtml,
+.jquerypopover-note .jquerypopover-innerHtml,
+.jquerybubblepopup-note .jquerybubblepopup-innerHtml,
+.jquerypopover-adviser .jquerypopover-innerHtml,
+.jquerybubblepopup-adviser .jquerybubblepopup-innerHtml {
+    font-size: @fontSizeMini;
 }
