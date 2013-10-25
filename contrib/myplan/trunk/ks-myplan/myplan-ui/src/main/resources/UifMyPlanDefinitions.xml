@@ -765,14 +765,6 @@
         </property>
     </bean>
 
-    <bean id="KSAP-VerticalBoxGroup-NoMargin" parent="KSAP-VerticalBoxGroup">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>ksap-noMargin</value>
-            </list>
-        </property>
-    </bean>
-
     <bean id="KSAP-HorizontalBoxGroup" parent="Uif-HorizontalBoxGroup">
         <property name="validationMessages">
             <null/>
@@ -785,13 +777,6 @@
         </property>
         <property name="scrollpane">
             <null/>
-        </property>
-    </bean>
-    <bean id="KSAP-HorizontalBoxGroup-NoMargin" parent="KSAP-HorizontalBoxGroup">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>ksap-noMargin</value>
-            </list>
         </property>
     </bean>
 
@@ -807,14 +792,6 @@
             <bean parent="KSAP-VerticalBoxGroup"/>
         </property>
     </bean>
-    <bean id="KSAP-VerticalFieldGroup-NoMargin" parent="KSAP-VerticalFieldGroup">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>ksap-noMargin</value>
-            </list>
-        </property>
-    </bean>
-
 
     <bean id="KSAP-HorizontalFieldGroup" parent="Uif-HorizontalFieldGroup">
         <property name="template" value="/ks-myplan/WEB-INF/ftl/components/field/fieldGroup.ftl"/>
@@ -828,20 +805,13 @@
             <bean parent="KSAP-HorizontalBoxGroup"/>
         </property>
     </bean>
-    <bean id="KSAP-HorizontalFieldGroup-NoMargin" parent="KSAP-HorizontalFieldGroup">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>ksap-noMargin</value>
-            </list>
-        </property>
-    </bean>
 
     <bean id="KSAP-PopoverPage" parent="Uif-Page">
         <property name="validationMessages">
             <null/>
         </property>
         <property name="header">
-            <bean parent="KSAP-HeaderSix"/>
+            <bean parent="KSAP-HeaderDiv" p:cssClasses="popover__header" p:headerTagCssClasses="popover__headerText"/>
         </property>
         <property name="width" value="300px"/>
     </bean>
