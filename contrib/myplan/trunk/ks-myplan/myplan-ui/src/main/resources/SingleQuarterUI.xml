@@ -266,7 +266,7 @@
                     customRetrieveComponent(data.atpId + '_' + data.planItemType, data.atpId + '_' + data.planItemType, 'start', 'inquiry', {viewId:'SingleTerm-InquiryView', term_atp_id:'@{dataObject.atpId}'}, null, {css:{top:'1px',left:'1px',border:'none',background:'none'},overlayCSS:{backgroundColor: '#fff'}});
                 }
             }).on('PLAN_ITEM_UPDATED', function(event, data) {
-                fnUpdateNote(data);
+                updateNote(data);
             });
         "/>
         <property name="cssClasses">

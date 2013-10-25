@@ -476,7 +476,7 @@ function planItemTemplate(data) {
     return item;
 }
 
-function fnAddPlanItem(data) {
+function addPlanItem(data) {
     var itemId = data.planItemType + "-" + data.atpId + "-" + data.planItemId;
     var collection = jQuery("#" + data.planItemType + "-" + data.atpId);
 
@@ -484,7 +484,7 @@ function fnAddPlanItem(data) {
     collection.attr("data-size", size);
 
     if (collection.attr("data-limit") != "false") {
-        fnShowHideQuickAddLink(data.atpId, data.planItemType, size);
+        toggleAddPlanItem(data.atpId, data.planItemType, size);
     }
 
     planItemTemplate(data).prependTo(collection.find(".planYear__items"));
@@ -493,14 +493,14 @@ function fnAddPlanItem(data) {
     truncateField(itemId + "-group", true);
 }
 
-function fnUpdatePlanItem(data) {
+function updatePlanItem(data) {
     var itemId = data.planItemType + "-" + data.atpId + "-" + data.planItemId;
     jQuery("#" + itemId + "-group").replaceWith(planItemTemplate(data));
     runHiddenScripts(itemId + "-group");
     animateHighlight(jQuery("#" + itemId + "-group"));
     truncateField(itemId + "-group", true);
 }
-function fnUpdateNote(data) {
+function updateNote(data) {
     var noteId = data.planItemType + "-" + data.atpId + "-" + data.planItemId + "-note";
     jQuery("#" + noteId).off();
     var createTooltip = "createTooltip('" + noteId + "', ' <p>" + data.note + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId.replace(/-/g, ".") + " onclick=editNote(jQuery(this),event);>Edit Note</a></p> ', {position:'top',align:'left',alwaysVisible:false,tail:{align:'left',hidden:false},themePath:'../themes/ksap/images/popover-theme/',themeName:'note',selectable:true,width:'250px',openingSpeed:50,closingSpeed:50,openingDelay:500,closingDelay:0,themeMargins:{total:'17px',difference:'10px'},distance:'0px'},true,true);";
@@ -513,7 +513,7 @@ function fnUpdateNote(data) {
  Function: remove course from quarter plan view
  #################################################################
  */
-function fnRemovePlanItem(data) {
+function removePlanItem(data) {
     var itemId = data.planItemType + "-" + data.atpId + "-" + data.planItemId;
     var collection = jQuery("#" + data.planItemType + "-" + data.atpId);
     jQuery("#" + itemId).off("click");
@@ -522,7 +522,7 @@ function fnRemovePlanItem(data) {
     collection.attr("data-size", size);
 
     if (collection.attr("data-limit") != "false") {
-        fnShowHideQuickAddLink(data.atpId, data.planItemType, size);
+        toggleAddPlanItem(data.atpId, data.planItemType, size);
     }
 
     collection.find("#" + itemId + "-group").fadeOut(250, function () {
@@ -537,10 +537,23 @@ function fnRemovePlanItem(data) {
 }
 /*
  #################################################################
+ Function: show or hide the quick add link
+ #################################################################
+ */
+function toggleAddPlanItem(atpId, type, size) {
+    var addPlanItem = jQuery("#" + type + "-" + atpId + " .planYear__items .planItem.planItem--add");
+    if (size < 8) {
+        addPlanItem.fadeIn(250);
+    } else {
+        addPlanItem.fadeOut(250);
+    }
+}
+/*
+ #################################################################
  Function: update style from recommended item
  #################################################################
  */
-function fnUpdateRecommendedItem(data) {
+function updateRecommendedItem(data) {
     var itemId = data.planItemType + "-" + data.atpId + "-" + data.planItemId;
     jQuery("#" + itemId + "-group").removeClass("planItem--recommendedProposed").addClass("planItem--recommendedAccepted");
     animateHighlight(jQuery("#" + itemId + "-group"));
@@ -576,8 +589,8 @@ function fnUpdateSavedCount(savedItemCount) {
  Function: update the credits total in the quarter plan view
  #################################################################
  */
-function fnUpdateCredits(atpId, termCredits) {
-    jQuery("." + atpId + ".myplan-term-planned .myplan-carousel-term-total .credits.uif-messageField").fadeOut(250, function () {
+function updateCredits(atpId, termCredits) {
+    jQuery("#planned-" + atpId + " .planYear__creditTotal .planYear__creditValue").fadeOut(250, function () {
         jQuery(this).html(termCredits).fadeIn(250);
     });
 }
@@ -666,19 +679,6 @@ function restoreDetailsBookmarkButton(courseId) {
         jQuery(this).replaceWith(button);
         jQuery("#" + courseId + "_addSavedCourse").fadeIn(250);
     });
-}
-
-/*
- #################################################################
- Function: show or hide the quick add link
- #################################################################
- */
-function fnShowHideQuickAddLink(atpId, type, size) {
-    if (size < 8) {
-        jQuery("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .addItemAction").fadeIn(250);
-    } else {
-        jQuery("." + atpId + ".myplan-term-" + type + " .uif-stackedCollectionLayout .addItemAction").fadeOut(250);
-    }
 }
 
 function fnToggleSectionAction(actionId, regId, action, data, primaryPlan) {

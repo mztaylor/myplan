@@ -559,17 +559,17 @@
         <property name="onDocumentReadyScript" value="
             truncateField('planned_courses_detail_list', true);
             jQuery('#planned_courses_detail_list').on('PLAN_ITEM_ADDED', function(event, data) {
-                fnAddPlanItem(data);
+                addPlanItem(data);
             }).on('PLAN_ITEM_DELETED', function(event, data) {
-                fnRemovePlanItem(data);
+                removePlanItem(data);
             }).on('RECOMMENDED_ITEM_UPDATED', function(event, data) {
-                fnUpdateRecommendedItem(data);
+                updateRecommendedItem(data);
             }).on('PLAN_ITEM_UPDATED', function(event, data) {
-                fnUpdatePlanItem(data);
+                updatePlanItem(data);
             }).on('UPDATE_NEW_TERM_TOTAL_CREDITS', function(event, data) {
-                fnUpdateCredits(data.atpId, data.totalCredits);
+                updateCredits(data.atpId, data.totalCredits);
             }).on('UPDATE_OLD_TERM_TOTAL_CREDITS', function(event, data) {
-                fnUpdateCredits(data.atpId, data.totalCredits);
+                updateCredits(data.atpId, data.totalCredits);
             });
         "/>
     </bean>
