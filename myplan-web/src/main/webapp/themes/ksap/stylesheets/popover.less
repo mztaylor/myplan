@@ -5,6 +5,22 @@
     }
 }
 
+.popover__header {
+    .bold();
+    border-bottom: @baseBorderStyle;
+    margin: 0 0 @marginDefault 0;
+    padding: 0 0 @paddingMini 0;
+    font-size: @baseFontSize;
+}
+
+.popover__title {
+    display: inline-block;
+    padding: 0 @paddingLarge 0 0;
+    line-height: @fontSizeLarge;
+    .bold();
+    font-size: @baseFontSize;
+}
+
 .popover__infoText {
     font-size: @fontSizeMini;
     color: @textColorLight;
@@ -27,11 +43,48 @@
     top: 0px;
     right: 0px;
 }
+
+.popover__counter {
+    display: block;
+    font-size: @fontSizeTiny;
+    font-style: italic;
+    text-align: right;
+    color: @textColorMin;
+
+    & strong {
+        font-style: normal;
+    }
+}
+
+.popoverForm__radioSet {
+    & input, & label {
+        vertical-align: middle;
+        margin: 0;
+    }
+    & label {
+        margin: 0 0 0 @marginSmall;
+    }
+}
+
+.popoverForm__field {
+    & input, & select, & textarea {
+        width: 100%;
+    }
+}
+
+.popoverForm--indent {
+    margin: @marginDefault 0 0 @marginLarge;
+}
+
 .jquerybubblepopup .jquerybubblepopup-innerHtml {
     word-wrap: break-word;
     overflow-wrap: break-word;
     max-width: 300px;
     min-width: 100px;
+}
+
+.jquerypopover-default .jquerypopover-innerHtml {
+    font-size: @fontSizeSmall;
 }
 
 .jquerypopover-help .jquerypopover-innerHtml,
