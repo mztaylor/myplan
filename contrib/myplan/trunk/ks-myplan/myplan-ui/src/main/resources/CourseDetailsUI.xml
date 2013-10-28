@@ -115,7 +115,7 @@
                     <property name="render" value="@{dataObject.plannedCourseSummary.savedItemId ne null AND dataObject.plannedCourseSummary.plannedList.size() eq 0 AND dataObject.plannedCourseSummary.backupList.size() eq 0 AND dataObject.plannedCourseSummary.academicTerms.size() eq 0}"/>
                     <property name="inlineComponents">
                         <list>
-                            <bean parent="Uif-Link" p:linkText="Bookmarked" p:title="Bookmarked" p:target="" p:cssClasses=""
+                            <bean parent="Uif-Link" p:linkText="Bookmarked" p:title="Bookmarked" p:cssClasses=""
                                   p:href="lookup?methodToCall=search&amp;viewId=SavedCoursesDetail-LookupView"/>
                         </list>
                     </property>

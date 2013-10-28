@@ -117,14 +117,42 @@ button, a {
     color: @textColorLight;
     .normal();
 }
+
 .inlineElement.uif-boxLayoutHorizontalItem {
     display: inline !important;
     float: none;
 }
+
 .removeMargin.uif-boxLayoutHorizontalItem,
 .removeMargin.uif-boxLayoutVerticalItem {
     margin: 0;
 }
+
+.block {
+    display: block;
+}
+
+.blockLink {
+    display: inline-block;
+    float: left;
+    clear: both;
+}
+
+.defaultTopMargin {
+    margin-top: @marginDefault !important;
+}
+
+.smallerLineHeight {
+    line-height: @fontSizeLarge;
+}
+
+.bold {
+    .bold() !important;
+    & > label {
+        .bold() !important;
+    }
+}
+
 .bold() {
     font-weight: 700;
 }
@@ -138,8 +166,3 @@ button, a {
     top: 0px;
     right: 0px;
 }
-
-.block {
-    display: block;
-}
-

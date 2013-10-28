@@ -116,10 +116,10 @@
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#addUpdatePlanItem').on('PLAN_ITEM_ADDED', function(event, data){
                                                                 if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                                                    fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
+                                                                    actionFeedback('actionButtonsGroup', false, null, data.cssClasses, data.message);
                                                                 }
                                                             }).on('ERROR', function(event, data){
-                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
+                                                                actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
                                                             });
                                                         "/>
                                                     </bean>
@@ -128,10 +128,10 @@
                                             </property>
                                         </bean>
                                         <bean parent="errorPlaceholder"/>
+                                        <ref bean="recommendation_info"/>
                                     </list>
                                 </property>
                             </bean>
-                            <ref bean="recommendation_info"/>
                         </list>
                     </property>
                 </bean>
@@ -144,24 +144,16 @@
                         <list>
                             <ref bean="courseTermsScheduled"/>
                             <ref bean="courseTermSelection"/>
-                            <bean parent="KSAP-InfoMessage"
-                                  p:render="@{planActivities ne null AND planActivities.size() gt 0}">
-                                <property name="items">
-                                    <list>
-                                        <bean id="move_sections_info" parent="KSAP-SimpleDataField"
-                                              p:propertyName="this" p:escapeHtmlInPropertyValue="false">
-                                            <property name="propertyEditor" ref="move_planned_sections_formatter"/>
-                                            <property name="onDocumentReadyScript" value="
-                                                jQuery('#move_sections_info').on('PLAN_ITEM_ADDED', function(event, data){
-                                                    jQuery(this).parents().find('.alert.alert-info').fadeOut(250);
-                                                });"/>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>
                             <bean parent="KSAP-VerticalBoxGroup" p:id="actionButtonsGroup">
                                 <property name="items">
                                     <list>
+                                        <bean id="move_sections_info" parent="KSAP-SimpleDataField">
+                                            <property name="propertyName" value="this"/>
+                                            <property name="render" value="@{planActivities ne null AND planActivities.size() gt 0}"/>
+                                            <property name="escapeHtmlInPropertyValue" value="false"/>
+                                            <property name="propertyEditor" ref="move_planned_sections_formatter"/>
+                                            <property name="cssClasses" value="alert alert-info"/>
+                                        </bean>
                                         <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="items">
                                                 <list>
@@ -175,10 +167,10 @@
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#movePlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
                                                                 if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                                                    fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
+                                                                    actionFeedback('actionButtonsGroup', false, null, data.cssClasses, data.message);
                                                                 }
                                                             }).on('ERROR', function(event, data){
-                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true, 'errorPlaceholder');
+                                                                actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
                                                             });
                                                         "/>
                                                     </bean>
@@ -202,36 +194,16 @@
                         <list>
                             <ref bean="courseTermsScheduled"/>
                             <ref bean="courseTermSelection"/>
-                            <bean parent="KSAP-HorizontalBoxGroup"
-                                  p:render="@{planActivities ne null AND planActivities.size() gt 0}">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-status</value>
-                                        <value>info</value>
-                                    </list>
-                                </property>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="MyPlanMessagingIcon"/>
-                                        <bean id="copy_sections_info" parent="KSAP-SimpleDataField"
-                                              p:propertyName="this" p:escapeHtmlInPropertyValue="false">
-                                            <property name="propertyEditor" ref="copy_planned_sections_formatter"/>
-                                            <property name="onDocumentReadyScript" value="
-                                                jQuery('#copy_sections_info').on('PLAN_ITEM_ADDED', function(event, data){
-                                                    jQuery(this).parents().find('.myplan-status.info').fadeOut(250);
-                                                });"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>message</value>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>
                             <bean parent="KSAP-VerticalBoxGroup" p:id="actionButtonsGroup">
                                 <property name="items">
                                     <list>
+                                        <bean id="copy_sections_info" parent="KSAP-SimpleDataField">
+                                            <property name="propertyName" value="this"/>
+                                            <property name="render" value="@{planActivities ne null AND planActivities.size() gt 0}"/>
+                                            <property name="escapeHtmlInPropertyValue" value="false"/>
+                                            <property name="propertyEditor" ref="copy_planned_sections_formatter"/>
+                                            <property name="cssClasses" value="alert alert-info"/>
+                                        </bean>
                                         <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="items">
                                                 <list>
@@ -246,10 +218,10 @@
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#copyPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
                                                                 if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                                                    fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
+                                                                    actionFeedback('actionButtonsGroup', false, null, data.cssClasses, data.message);
                                                                 }
                                                             }).on('ERROR', function(event, data){
-                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true, 'errorPlaceholder');
+                                                                actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
                                                             });
                                                         "/>
                                                     </bean>
@@ -264,10 +236,10 @@
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#copyPastPlannedCourse').on('PLAN_ITEM_ADDED', function(event, data){
                                                                 if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                                                    fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
+                                                                    actionFeedback('actionButtonsGroup', false, null, data.cssClasses, data.message);
                                                                 }
                                                             }).on('ERROR', function(event, data){
-                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true, 'errorPlaceholder');
+                                                                actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
                                                             });
                                                         "/>
                                                     </bean>
@@ -282,10 +254,10 @@
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#copyAcademicCourse').on('PLAN_ITEM_ADDED', function(event, data){
                                                                 if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                                                    fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
+                                                                    actionFeedback('actionButtonsGroup', false, null, data.cssClasses, data.message);
                                                                 }
                                                             }).on('ERROR', function(event, data){
-                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true, 'errorPlaceholder');
+                                                                actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
                                                             });
                                                         "/>
                                                     </bean>
@@ -310,56 +282,43 @@
                               value="Are you sure that you want to delete [b]@{generalPlaceholder EQ null ? courseCd EQ null ?courseSummaryDetails.code:courseCd : placeholderCode}[/b]? Once deleted, you cannot undo."/>
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-HorizontalBoxGroup"
-                                  p:render="@{planActivities ne null AND planActivities.size() gt 0}">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-status</value>
-                                        <value>info</value>
-                                    </list>
-                                </property>
+                            <bean parent="KSAP-VerticalBoxGroup" p:id="actionButtonsGroup">
                                 <property name="items">
                                     <list>
-                                        <bean parent="MyPlanMessagingIcon"/>
-                                        <bean id="delete_sections_info" parent="KSAP-SimpleDataField"
-                                              p:propertyName="this" p:escapeHtmlInPropertyValue="false">
+                                        <bean id="delete_sections_info" parent="KSAP-SimpleDataField">
+                                            <property name="render" value="@{planActivities ne null AND planActivities.size() gt 0}"/>
+                                            <property name="propertyName" value="this"/>
+                                            <property name="escapeHtmlInPropertyValue" value="false"/>
                                             <property name="propertyEditor" ref="delete_planned_sections_formatter"/>
-                                            <property name="onDocumentReadyScript" value="
-                                                jQuery('#delete_sections_info').on('PLAN_ITEM_DELETED', function(event, data){
-                                                    jQuery(this).parents().find('.myplan-status.info').fadeOut(250);
-                                                });"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>message</value>
+                                            <property name="cssClasses" value="alert alert-info defaultTopMargin"/>
+                                        </bean>
+                                        <bean parent="KSAP-HorizontalBoxGroup">
+                                            <property name="items">
+                                                <list>
+                                                    <bean p:id="deletePlannedCourse" parent="KSAP-PrimaryActionButton-Small"
+                                                          p:actionLabel="Delete">
+                                                        <property name="actionScript" value="
+                                                            var additionalFormData = {
+                                                                viewId: 'PlannedCourse-FormView',
+                                                                methodToCall: 'removeItem',
+                                                                planItemId: '@{planItemId}',
+                                                                atpId: '@{atpId}'
+                                                            };
+                                                            submitPopupForm(additionalFormData, e, false);
+                                                        "/>
+                                                        <property name="onDocumentReadyScript" value="
+                                                            jQuery('#deletePlannedCourse').on('PLAN_ITEM_DELETED', function(event, data){
+                                                                actionFeedback('actionButtonsGroup', false, null, data.cssClasses + ' defaultTopMargin', data.message);
+                                                            }).on('ERROR', function(event, data) {
+                                                                actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
+                                                            });
+                                                        "/>
+                                                    </bean>
+                                                    <bean parent="closePopoverCancel"/>
                                                 </list>
                                             </property>
                                         </bean>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="KSAP-HorizontalBoxGroup">
-                                <property name="items">
-                                    <list>
-                                        <bean p:id="deletePlannedCourse" parent="KSAP-PrimaryActionButton-Small"
-                                              p:actionLabel="Delete">
-                                            <property name="actionScript" value="
-                                                var additionalFormData = {
-                                                    viewId: 'PlannedCourse-FormView',
-                                                    methodToCall: 'removeItem',
-                                                    planItemId: '@{planItemId}',
-                                                    atpId: '@{atpId}'
-                                                };
-                                                submitPopupForm(additionalFormData, e, false);
-                                            "/>
-                                            <property name="onDocumentReadyScript" value="
-                                                jQuery('#deletePlannedCourse').on('PLAN_ITEM_DELETED', function(event, data){
-                                                    fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
-                                                }).on('ERROR', function(event, data) {
-                                                    fnDisplayMessage(data.message, data.cssClass, 'deletePlannedCourse', true, true);
-                                                });
-                                            "/>
-                                        </bean>
-                                        <bean parent="closePopoverCancel"/>
+                                        <bean parent="errorPlaceholder"/>
                                     </list>
                                 </property>
                             </bean>
@@ -407,8 +366,8 @@
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#actionCoursePlaceholder').on('PLAN_ITEM_ADDED PLAN_ITEM_UPDATED', function(event, data){
                                                                 fnCloseAllPopups();
-                                                            }).on('ERROR', function(event, data){
-                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
+                                                            }).on('ERROR', function(event, data) {
+                                                                actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
                                                             });
                                                         "/>
                                                     </bean>
@@ -416,7 +375,7 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="KSAP-VerticalBoxGroup" p:id="errorPlaceholder" p:hidden="true"/>
+                                        <bean parent="errorPlaceholder"/>
                                     </list>
                                 </property>
                             </bean>
@@ -432,11 +391,6 @@
                     <property name="items">
                         <list>
                             <bean parent="planItemNote">
-                                <!--<property name="required" value="@{#form.generalPlaceholder EQ 'uw.academicplan.placeholder.other|uw.academicplan.placeholder'}"/>
-                                <property name="fieldLabel.requiredMessagePlacement" value="RIGHT"/>
-                                <property name="fieldLabel.requiredMessage">
-                                    <bean parent="KSAP-Message" p:messageText="(Required)"/>
-                                </property>-->
                                 <property name="label"
                                           value="Notes@{#form.generalPlaceholder EQ 'uw.academicplan.placeholder.other|uw.academicplan.placeholder' ? ' (Required)':''}"/>
                             </bean>
@@ -473,7 +427,7 @@
                                                             jQuery('#actionSaveNote').on('PLAN_ITEM_UPDATED', function(event, data){
                                                                 fnCloseAllPopups();
                                                             }).on('ERROR', function(event, data){
-                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
+                                                                actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
                                                             });
                                                         "/>
                                                     </bean>
@@ -481,7 +435,7 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="KSAP-VerticalBoxGroup" p:id="errorPlaceholder" p:hidden="true"/>
+                                        <bean parent="errorPlaceholder"/>
                                     </list>
                                 </property>
                             </bean>
@@ -524,7 +478,7 @@
                                                             jQuery('#actionRecommendedItem').on('PLAN_ITEM_ADDED', function(event, data){
                                                                 fnCloseAllPopups();
                                                             }).on('ERROR', function(event, data){
-                                                                fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
+                                                                actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
                                                             });
                                                         "/>
                                                     </bean>
@@ -532,7 +486,7 @@
                                                 </list>
                                             </property>
                                         </bean>
-                                        <bean parent="KSAP-VerticalBoxGroup" p:id="errorPlaceholder" p:hidden="true"/>
+                                        <bean parent="errorPlaceholder"/>
                                     </list>
                                 </property>
                             </bean>
@@ -568,29 +522,36 @@
                               value="Are you sure that you want to delete [b]@{generalPlaceholder EQ null ? courseCd EQ null ? courseSummaryDetails.code:courseCd : placeholderCode}[/b] recommendation? Recommendation withdrawal notification will be sent immediately."/>
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-HorizontalBoxGroup">
+                            <bean parent="KSAP-VerticalBoxGroup" p:id="actionButtonsGroup">
                                 <property name="items">
                                     <list>
-                                        <bean p:id="deleteRecommendedItem" parent="KSAP-PrimaryActionButton-Small"
-                                              p:actionLabel="Delete">
-                                            <property name="actionScript" value="
-                                                var additionalFormData = {
-                                                    viewId: 'PlannedCourse-FormView',
-                                                    methodToCall: 'removeRecommendedItem',
-                                                    planItemId: '@{planItemId}',
-                                                    pageId: 'recommended_delete_page'
-                                                };
-                                                submitPopupForm(additionalFormData, e, false);
-                                            "/>
-                                            <property name="onDocumentReadyScript" value="
-                                                jQuery('#deleteRecommendedItem').on('PLAN_ITEM_DELETED', function(event, data){
-                                                    fnDisplayMessage(data.message, data.cssClass, 'deleteRecommendedItem', true, true);
-                                                }).on('ERROR', function(event, data) {
-                                                    fnDisplayMessage(data.message, data.cssClass, 'deleteRecommendedItem', true, true);
-                                                });
-                                            "/>
+                                        <bean parent="KSAP-HorizontalBoxGroup">
+                                            <property name="items">
+                                                <list>
+                                                    <bean p:id="deleteRecommendedItem" parent="KSAP-PrimaryActionButton-Small"
+                                                          p:actionLabel="Delete">
+                                                        <property name="actionScript" value="
+                                                            var additionalFormData = {
+                                                                viewId: 'PlannedCourse-FormView',
+                                                                methodToCall: 'removeRecommendedItem',
+                                                                planItemId: '@{planItemId}',
+                                                                pageId: 'recommended_delete_page'
+                                                            };
+                                                            submitPopupForm(additionalFormData, e, false);
+                                                        "/>
+                                                        <property name="onDocumentReadyScript" value="
+                                                            jQuery('#deleteRecommendedItem').on('PLAN_ITEM_DELETED', function(event, data){
+                                                                actionFeedback('actionButtonsGroup', false, null, data.cssClasses + ' defaultTopMargin', data.message);
+                                                            }).on('ERROR', function(event, data) {
+                                                                actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
+                                                            });
+                                                        "/>
+                                                    </bean>
+                                                    <bean parent="closePopoverCancel"/>
+                                                </list>
+                                            </property>
                                         </bean>
-                                        <bean parent="closePopoverCancel"/>
+                                        <bean parent="errorPlaceholder"/>
                                     </list>
                                 </property>
                             </bean>
@@ -615,28 +576,16 @@
                 <bean id="recommended_item_adviser_note" parent="KSAP-SimpleDataField" p:propertyName="adviserNote">
                     <property name="render" value="@{adviserNote NE '' AND adviserNote NE null AND !setToPlanning}"/>
                     <property name="fieldLabel.render" value="false"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-recommendation-message</value>
-                        </list>
-                    </property>
+                    <property name="cssClasses" value="popover__recommendedMessage popover__recommendedMessage--bubble"/>
                 </bean>
                 <bean id="recommended_item_note" parent="KSAP-SimpleDataField" p:propertyName="note">
                     <property name="render" value="@{note NE '' AND note NE null AND setToPlanning}"/>
                     <property name="fieldLabel.render" value="false"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-recommendation-message</value>
-                        </list>
-                    </property>
+                    <property name="cssClasses" value="popover__recommendedMessage popover__recommendedMessage--bubble"/>
                 </bean>
                 <bean parent="KSAP-Message"
                       p:messageText="@{adviserName} recommended this @{courseSummaryDetails.courseId EQ null ? 'placeholder' : 'course'} on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(dateAdded.toString())}">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-recommendation-meta</value>
-                        </list>
-                    </property>
+                    <property name="cssClasses" value="popover__recommendedData"/>
                 </bean>
                 <bean parent="KSAP-VerticalBoxGroup">
                     <property name="items">
@@ -650,11 +599,11 @@
                                             <property name="render"
                                                       value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND owner}"/>
                                             <property name="actionScript" value="
-                                                                    var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#form.planItemId}', pageId:'recommended_delete_page'};
-                                                                    var popupStyle = {width:'300px', height:'16px'};
-                                                                    var popupOptions = {tail:{hidden:true}, align:'top', close:true};
-                                                                    openPopup('recommended_delete_page', retrieveData, 'plan', popupStyle, popupOptions, e);
-                                                                "/>
+                                                var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#form.planItemId}', pageId:'recommended_delete_page'};
+                                                var popupStyle = {width:'300px', height:'16px'};
+                                                var popupOptions = {tail:{hidden:true}, align:'top', close:true};
+                                                openPopup('recommended_delete_page', retrieveData, 'plan', popupStyle, popupOptions, e);
+                                            "/>
                                         </bean>
                                         <bean parent="addToPlanButton"
                                               p:render="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND !setToPlanning}">
@@ -667,29 +616,29 @@
                                             <property name="render"
                                                       value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND setToPlanning}"/>
                                             <property name="actionScript" value="
-                                                                    var additionalFormData = {
-                                                                        viewId: 'PlannedCourse-FormView',
-                                                                        methodToCall: 'copyPlannedCourse',
-                                                                        recommended: true,
-                                                                        planItemId:'@{#form.planItemId}',
-                                                                        atpId: '@{#form.atpId}',
-                                                                        pageId: 'recommended_dialog_page'
-                                                                    };
-                                                                    submitPopupForm(additionalFormData, e, false);
-                                                                "/>
+                                                var additionalFormData = {
+                                                    viewId: 'PlannedCourse-FormView',
+                                                    methodToCall: 'copyPlannedCourse',
+                                                    recommended: true,
+                                                    planItemId:'@{#form.planItemId}',
+                                                    atpId: '@{#form.atpId}',
+                                                    pageId: 'recommended_dialog_page'
+                                                };
+                                                submitPopupForm(additionalFormData, e, false);
+                                            "/>
                                             <property name="onDocumentReadyScript" value="
-                                                                    jQuery('#acceptRecommendedItem').on('PLAN_ITEM_ADDED', function(event, data){
-                                                                        fnCloseAllPopups();
-                                                                    }).on('ERROR', function(event, data){
-                                                                        fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false,true,'errorPlaceholder');
-                                                                    });
-                                                                "/>
+                                                jQuery('#acceptRecommendedItem').on('PLAN_ITEM_ADDED', function(event, data){
+                                                    fnCloseAllPopups();
+                                                }).on('ERROR', function(event, data){
+                                                    actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
+                                                });
+                                            "/>
                                         </bean>
                                         <bean parent="closePopoverCancel" p:actionLabel="Cancel"/>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-VerticalBoxGroup" p:id="errorPlaceholder" p:hidden="true"/>
+                            <bean parent="errorPlaceholder"/>
                         </list>
                     </property>
                 </bean>
@@ -746,74 +695,46 @@
         </property>
     </bean>
 
-    <bean id="course_summary_messages" parent="KSAP-HorizontalBoxGroup"
-          p:render="@{(plannedCourseSummary.backupList.size() GT 0 OR plannedCourseSummary.plannedList.size() GT 0 OR plannedCourseSummary.savedItemId NE null OR plannedCourseSummary.academicTerms.size() GT 0)}">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-status</value>
-                <value>info</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="MyPlanMessagingIcon"/>
-                <bean parent="KSAP-SimpleDataField" p:propertyName="courseAndPlanSummary"
-                      p:escapeHtmlInPropertyValue="false">
-                    <property name="propertyEditor" ref="crud_message_matrix_formatter"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-data-list</value>
-                            <value>message</value>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
+    <bean id="course_summary_messages" parent="KSAP-SimpleDataField">
+        <property name="render" value="@{(plannedCourseSummary.backupList.size() GT 0 OR plannedCourseSummary.plannedList.size() GT 0 OR plannedCourseSummary.savedItemId NE null OR plannedCourseSummary.academicTerms.size() GT 0)}"/>
+        <property name="propertyName" value="courseAndPlanSummary"/>
+        <property name="escapeHtmlInPropertyValue" value="false"/>
+        <property name="propertyEditor" ref="crud_message_matrix_formatter"/>
+        <property name="cssClasses" value="alert alert-info"/>
     </bean>
 
-    <bean id="course_summary_excluded_recommended_messages" parent="course_summary_messages">
-        <property name="items">
-            <list>
-                <bean parent="MyPlanMessagingIcon"/>
-                <bean parent="KSAP-SimpleDataField" p:propertyName="courseAndPlanSummary"
-                      p:escapeHtmlInPropertyValue="false">
-                    <property name="propertyEditor">
-                        <bean parent="crud_message_matrix_formatter">
-                            <property name="excludeRecommendations" value="true"/>
-                        </bean>
-                    </property>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-data-list</value>
-                            <value>message</value>
-                        </list>
-                    </property>
-                </bean>
-            </list>
+    <bean id="course_summary_excluded_recommended_messages" parent="KSAP-SimpleDataField">
+        <property name="render" value="@{(plannedCourseSummary.backupList.size() GT 0 OR plannedCourseSummary.plannedList.size() GT 0 OR plannedCourseSummary.savedItemId NE null OR plannedCourseSummary.academicTerms.size() GT 0)}"/>
+        <property name="propertyName" value="courseAndPlanSummary"/>
+        <property name="escapeHtmlInPropertyValue" value="false"/>
+        <property name="propertyEditor">
+            <bean parent="crud_message_matrix_formatter">
+                <property name="excludeRecommendations" value="true"/>
+            </bean>
         </property>
+        <property name="cssClasses" value="alert alert-info"/>
     </bean>
 
     <bean id="course_summary_recommended_note" parent="KSAP-VerticalBoxGroup"
           p:render="@{termRecommendation.adviserName NE null}">
         <property name="items">
             <list>
-                <bean parent="KSAP-Message"
-                      p:messageText="@{termRecommendation.adviserName} recommended this course for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termRecommendation.atpId)} on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(termRecommendation.dateAdded)}"/>
+                <bean parent="KSAP-Message">
+                    <property name="messageText" value="@{termRecommendation.adviserName} recommended this course for [0] on @{T(org.kuali.student.myplan.plan.util.DateFormatHelper).getDateFomatted(termRecommendation.dateAdded)}"/>
+                    <property name="inlineComponents">
+                        <list>
+                            <bean parent="Uif-Link" p:linkText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termRecommendation.atpId)}" p:cssClasses="">
+                                <property name="title" value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termRecommendation.atpId)}"/>
+                                <property name="href"
+                                          value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{termRecommendation.atpId}"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
                 <bean parent="KSAP-SimpleDataField" p:propertyName="termRecommendation.note">
                     <property name="render"
                               value="@{termRecommendation.note NE '' AND termRecommendation.note NE null}"/>
-                    <property name="labelPlacement" value="TOP"/>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="fieldLabel.cssClasses">
-                        <list merge="true">
-                            <value>ksap-text-normal</value>
-                        </list>
-                    </property>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-adviser-recommendation</value>
-                        </list>
-                    </property>
+                    <property name="cssClasses" value="popover__recommendedMessage popover__recommendedMessage--dashed"/>
                 </bean>
             </list>
         </property>
@@ -870,7 +791,7 @@
                     <property name="render" value="@{courseSummaryDetails.requisites.size() EQ 0}"/>
                 </bean>
                 <!-- Link to view more details (course details view) -->
-                <bean parent="Uif-Link" p:linkText="View more details" p:cssClasses="block">
+                <bean parent="Uif-Link" p:linkText="View more details" p:cssClasses="blockLink">
                     <property name="title" value="View more details about @{courseSummaryDetails.code}"/>
                     <property name="href"
                               value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseSummaryDetails.courseId}"/>
@@ -904,10 +825,10 @@
                                             <property name="onDocumentReadyScript" value="
                                                 jQuery('#addUpdatePlanItem').on('PLAN_ITEM_ADDED', function(event, data){
                                                     if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                                                         fnDisplayMessage(data.message, data.cssClass, 'actionButtonsGroup', true, false);
+                                                         actionFeedback('actionButtonsGroup', false, null, data.cssClasses, data.message);
                                                     }
                                                 }).on('ERROR', function(event, data){
-                                                    fnDisplayMessage(data.message, data.cssClass, 'errorPlaceholder', true, false, true, 'errorPlaceholder');
+                                                    actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
                                                 });
                                             "/>
                                         </bean>
@@ -928,30 +849,12 @@
         </property>
     </bean>
 
-    <bean id="recommendation_info" parent="KSAP-HorizontalBoxGroup"
-          p:render="@{plannedCourseSummary NE null AND plannedCourseSummary.recommendedItemDataObjects.size() GT 0}"
-          p:style="margin-top: 10px;">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-status</value>
-                <value>info</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="MyPlanMessagingIcon"/>
-                <bean parent="KSAP-SimpleDataField" p:propertyName="coursePlanSummary"
-                      p:escapeHtmlInPropertyValue="false">
-                    <property name="propertyEditor" ref="recommendation_formatter"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-data-list</value>
-                            <value>message</value>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
+    <bean id="recommendation_info" parent="KSAP-SimpleDataField">
+        <property name="render" value="@{plannedCourseSummary NE null AND plannedCourseSummary.recommendedItemDataObjects.size() GT 0}"/>
+        <property name="propertyName" value="coursePlanSummary"/>
+        <property name="escapeHtmlInPropertyValue" value="false"/>
+        <property name="propertyEditor" ref="recommendation_formatter"/>
+        <property name="cssClasses" value="alert alert-info"/>
     </bean>
 
     <!-- Delete from courses list confirmation -->
@@ -967,27 +870,34 @@
                     </property>
                 </bean>
                 <!-- Container for buttons -->
-                <bean parent="KSAP-HorizontalBoxGroup">
+                <bean parent="KSAP-VerticalBoxGroup" p:id="actionButtonsGroup">
                     <property name="items">
                         <list>
-                            <bean p:id="deleteCourseYesButton" parent="KSAP-PrimaryActionButton-Small"
-                                  p:actionLabel="Delete">
-                                <property name="actionScript" value="
-                                    var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'removeItem', courseId:'@{courseSummaryDetails.courseId}'};
-                                    submitPopupForm(additionalFormData, e, false);
-                                "/>
-                                <property name="onDocumentReadyScript" value="
-                                   jQuery('#deleteCourseYesButton').on('PLAN_ITEM_DELETED', function(event, data) {
-                                       fnDisplayMessage(data.message, data.cssClass, 'deleteCourseYesButton', true, true);
-                                   }).on('ERROR', function(event, data) {
-                                       fnDisplayMessage(data.message, data.cssClass, 'deleteCourseYesButton', true, true);
-                                   });"/>
+                            <bean parent="KSAP-HorizontalBoxGroup">
+                                <property name="items">
+                                    <list>
+                                        <bean p:id="deleteCourseYesButton" parent="KSAP-PrimaryActionButton-Small"
+                                              p:actionLabel="Delete">
+                                            <property name="actionScript" value="
+                                                var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'removeItem', courseId:'@{courseSummaryDetails.courseId}'};
+                                                submitPopupForm(additionalFormData, e, false);
+                                            "/>
+                                            <property name="onDocumentReadyScript" value="
+                                               jQuery('#deleteCourseYesButton').on('PLAN_ITEM_DELETED', function(event, data) {
+                                                   actionFeedback('actionButtonsGroup', false, null, data.cssClasses + ' defaultTopMargin', data.message);
+                                               }).on('ERROR', function(event, data) {
+                                                   actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
+                                               });"/>
+                                        </bean>
+                                        <bean p:id="deleteCourseNoButton" parent="KSAP-SecondaryActionButton-Small"
+                                              p:actionLabel="Cancel">
+                                            <property name="actionScript"
+                                                      value="fnPopoverSlider('course_details_info', 'course_popover_group', 'right');"/>
+                                        </bean>
+                                    </list>
+                                </property>
                             </bean>
-                            <bean p:id="deleteCourseNoButton" parent="KSAP-SecondaryActionButton-Small"
-                                  p:actionLabel="Cancel">
-                                <property name="actionScript"
-                                          value="fnPopoverSlider('course_details_info', 'course_popover_group', 'right');"/>
-                            </bean>
+                            <bean parent="errorPlaceholder"/>
                         </list>
                     </property>
                 </bean>
@@ -1017,21 +927,28 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-VerticalBoxGroup" p:style="border-bottom: dotted 1px #cfcfcf;">
+                            <bean parent="KSAP-VerticalBoxGroup" p:cssClasses="popover__groupSeparator">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-Link" p:linkText="Messages (@{messagesCount})">
                                             <property name="href"
                                                       value="lookup?methodToCall=search&amp;viewId=MessagesDetail-LookupView"/>
                                             <property name="render" value="@{messagesCount NE 0}"/>
+                                            <property name="cssClasses" value="blockLink"/>
                                         </bean>
-                                        <bean parent="Uif-MessageField" p:messageText="Messages (0)"
-                                              p:cssClasses="myplan-text-gray">
+                                        <bean parent="Uif-MessageField" p:messageText="Messages (0)">
                                             <property name="render" value="@{messagesCount EQ 0}"/>
+                                            <property name="cssClasses" value="normalLightText blockLink"/>
                                         </bean>
                                         <bean parent="Uif-Link" p:linkText="Bookmarked Courses (@{bookmarkedCount})">
                                             <property name="href"
                                                       value="lookup?methodToCall=search&amp;viewId=SavedCoursesDetail-LookupView"/>
+                                            <property name="render" value="@{bookmarkedCount NE 0}"/>
+                                            <property name="cssClasses" value="blockLink"/>
+                                        </bean>
+                                        <bean parent="Uif-MessageField" p:messageText="Bookmarked Courses (0)">
+                                            <property name="render" value="@{bookmarkedCount EQ 0}"/>
+                                            <property name="cssClasses" value="normalLightText blockLink"/>
                                         </bean>
                                     </list>
                                 </property>
@@ -1049,19 +966,20 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-VerticalBoxGroup" p:style="border-bottom: dotted 1px #cfcfcf;">
+                            <bean parent="KSAP-VerticalBoxGroup" p:cssClasses="popover__groupSeparator">
                                 <property name="items">
                                     <list>
-                                        <bean id="plan_access" parent="Uif-InputField" p:label="MyPlan Settings"
-                                              p:labelPlacement="TOP"
-                                              p:propertyName="enableAdviserView" p:width="auto">
+                                        <bean id="plan_access" parent="KSAP-SimpleInputField" p:label="MyPlan Settings"
+                                              p:propertyName="enableAdviserView">
+                                            <property name="fieldLabel.render" value="true"/>
+                                            <property name="fieldLabel.cssClasses" value="bold block"/>
                                             <property name="instructionalMessage">
-                                                <bean parent="Uif-Message"
-                                                      p:cssClasses="myplan-text-gray fl-font-size-80"
+                                                <bean parent="KSAP-Message" p:cssClasses="tinyLightText"
                                                       p:messageText="&quot;Shared&quot; plans are viewable by all UW advisers. &quot;Private&quot; plans are only viewable by you."/>
                                             </property>
                                             <property name="control">
                                                 <bean parent="Uif-VerticalRadioControl">
+                                                    <property name="fieldsetClasses" value="popoverForm__radioSet"/>
                                                     <property name="onDocumentReadyScript" value="
                                                         jQuery('input[name=enableAdviserView]').on('change', function(e) {
                                                             var form = jQuery('#popupForm');
@@ -1090,10 +1008,12 @@
                                             <property name="href"
                                                       value="http://depts.washington.edu/myplan/help-site/"/>
                                             <property name="target" value="_blank"/>
+                                            <property name="cssClasses" value="blockLink"/>
                                         </bean>
                                         <bean parent="Uif-Link" p:linkText="Log out">
                                             <property name="href"
                                                       value="/@{#ConfigProperties['app.code']}/logout.do"/>
+                                            <property name="cssClasses" value="blockLink"/>
                                         </bean>
                                     </list>
                                 </property>
@@ -1122,7 +1042,7 @@
     <!-- Select control for choosing a term -->
     <bean id="courseTermSelection" parent="KSAP-HorizontalFieldGroup"
           p:label="Quarter &amp; Year" p:labelPlacement="TOP">
-        <property name="fieldLabel.cssClasses" value="myplan-text-normal"/>
+        <property name="fieldLabel.render" value="true"/>
         <property name="items">
             <list>
                 <bean parent="KSAP-SimpleInputField" p:propertyName="atpId"
@@ -1136,12 +1056,7 @@
                 </bean>
                 <bean parent="KSAP-Message" p:width="160px"
                       p:messageText="Note: This course MAY NOT be offered in your selected quarter. Check back after the Time Schedule is released.">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-font-size-80</value>
-                            <value>fl-text-gray</value>
-                        </list>
-                    </property>
+                    <property name="cssClasses" value="tinyLightText smallerLineHeight"/>
                 </bean>
             </list>
         </property>
@@ -1167,7 +1082,6 @@
                       p:label="Mark as [b]'Backup'[/b] course."
                       p:labelPlacement="RIGHT">
                     <property name="fieldLabel.render" value="true"/>
-                    <property name="fieldLabel.cssClasses" value="myplan-text-normal"/>
                     <property name="control">
                         <bean parent="Uif-CheckboxControl"/>
                     </property>
@@ -1326,12 +1240,14 @@
     </bean>
 
     <!-- Placeholder DIV for error messages after submission failure -->
-    <bean id="errorPlaceholder" parent="KSAP-SimpleInputField" p:id="errorPlaceholder" p:hidden="true"
+    <!--<bean id="errorPlaceholder" parent="KSAP-SimpleInputField" p:id="errorPlaceholder" p:hidden="true"
           p:propertyName="courseSummaryDetails.courseId">
         <property name="control">
             <bean parent="Uif-HiddenControl"/>
         </property>
-    </bean>
+    </bean>-->
+
+    <bean id="errorPlaceholder" parent="KSAP-VerticalBoxGroup" p:id="errorPlaceholder" p:hidden="true"/>
 
     <!--
          Popover Action Buttons  *************************************************************************************

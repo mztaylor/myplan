@@ -91,7 +91,7 @@
     <bean id="menuOptionCourseSummary" parent="Uif-ActionLink" p:actionLabel="View Course Summary"
           p:title="View Course Summary">
         <property name="actionScript" value="
-            var backupFlag = (jQuery(this).data('type') == 'backup');
+            var backupFlag = jQuery(this).data('type') == 'backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:jQuery(this).data('courseid'),backup:backupFlag, pageId:'course_summary_dialog_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
@@ -102,7 +102,7 @@
     <bean id="menuOptionPlanItemSummary" parent="Uif-ActionLink" p:actionLabel="View Course Summary"
           p:title="View Course Summary">
         <property name="actionScript" value="
-            var backupFlag = (jQuery(this).data('type') == 'backup');
+            var backupFlag = jQuery(this).data('type') == 'backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'),backup:backupFlag, pageId:'course_summary_dialog_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
@@ -113,7 +113,7 @@
     <bean id="menuOptionEditPlanItemCourse" parent="Uif-ActionLink" p:actionLabel="Edit Course/Note"
           p:title="Edit Course/Note">
         <property name="actionScript" value="
-            var backupFlag = (jQuery(this).data('type') == 'backup');
+            var backupFlag = jQuery(this).data('type') == 'backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'),backup:backupFlag, pageId:'plan_item_add_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
@@ -124,7 +124,7 @@
     <bean id="menuOptionEditPlanItemPlaceholder" parent="Uif-ActionLink" p:actionLabel="Edit Placeholder/Note"
           p:title="Edit Placeholder/Note">
         <property name="actionScript" value="
-            var backupFlag = (jQuery(this).data('type') == 'backup');
+            var backupFlag = jQuery(this).data('type') == 'backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'),backup:backupFlag, pageId:'plan_item_add_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
@@ -157,7 +157,7 @@
     <bean id="menuOptionMove" parent="Uif-ActionLink" p:actionLabel="Move to Another Quarter"
           p:title="Move to Another Quarter">
         <property name="actionScript" value="
-            var backupFlag = (jQuery(this).data('type') == 'backup');
+            var backupFlag = jQuery(this).data('type') == 'backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'), backup:backupFlag, pageId:'move_dialog_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
@@ -168,7 +168,7 @@
     <bean id="menuOptionCopyPlanItem" parent="Uif-ActionLink" p:actionLabel="Copy to Another Quarter"
           p:title="Copy to Another Quarter">
         <property name="actionScript" value="
-            var backupFlag = (jQuery(this).data('type') == 'backup');
+            var backupFlag = jQuery(this).data('type') == 'backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'),backup:backupFlag, pageId:'copy_dialog_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
@@ -179,7 +179,7 @@
     <bean id="menuOptionCopyCourse" parent="Uif-ActionLink" p:actionLabel="Copy to Another Quarter"
           p:title="Copy to Another Quarter">
         <property name="actionScript" value="
-            var backupFlag = (jQuery(this).data('type') == 'backup');
+            var backupFlag = jQuery(this).data('type') == 'backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:jQuery(this).data('courseid'), atpId:jQuery(this).data('atpid'),backup:backupFlag, pageId:'copy_dialog_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
@@ -190,7 +190,7 @@
     <bean id="menuOptionDelete" parent="Uif-ActionLink" p:actionLabel="Delete from Plan"
           p:title="Delete from Plan">
         <property name="actionScript" value="
-            var backupFlag = (jQuery(this).data('type') == 'backup');
+            var backupFlag = jQuery(this).data('type') == 'backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:jQuery(this).data('planitemid'), atpId:jQuery(this).data('atpid'),backup:backupFlag, pageId:'plan_item_delete_page'};
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
@@ -500,7 +500,6 @@
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-Link" p:linkText="@{#line.qtrYear}" p:title="@{#line.qtrYear}"
-                                              p:target=""
                                               p:href="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{#line.atpId}"
                                               p:cssClasses="planYear__termHeader"/>
                                     </list>
@@ -773,16 +772,7 @@
             <bean parent="term_no_courses" p:render="@{!#line.openForPlanning AND #line.recommendedList.size() EQ 0}">
                 <property name="items">
                     <list>
-                        <bean parent="KSAP-Message" p:messageText="No recommendations">
-                            <property name="style"
-                                      value="margin-top:1px; font-size:0.8462em; height:25px; line-height:25px; padding:0 5px; display:block; text-align:center;"/>
-                            <property name="cssClasses">
-                                <list merge="true">
-                                    <value>fl-text-gray</value>
-                                    <value>myplan-text-italic</value>
-                                </list>
-                            </property>
-                        </bean>
+                        <bean parent="KSAP-Message" p:messageText="No recommendations"/>
                     </list>
                 </property>
             </bean>

@@ -288,7 +288,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-LinkField" p:target=""
+                            <bean parent="Uif-LinkField"
                                   p:style="width:418px; overflow:hidden; text-overflow:ellipsis; -o-text-overflow:ellipsis; -ms-text-overflow:ellipsis;">
                                 <property name="linkText"
                                           value="@{#line.courseDetails.code} @{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"/>

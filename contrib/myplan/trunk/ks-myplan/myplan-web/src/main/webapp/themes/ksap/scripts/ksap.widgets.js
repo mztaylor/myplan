@@ -422,7 +422,9 @@ function planItemTemplate(data) {
         "class": "uif-horizontalFieldGroup planItem__action uif-tooltip uif-boxLayoutHorizontalItem" + ((data.note) ? " planItem__action--hasNote":""),
         "data-atpid": data.atpId.replace(/-/g, "."),
         "data-planitemid": data.planItemId,
-        "data-placeholder": data.placeHolder
+        "data-placeholder": data.placeHolder,
+        "data-type": data.planItemType,
+        "data-plannedsections": data.sections
     });
 
     if (data.placeHolder == "true") {
