@@ -530,7 +530,7 @@
                         <list>
                             <bean parent="Uif-Message"
                                   p:messageText="Advisers are unable to add or bookmark courses and sections."/>
-                            <bean parent="Uif-Link" p:target="">
+                            <bean parent="Uif-Link">
                                 <property name="linkText" value="Learn more about Adviser View."/>
                                 <property name="href"
                                           value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
@@ -563,7 +563,7 @@
                         <list>
                             <bean parent="Uif-Message"
                                   p:messageText="Advisers are unable to run degree audits."/>
-                            <bean parent="Uif-Link" p:target="">
+                            <bean parent="Uif-Link">
                                 <property name="linkText" value="Learn more about Adviser View."/>
                                 <property name="href"
                                           value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
@@ -596,7 +596,7 @@
                         <list>
                             <bean parent="Uif-Message"
                                   p:messageText="Advisers are unable to edit bookmarked courses."/>
-                            <bean parent="Uif-Link" p:target="">
+                            <bean parent="Uif-Link">
                                 <property name="linkText" value="Learn more about Adviser View."/>
                                 <property name="href"
                                           value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
@@ -756,6 +756,9 @@
         <property name="scrollpane">
             <null/>
         </property>
+        <property name="cssClasses">
+            <list merge="false"/>
+        </property>
     </bean>
 
     <!-- KSAP Fmpty footer for lookup criteria -->
@@ -777,6 +780,9 @@
         </property>
         <property name="scrollpane">
             <null/>
+        </property>
+        <property name="cssClasses">
+            <list merge="false"/>
         </property>
     </bean>
 
@@ -803,6 +809,11 @@
         </property>
         <property name="group">
             <bean parent="KSAP-HorizontalBoxGroup"/>
+        </property>
+        <property name="cssClasses">
+            <list merge="false">
+                <value>uif-horizontalFieldGroup</value>
+            </list>
         </property>
     </bean>
 

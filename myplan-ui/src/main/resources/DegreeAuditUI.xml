@@ -523,7 +523,7 @@
                         <list>
                             <bean parent="Uif-Message"
                                   p:messageText="Advisers are unable to run degree audits."/>
-                            <bean parent="Uif-Link" p:target="">
+                            <bean parent="Uif-Link">
                                 <property name="linkText" value="Learn more about Adviser View."/>
                                 <property name="href"
                                           value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>

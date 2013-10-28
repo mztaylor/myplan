@@ -212,7 +212,6 @@
         <property name="linkText" value="Back to Plan"/>
         <property name="onClickScript" value="parent.jQuery.fancybox.close(true);"/>
         <property name="href" value="#"/>
-        <property name="target" value=""/>
         <property name="style" value="line-height:18px; margin:4px 0px 4px 10px;"/>
     </bean>
 
