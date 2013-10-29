@@ -1,0 +1,97 @@
+.planTerm__header {
+    font-size: @fontSizeExtraLarge;
+    text-transform: uppercase;
+    padding: @paddingDefault;
+    .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+    border-width: 1px;
+    border-style: solid;
+    border-bottom: none;
+
+    &.planTerm__header--past {
+        #gradient > .vertical(#dedede, #ccc);
+        border-color: #ccc;
+        color: @gray;
+        text-shadow: 0px 1px 0px #fcffff;
+    }
+
+    &.planTerm__header--current {
+        #gradient > .vertical(#5c428e, #3b295f);
+        border-color: #432f69;
+        color: #f9f7f7;
+        text-shadow: 0px 1px 0px #000;
+    }
+
+    &.planTerm__header--future {
+        #gradient > .vertical(#ede1c1, #efd89e);
+        border-color: #dcca9d;
+        color: @gray;
+        text-shadow: 0px 1px 0px #fcffff;
+    }
+}
+
+.planTerm__container {
+    border: @baseBorderStyle;
+    border-top: none;
+    .border-radius(0 0 @baseBorderRadius @baseBorderRadius);
+}
+
+.planContainer__header {
+    border-bottom: @baseBorderStyle;
+    padding: @paddingSmall;
+    #gradient > .vertical(#e7e7e7, #dfdfdf);
+
+    & .planContainer__headerText {
+        vertical-align: middle;
+        display: inline-block;
+    }
+
+    & .planContainer__headerGroup--right {
+        display: inline-block;
+        margin: 0 0 0 @marginSmall;
+        vertical-align: middle;
+        position: relative;
+        top: -1px;
+    }
+}
+
+.planContainer--empty {
+    padding: @paddingLarge;
+    font-style: italic;
+    color: @textColorMin;
+}
+
+.planTerm__creditTotal {
+    padding: @paddingSmall @paddingDefault;
+    background: #f6ebcd;
+    border: @baseBorderStyle;
+    border-left: none;
+    border-right: none;
+    border-top-width: 3px;
+    border-bottom-width: 2px;
+    color: @purple;
+    font-size: 15px;
+
+    & .uif-boxLayoutHorizontalItem {
+        display: inline-block;
+        margin: 0 0 0 @marginDefault;
+        vertical-align: middle;
+        float: none;
+    }
+
+    & .uif-boxLayoutHorizontalItem:first-child {
+        margin: 0;
+    }
+
+    & .planTerm__creditValue {
+        font-size: @fontSizeExtraLarge;
+        .bold();
+        margin: 0 0 0 @marginLarge;
+    }
+
+    & .uif-tooltip {
+        position: relative;
+        top: -2px;
+    }
+}
+
+

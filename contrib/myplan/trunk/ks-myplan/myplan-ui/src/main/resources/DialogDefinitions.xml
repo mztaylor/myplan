@@ -575,12 +575,10 @@
                       p:render="@{courseSummaryDetails.courseId EQ null AND credit NE null}"/>
                 <bean id="recommended_item_adviser_note" parent="KSAP-SimpleDataField" p:propertyName="adviserNote">
                     <property name="render" value="@{adviserNote NE '' AND adviserNote NE null AND !setToPlanning}"/>
-                    <property name="fieldLabel.render" value="false"/>
                     <property name="cssClasses" value="popover__recommendedMessage popover__recommendedMessage--bubble"/>
                 </bean>
                 <bean id="recommended_item_note" parent="KSAP-SimpleDataField" p:propertyName="note">
                     <property name="render" value="@{note NE '' AND note NE null AND setToPlanning}"/>
-                    <property name="fieldLabel.render" value="false"/>
                     <property name="cssClasses" value="popover__recommendedMessage popover__recommendedMessage--bubble"/>
                 </bean>
                 <bean parent="KSAP-Message"
@@ -750,9 +748,8 @@
                 <bean parent="KSAP-SimpleDataField" p:label="Last Offered"
                       p:propertyName="courseSummaryDetails.lastOffered">
                     <property name="fieldLabel">
-                        <bean parent="Uif-Label"/>
+                        <bean parent="Uif-Label" p:cssClasses="normalLightText"/>
                     </property>
-                    <property name="fieldLabel.cssClasses" value="normalLightText"/>
                     <property name="render"
                               value="@{courseSummaryDetails.lastOffered NE null AND courseSummaryDetails.scheduledTerms.size() EQ 0}"/>
                 </bean>
@@ -761,16 +758,14 @@
                       p:propertyName="courseSummaryDetails.termsOffered"
                       p:escapeHtmlInPropertyValue="false">
                     <property name="fieldLabel">
-                        <bean parent="Uif-Label"/>
+                        <bean parent="Uif-Label" p:cssClasses="normalLightText"/>
                     </property>
-                    <property name="fieldLabel.cssClasses" value="normalLightText"/>
                     <property name="render" value="@{courseSummaryDetails.termsOffered.size() GT 0}"/>
                 </bean>
                 <bean parent="KSAP-MessageField" p:label="Projected for">
                     <property name="fieldLabel">
-                        <bean parent="Uif-Label"/>
+                        <bean parent="Uif-Label" p:cssClasses="normalLightText"/>
                     </property>
-                    <property name="fieldLabel.cssClasses" value="normalLightText"/>
                     <property name="messageText"
                               value="Check with the department or your adviser for more information about this course."/>
                     <property name="render" value="@{courseSummaryDetails.termsOffered.size() EQ 0}"/>
@@ -784,9 +779,8 @@
                 </bean>
                 <bean parent="KSAP-MessageField" p:label="Course Requisites">
                     <property name="fieldLabel">
-                        <bean parent="Uif-Label"/>
+                        <bean parent="Uif-Label" p:cssClasses="normalLightText"/>
                     </property>
-                    <property name="fieldLabel.cssClasses" value="normalLightText"/>
                     <property name="messageText" value="None"/>
                     <property name="render" value="@{courseSummaryDetails.requisites.size() EQ 0}"/>
                 </bean>
@@ -804,6 +798,11 @@
     <bean id="add_planned_course_fields" parent="KSAP-VerticalBoxGroup" p:width="300px" p:hidden="true">
         <property name="instructionalText"
                   value="Which quarter would you like to add [b]@{courseSummaryDetails.code NE null ? courseSummaryDetails.code : courseCd NE null ? courseCd : placeholderCode}[/b] to?"/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>removeMargin</value>
+            </list>
+        </property>
         <property name="items">
             <list>
                 <bean parent="courseTermsScheduled" p:render="@{courseSummaryDetails.code NE null}"/>
@@ -861,6 +860,11 @@
     <bean id="delete_from_list_confirmation" parent="KSAP-VerticalBoxGroup" p:hidden="true" p:width="300px">
         <property name="instructionalText"
                   value="Are you sure that you want to delete [b]@{generalPlaceholder EQ null ? courseSummaryDetails.code : generalPlaceholder}[/b] from the Bookmarked Courses list? Once deleted, you cannot undo."/>
+        <property name="cssClasses">
+            <list merge="true">
+                <value>removeMargin</value>
+            </list>
+        </property>
         <property name="items">
             <list>
                 <bean parent="KSAP-SimpleInputField" p:propertyName="planItemId"
@@ -1066,9 +1070,8 @@
     <bean id="courseTermsScheduled" parent="KSAP-SimpleDataField" p:label="Scheduled For"
           p:propertyName="courseSummaryDetails" p:render="@{courseSummaryDetails NE null}">
         <property name="fieldLabel">
-            <bean parent="Uif-Label"/>
+            <bean parent="Uif-Label" p:cssClasses="normalLightText"/>
         </property>
-        <property name="fieldLabel.cssClasses" value="normalLightText"/>
         <property name="escapeHtmlInPropertyValue" value="false"/>
         <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
         <property name="cssClasses" value="termBadge"/>
@@ -1079,7 +1082,7 @@
         <property name="items">
             <list>
                 <bean id="checkbox_backup" parent="KSAP-SimpleInputField" p:propertyName="backup" p:defaultValue="false"
-                      p:label="Mark as [b]'Backup'[/b] course."
+                      p:label="Mark as [b]'Backup'[/b] course." p:cssClasses="popoverForm__alignElements"
                       p:labelPlacement="RIGHT">
                     <property name="fieldLabel.render" value="true"/>
                     <property name="control">
@@ -1193,7 +1196,7 @@
         <property name="control">
             <bean parent="Uif-TextAreaControl"
                   p:watermarkText="Enter a short note (500 characters max)" p:maxLength="500"
-                  p:style="resize:none; width:97%">
+                  p:style="resize:none; width:95%">
                 <property name="cssClasses" value="popover__characterCount"/>
             </bean>
         </property>
@@ -1261,11 +1264,7 @@
                   value="fnPopoverSlider('add_planned_course_fields', 'course_popover_group', 'left');"/>
         <property name="actionImage">
             <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif">
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>rightArrowSmall</value>
-                    </list>
-                </property>
+                <property name="cssClasses" value="rightArrowSmall"/>
             </bean>
         </property>
     </bean>
