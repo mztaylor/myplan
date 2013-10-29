@@ -1032,10 +1032,9 @@
     <bean id="term_total_credits" parent="KSAP-HorizontalBoxGroup" p:cssClasses="planYear__creditTotal">
         <property name="items">
             <list>
-                <bean parent="KSAP-MessageField" p:messageText="Credits" p:cssClasses=""/>
+                <bean parent="KSAP-Message" p:messageText="Credits" p:cssClasses=""/>
                 <bean parent="total_credits_help_icon"/>
-                <bean parent="KSAP-MessageField"
-                      p:messageText="@{#line.credits ne null ? #line.credits : '0'}">
+                <bean parent="KSAP-Message" p:messageText="@{#line.credits ne null ? #line.credits : '0'}">
                     <property name="cssClasses" value="planYear__creditValue"/>
                 </bean>
             </list>

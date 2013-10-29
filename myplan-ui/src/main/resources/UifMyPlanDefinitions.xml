@@ -782,7 +782,9 @@
             <null/>
         </property>
         <property name="cssClasses">
-            <list merge="false"/>
+            <list merge="false">
+                <value>uif-horizontalBoxGroup</value>
+            </list>
         </property>
     </bean>
 
