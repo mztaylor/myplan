@@ -55,7 +55,9 @@ public class CourseSectionDetailsLayoutManager extends TableLayoutManager {
 
             StringBuilder r2css = new StringBuilder();
             if (!aoi.isPrimary()) {
-                r2css.append("collapsible");
+                r2css.append("collapsible collapsible--secondary");
+            } else {
+                r2css.append("collapsible collapsible--primary");
             }
 
             if (offered) {

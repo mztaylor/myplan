@@ -724,9 +724,9 @@
                 <bean parent="activityCode" p:rowSpan="1" p:valign="@{#line.stateKey EQ 'active' ? 'TOP':'MIDDLE'}">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-SimpleDataField"
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="code" p:label="Section"
                                   p:id="@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
-                                  p:propertyName="code" p:label="Section">
+                                  p:cssClasses="courseActivities__code--secondary">
                             </bean>
                             <bean parent="KSAP-Message">
                                 <property name="messageText" value="PCE"/>
