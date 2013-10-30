@@ -1,3 +1,10 @@
+.planTerm {
+    & .courseActivities__table {
+        border: none;
+        margin: 0;
+    }
+}
+
 .planTerm__header {
     font-size: @fontSizeExtraLarge;
     text-transform: uppercase;
@@ -94,4 +101,39 @@
     }
 }
 
+.planTerm--unlocked {
+    background-image: url('../images/icon_unlocked.png');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
 
+.planTerm--locked {
+    background-image: url('../images/icon_locked.png');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+
+.planTerm__item {
+    border-top: @baseBorderStyle;
+    border-top-width: 3px;
+    &:first-child {
+        border-top: none;
+    }
+    & .uif-subCollection.uif-boxLayoutVerticalItem {
+        margin: 0;
+    }
+}
+
+.termPlanItem {
+    padding: @paddingSmall;
+}
+
+.termPlanItem__actions {
+    margin: 0 0 0 @marginLarge !important;
+    font-size: @fontSizeMini;
+    float: right !important;
+    & .uif-boxLayoutHorizontalItem {
+        float: none;
+        margin: 0;
+    }
+}

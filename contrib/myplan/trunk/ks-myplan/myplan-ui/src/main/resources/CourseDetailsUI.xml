@@ -1008,6 +1008,7 @@
 
     <bean id="activityActionButton" parent="section_button">
         <property name="cssClasses" value="courseActivities__itemAdd"/>
+        <property name="title" value="Add"/>
         <property name="actionScript" value="
             var additionalFormData = {
                 viewId: 'PlannedCourse-FormView',

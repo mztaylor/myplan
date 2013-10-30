@@ -34,11 +34,6 @@
         <property name="viewHelperServiceClass"
                   value="org.kuali.student.myplan.audit.service.DegreeAuditsLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-view</value>
-            </list>
-        </property>
         <property name="criteriaFields">
             <list/>
         </property>
@@ -134,24 +129,8 @@
         <property name="viewName" value="DegreeAudit-FormView"/>
         <property name="id" value="DegreeAudit-FormView"/>
         <property name="entryPageId" value="degree_audit"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-view</value>
-            </list>
-        </property>
         <property name="header">
             <bean parent="Uif-ViewHeader" p:headerLevel="h2"/>
-        </property>
-
-        <property name="additionalScriptFiles">
-            <list>
-                <value>ks-myplan/scripts/myplan.audit.js?@{#ConfigProperties['myplan.buildNumber']}</value>
-            </list>
-        </property>
-        <property name="additionalCssFiles">
-            <list>
-                <value>ks-myplan/css/audit.css?@{#ConfigProperties['myplan.buildNumber']}</value>
-            </list>
         </property>
         <property name="items">
             <list>
