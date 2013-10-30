@@ -477,7 +477,7 @@
         <property name="header.render" value="false"/>
         <property name="items">
             <list>
-                <bean p:id="@{degreeAudit.auditId}" parent="KSAP-Message" p:messageText="@{degreeAudit.auditHtml}"
+                <bean p:id="@{degreeAudit.auditId NE null ? degreeAudit.auditId : 'empty_degree_audit_html'}" parent="KSAP-Message" p:messageText="@{degreeAudit.auditHtml}"
                       p:style="display:block;" p:cssClasses="degreeAudit auditHtml"/>
             </list>
         </property>
