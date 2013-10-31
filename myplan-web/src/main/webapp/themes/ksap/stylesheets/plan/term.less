@@ -5,6 +5,9 @@
         & .collapsible {
             display: none;
         }
+        & .courseActivities--primary td, .courseActivities--secondary td {
+            border-top: @baseBorderStyle;
+        }
     }
 }
 
@@ -15,7 +18,6 @@
     .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
     border-width: 1px;
     border-style: solid;
-    border-bottom: none;
 
     &.planTerm__header--past {
         #gradient > .vertical(#dedede, #ccc);
@@ -61,6 +63,17 @@
         vertical-align: middle;
         position: relative;
         top: -1px;
+    }
+}
+
+.planContainer--recommended {
+    & .planContainer__header {
+        #gradient > .vertical(#d5edd5, #c7e1c7);
+        border-top: solid 1px #cce6cc;
+        border-bottom: solid 1px #c6dec7;
+        & .planContainer__headerText {
+            color: #899b8b;
+        }
     }
 }
 
@@ -127,6 +140,26 @@
     }
 }
 
+.planTerm__item--placeholder {
+    & .termPlanItem__title, & .termPlanItem__credit {
+        font-style: italic;
+        font-family: @altSerifFontFamily;
+        color: @gray;
+    }
+}
+
+.planTerm__item--recommendedProposed {
+    & .termPlanItem__code, &.planTerm__item--placeholder .termPlanItem__title {
+        .bold();
+    }
+}
+
+.planTerm__item--recommendedAccepted {
+    & .termPlanItem__code, &.planTerm__item--placeholder .termPlanItem__title {
+        color: @green;
+    }
+}
+
 .termPlanItem {
     padding: @paddingSmall;
 }
@@ -138,5 +171,41 @@
     & .uif-boxLayoutHorizontalItem {
         float: none;
         margin: 0;
+    }
+}
+
+.termPlanItem__alert {
+    .planItem__alert;
+    left: auto;
+    top: auto;
+    position: relative;
+    & img {
+        position: relative;
+        top: -2px
+    }
+}
+
+.termPlanItem__note {
+    .planItem__note;
+    right: auto;
+    top: auto;
+    position: relative;
+    & img {
+        position: relative;
+        top: -2px
+    }
+    &.uif-boxLayoutHorizontalItem {
+        margin: 0 0 0 @marginDefault;
+    }
+}
+
+.planContainer--recommended {
+    & .termPlanItem__note {
+        width: 16px;
+        & img {
+            width: 16px;
+            height: 16px;
+            background-position: -37px -181px;
+        }
     }
 }

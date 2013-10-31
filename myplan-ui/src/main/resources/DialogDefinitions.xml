@@ -283,6 +283,7 @@
                     <property name="items">
                         <list>
                             <bean parent="KSAP-VerticalBoxGroup" p:id="actionButtonsGroup">
+                                <property name="cssClasses" value="defaultTopMargin"/>
                                 <property name="items">
                                     <list>
                                         <bean id="delete_sections_info" parent="KSAP-SimpleDataField">
@@ -290,7 +291,7 @@
                                             <property name="propertyName" value="this"/>
                                             <property name="escapeHtmlInPropertyValue" value="false"/>
                                             <property name="propertyEditor" ref="delete_planned_sections_formatter"/>
-                                            <property name="cssClasses" value="alert alert-info defaultTopMargin"/>
+                                            <property name="cssClasses" value="alert alert-info"/>
                                         </bean>
                                         <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="items">
@@ -308,7 +309,7 @@
                                                         "/>
                                                         <property name="onDocumentReadyScript" value="
                                                             jQuery('#deletePlannedCourse').on('PLAN_ITEM_DELETED', function(event, data){
-                                                                actionFeedback('actionButtonsGroup', false, null, data.cssClasses + ' defaultTopMargin', data.message);
+                                                                actionFeedback('actionButtonsGroup', false, null, data.cssClasses, data.message);
                                                             }).on('ERROR', function(event, data) {
                                                                 actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
                                                             });
