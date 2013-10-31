@@ -40,56 +40,43 @@
                                     <bean parent="KSAP-HorizontalBoxGroup">
                                         <property name="items">
                                             <list>
-                                                <bean parent="KSAP-HorizontalBoxGroup" p:width="72px">
-                                                    <property name="items">
-                                                        <list>
-                                                            <bean id="previous_year_button" parent="Uif-Link"
-                                                                  p:title="Previous Quarter">
-                                                                <property name="linkText"
-                                                                          value="&lt;img src=&quot;../themes/ksap/images/pixel.gif&quot; class=&quot;planNavigation__image&quot; /&gt;"/>
-                                                                <property name="href"
-                                                                          value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}"/>
-                                                                <property name="cssClasses"
-                                                                          value="btn btn-secondary planNavigation__button planNavigation__button--previous"/>
-                                                            </bean>
-                                                            <bean id="next_year_button" parent="Uif-Link"
-                                                                  p:title="Next Quarter">
-                                                                <property name="linkText"
-                                                                          value="&lt;img src=&quot;../themes/ksap/images/pixel.gif&quot; class=&quot;planNavigation__image&quot; /&gt;"/>
-                                                                <property name="href"
-                                                                          value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}"/>
-                                                                <property name="cssClasses"
-                                                                          value="btn btn-secondary planNavigation__button planNavigation__button--next"/>
-                                                            </bean>
-                                                        </list>
-                                                    </property>
+                                                <bean id="previous_year_button" parent="Uif-LinkField"
+                                                      p:title="Previous Quarter" p:width="9px">
+                                                    <property name="linkText"
+                                                              value="&lt;img src=&quot;../themes/ksap/images/pixel.gif&quot; class=&quot;planNavigation__image&quot; /&gt;"/>
+                                                    <property name="href"
+                                                              value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}"/>
+                                                    <property name="cssClasses"
+                                                              value="btn btn-secondary planNavigation__button planNavigation__button--previous"/>
+                                                </bean>
+                                                <bean id="next_year_button" parent="Uif-LinkField"
+                                                      p:title="Next Quarter" p:width="9px">
+                                                    <property name="linkText"
+                                                              value="&lt;img src=&quot;../themes/ksap/images/pixel.gif&quot; class=&quot;planNavigation__image&quot; /&gt;"/>
+                                                    <property name="href"
+                                                              value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}"/>
+                                                    <property name="cssClasses"
+                                                              value="btn btn-secondary planNavigation__button planNavigation__button--next"/>
                                                 </bean>
                                                 <bean parent="KSAP-HeaderTwo" p:headerText="@{dataObject.qtrYear}"
                                                       p:width="506px"
                                                       p:cssClasses="planNavigation__header removeMargin"/>
-                                                <bean parent="KSAP-HorizontalBoxGroup" p:width="132px"
-                                                      p:cssClasses="removeMargin">
-                                                    <property name="items">
-                                                        <list>
-                                                            <bean id="term_button" parent="Uif-Link">
-                                                                <property name="linkText" value="Quarter"/>
-                                                                <property name="title" value="Quarter"/>
-                                                                <property name="href" value="#"/>
-                                                                <property name="onClickScript"
-                                                                          value="e.preventDefault();"/>
-                                                                <property name="cssClasses"
-                                                                          value="btn btn-secondary planNavigation__button planNavigation__button--first active"/>
-                                                            </bean>
-                                                            <bean id="one_year_button" parent="Uif-Link">
-                                                                <property name="linkText" value="1 Year"/>
-                                                                <property name="title" value="1 Year"/>
-                                                                <property name="href"
-                                                                          value="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView&amp;focusAtpId=@{dataObject.atpId}"/>
-                                                                <property name="cssClasses"
-                                                                          value="btn btn-secondary planNavigation__button planNavigation__button--last"/>
-                                                            </bean>
-                                                        </list>
-                                                    </property>
+                                                <bean id="term_button" parent="Uif-Link" p:width="45px">
+                                                    <property name="linkText" value="Quarter"/>
+                                                    <property name="title" value="Quarter"/>
+                                                    <property name="href" value="#"/>
+                                                    <property name="onClickScript"
+                                                              value="e.preventDefault();"/>
+                                                    <property name="cssClasses"
+                                                              value="btn btn-secondary planNavigation__button planNavigation__button--first active"/>
+                                                </bean>
+                                                <bean id="one_year_button" parent="Uif-Link" p:width="34px">
+                                                    <property name="linkText" value="1 Year"/>
+                                                    <property name="title" value="1 Year"/>
+                                                    <property name="href"
+                                                              value="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView&amp;focusAtpId=@{dataObject.atpId}"/>
+                                                    <property name="cssClasses"
+                                                              value="btn btn-secondary planNavigation__button planNavigation__button--last"/>
                                                 </bean>
                                             </list>
                                         </property>
@@ -169,7 +156,7 @@
                 }
             }).on('PLAN_ITEM_ADDED PLAN_ITEM_DELETED RECOMMENDED_ITEM_UPDATED', function(event, data) {
                 if (data.atpId == '@{dataObject.atpId.replaceAll('\.','-')}' &amp;&amp; data.planItemType != 'wishlist') {
-                    customRetrieveComponent(data.atpId + '_' + data.planItemType, data.atpId + '_' + data.planItemType, 'start', 'inquiry', {viewId:'SingleTerm-InquiryView', term_atp_id:'@{dataObject.atpId}'}, null, {css:{top:'1px',left:'1px',border:'none',background:'none'},overlayCSS:{backgroundColor: '#fff'}});
+                    customRetrieveComponent(data.atpId + '_' + data.planItemType, data.atpId + '_' + data.planItemType, 'start', 'inquiry', {viewId:'SingleTerm-InquiryView', term_atp_id:'@{dataObject.atpId}'}, null, {css:{top:'1px',left:'1px',border:'none',background:'none'},overlayCSS:{backgroundColor: '#fff',opacity: 0.5}});
                 }
             }).on('PLAN_ITEM_UPDATED', function(event, data) {
                 updateNote(data);
@@ -847,13 +834,7 @@
             };
             submitHiddenForm('plan', additionalFormData, e);
         "/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>activityAction</value>
-                <value>myplan-delete</value>
-                <value>fl-text-align-center</value>
-            </list>
-        </property>
+        <property name="cssClasses" value="courseActivities__itemDelete"/>
         <property name="dataAttributes">
             <map merge="true">
                 <entry key="initial" value="true"/>
@@ -869,7 +850,7 @@
         </property>
     </bean>
 
-    <bean id="termSectionsToggle" p:id="@{#line.courseDetails.courseId}_toggle" parent="Uif-ActionLink"
+    <bean id="termSectionsToggle" p:id="@{#line.courseDetails.courseId}_toggle" parent="Uif-ActionLink" p:cssClasses="inlineBlock"
           p:actionLabel="Show all scheduled sections">
         <property name="actionScript"
                   value="
@@ -884,7 +865,7 @@
         </property>
     </bean>
 
-    <bean id="termMoveCourse" parent="Uif-ActionLink" p:actionLabel="Move">
+    <bean id="termMoveCourse" parent="Uif-ActionLink" p:actionLabel="Move" p:cssClasses="inlineBlock">
         <property name="actionScript" value="
             var backupFlag = '@{#line.planItemDataObject.type}'=='backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', backup:backupFlag, pageId:'move_dialog_page'};
@@ -894,7 +875,7 @@
         "/>
     </bean>
 
-    <bean id="termCopyCourse" parent="Uif-ActionLink" p:actionLabel="Copy">
+    <bean id="termCopyCourse" parent="Uif-ActionLink" p:actionLabel="Copy" p:cssClasses="inlineBlock">
         <property name="actionScript" value="
             var backupFlag = '@{#line.planItemDataObject.type}'=='backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', backup:backupFlag, pageId:'copy_dialog_page'};
@@ -904,7 +885,7 @@
         "/>
     </bean>
 
-    <bean id="termDeleteCourse" parent="Uif-ActionLink" p:actionLabel="Delete">
+    <bean id="termDeleteCourse" parent="Uif-ActionLink" p:actionLabel="Delete" p:cssClasses="inlineBlock">
         <property name="actionScript" value="
             var backupFlag = '@{#line.planItemDataObject.type}'=='backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', backup:backupFlag, pageId:'plan_item_delete_page'};
@@ -914,7 +895,7 @@
         "/>
     </bean>
 
-    <bean id="termAddRecommended" parent="Uif-ActionLink" p:actionLabel="Add to Plan">
+    <bean id="termAddRecommended" parent="Uif-ActionLink" p:actionLabel="Add to Plan" p:cssClasses="inlineBlock">
         <property name="actionScript" value="
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', pageId:'recommended_dialog_page'};
             if (!@{#line.placeHolder}) retrieveData.courseId = '@{#line.courseDetails.courseId}';
@@ -945,9 +926,16 @@
         <property name="cssClasses" value="termPlanItem__title ellipsisItem"/>
     </bean>
 
-    <bean id="termItemPlaceholderCode" parent="KSAP-MessageField"
-          p:messageText="@{#line.placeHolderCode} '@{#line.placeHolderValue}'">
-        <property name="render" value="@{#line.placeHolder}"/>
+    <bean id="termItemPlaceholderCode" parent="KSAP-MessageField">
+        <property name="render" value="@{#line.placeHolder AND #line.placeHolderCode EQ #line.placeHolderValue}"/>
+        <property name="messageText" value="@{#line.placeHolderCode}"/>
+        <property name="title" value="@{#line.placeHolderCode}"/>
+        <property name="cssClasses" value="termPlanItem__title ellipsisItem"/>
+    </bean>
+
+    <bean id="termItemPlaceholderCodeTitle" parent="KSAP-MessageField">
+        <property name="render" value="@{#line.placeHolder AND #line.placeHolderCode NE #line.placeHolderValue}"/>
+        <property name="messageText" value="@{#line.placeHolderCode} '@{#line.placeHolderValue}'"/>
         <property name="title" value="@{#line.placeHolderCode} '@{#line.placeHolderValue}'"/>
         <property name="cssClasses" value="termPlanItem__title ellipsisItem"/>
     </bean>
@@ -968,8 +956,9 @@
                 <bean parent="termItemCourseCode"/>
                 <bean parent="termItemCourseLink"/>
                 <bean parent="termItemPlaceholderCode"/>
+                <bean parent="termItemPlaceholderCodeTitle"/>
                 <bean parent="termItemCredit"/>
-                <bean parent="planItemNoteIcon"/>
+                <bean parent="planItemNoteIcon" p:cssClasses="termPlanItem__note"/>
                 <!-- Past quarters OR Current Quarter and no Time Schedule OR Time Schedule Open and NOT Scheduled -->
                 <bean parent="termStudentActions">
                     <property name="render"
@@ -1006,6 +995,7 @@
                 </bean>
                 <!--For Advisers only-->
                 <bean parent="termSectionsToggle">
+                    <property name="cssClasses" value="termPlanItem__actions"/>
                     <property name="render"
                               value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.timeScheduleOpen AND #line.sectionsAvailable}"/>
                 </bean>
@@ -1020,8 +1010,9 @@
                 <bean parent="termItemCourseCode"/>
                 <bean parent="termItemCourseLink"/>
                 <bean parent="termItemPlaceholderCode"/>
+                <bean parent="termItemPlaceholderCodeTitle"/>
                 <bean parent="termItemCredit"/>
-                <bean parent="planItemNoteIcon">
+                <bean parent="planItemNoteIcon" p:cssClasses="termPlanItem__note">
                     <property name="propertyReplacers">
                         <list/>
                     </property>
@@ -1039,6 +1030,7 @@
                     </property>
                 </bean>
                 <bean parent="termAddRecommended">
+                    <property name="cssClasses" value="termPlanItem__actions"/>
                     <property name="render"
                               value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.proposed}"/>
                 </bean>
