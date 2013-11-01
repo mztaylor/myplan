@@ -414,28 +414,29 @@
     </bean>
 
     <bean id="KSAP-MessagesList" parent="KSAP-Module" p:headerText="Messages" p:id="KSAP-MessagesList">
+        <property name="header.render" value="false"/>
         <property name="onDocumentReadyScript" value="
-            customRetrieveComponent('KSAP-MessagesList','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
+            customRetrieveComponent('KSAP-MessagesList','messages_summary','search','lookup',{viewId:'MessagesSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
         "/>
     </bean>
 
 
     <bean id="KSAP-BookmarkList" parent="KSAP-Module" p:headerText="Bookmarked Courses" p:id="KSAP-BookmarkList">
         <property name="onDocumentReadyScript" value="
-            customRetrieveComponent('KSAP-BookmarkList','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
+            customRetrieveComponent('KSAP-BookmarkList','saved_courses_summary','search','lookup',{viewId:'SavedCoursesSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
         "/>
     </bean>
 
     <bean id="KSAP-DegreeAuditList" parent="KSAP-Module" p:headerText="Recent Degree Audits (DARS)"
           p:id="KSAP-DegreeAuditList">
         <property name="onDocumentReadyScript" value="
-            customRetrieveComponent('KSAP-DegreeAuditList','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
+            customRetrieveComponent('KSAP-DegreeAuditList','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
         "/>
     </bean>
 
     <bean id="KSAP-PlanAuditList" parent="KSAP-Module" p:headerText="Recent Plan Audits" p:id="KSAP-PlanAuditList">
         <property name="onDocumentReadyScript" value="
-            customRetrieveComponent('KSAP-PlanAuditList','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
+            customRetrieveComponent('KSAP-PlanAuditList','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
         "/>
     </bean>
 

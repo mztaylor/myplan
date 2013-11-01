@@ -128,6 +128,8 @@ function ksapAjaxSubmitForm(data, successCallback, elementToBlock, formId, block
                         css: {
                             border: 'none',
                             width: '16px',
+                            height: '16px',
+                            lineHeight: '16px',
                             top: '0px',
                             left: '0px'
                         }

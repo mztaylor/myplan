@@ -572,31 +572,21 @@
             });
         "/>
         <property name="header">
-            <bean parent="Uif-HeaderBase" p:cssClasses="" p:headerText="">
-                <property name="lowerGroup">
-                    <bean parent="KSAP-VerticalBoxGroup">
-                        <property name="cssClasses">
-                            <list merge="true">
-                                <value>ksap-defaultPadding</value>
-                            </list>
-                        </property>
-                        <property name="items">
-                            <list>
-                                <bean id="leave_message_button" parent="KSAP-PrimaryActionButton-Small"
-                                      p:actionLabel="Leave a Message">
-                                    <property name="cssClasses">
-                                        <list merge="true">
-                                            <value>ksap-noMargin</value>
-                                        </list>
-                                    </property>
-                                    <property name="actionScript" value=""/>
-                                    <property name="onDocumentReadyScript" value="
-                                        myplanCreateLightBoxLink('leave_message_button', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page&amp;renderedInLightBox=true'});
-                                    "/>
-                                </bean>
-                            </list>
-                        </property>
-                    </bean>
+            <bean parent="KSAP-HeaderBase" p:headerText="Messages" p:hidden="true"/>
+        </property>
+        <property name="header.lowerGroup">
+            <bean parent="KSAP-VerticalBoxGroup" p:cssClasses="messagesSummary__headerGroup--lower">
+                <property name="layoutManager.cssClasses" value="center"/>
+                <property name="items">
+                    <list>
+                        <bean id="leave_message_button" parent="KSAP-PrimaryActionButton-Small"
+                              p:actionLabel="Leave a Message">
+                            <property name="actionScript" value=""/>
+                            <property name="onDocumentReadyScript" value="
+                                myplanCreateLightBoxLink('leave_message_button', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page&amp;renderedInLightBox=true'});
+                            "/>
+                        </bean>
+                    </list>
                 </property>
             </bean>
         </property>
