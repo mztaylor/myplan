@@ -400,7 +400,7 @@ function planItemTemplate(data) {
 
     var item = jQuery("<div/>").attr({
         "id": itemId + "-group",
-        "class": "planItem"
+        "class": "planItem" + ((data.adviserRecommended == "true") ? " planItem--recommendedAccepted" : ((data.planItemType == "recommended") ? " planItem--recommendedProposed" : ""))
     });
 
     var title = jQuery("<div/>").attr("class", "planItem__title uif-boxLayoutHorizontalItem").append(data.planItemShortTitle);
@@ -447,12 +447,22 @@ function planItemTemplate(data) {
 
     itemGroup.append(action);
 
+    var clickEvent = "jQuery('#" + itemId + "').on('click', function(e) {";
+
+    if (!getConfigParam("adviser")) {
+        clickEvent += "openMenu('" + data.planItemId + "-" + data.planItemType + "','" + data.planItemType + "_" + ((data.placeHolder == "true") ? "placeholder" : "course" ) + "_menu','" + data.atpId.replace(/-/g, ".") + "',e,null,'popover__menu popover__menu--large',{tail:{align:'top'},align:'top',position:'right'},false);";
+    } else {
+        clickEvent += "var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'" + data.planItemId + "', atpId:'" + data.atpId.replace(/-/g, ".") + "', pageId:'recommended_dialog_page'" + ((data.placeHolder != "true") ? ", courseId:'" + data.courseId + "'" : "" ) + "}; openPopup('recommended_dialog_page', retrieveData, 'plan', {width:'300px', height:'16px'}, {tail:{hidden:true}, position:'right', align:'middle', close:true}, e);";
+    }
+
+    clickEvent += "});";
+
     var menuScript = jQuery("<input/>").attr({
         "type": "hidden",
         "name": "script",
         "data-role": "script",
         "data-for": itemId
-    }).val("jQuery('#" + itemId + "').on('click', function(e) {openMenu('" + data.planItemId + "-" + data.planItemType + "','" + data.planItemType + "_" + ((data.placeHolder == "true") ? "placeholder" : "course" ) + "_menu','" + data.atpId.replace(/-/g, ".") + "',e,null,'popover__menu popover__menu--large',{tail:{align:'top'},align:'top',position:'right'},false); });");
+    }).val(clickEvent);
 
     itemGroup.append(menuScript);
 
