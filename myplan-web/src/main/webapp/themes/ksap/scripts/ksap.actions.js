@@ -265,7 +265,7 @@ function getActivityEnrollment(url, retrieveOptions, componentId) {
         success: function (response) {
             elementToBlock.fadeOut(250);
             jQuery.each(response, function (sectionId, enrlObject) {
-                if (enrlObject.status) {
+                if (enrlObject.status && (enrlObject.status == "open" || enrlObject.status == "closed")) {
                     jQuery("#" + sectionId + ".courseActivities__enrlData").html('<div class="courseActivities__enrlData--' + enrlObject.status + '">' + enrlObject.status + '</div>');
                 } else {
                     jQuery("#" + sectionId + ".courseActivities__enrlData").html('<div>--</div>');
