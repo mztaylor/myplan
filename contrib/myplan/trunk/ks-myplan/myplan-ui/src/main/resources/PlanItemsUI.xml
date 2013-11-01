@@ -671,7 +671,7 @@
                 <property name="id"
                           value="@{#line.planItemDataObject.type}-@{#line.planItemDataObject.atp.replace('.','-')}-@{#line.planItemDataObject.id}-group"/>
                 <property name="cssClasses"
-                          value="planItem @{#line.planItemDataObject.type EQ 'recommended' ? (!#line.proposed ? 'planItem--recommendedAccepted' : 'planItem--recommendedProposed') : (#line.adviserRecommended ? 'planItem--recommendedAccepted':'')} @{#line.placeHolder ? 'planItem--placeholder':''} @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.placeHolder ? 'planItem--actionless' : ''}"/>
+                          value="planItem @{#line.planItemDataObject.type EQ 'recommended' ? (!#line.proposed ? 'planItem--recommendedAccepted' : 'planItem--recommendedProposed') : (#line.adviserRecommended ? 'planItem--recommendedAccepted':'')} @{#line.placeHolder ? 'planItem--placeholder':''} @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.placeHolder AND #line.planItemDataObject.type NE 'recommended' ? 'planItem--actionless' : ''}"/>
                 <property name="render" value="@{#line.courseDetails.code NE null OR #line.placeHolderCode NE null}"/>
                 <property name="footer.render" value="false"/>
                 <property name="validationMessages">
