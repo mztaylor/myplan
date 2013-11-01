@@ -190,7 +190,7 @@
     <bean id="MyPlanBaseTheme-parentBean" parent="MyPlanTheme" abstract="true">
         <property name="cssFiles">
             <list merge="true">
-                <value>ks-myplan/css/base.css</value>
+                <value>themes/ksap/stylesheets/base.css</value>
             </list>
         </property>
     </bean>

@@ -56,7 +56,7 @@
             border-top: @dottedBorderStyle;
             padding: @paddingSmall @paddingMini;
             height: 40px;
-            line-height: 1em;
+            line-height: @fontSizeLarge;
         }
 
         & .courseActivities--primary td:first-child, .courseActivities--secondary td:first-child {
@@ -84,11 +84,13 @@
     }
 }
 
-.courseActivities__table tr.courseActivities--planned td:first-child {
+.planContainer--planned .courseActivities--primary.courseActivities--planned td:first-child,
+.planContainer--planned .courseActivities--secondary.courseActivities--planned td:first-child {
     background: url('../images/planned_activity_bkgrd.png') !important;
 }
 
-.myplan-backup-collection .myplan-course-sections tr.courseActivities--planned td:first-child {
+.planContainer--backup .courseActivities--primary.courseActivities--planned td:first-child,
+.planContainer--backup .courseActivities--secondary.courseActivities--planned td:first-child {
     background: url('../images/backup_activity_bkgrd.png') !important;
 }
 
@@ -120,7 +122,7 @@
     display: block;
     margin: 0;
     padding: 0;
-    line-height: @baseLineHeight;
+    line-height: @fontSizeLarge;
 }
 
 .courseActivities__meetingData .meetingdays,
@@ -179,11 +181,14 @@
     }
 }
 
+.courseActivities__enrlData {
+    text-transform: capitalize;
+}
+
 .courseActivities__enrlData--open,
 .courseActivities__enrlData--closed {
     font-size: @baseFontSize + 2px;
     .bold();
-    text-transform: capitalize;
     line-height: @baseLineHeight;
     margin: 0 0 @marginSmall 0;
 }

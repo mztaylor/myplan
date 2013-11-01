@@ -123,30 +123,30 @@
                 createLightBoxLink(jQuery(this).attr('id'), {helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, false);
             });
             jQuery('body').on('SECTION_ITEM_ADDED', function(event, data) {
-                fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'added', data);
+                toggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, 'added', data);
                 if (data.ItemsToUpdate &amp;&amp; data.Primary == 'false') {
                     var items = data.ItemsToUpdate.split(',');
                     jQuery.each(items, function (index, value) {
-                        fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'added', data, true);
+                        toggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], 'added', data, true);
                     });
                 }
             }).on('SECTION_ITEM_DELETED', function(event, data) {
                 if (jQuery('#' + 'button_' + data.atpId + '_' + data.RegistrationCode).data('initial') || data.ActivityStateKey == 'withdrawn') {
-                    fnRemoveSectionRow('button_' + data.atpId + '_' + data.RegistrationCode);
+                    removeSectionRow('button_' + data.atpId + '_' + data.RegistrationCode);
                     if (data.ItemsToUpdate) {
                         var items = data.ItemsToUpdate.split(',');
                         jQuery.each(items, function (index, value) {
-                            fnRemoveSectionRow('button_' + data.atpId + '_' + items[index]);
+                            removeSectionRow('button_' + data.atpId + '_' + items[index]);
                         });
                     }
                 } else {
                     var action = 'deleted';
                     if (data.ActivityStateKey == 'suspended') action = data.ActivityStateKey;
-                    fnToggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, action, data);
+                    toggleSectionAction('button_' + data.atpId + '_' + data.RegistrationCode, data.RegistrationCode, action, data);
                     if (data.ItemsToUpdate) {
                         var items = data.ItemsToUpdate.split(',');
                         jQuery.each(items, function (index, value) {
-                            fnToggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], action, data);
+                            toggleSectionAction('button_' + data.atpId + '_' + items[index], items[index], action, data);
                         });
                     }
                 }
@@ -713,8 +713,7 @@
                         <list>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="code" p:label="Section"
                                   p:id="@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
-                                  p:cssClasses="courseActivities__code--secondary">
-                            </bean>
+                                  p:cssClasses="courseActivities__code--secondary"/>
                             <bean parent="KSAP-Message">
                                 <property name="messageText" value="PCE"/>
                                 <property name="title" value="UW Professional &amp; Continuing Education"/>
@@ -726,11 +725,6 @@
                                 <property name="render" value="@{#line.stateKey EQ 'active'}"/>
                                 <property name="actionScript"
                                           value="toggleSectionDetails(jQuery(this).parents('tr'), jQuery(this), 'View more', 'View less')"/>
-                                <property name="dataAttributes">
-                                    <map>
-                                        <entry key="collapsed" value="true"/>
-                                    </map>
-                                </property>
                                 <property name="cssClasses" value="courseActivities__code--small"/>
                             </bean>
                         </list>
@@ -854,8 +848,8 @@
           p:actionLabel="Show all scheduled sections">
         <property name="actionScript"
                   value="
-                       jQuery('#@{#line.courseDetails.courseId}_sections_collection').css('min-height','17px');
-                       customRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}',loadActivityOffering:'true'});
+                       jQuery('#@{#line.courseDetails.courseId}_sections_collection').css('min-height','18px');
+                       customRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}',loadActivityOffering:'true'},null,{css:{border:'none',width:'16px',height:'16px',lineHeight:'16px',top:'1px',left:'1px'},overlayCSS:{backgroundColor:'#fff',opacity:'0.5'}});
                        switchFetchAction('@{#line.courseDetails.courseId}_toggle', '@{#line.courseDetails.courseId}_sections_collection');
                   "/>
         <property name="dataAttributes">

@@ -60,6 +60,8 @@ public class CourseSectionDetailsLayoutManager extends TableLayoutManager {
                 r2css.append("collapsible collapsible--primary");
             }
 
+            r2css.append(aoi.getPlanItemId() != null ? " courseActivities--planned" : "");
+
             if (offered) {
                 rowCss.add(r2css.toString());
                 rowCss.add(r2css.toString());
