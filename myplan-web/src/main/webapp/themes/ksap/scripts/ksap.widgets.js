@@ -233,7 +233,7 @@ function buildHoverText(obj) {
         if (obj.data("planned")) {
             var secondarySections = [];
             // Find list of secondary sections associated
-            jQuery("div[data-courseid='" + obj.data("courseid") + "'][data-primarysection='" + obj.data("coursesection") + "'][data-planned='true'][data-primary='false']").each(function () {
+            jQuery("[data-courseid='" + obj.data("courseid") + "'][data-primarysection='" + obj.data("coursesection") + "'][data-planned='true'][data-primary='false']").each(function () {
                 secondarySections.push(jQuery(this).data("coursesection"));
             });
             // Build string of secondary sections associated
@@ -259,7 +259,7 @@ function buildHoverText(obj) {
             message = "Delete " + obj.data("coursesection");
         } else {
             // Text should give "Add {secondary section} and {primary section if not planned}"
-            if (!jQuery("div[data-courseid='" + obj.data("courseid") + "'][data-coursesection='" + obj.data("primarysection") + "']").data("planned")) {
+            if (!jQuery("[data-courseid='" + obj.data("courseid") + "'][data-coursesection='" + obj.data("primarysection") + "']").data("planned")) {
                 temp = " and " + obj.data("primarysection");
             }
             message = "Add " + obj.data("coursesection") + temp;
@@ -641,13 +641,24 @@ function fnDisplayMessage(message, cssClass, targetId, button, full, sameBlock, 
 function actionFeedback(targetId, needsParent, replacementId, cssClasses, replacementHtml) {
     jQuery("#" + targetId).fadeOut(250, function() {
         if (needsParent) {
+
+            var courseID = jQuery("#" + targetId).data('courseid');
+            var courseSection = jQuery("#" + targetId).data('coursesection');
+            var primary = jQuery("#" + targetId).data('primary');
+            var primarySection = jQuery("#" + targetId).data('primarysection');
+
             var container = jQuery("<div />").attr({
                 "id": replacementId
             });
             jQuery(this).replaceWith(container);
             jQuery("#" + replacementId).attr({
                 "class": cssClasses,
-                "style": "display: none;"
+                "style": "display: none;",
+                "data-courseid": courseID,
+                "data-coursesection": courseSection,
+                "data-primary": primary,
+                "data-planned": true,
+                "data-primarysection": primarySection
             });
             targetId = replacementId;
         }

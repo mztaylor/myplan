@@ -997,6 +997,15 @@
                 <property name="cssClasses" value="courseActivities__action--link"/>
             </bean>
         </property>
+        <property name="dataAttributes">
+            <map>
+                <entry key="courseid" value="@{#line.courseId}"/>
+                <entry key="planned" value="@{#line.planItemId ne null}"/>
+                <entry key="primary" value="@{#line.primary}"/>
+                <entry key="coursesection" value="@{#line.code}"/>
+                <entry key="primarysection" value="@{#line.primaryActivityOfferingCode}"/>
+            </map>
+        </property>
     </bean>
 
     <bean id="activityActionButton" parent="section_button">
