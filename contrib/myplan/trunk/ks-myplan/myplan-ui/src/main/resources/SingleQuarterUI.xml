@@ -40,7 +40,7 @@
                                     <bean parent="KSAP-HorizontalBoxGroup">
                                         <property name="items">
                                             <list>
-                                                <bean id="previous_year_button" parent="Uif-LinkField"
+                                                <bean id="sqv_previous_year_button" parent="Uif-LinkField"
                                                       p:title="Previous Quarter" p:width="9px">
                                                     <property name="linkText"
                                                               value="&lt;img src=&quot;../themes/ksap/images/pixel.gif&quot; class=&quot;planNavigation__image&quot; /&gt;"/>
@@ -49,7 +49,7 @@
                                                     <property name="cssClasses"
                                                               value="btn btn-secondary planNavigation__button planNavigation__button--previous"/>
                                                 </bean>
-                                                <bean id="next_year_button" parent="Uif-LinkField"
+                                                <bean id="sqv_next_year_button" parent="Uif-LinkField"
                                                       p:title="Next Quarter" p:width="9px">
                                                     <property name="linkText"
                                                               value="&lt;img src=&quot;../themes/ksap/images/pixel.gif&quot; class=&quot;planNavigation__image&quot; /&gt;"/>
@@ -61,7 +61,7 @@
                                                 <bean parent="KSAP-HeaderTwo" p:headerText="@{dataObject.qtrYear}"
                                                       p:width="506px"
                                                       p:cssClasses="planNavigation__header removeMargin"/>
-                                                <bean id="term_button" parent="Uif-Link" p:width="45px">
+                                                <bean id="sqv_term_button" parent="Uif-Link" p:width="45px">
                                                     <property name="linkText" value="Quarter"/>
                                                     <property name="title" value="Quarter"/>
                                                     <property name="href" value="#"/>
@@ -70,7 +70,7 @@
                                                     <property name="cssClasses"
                                                               value="btn btn-secondary planNavigation__button planNavigation__button--first active"/>
                                                 </bean>
-                                                <bean id="one_year_button" parent="Uif-Link" p:width="34px">
+                                                <bean id="sqv_one_year_button" parent="Uif-Link" p:width="34px">
                                                     <property name="linkText" value="1 Year"/>
                                                     <property name="title" value="1 Year"/>
                                                     <property name="href"
