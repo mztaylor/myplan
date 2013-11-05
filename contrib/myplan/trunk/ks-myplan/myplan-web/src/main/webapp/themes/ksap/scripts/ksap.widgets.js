@@ -473,12 +473,21 @@ function planItemTemplate(data) {
         }).append(image.clone());
         itemGroup.append(note);
         var decoded = jQuery("<div/>").html(data.note).text();
+        var popoverTheme = "note";
+        var editNote = "<p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId.replace(/-/g, ".") + " onclick=editNote(jQuery(this),event);>Edit Note</a></p>";
+
+        if (data.planItemType == "recommended") {
+            popoverTheme = "adviser";
+            editNote = "";
+            decoded += " - " + data.adviserName;
+        }
+
         var noteScript = jQuery("<input/>").attr({
             "type": "hidden",
             "name": "script",
             "data-role": "script",
             "data-for": itemId + "-note"
-        }).val("createTooltip('" + itemId + "-note', ' <p>" + decoded + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId.replace(/-/g, ".") + " onclick=editNote(jQuery(this),event);>Edit Note</a></p> ', {position:'top',align:'left',alwaysVisible:false,tail:{align:'left',hidden:false},themePath:'../themes/ksap/images/popover-theme/',themeName:'note',selectable:true,openingSpeed:50,closingSpeed:50,openingDelay:500,closingDelay:0,themeMargins:{total:'17px',difference:'10px'},distance:'0px'},true,true);");
+        }).val("createTooltip('" + itemId + "-note', ' <p>" + decoded + "</p>" + editNote + "', {position:'top',align:'left',alwaysVisible:false,tail:{align:'left',hidden:false},themePath:'../themes/ksap/images/popover-theme/',themeName:'" + popoverTheme + "',selectable:true,openingSpeed:50,closingSpeed:50,openingDelay:500,closingDelay:0,themeMargins:{total:'17px',difference:'10px'},distance:'0px'},true,true);");
         itemGroup.append(noteScript);
     }
 
