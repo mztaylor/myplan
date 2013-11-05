@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +116,9 @@ public class PlannedCourseDataObject implements Comparable {
     }
 
     public List<String> getStatusAlerts() {
+        if (statusAlerts == null) {
+            statusAlerts = new ArrayList<String>();
+        }
         return statusAlerts;
     }
 
@@ -191,7 +195,7 @@ public class PlannedCourseDataObject implements Comparable {
 
     //Used to get the list strings as a single string
     public String getAlertsAsString() {
-        if (getStatusAlerts() != null) {
+        if (!CollectionUtils.isEmpty(getStatusAlerts())) {
             return StringUtils.join(getStatusAlerts(), "");
         }
         return null;

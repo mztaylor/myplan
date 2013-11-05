@@ -157,7 +157,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                     plannedCourse.setShowAlert(!scheduled);
                 }
                 plannedCourse.setTimeScheduleOpen(timeScheduleOpen);
-                List<String> statusAlerts = new ArrayList<String>();
+                List<String> statusAlerts = plannedCourse.getStatusAlerts();
                 if (timeScheduleOpen && !scheduled) {
                     statusAlerts.add(String.format(PlanConstants.COURSE_NOT_SCHEDULE_ALERT, plannedCourse.getCourseDetails().getCode(), plannedCourse.getPlanItemDataObject().getTermName()));
                     plannedCourse.setSectionsAvailable(false);
@@ -175,9 +175,6 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
                         String[] sections = sectionList.toArray(new String[sectionList.size()]);
                         statusAlerts.add(String.format(PlanConstants.SUSPENDED_ALERT, getCourseHelper().joinStringsByDelimiter(',', sections)));
                         plannedCourse.setShowAlert(true);
-                    }
-                    if (!statusAlerts.isEmpty()) {
-                        plannedCourse.setStatusAlerts(statusAlerts);
                     }
                     plannedCourse.setPlanActivities(activityOfferingItems);
                 }
