@@ -156,11 +156,21 @@
     margin: @marginDefault 0 0 @marginLarge;
 }
 
+.jquerybubblepopup table,
+.jquerypopover table {
+    table-layout: fixed;
+}
+
 .jquerybubblepopup .jquerybubblepopup-innerHtml {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    max-width: 300px;
+    max-width: 250px;
     min-width: 100px;
+    -ms-word-break: break-all;
+    word-break: break-all;
+    /* Non standard for webkit */
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
 }
 
 .jquerypopover-default .jquerypopover-innerHtml {
