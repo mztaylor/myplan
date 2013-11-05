@@ -2641,6 +2641,7 @@ public class PlanController extends UifControllerBase {
             String termName = AtpHelper.atpIdToTermName(atpId);
 
             params.put("atpId", formatAtpIdForUI(atpId));
+            params.put("termName", termName);
 
             boolean showAlert = false;
             StringBuffer statusAlert = new StringBuffer();
