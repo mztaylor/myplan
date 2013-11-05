@@ -291,6 +291,7 @@
                                                           p:escapeHtmlInPropertyValue="false"
                                                           p:render="@{dataObject.courseSummaryDetails.termsOffered.size() gt 0}">
                                                         <property name="fieldLabel.render" value="true"/>
+                                                        <property name="fieldLabel.renderColon" value="true"/>
                                                         <property name="fieldLabel.cssClasses" value="normalLightText"/>
                                                         <property name="cssClasses" value="inlineElement"/>
                                                     </bean>
@@ -298,6 +299,7 @@
                                                           p:render="@{dataObject.courseSummaryDetails.termsOffered.size() eq 0}">
                                                         <property name="fieldLabel.cssClasses" value="normalLightText"/>
                                                         <property name="cssClasses" value="inlineElement"/>
+                                                        <property name="fieldLabel.renderColon" value="true"/>
                                                         <property name="messageText" value="Check with the department or your adviser for more information about this course."/>
                                                     </bean>
                                                     <bean parent="KSAP-Message" p:messageText="(Source: Course Catalog)">
