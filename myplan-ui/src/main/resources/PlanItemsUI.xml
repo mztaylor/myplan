@@ -399,10 +399,10 @@
         "/>
         <property name="items">
             <list>
-                <bean parent="KSAP-HorizontalBoxGroup">
+                <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planNavigation">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-HorizontalBoxGroup" p:width="72px">
+                            <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--term">
                                 <property name="items">
                                     <list>
                                         <bean id="previous_year_button" parent="Uif-ActionLink"
@@ -432,9 +432,8 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-HeaderTwo" p:headerText="Academic Year" p:width="506px"
-                                  p:cssClasses="planNavigation__header removeMargin"/>
-                            <bean parent="KSAP-HorizontalBoxGroup" p:width="132px" p:cssClasses="removeMargin">
+                            <bean parent="KSAP-HeaderTwo" p:headerText="Academic Year" p:cssClasses="planNavigation__header"/>
+                            <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--view">
                                 <property name="items">
                                     <list>
                                         <bean id="single_quarter_button" parent="Uif-Link">
@@ -519,10 +518,8 @@
                                 <value>planYear__term</value>
                                 <value>@{#line.currentTermForView ? 'planYear__term--current' :
                                     (!#line.currentTermForView AND #line.openForPlanning ? 'planYear__term--future' :
-                                    'planYear__term--past')}
-                                </value>
-                                <value>@{#line.openForPlanning ? 'planYear__term--open' : 'planYear__term--closed'}
-                                </value>
+                                    'planYear__term--past')}</value>
+                                <value>@{#line.openForPlanning ? ' planYear__term--unlocked' : ' planYear__term--locked'}</value>
                             </list>
                         </property>
                         <property name="layoutManager.cssClasses" value="planYear__termContainer"/>

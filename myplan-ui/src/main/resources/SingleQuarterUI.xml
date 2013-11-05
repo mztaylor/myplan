@@ -37,46 +37,56 @@
                         <bean id="term_items" parent="KSAP-VerticalBoxGroup" p:width="710px">
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-HorizontalBoxGroup">
+                                    <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planNavigation">
                                         <property name="items">
                                             <list>
-                                                <bean id="sqv_previous_year_button" parent="Uif-LinkField"
-                                                      p:title="Previous Quarter" p:width="9px">
-                                                    <property name="linkText"
-                                                              value="&lt;img src=&quot;../themes/ksap/images/pixel.gif&quot; class=&quot;planNavigation__image&quot; /&gt;"/>
-                                                    <property name="href"
-                                                              value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}"/>
-                                                    <property name="cssClasses"
-                                                              value="btn btn-secondary planNavigation__button planNavigation__button--previous"/>
+                                                <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--term">
+                                                    <property name="items">
+                                                        <list>
+                                                            <bean id="sqv_previous_term_button" parent="Uif-LinkField"
+                                                                  p:title="Previous Quarter">
+                                                                <property name="linkText"
+                                                                          value="&lt;img src=&quot;../themes/ksap/images/pixel.gif&quot; class=&quot;planNavigation__image&quot; /&gt;"/>
+                                                                <property name="href"
+                                                                          value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}"/>
+                                                                <property name="cssClasses"
+                                                                          value="btn btn-secondary planNavigation__button planNavigation__button--previous"/>
+                                                            </bean>
+                                                            <bean id="sqv_next_term_button" parent="Uif-LinkField"
+                                                                  p:title="Next Quarter">
+                                                                <property name="linkText"
+                                                                          value="&lt;img src=&quot;../themes/ksap/images/pixel.gif&quot; class=&quot;planNavigation__image&quot; /&gt;"/>
+                                                                <property name="href"
+                                                                          value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}"/>
+                                                                <property name="cssClasses"
+                                                                          value="btn btn-secondary planNavigation__button planNavigation__button--next"/>
+                                                            </bean>
+                                                        </list>
+                                                    </property>
                                                 </bean>
-                                                <bean id="sqv_next_year_button" parent="Uif-LinkField"
-                                                      p:title="Next Quarter" p:width="9px">
-                                                    <property name="linkText"
-                                                              value="&lt;img src=&quot;../themes/ksap/images/pixel.gif&quot; class=&quot;planNavigation__image&quot; /&gt;"/>
-                                                    <property name="href"
-                                                              value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}"/>
-                                                    <property name="cssClasses"
-                                                              value="btn btn-secondary planNavigation__button planNavigation__button--next"/>
-                                                </bean>
-                                                <bean parent="KSAP-HeaderTwo" p:headerText="@{dataObject.qtrYear}"
-                                                      p:width="506px"
-                                                      p:cssClasses="planNavigation__header removeMargin"/>
-                                                <bean id="sqv_term_button" parent="Uif-Link" p:width="45px">
-                                                    <property name="linkText" value="Quarter"/>
-                                                    <property name="title" value="Quarter"/>
-                                                    <property name="href" value="#"/>
-                                                    <property name="onClickScript"
-                                                              value="e.preventDefault();"/>
-                                                    <property name="cssClasses"
-                                                              value="btn btn-secondary planNavigation__button planNavigation__button--first active"/>
-                                                </bean>
-                                                <bean id="sqv_one_year_button" parent="Uif-Link" p:width="34px">
-                                                    <property name="linkText" value="1 Year"/>
-                                                    <property name="title" value="1 Year"/>
-                                                    <property name="href"
-                                                              value="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView&amp;focusAtpId=@{dataObject.atpId}"/>
-                                                    <property name="cssClasses"
-                                                              value="btn btn-secondary planNavigation__button planNavigation__button--last"/>
+                                                <bean parent="KSAP-HeaderTwo" p:headerText="@{dataObject.qtrYear}" p:cssClasses="planNavigation__header"/>
+                                                <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--view">
+                                                    <property name="items">
+                                                        <list>
+                                                            <bean id="sqv_term_button" parent="Uif-Link">
+                                                                <property name="linkText" value="Quarter"/>
+                                                                <property name="title" value="Quarter"/>
+                                                                <property name="href" value="#"/>
+                                                                <property name="onClickScript"
+                                                                          value="e.preventDefault();"/>
+                                                                <property name="cssClasses"
+                                                                          value="btn btn-secondary planNavigation__button planNavigation__button--first active"/>
+                                                            </bean>
+                                                            <bean id="sqv_one_year_button" parent="Uif-Link">
+                                                                <property name="linkText" value="1 Year"/>
+                                                                <property name="title" value="1 Year"/>
+                                                                <property name="href"
+                                                                          value="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView&amp;focusAtpId=@{dataObject.atpId}"/>
+                                                                <property name="cssClasses"
+                                                                          value="btn btn-secondary planNavigation__button planNavigation__button--last"/>
+                                                            </bean>
+                                                        </list>
+                                                    </property>
                                                 </bean>
                                             </list>
                                         </property>
@@ -691,10 +701,10 @@
                 tableHead.before('
                     &lt;col style=&quot;width: 62px;&quot;&gt;
                     &lt;col style=&quot;width: 103px;&quot;&gt;
-                    &lt;col style=&quot;width: 264px;&quot;&gt;
+                    &lt;col style=&quot;width: 268px;&quot;&gt;
                     &lt;col style=&quot;width: 50px;&quot;&gt;
-                    &lt;col style=&quot;width: 103px;&quot;&gt;
-                    &lt;col style=&quot;width: 81px;&quot;&gt;
+                    &lt;col style=&quot;width: 100px;&quot;&gt;
+                    &lt;col style=&quot;width: 80px;&quot;&gt;
                     &lt;col style=&quot;width: 45px;&quot;&gt;
                 ');
                 tableHead.remove();

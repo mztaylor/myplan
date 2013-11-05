@@ -1,5 +1,9 @@
+body {
+    background: #fff;
+}
+
 .uif-application {
-    background: #fff !important;
+    background: transparent !important;
     border: none !important;
     padding: 0 !important;
 }

@@ -1,3 +1,32 @@
+.planNavigation {
+    position: relative;
+    height: 30px;
+
+    & .planNavigation__buttonGroup,
+    & .planNavigation__header {
+        position: absolute;
+        margin: 0;
+        top: 0px;
+    }
+    & .planNavigation__buttonGroup--term {
+        left: 0px;
+    }
+    & .planNavigation__header {
+        left: 150px;
+        width: 410px;
+    }
+    & .planNavigation__buttonGroup--view {
+        right: 0px;
+    }
+}
+
+.planNavigation__header {
+    text-align: center;
+    & h2 {
+        line-height: 30px;
+    }
+}
+
 .planNavigation__button {
     font-size: @fontSizeSmall;
     margin: 0 !important;
@@ -50,13 +79,6 @@
     }
     &.disabled .planNavigation__image, &[disabled] .planNavigation__image {
         background-position: -38px -164px;
-    }
-}
-
-.planNavigation__header {
-    text-align: center;
-    & h2 {
-        line-height: 30px;
     }
 }
 
