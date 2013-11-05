@@ -873,6 +873,11 @@
         <property name="dataAttributes">
             <map merge="true">
                 <entry key="initial" value="true"/>
+                <entry key="courseid" value="@{#line.courseId}"/>
+                <entry key="planned" value="@{#line.planItemId ne null}"/>
+                <entry key="primary" value="@{#line.primary}"/>
+                <entry key="coursesection" value="@{#line.code}"/>
+                <entry key="primarysection" value="@{#line.primaryActivityOfferingCode}"/>
             </map>
         </property>
     </bean>
