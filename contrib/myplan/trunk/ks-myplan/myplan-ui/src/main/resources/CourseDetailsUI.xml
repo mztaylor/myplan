@@ -25,15 +25,6 @@
         <property name="footer.render" value="false"/>
         <property name="singlePageView" value="true"/>
         <property name="headerText" value="@{dataObject.courseSummaryDetails.code} @{dataObject.courseSummaryDetails.courseTitle} (@{dataObject.courseSummaryDetails.credit})"/>
-        <property name="header.upperGroup">
-            <bean parent="KSAP-VerticalBoxGroup">
-                <property name="items">
-                    <list>
-                        <bean parent="Uif-Link" p:linkText="Back to Previous Page" p:href="javascript:history.go(-1)"/>
-                    </list>
-                </property>
-            </bean>
-        </property>
         <property name="page">
             <bean parent="KSAP-Page" id="course_details_page">
                 <property name="items">
