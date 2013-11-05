@@ -1366,7 +1366,7 @@ public class PlanController extends UifControllerBase {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> wishlistEvents = null;
 
         if (!addPlaceHolder) {
-            if (!isRecommendedItem) {
+            if (!isRecommendedItem && addCourse) {
                 //  See if a wishList item exists for the course. If so, then update it. Otherwise create a new plan item.
                 planItem = getWishlistPlanItem(courseDetails.getVersionIndependentId());
             }
