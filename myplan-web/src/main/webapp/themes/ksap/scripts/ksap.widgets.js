@@ -641,24 +641,13 @@ function fnDisplayMessage(message, cssClass, targetId, button, full, sameBlock, 
 function actionFeedback(targetId, needsParent, replacementId, cssClasses, replacementHtml) {
     jQuery("#" + targetId).fadeOut(250, function() {
         if (needsParent) {
-
-            var courseID = jQuery("#" + targetId).data('courseid');
-            var courseSection = jQuery("#" + targetId).data('coursesection');
-            var primary = jQuery("#" + targetId).data('primary');
-            var primarySection = jQuery("#" + targetId).data('primarysection');
-
             var container = jQuery("<div />").attr({
                 "id": replacementId
             });
             jQuery(this).replaceWith(container);
             jQuery("#" + replacementId).attr({
                 "class": cssClasses,
-                "style": "display: none;",
-                "data-courseid": courseID,
-                "data-coursesection": courseSection,
-                "data-primary": primary,
-                "data-planned": true,
-                "data-primarysection": primarySection
+                "style": "display: none;"
             });
             targetId = replacementId;
         }
