@@ -343,7 +343,7 @@
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, position:'right', align:'middle', close:true};
             if ( !getConfigParam('adviser') ) {
-                jQuery('.planYear__term.planYear__term--open').find('.planYear__planned, .planYear__backup').each(function(){
+                jQuery('.planYear__term.planYear__term--unlocked').find('.planYear__planned, .planYear__backup').each(function(){
                     var atpId = jQuery(this).data('atpid');
                     var backup = jQuery(this).data('backupflag');
                     var size = jQuery(this).data('size');
@@ -359,7 +359,7 @@
                 });
             }
             if ( getConfigParam('adviser') ) {
-                jQuery('.planYear__term.planYear__term--open').find('.planYear__recommended').each(function(){
+                jQuery('.planYear__term.planYear__term--unlocked').find('.planYear__recommended').each(function(){
                     var atpId = jQuery(this).data('atpid');
                     var addPlanItem = jQuery('&lt;div /&gt;').addClass('planItem planItem--empty planItem--add').html('Recommend').click(function(e){
                         var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', atpId:atpId, pageId:'recommended_add_page'};
@@ -1012,7 +1012,7 @@
                 var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', pageId:'recommended_dialog_page'};
                 if (!@{#line.placeHolder}) retrieveData.courseId = '@{#line.courseDetails.courseId}';
                 var popupStyle = {width:'300px', height:'16px'};
-                var popupOptions = {tail:{hidden:true}, position:'right', align:'middle', close:true};
+                var popupOptions = {tail:{hidden:true}, position:'bottom', align:'left', close:true};
                 openPopup('recommended_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
             "/>
     </bean>

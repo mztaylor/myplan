@@ -1089,9 +1089,12 @@
                                         if (data.ItemsToUpdate != null) {
                                             var items = data.ItemsToUpdate.split(',');
                                             jQuery.each(items, function (index, value) {
-                                                link.attr('title', data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.');
+                                                var primaryLink = jQuery('&lt;a/&gt;').text('Added').attr({
+                                                    href: 'inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=' + data.atpId.replace(/-/g,'.'),
+                                                    title: data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.'
+                                                });
                                                 jQuery('#button_' + data.atpId + '_' + items[index]).parents('tr').addClass('courseActivities--planned');
-                                                actionFeedback('button_' + data.atpId + '_' + items[index], true, 'button_' + data.atpId + '_' + items[index], null, link);
+                                                actionFeedback('button_' + data.atpId + '_' + items[index], true, 'button_' + data.atpId + '_' + items[index], null, primaryLink);
                                             });
                                         }
                                     });
