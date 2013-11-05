@@ -30,6 +30,12 @@
 .planNavigation__button {
     font-size: @fontSizeSmall;
     margin: 0 !important;
+    &.disabled {
+        cursor: default;
+        & a {
+            cursor: default;
+        }
+    }
 }
 
 .planNavigation__button--previous,
