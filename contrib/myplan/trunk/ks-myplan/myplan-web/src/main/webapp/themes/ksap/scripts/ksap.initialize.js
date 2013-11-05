@@ -126,17 +126,12 @@ jQuery(document).ready(function () {
     })();
 
     jQuery("head").append('<!--[if ie 9]><style type="text/css" media="screen"> \
-        button.uif-primaryActionButton,button.uif-secondaryActionButton, \
-        button.uif-primaryActionButton:hover,button.uif-secondaryActionButton:hover,\
-        button.uif-primaryActionButton[disabled="true"],\
-        button.uif-primaryActionButton[disabled="disabled"],\
-        button.uif-primaryActionButton[disabled="true"]:hover,\
-        button.uif-primaryActionButton[disabled="disabled"]:hover,\
-        button.uif-secondaryActionButton[disabled="true"],\
-        button.uif-secondaryActionButton[disabled="disabled"],\
-        button.uif-secondaryActionButton[disabled="true"]:hover,\
-        button.uif-secondaryActionButton[disabled="disabled"]:hover{ \
-            filter:none !important;}</style><![endif]-->\
+        .btn, .btn:hover,\
+        .btn[disabled="true"], .btn[disabled="true"]:hover,\
+        .btn[disabled="disabled"], .btn[disabled="disabled"]:hover,\
+        .planYear__term .planYear__termHeader, .planYear__term .planYear__termHeader:hover,\
+        .planTerm__header.planTerm__header--past, .planTerm__header.planTerm__header--current, .planTerm__header.planTerm__header--future\
+        {filter:none !important;}</style><![endif]-->\
     ');
 });
 

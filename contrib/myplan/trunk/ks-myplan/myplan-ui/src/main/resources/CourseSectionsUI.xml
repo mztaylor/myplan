@@ -71,10 +71,10 @@
                                                         tableHead.before('
                                                             &lt;col style=&quot;width: 62px;&quot;&gt;
                                                             &lt;col style=&quot;width: 103px;&quot;&gt;
-                                                            &lt;col style=&quot;width: 264px;&quot;&gt;
+                                                            &lt;col style=&quot;width: 268px;&quot;&gt;
                                                             &lt;col style=&quot;width: 50px;&quot;&gt;
-                                                            &lt;col style=&quot;width: 103px;&quot;&gt;
-                                                            &lt;col style=&quot;width: 81px;&quot;&gt;
+                                                            &lt;col style=&quot;width: 100px;&quot;&gt;
+                                                            &lt;col style=&quot;width: 80px;&quot;&gt;
                                                             &lt;col style=&quot;width: 45px;&quot;&gt;
                                                         ');
                                                         tableHead.remove();

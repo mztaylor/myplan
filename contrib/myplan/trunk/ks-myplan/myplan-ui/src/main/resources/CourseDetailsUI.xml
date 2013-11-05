@@ -25,6 +25,15 @@
         <property name="footer.render" value="false"/>
         <property name="singlePageView" value="true"/>
         <property name="headerText" value="@{dataObject.courseSummaryDetails.code} @{dataObject.courseSummaryDetails.courseTitle} (@{dataObject.courseSummaryDetails.credit})"/>
+        <property name="header.upperGroup">
+            <bean parent="KSAP-VerticalBoxGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-Link" p:linkText="Back to Previous Page" p:href="javascript:history.go(-1)"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="page">
             <bean parent="KSAP-Page" id="course_details_page">
                 <property name="items">
@@ -587,10 +596,10 @@
             tableHead.before('
                 &lt;col style=&quot;width: 62px;&quot;&gt;
                 &lt;col style=&quot;width: 103px;&quot;&gt;
-                &lt;col style=&quot;width: 264px;&quot;&gt;
+                &lt;col style=&quot;width: 268px;&quot;&gt;
                 &lt;col style=&quot;width: 50px;&quot;&gt;
-                &lt;col style=&quot;width: 103px;&quot;&gt;
-                &lt;col style=&quot;width: 81px;&quot;&gt;
+                &lt;col style=&quot;width: 100px;&quot;&gt;
+                &lt;col style=&quot;width: 80px;&quot;&gt;
                 &lt;col style=&quot;width: 45px;&quot;&gt;
             ');
             table.find('.courseActivities__other').parents('td').each(function() {

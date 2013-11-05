@@ -1,0 +1,26 @@
+.auditTabs {
+    border-bottom: solid 4px #f9ac23;
+
+    & a {
+        display: inline-block;
+        float: left;
+        border: @baseBorderStyle;
+        border-bottom: none;
+        color: @textColor;
+        text-decoration: none;
+        padding: @paddingSmall 18px;
+        margin: 0;
+        .border-radius(@baseBorderRadius @baseBorderRadius 0px 0px);
+        #gradient > .vertical(#f7f7f7, #efefef);
+
+        &:hover {
+            #gradient > .vertical(#f9ac23, #f6ca77);
+            border-color: #f5c97c;
+        }
+    }
+
+    & .auditTabs--active {
+        #gradient > .vertical(#f6ca77, #f9ac23);
+        border-color: #f3bd73;
+    }
+}

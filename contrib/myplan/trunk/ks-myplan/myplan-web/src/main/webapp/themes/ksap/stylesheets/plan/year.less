@@ -65,12 +65,20 @@
     }
 }
 
-.planYear__term--open {
-
+.planYear__term--unlocked {
+    & .planYear__academicRecord .planYear__typeHeader {
+        background-image: url('../images/icon_unlocked.png');
+        background-repeat: no-repeat;
+        background-position: right 5px center;
+    }
 }
 
-.planYear__term--closed {
-
+.planYear__term--locked {
+    & .planYear__academicRecord .planYear__typeHeader {
+        background-image: url('../images/icon_locked.png');
+        background-repeat: no-repeat;
+        background-position: right 5px center;
+    }
 }
 
 .planYear__termHeader {
