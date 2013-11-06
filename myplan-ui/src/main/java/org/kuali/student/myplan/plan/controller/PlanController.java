@@ -1373,7 +1373,7 @@ public class PlanController extends UifControllerBase {
             if (planItem == null && addCourse) {
                 try {
                     // Don't allow duplicate recommended items.
-                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(newType) && getPlanHelper().getPlanItemByAtpAndType(plan.getId(), courseDetails.getVersionIndependentId(), newAtpId, newType, isCrossListedCourse ? code : null) != null) {
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(newType) && getPlanHelper().getPlanItemByAtpAndType(plan.getId(), courseDetails.getVersionIndependentId(), newAtpId, newType)) {
                         return doDuplicateRecommendedItem(form, newAtpId, courseDetails.getCode());
                     }
 
