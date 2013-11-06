@@ -28,10 +28,23 @@
     padding: 0 12px 0 0;
     color: @purple;
     background: url('../images/appheader_person_arrow.png') no-repeat center right;
+
+    &.appHeader__person--adviser {
+        padding: 0;
+        background: none;
+    }
 }
 
 .appHeader__patch {
     position: absolute;
     top: 0px;
     right: 10px;
+    background-color: #39275b;
+    padding: 39px 12px 12px;
+}
+
+.appHeader__logout {
+    & a {
+        color: @purple;
+    }
 }
