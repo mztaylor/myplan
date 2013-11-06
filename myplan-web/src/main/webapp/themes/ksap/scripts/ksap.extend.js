@@ -101,3 +101,10 @@ function setupProgressiveCheck(controlName, disclosureId, baseId, condition, alw
         }
     }
 }
+
+function setupLightboxForm() {
+    jQuery(".fancybox-inner").children().wrap("<form style='margin:0; padding:0; overflow:auto; height:100%' id='kualiLightboxForm' class='uif-lightbox'>");
+
+    var kualiLightboxForm = jQuery('#kualiLightboxForm');
+    setupValidator(kualiLightboxForm);
+}
