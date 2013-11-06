@@ -652,7 +652,8 @@ function actionFeedback(targetId, needsParent, replacementId, cssClasses, replac
             targetId = replacementId;
         }
         if (cssClasses) jQuery("#" + targetId).addClass(cssClasses);
-        jQuery("#" + targetId).html(replacementHtml).fadeIn(250);
+        var decoded = jQuery("<div/>").html(replacementHtml).text();
+        jQuery("#" + targetId).html(decoded).fadeIn(250);
     });
 }
 /*
