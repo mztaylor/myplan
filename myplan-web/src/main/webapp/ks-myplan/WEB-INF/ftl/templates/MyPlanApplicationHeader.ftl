@@ -14,7 +14,7 @@
             <#if UserSession.objectMap["kuali.uw.authz.adviser"]?string("true","false")=="true">
             <div class="appHeader__identity">
                     Welcome, <span
-                    class="appHeader__person">${UserSession.person.firstName?cap_first} ${UserSession.person.lastName?substring(0,1)?capitalize}
+                    class="appHeader__person appHeader__person--adviser">${UserSession.person.firstName?cap_first} ${UserSession.person.lastName?substring(0,1)?capitalize}
                     .</span>
                 </div>
             <div class="appHeader__logout">
@@ -32,7 +32,7 @@
         </#if>
     </div>
 
-    <img class="appHeader__patch" src="../ks-myplan/images/myplan_w_patch_purple.png"/>
+    <img class="appHeader__patch" src="../themes/ksap/images/appheader_icon_logo.png"/>
 
 </div>
 
