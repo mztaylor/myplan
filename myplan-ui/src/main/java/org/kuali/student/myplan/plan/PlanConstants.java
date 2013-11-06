@@ -43,6 +43,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     //  CRUD error feedback
     public static final String ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS = "myplan.text.error.plannedCourseList.itemAlreadyExists";
+    public static final String ERROR_KEY_RECOMMENDED_ITEM_ALREADY_EXISTS = "myplan.text.error.plannedCourseList.recommendedItemAlreadyExists";
     public static final String ERROR_KEY_PLANNED_ITEM_CAPACITY_EXCEEDED = "myplan.text.error.plannedCourseList.plannedCapacityExceeded";
     public static final String ERROR_KEY_BACKUP_ITEM_CAPACITY_EXCEEDED = "myplan.text.error.plannedCourseList.backupCapacityExceeded";
 
