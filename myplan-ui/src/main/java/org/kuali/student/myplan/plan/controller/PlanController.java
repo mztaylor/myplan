@@ -1373,7 +1373,7 @@ public class PlanController extends UifControllerBase {
             if (planItem == null && addCourse) {
                 try {
                     // Don't allow duplicate recommended items.
-                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(newType) && getPlanHelper().getPlanItemByAtpAndType(plan.getId(), courseDetails.getVersionIndependentId(), newAtpId, newType)) {
+                    if (PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(newType) && getPlanHelper().getPlanItemByAtpAndType(plan.getId(), courseDetails.getVersionIndependentId(), newAtpId, newType) != null) {
                         return doDuplicateRecommendedItem(form, newAtpId, courseDetails.getCode());
                     }
 
@@ -1572,7 +1572,7 @@ public class PlanController extends UifControllerBase {
 
         if (!CollectionUtils.isEmpty(pro)) {
             String adviserName = getUserSessionHelper().getCapitalizedName(getUserSessionHelper().getCurrentUserId());
-            note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim().replace("\n","<br/>"), 80, "<br/>", true)) : "";
+            note = hasText(note) ? String.format("'%s'", WordUtils.wrap(note.trim().replace("\n", "<br/>"), 80, "<br/>", true)) : "";
             String dateAdded = DateFormatHelper.getDateFomatted(new java.sql.Date(System.currentTimeMillis()).toString());
             String planLink = makeLinkToAtp(AtpHelper.termToYearTerm(term).toATP(), "visit your plan page");
             String code = courseCd;
