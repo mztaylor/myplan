@@ -90,7 +90,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String APP_URL = "appserver.url";
 
     //  {host} will be replac{atp} will be replaced by an ATP ID and {label} will be replaced with the link text at runtime.
-    public static final String QUARTER_LINK = "<a href=\"" + ConfigContext.getCurrentContextConfig().getProperty(APP_URL) + "/student/myplan/plan?methodToCall=start&viewId=PlannedCourses-FormView&focusAtpId={atpId}\">{label}</a>";
+    public static final String QUARTER_LINK = "<a href=\"" + ConfigContext.getCurrentContextConfig().getProperty(APP_URL) + "/student/myplan/inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id={atpId}\">{label}</a>";
 
     public static final String PLANNED_TYPE = "planned";
     public static final String BACKUP_TYPE = "backup";
