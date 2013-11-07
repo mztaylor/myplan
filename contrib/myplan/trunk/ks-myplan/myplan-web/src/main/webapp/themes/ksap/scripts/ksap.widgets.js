@@ -614,29 +614,6 @@ function updateCredits(atpId, termCredits) {
         jQuery(this).html(termCredits).fadeIn(250);
     });
 }
-/*
- #################################################################
- Function: swap action button with feedback message
- #################################################################
- */
-function fnDisplayMessage(message, cssClass, targetId, button, full, sameBlock, newId) {
-    if (button) {
-        if (!sameBlock) {
-            if (!full) jQuery("#" + targetId).wrap('<div id="' + newId + '" style="float:left;" />');
-            jQuery("#" + targetId).parent("div").fadeOut(250, function () {
-                jQuery(this).addClass(cssClass).html(message).fadeIn(250);
-            });
-        } else {
-            jQuery("#" + targetId).fadeOut(250, function () {
-                jQuery(this).addClass(cssClass).html('<div id="' + newId + '" style="float:left;">' + message + '</div>').fadeIn(250);
-            });
-        }
-    } else {
-        jQuery("#" + targetId).fadeOut(250, function () {
-            jQuery(this).addClass(cssClass).html(message).fadeIn(250);
-        });
-    }
-}
 
 function actionFeedback(targetId, needsParent, replacementId, cssClasses, replacementHtml) {
     jQuery("#" + targetId).fadeOut(250, function() {
