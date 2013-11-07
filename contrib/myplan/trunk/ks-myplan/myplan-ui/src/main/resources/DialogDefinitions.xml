@@ -875,7 +875,7 @@
                     </property>
                 </bean>
                 <!-- Container for buttons -->
-                <bean parent="KSAP-VerticalBoxGroup" p:id="actionButtonsGroup">
+                <bean parent="KSAP-VerticalBoxGroup" p:id="actionButtonsGroup2">
                     <property name="items">
                         <list>
                             <bean parent="KSAP-HorizontalBoxGroup">
@@ -889,7 +889,7 @@
                                             "/>
                                             <property name="onDocumentReadyScript" value="
                                                jQuery('#deleteCourseYesButton').on('PLAN_ITEM_DELETED', function(event, data) {
-                                                   actionFeedback('actionButtonsGroup', false, null, data.cssClasses + ' defaultTopMargin', data.message);
+                                                   actionFeedback('actionButtonsGroup2', false, null, data.cssClasses + ' defaultTopMargin', data.message);
                                                }).on('ERROR', function(event, data) {
                                                    actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
                                                });"/>
@@ -1276,7 +1276,7 @@
         <property name="onDocumentReadyScript" value="
             jQuery('#addSavedCourseButton').on('PLAN_ITEM_ADDED', function(event, data){
                 if (data.planItemType === 'wishlist') {
-                    fnDisplayMessage(data.message, data.cssClass, 'addSavedCourseButton', true);
+                    actionFeedback('addSavedCourseButton', true, data.courseId + '_bookmarked', data.cssClasses + ' alert-unboxed alert-replace-btn-small uif-boxLayoutHorizontalItem', data.message);
                 }
             });
         "/>
