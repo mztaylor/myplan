@@ -207,3 +207,46 @@
         color: @textColor;
     }
 }
+
+.courseActivities__tabGroup {
+    margin-top: -@marginLarge !important;
+
+    & .ui-tabs .ui-tabs-nav {
+        list-style: none;
+        border-right: @baseBorderStyle;
+        border-bottom: @baseBorderStyle;
+        #gradient > .vertical(#f5f5f5, #ebebeb);
+        margin: 0 0 @marginLarge;
+        padding: 0;
+
+        & li {
+            display: inline-block;
+            height: 40px;
+            line-height: 40px;
+            padding: 0 @paddingLarge;
+            top: 0px;
+            margin-bottom: -1px;
+            .border-radius(0);
+
+            &:first-child {
+                border-left: @baseBorderStyle;
+            }
+
+            &.ui-state-active {
+                border-right: @baseBorderStyle;
+                border-left: @baseBorderStyle;
+                background: @white;
+                border-bottom: solid 1px @white;
+
+                & a {
+                    .bold();
+                }
+            }
+
+            & a {
+                font-size: @fontSizeLarge;
+                color: @textColor;
+            }
+        }
+    }
+}
