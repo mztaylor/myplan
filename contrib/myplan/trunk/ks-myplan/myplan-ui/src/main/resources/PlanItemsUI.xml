@@ -51,9 +51,9 @@
                             <ref bean="planned_placeholder_menu"/>
                             <ref bean="backup_course_menu"/>
                             <ref bean="backup_placeholder_menu"/>
-                            <ref bean="completed_courses_menu_items"/>
-                            <ref bean="completed_planned_backup_menu_items"/>
-                            <ref bean="completed_placeholder_menu_items"/>
+                            <ref bean="completed_course_menu"/>
+                            <ref bean="completed_placeholder_menu"/>
+                            <ref bean="academic_course_menu"/>
                             <bean id="hidden_new_user_flag" parent="KSAP-SimpleDataField" p:propertyName="newUser"
                                   p:hidden="true"/>
                         </list>
@@ -266,7 +266,7 @@
     </bean>
 
     <!--Completed Menu Items-->
-    <bean id="completed_courses_menu_items" parent="KSAP-VerticalBoxGroup" p:hidden="true"
+    <bean id="academic_course_menu" parent="KSAP-VerticalBoxGroup" p:hidden="true"
           p:cssClasses="popover__menu popover__menu--large">
         <property name="items">
             <list>
@@ -278,7 +278,7 @@
 
 
     <!--Completed planned/backup Menu Items-->
-    <bean id="completed_planned_backup_menu_items" parent="KSAP-VerticalBoxGroup" p:hidden="true"
+    <bean id="completed_course_menu" parent="KSAP-VerticalBoxGroup" p:hidden="true"
           p:cssClasses="popover__menu popover__menu--large">
         <property name="items">
             <list>
@@ -291,7 +291,7 @@
     </bean>
 
     <!--Completed planned/backup placeholder items-->
-    <bean id="completed_placeholder_menu_items" parent="KSAP-VerticalBoxGroup" p:hidden="true"
+    <bean id="completed_placeholder_menu" parent="KSAP-VerticalBoxGroup" p:hidden="true"
           p:cssClasses="popover__menu popover__menu--large">
         <property name="items">
             <list>
@@ -511,6 +511,7 @@
                                 <entry key="single-quarter-atpid" value="@{#line.singleQuarterAtp}"/>
                                 <entry key="start" value="@{#line.index GE 0 ? 'true':'false'}"/>
                                 <entry key="index" value="@{#line.index GE 0 ? #line.index :'-1'}"/>
+                                <entry key="openforplanning" value="@{#line.openForPlanning}"/>
                             </map>
                         </property>
                         <property name="cssClasses">
@@ -844,7 +845,7 @@
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="onClickScript"
                       p:condition="#line.courseId NE null">
                     <property name="replacement"
-                              value="openMenu('@{#line.uuid}_record','completed_courses_menu_items','@{#line.atpId}',e,null,'popover__menu popover__menu--large',{themeMargins:{total:'20px', difference:'0px'},tail:{align:'top'},align:'top',position:'right'},false);"/>
+                              value="openMenu('@{#line.uuid}_record','academic_course_menu','@{#line.atpId}',e,null,'popover__menu popover__menu--large',{themeMargins:{total:'20px', difference:'0px'},tail:{align:'top'},align:'top',position:'right'},false);"/>
                 </bean>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="cssClasses"
                       p:condition="#line.courseId NE null">
