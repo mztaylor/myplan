@@ -130,12 +130,13 @@ function openMenu(id, getId, atpId, e, selector, popupClasses, popupOptions, clo
     if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents: false});
 
     if (atpId != null) {
-        var openForPlanning = jQuery('input[id^="' + atpId + '_plan_status"]').val();
-        if (openForPlanning == "false" && getId != "completed_courses_menu_items") {
+        var openForPlanning = popupBox.parents(".planYear__term").data("openforplanning");
+        if (!openForPlanning && getId != "academic_course_menu") {
             if (getId == "planned_placeholder_menu" || getId == "backup_placeholder_menu") {
-                getId = "completed_placeholder_menu_items";
-            } else {
-                getId = "completed_planned_backup_menu_items";
+                getId = "completed_placeholder_menu";
+            }
+            if (getId == "planned_course_menu" || getId == "backup_course_menu") {
+                getId = "completed_course_menu";
             }
         }
     }
