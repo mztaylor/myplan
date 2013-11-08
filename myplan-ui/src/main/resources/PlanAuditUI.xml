@@ -134,7 +134,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-SimpleDataField" p:propertyName="report.runDate">
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="report.runDate" p:width="40px">
                                 <property name="escapeHtmlInPropertyValue" value="false"/>
                                 <property name="propertyEditor" ref="plan_audit_timestamp_formatter"/>
                                 <property name="cssClasses">
@@ -143,7 +143,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-HorizontalBoxGroup" p:width="164px">
+                            <bean parent="KSAP-HorizontalBoxGroup" p:width="158px">
                                 <property name="instructionalMessage">
                                     <bean parent="Uif-Message">
                                         <property name="messageText" value="Plan Includes"/>
