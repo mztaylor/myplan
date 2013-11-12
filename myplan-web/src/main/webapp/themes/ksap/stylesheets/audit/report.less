@@ -1,55 +1,42 @@
 .myplan-audit-report h6 {
     background: #39275b;
-    color: #fff;
-    padding: 2px 10px;
+    color: @white;
+    padding: 2px @paddingDefault;
     text-transform: uppercase;
-    border-radius: 5px 5px 0px 0px;
-    -moz-border-radius: 5px 5px 0px 0px;
-    -webkit-border-radius: 5px 5px 0px 0px;
+    .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
 }
 
 .myplan-audit-report h1 {
-    color: #fff;
+    color: @white;
     text-transform: uppercase;
     background: #39275b;
     padding: 15px;
-    font-size: 1.3846em;
-    border-radius: 5px 5px 0px 0px;
-    -moz-border-radius: 5px 5px 0px 0px;
-    -webkit-border-radius: 5px 5px 0px 0px;
+    font-size: @fontSizeExtraLarge;
+    line-height: @baseLineHeight;
+    .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
 }
 
 .planAudit .myplan-audit-report h1 {
-    color: #000;
+    color: @black;
     border-left: solid 1px #ffe3a2;
     border-right: solid 1px #ffe3a2;
-    background: url('../images/myplan_planned_section_bkgrd.png') !important;
-    border-radius: 0px;
-    -moz-border-radius: 0px;
-    -webkit-border-radius: 0px;
+    background: url('../images/planned_activity_bkgrd.png') !important;
     text-shadow: 0px 0px 5px #FBF2DB;
-}
-
-.myplan-audit-report a {
-    outline: 0;
-    border: none;
-    color: #0066cc;
+    .border-radius(0);
 }
 
 .myplan-audit-report .audit-summary {
-    background: #dddddd;
-    border-radius: 0px 0px 5px 5px;
-    -moz-border-radius: 0px 0px 5px 5px;
-    -webkit-border-radius: 0px 0px 5px 5px;
-    padding: 10px 15px;
+    background: #ddd;
+    padding: @paddingDefault 15px;
     overflow: auto;
-    margin: 0 0 10px 0;
+    margin: 0 0 @marginDefault 0;
+    .border-radius(0 0 @baseBorderRadius @baseBorderRadius);
 }
 
 .planAudit .myplan-audit-report .audit-summary {
     border: solid 1px #ffe3a2;
     border-top: none;
-    background: #fff;
+    background: @white;
 }
 
 .myplan-audit-report .audit-summary .audit-summary-data {
@@ -62,10 +49,10 @@
 }
 
 .planAudit .myplan-audit-report .audit-summary .audit-summary-data label {
-    font-weight: normal;
-    color: #777;
+    color: @textColorMin;
     display: inline-block;
     width: 39%;
+    .normal();
 }
 
 .myplan-audit-report .audit-summary .audit-summary-data > div,
@@ -81,12 +68,10 @@
 }
 
 .myplan-audit-report .audit-status-msg {
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
     background: #faf5ff;
     padding: 10px 15px 10px 85px;
     position: relative;
+    .border-radius(@baseBorderRadius);
 }
 
 .myplan-audit-report .audit-status-msg label {
@@ -94,77 +79,70 @@
     top: 0px;
     left: 0px;
     background: #ebe1fe;
-    padding: 10px 15px;
-    border-radius: 5px 0 0 5px;
-    -moz-border-radius: 5px 0 0 5px;
-    -webkit-border-radius: 5px 0 0 5px;
+    padding: @paddingDefault 15px;
+    .border-radius(@baseBorderRadius 0 0 @baseBorderRadius);
 }
 
 .myplan-audit-report .control-toolbar {
-    padding: 10px;
+    padding: @paddingDefault;
+    margin: 0 0 @marginLarge 0;
     background: #faf8ec;
-    border: solid 1px #dfdcdc;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    margin: 0 0 20px 0;
+    border: @baseBorderStyle;
+    .border-radius(@baseBorderRadius);
 }
 
 .myplan-audit-report .control-toolbar label {
-    font-weight: normal;
     margin: 0 7px 0 0;
+    .normal();
 }
 
 .myplan-audit-report .section {
-    margin: 20px 0 0 0;
+    margin: @marginLarge 0 0 0;
 }
 
 .myplan-audit-report .section .heading,
 .myplan-audit-report .section .planHeading {
-    font-family: "museo-sans", Arial, Helvetica, Verdana, sans-serif;
-    font-size: 1.1538em !important;
+    font-size: @fontSizeLarge;
     background: #dddddd;
     border: solid 1px #e6e6e6;
-    padding: 10px;
-    margin: 0 0 20px 0;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
+    padding: @paddingDefault;
+    margin: 0 0 @marginLarge 0;
+    .border-radius(@baseBorderRadius);
 }
 
 .myplan-audit-report .section .planHeading {
     border: none;
-    border-radius: 0px;
-    -moz-border-radius: 0px;
-    -webkit-border-radius: 0px;
     margin: 0;
     background: none;
+    .border-radius(0);
 }
 
 .myplan-audit-report .requirement,
 .myplan-audit-report .bigsection {
-    margin: 0 10px 5px 10px;
+    margin: 0 @marginDefault @marginSmall;
     clear: both;
-    border-top: dotted 1px #e4e3e3;
-    padding: 10px;
-    background: url('../images/myplan_audit_req_gradient.png') repeat-x;
+    border-top: @dottedBorderStyle;
+    padding: @paddingDefault;
     overflow: hidden;
     height: auto;
+    background: -moz-linear-gradient(top, #fbf6e6 0px, #ffffff 50px);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0px,#fbf6e6), color-stop(50px,#ffffff));
+    background: -webkit-linear-gradient(top, #fbf6e6 0px,#ffffff 50px);
+    background: -o-linear-gradient(top, #fbf6e6 0px,#ffffff 50px);
+    background: -ms-linear-gradient(top, #fbf6e6 0px,#ffffff 50px);
+    background: linear-gradient(to bottom, #fbf6e6 0px,#ffffff 50px);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fbf6e6', endColorstr='#ffffff',GradientType=0);
 }
 
 .myplan-audit-report .bigsection .heading {
     margin-left: 66px;
-    font: inherit !important;
     background: none;
     border: none;
     padding: 0;
-    border-radius: 0px;
-    -moz-border-radius: 0px;
-    -webkit-border-radius: 0px;
+    .border-radius(0);
 }
 
 .myplan-audit-report .requirement .header {
-    line-height: 1.75em;
     overflow: auto;
 }
 
@@ -179,7 +157,7 @@
 .myplan-audit-report .requirement .subrequirement .header .title,
 .myplan-audit-report .requirement .subrequirement .header .subreqCline {
     float: left;
-    margin: 0 10px 0 0;
+    margin: 0 @marginDefault 0 0;
     vertical-align: middle;
     padding: 0;
     min-height: 1px;
@@ -195,7 +173,7 @@
 }
 
 .myplan-audit-report .requirement .header .toggle {
-    background: url('../images/myplan_icon_sprites.png') no-repeat -1000px -1000px;
+    background: url('../images/icon_sprite.png') no-repeat -1000px -1000px;
     width: 16px;
     height: 16px;
     margin-top: 2px;
@@ -226,21 +204,19 @@
 
 .myplan-audit-report .requirement .header .status,
 .myplan-audit-report .requirement .subrequirement .header .status {
-    color: #fff;
-    font-size: 9px;
+    color: @white;
+    font-size: @fontSizeMin;
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-weight: bold;
     width: 28px;
     text-align: center;
     text-transform: uppercase;
     line-height: 13px;
     height: 13px;
-    margin-top: 3px;
-    border-radius: 3px;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
+    margin-top: @marginMini;
+    .border-radius(@borderRadiusSmall);
     border: solid 1px transparent;
     text-shadow: 0px 1px 2px rgba(50, 50, 50, 1);
+    .bold();
 }
 
 .myplan-audit-report .requirement .header .status.Status_NO {
@@ -249,9 +225,9 @@
 }
 
 .myplan-audit-report .requirement .header .status.Status_PL {
-    background: #fbf2da url('../images/myplan_planned_section_bkgrd.png');
+    background: #fbf2da url('../images/planned_activity_bkgrd.png');
     border-color: #fdd982;
-    color: #000;
+    color: @black;
     text-shadow: 0px 0px 3px rgba(250, 250, 250, 1);
 }
 
@@ -283,7 +259,7 @@
 }
 
 .myplan-audit-report .requirement .body .totals .value {
-    font-weight: bold;
+    .bold();
 }
 
 .myplan-audit-report .requirement .body .totals .earned,
@@ -291,14 +267,14 @@
 .myplan-audit-report .requirement .body .totals .needs,
 .myplan-audit-report .requirement .body .totals .required,
 .myplan-audit-report .requirement .body .totals .whatif {
-    margin: 0 20px 0 0;
+    margin: 0 @marginLarge 0 0;
     display: inline-block;
 }
 
 .myplan-audit-report .requirement .subrequirement .header .status {
     background-color: #666;
     border-color: #aaa;
-    color: #fff;
+    color: @white;
 }
 
 .myplan-audit-report .requirement .subrequirement .header .Status_PL {
@@ -327,7 +303,7 @@
 }
 
 .myplan-audit-report .requirement .subrequirement.justtitle {
-    padding: 10px 0px;
+    padding: @paddingDefault 0px;
 }
 
 .myplan-audit-report .requirement .subrequirement.justtitle .subreqNumber.required {
@@ -337,8 +313,8 @@
 .myplan-audit-report .requirement .subrequirement.justtitle .title {
     margin-left: 40px;
     font-weight: bold;
-    border-top: dotted 1px #ccc;
-    border-bottom: dotted 1px #ccc;
+    border-top: @dottedBorderStyle;
+    border-bottom: @dottedBorderStyle;
     padding: 4px 0px;
     line-height: 1.25em;
 }
@@ -351,7 +327,7 @@
 }
 
 .myplan-audit-report table caption {
-    font-size: 10px;
+    font-size: @fontSizeTiny;
     color: #666;
     text-transform: uppercase;
     line-height: 2em;
@@ -365,21 +341,21 @@
 }
 
 .myplan-audit-report .requirement table.taken {
-    border-top: solid 1px #ddd;
+    border-top: @baseBorderStyle;
     margin-top: 0.75em;
     margin-bottom: 0.75em;
 }
 
 .myplan-audit-report .requirement table th,
 .myplan-audit-report .requirement table td {
-    font-size: 12px;
+    font-size: @fontSizeSmall;
     padding: 0 0.4em 0 0;
 }
 
 .myplan-audit-report .requirement .taken td,
 .myplan-audit-report .requirement .taken th {
     padding-right: 1.25em;
-    border-bottom: solid 1px #ddd;
+    border-bottom: @baseBorderStyle;
     line-height: 1.88em;
 }
 
@@ -389,8 +365,8 @@
 }
 
 .myplan-audit-report .requirement table th {
-    font-size: 10px;
-    color: #777;
+    font-size: @fontSizeTiny;
+    color: @textColorMin;
     text-align: left;
 }
 
@@ -428,10 +404,8 @@
 
 .myplan-audit-report .footer .purple-line {
     background: #39275b;
-    border-radius: 0px 0px 5px 5px;
-    -moz-border-radius: 0px 0px 5px 5px;
-    -webkit-border-radius: 0px 0px 5px 5px;
-    color: #fff;
+    .border-radius(0 0 @baseBorderRadius @baseBorderRadius);
+    color: @white;
 }
 
 .sigdateLabel, .sigdateField {
@@ -445,22 +419,18 @@
 
 .WIFCRSES.requirement.Status_NONE {
     border: solid 1px #fac157;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
+    .border-radius(@baseBorderRadius);
     margin-bottom: 30px;
-    background: #fff;
+    background: @white;
     padding: 0;
 }
 
 .WIFCRSES.requirement.Status_NONE > .header {
-    border-radius: 5px 5px 0 0;
-    -webkit-border-radius: 5px 5px 0 0;
-    -moz-border-radius: 5px 5px 0 0;
-    padding: 20px;
+    padding: @paddingLarge;
     background: #faeac4;
-    font-weight: 700;
     line-height: 1.5em;
+    .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+    .bold();
 }
 
 .WIFCRSES.requirement.Status_NONE > .header .title {

@@ -336,7 +336,7 @@
                         <bean parent="KSAP-Message" p:messageText="Select your campus and intended degree program from the dropdown menu below."/>
                     </property>
                     <property name="control">
-                        <bean parent="Uif-HorizontalRadioControl"/>
+                        <bean parent="Uif-HorizontalRadioControl" p:fieldsetClasses="auditRun__radioSet"/>
                     </property>
                     <property name="optionsFinder">
                         <bean class="org.kuali.student.myplan.course.util.AuditRunCampusParam"/>
