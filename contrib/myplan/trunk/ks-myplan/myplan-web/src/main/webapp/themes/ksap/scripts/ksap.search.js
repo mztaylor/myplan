@@ -145,7 +145,6 @@ jQuery.fn.iterateSorted = function (sorter, print) {
 }(jQuery));
 
 function searchForCourses(id, parentId) {
-    window.location.replace('#');
     var results = jQuery("#" + parentId + " > .uif-horizontalBoxLayout"); // course_search_results_panel
     results.fadeOut("fast");
     var sQuery = jQuery("input[name='searchQuery']").val();
