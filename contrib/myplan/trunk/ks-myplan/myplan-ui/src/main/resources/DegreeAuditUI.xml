@@ -142,7 +142,7 @@
                     <property name="items">
                         <list>
                             <bean id="degree_audit_block_item" parent="degree_audit_block"/>
-                            <bean parent="KSAP-RightPane" p:width="240px">
+                            <bean parent="KSAP-RightPane" p:width="230px">
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-YourStuff">
@@ -220,12 +220,12 @@
         <property name="formClass" value="org.kuali.student.myplan.audit.form.AuditForm"/>
     </bean>
 
-    <bean id="degree_audit_block" parent="KSAP-VerticalBoxGroup" p:width="700px">
+    <bean id="degree_audit_block" parent="KSAP-VerticalBoxGroup" p:width="710px">
         <property name="onDocumentReadyScript" value="
-            if (jQuery.cookie('myplan_audit_running')) {
+            if (jQuery.cookie('pendingAudit')) {
                 if (readUrlParam('degreeAudit.auditId') == false) {
-                    var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running')));
-                    blockPendingAudit(data);
+                    var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('pendingAudit')));
+                    blockPendingAudit(data, true);
                 }
             }
         "/>
@@ -242,7 +242,6 @@
                       p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
                     <property name="replacement">
                         <list>
-                            <!--<ref bean="audit_adviser_actions_message"/>-->
                             <bean parent="audit_tabs"/>
                             <bean parent="run_degree_audits"/>
                             <ref bean="audit_section"/>
@@ -344,13 +343,11 @@
           p:actionLabel="Audit Your Degree">
         <property name="disabled"
                   value="@{(#form.degreeAudit.campusParam EQ '306' AND #form.degreeAudit.programParamSeattle EQ 'default') OR (#form.degreeAudit.campusParam EQ '310' AND #form.degreeAudit.programParamBothell EQ 'default') OR (#form.degreeAudit.campusParam EQ '323' AND #form.degreeAudit.programParamTacoma EQ 'default')}"/>
-        <property name="onClickScript" value="
-            setPendingAudit(jQuery(this), 5);
-        "/>
+        <property name="actionScript" value="setPendingAudit(jQuery(this), 5);"/>
         <property name="onDocumentReadyScript" value="
             var disableCompId = 'degree_audit_run';
             var condition = function () {
-                return ((jQuery.cookie('myplan_audit_running') != null) || (coerceValue('degreeAudit.campusParam') == '306' &amp;&amp; coerceValue('degreeAudit.programParamSeattle') == 'default') || (coerceValue('degreeAudit.campusParam') == '310' &amp;&amp; coerceValue('degreeAudit.programParamBothell') == 'default') || (coerceValue('degreeAudit.campusParam') == '323' &amp;&amp; coerceValue('degreeAudit.programParamTacoma') == 'default'));
+                return ((jQuery.cookie('pendingAudit') != null) || (coerceValue('degreeAudit.campusParam') == '306' &amp;&amp; coerceValue('degreeAudit.programParamSeattle') == 'default') || (coerceValue('degreeAudit.campusParam') == '310' &amp;&amp; coerceValue('degreeAudit.programParamBothell') == 'default') || (coerceValue('degreeAudit.campusParam') == '323' &amp;&amp; coerceValue('degreeAudit.programParamTacoma') == 'default'));
             };
             disabledCheck(disableCompId, 'action', condition);
             jQuery('button#' + disableCompId).on('AUDIT_COMPLETE', function(event, data) {
@@ -368,11 +365,7 @@
     </bean>
 
     <bean id="audit_section" parent="Uif-VerticalBoxGroup">
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-audit-report</value>
-            </list>
-        </property>
+        <property name="cssClasses" value="auditReport"/>
         <property name="items">
             <list>
                 <bean parent="empty_degree_audits"/>
@@ -385,60 +378,34 @@
           p:headerText="How to Use Degree Audit (DARS) for Academic Planning">
         <property name="render" value="@{#form.degreeAudit.auditHtml EQ null}"/>
         <property name="header">
-            <bean parent="Uif-HeaderFour">
-                <property name="cssClasses">
-                    <list merge="true">
-                        <value>uif-boxLayoutVerticalItem</value>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>ksap-noMargin</value>
-            </list>
+            <bean parent="Uif-HeaderFour"/>
         </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-VerticalBoxGroup" p:headerText="Explore Programs and Minors" p:width="318px">
-                    <property name="style" value="margin-right:20px; height:175px;"/>
+                <bean parent="KSAP-VerticalBoxGroup" p:headerText="Explore Programs and Minors">
                     <property name="header">
-                        <bean parent="Uif-HeaderFive"/>
+                        <bean parent="Uif-HeaderFive" p:cssClasses="auditRun__infoHeader" p:headerTagCssClasses="auditRun__infoHeaderText"/>
                     </property>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-audit-info-panel</value>
-                        </list>
-                    </property>
+                    <property name="cssClasses" value="auditRun__info"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message">
+                            <bean parent="KSAP-Message">
                                 <property name="messageText"
-                                          value="Still deciding on a degree program? DARS can help you determine your academic progress towards any degree.
-                                  [br/][br/]
-                                  Select a program from the menu above and run DARS to explore listed majors and more."/>
+                                          value="Still deciding on a degree program? DARS can help you determine your academic progress towards any degree.[br/][br/]Select a program from the menu above and run DARS to explore listed majors and more."/>
                             </bean>
                         </list>
                     </property>
                 </bean>
-                <bean parent="KSAP-VerticalBoxGroup" p:headerText="Track Your Progress" p:width="318px">
-                    <property name="style" value="height:175px;"/>
+                <bean parent="KSAP-VerticalBoxGroup" p:headerText="Track Your Progress">
                     <property name="header">
-                        <bean parent="Uif-HeaderFive"/>
+                        <bean parent="Uif-HeaderFive" p:cssClasses="auditRun__infoHeader" p:headerTagCssClasses="auditRun__infoHeaderText"/>
                     </property>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>ksap-noMargin</value>
-                            <value>myplan-audit-info-panel</value>
-                        </list>
-                    </property>
+                    <property name="cssClasses" value="auditRun__info"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message">
+                            <bean parent="KSAP-Message">
                                 <property name="messageText"
-                                          value="Stay on top of your required credits and courses. DARS will compare your academic record with program requirements so that you know what&#39;s needed to complete your degree.
-                                  [br/][br/]
-                                  Select your program from the menu above &amp; run DARS to see your academic progress now."/>
+                                          value="Stay on top of your required credits and courses. DARS will compare your academic record with program requirements so that you know what&#39;s needed to complete your degree.[br/][br/]Select your program from the menu above &amp; run DARS to see your academic progress now."/>
                             </bean>
                         </list>
                     </property>
@@ -457,37 +424,6 @@
             <list>
                 <bean p:id="@{degreeAudit.auditId NE null ? degreeAudit.auditId : 'empty_degree_audit_html'}" parent="KSAP-Message" p:messageText="@{degreeAudit.auditHtml}"
                       p:style="display:block;" p:cssClasses="degreeAudit auditHtml"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="audit_adviser_actions_message" parent="Uif-VerticalBoxGroup">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-status</value>
-                <value>info</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-HorizontalFieldGroup">
-                    <property name="group.validationMessages.render" value="false"/>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-Message"
-                                  p:messageText="Advisers are unable to run degree audits."/>
-                            <bean parent="Uif-Link">
-                                <property name="linkText" value="Learn more about Adviser View."/>
-                                <property name="href"
-                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
             </list>
         </property>
     </bean>
