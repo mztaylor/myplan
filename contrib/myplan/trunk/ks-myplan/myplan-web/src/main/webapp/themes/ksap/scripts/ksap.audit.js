@@ -164,19 +164,25 @@ function collapseReq(obj, onload) {
         obj.removeClass("expanded").addClass("collapsed").css({
             height: height + "px"
         }).children(".header").find(".title").css({
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                height: height + "px"
-            });
+            height: height + "px"
+        }).find(".text:first").css({
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
+        });
+        jQuery(this).find(".header .title .text").not(':first').hide();
     } else {
         obj.removeClass("expanded").addClass("collapsed").animate({
             height: height + "px"
         }, 300, function () {
             jQuery(this).children(".header").find(".title").css({
+                height: height + "px"
+            }).find(".text:first").css({
                 whiteSpace: "nowrap",
                 overflow: "hidden",
-                height: height + "px"
+                textOverflow: "ellipsis"
             });
+            jQuery(this).find(".header .title .text").not(':first').hide();
         });
     }
 }
@@ -187,19 +193,25 @@ function expandReq(obj, onload) {
         obj.removeClass("collapsed").addClass("expanded").css({
             height: "auto"
         }).children(".header").find(".title").css({
-                whiteSpace: "normal",
-                overflow: "auto",
-                height: "auto"
-            });
+            height: "auto"
+        }).find(".text:first").css({
+            whiteSpace: "normal",
+            overflow: "auto",
+            textOverflow: "ellipsis"
+        });
+        jQuery(this).find(".header .title .text").not(':first').show();
     } else {
         obj.removeClass("collapsed").addClass("expanded").animate({
                 height: height
             }, 300
         ).children(".header").find(".title").css({
-                whiteSpace: "normal",
-                overflow: "auto",
-                height: "auto"
-            });
+            height: "auto"
+        }).find(".text:first").css({
+            whiteSpace: "normal",
+            overflow: "auto",
+            textOverflow: "ellipsis"
+        });
+        jQuery(this).find(".header .title .text").not(':first').show();
     }
 }
 
@@ -351,11 +363,11 @@ function validatePlanAudit(obj) {
 
 function setFancyboxScrollableGroup(addPadding) {
     var innerHeight = 0;
-    jQuery(".fancybox-inner .ksap-getHeight").each(function () {
+    jQuery(".fancybox-inner .getHeight").each(function () {
         innerHeight = innerHeight + Math.round(parseFloat(jQuery(this).outerHeight(true))) + 1;
     });
     var maxHeight = jQuery(window).height() - (addPadding + innerHeight);
-    jQuery(".fancybox-inner .ksap-scrollableGroup").css("max-height", maxHeight + "px");
+    jQuery(".fancybox-inner .auditHandOff__scrollGroup").css("max-height", maxHeight + "px");
 }
 
 function runPlanAudit(id) {
@@ -364,4 +376,32 @@ function runPlanAudit(id) {
     }
     jQuery("button#" + id).click();
     jQuery.fancybox.close(true);
+}
+
+function indicateViewingAudit(id, type) {
+    var open = false;
+    var currentAudit = jQuery(".auditReport__html--" + type + " .myplan-audit-report");
+    var currentAuditId = currentAudit.attr("auditid");
+
+    jQuery("#" + id + " .module__item").not(".pending").each(function (index) {
+        if (jQuery(this).attr("id").replace("link_", "") == currentAuditId && currentAudit.is(":visible")) {
+            if (type == 'degree') {
+                jQuery(this).find(".module__itemLabel label").html("Viewing");
+            }
+            if (type == 'plan') {
+                if (index > 1) open = true;
+                jQuery(this).addClass("viewing");
+            }
+        } else {
+            if (type == 'degree') {
+                jQuery(this).find(".module__itemLabel label").html("View");
+            }
+            if (type == 'plan') {
+                jQuery(this).removeClass("viewing");
+            }
+        }
+    });
+    if (open) {
+        jQuery("#plan_audit_toggle_link").click();
+    }
 }

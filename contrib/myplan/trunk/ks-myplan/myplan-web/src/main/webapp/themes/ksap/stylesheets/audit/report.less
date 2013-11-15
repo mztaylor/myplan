@@ -16,7 +16,7 @@
     .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
 }
 
-.auditReport .planAudit h1 {
+.auditReport .auditReport__html--plan h1 {
     color: @black;
     border-left: solid 1px #ffe3a2;
     border-right: solid 1px #ffe3a2;
@@ -33,7 +33,7 @@
     .border-radius(0 0 @baseBorderRadius @baseBorderRadius);
 }
 
-.auditReport .planAudit .audit-summary {
+.auditReport .auditReport__html--plan .audit-summary {
     border: solid 1px #ffe3a2;
     border-top: none;
     background: @white;
@@ -44,11 +44,11 @@
     width: 50%;
 }
 
-.degreeAudit.auditHtml .auditReport .audit-summary .plan-audit-data {
+.auditReport .auditReport__html--degree .audit-summary .plan-audit-data {
     display: none;
 }
 
-.auditReport .planAudit .audit-summary .audit-summary-data label {
+.auditReport .auditReport__html--plan .audit-summary .audit-summary-data label {
     color: @textColorMin;
     display: inline-block;
     width: 39%;

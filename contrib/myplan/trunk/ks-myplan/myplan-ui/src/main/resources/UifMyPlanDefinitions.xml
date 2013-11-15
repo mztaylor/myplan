@@ -929,7 +929,7 @@
 
     <bean id="KSAP-ViewHeader" parent="Uif-ViewHeader">
         <property name="cssClasses" value="viewHeader"/>
-        <property name="headerTagCssClasses" value=""/>
+        <property name="headerTagCssClasses" value="viewHeaderText"/>
         <property name="headerLevel" value="h2"/>
     </bean>
 
