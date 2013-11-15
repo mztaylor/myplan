@@ -1,0 +1,63 @@
+.auditHandOff {
+    overflow: hidden;
+
+    & .uif-stackedCollectionLayout {
+
+        & > .uif-collectionItem {
+            margin: @marginLarge 0 0;
+            border: @dottedBorderStyle;
+            padding: @paddingDefault 15px;
+            background-color: @white;
+            .border-radius(@baseBorderRadius);
+
+            &:first-child {
+                margin: 0;
+            }
+        }
+
+        & .uif-stackedCollectionLayout {
+
+            &  > .uif-collectionItem {
+                margin: @marginDefault 0 0 0;
+                .border-radius(0);
+                border: none;
+                padding: 0;
+            }
+        }
+    }
+}
+
+.auditHandOff__scrollGroup {
+    overflow: auto;
+    padding: 0 @paddingLarge @paddingLarge;
+    margin: 0;
+    border-top: @baseBorderStyle;
+    border-bottom: @baseBorderStyle;
+
+    &.auditHandOff__scrollGroup--noBorder {
+        border: none;
+    }
+}
+
+.auditHandOff__buttonGroup .uif-boxLayoutHorizontalItem {
+    margin: 0 0 0 @marginLarge;
+
+    &:first-child {
+        margin: 0;
+    }
+}
+
+.auditHandOff__actionLink {
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+}
+
+.auditHandOff__excludeHeaderText {
+    color: #6E4F1A !important;
+}
+
+.auditHandOff__ignore,
+.auditHandOff__messy {
+    margin: @marginLarge 0 0;
+}

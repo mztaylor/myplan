@@ -26,33 +26,7 @@ function truncateField(id, floated) {
         }
     });
 }
-function indicateViewingAudit(id, type) {
-    var open = false;
-    var currentAudit = jQuery("." + type + ".auditHtml .myplan-audit-report");
-    var currentAuditId = currentAudit.attr("auditid");
 
-    jQuery("#" + id + " .uif-collectionItem").not(".pending").each(function (index) {
-        if (jQuery(this).attr("id").replace("link_", "") == currentAuditId && currentAudit.is(":visible")) {
-            if (type == 'degreeAudit') {
-                jQuery(this).find(".uif-label label").html("Viewing");
-            }
-            if (type == 'planAudit') {
-                if (index > 1) open = true;
-                jQuery(this).addClass("viewing");
-            }
-        } else {
-            if (type == 'degreeAudit') {
-                jQuery(this).find(".uif-label label").html("View");
-            }
-            if (type == 'planAudit') {
-                jQuery(this).removeClass("viewing");
-            }
-        }
-    });
-    if (open) {
-        jQuery("#plan_audit_toggle_link").click();
-    }
-}
 
 /*
  ######################################################################################
