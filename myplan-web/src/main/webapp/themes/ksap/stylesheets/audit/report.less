@@ -1,4 +1,4 @@
-.myplan-audit-report h6 {
+.auditReport h6 {
     background: #39275b;
     color: @white;
     padding: 2px @paddingDefault;
@@ -6,7 +6,7 @@
     .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
 }
 
-.myplan-audit-report h1 {
+.auditReport h1 {
     color: @white;
     text-transform: uppercase;
     background: #39275b;
@@ -16,7 +16,7 @@
     .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
 }
 
-.planAudit .myplan-audit-report h1 {
+.auditReport .planAudit h1 {
     color: @black;
     border-left: solid 1px #ffe3a2;
     border-right: solid 1px #ffe3a2;
@@ -25,7 +25,7 @@
     .border-radius(0);
 }
 
-.myplan-audit-report .audit-summary {
+.auditReport .audit-summary {
     background: #ddd;
     padding: @paddingDefault 15px;
     overflow: auto;
@@ -33,48 +33,48 @@
     .border-radius(0 0 @baseBorderRadius @baseBorderRadius);
 }
 
-.planAudit .myplan-audit-report .audit-summary {
+.auditReport .planAudit .audit-summary {
     border: solid 1px #ffe3a2;
     border-top: none;
     background: @white;
 }
 
-.myplan-audit-report .audit-summary .audit-summary-data {
+.auditReport .audit-summary .audit-summary-data {
     float: left;
     width: 50%;
 }
 
-.degreeAudit.auditHtml .myplan-audit-report .audit-summary .plan-audit-data {
+.degreeAudit.auditHtml .auditReport .audit-summary .plan-audit-data {
     display: none;
 }
 
-.planAudit .myplan-audit-report .audit-summary .audit-summary-data label {
+.auditReport .planAudit .audit-summary .audit-summary-data label {
     color: @textColorMin;
     display: inline-block;
     width: 39%;
     .normal();
 }
 
-.myplan-audit-report .audit-summary .audit-summary-data > div,
-.myplan-audit-report .audit-summary .audit-summary-data > span {
+.auditReport .audit-summary .audit-summary-data > div,
+.auditReport .audit-summary .audit-summary-data > span {
     display: inline-block;
     width: 59%;
 }
 
-.myplan-audit-report .toptext,
-.myplan-audit-report .audit-status-msg,
-.myplan-audit-report .advisory {
+.auditReport .toptext,
+.auditReport .audit-status-msg,
+.auditReport .advisory {
     margin-top: 1em;
 }
 
-.myplan-audit-report .audit-status-msg {
+.auditReport .audit-status-msg {
     background: #faf5ff;
     padding: 10px 15px 10px 85px;
     position: relative;
     .border-radius(@baseBorderRadius);
 }
 
-.myplan-audit-report .audit-status-msg label {
+.auditReport .audit-status-msg label {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -83,7 +83,7 @@
     .border-radius(@baseBorderRadius 0 0 @baseBorderRadius);
 }
 
-.myplan-audit-report .control-toolbar {
+.auditReport .control-toolbar {
     padding: @paddingDefault;
     margin: 0 0 @marginLarge 0;
     background: #faf8ec;
@@ -91,17 +91,17 @@
     .border-radius(@baseBorderRadius);
 }
 
-.myplan-audit-report .control-toolbar label {
+.auditReport .control-toolbar label {
     margin: 0 7px 0 0;
     .normal();
 }
 
-.myplan-audit-report .section {
+.auditReport .section {
     margin: @marginLarge 0 0 0;
 }
 
-.myplan-audit-report .section .heading,
-.myplan-audit-report .section .planHeading {
+.auditReport .section .heading,
+.auditReport .section .planHeading {
     font-size: @fontSizeLarge;
     background: #dddddd;
     border: solid 1px #e6e6e6;
@@ -110,15 +110,15 @@
     .border-radius(@baseBorderRadius);
 }
 
-.myplan-audit-report .section .planHeading {
+.auditReport .section .planHeading {
     border: none;
     margin: 0;
     background: none;
     .border-radius(0);
 }
 
-.myplan-audit-report .requirement,
-.myplan-audit-report .bigsection {
+.auditReport .requirement,
+.auditReport .bigsection {
     margin: 0 @marginDefault @marginSmall;
     clear: both;
     border-top: @dottedBorderStyle;
@@ -134,7 +134,7 @@
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fbf6e6', endColorstr='#ffffff',GradientType=0);
 }
 
-.myplan-audit-report .bigsection .heading {
+.auditReport .bigsection .heading {
     margin-left: 66px;
     background: none;
     border: none;
@@ -142,20 +142,20 @@
     .border-radius(0);
 }
 
-.myplan-audit-report .requirement .header {
+.auditReport .requirement .header {
     overflow: auto;
 }
 
-.myplan-audit-report .requirement .header .toggle,
-.myplan-audit-report .requirement .header .status,
-.myplan-audit-report .requirement .header .reqNumber,
-.myplan-audit-report .requirement .header .reqGroup,
-.myplan-audit-report .requirement .header .title,
-.myplan-audit-report .requirement .subrequirement .header .status,
-.myplan-audit-report .requirement .subrequirement .header .required,
-.myplan-audit-report .requirement .subrequirement .header .subreqNumber,
-.myplan-audit-report .requirement .subrequirement .header .title,
-.myplan-audit-report .requirement .subrequirement .header .subreqCline {
+.auditReport .requirement .header .toggle,
+.auditReport .requirement .header .status,
+.auditReport .requirement .header .reqNumber,
+.auditReport .requirement .header .reqGroup,
+.auditReport .requirement .header .title,
+.auditReport .requirement .subrequirement .header .status,
+.auditReport .requirement .subrequirement .header .required,
+.auditReport .requirement .subrequirement .header .subreqNumber,
+.auditReport .requirement .subrequirement .header .title,
+.auditReport .requirement .subrequirement .header .subreqCline {
     float: left;
     margin: 0 @marginDefault 0 0;
     vertical-align: middle;
@@ -163,16 +163,16 @@
     min-height: 1px;
 }
 
-.myplan-audit-report .requirement .header .title,
-.myplan-audit-report .requirement .subrequirement .header .title {
+.auditReport .requirement .header .title,
+.auditReport .requirement .subrequirement .header .title {
     margin: 0;
 }
 
-.myplan-audit-report .requirement .header .reqNumber {
+.auditReport .requirement .header .reqNumber {
     width: 20px;
 }
 
-.myplan-audit-report .requirement .header .toggle {
+.auditReport .requirement .header .toggle {
     background: url('../images/icon_sprite.png') no-repeat -1000px -1000px;
     width: 16px;
     height: 16px;
@@ -180,30 +180,30 @@
     cursor: pointer;
 }
 
-.myplan-audit-report .requirement.expanded .header .toggle {
+.auditReport .requirement.expanded .header .toggle {
     background-position: 0px -16px;
 }
 
-.myplan-audit-report .requirement.expanded .header .toggle:hover {
+.auditReport .requirement.expanded .header .toggle:hover {
     background-position: -16px -16px;
 }
 
-.myplan-audit-report .requirement.collapsed .header .toggle {
+.auditReport .requirement.collapsed .header .toggle {
     background-position: 0px -32px;
 }
 
-.myplan-audit-report .requirement.collapsed .header .toggle:hover {
+.auditReport .requirement.collapsed .header .toggle:hover {
     background-position: -16px -32px;
 }
 
-.myplan-audit-report .requirement .header .title {
+.auditReport .requirement .header .title {
     text-overflow: ellipsis;
     cursor: pointer;
     width: 564px;
 }
 
-.myplan-audit-report .requirement .header .status,
-.myplan-audit-report .requirement .subrequirement .header .status {
+.auditReport .requirement .header .status,
+.auditReport .requirement .subrequirement .header .status {
     color: @white;
     font-size: @fontSizeMin;
     font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -219,98 +219,98 @@
     .bold();
 }
 
-.myplan-audit-report .requirement .header .status.Status_NO {
+.auditReport .requirement .header .status.Status_NO {
     background-color: #990000;
     border-color: #b76066;
 }
 
-.myplan-audit-report .requirement .header .status.Status_PL {
+.auditReport .requirement .header .status.Status_PL {
     background: #fbf2da url('../images/planned_activity_bkgrd.png');
     border-color: #fdd982;
     color: @black;
     text-shadow: 0px 0px 3px rgba(250, 250, 250, 1);
 }
 
-.myplan-audit-report .requirement .header .status.Status_IP {
+.auditReport .requirement .header .status.Status_IP {
     background-color: #ffac22;
     border-color: #ffc86c;
     color: #013802;
     text-shadow: 0px 0px 3px rgba(250, 250, 250, 1);
 }
 
-.myplan-audit-report .requirement .header .status.Status_OK {
+.auditReport .requirement .header .status.Status_OK {
     background-color: #4a7c01;
     border-color: #92b067;
 }
 
-.myplan-audit-report .requirement .header .status.Status_NONE {
+.auditReport .requirement .header .status.Status_NONE {
     background-color: transparent;
     display: none;
 }
 
-.myplan-audit-report .requirement .subrequirement .status.Status_NONE {
+.auditReport .requirement .subrequirement .status.Status_NONE {
     visibility: hidden;
     display: block;
 }
 
-.myplan-audit-report .requirement .body {
+.auditReport .requirement .body {
     clear: both;
     margin: 20px 0 0 66px;
 }
 
-.myplan-audit-report .requirement .body .totals .value {
+.auditReport .requirement .body .totals .value {
     .bold();
 }
 
-.myplan-audit-report .requirement .body .totals .earned,
-.myplan-audit-report .requirement .body .totals .inprogress,
-.myplan-audit-report .requirement .body .totals .needs,
-.myplan-audit-report .requirement .body .totals .required,
-.myplan-audit-report .requirement .body .totals .whatif {
+.auditReport .requirement .body .totals .earned,
+.auditReport .requirement .body .totals .inprogress,
+.auditReport .requirement .body .totals .needs,
+.auditReport .requirement .body .totals .required,
+.auditReport .requirement .body .totals .whatif {
     margin: 0 @marginLarge 0 0;
     display: inline-block;
 }
 
-.myplan-audit-report .requirement .subrequirement .header .status {
+.auditReport .requirement .subrequirement .header .status {
     background-color: #666;
     border-color: #aaa;
     color: @white;
 }
 
-.myplan-audit-report .requirement .subrequirement .header .Status_PL {
+.auditReport .requirement .subrequirement .header .Status_PL {
     background: #666;
     border-color: #aaa;
     text-shadow: none;
 }
 
-.myplan-audit-report .requirement .subrequirement .header .Status_IP {
+.auditReport .requirement .subrequirement .header .Status_IP {
     text-shadow: none;
 }
 
-.myplan-audit-report .requirement .subrequirement .header .Status_NONE {
+.auditReport .requirement .subrequirement .header .Status_NONE {
     text-shadow: none;
 }
 
-.myplan-audit-report .requirement .subrequirement .header .required.subreqNumber {
+.auditReport .requirement .subrequirement .header .required.subreqNumber {
     width: 30px;
     text-align: right;
 }
 
-.myplan-audit-report .requirement .subrequirement .header .title {
+.auditReport .requirement .subrequirement .header .title {
     text-overflow: clip;
     cursor: default;
     width: 474px;
 }
 
-.myplan-audit-report .requirement .subrequirement.justtitle {
+.auditReport .requirement .subrequirement.justtitle {
     padding: @paddingDefault 0px;
 }
 
-.myplan-audit-report .requirement .subrequirement.justtitle .subreqNumber.required {
+.auditReport .requirement .subrequirement.justtitle .subreqNumber.required {
     display: none;
 }
 
-.myplan-audit-report .requirement .subrequirement.justtitle .title {
+.auditReport .requirement .subrequirement.justtitle .title {
     margin-left: 40px;
     font-weight: bold;
     border-top: @dottedBorderStyle;
@@ -319,62 +319,62 @@
     line-height: 1.25em;
 }
 
-.myplan-audit-report table,
-.myplan-audit-report table th,
-.myplan-audit-report table td {
+.auditReport table,
+.auditReport table th,
+.auditReport table td {
     padding: 0;
     border-collapse: collapse;
 }
 
-.myplan-audit-report table caption {
+.auditReport table caption {
     font-size: @fontSizeTiny;
     color: #666;
     text-transform: uppercase;
     line-height: 2em;
 }
 
-.myplan-audit-report .subrequirement .totals,
-.myplan-audit-report .subrequirement .taken,
-.myplan-audit-report .subrequirement .fromcourses,
-.myplan-audit-report .requirement .subrequirement .header .subreqCline {
+.auditReport .subrequirement .totals,
+.auditReport .subrequirement .taken,
+.auditReport .subrequirement .fromcourses,
+.auditReport .requirement .subrequirement .header .subreqCline {
     margin-left: 80px;
 }
 
-.myplan-audit-report .requirement table.taken {
+.auditReport .requirement table.taken {
     border-top: @baseBorderStyle;
     margin-top: 0.75em;
     margin-bottom: 0.75em;
 }
 
-.myplan-audit-report .requirement table th,
-.myplan-audit-report .requirement table td {
+.auditReport .requirement table th,
+.auditReport .requirement table td {
     font-size: @fontSizeSmall;
     padding: 0 0.4em 0 0;
 }
 
-.myplan-audit-report .requirement .taken td,
-.myplan-audit-report .requirement .taken th {
+.auditReport .requirement .taken td,
+.auditReport .requirement .taken th {
     padding-right: 1.25em;
     border-bottom: @baseBorderStyle;
     line-height: 1.88em;
 }
 
-.myplan-audit-report .requirement .taken td:first-child,
-.myplan-audit-report .requirement .taken th:first-child {
+.auditReport .requirement .taken td:first-child,
+.auditReport .requirement .taken th:first-child {
     padding-left: 1.25em;
 }
 
-.myplan-audit-report .requirement table th {
+.auditReport .requirement table th {
     font-size: @fontSizeTiny;
     color: @textColorMin;
     text-align: left;
 }
 
-.myplan-audit-report .taken .ccode {
+.auditReport .taken .ccode {
     cursor: help;
 }
 
-.myplan-audit-report .section.rname_WHAT-IF .heading {
+.auditReport .section.rname_WHAT-IF .heading {
     border: none;
     margin: 0;
     padding: 0px;
@@ -383,7 +383,7 @@
     height: 20px;
 }
 
-.myplan-audit-report .section.rname_LINE1 .heading {
+.auditReport .section.rname_LINE1 .heading {
     border: none;
     margin: 0;
     padding: 0px;
@@ -392,17 +392,17 @@
     height: 20px;
 }
 
-.myplan-audit-report .footer {
+.auditReport .footer {
     text-align: center;
     text-transform: uppercase;
     line-height: 1.75em;
 }
 
-.myplan-audit-report .footer .gray-line {
+.auditReport .footer .gray-line {
     background: #dddddd;
 }
 
-.myplan-audit-report .footer .purple-line {
+.auditReport .footer .purple-line {
     background: #39275b;
     .border-radius(0 0 @baseBorderRadius @baseBorderRadius);
     color: @white;

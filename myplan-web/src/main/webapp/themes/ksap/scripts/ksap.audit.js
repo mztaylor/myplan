@@ -20,64 +20,39 @@ function getAuditProgram(param, type) {
     }
 }
 
-var pendingPlanAuditHeadingText = 'We are currently auditing your plan for \'<span class="programName"></span>\'.';
-var pendingDegreeAuditHeadingText = 'We are currently auditing your degree for \'<span class="programName"></span>\'.';
-
 var blockPendingAuditStyle = {
-    message: '<img src="../ks-myplan/images/ajaxAuditRunning32.gif" alt="" class="icon"/><div class="heading"></div>',
+    blockMsgClass: 'auditRun__blockAudit',
+    baseZ: 100,
+    centerX: false,
+    centerY: false,
+    message: "",
     fadeIn: 250,
     fadeOut: 250,
     css: {
+        top: '0px',
+        left: '0px',
+        width: '536px',
+        color: '#c09853',
         padding: '30px 30px 30px 82px',
         margin: '30px',
-        width: 'auto',
         textAlign: 'left',
-        border: 'solid 1px #ffd14c',
-        backgroundColor: '#fffdd7',
-        'border-radius': '15px',
-        '-webkit-border-radius': '15px',
-        '-moz-border-radius': '15px'
+        border: 'solid 1px #fbeed5',
+        backgroundColor: '#fcf8e3'
     },
     overlayCSS: {
         backgroundColor: '#fff',
-        opacity: 0.85,
+        opacity: 0.9,
         border: 'none',
         cursor: 'wait'
     }
 };
 
-var replaceBlockPendingAudit;
-
-function changeLoadingMessage(selector, programName, auditType) {
-    replaceBlockPendingAudit = setInterval(function () {
-        setLoadingMessage(selector, programName, auditType)
-    }, 100);
-}
-
-function setLoadingMessage(selector, programName, auditType) {
-    if (jQuery(selector + ' div.blockUI.blockMsg.blockElement').length > 0) {
-        fnAddLoadingText(selector, programName, auditType);
-    }
-}
-
-function fnAddLoadingText(selector, programName, auditType) {
-    clearInterval(replaceBlockPendingAudit);
-    jQuery(selector + " div.blockUI.blockOverlay").css(blockPendingAuditStyle.overlayCSS);
-    jQuery(selector + " div.blockUI.blockMsg.blockElement").html(blockPendingAuditStyle.message).css(blockPendingAuditStyle.css).data("growl", "false");
-    if (auditType == "plan") {
-        jQuery(selector + " div.blockUI.blockMsg.blockElement .heading").html(pendingPlanAuditHeadingText);
-    } else {
-        jQuery(selector + " div.blockUI.blockMsg.blockElement .heading").html(pendingDegreeAuditHeadingText);
-    }
-    jQuery(selector + " div.blockUI.blockMsg.blockElement .programName").text(programName);
-}
-
 function removeCookie() {
-    jQuery.cookie("myplan_audit_running", null, {expires: new Date().setTime(0)});
+    jQuery.cookie("pendingAudit", null, {expires: new Date().setTime(0)});
 }
 
 function setPendingAudit(obj, minutes) {
-    if (jQuery.cookie("myplan_audit_running") == null) {
+    if (jQuery.cookie("pendingAudit") == null) {
         var data = {};
         data.expires = new Date();
         data.expires.setTime(data.expires.getTime() + (minutes * 60 * 1000));
@@ -88,7 +63,7 @@ function setPendingAudit(obj, minutes) {
         if (typeof data.recentAuditId === 'undefined') data.recentAuditId = '';
 
         if (data.programId != 'default') {
-            changeLoadingMessage('.myplan-audit-report', data.programName, data.auditType);
+            blockPendingAudit(data, false);
             jQuery.ajax({
                 url: "/student/myplan/audit/status",
                 data: {"programId": data.programId, "auditId": data.recentAuditId},
@@ -96,7 +71,7 @@ function setPendingAudit(obj, minutes) {
                 beforeSend: null,
                 success: function (response) {
                     if (response.status == "PENDING") {
-                        jQuery.cookie('myplan_audit_running', JSON.stringify(data), {expires: data.expires});
+                        jQuery.cookie('pendingAudit', JSON.stringify(data), {expires: data.expires});
                         disabledCheck(obj.attr("id"), 'action', function () {
                             return true;
                         });
@@ -115,36 +90,35 @@ function setPendingAudit(obj, minutes) {
 }
 
 function getPendingAudit(id, type) {
-    if (jQuery.cookie('myplan_audit_running')) {
-        var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('myplan_audit_running')));
+    if (jQuery.cookie('pendingAudit')) {
+        var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('pendingAudit')));
         if (type == data.auditType) {
             var component = jQuery("#" + id + " .uif-stackedCollectionLayout");
             if (data) {
-                var item = jQuery("<div />").addClass("module__item module__item--pending").html('<img src="../ks-myplan/images/ajaxPending16.gif" class="icon"/><span>Auditing</span> ' + data.programName);
+                var item = jQuery("<div />").addClass("module__item module__item--pending").html('<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_small.gif" class="icon"/><span>Auditing</span> ' + data.programName);
                 component.prepend(item);
                 pollPendingAudit(data.programId, data.recentAuditId, data.auditType);
             }
-            if (component.prev(".ksap-emptyCollection").length > 0) {
-                component.prev(".ksap-emptyCollection").remove();
+            if (component.prev(".module__empty").length > 0) {
+                component.prev(".module__empty").remove();
             }
         }
     }
 }
 
-function blockPendingAudit(data) {
+function blockPendingAudit(data, refresh) {
     var id = "audit_section";
     if (data.auditType == "plan") id = "plan_audit_section";
     var elementToBlock = jQuery("#" + id);
+    jQuery("body").data("showAuditGrowl", !refresh);
+    blockPendingAuditStyle.message = 'We are currently auditing your ' + data.auditType + " for '<strong>" + data.programName + "</strong>'.";
     elementToBlock.block(blockPendingAuditStyle);
-    jQuery("#" + id + " div.blockUI.blockMsg.blockElement").data("growl", "true");
-    if (data.auditType == "plan") {
-        jQuery("#" + id + " div.blockUI.blockMsg.blockElement .heading").html(pendingPlanAuditHeadingText);
-    } else {
-        jQuery("#" + id + " div.blockUI.blockMsg.blockElement .heading").html(pendingDegreeAuditHeadingText);
-    }
-    jQuery("#" + id + " div.blockUI.blockMsg.blockElement .programName").text(data.programName);
     jQuery("#" + id).on('AUDIT_COMPLETE', function (event, data) {
-        window.location.assign(window.location.href.split("#")[0]);
+        if (refresh) {
+            window.location.assign(window.location.href.split("#")[0]);
+        } else {
+            elementToBlock.unblock();
+        }
     });
 }
 
@@ -158,12 +132,12 @@ function pollPendingAudit(programId, recentAuditId, auditType) {
         dataType: "json",
         beforeSend: null,
         successCondition: function (response) {
-            return (response.status == 'DONE' || response.status == 'FAILED' || jQuery.cookie("myplan_audit_running") == null);
+            return (response.status == 'DONE' || response.status == 'FAILED' || jQuery.cookie("pendingAudit") == null);
         },
         success: function (response) {
-            var growl = true;
-            if (readUrlParam("viewId") == "DegreeAudit-FormView") {
-                growl = jQuery(".myplan-audit-report div.blockUI.blockMsg.blockElement").data("growl");
+            var showAuditGrowl = true;
+            if (readUrlParam("viewId") == "DegreeAudit-FormView" || readUrlParam("viewId") == "PlanAudit-FormView") {
+                showAuditGrowl = jQuery("body").data("showAuditGrowl");
                 if (readUrlParam(auditType + "Audit.auditId") != false) jQuery("body").on('AUDIT_COMPLETE', function (event, data) {
                     setUrlParam(auditType + "Audit.auditId", "");
                 });
@@ -172,13 +146,13 @@ function pollPendingAudit(programId, recentAuditId, auditType) {
             if (auditType == "plan") {
                 title = "Plan Audit";
             }
-            if (jQuery.cookie("myplan_audit_running") == null || response.status == 'FAILED') {
-                if (growl) showGrowl("Your " + title + " was unable to complete.", title + " Error", "errorGrowl");
+            if (jQuery.cookie("pendingAudit") == null || response.status == 'FAILED') {
+                showGrowl("Your " + title + " was unable to complete.", title + " Error", "errorGrowl");
             } else {
-                var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("myplan_audit_running")));
-                if (growl) showGrowl(data.programName + " " + title + " is ready to view.", title + " Completed", "infoGrowl");
+                var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("pendingAudit")));
+                if (showAuditGrowl) showGrowl(data.programName + " " + title + " is ready to view.", title + " Completed", "infoGrowl");
             }
-            jQuery.cookie("myplan_audit_running", null, {expires: new Date().setTime(0)});
+            jQuery.cookie("pendingAudit", null, {expires: new Date().setTime(0)});
             jQuery.event.trigger("AUDIT_COMPLETE", {"auditType": auditType});
         }
     });
@@ -254,7 +228,7 @@ function initAuditActions() {
         var data = jQuery(this).val();
 
         //jQuery(".requirement").each(function() {
-        jQuery(".myplan-audit-report .requirement[class*='Status']").not(".Status_NONE").each(function () {
+        jQuery(".auditReport .requirement[class*='Status']").not(".Status_NONE").each(function () {
 
             //if (jQuery(this).hasClass(data) || data == 'all' || jQuery(this).hasClass("Status_NONE") || !jQuery(this).is("div[class*='Status']")) {
             if (data == 'unmet' && jQuery(this).hasClass("Status_OK")) {
@@ -298,18 +272,25 @@ function validatePlanAudit(obj) {
     jQuery("body").append(retrieveForm);
 
     var blockOptions = {
-        message: '<img src="../ks-myplan/images/btnLoader.gif" style="vertical-align:middle; margin-right:10px;"/>Processing request',
+        centerX: false,
+        centerY: false,
+        message: '<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_small.gif" style="vertical-align:middle; margin-right:10px;"/>Processing request',
         css: {
+            top: '0px',
+            left: '0px',
             width: '100%',
+            height: '16px',
             border: 'none',
             backgroundColor: 'transparent',
             font: 'bold 14px museo-sans, Arial, Helvetica, Verdana, sans-serif',
-            padding: '5px'
+            padding: '6px 5px',
+            margin: '0'
         },
         overlayCSS: {
             backgroundColor: '#fcf9f0',
             opacity: 1,
-            border: 'solid 1px #fcf9f0'
+            border: 'none',
+            height: '32px'
         },
         fadeIn: 50,
         fadeOut: 50
@@ -351,7 +332,7 @@ function validatePlanAudit(obj) {
                 },
                 afterClose: function () {
                     var condition = function () {
-                        return ((jQuery.cookie("myplan_audit_running") != null) || (coerceValue("planExists") == false) || (coerceValue("planAudit.campusParam") == "306" && coerceValue("planAudit.programParamSeattle") == "default") || (coerceValue("planAudit.campusParam") == "310" && coerceValue("planAudit.programParamBothell") == "default") || (coerceValue("planAudit.campusParam") == "323" && coerceValue("planAudit.programParamTacoma") == "default"));
+                        return ((jQuery.cookie("pendingAudit") != null) || (coerceValue("planExists") == false) || (coerceValue("planAudit.campusParam") == "306" && coerceValue("planAudit.programParamSeattle") == "default") || (coerceValue("planAudit.campusParam") == "310" && coerceValue("planAudit.programParamBothell") == "default") || (coerceValue("planAudit.campusParam") == "323" && coerceValue("planAudit.programParamTacoma") == "default"));
                     };
                     disabledCheck(obj.attr("id"), "action", condition);
                 }
@@ -364,7 +345,7 @@ function validatePlanAudit(obj) {
 
     };
 
-    ksapAjaxSubmitForm(retrieveData, successCallback, elementToBlock, "retrieveForm");
+    ksapAjaxSubmitForm(retrieveData, successCallback, elementToBlock, "retrieveForm", blockOptions);
     jQuery("form#retrieveForm").remove();
 }
 
