@@ -119,7 +119,24 @@
                       p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
                     <property name="replacement">
                         <list>
-                            <ref bean="course_adviser_actions_message"/>
+                            <!--  Message to use when an adviser can't perform a particular action. -->
+                            <bean parent="KSAP-InfoMessage">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-Message"
+                                              p:messageText="Advisers are unable to add or bookmark courses and sections. [0]">
+                                            <property name="inlineComponents">
+                                                <list>
+                                                    <bean parent="Uif-Link" p:linkText="Learn more about Adviser View.">
+                                                        <property name="href"
+                                                                  value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
