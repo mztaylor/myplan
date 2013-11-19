@@ -81,6 +81,14 @@
                     setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
                     setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
         "/>
+        <property name="criteriaFields">
+            <list/>
+        </property>
+        <property name="resultFields">
+            <list/>
+        </property>
+        <property name="renderSearchButtons" value="false"/>
+        <property name="renderLookupCriteria" value="false"/>
     </bean>
 
     <bean id="MyPlanLookupView" abstract="true" parent="MyPlanBaseLookupView">
@@ -96,6 +104,7 @@
         <property name="applicationFooter">
             <bean parent="KSAP-GlobalApplicationFooter"/>
         </property>
+        <property name="resultsGroup.header.render" value="false"/>
     </bean>
 
     <bean id="MyPlanBaseInquiryView" abstract="true" parent="Uif-InquiryView">
@@ -509,106 +518,6 @@
         <property name="planAuditSummaryFormat" value="true"/>
     </bean>
 
-    <!--  Message to use when an adviser can't perform a particular action. -->
-    <bean id="course_adviser_actions_message" parent="Uif-VerticalBoxGroup">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-status</value>
-                <value>info</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:style="margin:0px;">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-Message"
-                                  p:messageText="Advisers are unable to add or bookmark courses and sections."/>
-                            <bean parent="Uif-Link">
-                                <property name="linkText" value="Learn more about Adviser View."/>
-                                <property name="href"
-                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="audit_adviser_actions_message" parent="Uif-VerticalBoxGroup">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-status</value>
-                <value>info</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-HorizontalFieldGroup">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-Message"
-                                  p:messageText="Advisers are unable to run degree audits."/>
-                            <bean parent="Uif-Link">
-                                <property name="linkText" value="Learn more about Adviser View."/>
-                                <property name="href"
-                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="bookmark_adviser_actions_message" parent="Uif-VerticalBoxGroup">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-status</value>
-                <value>info</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-HorizontalFieldGroup">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-Message"
-                                  p:messageText="Advisers are unable to edit bookmarked courses."/>
-                            <bean parent="Uif-Link">
-                                <property name="linkText" value="Learn more about Adviser View."/>
-                                <property name="href"
-                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
     <!-- Light weight fields -->
     <bean id="KSAP-SimpleDataField" parent="KSAP-SimpleDataField-parentBean"/>
     <bean id="KSAP-SimpleDataField-parentBean" abstract="true" parent="Uif-DataField" scope="prototype">
@@ -931,6 +840,7 @@
         <property name="cssClasses" value="viewHeader"/>
         <property name="headerTagCssClasses" value="viewHeaderText"/>
         <property name="headerLevel" value="h2"/>
+        <property name="supportTitleText" value=""/>
     </bean>
 
     <bean id="KSAP-Page" parent="Uif-Page">

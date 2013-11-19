@@ -306,9 +306,6 @@
       This lookup provides the term by term view of Planned Courses.
     -->
     <bean id="PlannedCourses-LookupView" parent="MyPlanBaseLookupView">
-        <property name="theme">
-            <bean parent="MyPlanRetrievedTheme"/>
-        </property>
         <property name="onLoadScript" value=""/>
         <property name="headerText" value="Plan"/>
         <property name="header.render" value="false"/>

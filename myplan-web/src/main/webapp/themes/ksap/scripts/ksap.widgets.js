@@ -558,26 +558,7 @@ function animateHighlight(obj) {
         jQuery(this).removeAttr("style");
     });
 }
-/*
- #################################################################
- Function: remove course from saved courses list
- #################################################################
- */
-function fnRemoveSavedItem(planItemId, cssStyle) {
-    jQuery("." + cssStyle + " #" + planItemId).parents("li").fadeOut(250, function () {
-        jQuery(this).remove();
-    });
-}
-/*
- #################################################################
- Function: update the count of saved courses
- #################################################################
- */
-function fnUpdateSavedCount(savedItemCount) {
-    jQuery(".myplan-saved-courses-detail .uif-sectionHeader .uif-headerText strong").fadeOut(250, function () {
-        jQuery(this).html(savedItemCount - 1).fadeIn(250);
-    });
-}
+
 /*
  #################################################################
  Function: update the credits total in the quarter plan view

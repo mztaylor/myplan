@@ -34,25 +34,11 @@
         <property name="viewHelperServiceClass"
                   value="org.kuali.student.myplan.plan.service.SavedCoursesLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-view</value>
-            </list>
-        </property>
         <property name="criteriaFields">
             <list/>
         </property>
         <property name="resultFields">
             <list/>
-        </property>
-
-        <!-- Not Displaying any criteria -->
-        <property name="criteriaGroup">
-            <bean parent="KSAP-VerticalBoxGroup">
-                <property name="footer">
-                    <bean parent="KSAP-EmptyLookupCriteriaFooter"/>
-                </property>
-            </bean>
         </property>
         <property name="resultsGroup">
             <bean id="saved_courses_summary" parent="saved_courses_summary_list"/>
@@ -163,29 +149,16 @@
         This lookup view provides the list of saved courses which make up the full saved courses page.
       -->
     <bean id="SavedCoursesDetail-LookupView" parent="MyPlanLookupView">
-        <property name="headerText" value="Bookmarked Courses"/>
         <property name="viewName" value="SavedCoursesDetail-LookupView"/>
         <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="viewHelperServiceClass"
                   value="org.kuali.student.myplan.plan.service.SavedCoursesLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
+        <property name="footer.render" value="false"/>
         <property name="page.header.render" value="false"/>
-        <property name="header.render" value="false"/>
-        <property name="renderSearchButtons" value="false"/>
-        <property name="renderLookupCriteria" value="false"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-view</value>
-            </list>
-        </property>
+        <property name="headerText" value="Bookmarked Courses"/>
         <property name="page">
-                <bean parent="Uif-LookupPage" p:id="saved_courses_detail_page" p:headerText="Bookmarked Courses">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
-                    <property name="layoutManager">
-                        <bean parent="Uif-HorizontalBoxLayout"/>
-                    </property>
+                <bean parent="KSAP-Page" p:id="saved_courses_detail_page">
                     <property name="items">
                         <list>
                             <bean parent="saved_courses_detail" p:width="710px"/>
@@ -207,259 +180,146 @@
                     </property>
                 </bean>
         </property>
-
-        <property name="criteriaFields">
-            <list/>
-        </property>
-        <property name="resultFields">
-            <list/>
-        </property>
-
-        <property name="footer.render" value="false"/>
     </bean>
 
-    <bean id="saved_courses_detail" parent="Uif-VerticalBoxSubSection">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-saved-courses-detail</value>
-            </list>
-        </property>
+    <bean id="saved_courses_detail" parent="KSAP-VerticalBoxGroup">
         <property name="items">
             <list>
+                <ref bean="bookmark_adviser_actions_message"/>
                 <ref bean="saved_courses_detail_list"/>
                 <ref bean="saved_courses_detail_list_empty"/>
             </list>
         </property>
-        <property name="propertyReplacers">
-            <list>
-                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                      p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
-                    <property name="replacement">
-                        <list>
-                            <ref bean="bookmark_adviser_actions_message"/>
-                            <ref bean="saved_courses_detail_list"/>
-                            <ref bean="saved_courses_detail_list_empty"/>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
     </bean>
 
-    <bean id="saved_courses_detail_list" parent="Uif-ListCollectionSection" p:style="clear:both;">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="headerText"
-                  value="&lt;strong&gt;@{lookupResults.size()}&lt;/strong&gt; course(s) bookmarked"/>
+    <bean id="saved_courses_detail_list" parent="KSAP-StackedCollectionGroup">
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="propertyName" value="lookupResults"/>
-        <property name="render" value="@{lookupResults.size() gt 0}"/>
+        <property name="render" value="@{lookupResults.size() GT 0}"/>
+        <property name="cssClasses" value="planBookmarks"/>
         <property name="onDocumentReadyScript" value="
-            jQuery('#saved_courses_detail_list ul').css('minHeight',jQuery('#saved_courses_detail_list ul').height());
-            jQuery('.myplan-saved-courses-detail').on('PLAN_ITEM_DELETED', function(event, data){
+            var bookmarks = jQuery('.planBookmarks');
+            bookmarks.css('minHeight', bookmarks.outerHeight(true));
+            bookmarks.on('PLAN_ITEM_DELETED', function(event, data){
                 if (data.planItemType === 'wishlist') {
-                    fnRemoveSavedItem(data.planItemId, 'myplan-saved-courses-detail');
-                    fnUpdateSavedCount( jQuery(this).find('.uif-sectionHeader .uif-headerText strong').text() );
+                    jQuery(this).find('#' + data.planItemType + '-' + data.planItemId + '.planBookmarks__item').fadeOut(250, function () {
+                        jQuery(this).remove();
+                    });
+                    jQuery(this).find('.planBookmarks__header strong').fadeOut(250, function () {
+                        var current = jQuery(this).text();
+                        jQuery(this).html(current - 1).fadeIn(250);
+                    });
                 }
             });
         "/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-stacked-list</value>
-            </list>
+        <property name="header">
+            <bean parent="KSAP-HeaderThree" p:headerText="&lt;strong&gt;@{lookupResults.size()}&lt;/strong&gt; course(s) bookmarked"
+                  p:cssClasses="planBookmarks__header"/>
         </property>
+        <property name="layoutManager.lineGroupPrototype.id" value="@{#line.planItemDataObject.type}-@{#line.planItemDataObject.id}"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="planBookmarks__item"/>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:id="@{#line.planItemDataObject.id}" p:style="display:block;">
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>myplan-remove-margin</value>
-                            <value>myplan-saved-courses-detail-heading</value>
-                        </list>
-                    </property>
+                <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-LinkField"
-                                  p:style="width:418px; overflow:hidden; text-overflow:ellipsis; -o-text-overflow:ellipsis; -ms-text-overflow:ellipsis;">
-                                <property name="linkText"
-                                          value="@{#line.courseDetails.code} @{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})"/>
-                                <property name="fieldLabel.render"
-                                          value="false"/>
+                            <bean parent="Uif-Link" p:width="420px"
+                                  p:linkText="@{#line.courseDetails.code} @{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})">
                                 <property name="href"
                                           value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
+                                <property name="cssClasses" value="ellipsisItem removeMargin"/>
                             </bean>
-                            <bean parent="Uif-DataField" p:propertyName="courseDetails.abbrGenEdRequirements"
-                                  p:style="width:131px;" p:escapeHtmlInPropertyValue="false"
-                                  p:render="@{#line.courseDetails.abbrGenEdRequirements.size() gt 0}">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-data-list</value>
-                                        <value>fl-text-gray</value>
-                                        <value>myplan-text-italic</value>
-                                    </list>
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="courseDetails.abbrGenEdRequirements"
+                                  p:escapeHtmlInPropertyValue="false" p:width="135px"
+                                  p:render="@{#line.courseDetails.abbrGenEdRequirements.size() GT 0}" p:cssClasses="normalLightText italic removeMargin">
+                            </bean>
+                            <bean parent="Uif-SpaceField" p:width="135px" p:cssClasses="removeMargin"
+                                  p:render="@{#line.courseDetails.abbrGenEdRequirements.size() EQ 0}">
+                            </bean>
+                            <bean parent="KSAP-SimpleDataField" p:propertyName="planItemDataObject.dateAdded" p:width="135px">
+                                <property name="fieldLabel">
+                                    <bean parent="Uif-Label" p:labelText="Added on" p:renderColon="false"/>
                                 </property>
-                            </bean>
-                            <bean parent="Uif-SpaceField" p:style="width:131px;"
-                                  p:render="@{#line.courseDetails.abbrGenEdRequirements.size() eq 0}">
-                            </bean>
-
-                            <bean parent="Uif-DataField" p:propertyName="planItemDataObject.dateAdded"
-                                  p:style="width:131px;" p:label="Added on">
-                                <property name="fieldLabel.cssClasses" value="myplan-text-normal"/>
-                                <property name="fieldLabel.renderColon" value="false"/>
-                                <property name="fieldLabel.render" value="false"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-text-gray</value>
-                                        <value>myplan-text-italic</value>
-                                    </list>
-                                </property>
+                                <property name="cssClasses" value="normalLightText italic removeMargin"/>
                             </bean>
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-HorizontalFieldGroup">
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
+                <bean parent="KSAP-VerticalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-DataField" p:label="Scheduled For"
+                            <!--    TERM DATA      ################### -->
+                            <bean parent="KSAP-SimpleDataField" p:label="Scheduled For"
                                   p:propertyName="courseDetails" p:labelPlacement="LEFT"
                                   p:escapeHtmlInPropertyValue="false">
                                 <property name="propertyEditor" ref="scheduled_terms_list_formatter"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-data-list</value>
-                                    </list>
-                                </property>
-                                <property name="fieldLabel.cssClasses">
-                                    <list merge="true">
-                                        <value>fl-text-gray</value>
-                                        <value>myplan-text-normal</value>
-                                    </list>
+                                <property name="cssClasses" value="termBadge"/>
+                                <property name="fieldLabel">
+                                    <bean parent="Uif-Label" p:cssClasses="normalLightText"/>
                                 </property>
                             </bean>
-
-                            <!--Last Offered -->
-
-                            <bean parent="Uif-DataField" p:label="Last Offered"
+                            <bean parent="KSAP-SimpleDataField" p:label="Last Offered"
                                   p:propertyName="courseDetails.lastOffered" p:labelPlacement="LEFT">
-                                <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
+                                <property name="fieldLabel">
+                                    <bean parent="Uif-Label" p:cssClasses="normalLightText"/>
+                                </property>
                                 <property name="render"
-                                          value="@{#line.courseDetails.lastOffered ne null and #line.courseDetails.scheduledTerms.size() eq 0}"/>
+                                          value="@{#line.courseDetails.lastOffered NE null AND #line.courseDetails.scheduledTerms.size() EQ 0}"/>
                             </bean>
-                            <bean parent="Uif-DataField" p:label="Projected For"
-                                  p:propertyName="courseDetails.termsOffered"
-                                  p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false"
-                                  p:render="@{#line.courseDetails.termsOffered.size() gt 0}">
-                                <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-data-list</value>
-                                    </list>
+                            <bean parent="KSAP-SimpleDataField" p:label="Projected For"
+                                  p:propertyName="courseDetails.termsOffered" p:labelPlacement="LEFT"
+                                  p:escapeHtmlInPropertyValue="false">
+                                <property name="fieldLabel">
+                                    <bean parent="Uif-Label" p:cssClasses="normalLightText"/>
                                 </property>
+                                <property name="render" value="@{#line.courseDetails.termsOffered.size() GT 0}"/>
                             </bean>
-                            <bean parent="Uif-MessageField"
-                                  p:label="Projected For"
-                                  p:render="@{#line.courseDetails.termsOffered.size() eq 0}">
-                                <property name="fieldLabel.cssClasses"
-                                          value="fl-text-gray myplan-text-normal"/>
-                                <property name="message">
-                                    <bean parent="Uif-Message"
-                                          p:messageText="Check with the department or your adviser for more information about this course."/>
+                            <bean parent="KSAP-MessageField" p:label="Projected For" p:labelPlacement="LEFT">
+                                <property name="messageText" value="Check with the department or your adviser for more information about this course."/>
+                                <property name="fieldLabel">
+                                    <bean parent="Uif-Label" p:cssClasses="normalLightText"/>
                                 </property>
+                                <property name="render" value="@{#line.courseDetails.termsOffered.size() EQ 0}"/>
                             </bean>
-                        </list>
-                    </property>
-                </bean>
-
-                <bean parent="Uif-HorizontalFieldGroup">
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-DataField" p:label="Course Requisites"
+                            <!--    COURSE REQUISITES      ################### -->
+                            <bean parent="KSAP-SimpleDataField" p:label="Course Requisites"
                                   p:propertyName="courseDetails.requisites"
-                                  p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false"
-                                  p:render="@{#line.courseDetails.requisites.size() gt 0}">
-                                <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-data-list</value>
-                                    </list>
+                                  p:labelPlacement="LEFT" p:escapeHtmlInPropertyValue="false">
+                                <property name="fieldLabel">
+                                    <bean parent="Uif-Label" p:cssClasses="normalLightText"/>
                                 </property>
+                                <property name="render" value="@{#line.courseDetails.requisites.size() GT 0}"/>
                             </bean>
-                            <bean parent="Uif-MessageField" p:label="Course Requisites"
-                                  p:render="@{#line.courseDetails.requisites.size() eq 0}">
-                                <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
-                                <property name="message">
-                                    <bean parent="Uif-Message" p:messageText="None"/>
+                            <bean parent="KSAP-MessageField" p:label="Course Requisites" p:labelPlacement="LEFT">
+                                <property name="messageText" value="None"/>
+                                <property name="fieldLabel">
+                                    <bean parent="Uif-Label" p:cssClasses="normalLightText"/>
                                 </property>
+                                <property name="render" value="@{#line.courseDetails.requisites.size() EQ 0}"/>
                             </bean>
-                        </list>
-                    </property>
-                </bean>
-                <bean parent="Uif-HorizontalFieldGroup">
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>uif-boxLayoutVerticalItem</value>
-                        </list>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-DataField" p:label="Course Description"
+                            <!--    COURSE DESCRIPTION      ################### -->
+                            <bean parent="KSAP-SimpleDataField" p:label="Course Description"
                                   p:propertyName="courseDetails.courseDescription"
                                   p:labelPlacement="TOP" p:escapeHtmlInPropertyValue="false">
-                                <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>courseDescription</value>
-                                    </list>
+                                <property name="fieldLabel">
+                                    <bean parent="Uif-Label" p:cssClasses="normalLightText block"/>
                                 </property>
-                                <property name="render"
-                                          value="@{#line.courseDetails.courseDescription ne null}"/>
+                                <property name="render" value="@{#line.courseDetails.courseDescription NE null}"/>
                             </bean>
-                            <!-- If Course Description is empty-->
-                            <bean parent="Uif-MessageField" p:label="Course Description"
+                            <bean parent="KSAP-MessageField" p:label="Course Description"
                                   p:labelPlacement="TOP">
-                                <property name="fieldLabel.cssClasses" value="fl-text-gray myplan-text-normal"/>
-                                <property name="message">
-                                    <bean parent="Uif-Message" p:messageText="This course has no description in the Course Catalog. Please contact the department for more details."/>
+                                <property name="messageText" value="This course has no description in the Course Catalog. Please contact the department for more details."/>
+                                <property name="fieldLabel">
+                                    <bean parent="Uif-Label" p:cssClasses="normalLightText block"/>
                                 </property>
-                                <property name="render"
-                                          value="@{#line.courseDetails.courseDescription ne null ? false : true}"/>
+                                <property name="render" value="@{#line.courseDetails.courseDescription EQ null}"/>
                             </bean>
                         </list>
                     </property>
                 </bean>
-
-                <bean parent="Uif-HorizontalFieldGroup">
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>uif-boxLayoutVerticalItem</value>
-                        </list>
-                    </property>
+                <bean parent="KSAP-HorizontalFieldGroup">
+                    <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Add to Plan">
@@ -480,16 +340,32 @@
                             </bean>
                         </list>
                     </property>
-                    <!--  Alternate rendering for advisors -->
-                    <property name="propertyReplacers">
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Group for Empty Result Set -->
+    <bean id="saved_courses_detail_list_empty" parent="KSAP-VerticalBoxGroup">
+        <property name="headerText"
+                  value="&lt;strong&gt;@{lookupResults.size()}&lt;/strong&gt; courses bookmarked"/>
+        <property name="render" value="@{lookupResults.size() EQ 0}"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-Message"
+                      p:messageText="Your List Is Empty. [0] and bookmark them to your list.">
+                    <property name="inlineComponents">
                         <list>
-                            <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                                  p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
-                                <property name="replacement">
-                                    <list>
-                                        <bean parent="Uif-Message" p:messageText=""/>
-                                    </list>
-                                </property>
+                            <bean parent="Uif-Link" p:linkText="Find Courses"
+                                  p:href="course?methodToCall=start&amp;viewId=CourseSearch-FormView"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="KSAP-VerticalBoxGroup" p:headerText="With Bookmarked Courses, you can:">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-Message">
+                                <property name="messageText" value="[ul][li]Save courses before adding to your Plan[/li][li]Share your list with advisers[/li][/ul]"/>
                             </bean>
                         </list>
                     </property>
@@ -498,60 +374,23 @@
         </property>
     </bean>
 
-    <!-- Group for Empty Result Set -->
-    <bean id="saved_courses_detail_list_empty" parent="Uif-VerticalBoxGroup">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="headerText"
-                  value="You have &lt;strong&gt;@{lookupResults.size()}&lt;/strong&gt; courses bookmarked"/>
-        <property name="render" value="@{lookupResults.size() gt 0 ? false : true}"/>
+    <bean id="bookmark_adviser_actions_message" parent="KSAP-InfoMessage">
+        <property name="render" value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Message" p:style="padding-bottom: 10px;"
-                      p:messageText="Your List Is Empty. &lt;a href=&quot;@{#ConfigProperties['application.url']}/myplan/course?methodToCall=start&amp;viewId=CourseSearch-FormView&quot;&gt;Find Courses&lt;/a&gt; and bookmark them.">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>fl-font-size-150</value>
+                <bean parent="KSAP-Message"
+                      p:messageText="Advisers are unable to edit bookmarked courses. [0]">
+                    <property name="inlineComponents">
+                        <list>
+                            <bean parent="Uif-Link" p:linkText="Learn more about Adviser View.">
+                                <property name="href"
+                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
+                            </bean>
                         </list>
                     </property>
                 </bean>
-                <ref bean="empty_bookmarked_section"/>
-
             </list>
         </property>
     </bean>
-
-    <bean id="empty_bookmarked_section" parent="Uif-VerticalFieldGroup" p:style="padding: 10px;">
-        <property name="group.validationMessages">
-            <null/>
-        </property>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>fl-container-650</value>
-                <value>myplan-audit-info-panel</value>
-                <value>myplan-carousel-list</value>
-            </list>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-Message" p:style="padding: 5px;" p:cssClasses="fl-font-size-130 fl-text-bold ">
-                    <property name="messageText" value="With Bookmarked Courses, you can: "/>
-                </bean>
-                <bean parent="Uif-Message" p:style="padding-left: 20px;" p:cssClasses="fl-font-size-100">
-                    <property name="messageText"
-                              value="&lt;li style=&quot;list-style: disc;&quot;&gt; Save courses before adding to your Plan &lt;/li&gt;"/>
-                </bean>
-                <bean parent="Uif-Message" p:style="padding-left: 20px;" p:cssClasses="fl-font-size-100">
-                    <property name="messageText"
-                              value="&lt;li style=&quot;list-style: disc;&quot;&gt;Share your list with advisers&lt;/li&gt;"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <!--
-        End Saved Courses Page components.
-      -->
 
 </beans>
