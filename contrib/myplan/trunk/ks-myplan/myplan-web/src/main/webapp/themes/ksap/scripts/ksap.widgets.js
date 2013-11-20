@@ -291,7 +291,7 @@ function buildTooltip(id, content, position, align, delay, speed) {
 
 function fnCreateDate(sData) {
     var jTemp = jQuery(sData);
-    jTemp.find("legend, .myplan-sort-remove").remove();
+    jTemp.find("legend, .removeSort").remove();
     var sDate = jQuery.trim(jTemp.text());
     if (sDate.length > 2) {
         return Date.parse(sDate);
@@ -315,7 +315,7 @@ function switchFetchAction(actionId, toggleId) {
 function buttonState(parentId, buttonId) {
     var disabled = false;
     var button = jQuery("button#" + buttonId);
-    jQuery("#" + parentId + " .myplan-required").each(function () {
+    jQuery("#" + parentId + " .requiredField").each(function () {
         var value;
         if (jQuery(this).val()) {
             value = jQuery(this).val().replace(/\n/g, '');
