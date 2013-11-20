@@ -2,3 +2,180 @@
     border-bottom: @dottedBorderStyle;
     padding: @paddingDefault 0;
 }
+
+.messagesList__table {
+    border: @baseBorderStyle;
+    .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+    width: 708px;
+    font-family: @sansFontFamily;
+    margin: @marginDefault 0 0 0;
+    display: block;
+
+    & thead {
+        & tr {
+            #gradient > .vertical(#f7f7f7, #e9e9e9);
+            .box-shadow(inset 0px 1px 1px 0px rgba(255, 255, 255, 1));
+            border-bottom: solid 1px #e4e4e4;
+            .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+        }
+
+        & th {
+            border: none;
+            padding: 8px 0 8px @paddingSmall;
+            color: @textColor;
+            font-size: @fontSizeTiny;
+            background: transparent;
+            text-align: left;
+            .normal();
+
+            &.messagesList__tableHeader--sortable {
+                cursor: pointer;
+                &:hover {
+                    color: @linkColor;
+                    text-decoration: underline;
+                }
+
+                &[aria-sort='ascending'],
+                &[aria-sort='descending'] {
+                    color: @linkColor;
+                }
+            }
+
+            & .DataTables_sort_wrapper {
+                display: inline;
+
+                & .ui-icon {
+                    display: inline-block;
+                    vertical-align: middle;
+                    margin: 0 0 0 @marginSmall;
+                    width: 16px;
+                    height: 16px;
+                    background: url('../images/icon_sprite.png') no-repeat 0px -48px transparent;
+
+                    &.ui-icon-carat-2-n-s {
+                        background-position: 0px -48px;
+                    }
+
+                    &.ui-icon-triangle-1-n {
+                        background-position: -16px -48px;
+                    }
+
+                    &.ui-icon-triangle-1-s {
+                        background-position: -32px -48px;
+                    }
+                }
+            }
+        }
+    }
+
+    & tbody tr {
+        &.odd {
+            background-color: @white;
+        }
+
+        &.even {
+            background-color: #f7f7f7;
+        }
+
+        &:hover {
+            background-color: @itemHover;
+        }
+    }
+
+    & td {
+        vertical-align: top;
+        padding: @paddingSmall 0 @paddingSmall @paddingSmall;
+    }
+
+    & tfoot {
+        display: none;
+    }
+}
+
+.messagesForm__header {
+    border-bottom: @baseBorderStyle;
+    margin: 0 0 @marginLarge;
+}
+
+.messagesForm__constraint {
+    display: block;
+    font-size: @fontSizeTiny;
+    color: @textColorMin;
+
+    &.counter {
+        font-style: italic;
+        text-align: right;
+    }
+}
+
+.messagesForm__field {
+    & .messagesForm__label label,
+    & .messagesForm__control {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    & .messagesForm__label label {
+        line-height: 30px;
+        width: 100px;
+        text-align: right;
+        margin: 0 @marginDefault 0 0;
+    }
+
+    & .messagesForm__control {
+        resize: none;
+    }
+
+    & .messagesForm__constraint {
+        margin: 0 @marginSmall 0 115px;
+    }
+}
+
+.messagesForm__actions {
+    margin: 0 0 0 110px;
+}
+
+.messagesForm__originalMessage {
+    margin: -@marginLarge 0 0 !important;
+    background-color: #f0f0f0;
+    padding: @paddingDefault;
+}
+
+.messagesForm__subject {
+    font-size: 15px;
+    .bold();
+}
+
+.messagesForm__commentHeader {
+    font-size: 14px;
+    .bold();
+    margin: 0 0 @marginDefault 0;
+}
+
+.messagesForm__commentList {
+    & ul,
+    & li {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    & ul {
+        max-height: 125px;
+        overflow: auto;
+    }
+
+    & li {
+        padding: @paddingSmall;
+        margin: @marginMini @marginDefault 0 0;
+        background-color: #f3f3f3;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+}
+
+.messagesForm__leaveComment {
+    padding: 0 @paddingSmall;
+}

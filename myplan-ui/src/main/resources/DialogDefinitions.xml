@@ -1197,7 +1197,7 @@
         <property name="control">
             <bean parent="Uif-TextAreaControl"
                   p:watermarkText="Enter a short note (500 characters max)" p:maxLength="500"
-                  p:style="resize:none; width:95%">
+                  p:style="resize:none; width:95%;" p:textExpand="false">
                 <property name="cssClasses" value="popover__characterCount"/>
             </bean>
         </property>
