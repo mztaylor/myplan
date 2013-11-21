@@ -76,7 +76,10 @@
                 indicateViewingAudit('plan_audits_summary', 'plan');
             }
             jQuery('#plan_audits_summary').on('REFRESH_AUDITS AUDIT_COMPLETE', function(event, data) {
-                if( data.auditType == 'plan' ) customRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'});
+                if( data.auditType == 'plan' ) {
+                    var newAudit = jQuery('.auditReport__html--' + data.auditType + ' .myplan-audit-report').attr('auditid');
+                    customRetrieveComponent('plan_audits_summary','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'}, (newAudit &amp;&amp; event.type == 'AUDIT_COMPLETE' ? 'link_' + newAudit : null));
+                }
             });
         "/>
         <property name="filters">

@@ -153,7 +153,7 @@ function pollPendingAudit(programId, recentAuditId, auditType) {
                 if (showAuditGrowl) showGrowl(data.programName + " " + title + " is ready to view.", title + " Completed", "infoGrowl");
             }
             jQuery.cookie("pendingAudit", null, {expires: new Date().setTime(0)});
-            jQuery.event.trigger("AUDIT_COMPLETE", {"auditType": auditType});
+            //jQuery.event.trigger("AUDIT_COMPLETE", {"auditType": auditType});
         }
     });
 }

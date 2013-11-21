@@ -160,7 +160,7 @@
 
     <bean id="term_collection_data" parent="KSAP-VerticalBoxGroup">
         <property name="onDocumentReadyScript" value="
-            jQuery('a.ksap-lightBoxLink').each(function() {
+            jQuery('a.lightBoxLink').each(function() {
                 createLightBoxLink(jQuery(this).attr('id'), {helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, false);
             });
             jQuery('body').on('SECTION_ITEM_ADDED', function(event, data) {
@@ -545,11 +545,8 @@
                                     />
                             <bean parent="current_section_status"
                                   p:linkText="@{#line.activityOfferingItem.details}">
-                                <property name="href"
-                                          value="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.activityOfferingItem.qtryr}&amp;SLN=@{#line.activityOfferingItem.registrationCode}"/>
-                                <!--<property name="actionScript"
-                                          value="myplanLightBoxLink('https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.activityOfferingItem.qtryr}&amp;SLN=@{#line.activityOfferingItem.registrationCode}',{helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'},e);"/>
-                           -->
+                                <property name="href" value="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.activityOfferingItem.qtryr}&amp;SLN=@{#line.activityOfferingItem.registrationCode}"/>
+                                <property name="cssClasses" value="lightBoxLink"/>
                             </bean>
                         </list>
                     </property>

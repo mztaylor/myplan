@@ -80,12 +80,11 @@ function myplanCreateLightBoxLink(controlId, options) {
     });
 }
 
-function myplanLightBoxLink(href, options, e) {
+function lightBoxLink(href, options, e) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     options['autoHeight'] = true;
     options['href'] = href;
-    //options['beforeClose'] = cleanupClosedLightboxForms;
     top.jQuery.fancybox(options);
 }
 

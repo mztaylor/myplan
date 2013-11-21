@@ -76,7 +76,10 @@
                 indicateViewingAudit('degree_audits_summary','degree');
             }
             jQuery('#degree_audits_summary').on('REFRESH_AUDITS AUDIT_COMPLETE', function(event, data){
-                if( data.auditType == 'degree' ) customRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+                if( data.auditType == 'degree' ) {
+                    var newAudit = jQuery('.auditReport__html--' + data.auditType + ' .myplan-audit-report').attr('auditid');
+                    customRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'}, (newAudit &amp;&amp; event.type == 'AUDIT_COMPLETE' ? 'link_' + newAudit : null));
+                }
             });
         "/>
         <property name="layoutManager.lineGroupPrototype.id" value="link_@{#line.report.auditId}"/>

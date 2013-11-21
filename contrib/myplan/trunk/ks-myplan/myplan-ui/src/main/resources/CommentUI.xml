@@ -112,7 +112,8 @@
     <bean id="comment_sent" parent="KSAP-SuccessMessage" p:render="@{#form.feedBackMode}">
         <property name="cssClasses">
             <list merge="true">
-                <value>alert-inline</value>
+                <value>alert-unboxed</value>
+                <value>alert-replace-btn</value>
             </list>
         </property>
         <property name="onDocumentReadyScript"
@@ -230,7 +231,7 @@
         <property name="fieldLabel.render" value="true"/>
         <property name="fieldLabel.cssClasses" value="messagesForm__label"/>
         <property name="control">
-            <bean parent="Uif-TextControl" p:maxLength="70" p:disabled="@{#form.feedBackMode}" p:style="width:520px;">
+            <bean parent="Uif-TextControl" p:maxLength="70" p:disabled="@{#form.feedBackMode}" p:style="width:510px;">
                 <property name="onKeyPressScript" value="
                     var code = (e.keyCode ? e.keyCode : e.which);
                     if (code == 13) {
@@ -250,7 +251,7 @@
         <property name="fieldLabel.render" value="true"/>
         <property name="fieldLabel.cssClasses" value="messagesForm__label"/>
         <property name="control">
-            <bean parent="Uif-TextAreaControl" p:rows="10" p:maxLength="900" p:textExpand="false" p:style="width:520px;"
+            <bean parent="Uif-TextAreaControl" p:rows="10" p:maxLength="900" p:textExpand="false" p:style="width:510px;"
                   p:disabled="@{#form.feedBackMode}" p:cssClasses="messagesForm__control messagesForm__comment requiredField"/>
         </property>
         <property name="constraintMessage">
@@ -280,9 +281,6 @@
 
     <!--  Messages Summary (Gutter) Lookup -->
     <bean id="MessagesSummary-LookupView" parent="MyPlanBaseLookupView">
-        <!-- <property name="theme">
-            <bean parent="MyPlanRetrievedTheme"/>
-        </property>-->
         <property name="onLoadScript" value=""/>
         <property name="headerText" value="Messages Summary"/>
         <property name="page.header.render" value="false"/>
@@ -335,10 +333,7 @@
                     <list>
                         <bean id="leave_message_button" parent="KSAP-PrimaryActionButton-Small"
                               p:actionLabel="Leave a Message">
-                            <property name="actionScript" value=""/>
-                            <property name="onDocumentReadyScript" value="
-                                myplanCreateLightBoxLink('leave_message_button', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page&amp;renderedInLightBox=true'});
-                            "/>
+                            <property name="actionScript" value="lightBoxLink('comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=message_dialog_response_page&amp;renderedInLightBox=true', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e)"/>
                         </bean>
                     </list>
                 </property>
@@ -355,7 +350,7 @@
         </property>
         <property name="layoutManager.lineGroupPrototype.id" value="@{#line.messageId}"/>
         <property name="layoutManager.lineGroupPrototype.onClickScript" value="
-            myplanLightBoxLink('comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);
+            lightBoxLink('comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}', {helpers:{overlay:{closeClick: false}},autoScale:true,width:660,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);
         "/>
         <property name="instructionalMessage">
             <bean parent="Uif-Message" p:messageText="You don't have any messages.">
@@ -399,16 +394,6 @@
                                 <property name="fieldLabel.cssClasses" value="module__itemLabel"/>
                                 <property name="cssClasses" value="module--mini module--gray"/>
                             </bean>
-                            <!--<bean parent="KSAP-MessageField"
-                                  p:messageText="@{#line.comments.size()}">
-                                <property name="render" value="@{#line.comments.size() gt 0}"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-comment-bubble</value>
-                                        <value>ksap-noMargin</value>
-                                    </list>
-                                </property>
-                            </bean>-->
                         </list>
                     </property>
                 </bean>
@@ -506,8 +491,11 @@
         <property name="items">
             <list>
                 <bean p:id="@{#line.messageId}_subject" parent="KSAP-VerticalFieldGroup" p:label="Subject">
-                    <property name="onDocumentReadyScript"
-                              value="myplanCreateLightBoxLink('@{#line.messageId}_subject', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
+                    <property name="onDocumentReadyScript" value="
+                        jQuery('#@{#line.messageId}_subject').parents('tr').on('click', function(e) {
+                            lightBoxLink('comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);
+                        });
+                    "/>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="subject" p:width="241px">
@@ -526,20 +514,14 @@
                     <property name="propertyName" value="createDate"/>
                     <property name="propertyEditor" ref="timestamp_formatter"/>
                     <property name="escapeHtmlInPropertyValue" value="false"/>
-                    <property name="onDocumentReadyScript"
-                              value="myplanCreateLightBoxLink('@{#line.messageId}_received', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                 </bean>
 
                 <bean p:id="@{#line.messageId}_comments" parent="KSAP-MessageField" p:label="Comments">
                     <property name="messageText" value="@{#line.comments.size()} comments"/>
-                    <property name="onDocumentReadyScript"
-                              value="myplanCreateLightBoxLink('@{#line.messageId}_comments', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                 </bean>
 
                 <bean p:id="@{#line.messageId}_lastcomment" parent="KSAP-VerticalFieldGroup" p:label="Last Comment">
                     <property name="cssClasses" value="normalLightText"/>
-                    <property name="onDocumentReadyScript"
-                              value="myplanCreateLightBoxLink('@{#line.messageId}_lastcomment', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe',href:'comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}'});"/>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="lastCommentDate"
@@ -556,7 +538,6 @@
             </list>
         </property>
     </bean>
-
 
     <!-- last comment time stamp formatter -->
     <bean id="last_comment_formatter" class="org.kuali.student.myplan.course.util.TimestampPropertyEditor">
