@@ -131,8 +131,12 @@
     }
 }
 
-.messagesForm__actions {
+.messagesForm__actions--message {
     margin: 0 0 0 110px;
+}
+
+.messagesForm__actions--comment {
+    margin: 0 0 0 140px;
 }
 
 .messagesForm__originalMessage {
@@ -149,10 +153,12 @@
 .messagesForm__commentHeader {
     font-size: 14px;
     .bold();
-    margin: 0 0 @marginDefault 0;
+    margin: 0 0 @marginLarge 0;
 }
 
 .messagesForm__commentList {
+    margin: @marginLarge 0 0;
+
     & ul,
     & li {
         list-style: none;
@@ -178,4 +184,8 @@
 
 .messagesForm__leaveComment {
     padding: 0 @paddingSmall;
+}
+
+.messagesForm__comment {
+    resize: none;
 }

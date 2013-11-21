@@ -26,7 +26,7 @@
         <property name="footer.render" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="message_dialog_response_page" p:width="650px"
+                <bean parent="Uif-Page" p:id="message_dialog_response_page" p:width="640px"
                         p:headerText="Leave a Message for @{#form.studentName}">
                     <property name="header">
                         <bean parent="KSAP-HeaderThree" p:cssClasses="messagesForm__header"/>
@@ -66,7 +66,7 @@
                 </bean>
 
                 <!--Comment Page-->
-                <bean parent="Uif-Page" p:id="comment_dialog_response_page" p:width="650px"
+                <bean parent="Uif-Page" p:id="comment_dialog_response_page" p:width="640px"
                       p:headerText="View Message">
                     <property name="header">
                         <bean parent="KSAP-HeaderThree" p:cssClasses="messagesForm__header"/>
@@ -91,17 +91,17 @@
                             <ref bean="comment_dialog_subject"/>
                             <ref bean="comment_dialog_comments_list"/>
                             <ref bean="comment_dialog_message"/>
-                            <bean id="postCommentButton" p:id="postCommentButton" parent="KSAP-PrimaryActionButton"
-                                  p:actionLabel="Post a Comment" p:methodToCall="addComment"
-                                  p:disabled="true" p:focusOnIdAfterSubmit="commenting_textbox_control">
-                            </bean>
-                            <bean id="hidden_messageId" parent="KSAP-SimpleInputField" p:propertyName="messageId"
-                                  p:defaultValue="@{#form.messageId}" p:hidden="true">
-                                <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
+                            <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="messagesForm__actions--comment">
+                                <property name="items">
+                                    <list>
+                                        <bean id="postCommentButton" p:id="postCommentButton" parent="KSAP-PrimaryActionButton"
+                                              p:actionLabel="Post a Comment" p:methodToCall="addComment"
+                                              p:disabled="true" p:focusOnIdAfterSubmit="commenting_textbox_control">
+                                        </bean>
+                                        <ref bean="comment_sent"/>
+                                    </list>
                                 </property>
                             </bean>
-                            <ref bean="comment_sent"/>
                         </list>
                     </property>
                 </bean>
@@ -110,6 +110,11 @@
     </bean>
 
     <bean id="comment_sent" parent="KSAP-SuccessMessage" p:render="@{#form.feedBackMode}">
+        <property name="cssClasses">
+            <list merge="true">
+                <value>alert-inline</value>
+            </list>
+        </property>
         <property name="onDocumentReadyScript"
                   value="parent.jQuery.event.trigger('COMMENT_SENT'); parent.jQuery.fancybox.inner.css({height:jQuery('.fancybox-iframe').contents().find('body').height()+'px'});"/>
         <property name="items">
@@ -145,6 +150,12 @@
                 <bean parent="KSAP-SimpleDataField" p:propertyName="subject" p:cssClasses="messagesForm__subject"/>
                 <bean parent="KSAP-SimpleDataField" p:propertyName="body"
                       p:escapeHtmlInPropertyValue="false"/>
+                <bean parent="KSAP-SimpleInputField" p:propertyName="messageId"
+                      p:defaultValue="@{#form.messageId}" p:hidden="true">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
@@ -201,7 +212,7 @@
                 <bean id="commenting_textbox" parent="KSAP-SimpleInputField" p:propertyName="commentBody">
                     <property name="control">
                         <bean parent="Uif-TextAreaControl" p:rows="2" p:maxLength="500" p:textExpand="false"
-                              p:cssClasses="messagesForm__comment requiredField"/>
+                              p:cssClasses="messagesForm__comment requiredField" p:style="width:460px;"/>
                     </property>
                     <property name="constraintMessage">
                         <bean parent="KSAP-Message" p:messageText="characters remaining">
@@ -250,7 +261,7 @@
         </property>
     </bean>
 
-    <bean id="message_actions" parent="KSAP-HorizontalBoxGroup" p:cssClasses="messagesForm__actions">
+    <bean id="message_actions" parent="KSAP-HorizontalBoxGroup" p:cssClasses="messagesForm__actions--message">
         <property name="items">
             <list>
                 <bean id="leaveMessageButton" p:id="leaveMessageButton" parent="KSAP-PrimaryActionButton"

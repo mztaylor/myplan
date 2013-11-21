@@ -415,7 +415,8 @@
     <bean id="plan_audit_run" parent="KSAP-PrimaryActionButton" p:methodToCall="runPlanAudit" p:hidden="true"
           p:disabled="false" p:refreshId="plan_audit_section" p:focusOnIdAfterSubmit="plan_audits_summary" p:disableBlocking="true"
           p:actionLabel="Audit Plan">
-        <property name="actionScript" value="setPendingAudit(jQuery('button#plan_audit_validate'), 5);"/>
+        <!-- Leave actionInvokeHandler in actionscript or the methodToCall will not execute on audit run -->
+        <property name="actionScript" value="actionInvokeHandler(this); setPendingAudit(jQuery('button#plan_audit_validate'), 5);"/>
         <property name="dataAttributes">
             <map>
                 <entry key="audittype" value="plan"/>
