@@ -383,7 +383,7 @@ function indicateViewingAudit(id, type) {
     var currentAudit = jQuery(".auditReport__html--" + type + " .myplan-audit-report");
     var currentAuditId = currentAudit.attr("auditid");
 
-    jQuery("#" + id + " .module__item").not(".pending").each(function (index) {
+    jQuery("#" + id + " .module__item").not(".module__item--pending").each(function (index) {
         if (jQuery(this).attr("id").replace("link_", "") == currentAuditId && currentAudit.is(":visible")) {
             if (type == 'degree') {
                 jQuery(this).find(".module__itemLabel label").html("Viewing");

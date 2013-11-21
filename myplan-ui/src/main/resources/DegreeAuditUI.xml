@@ -300,7 +300,8 @@
           p:actionLabel="Audit Your Degree">
         <property name="disabled"
                   value="@{(#form.degreeAudit.campusParam EQ '306' AND #form.degreeAudit.programParamSeattle EQ 'default') OR (#form.degreeAudit.campusParam EQ '310' AND #form.degreeAudit.programParamBothell EQ 'default') OR (#form.degreeAudit.campusParam EQ '323' AND #form.degreeAudit.programParamTacoma EQ 'default')}"/>
-        <property name="actionScript" value="setPendingAudit(jQuery(this), 5);"/>
+        <!-- Leave actionInvokeHandler in actionscript or the methodToCall will not execute on audit run -->
+        <property name="actionScript" value="actionInvokeHandler(this); setPendingAudit(jQuery(this), 5);"/>
         <property name="onDocumentReadyScript" value="
             var disableCompId = 'degree_audit_run';
             var condition = function () {
