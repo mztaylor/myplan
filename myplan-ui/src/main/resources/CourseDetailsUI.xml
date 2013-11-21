@@ -1001,7 +1001,7 @@
     <bean id="current_section_status" parent="Uif-Link">
         <property name="href"
                   value="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.registrationCode}"/>
-        <property name="cssClasses" value="courseActivities--lightBoxLink"/>
+        <property name="cssClasses" value="courseActivities--lightBoxLink lightBoxLink"/>
     </bean>
 
     <bean id="emptyField" parent="KSAP-MessageField" p:messageText="--"/>
@@ -1032,7 +1032,7 @@
                     <list>
                         <bean id="course_details_sections_list" parent="KSAP-VerticalBoxGroup">
                             <property name="onDocumentReadyScript" value="
-                                    jQuery('a.courseActivities--lightBoxLink').each(function() {
+                                    jQuery('a.lightBoxLink').each(function() {
                                     	createLightBoxLink(jQuery(this).attr('id'), {helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, false);
                                     });
                                     jQuery('body').on('SECTION_ITEM_ADDED', function(event, data){
