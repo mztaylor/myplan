@@ -1,0 +1,81 @@
+.planPreview {
+    width: 660px;
+    margin: 0 auto;
+    border: @baseBorderStyle;
+    border-bottom: none;
+
+    & .uif-boxLayoutVerticalItem,
+    & .uif-boxLayoutHorizontalItem {
+        margin: 0 !important;
+    }
+
+    & .planPreview__emptyLabel {
+        width: 60px;
+        height: 20px;
+        padding: @paddingMini 0;
+        border-bottom: @baseBorderStyle;
+        & h4 {
+            visibility: hidden;
+        }
+    }
+
+    & .planPreview__termLabel {
+        width: 149px;
+        text-align: center;
+        padding: @paddingMini 0;
+        border-left: @baseBorderStyle;
+        border-bottom: @baseBorderStyle;
+    }
+
+    & .planPreview__year {
+        border-bottom: @baseBorderStyle;
+        width: 660px;
+        font-size: @fontSizeSmall;
+
+        & .planPreview__yearLabel {
+            float: left;
+            width: 50px;
+            padding: @paddingSmall;
+            .bold();
+        }
+
+        & .planPreview__yearData {
+            float: left;
+            clear: none;
+        }
+
+        & .planPreview__term {
+            float: left;
+            border-left: @baseBorderStyle;
+            width: 149px;
+
+            & .planPreview__itemsHeaderText {
+                text-transform: uppercase;
+                font-size: @fontSizeTiny;
+                color: @textColorMin;
+            }
+
+            & > .uif-verticalBoxLayout {
+                min-height: 100px;
+                padding: @paddingSmall;
+            }
+
+            & .planPreview__termFooter {
+                border-top: @dottedBorderStyle;
+                padding: @paddingMini @paddingSmall;
+                text-align: right;
+                font-size: @fontSizeMini;
+                color: @textColorMin;
+                .bold();
+
+                & label {
+                    .normal();
+                }
+            }
+
+            & .planPreview__itemGrade {
+                float: right;
+            }
+        }
+    }
+}

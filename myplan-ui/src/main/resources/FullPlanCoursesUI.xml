@@ -29,13 +29,8 @@
                   value="org.kuali.student.myplan.plan.service.FullPlanItemsLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
         <property name="page.header.render" value="false"/>
-        <property name="renderSearchButtons" value="false"/>
-        <property name="renderLookupCriteria" value="false"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-view</value>
-            </list>
-        </property>
+        <property name="footer.render" value="false"/>
+        <property name="resultsGroup.header.render" value="false"/>
         <property name="style" value="width:682px;"/>
         <property name="page">
                 <bean parent="Uif-LookupPage" p:id="full_planned_courses_detail_page">
@@ -44,17 +39,13 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-HorizontalBoxGroup" p:style="margin:0;">
-                                <property name="validationMessages">
-                                    <null/>
-                                </property>
+                            <bean parent="KSAP-HorizontalBoxGroup">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-ActionLink" p:actionLabel="Back to Plan page">
                                             <property name="actionScript" value="parent.jQuery.fancybox.close(true);"/>
                                         </bean>
-                                        <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Print"
-                                              p:style="float:right; margin:0;">
+                                        <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Print">
                                             <property name="actionScript" value="window.print();"/>
                                         </bean>
                                     </list>
@@ -65,142 +56,82 @@
                     </property>
                 </bean>
         </property>
-
-        <property name="criteriaFields">
-            <list/>
-        </property>
-
-        <property name="resultFields">
-            <list/>
-        </property>
-        <property name="footer.render" value="false"/>
     </bean>
 
-    <bean id="full_planned_courses" parent="Uif-VerticalBoxSection">
-        <property name="validationMessages">
-            <null/>
+    <bean id="full_planned_courses" parent="KSAP-VerticalBoxGroup" p:headerText="Student Academic Plan (MyPlan)">
+        <property name="header">
+            <bean parent="KSAP-HeaderOne"/>
         </property>
-        <property name="style" value="border:solid 1px #ddd; border-radius:5px; margin-top:20px;"/>
         <property name="items">
             <list>
-                <bean parent="Uif-HeaderOne" p:style="border-bottom:solid 1px #ddd; padding:10px; margin:0;">
-                    <property name="headerText" value="Student Academic Plan (MyPlan)"/>
-                </bean>
-                <bean parent="Uif-VerticalBoxGroup" p:style="border-bottom:solid 1px #ddd; padding:10px; margin:0;">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
+                <bean parent="KSAP-VerticalBoxGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField" p:label="Prepared for"
+                            <bean parent="KSAP-MessageField" p:label="Prepared for"
                                   p:messageText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentName()} (@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentNumber() ne null ? T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentNumber() : 'No student number'})">
-                                <property name="fieldLabel.cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-text-normal</value>
-                                    </list>
-                                </property>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-text-bold</value>
-                                    </list>
+                                <property name="fieldLabel">
+                                    <bean parent="Uif-Label"/>
                                 </property>
                             </bean>
-
-                            <bean parent="Uif-MessageField" p:label="Document is accurate at the time of creation"
+                            <bean parent="KSAP-MessageField" p:label="Document is accurate at the time of creation"
                                   p:messageText="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).displayCurrentDateTime('MM/dd/yy - h:mm a')}">
-                                <property name="style" value="margin:0;"/>
-                                <property name="fieldLabel.cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-text-normal</value>
-                                    </list>
-                                </property>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>fl-text-bold</value>
-                                    </list>
+                                <property name="fieldLabel">
+                                    <bean parent="Uif-Label"/>
                                 </property>
                             </bean>
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-VerticalBoxGroup" p:style="border-bottom:solid 1px #ddd; padding:10px; margin:0;">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
+                <bean parent="KSAP-VerticalBoxGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-Message"
-                                  p:messageText="This is an advising tool used to plan degree progress. This is not a UW transcript and does not reflect credit earned, transfer work, or AP/IB/CBE credit.">
-                                <property name="style" value="margin:0;"/>
-                            </bean>
-                            <bean parent="Uif-Message"
-                                  p:messageText="Any alteration, modification, or misrepresentation of this planning tool or any copy thereof may constitute a felony and/or lead to student disciplinary sanctions.">
-                                <property name="style" value="margin:0;"/>
-                            </bean>
+                            <bean parent="KSAP-Message"
+                                  p:messageText="This is an advising tool used to plan degree progress. This is not a UW transcript and does not reflect credit earned, transfer work, or AP/IB/CBE credit."/>
+                            <bean parent="KSAP-Message"
+                                  p:messageText="Any alteration, modification, or misrepresentation of this planning tool or any copy thereof may constitute a felony and/or lead to student disciplinary sanctions."/>
                         </list>
                     </property>
                 </bean>
                 <ref bean="full_planned_courses_detail"/>
                 <ref bean="planNotesCollection"/>
-                <bean parent="Uif-MessageField" p:label="Document was created"
+                <bean parent="KSAP-MessageField" p:label="Document was created"
                       p:messageText="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).displayCurrentDateTime('MM/dd/yy - h:mm a')} [End of document]">
-                    <property name="fieldLabel.renderColon" value="false"/>
-                    <property name="style" value="padding:10px; margin:0;"/>
-                    <property name="fieldLabel.cssClasses">
-                        <list merge="true">
-                            <value>myplan-text-normal</value>
-                        </list>
+                    <property name="fieldLabel">
+                        <bean parent="Uif-Label"/>
                     </property>
                 </bean>
             </list>
         </property>
     </bean>
 
-    <bean id="full_planned_courses_detail" parent="Uif-VerticalBoxSubSection" p:headerText="Entire Academic Plan">
-        <property name="style" value="padding:10px;"/>
+    <bean id="full_planned_courses_detail" parent="KSAP-VerticalBoxGroup" p:headerText="Entire Academic Plan">
+        <property name="header">
+            <bean parent="KSAP-HeaderTwo"/>
+        </property>
+        <property name="layoutManager.cssClasses" value="planPreview"/>
         <property name="onDocumentReadyScript" value="
-            jQuery('th, td').removeAttr('width');
-            jQuery('td div.uif-subCollection').each(function() {
+            jQuery('.planPreview .planPreview__year').each(function() {
                 var maxHeight = 0;
-                jQuery(this).find('.myplan-term > .uif-boxLayout').each(function() {
+                var term = jQuery(this).find('.planPreview__term > .uif-verticalBoxLayout');
+                term.each(function() {
                     if (jQuery(this).height() > maxHeight) maxHeight = jQuery(this).height();
                 });
-                jQuery(this).find('.myplan-term > .uif-boxLayout').each(function() {
+                term.each(function() {
                     jQuery(this).height(maxHeight);
                 });
             });
             truncateField('full_planned_courses_detail', true);
         "/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-full-plan-detail</value>
-            </list>
-        </property>
-        <property name="header">
-            <bean parent="Uif-HeaderTwo"/>
-        </property>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalBoxGroup" p:style="margin:0;">
-                    <property name="validationMessages">
-                        <null/>
-                    </property>
+                <bean parent="KSAP-HorizontalBoxGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-HeaderThree" p:headerText="Year" p:cssClasses=""
-                                  p:style="display:block; width:54px; visibility:hidden; margin:0; padding:5px 0;"/>
-                            <bean parent="Uif-HeaderThree" p:headerText="Autumn"
-                                  p:cssClasses="fl-text-align-center fl-text-bold"
-                                  p:style="width:140px; display:block; border-left:solid 1px #a9a9a9; margin:0; padding:5px 0;"/>
-                            <bean parent="Uif-HeaderThree" p:headerText="Winter"
-                                  p:cssClasses="fl-text-align-center fl-text-bold"
-                                  p:style="width:140px; display:block; border-left:solid 1px #a9a9a9; margin:0; padding:5px 0;"/>
-                            <bean parent="Uif-HeaderThree" p:headerText="Spring"
-                                  p:cssClasses="fl-text-align-center fl-text-bold"
-                                  p:style="width:140px; display:block; border-left:solid 1px #a9a9a9; margin:0; padding:5px 0;"/>
-                            <bean parent="Uif-HeaderThree" p:headerText="Summer"
-                                  p:cssClasses="fl-text-align-center fl-text-bold"
-                                  p:style="width:140px; display:block; border-left:solid 1px #a9a9a9; margin:0; padding:5px 0;"/>
+                            <bean parent="KSAP-HeaderFour" p:headerText="Year" p:cssClasses="planPreview__emptyLabel"/>
+                            <bean parent="KSAP-HeaderFour" p:headerText="Autumn" p:cssClasses="planPreview__termLabel"/>
+                            <bean parent="KSAP-HeaderFour" p:headerText="Winter" p:cssClasses="planPreview__termLabel"/>
+                            <bean parent="KSAP-HeaderFour" p:headerText="Spring" p:cssClasses="planPreview__termLabel"/>
+                            <bean parent="KSAP-HeaderFour" p:headerText="Summer" p:cssClasses="planPreview__termLabel"/>
                         </list>
                     </property>
                 </bean>
@@ -210,7 +141,7 @@
     </bean>
     <bean id="planNotesCollection" parent="Uif-ListCollectionSection" p:headerText="[0] NOTES">
         <property name="header">
-            <bean parent="Uif-HeaderFour">
+            <bean parent="KSAP-HeaderFour">
                 <property name="inlineComponents">
                     <list>
                         <bean parent="Uif-Image"
@@ -227,11 +158,6 @@
                   value="org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject"/>
         <property name="propertyName" value="lookupResults"/>
         <property name="layoutManager.lineGroupPrototype.render" value="@{#line.hasNote}"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-full-plan-notes</value>
-            </list>
-        </property>
         <property name="items">
             <list>
                 <bean parent="KSAP-SimpleDataField" p:propertyName="this"
@@ -243,47 +169,16 @@
     </bean>
 
     <!--Collection list of the Full Plan Items-->
-    <bean id="academicYearCollection" parent="Uif-StackedCollectionGroup" p:style="margin:0;">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="cssClasses" value=""/>
+    <bean id="academicYearCollection" parent="KSAP-StackedCollectionGroup">
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject"/>
         <property name="propertyName" value="lookupResults"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
-        <property name="layoutManager">
-            <bean parent="Uif-StackedCollectionLayout-WithGridItems">
-                <property name="subCollectionFieldGroupPrototype">
-                    <bean parent="Uif-VerticalFieldGroup">
-                        <property name="fieldLabel.render" value="false"/>
-                        <property name="cssClasses">
-                            <list merge="true">
-                                <value>uif-subCollection</value>
-                            </list>
-                        </property>
-                    </bean>
-                </property>
-                <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionGridItem">
-                        <property name="footer.render" value="false"/>
-                        <property name="validationMessages">
-                            <null/>
-                        </property>
-                    </bean>
-                </property>
-            </bean>
-        </property>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="planPreview__year @{#line.currentYear ? 'planPreview__year--current':''}"/>
+        <property name="layoutManager.subCollectionFieldGroupPrototype.cssClasses" value="planPreview__yearData"/>
         <property name="items">
             <list>
-                <bean parent="Uif-DataField" p:propertyName="yearRange">
-                    <property name="fieldLabel.render" value="false"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>@{#line.currentYear ? 'myplan-current-year':''}</value>
-                        </list>
-                    </property>
+                <bean parent="KSAP-SimpleDataField" p:propertyName="yearRange">
+                    <property name="cssClasses" value="planPreview__yearLabel"/>
                 </bean>
             </list>
         </property>
@@ -294,69 +189,20 @@
         </property>
     </bean>
 
-    <bean id="termsCollection" parent="UifMyPlan-HorizontalStackedSubCollection-WithinSection">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="cssClasses" value="myplan-remove-margin"/>
+    <bean id="termsCollection" parent="KSAP-StackedCollectionGroup">
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
         <property name="propertyName" value="terms"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
         <property name="bindingInfo.bindToForm" value="true"/>
-        <property name="disclosure.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages">
-            <null/>
-        </property>
-        <property name="layoutManager">
-            <bean parent="UifMyPlan-HorizontalStackedCollectionLayout">
-                <property name="subCollectionFieldGroupPrototype">
-                    <bean parent="Uif-VerticalFieldGroup" p:style="width: 120px;">
-                        <property name="cssClasses">
-                            <list merge="true">
-                                <value>uif-subCollection</value>
-                            </list>
-                        </property>
-                    </bean>
-                </property>
-                <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionHorizontalBoxItem">
-                        <property name="cssClasses">
-                            <list merge="true">
-                                <value>myplan-term</value>
-                                <value>@{#line.currentTermForView ? 'myplan-current-term':''}</value>
-                            </list>
-                        </property>
-                    </bean>
-                </property>
-            </bean>
-        </property>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="planPreview__term @{#line.currentTermForView ? 'planPreview__term--current':''}"/>
         <property name="layoutManager.lineGroupPrototype.footer">
-            <bean parent="Uif-VerticalBoxGroup">
-                <property name="validationMessages">
-                    <null/>
-                </property>
-                <property name="cssClasses">
-                    <list>
-                        <value>@{#line.credits ne null ? 'myplan-term-footer':'myplan-term-footer-blank'}</value>
-                    </list>
-                </property>
+            <bean parent="KSAP-VerticalBoxGroup" p:render="true" p:cssClasses="planPreview__termFooter">
                 <property name="items">
                     <list>
-                        <bean parent="Uif-MessageField" p:label="Credits" p:messageText="@{#line.credits}"
-                              p:style="float:right; color:#999; margin:0;" p:render="@{#line.credits ne null}">
-                            <property name="fieldLabel.style" value="color:#999;"/>
-                            <property name="fieldLabel.cssClasses">
-                                <list merge="true">
-                                    <value>myplan-text-normal</value>
-                                </list>
-                            </property>
-                            <property name="cssClasses">
-                                <list merge="true">
-                                    <value>fl-text-bold</value>
-                                </list>
+                        <bean parent="KSAP-MessageField" p:label="Credits" p:messageText="@{#line.credits}"
+                              p:render="@{#line.credits ne null}">
+                            <property name="fieldLabel">
+                                <bean parent="Uif-Label"/>
                             </property>
                         </bean>
                         <bean parent="Uif-SpaceField" p:render="@{#line.credits eq null}"/>
@@ -370,130 +216,61 @@
                 <bean parent="plannedCourseDOCollection"/>
             </list>
         </property>
-        <!--<property name="collectionLookup.render" value="false"/>-->
-        <!--<property name="collectionLookup.quickfinderAction.render" value="false"/>-->
     </bean>
 
-    <bean id="academicRecordDOCollection" parent="Uif-StackedCollectionGroup" p:headerText="Registered">
-        <!--<property name="render" value="@{#line.academicRecord.size() GT 0}"/>-->
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="header">
-            <bean parent="Uif-HeaderFour"/>
-        </property>
-        <property name="header.render"
-                  value="@{(#line.openForPlanning OR #line.currentTermForView) AND #line.academicRecord.size() GT 0}"/>
-        <property name="layoutManager">
-            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
-                <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem">
-                        <property name="footer.render" value="false"/>
-                        <property name="validationMessages">
-                            <null/>
-                        </property>
-                    </bean>
-                </property>
-            </bean>
-        </property>
+    <bean id="academicRecordDOCollection" parent="KSAP-StackedCollectionGroup" p:headerText="Registered">
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
         <property name="propertyName" value="academicRecord"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
         <property name="bindingInfo.bindToForm" value="true"/>
-        <property name="disclosure.render" value="false"/>
+        <property name="header">
+            <bean parent="KSAP-HeaderSix" p:cssClasses="planPreview__itemsHeader" p:headerTagCssClasses="planPreview__itemsHeaderText"/>
+        </property>
+        <property name="header.render"
+                  value="@{(#line.openForPlanning OR #line.currentTermForView) AND #line.academicRecord.size() GT 0}"/>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:render="@{#line.courseCode ne null}">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
+                <bean parent="KSAP-HorizontalFieldGroup" p:render="@{#line.courseCode NE null}">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField" p:messageText="@{#line.courseCode} (@{#line.credit})"/>
-                            <bean parent="Uif-MessageField" p:messageText="@{#line.grade}"
-                                  p:style="float:right; margin:0;"/>
+                            <bean parent="KSAP-MessageField" p:messageText="@{#line.courseCode} (@{#line.credit})"/>
+                            <bean parent="KSAP-MessageField" p:messageText="@{#line.grade}" p:cssClasses="planPreview__itemGrade"/>
                         </list>
                     </property>
                 </bean>
             </list>
         </property>
-        <!--<property name="collectionLookup.render" value="false"/>-->
-        <!--<property name="collectionLookup.quickfinderAction.render" value="false"/>-->
     </bean>
 
-    <bean id="plannedCourseDOCollection" parent="Uif-StackedCollectionGroup" p:headerText="Planned">
-        <!-- <property name="render" value="@{!#line.completedTerm OR !#line.openForPlanning}"/>-->
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="header">
-            <bean parent="Uif-HeaderFour"/>
-        </property>
-        <property name="header.render"
-                  value="@{(#line.openForPlanning OR #line.currentTermForView) AND #line.plannedList.size() GT 0}"/>
-        <property name="layoutManager">
-            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
-                <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem"
-                          p:id="@{#line.planItemDataObject.id}_@{#line.planItemDataObject.atp.replace('.','-')}"
-                          p:style="width:120px;">
-                        <property name="footer.render" value="false"/>
-                        <property name="validationMessages">
-                            <null/>
-                        </property>
-                    </bean>
-                </property>
-            </bean>
-        </property>
+    <bean id="plannedCourseDOCollection" parent="KSAP-StackedCollectionGroup" p:headerText="Planned">
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="propertyName" value="plannedList"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
         <property name="bindingInfo.bindToForm" value="true"/>
-        <property name="disclosure.render" value="false"/>
+        <property name="header">
+            <bean parent="KSAP-HeaderSix" p:cssClasses="planPreview__itemsHeader" p:headerTagCssClasses="planPreview__itemsHeaderText"/>
+        </property>
+        <property name="header.render"
+                  value="@{(#line.openForPlanning OR #line.currentTermForView) AND #line.plannedList.size() GT 0}"/>
         <property name="items">
             <list>
-                <bean parent="Uif-HorizontalFieldGroup"
-                      p:render="@{#line.courseDetails.code ne null OR #line.placeHolderCode ne null}">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
+                <bean parent="KSAP-HorizontalFieldGroup"
+                      p:render="@{#line.courseDetails.code NE null OR #line.placeHolderCode NE null}">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-MessageField"
-                                  p:messageText="@{#line.placeHolderCode eq null ? #line.courseDetails.code : #line.placeHolderCode}"
-                                  p:style="margin:0 4px 0 0;"/>
-                            <bean parent="Uif-MessageField" p:messageText="@{#line.sections}"
-                                  p:style="margin:0 4px 0 0;">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-text-ellipsis</value>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="Uif-MessageField"
+                            <bean parent="KSAP-MessageField"
+                                  p:messageText="@{#line.placeHolderCode eq null ? #line.courseDetails.code : #line.placeHolderCode}"/>
+                            <bean parent="KSAP-MessageField" p:messageText="@{#line.sections}"/>
+                            <bean parent="KSAP-MessageField"
                                   p:render="@{#line.placeHolderCredit NE null OR #line.credit NE null}"
-                                  p:messageText="(@{#line.placeHolderCredit EQ null ? #line.credit : #line.placeHolderCredit})"
-                                  p:style="margin:0;"/>
-                            <bean parent="Uif-ImageField"
-                                  p:render="@{#line.note NE null}"
-                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/iconNote8.png">
-                                <property name="cssClasses">
-                                    <list merge="false">
-                                        <value>itemNote</value>
-                                    </list>
-                                </property>
-                            </bean>
+                                  p:messageText="(@{#line.placeHolderCredit EQ null ? #line.credit : #line.placeHolderCredit})"/>
+                            <bean parent="Uif-ImageField" p:render="@{#line.note NE null}"
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/iconNote8.png"/>
                         </list>
                     </property>
                 </bean>
             </list>
         </property>
-        <!--<property name="collectionLookup.render" value="false"/>-->
-        <!--<property name="collectionLookup.quickfinderAction.render" value="false"/>-->
     </bean>
 
 </beans>
