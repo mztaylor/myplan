@@ -175,23 +175,6 @@
                 <value>https://use.typekit.net/jpx3dug.js</value>
             </list>
         </property>
-        <!--<property name="cssFiles">
-            <list merge="true">
-                <value>ks-myplan/jquery-popover/jquery.popover.css?@{#ConfigProperties['myplan.buildNumber']}</value>
-                <value>ks-myplan/jquery-ui/jquery-ui.css?@{#ConfigProperties['myplan.buildNumber']}</value>
-                <value>ks-myplan/css/myplan.css?@{#ConfigProperties['myplan.buildNumber']}</value>
-                <value>ks-myplan/css/ksap.css?@{#ConfigProperties['myplan.buildNumber']}</value>
-            </list>
-        </property>
-        <property name="scriptFiles">
-            <list merge="true">
-                <value>ks-myplan/scripts/myplan.widgets.js?@{#ConfigProperties['myplan.buildNumber']}</value>
-                <value>ks-myplan/scripts/myplan.events.js?@{#ConfigProperties['myplan.buildNumber']}</value>
-                <value>ks-myplan/plugins/polling.js?@{#ConfigProperties['myplan.buildNumber']}</value>
-                <value>ks-myplan/jquery-popover/jquery.popover.js?@{#ConfigProperties['myplan.buildNumber']}</value>
-                <value>ks-myplan/scripts/myplan.google.js?@{#ConfigProperties['myplan.buildNumber']}</value>
-            </list>
-        </property>-->
     </bean>
 
     <!--Myplan theme with different view-->
@@ -340,19 +323,19 @@
         </property>
     </bean>
 
-    <bean id="UifMyPlan-HorizontalStackedSubCollection-WithinSection"
+    <bean id="KSAP-HorizontalStackedSubCollection-WithinSection"
           parent="Uif-StackedSubCollection-WithinSection-parentBean">
         <property name="layoutManager">
-            <bean parent="UifMyPlan-HorizontalStackedCollectionLayout"/>
+            <bean parent="KSAP-HorizontalStackedCollectionLayout"/>
+        </property>
+        <property name="validationMessages">
+            <null/>
         </property>
     </bean>
 
 
-    <bean id="UifMyPlan-HorizontalStackedCollectionLayout"
+    <bean id="KSAP-HorizontalStackedCollectionLayout"
           parent="Uif-StackedCollectionLayout-WithBoxItems-parentBean">
-
-        <!--<property name="template" value="/ks-myplan/WEB-INF/jsp/templates/layout/override/horizontalstacked.jsp"/>-->
-
         <property name="addLineGroup">
             <bean parent="Uif-CollectionVerticalBoxItem">
                 <property name="cssClasses">
@@ -370,11 +353,12 @@
                 <property name="footer.render" value="false"/>
             </bean>
         </property>
-
         <property name="subCollectionFieldGroupPrototype">
             <bean parent="Uif-VerticalFieldGroup" p:cssClasses="uif-subCollection"/>
         </property>
-
+        <property name="validationMessages">
+            <null/>
+        </property>
     </bean>
 
 
