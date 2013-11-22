@@ -434,6 +434,7 @@
                 <property name="items">
                     <list>
                         <bean parent="messages_detail_list" p:width="710px"/>
+                        <bean parent="messages_detail_list_empty" p:width="710px"/>
                         <bean parent="KSAP-RightPane" p:width="230px"/>
                     </list>
                 </property>
@@ -441,16 +442,25 @@
         </property>
     </bean>
 
+    <bean id="messages_detail_list_empty" parent="KSAP-Message" p:messageText="You do not have any messages">
+        <property name="cssClasses" value="block removeMargin"/>
+        <property name="render" value="@{lookupResults.size() EQ 0}"/>
+    </bean>
+
     <bean id="messages_detail_list" parent="Uif-TableCollectionGroup" p:layoutManager.numberOfColumns="4">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
         <property name="propertyName" value="lookupResults"/>
         <property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>
+        <property name="id" value="messages_detail_list"/>
         <property name="onDocumentReadyScript" value="
             jQuery('#messages_detail_list').on('COMMENT_SENT', function(event, data){
                 customRetrieveComponent('messages_detail_list','messages_detail_list','search','lookup',{viewId:'MessagesDetail-LookupView'});
             });
         "/>
+        <property name="validationMessages"><null/></property>
+        <property name="render" value="@{lookupResults.size() GT 0}"/>
+        <property name="cssClasses" value="messagesList"/>
         <property name="layoutManager.cssClasses" value="messagesList__table"/>
         <property name="layoutManager.libraryCssClasses" value=""/>
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
@@ -486,41 +496,49 @@
                                 jq('.dataTables_paginate .ui-button').hide();
                             }
                        }"/>
+                <entry key="fnRowCallback"
+                       value="function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                            jQuery(nRow).on('click', function(e) {
+                                var messageId = jQuery(this).find('input:hidden[name$=messageId]').val();
+                                lightBoxLink('comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=' + messageId, {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);
+                            });
+                       }"/>
             </map>
         </property>
         <property name="items">
             <list>
-                <bean p:id="@{#line.messageId}_subject" parent="KSAP-VerticalFieldGroup" p:label="Subject">
-                    <property name="onDocumentReadyScript" value="
-                        jQuery('#@{#line.messageId}_subject').parents('tr').on('click', function(e) {
-                            lightBoxLink('comment?methodToCall=startCommentForm&amp;viewId=Message-FormView&amp;pageId=comment_dialog_response_page&amp;messageId=@{#line.messageId}', {helpers:{overlay:{closeClick: false}},autoScale:true,width:650,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, e);
-                        });
-                    "/>
+                <bean parent="KSAP-VerticalFieldGroup" p:label="Subject">
                     <property name="items">
                         <list>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="subject" p:width="241px">
                                 <property name="cssClasses" value="bold ellipsisItem"/>
                             </bean>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="from" p:label="from">
-                                <property name="cssClasses" value="normalLightText"/>
+                                <property name="cssClasses" value="normalLightText removeMargin"/>
                                 <property name="fieldLabel.render" value="true"/>
+                            </bean>
+                            <bean parent="KSAP-SimpleInputField" p:propertyName="messageId"
+                                  p:defaultValue="@{#line.messageId}" p:hidden="true">
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
                             </bean>
                         </list>
                     </property>
                 </bean>
 
-                <bean p:id="@{#line.messageId}_received" parent="KSAP-SimpleDataField" p:label="Received">
+                <bean parent="KSAP-SimpleDataField" p:label="Received">
                     <property name="cssClasses" value="normalLightText"/>
                     <property name="propertyName" value="createDate"/>
                     <property name="propertyEditor" ref="timestamp_formatter"/>
                     <property name="escapeHtmlInPropertyValue" value="false"/>
                 </bean>
 
-                <bean p:id="@{#line.messageId}_comments" parent="KSAP-MessageField" p:label="Comments">
+                <bean parent="KSAP-MessageField" p:label="Comments">
                     <property name="messageText" value="@{#line.comments.size()} comments"/>
                 </bean>
 
-                <bean p:id="@{#line.messageId}_lastcomment" parent="KSAP-VerticalFieldGroup" p:label="Last Comment">
+                <bean parent="KSAP-VerticalFieldGroup" p:label="Last Comment">
                     <property name="cssClasses" value="normalLightText"/>
                     <property name="items">
                         <list>
@@ -530,7 +548,7 @@
                             </bean>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="lastCommentBy" p:label="by">
                                 <property name="render" value="@{#line.lastCommentBy NE null}"/>
-                                <property name="cssClasses" value="removeSort"/>
+                                <property name="cssClasses" value="removeSort removeMargin"/>
                             </bean>
                         </list>
                     </property>

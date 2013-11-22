@@ -94,6 +94,65 @@
     }
 }
 
+.messagesList .dataTables_paginate {
+    #gradient > .vertical(#ebebeb, #f6f6f6);
+    border: @baseBorderStyle;
+    .border-radius(0 0 @baseBorderRadius @baseBorderRadius);
+    .box-shadow(inset 0px 1px 1px 0px rgba(255, 255, 255, 1));
+    border-top: none;
+    text-align: right;
+    margin: 0;
+    padding: 8px @paddingDefault;
+    clear: both;
+
+    & .ui-button {
+        background: none;
+        border: none;
+        font-size: @fontSizeSmall;
+        margin: 0;
+        padding: 0 @paddingSmall;
+
+        &.ui-state-disabled.previous,
+        &.ui-state-disabled.next {
+            opacity: 0.25;
+            color: @textColor;
+        }
+    }
+
+    & a.ui-button.ui-state-default {
+        color: @linkColor;
+
+        &:hover {
+            text-decoration: underline !important;
+        }
+    }
+
+    & > span > .ui-button.ui-state-disabled {
+        .bold();
+        color: @textColor;
+        font-size: @baseFontSize;
+        opacity: 1;
+        text-decoration: none !important;
+    }
+
+    & .first,
+    & .last {
+        display: none !important;
+    }
+
+    & .previous {
+        border-right: solid 1px #c7c7c7;
+        margin-right: @marginSmall;
+        padding: 0 @paddingDefault 0 0;
+    }
+
+    & .next {
+        border-left: solid 1px #c7c7c7;
+        margin-left: @marginSmall;
+        padding: 0 0 0 @paddingDefault;
+    }
+}
+
 .messagesForm__header {
     border-bottom: @baseBorderStyle;
     margin: 0 0 @marginLarge;
