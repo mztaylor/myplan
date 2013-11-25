@@ -18,7 +18,7 @@
 
     <groupId>org.kuali.student.myplan</groupId>
     <artifactId>ks-myplan</artifactId>
-    <version>1.7.2-SNAPSHOT</version>
+    <version>1.7.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Kuali Student MyPlan Module</name>
     <description>
@@ -97,8 +97,11 @@
         <kuali.javadoc.link.9>http://ws.apache.org/wss4j/apidocs/</kuali.javadoc.link.9>
 
 
-        <kuali.student.version>1.3.0-myplan-SNAPSHOT</kuali.student.version>
-        <kuali.student.enroll.version>1.3.0-myplan-SNAPSHOT</kuali.student.enroll.version>
+        <ks.api.version>2.0.1-cm</ks.api.version>
+        <ks.core.version>2.0.1-cm</ks.core.version>
+        <ks.enroll.api.version>2.0.0-M7</ks.enroll.api.version>
+        <ks.enroll.version>1.0.0-M7</ks.enroll.version>
+        <ks.lum.version>2.0.1-cm</ks.lum.version>
 
         <!-- artifact versions -->
         <asm.version>3.3.1</asm.version>
@@ -869,31 +872,31 @@
             <dependency>
                 <groupId>org.kuali.student.common</groupId>
                 <artifactId>ks-jta</artifactId>
-                <version>${kuali.student.version}</version>
+                <version>${ks.core.version}</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.kuali.student.common</groupId>
                 <artifactId>ks-cxf</artifactId>
-                <version>${kuali.student.version}</version>
+                <version>${ks.core.version}</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.kuali.student.common</groupId>
                 <artifactId>ks-metro</artifactId>
-                <version>${kuali.student.version}</version>
+                <version>${ks.core.version}</version>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.kuali.student.common</groupId>
                 <artifactId>ks-eclipselink</artifactId>
-                <version>${kuali.student.version}</version>
+                <version>${ks.core.version}</version>
                 <type>pom</type>
             </dependency>
             <dependency>
-                <groupId>org.kuali.student.common</groupId>
+                <groupId>org.kuali.student.core</groupId>
                 <artifactId>ks-hibernate</artifactId>
-                <version>${kuali.student.version}</version>
+                <version>${ks.core.version}</version>
                 <type>pom</type>
             </dependency>
 

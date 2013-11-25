@@ -29,6 +29,7 @@ public class CourseSummaryDetails {
     private List<String> requisites;
     private List<String> genEdRequirements;
     private List<String> abbrGenEdRequirements;
+    private List<String> crossListings;
 
 
     private String lastOffered;
@@ -145,6 +146,14 @@ public class CourseSummaryDetails {
             campusLocations = new ArrayList<String>();
         }
         return campusLocations;
+    }
+
+    public List<String> getCrossListings() {
+        return crossListings;
+    }
+
+    public void setCrossListings(List<String> crossListings) {
+        this.crossListings = crossListings;
     }
 
     public void setCampusLocations(List<String> campusLocations) {

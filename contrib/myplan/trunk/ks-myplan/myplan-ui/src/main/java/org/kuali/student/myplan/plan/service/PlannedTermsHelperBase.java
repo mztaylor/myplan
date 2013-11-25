@@ -5,13 +5,10 @@ import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.rice.kim.api.identity.Person;
-import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
-import org.kuali.student.lum.course.dto.CourseInfo;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
@@ -26,6 +23,7 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.xml.namespace.QName;
@@ -107,9 +105,8 @@ public class PlannedTermsHelperBase {
                 if (!exists) {
                     PlannedTerm term = new PlannedTerm();
                     term.setAtpId(atp);
-                    String[] splitStr = AtpHelper.atpIdToTermNameAndYear(atp);
                     StringBuilder sb = new StringBuilder();
-                    sb.append(splitStr[0]).append(" ").append(splitStr[1]);
+                    sb.append(AtpHelper.atpIdToTermName(atp));
                     String QtrYear = sb.substring(0, 1).toUpperCase().concat(sb.substring(1));
                     term.setQtrYear(QtrYear);
                     term.getPlannedList().add(plan);
@@ -147,8 +144,7 @@ public class PlannedTermsHelperBase {
                     PlannedTerm plannedTerm = new PlannedTerm();
                     plannedTerm.setAtpId(atp);
                     StringBuffer str = new StringBuffer();
-                    String[] splitStr = AtpHelper.atpIdToTermNameAndYear(atp);
-                    str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
+                    str = str.append(AtpHelper.atpIdToTermName(atp));
                     String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
                     plannedTerm.setQtrYear(QtrYear);
                     plannedTerm.getBackupList().add(bl);
@@ -188,8 +184,7 @@ public class PlannedTermsHelperBase {
                     PlannedTerm plannedTerm = new PlannedTerm();
                     plannedTerm.setAtpId(atp);
                     StringBuffer str = new StringBuffer();
-                    String[] splitStr = AtpHelper.atpIdToTermNameAndYear(atp);
-                    str = str.append(splitStr[0]).append(" ").append(splitStr[1]);
+                    str = str.append(AtpHelper.atpIdToTermName(atp));
                     String QtrYear = str.substring(0, 1).toUpperCase().concat(str.substring(1, str.length()));
                     plannedTerm.setQtrYear(QtrYear);
                     plannedTerm.getRecommendedList().add(bl);
@@ -677,7 +672,7 @@ public class PlannedTermsHelperBase {
                 for (PlanItemInfo planItemInfo : plannedCourses) {
                     String credit = null;
                     if (PlanConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType())) {
-                        CourseInfo courseInfo = getCourseHelper().getCourseInfo(planItemInfo.getRefObjectId());
+                        CourseInfo courseInfo = getCourseHelper().getCourseInfoByIdAndCd(planItemInfo.getRefObjectId(), null);
                         String key = generateKey(courseInfo.getSubjectArea().trim(), courseInfo.getCourseNumberSuffix());
                         List<String> sectionCreditRangeList = courseSectionCreditsMap.get(key);
 

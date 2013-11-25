@@ -1,6 +1,6 @@
 package org.kuali.student.myplan.academicplan.model;
 
-import org.kuali.student.common.entity.KSEntityConstants;
+import org.kuali.student.r1.common.entity.KSEntityConstants;
 import org.kuali.student.r2.common.entity.BaseVersionEntity;
 
 import javax.persistence.*;

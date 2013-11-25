@@ -1,18 +1,14 @@
 package org.kuali.student.myplan.plan.util;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.common.exceptions.MissingParameterException;
-import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.common.search.dto.SearchResult;
-import org.kuali.student.common.search.dto.SearchResultCell;
-import org.kuali.student.common.search.dto.SearchResultRow;
-import org.kuali.student.core.organization.dto.OrgInfo;
-import org.kuali.student.core.organization.service.OrganizationService;
-import org.kuali.student.myplan.course.util.CampusSearch;
-import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.core.organization.dto.OrgInfo;
+import org.kuali.student.r2.core.organization.service.OrganizationService;
+import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
+import org.kuali.student.r2.core.search.dto.SearchResultInfo;
+import org.kuali.student.r2.core.search.infc.SearchResultRow;
 import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
@@ -32,7 +28,7 @@ public class OrgHelper {
 
     private static final Logger logger = Logger.getLogger(OrgHelper.class);
 
-    private static final SearchRequest SUBJECT_AREA_SEARCH_REQUEST = new SearchRequest(CourseSearchConstants.ORG_QUERY_SEARCH_SUBJECT_AREAS);
+    private static final SearchRequestInfo SUBJECT_AREA_SEARCH_REQUEST = new SearchRequestInfo(CourseSearchConstants.ORG_QUERY_SEARCH_SUBJECT_AREAS);
 
     public static OrganizationService organizationService;
 
@@ -67,12 +63,12 @@ public class OrgHelper {
             return getOrgTypeCache().get(param);
         } else {
             List<OrgInfo> orgInfoList = new ArrayList<OrgInfo>();
-            SearchRequest searchRequest = new SearchRequest(searchRequestKey);
+            SearchRequestInfo searchRequest = new SearchRequestInfo(searchRequestKey);
             searchRequest.addParam(paramKey, param);
-            SearchResult searchResult = new SearchResult();
+            SearchResultInfo searchResult = new SearchResultInfo();
             try {
-                searchResult = getOrganizationService().search(searchRequest);
-            } catch (MissingParameterException e) {
+                searchResult = getOrganizationService().search(searchRequest, CourseSearchConstants.CONTEXT_INFO);
+            } catch (Exception e) {
                 logger.error("Search Failed to get the Organization Data ", e);
             }
             for (SearchResultRow row : searchResult.getRows()) {
@@ -92,10 +88,12 @@ public class OrgHelper {
 
     public static Map<String, String> getSubjectAreas() {
         Map<String, String> subjects = new HashMap<String, String>();
-        SearchResult searchResult = new SearchResult();
+        SearchResultInfo searchResult = new SearchResultInfo();
         try {
-            searchResult = getOrganizationService().search(SUBJECT_AREA_SEARCH_REQUEST);
+            searchResult = getOrganizationService().search(SUBJECT_AREA_SEARCH_REQUEST, CourseSearchConstants.CONTEXT_INFO);
         } catch (MissingParameterException e) {
+            logger.error("Search Failed to get the Organization Data ", e);
+        } catch (Exception e) {
             logger.error("Search Failed to get the Organization Data ", e);
         }
         for (SearchResultRow row : searchResult.getRows()) {
@@ -108,10 +106,12 @@ public class OrgHelper {
     /*Used for the subjects area's with trimmed key value */
     public static Map<String, String> getTrimmedSubjectAreas() {
         Map<String, String> subjects = new HashMap<String, String>();
-        SearchResult searchResult = new SearchResult();
+        SearchResultInfo searchResult = new SearchResultInfo();
         try {
-            searchResult = getOrganizationService().search(SUBJECT_AREA_SEARCH_REQUEST);
+            searchResult = getOrganizationService().search(SUBJECT_AREA_SEARCH_REQUEST, CourseSearchConstants.CONTEXT_INFO);
         } catch (MissingParameterException e) {
+            logger.error("Search Failed to get the Organization Data ", e);
+        } catch (Exception e) {
             logger.error("Search Failed to get the Organization Data ", e);
         }
         for (SearchResultRow row : searchResult.getRows()) {

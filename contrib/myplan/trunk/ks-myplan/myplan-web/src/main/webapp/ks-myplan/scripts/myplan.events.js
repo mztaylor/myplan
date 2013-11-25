@@ -228,10 +228,10 @@ function fnDisplayMessage(message, cssClass, targetId, button, full, sameBlock, 
  Function: restore add button for saving courses in search results
  #################################################################
  */
-function fnRestoreSearchAddButton(courseId) {
+function fnRestoreSearchAddButton(courseId, subject, number) {
     var oTable = jQuery('.myplan-course-search-results-datatable.uif-dataTable').dataTable();
     var oNodes = oTable.fnGetNodes();
-    jQuery(oNodes).find("#" + courseId + "_status").fadeOut(250, function () {
+    jQuery(oNodes).find("#" + courseId + "_" + subject + "_" + number + "_status").fadeOut(250, function () {
         jQuery(this).removeClass().html('<input type="image" title="Bookmark or Add to Plan" src="/student/ks-myplan/images/pixel.gif" alt="Bookmark or Add to Plan" class="uif-field uif-imageField myplan-add" data-courseid="' + courseId + '" onclick="openMenu(\'' + courseId + '_add\',\'add_course_items\',null,event,null,\'myplan-container-75\',{tail:{align:\'middle\'},align:\'middle\',position:\'right\'},false);" />');
         jQuery(this).fadeIn(250);
     });

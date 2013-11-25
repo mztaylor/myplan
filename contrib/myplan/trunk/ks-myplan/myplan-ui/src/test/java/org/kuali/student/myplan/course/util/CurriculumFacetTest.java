@@ -2,14 +2,10 @@ package org.kuali.student.myplan.course.util;
 
 import org.junit.Test;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
-import org.kuali.student.myplan.course.dataobject.FacetItem;
-import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 
-import java.util.*;
+import java.util.Set;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 
 
 public class CurriculumFacetTest {

@@ -575,7 +575,7 @@
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="render"
                   value="@{#line NE null ? (#line.completedTerm OR #line.currentTermForView OR #line.academicRecord.size() GT 0) : true}"/>
-        <property name="id" value="academicRecord-@{#line.atpId.replaceAll('\.','-')}"/>
+        <property name="id" value="academicRecord-@{#line.atpId}"/>
         <property name="cssClasses" value="planYear__academicRecord"/>
         <property name="header">
             <bean parent="KSAP-HeaderBase"
@@ -598,7 +598,7 @@
                   value="planYear__items @{#line.openForPlanning ? '' : 'planYear__items--fixed'}"/>
         <property name="layoutManager.lineGroupPrototype">
             <bean parent="Uif-CollectionHorizontalBoxItem">
-                <property name="id" value="academicRecord-@{#line.atpId.replace('.','-')}-@{#line.uuid}-group"/>
+                <property name="id" value="academicRecord-@{#line.atpId}-@{#line.uuid}-group"/>
                 <property name="cssClasses" value="planItem @{#line.courseId EQ null ? 'planItem--actionless' : ''}"/>
                 <property name="footer.render" value="false"/>
                 <property name="validationMessages">
@@ -635,7 +635,7 @@
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="propertyName" value="plannedList"/>
         <property name="bindingInfo.bindToForm" value="true"/>
-        <property name="id" value="planned-@{#line.atpId.replaceAll('\.','-')}"/>
+        <property name="id" value="planned-@{#line.atpId}"/>
         <property name="cssClasses" value="planYear__planned"/>
         <property name="dataAttributes">
             <map>
@@ -664,7 +664,7 @@
         <property name="layoutManager.lineGroupPrototype">
             <bean parent="Uif-CollectionHorizontalBoxItem">
                 <property name="id"
-                          value="@{#line.planItemDataObject.type}-@{#line.planItemDataObject.atp.replace('.','-')}-@{#line.planItemDataObject.id}-group"/>
+                          value="@{#line.planItemDataObject.type}-@{#line.planItemDataObject.atp}-@{#line.planItemDataObject.id}-group"/>
                 <property name="cssClasses"
                           value="planItem @{#line.planItemDataObject.type EQ 'recommended' ? (!#line.proposed ? 'planItem--recommendedAccepted' : 'planItem--recommendedProposed') : (#line.adviserRecommended ? 'planItem--recommendedAccepted':'')} @{#line.placeHolder ? 'planItem--placeholder':''} @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND #line.placeHolder AND #line.planItemDataObject.type NE 'recommended' ? 'planItem--actionless' : ''}"/>
                 <property name="render" value="@{#line.courseDetails.code NE null OR #line.placeHolderCode NE null}"/>
@@ -713,7 +713,7 @@
         <property name="propertyName" value="recommendedList"/>
         <property name="render"
                   value="@{#line NE null ? (T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() ? true : (#parentLine.recommendedList.size() GT 0)) : true}"/>
-        <property name="id" value="recommended-@{#line.atpId.replaceAll('\.','-')}"/>
+        <property name="id" value="recommended-@{#line.atpId}"/>
         <property name="cssClasses" value="planYear__recommended"/>
         <property name="dataAttributes">
             <map>
@@ -776,7 +776,7 @@
 
     <bean id="backupCollection" parent="plannedCollection" p:headerText="Backup">
         <property name="propertyName" value="backupList"/>
-        <property name="id" value="backup-@{#line.atpId.replaceAll('\.','-')}"/>
+        <property name="id" value="backup-@{#line.atpId}"/>
         <property name="cssClasses" value="planYear__backup"/>
         <property name="dataAttributes">
             <map>
@@ -812,7 +812,7 @@
     </bean>
 
     <bean id="academicRecordAction" parent="KSAP-HorizontalFieldGroup">
-        <property name="id" value="academicRecord-@{#line.atpId.replace('.','-')}-@{#line.uuid}"/>
+        <property name="id" value="academicRecord-@{#line.atpId}-@{#line.uuid}"/>
         <property name="title" value="@{#line.courseTitle}"/>
         <property name="onClickScript"
                   value="e.preventDefault();"/>
@@ -909,7 +909,7 @@
 
     <bean id="planItemNoteIcon" parent="Uif-ImageField" p:render="@{#line.note NE null}">
         <property name="source" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
-        <property name="id" value="@{#line.planItemDataObject.type}-@{#line.planItemDataObject.atp.replace('.','-')}-@{#line.planItemDataObject.id}-note"/>
+        <property name="id" value="@{#line.planItemDataObject.type}-@{#line.planItemDataObject.atp}-@{#line.planItemDataObject.id}-note"/>
         <property name="cssClasses" value="planItem__note"/>
         <property name="toolTip">
             <bean parent="KSAP-TooltipLeft">
@@ -954,7 +954,7 @@
 
     <bean id="planItemAction" parent="KSAP-HorizontalFieldGroup">
         <property name="id"
-                  value="@{#line.planItemDataObject.type}-@{#line.planItemDataObject.atp.replace('.','-')}-@{#line.planItemDataObject.id}"/>
+                  value="@{#line.planItemDataObject.type}-@{#line.planItemDataObject.atp}-@{#line.planItemDataObject.id}"/>
         <property name="title"
                   value="@{#line.placeHolder ? (#line.placeHolderCode NE #line.placeHolderValue ? #line.placeHolderCode : '') : #line.courseDetails.code} @{#line.sections} '@{#line.placeHolder ? #line.placeHolderValue : #line.courseDetails.courseTitle}' @{#line.placeHolder ? 'placeholder':''}"/>
         <property name="dataAttributes">

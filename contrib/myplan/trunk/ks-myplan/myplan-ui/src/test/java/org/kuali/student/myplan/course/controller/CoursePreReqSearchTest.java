@@ -2,15 +2,15 @@ package org.kuali.student.myplan.course.controller;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kuali.student.common.search.dto.SearchRequest;
 import org.kuali.student.myplan.course.service.CoursePreReqSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:myplan-test-context.xml"})

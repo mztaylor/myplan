@@ -9,18 +9,21 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.common.search.dto.SearchResult;
 import org.kuali.student.enrollment.academicrecord.dto.*;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
-import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
-import org.kuali.student.lum.lu.service.LuService;
-import org.kuali.student.lum.lu.service.LuServiceConstants;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
+import org.kuali.student.r2.common.util.constants.LuServiceConstants;
+import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
+import org.kuali.student.r2.core.search.dto.SearchResultInfo;
+import org.kuali.student.r2.lum.clu.service.CluService;
+import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
 import org.springframework.util.StringUtils;
 
 import javax.jws.WebParam;
@@ -41,7 +44,7 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
 
     private StudentServiceClient studentServiceClient;
 
-    private transient LuService luService;
+    private transient CluService luService;
 
     private static transient AcademicCalendarService academicCalendarService;
 
@@ -49,14 +52,14 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
         this.studentServiceClient = studentServiceClient;
     }
 
-    protected LuService getLuService() {
+    protected CluService getLuService() {
         if (this.luService == null) {
-            this.luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+            this.luService = (CluService) GlobalResourceLoader.getService(new QName(CluServiceConstants.CLU_NAMESPACE, "CluService"));
         }
         return this.luService;
     }
 
-    public void setLuService(LuService luService) {
+    public void setLuService(CluService luService) {
         this.luService = luService;
     }
 
@@ -365,8 +368,8 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
 
         for (int i = 0; i < 2; i++) {
             String registrationResponseText = null;
-            if (currentTerm[0].equalsIgnoreCase("4")) {
-                currentTerm[0] = "1";
+            if (currentTerm[0].equalsIgnoreCase(PlanConstants.ATP_TERM_4)) {
+                currentTerm[0] = PlanConstants.ATP_TERM_1;
                 currentTerm[1] = String.valueOf(Integer.parseInt(currentTerm[1]) + 1);
                 AtpHelper.YearTerm yearTerm = new AtpHelper.YearTerm(Integer.parseInt(currentTerm[1].trim()), Integer.parseInt(currentTerm[0].trim()));
                 String atpId = yearTerm.toATP();
@@ -409,18 +412,22 @@ public class UwAcademicRecordServiceImpl implements AcademicRecordService {
      * @return
      */
     private String[] getCourseTitleAndId(String subject, String number) {
-        List<SearchRequest> requests = new ArrayList<SearchRequest>();
-        SearchRequest request = new SearchRequest("myplan.course.getCourseTitleAndId");
+        List<SearchRequestInfo> requests = new ArrayList<SearchRequestInfo>();
+        SearchRequestInfo request = new SearchRequestInfo(CourseSearchConstants.COURSE_SEARCH_FOR_COURSE_ID);
         request.addParam("subject", subject);
         request.addParam("number", number);
         request.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
         requests.add(request);
-        SearchResult searchResult = new SearchResult();
+        SearchResultInfo searchResult = new SearchResultInfo();
+
         try {
-            searchResult = getLuService().search(request);
-        } catch (org.kuali.student.common.exceptions.MissingParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            searchResult = getLuService().search(request, PlanConstants.CONTEXT_INFO);
+        } catch (MissingParameterException e) {
+            logger.error(e);
+        } catch (Exception e) {
+            logger.error(e);
         }
+
         String results[] = new String[2];
         if (searchResult.getRows().size() > 0) {
             results[0] = searchResult.getRows().get(0).getCells().get(0).getValue();

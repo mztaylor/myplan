@@ -11,6 +11,7 @@ import org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -90,10 +91,10 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
                 size--;
             }
 
-            String[] minYear = AtpHelper.atpIdToTermNameAndYear(plannedTermList.get(0).getAtpId());
-            String[] maxYear = AtpHelper.atpIdToTermNameAndYear(plannedTermList.get(plannedTermList.size() - 1).getAtpId());
+            YearTerm minYear = AtpHelper.atpToYearTerm(plannedTermList.get(0).getAtpId());
+            YearTerm maxYear = AtpHelper.atpToYearTerm(plannedTermList.get(plannedTermList.size() - 1).getAtpId());
             StringBuffer yearRange = new StringBuffer();
-            yearRange = yearRange.append(minYear[1]).append(" - ").append(maxYear[1]);
+            yearRange = yearRange.append(minYear.getYearAsString()).append(" - ").append(maxYear.getYearAsString());
             fullPlanItemsDataObject.setYearRange(yearRange.toString());
             fullPlanItemsDataObject.setTerms(plannedTermList);
             fullPlanItemsDataObjectList.add(fullPlanItemsDataObject);

@@ -1,18 +1,15 @@
 package org.kuali.student.myplan.course.util;
 
 import org.junit.Test;
-
-import org.kuali.student.lum.course.dto.CourseInfo;
-import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
-import org.kuali.student.lum.lrc.dto.ResultComponentInfo;
+import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.lum.course.dto.CourseInfo;
+import org.kuali.student.r2.lum.course.service.assembler.CourseAssemblerConstants;
+import org.kuali.student.r2.lum.lrc.dto.ResultValuesGroupInfo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 
 public class CreditsFormatterTest {
     @Test
@@ -23,17 +20,17 @@ public class CreditsFormatterTest {
         assertEquals("", CreditsFormatter.formatCredits(courseInfo));
 
         //  Empty credit options list.
-        List<ResultComponentInfo> creditOptions = new ArrayList<ResultComponentInfo>();
+        List<ResultValuesGroupInfo> creditOptions = new ArrayList<ResultValuesGroupInfo>();
         courseInfo.setCreditOptions(creditOptions);
 
         assertEquals("", CreditsFormatter.formatCredits(courseInfo));
 
         //  Credit options: fixed.
         String creditsText = "3";
-        ResultComponentInfo rci = new ResultComponentInfo();
+        ResultValuesGroupInfo rci = new ResultValuesGroupInfo();
         rci.setType(CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
-        Map<String, String> courseOptionAttributes = new HashMap<String, String>();
-        courseOptionAttributes.put(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_FIXED_CREDIT_VALUE, creditsText);
+        List<AttributeInfo> courseOptionAttributes = new ArrayList<AttributeInfo>();
+        courseOptionAttributes.add(new AttributeInfo(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_FIXED_CREDIT_VALUE, creditsText));
         rci.setAttributes(courseOptionAttributes);
         creditOptions.add(rci);
 
@@ -44,11 +41,11 @@ public class CreditsFormatterTest {
     public void formatCreditsMultiple() {
 
         CourseInfo courseInfo = new CourseInfo();
-        List<ResultComponentInfo> creditOptions = new ArrayList<ResultComponentInfo>();
+        List<ResultValuesGroupInfo> creditOptions = new ArrayList<ResultValuesGroupInfo>();
 
         //  Credit options: list.
         String creditsText = "1, 2, 5, 25";
-        ResultComponentInfo rci = new ResultComponentInfo();
+        ResultValuesGroupInfo rci = new ResultValuesGroupInfo();
         rci.setType(CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_MULTIPLE);
 
         List<String> resultValues = new ArrayList<String>();
@@ -57,7 +54,7 @@ public class CreditsFormatterTest {
         resultValues.add("5");
         resultValues.add("25");
 
-        rci.setResultValues(resultValues);
+        rci.setResultValueKeys(resultValues);
 
         creditOptions.add(rci);
 
@@ -69,16 +66,16 @@ public class CreditsFormatterTest {
     @Test
     public void formatCreditsRange() {
         CourseInfo courseInfo = new CourseInfo();
-        List<ResultComponentInfo> creditOptions = new ArrayList<ResultComponentInfo>();
+        List<ResultValuesGroupInfo> creditOptions = new ArrayList<ResultValuesGroupInfo>();
 
         //  Credit options: list.
         String creditsText = "1.5-25";
-        ResultComponentInfo rci = new ResultComponentInfo();
+        ResultValuesGroupInfo rci = new ResultValuesGroupInfo();
         rci.setType(CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_VARIABLE);
 
-        Map<String, String> courseOptionAttributes = new HashMap<String, String>();
-        courseOptionAttributes.put(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MIN_CREDIT_VALUE, "1.5");
-        courseOptionAttributes.put(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MAX_CREDIT_VALUE, "25");
+        List<AttributeInfo> courseOptionAttributes = new ArrayList<AttributeInfo>();
+        courseOptionAttributes.add(new AttributeInfo(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MIN_CREDIT_VALUE, "1.5"));
+        courseOptionAttributes.add(new AttributeInfo(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MAX_CREDIT_VALUE, "25"));
 
         rci.setAttributes(courseOptionAttributes);
 
@@ -93,21 +90,21 @@ public class CreditsFormatterTest {
     public void multipleCreditOptionsFirstIsUsed() {
         CourseInfo courseInfo = new CourseInfo();
 
-        List<ResultComponentInfo> creditOptions = new ArrayList<ResultComponentInfo>();
+        List<ResultValuesGroupInfo> creditOptions = new ArrayList<ResultValuesGroupInfo>();
         courseInfo.setCreditOptions(creditOptions);
 
         //  Credit options: fixed.
         String creditsText = "3";
 
-        ResultComponentInfo rci1 = new ResultComponentInfo();
+        ResultValuesGroupInfo rci1 = new ResultValuesGroupInfo();
         rci1.setType(CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
 
-        Map<String, String> courseOptionAttributes = new HashMap<String, String>();
-        courseOptionAttributes.put(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_FIXED_CREDIT_VALUE, creditsText);
+        List<AttributeInfo> courseOptionAttributes = new ArrayList<AttributeInfo>();
+        courseOptionAttributes.add(new AttributeInfo(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_FIXED_CREDIT_VALUE, creditsText));
         rci1.setAttributes(courseOptionAttributes);
         creditOptions.add(rci1);
 
-        ResultComponentInfo rci2 = new ResultComponentInfo();
+        ResultValuesGroupInfo rci2 = new ResultValuesGroupInfo();
         rci2.setType(CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_MULTIPLE);
         creditOptions.add(rci2);
 
@@ -118,17 +115,17 @@ public class CreditsFormatterTest {
     public void unknownCreditType() {
         CourseInfo courseInfo = new CourseInfo();
 
-        List<ResultComponentInfo> creditOptions = new ArrayList<ResultComponentInfo>();
+        List<ResultValuesGroupInfo> creditOptions = new ArrayList<ResultValuesGroupInfo>();
         courseInfo.setCreditOptions(creditOptions);
 
         //  Credit options: fixed.
         String creditsText = "";
 
-        ResultComponentInfo rci = new ResultComponentInfo();
+        ResultValuesGroupInfo rci = new ResultValuesGroupInfo();
         rci.setType("Unknown");
 
-        Map<String, String> courseOptionAttributes = new HashMap<String, String>();
-        courseOptionAttributes.put(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_FIXED_CREDIT_VALUE, "25");
+        List<AttributeInfo> courseOptionAttributes = new ArrayList<AttributeInfo>();
+        courseOptionAttributes.add(new AttributeInfo(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_FIXED_CREDIT_VALUE, "25"));
         rci.setAttributes(courseOptionAttributes);
         creditOptions.add(rci);
 

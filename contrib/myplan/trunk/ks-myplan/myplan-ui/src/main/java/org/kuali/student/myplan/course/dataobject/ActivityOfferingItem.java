@@ -20,6 +20,7 @@ public class ActivityOfferingItem {
     private String code;
     private String campus;
     private String feeAmount;
+    private String activityId;
     private String activityOfferingType;
     private String credits;
     private List<MeetingDetails> meetingDetailsList;
@@ -49,6 +50,7 @@ public class ActivityOfferingItem {
     private boolean ineligibleForFinancialAid;
     private boolean addCodeRequired;
     private boolean independentStudy;
+    private boolean hasSyllabus;
     private String gradingOption;
     private String sectionComments;
     private String summerTerm;
@@ -81,6 +83,14 @@ public class ActivityOfferingItem {
 
     public void setCampus(String campus) {
         this.campus = campus;
+    }
+
+    public String getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
     }
 
     public String getActivityOfferingType() {
@@ -237,6 +247,14 @@ public class ActivityOfferingItem {
 
     public boolean isNewThisYear() {
         return newThisYear;
+    }
+
+    public boolean isHasSyllabus() {
+        return hasSyllabus;
+    }
+
+    public void setHasSyllabus(boolean hasSyllabus) {
+        this.hasSyllabus = hasSyllabus;
     }
 
     public void setNewThisYear(boolean newThisYear) {

@@ -1,12 +1,13 @@
 package org.kuali.student.myplan.comment;
 
-import org.kuali.student.r2.common.util.constants.CommentServiceConstants;
+import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.core.constants.CommentServiceConstants;
 
 public class CommentConstants extends CommentServiceConstants {
     public static final String SERVICE_NAME = "CommentService";
 
-    public static final String MESSAGE_TYPE = "kuali.uw.comment.type.academicPlanning.message";
-    public static final String COMMENT_TYPE = "kuali.uw.comment.type.academicPlanning.comment";
+    public static final String MESSAGE_TYPE = "kuali.comment.type.academicplan.message";
+    public static final String COMMENT_TYPE = "kuali.comment.type.academicplan.comment";
     public static final String MESSAGE_REF_TYPE = "kuali.uw.comment.reference.type.person";
     public static final String COMMENT_REF_TYPE = "kuali.uw.comment.reference.type.academicPlanning.message";
 
@@ -41,6 +42,10 @@ public class CommentConstants extends CommentServiceConstants {
     public static final String ADVISER_MESSAGE_LINK = "myplan.adviser.message.env.link";
     
     public static final String SWS_URL_PARAM="uw.studentservice.url";
+
+
+    //  Global context info for use in service methods which need caching, but don't use the context argument.
+    public static final ContextInfo CONTEXT_INFO = new ContextInfo();
 
 
 }

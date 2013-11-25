@@ -24,8 +24,6 @@ import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
-import org.kuali.student.core.comment.dto.CommentInfo;
-import org.kuali.student.core.comment.service.CommentService;
 import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.comment.dataobject.CommentDataObject;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
@@ -33,6 +31,9 @@ import org.kuali.student.myplan.comment.form.CommentForm;
 import org.kuali.student.myplan.comment.service.CommentQueryHelper;
 import org.kuali.student.myplan.comment.util.CommentHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.core.comment.dto.CommentInfo;
+import org.kuali.student.r2.core.comment.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -111,7 +112,7 @@ public class CommentController extends UifControllerBase {
 
         //  Look up the message
         try {
-            messageInfo = getCommentService().getComment(form.getMessageId());
+            messageInfo = getCommentService().getComment(form.getMessageId(), CommentConstants.CONTEXT_INFO);
         } catch (Exception e) {
             logger.error(String.format("Query for comment [%s] failed.", form.getMessageId()), e);
             return null;
@@ -121,8 +122,20 @@ public class CommentController extends UifControllerBase {
         try {
             getCommentHelper().createComment(messageInfo.getId(), commentBodyText);
         } catch (Exception e) {
-            form.setSubject(messageInfo.getAttributes().get("subject"));
-            form.setFrom(getUserSessionHelper().getName(messageInfo.getAttributes().get("createdBy")));
+            String subject = null;
+            String createdBy = null;
+            for (AttributeInfo attributeInfo : messageInfo.getAttributes()) {
+                if (CommentConstants.SUBJECT_ATTRIBUTE_NAME.equals(attributeInfo.getKey())) {
+                    subject = attributeInfo.getValue();
+                } else if (CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME.equals(attributeInfo.getKey())) {
+                    createdBy = attributeInfo.getValue();
+                }
+                if (subject != null && createdBy != null) {
+                    break;
+                }
+            }
+            form.setSubject(subject);
+            form.setFrom(getUserSessionHelper().getName(createdBy));
             form.setBody(messageInfo.getCommentText().getPlain());
             form.setComments(new ArrayList<CommentDataObject>());
             logger.error("Could not add comment ", e);

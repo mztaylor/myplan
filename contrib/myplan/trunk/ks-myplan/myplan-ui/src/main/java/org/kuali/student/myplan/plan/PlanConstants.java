@@ -1,14 +1,15 @@
 package org.kuali.student.myplan.plan;
 
 import org.kuali.rice.core.api.config.property.ConfigContext;
-import org.kuali.student.lum.lu.LUConstants;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
 
 public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String PARAM_COURSE_ID = "courseId";
+    public static final String PARAM_COURSE_CD = "courseCd";
     public static final String PARAM_OFFERINGS_FLAG = "loadActivityOffering";
+    public static final String PARAM_ACTIVITY_ID = "activityId";
 
     public static final int PLANNED_PLAN_ITEM_CAPACITY = 8;
     public static final int BACKUP_PLAN_ITEM_CAPACITY = 8;
@@ -18,7 +19,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String PLAN_PAGE_ID = "planned_courses_detail_page";
     public static final String ACTION_MENU_PAGE_ID = "add_planned_course";
 
-    public static final String GEN_EDU_ENUM_KEY = "kuali.uw.lu.genedreq";
+    public static final String GEN_EDU_ENUM_KEY = "uw.course.genedrequirement";
     public static final String PLACE_HOLDER_ENUM_KEY = "uw.academicplan.placeholder";
     public static final String PLACE_HOLDER_OTHER_CODE = "uw.academicplan.placeholder.other";
 
@@ -44,6 +45,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     //  CRUD error feedback
     public static final String ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS = "myplan.text.error.plannedCourseList.itemAlreadyExists";
     public static final String ERROR_KEY_RECOMMENDED_ITEM_ALREADY_EXISTS = "myplan.text.error.plannedCourseList.recommendedItemAlreadyExists";
+    public static final String ERROR_KEY_BOOKMARKED_ITEM_ALREADY_EXISTS = "myplan.text.error.bookmarkedCourseList.itemAlreadyExists";
     public static final String ERROR_KEY_PLANNED_ITEM_CAPACITY_EXCEEDED = "myplan.text.error.plannedCourseList.plannedCapacityExceeded";
     public static final String ERROR_KEY_BACKUP_ITEM_CAPACITY_EXCEEDED = "myplan.text.error.plannedCourseList.backupCapacityExceeded";
 

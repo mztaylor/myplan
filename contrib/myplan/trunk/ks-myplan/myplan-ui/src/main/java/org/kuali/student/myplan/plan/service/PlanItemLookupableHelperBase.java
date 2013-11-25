@@ -142,7 +142,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             if (!plannedCourse.isPlaceHolder()) {
                 String key = generateKey(plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp());
                 List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(key);
-                if (activityOfferingItems != null && activityOfferingItems.size() > 0) {
+                if (!CollectionUtils.isEmpty(activityOfferingItems)) {
                     Collections.sort(activityOfferingItems, new Comparator<ActivityOfferingItem>() {
                         @Override
                         public int compare(ActivityOfferingItem item1, ActivityOfferingItem item2) {
@@ -193,6 +193,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
      */
     private void populatePlannedCourseList(PlanItemInfo planItemInfo, String planItemType, List<PlannedCourseDataObject> plannedCourseList, Map<String, List<ActivityOfferingItem>> plannedSections, Map<String, List<String>> sectionsSuspended, Map<String, List<String>> sectionsWithdrawn, Map<String, String> subjectAreas, boolean addPlaceHolders) {
         String courseID = planItemInfo.getRefObjectId();
+        String courseCd = getPlanHelper().getCrossListedCourse(planItemInfo.getAttributes());
         //  Only create a data object for the specified type.
         if (planItemInfo.getTypeKey().equals(planItemType) && planItemInfo.getRefObjectType().equalsIgnoreCase(PlanConstants.COURSE_TYPE)) {
 
@@ -209,14 +210,14 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             } else {
                 if (!CollectionUtils.isEmpty(planItemInfo.getPlanPeriods())) {
                     String atpId = planItemInfo.getPlanPeriods().get(0);
-                    PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+                    PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, getPlanHelper().getCrossListedCourse(planItemInfo.getAttributes()));
                     plannedCourse.setAdviserRecommended(recommendedPlanItem != null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
                 }
             }
             //  If the course info lookup fails just log the error and omit the item.
             try {
-                if (getCourseDetailsInquiryHelper().isCourseIdValid(courseID)) {
-                    CourseSummaryDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryById(courseID);
+                if (getCourseDetailsInquiryHelper().isCourseIdValid(courseID, courseCd)) {
+                    CourseSummaryDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryByIdAndCd(courseID, courseCd);
                     plannedCourse.setCourseDetails(courseDetails);
                     plannedCourseList.add(plannedCourse);
                 }
@@ -310,7 +311,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             } else {
                 if (!CollectionUtils.isEmpty(planItemInfo.getPlanPeriods())) {
                     String atpId = planItemInfo.getPlanPeriods().get(0);
-                    PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+                    PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, getPlanHelper().getCrossListedCourse(planItemInfo.getAttributes()));
                     plannedCourse.setAdviserRecommended(recommendedPlanItem != null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
                 }
             }
@@ -335,7 +336,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
             } else {
                 if (!CollectionUtils.isEmpty(planItemInfo.getPlanPeriods())) {
                     String atpId = planItemInfo.getPlanPeriods().get(0);
-                    PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED);
+                    PlanItemInfo recommendedPlanItem = getPlanHelper().getPlanItemByAtpAndType(planItemInfo.getLearningPlanId(), planItemInfo.getRefObjectId(), atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, getPlanHelper().getCrossListedCourse(planItemInfo.getAttributes()));
                     plannedCourse.setAdviserRecommended(recommendedPlanItem != null && PlanConstants.LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY.equals(recommendedPlanItem.getStateKey()));
                 }
             }

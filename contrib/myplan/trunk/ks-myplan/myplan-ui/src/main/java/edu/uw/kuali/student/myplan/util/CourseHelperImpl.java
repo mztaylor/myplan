@@ -10,19 +10,9 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.common.exceptions.DoesNotExistException;
-import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.common.search.dto.SearchResult;
-import org.kuali.student.common.search.dto.SearchResultCell;
-import org.kuali.student.common.search.dto.SearchResultRow;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
-import org.kuali.student.lum.course.dto.CourseInfo;
-import org.kuali.student.lum.course.service.CourseService;
-import org.kuali.student.lum.course.service.CourseServiceConstants;
-import org.kuali.student.lum.lu.service.LuService;
-import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.course.controller.QueryTokenizer;
 import org.kuali.student.myplan.course.controller.TokenPairs;
@@ -31,7 +21,21 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.SearchHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
+import org.kuali.student.r2.core.search.dto.SearchResultInfo;
+import org.kuali.student.r2.core.search.infc.SearchResultCell;
+import org.kuali.student.r2.core.search.infc.SearchResultRow;
+import org.kuali.student.r2.lum.clu.service.CluService;
+import org.kuali.student.r2.lum.course.dto.CourseCrossListingInfo;
+import org.kuali.student.r2.lum.course.dto.CourseInfo;
+import org.kuali.student.r2.lum.course.infc.CourseCrossListing;
+import org.kuali.student.r2.lum.course.service.CourseService;
+import org.kuali.student.r2.lum.course.service.assembler.CourseAssemblerConstants;
+import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
+import org.kuali.student.r2.lum.util.constants.CourseServiceConstants;
 import org.springframework.util.CollectionUtils;
 
 import javax.xml.namespace.QName;
@@ -50,7 +54,7 @@ public class CourseHelperImpl implements CourseHelper {
 
     private AcademicPlanService academicPlanService;
 
-    private LuService luService;
+    private CluService luService;
 
 
     private static Document newDocument(String xml) throws DocumentException {
@@ -178,17 +182,15 @@ public class CourseHelperImpl implements CourseHelper {
      */
     @Override
     public String getCourseIdForTerm(String subjectArea, String number, String termId) {
-        List<SearchRequest> requests = new ArrayList<SearchRequest>();
-        SearchRequest request = new SearchRequest(CourseSearchConstants.COURSE_SEARCH_FOR_COURSE_ID);
+        SearchRequestInfo request = new SearchRequestInfo(CourseSearchConstants.COURSE_SEARCH_FOR_COURSE_ID);
         request.addParam(CourseSearchConstants.SEARCH_REQUEST_SUBJECT_PARAM, subjectArea.trim());
         request.addParam(CourseSearchConstants.SEARCH_REQUEST_NUMBER_PARAM, number.trim());
         request.addParam(CourseSearchConstants.SEARCH_REQUEST_LAST_SCHEDULED_PARAM, termId);
-        requests.add(request);
-        SearchResult searchResult = new SearchResult();
+        SearchResultInfo searchResult = new SearchResultInfo();
         try {
-            searchResult = getLuService().search(request);
-        } catch (org.kuali.student.common.exceptions.MissingParameterException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            searchResult = getLuService().search(request, CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Failed to get courseId for given subject and number", e);
         }
         String courseId = null;
         if (searchResult.getRows().size() > 0) {
@@ -208,16 +210,71 @@ public class CourseHelperImpl implements CourseHelper {
 
         CourseInfo courseInfo = null;
         try {
-            courseInfo = getCourseService().getCourse(getVerifiedCourseId(courseId));
+            courseInfo = getCourseService().getCourse(getVerifiedCourseId(courseId), CourseSearchConstants.CONTEXT_INFO);
         } catch (DoesNotExistException e) {
             throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
         } catch (Exception e) {
             throw new RuntimeException("Query failed.", e);
         }
+
+
+        return courseInfo;
+    }
+
+    /**
+     * This method is used to get the courseInfo based on courseId and courseCd
+     * Mostly used for crossListed courses to get exact courseInfo for that course
+     * In this method if the courseCd given is a crossListed then that is swapped from the list of crossListings to be a actual courseInfo
+     * <p/>
+     * Eg: HIST 420 is crossListed and MATH 403 is original both have the same courseId
+     * Search for courseInfo based on courseId gives back courseInfo for MATH 403
+     * but the actual one we requested is for HIST 420 then that is picked out of the crossListings
+     * and made as actual courseInfo and adds the MATH 403 as a crossListing course
+     *
+     * @param courseId
+     * @param courseCd
+     * @return
+     */
+    @Override
+    public CourseInfo getCourseInfoByIdAndCd(String courseId, String courseCd) {
+        CourseInfo courseInfo = getCourseInfo(courseId);
+
+        /*If requested courseInfo is for a crossListed course then CrossListed course becomes the main course info and the rest becomes the crossListings*/
+        if (!StringUtils.isEmpty(courseCd)) {
+            DeconstructedCourseCode courseCode = getCourseDivisionAndNumber(courseCd);
+            List<CourseCrossListingInfo> courseCrossListingInfos = new ArrayList<CourseCrossListingInfo>();
+            if (!courseCode.getSubject().trim().equals(courseInfo.getSubjectArea().trim()) || !courseCode.getNumber().trim().equals(courseInfo.getCourseNumberSuffix().trim())) {
+                CourseCrossListingInfo crossListing = new CourseCrossListingInfo();
+                crossListing.setCode(courseInfo.getCode());
+                crossListing.setCourseNumberSuffix(courseInfo.getCourseNumberSuffix());
+                crossListing.setSubjectArea(courseInfo.getSubjectArea());
+                crossListing.setTypeKey(CourseAssemblerConstants.COURSE_OFFICIAL_IDENT_TYPE);
+                courseCrossListingInfos.add(crossListing);
+                for (CourseCrossListingInfo crossListingInfo : courseInfo.getCrossListings()) {
+                    if (courseCode.getSubject().trim().equals(crossListingInfo.getSubjectArea().trim()) && courseCode.getNumber().trim().equals(crossListingInfo.getCourseNumberSuffix().trim())) {
+                        courseInfo.setSubjectArea(crossListingInfo.getSubjectArea());
+                        courseInfo.setCourseNumberSuffix(crossListingInfo.getCourseNumberSuffix());
+                        courseInfo.setCode(crossListingInfo.getCode());
+                    } else {
+                        courseCrossListingInfos.add(crossListingInfo);
+                    }
+                }
+                if (!CollectionUtils.isEmpty(courseCrossListingInfos)) {
+                    courseInfo.setCrossListings(courseCrossListingInfos);
+                }
+            }
+
+        }
+
         return courseInfo;
     }
 
 
+    /**
+     * @param element
+     * @param name
+     * @return
+     */
     private static int getAsInteger(Element element, String name) {
         int result = 0;
         try {
@@ -229,6 +286,12 @@ public class CourseHelperImpl implements CourseHelper {
         return result;
     }
 
+    /**
+     * @param parent
+     * @param sectionStatus
+     * @param yt
+     * @throws DocumentException
+     */
     private void formatSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> parent, Element sectionStatus,
                                      AtpHelper.YearTerm yt) throws DocumentException {
         String sln = sectionStatus.elementText("SLN");
@@ -281,11 +344,11 @@ public class CourseHelperImpl implements CourseHelper {
     public String getCourseVersionIdByTerm(String courseId, String termId) {
         String courseVersionId = null;
         try {
-            SearchRequest req = new SearchRequest("myplan.course.version.id");
+            SearchRequestInfo req = new SearchRequestInfo("myplan.course.version.id");
             req.addParam("courseId", courseId);
             req.addParam("courseId", courseId);
             req.addParam("lastScheduledTerm", termId);
-            SearchResult result = getLuService().search(req);
+            SearchResultInfo result = getLuService().search(req, CourseSearchConstants.CONTEXT_INFO);
             for (SearchResultRow row : result.getRows()) {
                 for (SearchResultCell cell : row.getCells()) {
                     if ("lu.resultColumn.cluId".equals(cell.getKey())) {
@@ -440,9 +503,9 @@ public class CourseHelperImpl implements CourseHelper {
     public HashMap<String, String> fetchCourseDivisions() {
         HashMap<String, String> map = new HashMap<String, String>();
         try {
-            SearchRequest request = new SearchRequest("myplan.distinct.clu.divisions");
+            SearchRequestInfo request = new SearchRequestInfo("myplan.distinct.clu.divisions");
 
-            SearchResult result = getLuService().search(request);
+            SearchResultInfo result = getLuService().search(request, CourseSearchConstants.CONTEXT_INFO);
 
             for (SearchResultRow row : result.getRows()) {
                 for (SearchResultCell cell : row.getCells()) {
@@ -503,20 +566,22 @@ public class CourseHelperImpl implements CourseHelper {
 
     /**
      * Checks to see if the division and level exists
+     *
      * @param division
      * @param level
      * @return true if for the given division and level courses exists else false
      */
+    @Override
     public boolean isValidCourseLevel(String division, String level) {
-        List<SearchRequest> requests = new ArrayList<SearchRequest>();
-        SearchRequest request = new SearchRequest(CourseSearchConstants.COURSE_SEARCH_FOR_DIVISION_LEVELS);
+        List<SearchRequestInfo> requests = new ArrayList<SearchRequestInfo>();
+        SearchRequestInfo request = new SearchRequestInfo(CourseSearchConstants.COURSE_SEARCH_FOR_DIVISION_LEVELS);
         request.addParam(CourseSearchConstants.SEARCH_REQUEST_SUBJECT_PARAM, division.trim());
         request.addParam(CourseSearchConstants.SEARCH_REQUEST_NUMBER_PARAM, level.trim());
         requests.add(request);
-        SearchResult searchResult = new SearchResult();
+        SearchResultInfo searchResult = new SearchResultInfo();
         try {
-            searchResult = getLuService().search(request);
-        } catch (org.kuali.student.common.exceptions.MissingParameterException e) {
+            searchResult = getLuService().search(request, CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
             logger.error("Could not get courses by division and level", e);
         }
         if (!CollectionUtils.isEmpty(searchResult.getRows())) {
@@ -526,14 +591,70 @@ public class CourseHelperImpl implements CourseHelper {
     }
 
 
-    protected LuService getLuService() {
+    /**
+     * Method used to generate a compositeKey for CourseOffering data search
+     * format: courseId|subject|number
+     * <p/>
+     * Eg: 'c87e6090-a177-445b-9a7d-7915120e4adc:ENGL:201'
+     *
+     * @param courseId
+     * @param subject
+     * @param number
+     * @return
+     */
+    @Override
+    public String getKeyForCourseOffering(String courseId, String subject, String number) {
+        return String.format("%s|%s|%s", courseId, subject, number);
+    }
+
+
+    /**
+     * Method used to know if the given courseCd is a alias/CrossListed or a regular parent course
+     *
+     * @param courseInfo
+     * @param courseCd
+     * @return
+     */
+    @Override
+    public boolean isCrossListedCourse(CourseInfo courseInfo, String courseCd) throws DoesNotExistException {
+        DeconstructedCourseCode courseCode = getCourseDivisionAndNumber(courseCd);
+        if (courseCode.getSubject().trim().equals(courseInfo.getSubjectArea().trim()) && courseCode.getNumber().trim().equals(courseInfo.getCourseNumberSuffix().trim())) {
+            return false;
+        } else {
+            for (CourseCrossListingInfo crossListingInfo : courseInfo.getCrossListings()) {
+                if (courseCode.getSubject().trim().equals(crossListingInfo.getSubjectArea().trim()) && courseCode.getNumber().equals(crossListingInfo.getCourseNumberSuffix().trim())) {
+                    return true;
+                }
+            }
+        }
+        throw new DoesNotExistException();
+    }
+
+    /**
+     * Checks if the courseCd's given are similar or not , either they might be in formatted or unFormatted form
+     *
+     * @param courseCd1
+     * @param courseCd2
+     * @return true if subject and numbers matched for the two courses else false
+     */
+    @Override
+    public boolean isSimilarCourses(String courseCd1, String courseCd2) {
+        if (!StringUtils.isEmpty(courseCd1) && !StringUtils.isEmpty(courseCd2)) {
+            DeconstructedCourseCode courseCode1 = getCourseDivisionAndNumber(courseCd1);
+            DeconstructedCourseCode courseCode2 = getCourseDivisionAndNumber(courseCd2);
+            return courseCode1.getSubject().equals(courseCode2.getSubject()) && courseCode1.getNumber().equals(courseCode2.getNumber());
+        }
+        return false;
+    }
+
+    protected CluService getLuService() {
         if (luService == null) {
-            luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+            luService = (CluService) GlobalResourceLoader.getService(new QName(CluServiceConstants.CLU_NAMESPACE, "CluService"));
         }
         return luService;
     }
 
-    public void setLuService(LuService luService) {
+    public void setLuService(CluService luService) {
         this.luService = luService;
     }
 

@@ -18,6 +18,7 @@ import org.kuali.rice.krad.web.form.UifFormBase;
 
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -25,22 +26,16 @@ import java.util.ArrayList;
 public class CourseSearchForm extends UifFormBase {
     private static final long serialVersionUID = 4898118410378641665L;
 
-    /** The key of the term drop-down any item. */
-    public static final String SEARCH_TERM_ANY_ITEM = "any";
-
-    /** Form fields */
+    /**
+     * Form fields
+     */
     private boolean campusBothell;
     private boolean campusSeattle;
     private boolean campusTacoma;
 
     private String searchQuery;
-    private String searchTerm = SEARCH_TERM_ANY_ITEM;
+    private String searchTerm = CourseSearchConstants.SEARCH_TERM_ANY_ITEM;
     private List<String> campusSelect;
-
-/*    *//** Search results list. *//*
-    private List<CourseSearchItem> courseSearchResults = new ArrayList<CourseSearchItem>();
-
-    */
 
     public List<String> getCampusSelect() {
         return campusSelect;
@@ -50,26 +45,9 @@ public class CourseSearchForm extends UifFormBase {
         this.campusSelect = campusSelect;
     }
 
-    /** Facet data lists *//*
-    private List<FacetItem> curriculumFacetItems;
-    private List<FacetItem> courseLevelFacetItems;
-    private List<FacetItem> termsFacetItems;
-    private List<FacetItem> genEduReqFacetItems;
-    private List<FacetItem> creditsFacetItems;*/
-
-
-
     public CourseSearchForm() {
         super();
     }
-
-/*    public List<org.kuali.student.myplan.course.dataobject.CourseSearchItem> getCourseSearchResults() {
-        return courseSearchResults;
-    }
-
-    public void setCourseSearchResults(List<org.kuali.student.myplan.course.dataobject.CourseSearchItem> courseSearchResults) {
-        this.courseSearchResults = courseSearchResults;
-    }*/
 
     public Boolean getCampusBothell() {
 		return campusBothell;
@@ -107,47 +85,7 @@ public class CourseSearchForm extends UifFormBase {
         return searchTerm;
     }
 
-   /* public List<FacetItem> getCurriculumFacetItems() {
-        return curriculumFacetItems;
-    }
-*/
     public void setSearchTerm(String searchTerm) {
         this.searchTerm = searchTerm;
     }
-
-    /*public void setCurriculumFacetItems(List<FacetItem> curriculumFacetItems) {
-        this.curriculumFacetItems = curriculumFacetItems;
-    }
-
-    public List<FacetItem> getCourseLevelFacetItems() {
-        return courseLevelFacetItems;
-    }
-
-    public void setCourseLevelFacetItems(List<FacetItem> courseLevelFacetItems) {
-        this.courseLevelFacetItems = courseLevelFacetItems;
-    }
-
-    public List<FacetItem> getTermsFacetItems() {
-        return termsFacetItems;
-    }
-
-    public void setTermsFacetItems(List<FacetItem> termsFacetItems) {
-        this.termsFacetItems = termsFacetItems;
-    }
-
-    public List<FacetItem> getGenEduReqFacetItems() {
-        return genEduReqFacetItems;
-    }
-
-    public void setGenEduReqFacetItems(List<FacetItem> genEduReqFacetItems) {
-        this.genEduReqFacetItems = genEduReqFacetItems;
-    }
-
-    public List<FacetItem> getCreditsFacetItems() {
-        return creditsFacetItems;
-    }
-
-    public void setCreditsFacetItems(List<FacetItem> creditsFacetItems) {
-        this.creditsFacetItems = creditsFacetItems;
-    }*/
 }

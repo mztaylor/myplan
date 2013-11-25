@@ -7,12 +7,7 @@ import org.kuali.rice.kim.api.identity.PersonService;
 import org.kuali.rice.kim.api.services.KimApiServiceLocator;
 import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.util.GlobalVariables;
-import org.kuali.student.common.util.UUIDHelper;
-import org.kuali.student.core.atp.service.AtpService;
-import org.kuali.student.lum.course.service.CourseService;
-import org.kuali.student.lum.course.service.CourseServiceConstants;
-import org.kuali.student.lum.lu.service.LuService;
-import org.kuali.student.lum.lu.service.LuServiceConstants;
+import org.kuali.student.common.UUIDHelper;
 import org.kuali.student.myplan.academicplan.dao.LearningPlanDao;
 import org.kuali.student.myplan.academicplan.dao.LearningPlanTypeDao;
 import org.kuali.student.myplan.academicplan.dao.PlanItemDao;
@@ -21,6 +16,7 @@ import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
 import org.kuali.student.myplan.academicplan.model.*;
+import org.kuali.student.myplan.util.DegreeAuditAtpHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
@@ -28,6 +24,16 @@ import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.infc.Attribute;
 import org.kuali.student.r2.common.infc.ValidationResult;
+import org.kuali.student.r2.core.atp.service.AtpService;
+import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
+import org.kuali.student.r2.core.search.dto.SearchResultInfo;
+import org.kuali.student.r2.core.search.infc.SearchResultCell;
+import org.kuali.student.r2.core.search.infc.SearchResultRow;
+import org.kuali.student.r2.lum.clu.service.CluService;
+import org.kuali.student.r2.lum.course.dto.CourseInfo;
+import org.kuali.student.r2.lum.course.service.CourseService;
+import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
+import org.kuali.student.r2.lum.util.constants.CourseServiceConstants;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -48,7 +54,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     private PlanItemTypeDao planItemTypeDao;
     private CourseService courseService;
     private AtpService atpService;
-    private LuService luService;
+    private CluService luService;
     private PersonService personService;    
 
     /**
@@ -68,9 +74,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         return this.courseService;
     }
 
-    protected synchronized LuService getLuService() {
+    protected synchronized CluService getLuService() {
         if (this.luService == null) {
-            this.luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+            this.luService = (CluService) GlobalResourceLoader.getService(new QName(CluServiceConstants.CLU_NAMESPACE, "CluService"));
         }
         return this.luService;
     }
@@ -449,9 +455,26 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         //  Update attributes.
         if (planItem.getAttributes() != null) {
             Set<PlanItemAttributeEntity> attributeEntities = new HashSet<PlanItemAttributeEntity>();
-            for (AttributeInfo att : planItem.getAttributes()) {
-                attributeEntities.add(new PlanItemAttributeEntity(att, planItemEntity));
+            Set<PlanItemAttributeEntity> tempAttributeEntities = new HashSet<PlanItemAttributeEntity>();
+
+            for (PlanItemAttributeEntity planItemAttributeEntity : planItemEntity.getAttributes()) {
+                planItemAttributeEntity.setValue("");
+                tempAttributeEntities.add(planItemAttributeEntity);
             }
+
+
+            for (AttributeInfo attributeInfo : planItem.getAttributes()) {
+                for (PlanItemAttributeEntity planItemAttributeEntity : tempAttributeEntities) {
+                    if (planItemAttributeEntity.getKey().equals(attributeInfo.getKey())) {
+                        planItemAttributeEntity.setValue(attributeInfo.getValue());
+                        attributeEntities.add(planItemAttributeEntity);
+                    }else{
+                        attributeEntities.add(new PlanItemAttributeEntity(attributeInfo,planItemEntity));
+                    }
+                }
+
+            }
+
             planItemEntity.setAttributes(attributeEntities);
         }
 
@@ -634,7 +657,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                 for (String atpId : planItemInfo.getPlanPeriods()) {
                     boolean valid = false;
                     try {
-                        valid = isValidAtp(atpId);
+                        valid = isValidAtp(atpId, context);
                         if (!valid) {
                             validationResultInfos.add(makeValidationResultInfo(
                                     String.format("ATP ID [%s] was not valid.", atpId), "atpId", ValidationResult.ErrorLevel.ERROR));
@@ -685,6 +708,22 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         String planItemId = planItem.getLearningPlanId();
         String courseId = planItem.getRefObjectId();
         String planItemType = planItem.getTypeKey();
+        String crossListedCourse = null;
+        String crossListedSubject = null;
+        String crossListedNumber = null;
+        for (AttributeInfo attributeInfo : planItem.getAttributes()) {
+            if (AcademicPlanServiceConstants.CROSS_LISTED_COURSE_ATTR_KEY.equals(attributeInfo.getKey())) {
+                crossListedCourse = attributeInfo.getValue();
+                break;
+            }
+        }
+
+        if (StringUtils.hasText(crossListedCourse)) {
+            String[] str = crossListedCourse.split(AcademicPlanServiceConstants.SPLIT_DIGITS_ALPHABETS);
+            crossListedSubject = str[0].trim();
+            crossListedNumber = str[1].trim();
+        }
+
 
         /**
          * See if a duplicate item exits in the plan. If the type is wishlist then only the course id has to match to make
@@ -696,17 +735,51 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                 if (AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED.equals(planItemType) || AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP.equals(planItemType) || AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED.equals(planItemType)) {
                     for (String atpId : planItem.getPlanPeriods()) {
                         if (p.getPlanPeriods().contains(atpId)) {
-                            throw new AlreadyExistsException(String.format("A plan item for plan [%s], course id [%s], and term [%s] already exists.",
-                                    p.getLearningPlan().getId(), courseId, atpId));
+                            /*If the course is a crossListed then we should check against the crossListed items in the planItemEntity for perfect validation*/
+                            String plannedCrossListedCourse = null;
+                            for (PlanItemAttributeEntity attributeEntity : p.getAttributes()) {
+                                if (AcademicPlanServiceConstants.CROSS_LISTED_COURSE_ATTR_KEY.equals(attributeEntity.getKey()) && StringUtils.hasText(attributeEntity.getValue())) {
+                                    plannedCrossListedCourse = attributeEntity.getValue();
                         }
                     }
-                } else {
+
+                            if (StringUtils.hasText(plannedCrossListedCourse) && StringUtils.hasText(crossListedCourse)) {
+                                String[] str = plannedCrossListedCourse.split(AcademicPlanServiceConstants.SPLIT_DIGITS_ALPHABETS);
+                                if (crossListedSubject.equals(str[0].trim()) && crossListedNumber.equals(str[1].trim())) {
+                                    throw new AlreadyExistsException(String.format("A plan item for plan [%s], course id [%s], course Cd [%s], and term [%s] already exists.",
+                                            p.getLearningPlan().getId(), courseId, crossListedCourse, atpId));
+                                }
+                            } else if (StringUtils.isEmpty(plannedCrossListedCourse) && StringUtils.isEmpty(crossListedCourse)) {
+                                throw new AlreadyExistsException(String.format("A plan item for plan [%s], course id [%s], course Cd [%s], and term [%s] already exists.",
+                                        p.getLearningPlan().getId(), courseId, crossListedCourse, atpId));
+                            }
+
+                        }
+                    }
+                } else if (AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST.equals(planItemType)) {
+                    /*If the course is a crossListed then we should check against the crossListed items in the planItemEntity for perfect validation*/
+                    String plannedCrossListedCourse = null;
+                    for (PlanItemAttributeEntity attributeEntity : p.getAttributes()) {
+                        if (AcademicPlanServiceConstants.CROSS_LISTED_COURSE_ATTR_KEY.equals(attributeEntity.getKey()) && StringUtils.hasText(attributeEntity.getValue())) {
+                            plannedCrossListedCourse = attributeEntity.getValue();
+                        }
+                    }
+
+                    if (StringUtils.hasText(plannedCrossListedCourse) && StringUtils.hasText(crossListedCourse)) {
+                        String[] str = plannedCrossListedCourse.split(AcademicPlanServiceConstants.SPLIT_DIGITS_ALPHABETS);
+                        if (crossListedSubject.equals(str[0].trim()) && crossListedNumber.equals(str[1].trim())) {
                     throw new AlreadyExistsException(String.format("A plan item for plan [%s] and course id [%s] already exists.",
                             p.getLearningPlan().getId(), courseId));
                 }
+                    } else if (StringUtils.isEmpty(plannedCrossListedCourse) && StringUtils.isEmpty(crossListedCourse)) {
+                        throw new AlreadyExistsException(String.format("A plan item for plan [%s] and course id [%s] already exists.",
+                                p.getLearningPlan().getId(), courseId));
             }
         }
     }
+        }
+    }
+
 
     /**
      * @param learningPlan
@@ -783,9 +856,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         pie.setDescr(new PlanItemRichTextEntity(planItem.getDescr()));
 
         //  Set meta data.
-        pie.setCreateId(context.getPrincipalId());
+        pie.setCreateId(GlobalVariables.getUserSession().getPrincipalId());
         pie.setCreateTime(new Date());
-        pie.setUpdateId(context.getPrincipalId());
+        pie.setUpdateId(GlobalVariables.getUserSession().getPrincipalId());
         pie.setUpdateTime(new Date());
 
         //  Set the learning plan.
@@ -813,10 +886,10 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         return vri;
     }
 
-    private boolean isValidAtp(String atpId) {
+    private boolean isValidAtp(String atpId, ContextInfo contextInfo) {
         try {
-            getAtpService().getAtp(atpId);
-        } catch (org.kuali.student.common.exceptions.DoesNotExistException e) {
+            getAtpService().getAtp(atpId, contextInfo);
+        } catch (DoesNotExistException e) {
             return false;
         } catch (Exception e) {
             throw new RuntimeException("Query to ATP service failed.", e);

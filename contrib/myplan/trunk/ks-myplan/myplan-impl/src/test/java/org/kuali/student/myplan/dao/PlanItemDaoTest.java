@@ -12,6 +12,7 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstant
 import org.kuali.student.myplan.academicplan.model.LearningPlanEntity;
 import org.kuali.student.myplan.academicplan.model.PlanItemEntity;
 import org.kuali.student.myplan.academicplan.model.PlanItemTypeEntity;
+import org.kuali.student.r2.lum.clu.CLUConstants;
 
 import java.util.*;
 
@@ -67,7 +68,7 @@ public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
     public void testGetPlanItemsByCourse() {
         String planId = "lp1";
         String refObjectId = "006476b5-18d8-4830-bbb6-2bb9e79600fb";
-        String refObjectType1 = "kuali.lu.type.CreditCourse";
+        String refObjectType1 = CLUConstants.CLU_TYPE_CREDIT_COURSE;
         String refObjectType2 = "kuali.lu.type.NonCreditCourse";
 
         List<PlanItemEntity> planItems = planItemDao.getLearningPlanItemsByRefObjectId(planId, refObjectId, refObjectType1);
@@ -136,7 +137,7 @@ public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
         pie.setLearningPlan(learningPlanEntity);
         pie.setLearningPlanItemType(planItemTypeEntity);
         pie.setRefObjectId("02711400-c66d-4ecb-aca5-565118f167cf");
-        pie.setRefObjectTypeKey("kuali.lu.type.CreditCourse");
+        pie.setRefObjectTypeKey(CLUConstants.CLU_TYPE_CREDIT_COURSE);
         pie.setCreateId("student1");
         pie.setCreateTime(new Date());
 
@@ -162,7 +163,7 @@ public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
         pie.setLearningPlan(learningPlanEntity);
         pie.setLearningPlanItemType(planItemTypeEntity);
         pie.setRefObjectId("02711400-c66d-4ecb-aca5-565118f167cf");
-        pie.setRefObjectTypeKey("kuali.lu.type.CreditCourse");
+        pie.setRefObjectTypeKey(CLUConstants.CLU_TYPE_CREDIT_COURSE);
         pie.setCreateId("student1");
         pie.setCreateTime(new Date());
 
@@ -198,7 +199,7 @@ public class PlanItemDaoTest extends AbstractTransactionalDaoTest {
         pie.setLearningPlan(learningPlanEntity);
         pie.setLearningPlanItemType(planItemTypeEntity);
         pie.setRefObjectId("02711400-c66d-4ecb-aca5-565118f167cf");
-        pie.setRefObjectTypeKey("kuali.lu.type.CreditCourse");
+        pie.setRefObjectTypeKey(CLUConstants.CLU_TYPE_CREDIT_COURSE);
         pie.setCreateId("student1");
         pie.setCreateTime(new Date());
 

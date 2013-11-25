@@ -35,10 +35,10 @@ function truncateField(id, floated) {
  */
 function buildPlanHeader(aView, selector) {
     var sText = 'Academic Year';
-    var aFirst = jQuery(aView[0]).find(".planYear__term").data("atpid").split(".");
-    var aLast = jQuery(aView[aView.length - 1]).find(".planYear__term").data("atpid").split(".");
+    var aFirst = jQuery(aView[0]).find(".planYear__term").data("atpid").toString().substring(0,4);
+    var aLast = jQuery(aView[aView.length - 1]).find(".planYear__term").data("atpid").toString().substring(0,4);
     var quarterLink = "inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=" + jQuery(aView[0]).find(".planYear__term").data("single-quarter-atpid");
-    jQuery(selector).html(sText + ' ' + aFirst[3] + '-' + aLast[3]);
+    jQuery(selector).html(sText + ' ' + aFirst + '-' + aLast);
     jQuery("#single_quarter_button").attr("href", quarterLink);
 }
 /*

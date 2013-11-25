@@ -2,22 +2,23 @@ package org.kuali.student.myplan.course.service;
 
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.common.search.dto.SearchResult;
-import org.kuali.student.common.search.dto.SearchResultCell;
-import org.kuali.student.common.search.dto.SearchResultRow;
-import org.kuali.student.lum.lu.service.LuService;
-import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.util.CourseHelper;
-import org.kuali.student.myplan.plan.util.OrgHelper;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.util.SearchHelper;
+import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
+import org.kuali.student.r2.core.search.dto.SearchResultInfo;
+import org.kuali.student.r2.core.search.infc.SearchResultRow;
+import org.kuali.student.r2.lum.clu.service.CluService;
+import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
 
 import javax.xml.namespace.QName;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class CoursePreReqSearch {
 
-    private transient LuService luService;
+    private transient CluService luService;
 
     private CourseHelper courseHelper;
 
@@ -32,14 +33,14 @@ public class CoursePreReqSearch {
         this.courseHelper = courseHelper;
     }
 
-    protected LuService getLuService() {
+    protected CluService getLuService() {
         if (this.luService == null) {
-            this.luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+            this.luService = (CluService) GlobalResourceLoader.getService(new QName(CluServiceConstants.CLU_NAMESPACE, "CluService"));
         }
         return this.luService;
     }
 
-    public void setLuService(LuService luService) {
+    public void setLuService(CluService luService) {
         this.luService = luService;
     }
 
@@ -52,9 +53,9 @@ public class CoursePreReqSearch {
         try {
 
             ArrayList<String> courseList = new ArrayList<String>();
-            SearchRequest req = new SearchRequest("myplan.course.prereqsearch.subject");
+            SearchRequestInfo req = new SearchRequestInfo("myplan.course.prereqsearch.subject");
             req.addParam("subject", subject);
-            SearchResult result = getLuService().search(req);
+            SearchResultInfo result = getLuService().search(req, CourseSearchConstants.CONTEXT_INFO);
             for (SearchResultRow row : result.getRows()) {
                 String cluid = SearchHelper.getCellValue(row, "lu.resultColumn.cluId");
                 courseList.add(cluid);
@@ -77,10 +78,10 @@ public class CoursePreReqSearch {
             range = range.toUpperCase().replace("X", "_");
 
             ArrayList<String> courseList = new ArrayList<String>();
-            SearchRequest req = new SearchRequest("myplan.course.prereqsearch.range");
+            SearchRequestInfo req = new SearchRequestInfo("myplan.course.prereqsearch.range");
             req.addParam("subject", subject);
             req.addParam("range", range);
-            SearchResult result = getLuService().search(req);
+            SearchResultInfo result = getLuService().search(req, CourseSearchConstants.CONTEXT_INFO);
             for (SearchResultRow row : result.getRows()) {
                 String cluid = SearchHelper.getCellValue(row, "lu.resultColumn.cluId");
                 courseList.add(cluid);
@@ -103,10 +104,10 @@ public class CoursePreReqSearch {
             range = range.toUpperCase().replace("X", "_");
 
             ArrayList<String> courseList = new ArrayList<String>();
-            SearchRequest req = new SearchRequest("myplan.course.prereqsearch.exclusions");
+            SearchRequestInfo req = new SearchRequestInfo("myplan.course.prereqsearch.exclusions");
             req.addParam("subject", subject);
             req.addParam("range", range);
-            SearchResult result = getLuService().search(req);
+            SearchResultInfo result = getLuService().search(req, CourseSearchConstants.CONTEXT_INFO);
             for (SearchResultRow row : result.getRows()) {
                 String cluid = SearchHelper.getCellValue(row, "lu.resultColumn.cluId");
                 String code = SearchHelper.getCellValue(row, "lu.resultColumn.luOptionalCode");

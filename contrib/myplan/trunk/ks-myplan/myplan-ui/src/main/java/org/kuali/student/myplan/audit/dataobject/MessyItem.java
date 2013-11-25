@@ -18,6 +18,8 @@ import java.util.*;
 public class MessyItem {
     private String atpId;
     private String courseCode;
+    private String subject;
+    private String number;
     private String courseId;
     private String versionIndependentId;
     private String courseTitle;
@@ -81,6 +83,22 @@ public class MessyItem {
 
     public void setVersionIndependentId(String versionIndependentId) {
         this.versionIndependentId = versionIndependentId;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     /*Used to set the MessyItem to request and return back a AtpId. Used in the planAuditMessyItems to build the drop downs*/

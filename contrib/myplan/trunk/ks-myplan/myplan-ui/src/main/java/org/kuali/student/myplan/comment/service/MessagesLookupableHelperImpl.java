@@ -4,11 +4,11 @@ import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
-import org.kuali.student.core.comment.service.CommentService;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.kuali.student.r2.common.util.constants.CommentServiceConstants;
+import org.kuali.student.r2.core.comment.service.CommentService;
+import org.kuali.student.r2.core.constants.CommentServiceConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.xml.namespace.QName;

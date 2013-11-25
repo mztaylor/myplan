@@ -1,8 +1,8 @@
 package org.kuali.student.myplan.plan.util;
 
 
-import org.kuali.student.common.search.dto.SearchResultCell;
-import org.kuali.student.common.search.dto.SearchResultRow;
+import org.kuali.student.r2.core.search.infc.SearchResultCell;
+import org.kuali.student.r2.core.search.infc.SearchResultRow;
 
 public class SearchHelper {
   /**

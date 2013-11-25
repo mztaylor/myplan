@@ -62,6 +62,8 @@ public class PlanForm extends UifFormBase {
 
     private String courseId;
 
+    private String code;
+
     private String atpId;
 
     private String termName;
@@ -228,6 +230,14 @@ public class PlanForm extends UifFormBase {
 
     public void setCourseId(String courseId) {
         this.courseId = courseId;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getPlanItemId() {

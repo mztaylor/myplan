@@ -2,6 +2,7 @@ package edu.uw.kuali.student.service.impl;
 
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
+import edu.uw.kuali.student.myplan.util.PlanHelperImpl;
 import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.dom4j.*;
@@ -13,10 +14,6 @@ import org.dom4j.xpath.DefaultXPath;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
-import org.kuali.student.core.organization.dto.OrgInfo;
-import org.kuali.student.lum.course.dto.CourseInfo;
-import org.kuali.student.lum.course.service.CourseService;
-import org.kuali.student.lum.course.service.CourseServiceConstants;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
@@ -33,6 +30,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.plan.util.OrgHelper;
+import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
@@ -42,6 +40,10 @@ import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.core.organization.dto.OrgInfo;
+import org.kuali.student.r2.lum.course.dto.CourseInfo;
+import org.kuali.student.r2.lum.course.service.CourseService;
+import org.kuali.student.r2.lum.util.constants.CourseServiceConstants;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Method;
@@ -117,6 +119,9 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     @Autowired
     CourseHelper courseHelper;
+
+    @Autowired
+    private PlanHelper planHelper;
 
     @Autowired
     private UserSessionHelper userSessionHelper;
@@ -314,10 +319,10 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
                     if (BUCKET_IGNORE.equals(bucketType)) continue;
                     String versionIndependentId = planItem.getRefObjectId();
-
+                    String crossListedCourse = getPlanHelper().getCrossListedCourse(planItem.getAttributes());
                     try {
                         String latestCourseId = getCourseHelper().getVerifiedCourseId(versionIndependentId);
-                        CourseInfo courseInfo = getCourseService().getCourse(latestCourseId);
+                        CourseInfo courseInfo = getCourseHelper().getCourseInfoByIdAndCd(latestCourseId, crossListedCourse);
 
                         DegreeAuditCourseRequest course = new DegreeAuditCourseRequest();
                         course.curric = courseInfo.getSubjectArea().trim();
@@ -328,9 +333,14 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                             course.campus = "Seattle";
                             List<OrgInfo> campusList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
 
-                            Map<String, String> map = courseInfo.getAttributes();
-                            if (map.containsKey(CourseSearchConstants.CAMPUS_LOCATION_COURSE_ATTRIBUTE)) {
-                                String campusId = map.get(CourseSearchConstants.CAMPUS_LOCATION_COURSE_ATTRIBUTE);
+                            List<AttributeInfo> attributes = courseInfo.getAttributes();
+                            String campusId = null;
+                            for (AttributeInfo attributeInfo : attributes) {
+                                if (CourseSearchConstants.CAMPUS_LOCATION_COURSE_ATTRIBUTE.equals(attributeInfo.getKey())) {
+                                    campusId = attributeInfo.getValue();
+                                }
+                            }
+                            if (StringUtils.hasText(campusId)) {
                                 for (OrgInfo campusOrg : campusList) {
                                     if (campusOrg.getId().equals(campusId)) {
                                         course.campus = campusOrg.getLongName();
@@ -950,5 +960,16 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
 
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
+    }
+
+    public PlanHelper getPlanHelper() {
+        if (planHelper == null) {
+            planHelper = new PlanHelperImpl();
+        }
+        return planHelper;
+    }
+
+    public void setPlanHelper(PlanHelper planHelper) {
+        this.planHelper = planHelper;
     }
 }

@@ -17,6 +17,7 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
@@ -103,7 +104,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         *"You took this course on Winter 2012" or
         *"This course was withdrawn on week 6 in Spring 2012" or
         *"You're enrolled in this course for Autumn 2012" */
-        if (courseDetails.getPlannedCourseSummary().getAcademicTerms().size() > 0) {
+        if (!CollectionUtils.isEmpty(courseDetails.getPlannedCourseSummary().getAcademicTerms())) {
             List<String> withDrawnCourseTerms = new ArrayList<String>();
             List<String> nonWithDrawnCourseTerms = new ArrayList<String>();
 
@@ -232,14 +233,14 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
             if (planItemDataObjects.size() > 0) {
 
                 for (PlanItemDataObject pl : planItemDataObjects) {
-                    String[] str = AtpHelper.atpIdToTermNameAndYear(pl.getAtp());
+                    String termName = AtpHelper.atpIdToTermName(pl.getAtp());
                     String date = DateFormatHelper.getDateFomatted(pl.getDateAdded().toString());
                     if (planItemsMap.containsKey(date)) {
                         StringBuffer sbuf = new StringBuffer();
-                        sbuf = sbuf.append(planItemsMap.get(date)).append(",").append(str[0]).append(" ").append(str[1]);
+                        sbuf = sbuf.append(planItemsMap.get(date)).append(",").append(termName);
                         planItemsMap.put(date, sbuf.toString());
                     } else {
-                        planItemsMap.put(date, str[0] + " " + str[1]);
+                        planItemsMap.put(date, termName);
                     }
                 }
 

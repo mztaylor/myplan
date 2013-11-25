@@ -13,6 +13,7 @@ import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
@@ -46,11 +47,12 @@ public class PlanHelperImpl implements PlanHelper {
      * @param refObjId       The id of the course
      * @param atpId          The ATP id
      * @param planItemType   The plan item type key.
+     * @param courseCd       The crossListed course code.
      * @return A "planned" or "backup" plan item. Or 'null' if none exists.
      * @throws RuntimeException on errors.
      */
     @Override
-    public PlanItemInfo getPlanItemByAtpAndType(String learningPlanId, String refObjId, String atpId, String planItemType) {
+    public PlanItemInfo getPlanItemByAtpAndType(String learningPlanId, String refObjId, String atpId, String planItemType, String courseCd) {
         if (StringUtils.isEmpty(learningPlanId)) {
             throw new RuntimeException("Learning Plan Id was empty.");
         }
@@ -64,6 +66,7 @@ public class PlanHelperImpl implements PlanHelper {
         }
 
         List<PlanItemInfo> planItems = null;
+        List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();
         PlanItemInfo item = null;
 
         try {
@@ -74,8 +77,25 @@ public class PlanHelperImpl implements PlanHelper {
 
         for (PlanItemInfo p : planItems) {
             if (p.getRefObjectId().equals(refObjId) && p.getTypeKey().equals(planItemType)) {
-                item = p;
-                break;
+
+                if (PlanConstants.COURSE_TYPE.equals(p.getRefObjectType())) {
+                /*Multiple PlanItems with same refObjId can be present which are crossListed courses in same term,
+                So filtering them by using the given crossListed courseCd to get the exact planItemInfo*/
+                    String crossListedCourse = getCrossListedCourse(p.getAttributes());
+                    //Planned parent course returned
+                    if (StringUtils.isEmpty(courseCd) && StringUtils.isEmpty(crossListedCourse)) {
+                        item = p;
+                        break;
+                    }
+                    //Planned crossListed course returned
+                    else if (!StringUtils.isEmpty(courseCd) && getCourseHelper().isSimilarCourses(courseCd, crossListedCourse)) {
+                        item = p;
+                        break;
+                    }
+                } else {
+                    item = p;
+                    break;
+                }
             }
         }
 
@@ -92,7 +112,7 @@ public class PlanHelperImpl implements PlanHelper {
      * @throws RuntimeException on errors.
      */
     @Override
-    public PlanItemInfo getPlannedOrBackupPlanItem(String courseId, String atpId) {
+    public PlanItemInfo getPlannedOrBackupPlanItem(String courseId, String courseCd, String atpId) {
         String studentId = getUserSessionHelper().getStudentId();
         LearningPlan learningPlan = getLearningPlan(studentId);
         if (learningPlan == null) {
@@ -102,7 +122,7 @@ public class PlanHelperImpl implements PlanHelper {
         PlanItemInfo planItem = null;
 
         try {
-            planItem = getPlanItemByAtpAndType(learningPlan.getId(), courseId, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED);
+            planItem = getPlanItemByAtpAndType(learningPlan.getId(), courseId, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, courseCd);
         } catch (Exception e) {
             logger.error("Could not retrieve plan items.", e);
             throw new RuntimeException("Could not retrieve plan items.", e);
@@ -110,7 +130,7 @@ public class PlanHelperImpl implements PlanHelper {
 
         if (planItem == null) {
             try {
-                planItem = getPlanItemByAtpAndType(learningPlan.getId(), courseId, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
+                planItem = getPlanItemByAtpAndType(learningPlan.getId(), courseId, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP, courseCd);
             } catch (Exception e) {
                 logger.error("Could not retrieve plan items.", e);
                 throw new RuntimeException("Could not retrieve plan items.", e);
@@ -210,7 +230,7 @@ public class PlanHelperImpl implements PlanHelper {
                             recommendedItemDataObject.setDateAdded(dateAdded);
                             recommendedItemDataObject.setNote(planItemInfo.getDescr().getPlain());
                             recommendedItemDataObject.setAtpId(planItemInfo.getPlanPeriods().get(0));
-                            PlanItemInfo plan = getPlannedOrBackupPlanItem(planItemInfo.getRefObjectId(), planItemInfo.getPlanPeriods().get(0));
+                            PlanItemInfo plan = getPlannedOrBackupPlanItem(planItemInfo.getRefObjectId(), getCrossListedCourse(planItemInfo.getAttributes()), planItemInfo.getPlanPeriods().get(0));
                             if (plan != null && plan.getId() != null) {
                                 recommendedItemDataObject.setPlanned(true);
                             }
@@ -227,7 +247,27 @@ public class PlanHelperImpl implements PlanHelper {
     }
 
 
+    /**
+     * Method used to get the crossListed value from attributeInfoList in PlanItemInfo
+     * If not found null is returned which indicates that this is a normal course that is planned
+     *
+     * @param attributeInfoList
+     * @return
+     */
+    public String getCrossListedCourse(List<AttributeInfo> attributeInfoList) {
+        for (AttributeInfo attributeInfo : attributeInfoList) {
+            if (PlanConstants.CROSS_LISTED_COURSE_ATTR_KEY.equals(attributeInfo.getKey()) && !StringUtils.isEmpty(attributeInfo.getValue())) {
+                return attributeInfo.getValue();
+            }
+        }
+        return null;
+    }
+
+
     public CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = new CourseHelperImpl();
+        }
         return courseHelper;
     }
 

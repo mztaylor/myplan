@@ -26,19 +26,9 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
-import org.kuali.student.common.exceptions.MissingParameterException;
-import org.kuali.student.common.search.dto.SearchParam;
-import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.common.search.dto.SearchResult;
-import org.kuali.student.common.search.dto.SearchResultRow;
-import org.kuali.student.core.atp.dto.AtpTypeInfo;
-import org.kuali.student.core.atp.service.AtpService;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
-import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
-import org.kuali.student.lum.lu.service.LuService;
-import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
@@ -54,11 +44,26 @@ import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.plan.util.SearchHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
-import org.kuali.student.r2.common.util.constants.CourseOfferingServiceConstants;
+import org.kuali.student.r2.core.atp.service.AtpService;
+import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
+import org.kuali.student.r2.core.class1.type.service.TypeService;
+import org.kuali.student.r2.core.constants.TypeServiceConstants;
+import org.kuali.student.r2.core.search.dto.SearchParamInfo;
+import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
+import org.kuali.student.r2.core.search.dto.SearchResultInfo;
+import org.kuali.student.r2.core.search.infc.SearchResultRow;
+import org.kuali.student.r2.lum.clu.service.CluService;
+import org.kuali.student.r2.lum.course.dto.CourseInfo;
+import org.kuali.student.r2.lum.course.service.assembler.CourseAssemblerConstants;
+import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -87,11 +92,11 @@ public class CourseSearchController extends UifControllerBase {
 
     public static final String COURSE_SEARCH_URL = "/student/myplan/course?#searchQuery=%s&searchTerm=any&campusSelect=%s";
 
-    public static final String COURSE_DETAILS_URL = "/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=%s";
+    public static final String COURSE_DETAILS_URL = "/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=%s&courseCd=%s";
 
     private static final int MAX_HITS = 1000;
 
-    private transient LuService luService;
+    private transient CluService luService;
 
     private transient AtpService atpService;
 
@@ -100,6 +105,8 @@ public class CourseSearchController extends UifControllerBase {
     private transient AcademicCalendarService academicCalendarService;
 
     private transient AcademicPlanService academicPlanService;
+
+    private transient TypeService typeService;
 
 
     @Autowired
@@ -119,7 +126,7 @@ public class CourseSearchController extends UifControllerBase {
 
     private CampusSearch campusSearch = new CampusSearch();
 
-    //  Java to JSON outputter.
+    //  Java to JSON outPutter.
     private transient ObjectMapper mapper = new ObjectMapper();
 
 
@@ -162,7 +169,7 @@ public class CourseSearchController extends UifControllerBase {
             return null;
 
         }
-        response.sendRedirect(String.format(COURSE_DETAILS_URL, courseId));
+        response.sendRedirect(String.format(COURSE_DETAILS_URL, courseId, String.format("%s %s", subject.trim(), number)));
         return null;
     }
 
@@ -233,10 +240,10 @@ public class CourseSearchController extends UifControllerBase {
         HashMap<String, Credit> creditMap = new HashMap<String, Credit>();
 
         try {
-            SearchRequest searchRequest = new SearchRequest(CourseSearchConstants.SEARCH_REQUEST_CREDITS_DETAILS);
-            List<SearchParam> params = new ArrayList<SearchParam>();
+            SearchRequestInfo searchRequest = new SearchRequestInfo(CourseSearchConstants.SEARCH_REQUEST_CREDITS_DETAILS);
+            List<SearchParamInfo> params = new ArrayList<SearchParamInfo>();
             searchRequest.setParams(params);
-            SearchResult searchResult = getLuService().search(searchRequest);
+            SearchResultInfo searchResult = getLuService().search(searchRequest, CourseSearchConstants.CONTEXT_INFO);
             for (SearchResultRow row : searchResult.getRows()) {
                 String id = SearchHelper.getCellValue(row, "credit.id");
                 String type = SearchHelper.getCellValue(row, "credit.type");
@@ -281,7 +288,9 @@ public class CourseSearchController extends UifControllerBase {
         String maxCountProp = ConfigContext.getCurrentContextConfig().getProperty(CourseSearchConstants.MYPLAN_SEARCH_RESULTS_MAX);
         int maxCount = (StringUtils.hasText(maxCountProp)) ? Integer.valueOf(maxCountProp) : MAX_HITS;
         try {
-            List<SearchRequest> requests = searcher.queryToRequests(form);
+            List<SearchRequestInfo> requests = searcher.queryToRequests(form);
+            Set<String> divisionsQueried = getDivisionsFromSearchRequests(requests);
+            Set<String> numbersQueried = getNumbersFromSearchRequests(requests);
             List<Hit> hits = processSearchRequests(requests);
             List<CourseSearchItem> courseList = new ArrayList<CourseSearchItem>();
             Map<String, CourseSearchItem.PlanState> courseStatusMap = getCourseStatusMap(studentId);
@@ -289,22 +298,30 @@ public class CourseSearchController extends UifControllerBase {
             Set<String> subjectArea = new HashSet<String>();
 
             for (Hit hit : hits) {
-                CourseSearchItem course = getCourseInfo(hit.courseID);
+                List<CourseSearchItem> courseSearchItems = getCourseInfo(hit.courseID);
+                for (CourseSearchItem course : courseSearchItems) {
+
+                    if ((divisionsQueried.size() == 1 && !divisionsQueried.contains(course.getSubject())) || (numbersQueried.size() == 1 && !numbersQueried.contains(course.getNumber()))) {
+                        continue;
+                    }
                 //       loadScheduledTerms(course);
                 subjectArea.add(course.getSubject());
                 loadTermsOffered(course);
                 loadGenEduReqs(course);
-                if (courseStatusMap.containsKey(course.getCourseVersionIndependentId())) {
-                    course.setStatus(courseStatusMap.get(course.getCourseVersionIndependentId()));
+                    String key = String.format("%s:%s:%s", course.getCourseVersionIndependentId(), course.getSubject().trim(), course.getNumber().trim());
+                    if (courseStatusMap.containsKey(key)) {
+
+                        course.setStatus(courseStatusMap.get(key));
                 }
                 courseList.add(course);
+                }
                 if (courseList.size() >= maxCount) {
                     break;
                 }
             }
 
             loadScheduledTerms(courseList, subjectArea);
-            if (!CourseSearchForm.SEARCH_TERM_ANY_ITEM.equals(form.getSearchTerm())) {
+            if (!CourseSearchConstants.SEARCH_TERM_ANY_ITEM.equals(form.getSearchTerm())) {
                 List<CourseSearchItem> filteredCourses = new ArrayList<CourseSearchItem>();
                 filteredCourses = filterCoursesByTerm(courseList, form.getSearchTerm());
                 populateFacets(form, filteredCourses);
@@ -358,12 +375,13 @@ public class CourseSearchController extends UifControllerBase {
             String status = "";
             String courseId = item.getCourseId();
             String label = item.getStatus().getLabel();
+
             if (label.length() > 0) {
-                status = "<span id=\\\"" + courseId + "_status\\\" class=\\\"" + label.toLowerCase() + "\\\">" + label + "</span>";
+                status = String.format("<span id=\\\"%s_%s_%s_status\\\" class=\\\"%s\\\">%s</span>", courseId, item.getSubject().trim(), item.getNumber().trim(), label.toLowerCase(), label);
             } else if (getUserSessionHelper().isAdviser()) {
-                status = "<span id=\\\"" + courseId + "_status\\\">" + CourseSearchItem.EMPTY_RESULT_VALUE_KEY + "</span>";
+                status = String.format("<span id=\\\"%s_%s_%s_status\\\">%s</span>", courseId, item.getSubject().trim(), item.getNumber().trim(), CourseSearchItem.EMPTY_RESULT_VALUE_KEY);
             } else {
-                status = "<span id=\\\"" + courseId + "_status\\\"><input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"../themes/ksap/images/pixel.gif\\\" alt=\\\"Bookmark or Add to Plan\\\" class=\\\"courseResults__itemAdd\\\" data-courseid= \\\"" + courseId + "\\\"onclick=\\\"openMenu('" + courseId + "_add','add_course_items',null,event,null,'popover__menu popover__menu--small',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>";
+                status = String.format("<span id=\\\"%s_%s_%s_status\\\"><input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"/student/ks-myplan/images/pixel.gif\\\" alt=\\\"Bookmark or Add to Plan\\\" class=\\\"courseResults__itemAdd\\\" data-courseid= \\\"%s\\\" data-coursecd= \\\"%s\\\" data-subject= \\\"%s\\\" data-number= \\\"%s\\\" onclick=\\\"openMenu('%s_add','add_course_items',null,event,null,'myplan-container-75',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>", courseId, item.getSubject().trim(), item.getNumber().trim(), courseId, item.getCode().trim(), item.getSubject().trim(), item.getNumber().trim(), courseId);
             }
 
             String courseName = "";
@@ -379,7 +397,7 @@ public class CourseSearchController extends UifControllerBase {
 
             jsonString.append("[\"").append(item.getCode()).
                     append("\",\" <a href=\\\"inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=").
-                    append(courseId).append("\\\" target=\\\"_self\\\" title=\\\"").append(courseName).append("\\\" class=\\\"ellipsisItem\\\">").
+                    append(courseId + "&courseCd=" + item.getCode()).append("\\\" target=\\\"_self\\\" title=\\\"").append(courseName).append("\\\" class=\\\"ellipsisItem\\\">").
                     append(courseName).append("</a>\",\"").
                     append(item.getCredit()).append("\",").append(scheduledAndOfferedTerms).append(",\"").
                     append(item.getGenEduReq()).append("\",\"").append(status).
@@ -408,7 +426,7 @@ public class CourseSearchController extends UifControllerBase {
         return getUIFModelAndView(form, CourseSearchConstants.COURSE_SEARCH_RESULT_PAGE);
     }
 
-    public List<String> getResults(SearchRequest request, String division, String code) {
+    public List<String> getResults(SearchRequestInfo request, String division, String code) {
         try {
             List<String> results = new ArrayList<String>();
             if (division == null && code == null) {
@@ -424,7 +442,7 @@ public class CourseSearchController extends UifControllerBase {
 
             request.addParam("lastScheduledTerm", AtpHelper.getLastScheduledAtpId());
 
-            SearchResult searchResult = getLuService().search(request);
+            SearchResultInfo searchResult = getLuService().search(request, CourseSearchConstants.CONTEXT_INFO);
             if (searchResult != null) {
                 for (SearchResultRow row : searchResult.getRows()) {
                     results.add(SearchHelper.getCellValue(row, "courseCode"));
@@ -450,18 +468,76 @@ public class CourseSearchController extends UifControllerBase {
         }
     }
 
-    public ArrayList<Hit> processSearchRequests(List<SearchRequest> requests) throws MissingParameterException {
+    /**
+     * Divisions that are added as params in the search request are passed as a set for crossListing course verification
+     *
+     * @param requestInfos
+     * @return
+     */
+    private Set<String> getDivisionsFromSearchRequests(List<SearchRequestInfo> requestInfos) {
+        Set<String> divisions = new HashSet<String>();
+        for (SearchRequestInfo searchRequestInfo : requestInfos) {
+            for (SearchParamInfo requestParam : searchRequestInfo.getParams()) {
+                if ("division".equals(requestParam.getKey())) {
+                    divisions.add(requestParam.getValues().get(0).trim());
+                }
+            }
+        }
+        return divisions;
+    }
+
+    /**
+     * Numbers that are added as params in the search request are passed as a set for crossListing course verification
+     *
+     * @param requestInfos
+     * @return
+     */
+    private Set<String> getNumbersFromSearchRequests(List<SearchRequestInfo> requestInfos) {
+        Set<String> numbers = new HashSet<String>();
+        for (SearchRequestInfo searchRequestInfo : requestInfos) {
+            for (SearchParamInfo requestParam : searchRequestInfo.getParams()) {
+                if ("code".equals(requestParam.getKey())) {
+                    numbers.add(requestParam.getValues().get(0).trim());
+                }
+            }
+        }
+        return numbers;
+    }
+
+
+    /**
+     * Gets the CluIds from the given search requests
+     *
+     * @param requests
+     * @return
+     * @throws MissingParameterException
+     */
+    public ArrayList<Hit> processSearchRequests(List<SearchRequestInfo> requests) throws MissingParameterException {
         logger.info("Start of processSearchRequests of CourseSearchController:" + System.currentTimeMillis());
 
         ArrayList<Hit> hits = new ArrayList<Hit>();
         ArrayList<Hit> tempHits = new ArrayList<Hit>();
-        for (SearchRequest request : requests) {
-            SearchResult searchResult = getLuService().search(request);
+        List<String> courseIds = new ArrayList<String>();
+        for (SearchRequestInfo request : requests) {
+            SearchResultInfo searchResult = null;
+            try {
+                searchResult = getLuService().search(request, CourseSearchConstants.CONTEXT_INFO);
+            } catch (InvalidParameterException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (OperationFailedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (PermissionDeniedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
             for (SearchResultRow row : searchResult.getRows()) {
                 String id = SearchHelper.getCellValue(row, "lu.resultColumn.cluId");
+                if (!courseIds.contains(id)) {
                 /* hitCourseID(courseMap, id);*/
+                    courseIds.add(id);
                 Hit hit = new Hit(id);
                 tempHits.add(hit);
+
+            }
 
             }
             tempHits.removeAll(hits);
@@ -524,19 +600,33 @@ public class CourseSearchController extends UifControllerBase {
     private void loadTermsOffered(CourseSearchItem course) throws MissingParameterException {
         logger.info("Start of method loadTermsOffered of CourseSearchController:" + System.currentTimeMillis());
         String courseId = course.getCourseId();
-        SearchRequest request = new SearchRequest("myplan.course.info.atp");
+        SearchRequestInfo request = new SearchRequestInfo("myplan.course.info.atp");
         request.addParam("courseID", courseId);
 
-        List<AtpTypeInfo> termsOffered = new ArrayList<AtpTypeInfo>();
-        SearchResult result = getLuService().search(request);
+        List<TypeInfo> termsOffered = new ArrayList<TypeInfo>();
+        SearchResultInfo result = null;
+        try {
+            result = getLuService().search(request, CourseSearchConstants.CONTEXT_INFO);
+        } catch (InvalidParameterException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (OperationFailedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (PermissionDeniedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         for (SearchResultRow row : result.getRows()) {
             String id = SearchHelper.getCellValue(row, "atp.id");
 
             // Don't add the terms that are not found
-            AtpTypeInfo atpType = getATPType(id);
-            if (null != atpType) {
-                termsOffered.add(atpType);
+            TypeInfo atpTypeInfo = null;
+            try {
+                atpTypeInfo = getTypeService().getType(id, PlanConstants.CONTEXT_INFO);
+            } catch (Exception e) {
+
             }
+            if (atpTypeInfo != null) {
+                termsOffered.add(atpTypeInfo);
+        }
         }
 
         Collections.sort(termsOffered, getAtpTypeComparator());
@@ -547,10 +637,19 @@ public class CourseSearchController extends UifControllerBase {
     private void loadGenEduReqs(CourseSearchItem course) throws MissingParameterException {
         logger.info("Start of method loadGenEduReqs of CourseSearchController:" + System.currentTimeMillis());
         String courseId = course.getCourseId();
-        SearchRequest request = new SearchRequest("myplan.course.info.gened");
+        SearchRequestInfo request = new SearchRequestInfo("myplan.course.info.gened");
         request.addParam("courseID", courseId);
         List<String> reqs = new ArrayList<String>();
-        SearchResult result = getLuService().search(request);
+        SearchResultInfo result = null;
+        try {
+            result = getLuService().search(request, CourseSearchConstants.CONTEXT_INFO);
+        } catch (InvalidParameterException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (OperationFailedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (PermissionDeniedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         for (SearchResultRow row : result.getRows()) {
             String genEd = SearchHelper.getCellValue(row, "gened.name");
             reqs.add(genEd);
@@ -573,6 +672,13 @@ public class CourseSearchController extends UifControllerBase {
         this.academicPlanService = academicPlanService;
     }
 
+    /**
+     * Courses status map (which tells if that course is planned, bookmarked or not planned)
+     *
+     * @param studentID
+     * @return
+     * @throws Exception
+     */
     private Map<String, CourseSearchItem.PlanState> getCourseStatusMap(String studentID) throws Exception {
         logger.info("Start of method getCourseStatusMap of CourseSearchController:" + System.currentTimeMillis());
 
@@ -583,8 +689,11 @@ public class CourseSearchController extends UifControllerBase {
          */
         List<String> planItemTypes = Arrays.asList(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
             List<PlanItemInfo> planItemList = getPlanHelper().getPlanItemsByTypes(getUserSessionHelper().getStudentId(), planItemTypes);
-        for (PlanItem planItem : planItemList) {
+        for (PlanItemInfo planItem : planItemList) {
+            if (PlanConstants.COURSE_TYPE.equals(planItem.getRefObjectType())) {
             String courseID = planItem.getRefObjectId();
+                String crossListedCourse = getPlanHelper().getCrossListedCourse(planItem.getAttributes());
+                CourseInfo courseInfo = getCourseHelper().getCourseInfoByIdAndCd(courseID, crossListedCourse);
             CourseSearchItem.PlanState state;
             if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
                 state = CourseSearchItem.PlanState.SAVED;
@@ -594,20 +703,36 @@ public class CourseSearchController extends UifControllerBase {
             } else {
                 throw new RuntimeException("Unknown plan item type.");
             }
-            savedCourseSet.put(courseID, state);
+                savedCourseSet.put(String.format("%s:%s:%s", courseID, courseInfo.getSubjectArea().trim(), courseInfo.getCourseNumberSuffix().trim()), state);
+        }
         }
         logger.info("End of method getCourseStatusMap of CourseSearchController:" + System.currentTimeMillis());
         return savedCourseSet;
     }
 
-    private CourseSearchItem getCourseInfo(String courseId) throws MissingParameterException {
+    /**
+     * A list of course search items are returned back if the provided courseId has crossListing courses
+     * else a list with only one Object is sent back
+     *
+     * @param courseId
+     * @return
+     * @throws MissingParameterException
+     */
+    private List<CourseSearchItem> getCourseInfo(String courseId) throws MissingParameterException {
         logger.info("Start of method getCourseInfo of CourseSearchController:" + System.currentTimeMillis());
-        CourseSearchItem course = new CourseSearchItem();
+        List<CourseSearchItem> courseSearchItems = new ArrayList<CourseSearchItem>();
 
-        SearchRequest request = new SearchRequest("myplan.course.info");
+        SearchRequestInfo request = new SearchRequestInfo("myplan.course.info");
         request.addParam("courseID", courseId);
-        SearchResult result = getLuService().search(request);
+        SearchResultInfo result = null;
+        try {
+            result = getLuService().search(request, CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Could not load courseInfo for CourseId: " + courseId, e);
+        }
+
         for (SearchResultRow row : result.getRows()) {
+            CourseSearchItem course = new CourseSearchItem();
             String name = SearchHelper.getCellValue(row, "course.name");
             String number = SearchHelper.getCellValue(row, "course.number");
             String subject = SearchHelper.getCellValue(row, "course.subject");
@@ -629,10 +754,13 @@ public class CourseSearchController extends UifControllerBase {
             course.setCreditMax(credit.max);
             course.setCreditType(credit.type);
             course.setCredit(credit.display);
-            break;
+
+            courseSearchItems.add(course);
         }
+
+
         logger.info("End of method getCourseInfo of CourseSearchController:" + System.currentTimeMillis());
-        return course;
+        return courseSearchItems;
     }
 
     public void populateFacets(CourseSearchForm form, List<CourseSearchItem> courses) {
@@ -698,28 +826,34 @@ public class CourseSearchController extends UifControllerBase {
             }
             req = EnumerationHelper.getEnumAbbrValForCodeByType(req, PlanConstants.GEN_EDU_ENUM_KEY);
             /*Doing this to fix a bug in IE8 which is trimming off the I&S as I*/
+            if (StringUtils.hasText(req)) {
             if (req.contains("&")) {
                 req = req.replace("&", "&amp;");
             }
+
             genEdsOut.append(req);
+        }
         }
         return genEdsOut.toString();
     }
 
-    private AtpTypeInfo getATPType(String key) {
-        try {
-            return getAtpService().getAtpType(key);
-        } catch (Exception e) {
-            logger.error("Could not find ATP Type: " + key);
-            return null;
-        }
-    }
-
-    protected LuService getLuService() {
+    protected CluService getLuService() {
         if (this.luService == null) {
-            this.luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+            this.luService = (CluService) GlobalResourceLoader.getService(new QName(CluServiceConstants.CLU_NAMESPACE, "CluService"));
         }
         return this.luService;
+    }
+
+    public TypeService getTypeService() {
+        if (typeService == null) {
+            typeService = (TypeService)
+                    GlobalResourceLoader.getService(new QName(TypeServiceConstants.NAMESPACE, TypeServiceConstants.SERVICE_NAME_LOCAL_PART));
+        }
+        return typeService;
+    }
+
+    public void setTypeService(TypeService typeService) {
+        this.typeService = typeService;
     }
 
     protected AtpService getAtpService() {
@@ -732,8 +866,7 @@ public class CourseSearchController extends UifControllerBase {
 
     protected CourseOfferingService getCourseOfferingService() {
         if (this.courseOfferingService == null) {
-            this.courseOfferingService = (CourseOfferingService)
-                    GlobalResourceLoader.getService(new QName(CourseOfferingServiceConstants.NAMESPACE, CourseOfferingServiceConstants.SERVICE_NAME_LOCAL_PART));
+            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
         }
         return this.courseOfferingService;
     }
@@ -747,7 +880,7 @@ public class CourseSearchController extends UifControllerBase {
         return this.academicCalendarService;
     }
 
-    public void setLuService(LuService luService) {
+    public void setLuService(CluService luService) {
         this.luService = luService;
     }
 
@@ -816,6 +949,8 @@ public class CourseSearchController extends UifControllerBase {
     public void setPlanHelper(PlanHelper planHelper) {
         this.planHelper = planHelper;
     }
+
+
 }
 
 

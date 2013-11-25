@@ -74,7 +74,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             String type = "";
             plan.setRefObjectType(type);
             List<String> atps = new ArrayList<String>();
-            atps.add("kuali.uw.atp.autumn2011");
+            atps.add("20114");
             plan.setPlanPeriods(atps);
 
             plan.setId("1");
@@ -111,7 +111,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             String type = "";
             plan.setRefObjectType(type);
             List<String> atps = new ArrayList<String>();
-            atps.add("kuali.uw.atp.autumn2011");
+            atps.add("20114");
             plan.setPlanPeriods(atps);
 
             plan.setId("1");
@@ -129,7 +129,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             String type = "";
             plan.setRefObjectType(type);
             List<String> atps = new ArrayList<String>();
-            atps.add("kuali.uw.atp.spring2011");
+            atps.add("20112");
             plan.setPlanPeriods(atps);
 
             plan.setId("1");
@@ -147,7 +147,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
             String type = "";
             plan.setRefObjectType(type);
             List<String> atps = new ArrayList<String>();
-            atps.add("kuali.uw.atp.winter2011");
+            atps.add("20111");
             plan.setPlanPeriods(atps);
 
             plan.setId("1");
