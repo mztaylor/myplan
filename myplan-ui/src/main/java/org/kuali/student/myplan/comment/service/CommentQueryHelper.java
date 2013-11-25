@@ -1,14 +1,15 @@
 package org.kuali.student.myplan.comment.service;
 
 import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
+import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.core.comment.dto.CommentInfo;
-import org.kuali.student.core.comment.service.CommentService;
 import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.comment.dataobject.CommentDataObject;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
-import org.apache.log4j.Logger;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.core.comment.dto.CommentInfo;
+import org.kuali.student.r2.core.comment.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.xml.namespace.QName;
@@ -40,13 +41,14 @@ public class CommentQueryHelper {
 
     /**
      * Retrieve a single message.
+     *
      * @param messageId
      * @return
      */
     public synchronized MessageDataObject getMessage(String messageId) {
         CommentInfo commentInfo;
         try {
-            commentInfo = getCommentService().getComment(messageId);
+            commentInfo = getCommentService().getComment(messageId, CommentConstants.CONTEXT_INFO);
         } catch (Exception e) {
             logger.error(String.format("Query for comment [%s] failed.", messageId), e);
             return null;
@@ -56,10 +58,25 @@ public class CommentQueryHelper {
 
     private MessageDataObject makeMessageDataObject(CommentInfo commentInfo) {
         MessageDataObject messageDataObject = new MessageDataObject();
-        messageDataObject.setCreateDate(commentInfo.getMetaInfo().getCreateTime());
-        messageDataObject.setSubject(commentInfo.getAttributes().get(CommentConstants.SUBJECT_ATTRIBUTE_NAME));
+        messageDataObject.setCreateDate(commentInfo.getMeta().getCreateTime());
+        List<AttributeInfo> abbrAttributes = commentInfo.getAttributes();
+        String subject = null;
+        String createdBy = null;
+        for (AttributeInfo entry : abbrAttributes) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if (CommentConstants.SUBJECT_ATTRIBUTE_NAME.equals(key)) {
+                subject = value;
+            } else if (CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME.equals(key)) {
+                createdBy = value;
+            }
+            if (subject != null && createdBy != null) {
+                break;
+            }
+        }
+        messageDataObject.setSubject(subject);
         messageDataObject.setBody(commentInfo.getCommentText().getPlain());
-        messageDataObject.setFrom(getUserSessionHelper().getName(commentInfo.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME)));
+        messageDataObject.setFrom(getUserSessionHelper().getName(createdBy));
         messageDataObject.setMessageId(commentInfo.getId());
 
         //  Pass the id of the message to get the comments associated with this message.
@@ -84,6 +101,7 @@ public class CommentQueryHelper {
 
     /**
      * Get all messages for a particular student.
+     *
      * @param studentId
      * @return
      */
@@ -91,7 +109,7 @@ public class CommentQueryHelper {
         List<MessageDataObject> messages = new ArrayList<MessageDataObject>();
         List<CommentInfo> commentInfos = new ArrayList<CommentInfo>();
         try {
-            commentInfos = getCommentService().getComments(studentId, CommentConstants.MESSAGE_REF_TYPE);
+            commentInfos = getCommentService().getCommentsByReferenceAndType(studentId, CommentConstants.MESSAGE_REF_TYPE, CommentConstants.CONTEXT_INFO);
         } catch (Exception e) {
             logger.error(String.format("Failed to retrieve messages for student [%s].", studentId), e);
         }
@@ -109,16 +127,26 @@ public class CommentQueryHelper {
         List<CommentDataObject> comments = new ArrayList<CommentDataObject>();
         List<CommentInfo> commentInfos = new ArrayList<CommentInfo>();
         try {
-            commentInfos = getCommentService().getComments(messageId, CommentConstants.COMMENT_REF_TYPE);
+            commentInfos = getCommentService().getCommentsByReferenceAndType(messageId, CommentConstants.COMMENT_REF_TYPE, CommentConstants.CONTEXT_INFO);
         } catch (Exception e) {
             logger.error(String.format("Failed to retrieve messages for messages id [%s].", messageId), e);
         }
 
         for (CommentInfo ci : commentInfos) {
             CommentDataObject commentDataObject = new CommentDataObject();
-            commentDataObject.setCreateDate(ci.getMetaInfo().getCreateTime());
+            commentDataObject.setCreateDate(ci.getMeta().getCreateTime());
             commentDataObject.setBody(ci.getCommentText().getPlain());
-            commentDataObject.setFrom(getUserSessionHelper().getName(ci.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME)));
+            List<AttributeInfo> abbrAttributes = ci.getAttributes();
+            String createdBy = null;
+            for (AttributeInfo entry : abbrAttributes) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME.equals(key)) {
+                    createdBy = value;
+                    break;
+                }
+            }
+            commentDataObject.setFrom(getUserSessionHelper().getName(createdBy));
             comments.add(commentDataObject);
         }
 

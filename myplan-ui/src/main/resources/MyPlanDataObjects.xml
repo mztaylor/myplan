@@ -1287,4 +1287,138 @@
     </bean>
 
     <!-- *********************** Adviser Message and Comment Data Object End ******************** -->
+
+    <!-- *********************** Course Syllabus Data Object ******************** -->
+
+    <bean id="CourseSyllabus" parent="CourseSyllabus-parentBean"/>
+    <bean id="CourseSyllabus-parentBean" abstract="true" parent="DataObjectEntry">
+        <property name="objectLabel" value="Course Details"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.course.dataobject.SyllabusItem"/>
+        <property name="attributes">
+            <list>
+                <ref bean="CourseSyllabus.subject"/>
+                <ref bean="CourseSyllabus.number"/>
+                <ref bean="CourseSyllabus.year"/>
+                <ref bean="CourseSyllabus.term"/>
+                <ref bean="CourseSyllabus.description"/>
+                <ref bean="CourseSyllabus.activityCode"/>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="CourseSyllabus.subject" parent="CourseSyllabus.subject-parentBean"/>
+    <bean id="CourseSyllabus.subject-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="subject"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Course Subject Area"/>
+        <property name="shortLabel" value="Course"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+
+    <bean id="CourseSyllabus.number" parent="CourseSyllabus.number-parentBean"/>
+    <bean id="CourseSyllabus.number-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="number"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Course Course Number"/>
+        <property name="shortLabel" value="Course"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="CourseSyllabus.description" parent="CourseSyllabus.description-parentBean"/>
+    <bean id="CourseSyllabus.description-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="description"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Course Syllabus Description"/>
+        <property name="shortLabel" value="Syllabus"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="CourseSyllabus.year" parent="CourseSyllabus.year-parentBean"/>
+    <bean id="CourseSyllabus.year-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="year"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Year"/>
+        <property name="shortLabel" value="Year"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="CourseSyllabus.term" parent="CourseSyllabus.term-parentBean"/>
+    <bean id="CourseSyllabus.term-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="term"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Term"/>
+        <property name="shortLabel" value="Term"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="4"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="CourseSyllabus.activityCode" parent="CourseSyllabus.activityCode-parentBean"/>
+    <bean id="CourseSyllabus.activityCode-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="activityCode"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Activity Code"/>
+        <property name="shortLabel" value="Activity"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="4"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
 </beans>

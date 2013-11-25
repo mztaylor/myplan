@@ -1,18 +1,20 @@
 package org.kuali.student.myplan.service.mock;
 
 
-import org.kuali.student.common.dictionary.dto.ObjectStructureDefinition;
-import org.kuali.student.common.dto.RichTextInfo;
-import org.kuali.student.common.dto.StatusInfo;
-import org.kuali.student.common.exceptions.*;
-import org.kuali.student.common.validation.dto.ValidationResultInfo;
-import org.kuali.student.common.versionmanagement.dto.VersionDisplayInfo;
-import org.kuali.student.core.statement.dto.StatementTreeViewInfo;
-import org.kuali.student.lum.course.dto.ActivityInfo;
-import org.kuali.student.lum.course.dto.CourseInfo;
-import org.kuali.student.lum.course.dto.FormatInfo;
-import org.kuali.student.lum.course.dto.LoDisplayInfo;
-import org.kuali.student.lum.course.service.CourseService;
+import org.kuali.rice.core.api.criteria.QueryByCriteria;
+import org.kuali.student.r1.common.dictionary.dto.ObjectStructureDefinition;
+import org.kuali.student.r1.core.statement.dto.StatementTreeViewInfo;
+import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.dto.RichTextInfo;
+import org.kuali.student.r2.common.dto.StatusInfo;
+import org.kuali.student.r2.common.dto.ValidationResultInfo;
+import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.core.versionmanagement.dto.VersionDisplayInfo;
+import org.kuali.student.r2.lum.course.dto.ActivityInfo;
+import org.kuali.student.r2.lum.course.dto.CourseInfo;
+import org.kuali.student.r2.lum.course.dto.FormatInfo;
+import org.kuali.student.r2.lum.course.dto.LoDisplayInfo;
+import org.kuali.student.r2.lum.course.service.CourseService;
 
 import javax.jws.WebParam;
 import java.util.*;
@@ -60,91 +62,115 @@ public class CourseServiceMockImpl implements CourseService {
     }
 
     @Override
-    public CourseInfo getCourse(@WebParam(name = "courseId") String courseId) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        if (!validCourseIds.contains(courseId)) {
+    public CourseInfo getCourse(@WebParam(name = "courseId") String s, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        if (!validCourseIds.contains(s)) {
             throw new DoesNotExistException();
         }
-        if (getCourseInfos().containsKey(courseId)) {
-            return courseInfos.get(courseId);
+        if (getCourseInfos().containsKey(s)) {
+            return courseInfos.get(s);
         }
         CourseInfo courseInfo = new CourseInfo();
-        courseInfo.setId(courseId);
+        courseInfo.setId(s);
         RichTextInfo richTextInfo = new RichTextInfo();
         courseInfo.setDescr(richTextInfo);
         return courseInfo;
     }
 
     @Override
-    public List<FormatInfo> getCourseFormats(@WebParam(name = "courseId") String courseId) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+    public List<CourseInfo> getCoursesByIds(@WebParam(name = "courseIds") List<String> strings, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public List<ActivityInfo> getCourseActivities(@WebParam(name = "formatId") String formatId) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+    public List<String> searchForCourseIds(@WebParam(name = "criteria") QueryByCriteria queryByCriteria, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public List<LoDisplayInfo> getCourseLos(@WebParam(name = "courseId") String courseId) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+    public List<CourseInfo> searchForCourses(@WebParam(name = "criteria") QueryByCriteria queryByCriteria, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public List<StatementTreeViewInfo> getCourseStatements(@WebParam(name = "courseId") String courseId, @WebParam(name = "nlUsageTypeKey") String nlUsageTypeKey, @WebParam(name = "language") String language) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-
-        List<StatementTreeViewInfo> statementTreeViewInfos = new ArrayList<StatementTreeViewInfo>();
-        return statementTreeViewInfos;
-    }
-
-    @Override
-    public CourseInfo createCourse(@WebParam(name = "courseInfo") CourseInfo courseInfo) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException, DoesNotExistException, CircularRelationshipException, DependentObjectsExistException, UnsupportedActionException {
+    public CourseInfo createCourse(@WebParam(name = "courseInfo") CourseInfo courseInfo, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException {
         getValidCourseIds().add(courseInfo.getId());
         getCourseInfos().put(courseInfo.getId(), courseInfo);
         return courseInfo;
     }
 
     @Override
-    public CourseInfo updateCourse(@WebParam(name = "courseInfo") CourseInfo courseInfo) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, VersionMismatchException, OperationFailedException, PermissionDeniedException, AlreadyExistsException, CircularRelationshipException, DependentObjectsExistException, UnsupportedActionException, UnsupportedOperationException, CircularReferenceException {
+    public CourseInfo updateCourse(@WebParam(name = "courseId") String s, @WebParam(name = "courseInfo") CourseInfo courseInfo, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, VersionMismatchException, OperationFailedException, PermissionDeniedException, UnsupportedActionException, DependentObjectsExistException, AlreadyExistsException, CircularRelationshipException, CircularReferenceException, ReadOnlyException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public StatusInfo deleteCourse(@WebParam(name = "courseId") String courseId) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException, DataValidationErrorException, AlreadyExistsException, CircularRelationshipException, DependentObjectsExistException, UnsupportedActionException, UnsupportedOperationException, CircularReferenceException {
+    public StatusInfo deleteCourse(@WebParam(name = "courseId") String s, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException, DataValidationErrorException, AlreadyExistsException, UnsupportedActionException, DependentObjectsExistException, CircularRelationshipException, CircularReferenceException, ReadOnlyException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public StatementTreeViewInfo createCourseStatement(@WebParam(name = "courseId") String courseId, @WebParam(name = "statementTreeViewInfo") StatementTreeViewInfo statementTreeViewInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DataValidationErrorException {
+    public List<ValidationResultInfo> validateCourse(String s, CourseInfo courseInfo, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public StatementTreeViewInfo updateCourseStatement(@WebParam(name = "courseId") String courseId, @WebParam(name = "statementTreeViewInfo") StatementTreeViewInfo statementTreeViewInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DataValidationErrorException, CircularReferenceException, VersionMismatchException {
+    public List<FormatInfo> getCourseFormatsByCourse(@WebParam(name = "courseId") String s, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public StatusInfo deleteCourseStatement(@WebParam(name = "courseId") String courseId, @WebParam(name = "statementTreeViewInfo") StatementTreeViewInfo statementTreeViewInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+    public List<ActivityInfo> getCourseActivitiesByCourseFormat(@WebParam(name = "formatId") String s, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public List<ValidationResultInfo> validateCourse(String validationType, CourseInfo courseInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+    public List<LoDisplayInfo> getCourseLearningObjectivesByCourse(@WebParam(name = "courseId") String s, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public List<ValidationResultInfo> validateCourseStatement(@WebParam(name = "courseId") String courseId, @WebParam(name = "statementTreeViewInfo") StatementTreeViewInfo statementTreeViewInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+    public List<StatementTreeViewInfo> getCourseStatements(@WebParam(name = "courseId") String s, @WebParam(name = "nlUsageTypeKey") String s1, @WebParam(name = "language") String s2, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        List<StatementTreeViewInfo> statementTreeViewInfos = new ArrayList<StatementTreeViewInfo>();
+        return statementTreeViewInfos;
+    }
+
+    @Override
+    public StatementTreeViewInfo createCourseStatement(@WebParam(name = "courseId") String s, @WebParam(name = "statementTreeViewInfo") StatementTreeViewInfo statementTreeViewInfo, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DataValidationErrorException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public CourseInfo createNewCourseVersion(@WebParam(name = "courseId") String courseId, @WebParam(name = "versionComment") String versionComment) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException {
+    public StatementTreeViewInfo updateCourseStatement(@WebParam(name = "courseId") String s, @WebParam(name = "statementTreeId") String s1, @WebParam(name = "statementTreeViewInfo") StatementTreeViewInfo statementTreeViewInfo, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DataValidationErrorException, VersionMismatchException {
         throw new RuntimeException("Not implemented.");
     }
 
     @Override
-    public StatusInfo setCurrentCourseVersion(@WebParam(name = "courseVersionId") String courseVersionId, @WebParam(name = "currentVersionStart") Date currentVersionStart) throws DoesNotExistException, InvalidParameterException, MissingParameterException, IllegalVersionSequencingException, OperationFailedException, PermissionDeniedException {
+    public StatusInfo deleteCourseStatement(@WebParam(name = "courseId") String s, @WebParam(name = "statementTreeViewInfo") StatementTreeViewInfo statementTreeViewInfo, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented.");
+    }
+
+    @Override
+    public List<ValidationResultInfo> validateCourseStatement(@WebParam(name = "courseId") String s, @WebParam(name = "statementTreeViewInfo") StatementTreeViewInfo statementTreeViewInfo, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented.");
+    }
+
+    @Override
+    public CourseInfo createNewCourseVersion(@WebParam(name = "courseId") String s, @WebParam(name = "versionComment") String s1, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DataValidationErrorException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, VersionMismatchException, ReadOnlyException {
+        throw new RuntimeException("Not implemented.");
+    }
+
+    @Override
+    public StatusInfo setCurrentCourseVersion(@WebParam(name = "courseVersionId") String s, @WebParam(name = "currentVersionStart") Date date, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, IllegalVersionSequencingException, DataValidationErrorException {
+        throw new RuntimeException("Not implemented.");
+    }
+
+    @Override
+    public VersionDisplayInfo getCurrentVersion(@WebParam(name = "refObjectTypeURI") String s, @WebParam(name = "refObjectId") String s1, ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+        throw new RuntimeException("Not implemented.");
+    }
+
+    @Override
+    public List<VersionDisplayInfo> getVersions(String s, String s1, ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         throw new RuntimeException("Not implemented.");
     }
 
@@ -154,42 +180,7 @@ public class CourseServiceMockImpl implements CourseService {
     }
 
     @Override
-    public ObjectStructureDefinition getObjectStructure(@WebParam(name = "objectTypeKey") String objectTypeKey) {
-        throw new RuntimeException("Not implemented.");
-    }
-
-    @Override
-    public List<VersionDisplayInfo> getVersions(@WebParam(name = "refObjectTypeURI") String refObjectTypeURI, @WebParam(name = "refObjectId") String refObjectId) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        throw new RuntimeException("Not implemented.");
-    }
-
-    @Override
-    public VersionDisplayInfo getFirstVersion(@WebParam(name = "refObjectTypeURI") String refObjectTypeURI, @WebParam(name = "refObjectId") String refObjectId) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        throw new RuntimeException("Not implemented.");
-    }
-
-    @Override
-    public VersionDisplayInfo getLatestVersion(@WebParam(name = "refObjectTypeURI") String refObjectTypeURI, @WebParam(name = "refObjectId") String refObjectId) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        throw new RuntimeException("Not implemented.");
-    }
-
-    @Override
-    public VersionDisplayInfo getCurrentVersion(@WebParam(name = "refObjectTypeURI") String refObjectTypeURI, @WebParam(name = "refObjectId") String refObjectId) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        throw new RuntimeException("Not implemented.");
-    }
-
-    @Override
-    public VersionDisplayInfo getVersionBySequenceNumber(@WebParam(name = "refObjectTypeURI") String refObjectTypeURI, @WebParam(name = "refObjectId") String refObjectId, @WebParam(name = "sequence") Long sequence) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        throw new RuntimeException("Not implemented.");
-    }
-
-    @Override
-    public VersionDisplayInfo getCurrentVersionOnDate(@WebParam(name = "refObjectTypeURI") String refObjectTypeURI, @WebParam(name = "refObjectId") String refObjectId, @WebParam(name = "date") Date date) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        throw new RuntimeException("Not implemented.");
-    }
-
-    @Override
-    public List<VersionDisplayInfo> getVersionsInDateRange(@WebParam(name = "refObjectTypeURI") String refObjectTypeURI, @WebParam(name = "refObjectId") String refObjectId, @WebParam(name = "from") Date from, @WebParam(name = "to") Date to) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+    public ObjectStructureDefinition getObjectStructure(@WebParam(name = "objectTypeKey") String s) {
         throw new RuntimeException("Not implemented.");
     }
 }

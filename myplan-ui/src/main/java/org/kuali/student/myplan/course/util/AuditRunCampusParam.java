@@ -4,8 +4,8 @@ import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
-import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.myplan.plan.util.OrgHelper;
+import org.kuali.student.r2.core.organization.dto.OrgInfo;
 
 import java.util.*;
 

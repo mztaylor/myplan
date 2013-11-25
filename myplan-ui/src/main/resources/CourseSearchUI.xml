@@ -92,7 +92,7 @@
                                 if (readUrlHash('searchQuery')) {
                                     jQuery('#searchQuery_control').val(readUrlHash('searchQuery'));
                                 }
-                            "/>
+                                "/>
                             <property name="onKeyPressScript" value="
                                 var code = (e.keyCode ? e.keyCode : e.which);
                                 if (code == 13) {
@@ -207,15 +207,15 @@
         <property name="onDocumentReadyScript" value="
             jQuery('#course_search_results').on('PLAN_ITEM_DELETED', function(event, data){
                 if (data.planItemType === 'wishlist') {
-                    restoreSearchAddButton(data.courseId);
+                    restoreSearchAddButton(data.courseId, data.subject, data.number, data.courseCd);
                 }
             }).on('PLAN_ITEM_ADDED', function(event, data){
                 if (data.planItemType === 'wishlist') {
-                    actionFeedback(data.courseId + '_status', false, null, 'bookmarked', 'Bookmarked');
+                    actionFeedback(data.courseId + '_' + data.subject + '_' + data.number + '_status', false, null, 'bookmarked', 'Bookmarked');
                 }
             }).on('PLAN_ITEM_ADDED', function(event, data){
                 if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                    actionFeedback(data.courseId + '_status', false, null, 'planned', 'Planned');
+                    actionFeedback(data.courseId + '_' + data.subject + '_' + data.number + '_status', false, null, 'planned', 'Planned');
                 }
             });
         "/>
@@ -226,16 +226,16 @@
                 <entry key="aoColumns" value="[
                     {'sTitle':'Code','bSortable':true, 'bSearchable':false, 'sClass':'courseResults__tableHeader--sortable', 'sWidth':'73px'},
                     {'sTitle':'Course Name','bSortable':true, 'bSearchable':false, 'sClass':'courseResults__tableHeader--sortable', 'sWidth':'188px'},
-                    {'sTitle':'Credits','bSortable':false, 'bSearchable':false, 'sWidth':'36px'},
+                            {'sTitle':'Credits','bSortable':false, 'bSearchable':false, 'sWidth':'36px'},
                     {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'termBadge', 'sWidth':'80px'},
-                    {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'69px'},
+                            {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'69px'},
                     {'sTitle':'', 'bSortable':false, 'bSearchable':false, 'sClass':'courseResults__item--right', 'sWidth':'62px'},
-                    {'sTitle':'facetQuarter', 'bVisible':false},
-                    {'sTitle':'facetGenEduReq', 'bVisible':false},
-                    {'sTitle':'facetCredits', 'bVisible':false},
-                    {'sTitle':'facetLevel', 'bVisible':false},
-                    {'sTitle':'facetCurriculum', 'bVisible':false}
-                ]"/>
+                            {'sTitle':'facetQuarter', 'bVisible':false},
+                            {'sTitle':'facetGenEduReq', 'bVisible':false},
+                            {'sTitle':'facetCredits', 'bVisible':false},
+                            {'sTitle':'facetLevel', 'bVisible':false},
+                            {'sTitle':'facetCurriculum', 'bVisible':false}
+                        ]"/>
                 <entry key="bAutoWidth" value="false"/>
                 <entry key="bDeferRender" value="true"/>
                 <entry key="bDestroy" value="true"/>
@@ -262,7 +262,7 @@
                     'sInfoFiltered':'',
                     'sLengthMenu':'Show _MENU_',
                     'sZeroRecords':'0 results found'
-                }"/>
+                       }"/>
                 <entry key="sCookiePrefix" value="course_search_"/>
                 <entry key="sDom" value="ilrtSp"/>
                 <entry key="sPaginationType" value="full_numbers"/>
@@ -366,7 +366,7 @@
             <list>
                 <bean parent="Uif-ActionLink" p:actionLabel="Add to Plan" p:title="Add to Plan">
                     <property name="actionScript" value="
-                        var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:jQuery(this).data('courseid'), pageId:'add_dialog_page'};
+                        var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:jQuery(this).data('courseid'), code:jQuery(this).data('coursecd'), pageId:'add_dialog_page'};
                         var popupStyle = {width:'300px', height:'16px'};
                         var popupOptions = {tail:{hidden:true}, align:'top', close:true};
                         openPopup('add_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
@@ -374,7 +374,7 @@
                 </bean>
                 <bean parent="Uif-ActionLink" p:actionLabel="Bookmark" p:title="Bookmark">
                     <property name="actionScript" value="
-                        var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:jQuery(this).data('courseid')};
+                        var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:jQuery(this).data('courseid'), code:jQuery(this).data('coursecd')};
                         submitHiddenForm('plan', additionalFormData, e);
                     "/>
                 </bean>

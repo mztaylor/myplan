@@ -2,9 +2,9 @@ package org.kuali.student.myplan.course.dataobject;
 
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.myplan.course.util.CollectionListPropertyEditorHtmlListType;
 import org.kuali.student.myplan.course.util.FacetKeyFormatter;
+import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class CourseSearchItem {
     private Set<String> scheduledFacetKeys = new HashSet<String>();
     private Set<String> creditsFacetKeys = new HashSet<String>();
 
-    private List<AtpTypeInfo> termInfoList;
+    private List<TypeInfo> termInfoList;
 
     public String getCourseId() {
         return courseId;
@@ -180,7 +180,7 @@ public class CourseSearchItem {
             Element termsListItem = termsList.addElement(listType.getListItemElementName()); // dd
             termsListItem.addAttribute("class", "projected");
             Element termListElement = termsListItem.addElement(listType.getListElementName()); // dl
-            for (AtpTypeInfo term : termInfoList) {
+            for (TypeInfo term : termInfoList) {
                 Element scheduledListItem = termListElement.addElement(listType.getListItemElementName()); //dd
                 scheduledListItem.setText(term.getName().substring(0, 2).toUpperCase());
             }
@@ -306,11 +306,11 @@ public class CourseSearchItem {
         this.creditsFacetKeys = creditsFacetKeys;
     }
 
-    public List<AtpTypeInfo> getTermInfoList() {
+    public List<TypeInfo> getTermInfoList() {
         return termInfoList;
     }
 
-    public void setTermInfoList(List<AtpTypeInfo> termInfoList) {
+    public void setTermInfoList(List<TypeInfo> termInfoList) {
         this.termInfoList = termInfoList;
     }
 

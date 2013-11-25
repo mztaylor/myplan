@@ -192,11 +192,11 @@
                     }
                 }
             }).on('UPDATE_NEW_TERM_TOTAL_CREDITS', function(event, data) {
-                if (data.atpId == '@{dataObject.atpId.replaceAll('\.','-')}') {
+                if (data.atpId == '@{dataObject.atpId}') {
                     fnUpdateQuarterViewCredits(data.totalCredits);
                 }
             }).on('PLAN_ITEM_ADDED PLAN_ITEM_DELETED RECOMMENDED_ITEM_UPDATED', function(event, data) {
-                if (data.atpId == '@{dataObject.atpId.replaceAll('\.','-')}' &amp;&amp; data.planItemType != 'wishlist') {
+                if (data.atpId == '@{dataObject.atpId}' &amp;&amp; data.planItemType != 'wishlist') {
                     customRetrieveComponent(data.atpId + '_' + data.planItemType, data.atpId + '_' + data.planItemType, 'start', 'inquiry', {viewId:'SingleTerm-InquiryView', term_atp_id:'@{dataObject.atpId}'}, null, {css:{top:'1px',left:'1px',border:'none',background:'none'},overlayCSS:{backgroundColor: '#fff',opacity: 0.5}});
                 }
             }).on('PLAN_ITEM_UPDATED', function(event, data) {
@@ -236,7 +236,7 @@
     </bean>
 
     <bean id="plannedItemsList" parent="KSAP-VerticalBoxGroup">
-        <property name="id" value="@{dataObject.atpId.replace('.','-')}_planned"/>
+        <property name="id" value="@{dataObject.atpId}_planned"/>
         <property name="cssClasses" value="removeMargin"/>
         <property name="items">
             <list>
@@ -260,7 +260,7 @@
     </bean>
 
     <bean id="recommendedItemsList" parent="KSAP-VerticalBoxGroup">
-        <property name="id" value="@{dataObject.atpId.replace('.','-')}_recommended"/>
+        <property name="id" value="@{dataObject.atpId}_recommended"/>
         <property name="cssClasses" value="removeMargin"/>
         <property name="items">
             <list>
@@ -271,7 +271,7 @@
     </bean>
 
     <bean id="backupItemsList" parent="KSAP-VerticalBoxGroup">
-        <property name="id" value="@{dataObject.atpId.replace('.','-')}_backup"/>
+        <property name="id" value="@{dataObject.atpId}_backup"/>
         <property name="cssClasses" value="removeMargin"/>
         <property name="items">
             <list>
@@ -300,22 +300,22 @@
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject"/>
         <property name="propertyName" value="academicRecord"/>
-        <property name="id" value="@{dataObject.atpId.replace('.','-')}_completed"/>
+        <property name="id" value="@{dataObject.atpId}_completed"/>
         <property name="onDocumentReadyScript" value="
-            var tableHead = jQuery('table#@{dataObject.atpId.replace('.','-')} thead');
+            var tableHead = jQuery('table#@{dataObject.atpId} thead');
             tableHead.before('
                 &lt;col style=&quot;width: 568px;&quot;&gt;
                 &lt;col style=&quot;width: 70px;&quot;&gt;
                 &lt;col style=&quot;width: 70px;&quot;&gt;
             ');
-            jQuery('table#@{dataObject.atpId.replace('.','-')} tfoot').remove();
-            truncateField('@{dataObject.atpId.replace('.','-')}_completed');
+            jQuery('table#@{dataObject.atpId} tfoot').remove();
+            truncateField('@{dataObject.atpId}_completed');
         "/>
         <property name="cssClasses" value="removeMargin"/>
         <!--<property name="renderAddLine" value="false"/>
         <property name="renderLineActions" value="false"/>-->
         <property name="layoutManager.numberOfColumns" value="3"/>
-        <property name="layoutManager.id" value="@{dataObject.atpId.replace('.','-')}"/>
+        <property name="layoutManager.id" value="@{dataObject.atpId}"/>
         <property name="header">
             <bean parent="KSAP-HeaderDiv" p:cssClasses="planContainer__header planTerm--locked"
                   p:headerTagCssClasses="planContainer__headerText"/>
@@ -343,7 +343,7 @@
                             <bean parent="KSAP-SimpleDataField" p:propertyName="courseCode"/>
                             <bean parent="Uif-Link" p:linkText="@{#line.courseTitle}" p:render="@{#line.courseId NE ''}">
                                 <property name="href"
-                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}"/>
+                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode}"/>
                                 <property name="cssClasses" value="ellipsisItem"/>
                             </bean>
                         </list>
@@ -387,10 +387,10 @@
         <property name="propertyName" value="academicRecord"/>
         <property name="cssClasses" value="removeMargin"/>
         <property name="onDocumentReadyScript" value="
-            var tableHead = jQuery('table#academicRecord_@{dataObject.atpId.replace('.','-')} thead');
+            var tableHead = jQuery('table#academicRecord_@{dataObject.atpId} thead');
             tableHead.find('tr:gt(0)').remove();
             tableHead.find('tr th').last().attr('colspan', '2').prev('th').attr('colspan', '2');
-            jQuery('table#@{dataObject.atpId.replace('.','-')} tfoot').remove();
+            jQuery('table#@{dataObject.atpId} tfoot').remove();
         "/>
         <property name="width" value="708px"/>
         <property name="header">
@@ -411,7 +411,7 @@
         </property>
         <property name="header.lowerGroup.render" value="false"/>
         <property name="layoutManager.numberOfColumns" value="5"/>
-        <property name="layoutManager.id" value="academicRecord_@{dataObject.atpId.replace('.','-')}"/>
+        <property name="layoutManager.id" value="academicRecord_@{dataObject.atpId}"/>
         <property name="items">
             <list>
                 <bean parent="Uif-ImageField" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
@@ -631,7 +631,7 @@
         <property name="propertyName" value="plannedList"/>
         <property name="render" value="@{dataObject.plannedList.size() GT 0}"/>
         <property name="onDocumentReadyScript"
-                  value="truncateField('@{dataObject.atpId.replace('.','-')}_planned', true);"/>
+                  value="truncateField('@{dataObject.atpId}_planned', true);"/>
         <property name="cssClasses" value="planContainer--planned"/>
         <property name="header">
             <bean parent="KSAP-HeaderDiv" p:cssClasses="planContainer__header"
@@ -669,7 +669,7 @@
         <property name="propertyName" value="recommendedList"/>
         <property name="render" value="@{dataObject.recommendedList.size() gt 0}"/>
         <property name="onDocumentReadyScript"
-                  value="truncateField('@{dataObject.atpId.replace('.','-')}_recommended', true);"/>
+                  value="truncateField('@{dataObject.atpId}_recommended', true);"/>
         <property name="cssClasses" value="planContainer--recommended"/>
         <property name="header.rightGroup.items">
             <list>
@@ -688,7 +688,7 @@
         <property name="propertyName" value="backupList"/>
         <property name="render" value="@{dataObject.backupList.size() gt 0}"/>
         <property name="onDocumentReadyScript"
-                  value="truncateField('@{dataObject.atpId.replace('.','-')}_backup', true);"/>
+                  value="truncateField('@{dataObject.atpId}_backup', true);"/>
         <property name="cssClasses" value="planContainer--backup"/>
         <property name="header.rightGroup.items">
             <list>
@@ -750,7 +750,7 @@
                     <property name="items">
                         <list>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="code" p:label="Section"
-                                  p:id="@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
+                                  p:id="@{#line.atpId}-@{#line.registrationCode}"
                                   p:cssClasses="courseActivities__code--secondary"/>
                             <bean parent="KSAP-Message">
                                 <property name="messageText" value="PCE"/>
@@ -759,7 +759,7 @@
                                 <property name="cssClasses" value="courseActivities__code--small"/>
                             </bean>
                             <bean parent="Uif-ActionLink" p:actionLabel="View more"
-                                  p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}">
+                                  p:id="toggle_@{#line.atpId}-@{#line.registrationCode}">
                                 <property name="render" value="@{#line.stateKey EQ 'active'}"/>
                                 <property name="actionScript"
                                           value="toggleSectionDetails(jQuery(this).parents('tr'), jQuery(this), 'View more', 'View less')"/>
@@ -796,7 +796,7 @@
                                   p:valign="@{#line.stateKey EQ 'active' ? 'TOP':'MIDDLE'}">
                                 <property name="items">
                                     <list>
-                                        <bean p:id="@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
+                                        <bean p:id="@{#line.atpId}-@{#line.registrationCode}"
                                               parent="KSAP-SimpleDataField" p:propertyName="code" p:label="Section">
                                         </bean>
                                         <bean parent="KSAP-MessageField">
@@ -811,7 +811,7 @@
                                             </property>
                                         </bean>
                                         <bean parent="Uif-ActionLink"
-                                              p:id="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}">
+                                              p:id="toggle_@{#line.atpId}-@{#line.registrationCode}">
                                             <property name="actionLabel" value="View more"/>
                                             <property name="actionScript"
                                                       value="toggleSectionDetails(jQuery(this).parents('tr.row'), jQuery(this), 'View more', 'View less')"/>
@@ -892,7 +892,7 @@
         <property name="actionScript"
                   value="
                        jQuery('#@{#line.courseDetails.courseId}_sections_collection').css('min-height','18px');
-                       customRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}',loadActivityOffering:'true'},null,{css:{border:'none',width:'16px',height:'16px',lineHeight:'16px',top:'1px',left:'1px'},overlayCSS:{backgroundColor:'#fff',opacity:'0.5'}});
+                       customRetrieveComponent('@{#line.courseDetails.courseId}_sections_collection','@{#line.courseDetails.courseId}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}',loadActivityOffering:'true', courseCd: '@{#line.courseDetails.code}'},null,{css:{border:'none',width:'16px',height:'16px',lineHeight:'16px',top:'1px',left:'1px'},overlayCSS:{backgroundColor:'#fff',opacity:'0.5'}});
                        switchFetchAction('@{#line.courseDetails.courseId}_toggle', '@{#line.courseDetails.courseId}_sections_collection');
                   "/>
         <property name="dataAttributes">

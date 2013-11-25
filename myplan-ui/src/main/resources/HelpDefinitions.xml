@@ -127,6 +127,14 @@
         </property>
     </bean>
 
+    <bean id="course_cross_listings_help_icon" parent="KSAP-HelpImage">
+        <property name="toolTip">
+            <bean parent="KSAP-TooltipLeft"
+                  p:tooltipContent="&lt;strong&gt;TBD&lt;/strong&gt; &lt;/br&gt;
+                                    &lt;/br&gt; &lt;a target=_blank href=&quot;http://depts.washington.edu/registra/curriculum/jointCourses.php&quot;&gt;Learn More&lt;/a&gt;"/>
+        </property>
+    </bean>
+
     <bean id="course_sections_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
             <bean parent="KSAP-TooltipRight"

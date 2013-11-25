@@ -2,12 +2,14 @@ package org.kuali.student.myplan.util;
 
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.common.search.dto.SearchResult;
-import org.kuali.student.common.search.dto.SearchResultCell;
-import org.kuali.student.common.search.dto.SearchResultRow;
-import org.kuali.student.lum.lu.service.LuService;
-import org.kuali.student.lum.lu.service.LuServiceConstants;
+import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.util.constants.LuServiceConstants;
+import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
+import org.kuali.student.r2.core.search.infc.SearchResult;
+import org.kuali.student.r2.core.search.infc.SearchResultCell;
+import org.kuali.student.r2.core.search.infc.SearchResultRow;
+import org.kuali.student.r2.lum.clu.service.CluService;
+import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
 
 import javax.xml.namespace.QName;
 import java.util.regex.Matcher;
@@ -21,9 +23,9 @@ public class CourseLinkBuilder {
 
     private static final Logger logger = Logger.getLogger(CourseLinkBuilder.class);
 
-    private transient static LuService luService;
+    private transient static CluService luService;
 
-    static String link = "<a onclick=\"openCourse('%s', event);\" href=\"#\" title=\"%s\">%s</a>";
+    static String link = "<a onclick=\"openCourse('%s','%s %s', event);\" href=\"#\" title=\"%s\">%s</a>";
 
     /**
      * References to course (subject + number) are found and converted to links.
@@ -201,17 +203,17 @@ public class CourseLinkBuilder {
         // Do not link (skip) 100, 200, 300, 400, etc level courses
         if (!num.endsWith("00")) {
             try {
-                SearchRequest searchRequest = new SearchRequest("myplan.course.getCourseTitleAndId");
-                searchRequest.addParam("subject", subject);
-                searchRequest.addParam("number", num);
+                SearchRequestInfo searchRequest = new SearchRequestInfo("myplan.course.getCourseTitleAndId");
+                searchRequest.addParam("subject", subject.trim());
+                searchRequest.addParam("number", num.trim());
                 searchRequest.addParam("lastScheduledTerm", DegreeAuditAtpHelper.getLastScheduledAtpId());
 
 
-                SearchResult searchResult = getLuService().search(searchRequest);
+                SearchResult searchResult = getLuService().search(searchRequest, new ContextInfo());
                 for (SearchResultRow row : searchResult.getRows()) {
                     String courseId = getCellValue(row, "lu.resultColumn.cluId");
                     String title = getCellValue(row, "id.lngName");
-                    String temp = String.format(link, courseId, title, text);
+                    String temp = String.format(link, courseId, subject.trim(), num.trim(), title, text);
                     return temp;
                 }
 
@@ -233,14 +235,18 @@ public class CourseLinkBuilder {
         throw new RuntimeException("cell result '" + key + "' not found");
     }
 
-    protected synchronized static LuService getLuService() {
+    protected synchronized static CluService getLuService() {
         if (luService == null) {
-            luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+            luService = (CluService) GlobalResourceLoader.getService(new QName(CluServiceConstants.CLU_NAMESPACE, "CluService"));
         }
         return luService;
     }
 
-    public static void setLuService(LuService luService) {
+    public static void setLuService(CluService luService) {
         CourseLinkBuilder.luService = luService;
+    }
+
+    public synchronized void setCourseService(CluService luService) {
+        this.luService = luService;
     }
 }

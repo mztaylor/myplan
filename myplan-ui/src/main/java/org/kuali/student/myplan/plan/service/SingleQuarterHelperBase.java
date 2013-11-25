@@ -133,7 +133,7 @@ public class SingleQuarterHelperBase {
 
                     //TODO: We should move these methods out of courseDetailsInquiryHelper
                     if (academicRecordDataObject.getCourseId() != null) {
-                        List<ActivityOfferingItem> activityOfferingItemList = courseDetailsHelper.getActivityOfferingItemsById(academicRecordDataObject.getCourseId(), academicRecordDataObject.getAtpId());
+                        List<ActivityOfferingItem> activityOfferingItemList = courseDetailsHelper.getActivityOfferingItemsByIdAndCd(academicRecordDataObject.getCourseId(), academicRecordDataObject.getCourseCode(), academicRecordDataObject.getAtpId());
                         for (ActivityOfferingItem activityOfferingItem : activityOfferingItemList) {
                             if (activityOfferingItem.getCode().equalsIgnoreCase(academicRecordDataObject.getActivityCode())) {
                                 academicRecordDataObject.setActivityOfferingItem(activityOfferingItem);

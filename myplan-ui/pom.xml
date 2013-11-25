@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.kuali.student.myplan</groupId>
         <artifactId>ks-myplan</artifactId>
-        <version>1.7.2-SNAPSHOT</version>
+        <version>1.7.3-SNAPSHOT</version>
     </parent>
 
     <!-- For Restlet dependency -->
@@ -43,24 +43,19 @@
 
         <!-- Kuali Student Dependencies -->
         <dependency>
-            <groupId>org.kuali.student.lum</groupId>
+            <groupId>org.kuali.student.api</groupId>
             <artifactId>ks-lum-api</artifactId>
-            <version>${kuali.student.version}</version>
+            <version>${ks.api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kuali.student.lum</groupId>
             <artifactId>ks-lum-impl</artifactId>
-            <version>${kuali.student.version}</version>
+            <version>${ks.lum.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kuali.student.common</groupId>
-            <artifactId>ks-common-api</artifactId>
-            <version>${kuali.student.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kuali.student.core</groupId>
+            <groupId>org.kuali.student.api</groupId>
             <artifactId>ks-core-api</artifactId>
-            <version>${kuali.student.version}</version>
+            <version>${ks.api.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>rice-api</artifactId>
@@ -69,15 +64,15 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.kuali.student.common</groupId>
-            <artifactId>ks-common-util</artifactId>
-            <version>${kuali.student.version}</version>
+            <groupId>org.kuali.student.api</groupId>
+            <artifactId>ks-enroll-api</artifactId>
+            <version>${ks.api.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.kuali.student.enroll</groupId>
-            <artifactId>ks-enroll-api</artifactId>
-            <version>${kuali.student.enroll.version}</version>
+            <groupId>org.kuali.student.core</groupId>
+            <artifactId>ks-common-util</artifactId>
+            <version>${ks.core.version}</version>
         </dependency>
 
         <!--
@@ -89,9 +84,9 @@
         -->
 
         <dependency>
-            <groupId>org.kuali.student.common</groupId>
+            <groupId>org.kuali.student.core</groupId>
             <artifactId>ks-common-test</artifactId>
-            <version>${kuali.student.version}</version>
+            <version>${ks.core.version}</version>
             <scope>test</scope>
         </dependency>
 

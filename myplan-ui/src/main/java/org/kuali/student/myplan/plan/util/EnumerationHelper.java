@@ -2,13 +2,12 @@ package org.kuali.student.myplan.plan.util;
 
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
-import org.kuali.student.core.enumerationmanagement.service.EnumerationManagementService;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
-import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.common.search.dto.SearchResult;
-import org.kuali.student.common.search.dto.SearchResultRow;
-import org.kuali.student.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.core.enumerationmanagement.dto.EnumeratedValueInfo;
+import org.kuali.student.r2.core.enumerationmanagement.service.EnumerationManagementService;
+import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
+import org.kuali.student.r2.core.search.dto.SearchResultInfo;
+import org.kuali.student.r2.core.search.infc.SearchResultRow;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -90,7 +89,7 @@ public class EnumerationHelper {
             enumeratedValueInfoList = getEnumServiceCache().get(key);
         } else {
             try {
-                enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(key, null, null, null);
+                enumeratedValueInfoList = getEnumerationService().getEnumeratedValues(key, null, null, null, CourseSearchConstants.CONTEXT_INFO);
                 getEnumServiceCache().put(key, enumeratedValueInfoList);
             } catch (Exception e) {
                 logger.error("Could not load the enum list", e);
@@ -171,17 +170,16 @@ public class EnumerationHelper {
      * are associated with context bar then a get for context bar values will retrieve both the foo and boo values.
      *
      * @param contextKey - the context to fetch enums for; in database this is value of KSEM_CTX_T.CTX_KEY
-     *
      * @return list of EnumeratedValueInfo for the enums joined to the requested contextKey
      */
     public static List<EnumeratedValueInfo> getEnumsByContext(String contextKey) {
         List<EnumeratedValueInfo> enumeratedValueInfoList = new ArrayList<EnumeratedValueInfo>();
-        SearchRequest searchRequest = new SearchRequest(CourseSearchConstants.ENUM_CONTEXT_KEY_SEARCH_TYPE);
+        SearchRequestInfo searchRequest = new SearchRequestInfo(CourseSearchConstants.ENUM_CONTEXT_KEY_SEARCH_TYPE);
         searchRequest.addParam(CourseSearchConstants.ENUM_CONTEXT_KEY_SEARCH_PARAM_NAME, contextKey);
-        SearchResult searchResult = new SearchResult();
+        SearchResultInfo searchResult = new SearchResultInfo();
         try {
-            searchResult = getEnumerationService().search(searchRequest);
-            } catch (MissingParameterException e) {
+            searchResult = getEnumerationService().search(searchRequest, CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
                 logger.error("Search Failed in getEnumsByContext to get the Enumeration Data for " + contextKey +
                         ". Exception info: " +  e);
                 return enumeratedValueInfoList;   // an empty list

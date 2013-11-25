@@ -18,9 +18,12 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
     public static final String AUDIT_REPORT_SECTION = "audit_report_section";
     public static final String AUDIT_EMPTY_PAGE_SECTION = "empty_degree_audits";
 
+    public static final String DEGREE_AUDIT_VIEW_ID = "DegreeAudit-FormView";
+    public static final String PLAN_AUDIT_VIEW_ID = "PlanAudit-FormView";
+
     public static final String ORG_QUERY_PARAM = "org_queryParam_orgType";
 
-    public static final String CAMPUS_LOCATION = "kuali.uw.org.type.campus";
+    public static final String CAMPUS_LOCATION = "kuali.org.type.campus";
 
     public static final String DEGREE_AUDIT_SERVICE_URL = "myplan.auditservice.url";
 
@@ -40,7 +43,7 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
     public static final String BUCKET_MESSY = "BUCKET_MESSY";
     public static final String BUCKET_IGNORE = "BUCKET_IGNORE";
 
-    public static final String CR_NO_CR_GRADING_OPTION_ID = "kuali.uw.resultcomponent.grade.crnc";
+    public static final String CR_NO_CR_GRADING_OPTION_ID = "uw.result.group.grading.option.crnc";
     public static final String CR_NO_CR_GRADING_OPTION = "Credit/No-Credit grading";
 
     public static final String APPLICATION_URL = "application.url";
@@ -58,4 +61,6 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
     public static final String AUDIT_STATUS_ERROR_MSG = "audit status returned error";
 
 
+    public static final String DEGREE_AUDIT_PROGRAM_PARAM_SEATTLE = "degreeAudit.programParamSeattle";
+    public static final String PLAN_AUDIT_PROGRAM_PARAM_SEATTLE = "planAudit.programParamSeattle";
 }

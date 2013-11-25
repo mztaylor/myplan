@@ -107,15 +107,17 @@
         <property name="sourceMap">
             <map merge="true">
                 <entry key="org.search.orgInfoByType">
-                    <value>SELECT org.id, org.shortName, org.longName FROM Org org WHERE
-                        org.type.id = :org_queryParam_orgType
+                    <value>NATIVE:
+                        SELECT ID, SHRT_NAME, LNG_NAME
+                        FROM KSOR_ORG
+                        WHERE TYPE = :org_queryParam_orgType
                     </value>
                 </entry>
                 <entry key="org.search.orgCurriculum">
                     <value>NATIVE:
                         SELECT DISTINCT( attr.attr_value ), upper(org.shrt_descr)
                         FROM KSOR_ORG org JOIN KSOR_ORG_ATTR attr ON attr.owner = org.id
-                        where org.type = 'kuali.uw.org.type.curriculum' and attr.attr_name = 'org.abbreviation'
+                        where org.type = 'kuali.org.type.curriculum' and attr.attr_name = 'org.abbreviation'
                     </value>
                 </entry>
             </map>

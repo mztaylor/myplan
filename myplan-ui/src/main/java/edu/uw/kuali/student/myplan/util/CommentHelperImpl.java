@@ -8,22 +8,23 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.identity.Person;
 import org.kuali.rice.krad.exception.InvalidAddressException;
 import org.kuali.rice.krad.util.GlobalVariables;
-import org.kuali.student.common.dto.RichTextInfo;
-import org.kuali.student.common.exceptions.*;
-import org.kuali.student.core.comment.dto.CommentInfo;
-import org.kuali.student.core.comment.service.CommentService;
 import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.comment.util.CommentHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.service.MyPlanMailService;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.common.dto.RichTextInfo;
+import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.core.comment.dto.CommentInfo;
+import org.kuali.student.r2.core.comment.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.mail.MessagingException;
 import javax.xml.namespace.QName;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -58,25 +59,21 @@ public class CommentHelperImpl implements CommentHelper {
      * @throws PermissionDeniedException
      */
     @Override
-    public CommentInfo createMessage(String subjectText, String messageText) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+    public CommentInfo createMessage(String subjectText, String messageText) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException, ReadOnlyException {
         CommentInfo ci = new CommentInfo();
 
         String studentPrincipleId = getUserSessionHelper().getStudentId();
         String principleId = getUserSessionHelper().getCurrentUserId();
-
-        Map<String, String> attributes = new HashMap<String, String>();
-        attributes.put(CommentConstants.SUBJECT_ATTRIBUTE_NAME, subjectText);
-        attributes.put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
-        ci.setAttributes(attributes);
+        List<AttributeInfo> attributeInfos = new ArrayList<AttributeInfo>();
+        attributeInfos.add(new AttributeInfo(CommentConstants.SUBJECT_ATTRIBUTE_NAME, subjectText));
+        attributeInfos.add(new AttributeInfo(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId));
+        ci.setAttributes(attributeInfos);
         ci.setType(CommentConstants.MESSAGE_TYPE);
         ci.setState("ACTIVE");
         RichTextInfo rtiBody = new RichTextInfo();
         rtiBody.setPlain(messageText);
         ci.setCommentText(rtiBody);
-        ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
-
-
-        ci = getCommentService().addComment(studentPrincipleId, CommentConstants.MESSAGE_REF_TYPE, ci);
+        ci = getCommentService().createComment(studentPrincipleId, CommentConstants.MESSAGE_REF_TYPE, CommentConstants.MESSAGE_TYPE, ci, CommentConstants.CONTEXT_INFO);
 
         return ci;
 
@@ -97,25 +94,23 @@ public class CommentHelperImpl implements CommentHelper {
      * @throws PermissionDeniedException
      */
     @Override
-    public CommentInfo createComment(String referenceId, String commentText) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
+    public CommentInfo createComment(String referenceId, String commentText) throws DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException, ReadOnlyException {
 
         CommentInfo ci = new CommentInfo();
 
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
 
-
-        Map<String, String> attributes = new HashMap<String, String>();
-        attributes.put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
-        ci.setAttributes(attributes);
+        List<AttributeInfo> attributeInfos = new ArrayList<AttributeInfo>();
+        attributeInfos.add(new AttributeInfo(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId));
+        ci.setAttributes(attributeInfos);
         ci.setType(CommentConstants.COMMENT_TYPE);
         ci.setState("ACTIVE");
         RichTextInfo rtiBody = new RichTextInfo();
         rtiBody.setPlain(commentText);
         ci.setCommentText(rtiBody);
-        ci.getAttributes().put(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME, principleId);
 
-        ci = getCommentService().addComment(referenceId, CommentConstants.COMMENT_REF_TYPE, ci);
+        ci = getCommentService().createComment(referenceId, CommentConstants.COMMENT_REF_TYPE, CommentConstants.COMMENT_TYPE, ci, CommentConstants.CONTEXT_INFO);
 
         return ci;
 
@@ -201,7 +196,7 @@ public class CommentHelperImpl implements CommentHelper {
             logger.error("Could not find the properties file" + e);
         }
 
-        String toId, toAddress, toName, fromId, fromAddress, fromName;
+        String toId = null, toAddress, toName, fromId, fromAddress, fromName;
 
         fromId = principleId;
         String messageLink = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.MESSAGE_LINK);
@@ -211,7 +206,13 @@ public class CommentHelperImpl implements CommentHelper {
 
         } else {
             //  Get the created by user Id from the message.
-            toId = commentInfo.getAttributes().get(CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME);
+            List<AttributeInfo> attributeInfos = commentInfo.getAttributes();
+            for (AttributeInfo attributeInfo : attributeInfos) {
+                if (CommentConstants.CREATED_BY_USER_ATTRIBUTE_NAME.equals(attributeInfo.getKey())) {
+                    toId = attributeInfo.getValue();
+                    break;
+                }
+            }
             toName = getUserSessionHelper().getFirstName(toId);
             messageLink = ConfigContext.getCurrentContextConfig().getProperty(CommentConstants.ADVISER_MESSAGE_LINK) + fromId;
 

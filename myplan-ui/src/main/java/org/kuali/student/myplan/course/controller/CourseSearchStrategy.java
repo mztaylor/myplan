@@ -3,28 +3,26 @@ package org.kuali.student.myplan.course.controller;
 import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.common.search.dto.SearchRequest;
-import org.kuali.student.core.organization.dto.OrgInfo;
-import org.kuali.student.lum.lu.service.LuService;
-import org.kuali.student.lum.lu.service.LuServiceConstants;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
+import org.kuali.student.r2.core.organization.dto.OrgInfo;
+import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
+import org.kuali.student.r2.lum.clu.service.CluService;
+import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
+import org.springframework.util.CollectionUtils;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CourseSearchStrategy {
     private final Logger logger = Logger.getLogger(CourseSearchStrategy.class);
 
-    private transient LuService luService;
+    private transient CluService luService;
     /*Remove the HashMap after enumeration service is in the ehcache and remove the hashmap occurance in this*/
     private HashMap<String, List<OrgInfo>> orgTypeCache;
     private HashMap<String, Map<String, String>> hashMap;
@@ -58,7 +56,7 @@ public class CourseSearchStrategy {
     public final static String NO_CAMPUS = "-1";
 
 
-    public void addCampusParams(ArrayList<SearchRequest> requests, CourseSearchForm form) {
+    public void addCampusParams(ArrayList<SearchRequestInfo> requests, CourseSearchForm form) {
         List<String> str = form.getCampusSelect();
         String[] results = null;
         if (str != null) {
@@ -88,7 +86,7 @@ public class CourseSearchStrategy {
             }
         }
         //  Add the individual term items.
-        for (SearchRequest request : requests) {
+        for (SearchRequestInfo request : requests) {
             for (int j = 0; j < campus.length; j++) {
                 int count = j + 1;
                 String campusKey = "campus" + count;
@@ -99,7 +97,7 @@ public class CourseSearchStrategy {
     }
 
 
-    public void addCampusParam(SearchRequest request, CourseSearchForm form) {
+    public void addCampusParam(SearchRequestInfo request, CourseSearchForm form) {
         List<String> str = form.getCampusSelect();
         String[] results = null;
         if (str != null) {
@@ -135,13 +133,13 @@ public class CourseSearchStrategy {
 
     }
 
-    public void addDivisionSearches(List<String> divisions, List<String> codes, List<String> levels, List<SearchRequest> requests) {
+    public void addDivisionSearches(List<String> divisions, List<String> codes, List<String> levels, List<SearchRequestInfo> requests) {
         for (String division : divisions) {
             boolean needDivisionQuery = true;
 
             for (String code : codes) {
                 needDivisionQuery = false;
-                SearchRequest request = new SearchRequest("myplan.lu.search.divisionAndCode");
+                SearchRequestInfo request = new SearchRequestInfo("myplan.lu.search.divisionAndCode");
                 request.addParam("division", division);
                 request.addParam("code", code);
                 requests.add(request);
@@ -153,21 +151,25 @@ public class CourseSearchStrategy {
                 // Converts "1XX" to "100"
                 level = level.substring(0, 1) + "00";
 
-                SearchRequest request = new SearchRequest("myplan.lu.search.divisionAndLevel");
+                //Converts "100" to "1"
+                String levelStart = level.substring(0, 1);
+
+                SearchRequestInfo request = new SearchRequestInfo("myplan.lu.search.divisionAndLevel");
                 request.addParam("division", division);
                 request.addParam("level", level);
+                request.addParam("levelStart", levelStart);
                 requests.add(request);
             }
 
             if (needDivisionQuery) {
-                SearchRequest request = new SearchRequest("myplan.lu.search.division");
+                SearchRequestInfo request = new SearchRequestInfo("myplan.lu.search.division");
                 request.addParam("division", division);
                 requests.add(request);
             }
         }
     }
 
-    public void addFullTextSearches(String query, List<SearchRequest> requests) {
+    public void addFullTextSearches(String query, List<SearchRequestInfo> requests) {
         List<QueryTokenizer.Token> tokens = QueryTokenizer.tokenize(query);
 
         for (QueryTokenizer.Token token : tokens) {
@@ -183,13 +185,13 @@ public class CourseSearchStrategy {
                 default:
                     break;
             }
-            SearchRequest request = new SearchRequest("myplan.lu.search.fulltext");
+            SearchRequestInfo request = new SearchRequestInfo("myplan.lu.search.fulltext");
             request.addParam("queryText", queryText);
             requests.add(request);
         }
     }
 
-    public List<SearchRequest> queryToRequests(CourseSearchForm form)
+    public List<SearchRequestInfo> queryToRequests(CourseSearchForm form)
             throws Exception {
         logger.info("Start Of Method queryToRequests in CourseSearchStrategy:" + System.currentTimeMillis());
         String query = form.getSearchQuery().toUpperCase();
@@ -215,11 +217,11 @@ public class CourseSearchStrategy {
         query = getCourseHelper().extractDivisions(divisionMap, query, divisions, false);
 
 
-        ArrayList<SearchRequest> requests = new ArrayList<SearchRequest>();
+        ArrayList<SearchRequestInfo> requests = new ArrayList<SearchRequestInfo>();
         // Order is important, more exact search results appear at top of list
         addDivisionSearches(divisions, codes, levels, requests);
         for (String text : fullTextQueries) {
-            SearchRequest request = new SearchRequest("myplan.lu.search.fulltext");
+            SearchRequestInfo request = new SearchRequestInfo("myplan.lu.search.fulltext");
             request.addParam("queryText", text);
             requests.add(request);
         }
@@ -235,19 +237,21 @@ public class CourseSearchStrategy {
      * @param form
      */
     //To process the Request with search key as division or full Text
-    public ArrayList<SearchRequest> processRequests(ArrayList<SearchRequest> requests, CourseSearchForm form) {
+    public ArrayList<SearchRequestInfo> processRequests(ArrayList<SearchRequestInfo> requests, CourseSearchForm form) {
         Map<String, String> subjects = null;
         int size = requests.size();
 
         for (int i = 0; i < size; i++) {
             if (requests.get(i).getSearchKey() != null) {
                 if (requests.get(i).getSearchKey().equalsIgnoreCase("myplan.lu.search.division")) {
-                    String queryText = (String) requests.get(i).getParams().get(0).getValue();
-                    String key = (String) requests.get(i).getParams().get(0).getValue();
+                    List<String> queryTexts = requests.get(i).getParams().get(0).getValues();
+                    List<String> keys = requests.get(i).getParams().get(0).getValues();
+                    String queryText = CollectionUtils.isEmpty(queryTexts) ? "" : queryTexts.get(0);
+                    String key = CollectionUtils.isEmpty(keys) ? "" : keys.get(0);
                     if (form.getSearchQuery().length() <= 2) {
                         break;
                     } else {
-                        SearchRequest request0 = new SearchRequest("myplan.lu.search.title");
+                        SearchRequestInfo request0 = new SearchRequestInfo("myplan.lu.search.title");
                         request0.addParam("queryText", queryText.trim());
                         addCampusParam(request0, form);
                         requests.add(request0);
@@ -271,12 +275,12 @@ public class CourseSearchStrategy {
                         }
                         if (additionalDivisions.length() > 0) {
                             String div = additionalDivisions.substring(0, additionalDivisions.length() - 1);
-                            SearchRequest request1 = new SearchRequest("myplan.lu.search.additionalDivision");
+                            SearchRequestInfo request1 = new SearchRequestInfo("myplan.lu.search.additionalDivision");
                             request1.addParam("divisions", div.trim());
                             addCampusParam(request1, form);
                             requests.add(request1);
                         }
-                        SearchRequest request2 = new SearchRequest("myplan.lu.search.description");
+                        SearchRequestInfo request2 = new SearchRequestInfo("myplan.lu.search.description");
                         request2.addParam("queryText", queryText.trim());
                         addCampusParam(request2, form);
                         requests.add(request2);
@@ -285,13 +289,13 @@ public class CourseSearchStrategy {
 
                 }
                 if (requests.get(i).getSearchKey().equalsIgnoreCase("myplan.lu.search.fulltext")) {
-                    String key = (String) requests.get(i).getParams().get(0).getValue();
+                    List<String> keys = requests.get(i).getParams().get(0).getValues();
+                    String key = CollectionUtils.isEmpty(keys) ? "" : keys.get(0);
                     List<String> divisions = new ArrayList<String>();
                     if (key.length() <= 2) {
-                        requests.get(i).getParams().get(0).setValue("null");
+                        requests.get(i).getParams().get(0).setValues(Arrays.asList("null"));
                         break;
-                    } else {
-                        if (key.length() > 2) {
+                    } else if (key.length() > 2) {
 
                             if (!this.getHashMap().containsKey(CourseSearchConstants.SUBJECT_AREA)) {
                                 subjects = OrgHelper.getSubjectAreas();
@@ -314,17 +318,17 @@ public class CourseSearchStrategy {
                                 // Re-purpose the request for the first division
                                 requests.get(i).setSearchKey("myplan.lu.search.division");
                                 requests.get(i).getParams().get(0).setKey("division");
-                                requests.get(i).getParams().get(0).setValue(divisions.get(0));
+                            requests.get(i).getParams().get(0).setValues(Arrays.asList(divisions.get(0)));
 
                                 // Now add the rest of the divisions
                                 for (int dItr = 1; dItr < divisions.size(); dItr++) {
-                                    SearchRequest requestD = new SearchRequest("myplan.lu.search.division");
+                                SearchRequestInfo requestD = new SearchRequestInfo("myplan.lu.search.division");
                                     requestD.addParam("division", divisions.get(dItr));
                                     addCampusParam(requestD, form);
                                     requests.add(requestD);
                                 }
 
-                                SearchRequest request1 = new SearchRequest("myplan.lu.search.title");
+                            SearchRequestInfo request1 = new SearchRequestInfo("myplan.lu.search.title");
                                 request1.addParam("queryText", key.trim());
                                 addCampusParam(request1, form);
                                 requests.add(request1);
@@ -334,26 +338,26 @@ public class CourseSearchStrategy {
                                 requests.get(i).setSearchKey("myplan.lu.search.title");
                             }
 
-                            SearchRequest request2 = new SearchRequest("myplan.lu.search.description");
+                        SearchRequestInfo request2 = new SearchRequestInfo("myplan.lu.search.description");
                             request2.addParam("queryText", key.trim());
                             addCampusParam(request2, form);
                             requests.add(request2);
                         }
 
+
                     }
                 }
             }
-        }
-        ArrayList<SearchRequest> orderedRequests = new ArrayList<SearchRequest>();
+        ArrayList<SearchRequestInfo> orderedRequests = new ArrayList<SearchRequestInfo>();
         if (requests != null && requests.size() > 0) {
-            ArrayList<SearchRequest> divisionAndLevelReq = new ArrayList<SearchRequest>();
-            ArrayList<SearchRequest> divisionAndCodeReq = new ArrayList<SearchRequest>();
-            ArrayList<SearchRequest> divisionReq = new ArrayList<SearchRequest>();
-            ArrayList<SearchRequest> additionalDivisionReq = new ArrayList<SearchRequest>();
-            ArrayList<SearchRequest> titleReq = new ArrayList<SearchRequest>();
-            ArrayList<SearchRequest> descriptionReq = new ArrayList<SearchRequest>();
-            ArrayList<SearchRequest> fullTextReq = new ArrayList<SearchRequest>();
-            for (SearchRequest searchRequest : requests) {
+            ArrayList<SearchRequestInfo> divisionAndLevelReq = new ArrayList<SearchRequestInfo>();
+            ArrayList<SearchRequestInfo> divisionAndCodeReq = new ArrayList<SearchRequestInfo>();
+            ArrayList<SearchRequestInfo> divisionReq = new ArrayList<SearchRequestInfo>();
+            ArrayList<SearchRequestInfo> additionalDivisionReq = new ArrayList<SearchRequestInfo>();
+            ArrayList<SearchRequestInfo> titleReq = new ArrayList<SearchRequestInfo>();
+            ArrayList<SearchRequestInfo> descriptionReq = new ArrayList<SearchRequestInfo>();
+            ArrayList<SearchRequestInfo> fullTextReq = new ArrayList<SearchRequestInfo>();
+            for (SearchRequestInfo searchRequest : requests) {
                 if (searchRequest.getSearchKey().equalsIgnoreCase("myplan.lu.search.divisionAndCode")) {
                     divisionAndCodeReq.add(searchRequest);
                 } else if (searchRequest.getSearchKey().equalsIgnoreCase("myplan.lu.search.divisionAndLevel")) {
@@ -381,14 +385,14 @@ public class CourseSearchStrategy {
         return orderedRequests;
     }
 
-    private void addVersionDateParam(List<SearchRequest> searchRequests) {
+    private void addVersionDateParam(List<SearchRequestInfo> searchRequests) {
 //        String currentTerm = null;
         String lastScheduledTerm = null;
 
 
 //            currentTerm = AtpHelper.getCurrentAtpId();
         lastScheduledTerm = AtpHelper.getLastScheduledAtpId();
-        for (SearchRequest searchRequest : searchRequests) {
+        for (SearchRequestInfo searchRequest : searchRequests) {
             // TODO: Fix when version issue for course is addressed
 //            searchRequest.addParam("currentTerm", currentTerm);
             searchRequest.addParam("lastScheduledTerm", lastScheduledTerm);
@@ -397,14 +401,14 @@ public class CourseSearchStrategy {
 
 
     //Note: here I am using r1 LuService implementation!!!
-    protected LuService getLuService() {
+    protected CluService getLuService() {
         if (luService == null) {
-            luService = (LuService) GlobalResourceLoader.getService(new QName(LuServiceConstants.LU_NAMESPACE, "LuService"));
+            luService = (CluService) GlobalResourceLoader.getService(new QName(CluServiceConstants.CLU_NAMESPACE, "CluService"));
         }
         return this.luService;
     }
 
-    public void setLuService(LuService luService) {
+    public void setLuService(CluService luService) {
         this.luService = luService;
     }
 

@@ -6,6 +6,7 @@ import org.kuali.student.r2.common.dto.TypeStateEntityInfo;
 import org.w3c.dom.Element;
 
 import javax.xml.bind.annotation.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
     private List<String> planPeriods;
 
     @XmlElement
-    private Float credit;
+    private BigDecimal credit;
 
     @XmlAnyElement
     private List<Element> _futureElements;
@@ -122,11 +123,11 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
         this.planPeriods = planPeriods;
     }
 
-     public Float getCredit() {
+    public BigDecimal getCredit() {
         return credit;
     }
 
-    public void setCredit(Float credit) {
+    public void setCredit(BigDecimal credit) {
          this.credit = credit;
     }
 }

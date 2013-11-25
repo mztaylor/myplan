@@ -1,28 +1,27 @@
 package edu.uw.kuali.student.service.impl;
 
-import edu.uw.kuali.student.myplan.util.CircularTermList;
 import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
 import edu.uw.kuali.student.lib.client.studentservice.StudentServiceClient;
+import edu.uw.kuali.student.myplan.util.CircularTermList;
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.joda.time.DateTime;
 import org.kuali.rice.core.api.criteria.Predicate;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
-import org.kuali.student.core.organization.dto.OrgInfo;
 import org.kuali.student.enrollment.acal.dto.*;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
-import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
-import org.kuali.student.r2.common.dto.*;
+import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.dto.StatusInfo;
+import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
-
-import org.apache.log4j.Logger;
-import org.kuali.student.r2.core.state.dto.StateInfo;
-import org.kuali.student.r2.core.type.dto.TypeInfo;
+import org.kuali.student.r2.core.class1.state.dto.StateInfo;
+import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 import org.springframework.util.StringUtils;
 
 import javax.jws.WebParam;
@@ -42,8 +41,6 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
      * The number of terms to inspect when looking for section data.
      */
     private static final short PUBLISHED_QUARTER_COUNT = 3;
-
-    private static final String TERM_KEY_PREFIX = "kuali.uw.atp.";
 
     private static int CRITERIA_LENGTH = 23;
 
@@ -395,9 +392,6 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
                         ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear()));
             }
 
-
-            if (PlanConstants.PUBLISHED.equals(str)) {
-
             /*
             *  Query the term service and determine which terms are published.
             */
@@ -432,7 +426,7 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
 
                         TermInfo ti = new TermInfo();
                         //  Create the ATP ID.
-                        ti.setId(TERM_KEY_PREFIX + ccl.getYear() + "." + ccl.getQuarterNumber());
+                    ti.setId(ccl.getYear() + ccl.getQuarterNumber());
                         ti.setName(ccl.getQuarterName() + " " + ccl.getYear());
 
                         List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
@@ -452,7 +446,11 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
                         attributes.add(priorityOneRegStAttr);
                         attributes.add(priorityOneRegEndAttr);
                         ti.setAttributes(attributes);
+
                         termInfos.add(ti);
+                    if (str.equalsIgnoreCase(PlanConstants.PLANNING)) {
+                        break;
+                    }
 
                         ccl.incrementQuarter();
                     } else {
@@ -460,46 +458,6 @@ public class UwAcademicCalendarServiceImpl implements AcademicCalendarService {
                     }
 
                 }
-            } else if (PlanConstants.PLANNING.equals(str)) {
-                try {
-                    logger.info(String.format("Querying the Student Term Service for quarter [%s/%s] year [%s] to determine if section information as been published.",
-                            ccl.getQuarterName(), ccl.getQuarterNumber(), ccl.getYear()));
-                    responseText = studentServiceClient.getTermInfo(String.valueOf(ccl.getYear()), ccl.getQuarterName());
-                } catch (ServiceException e) {
-                    logger.error("Call to Student Term Service failed.", e);
-                }
-                Document sectionDocument = null;
-                try {
-                    SAXReader reader = new SAXReader();
-                    termDocument = reader.read(new StringReader(responseText));
-                } catch (Exception e) {
-                    logger.error("Could not parse reply from the Student Term Service.", e);
-                }
-                String lastDropDayStr = termDocument.getRootElement().element("LastDropDay").getTextTrim();
-                TermInfo ti = new TermInfo();
-                //  Create the ATP ID.
-                ti.setId(TERM_KEY_PREFIX + ccl.getYear() + "." + ccl.getQuarterNumber());
-                ti.setName(ccl.getQuarterName() + " " + ccl.getYear());
-
-                List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
-                AttributeInfo lastDropAttr = new AttributeInfo();
-                lastDropAttr.setKey(AtpHelper.LAST_ADD_DAY);
-                lastDropAttr.setValue(lastDropDayStr);
-
-                AttributeInfo priorityOneRegStAttr = new AttributeInfo();
-                priorityOneRegStAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_START);
-                priorityOneRegStAttr.setValue(getPriorityOneRegistrationStartDate(termDocument));
-
-                AttributeInfo priorityOneRegEndAttr = new AttributeInfo();
-                priorityOneRegEndAttr.setKey(AtpHelper.PRIORITY_ONE_REGISTRATION_END);
-                priorityOneRegEndAttr.setValue(getPriorityOneRegistrationEndDate(termDocument));
-
-                attributes.add(lastDropAttr);
-                attributes.add(priorityOneRegStAttr);
-                attributes.add(priorityOneRegEndAttr);
-                ti.setAttributes(attributes);
-                termInfos.add(ti);
-            }
         }
         return termInfos;
 

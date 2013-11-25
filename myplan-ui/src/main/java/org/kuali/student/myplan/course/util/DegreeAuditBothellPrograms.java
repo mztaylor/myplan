@@ -5,12 +5,11 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
-import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
-
 import org.kuali.student.myplan.audit.dto.AuditProgramInfo;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
+import org.kuali.student.r2.core.enumerationmanagement.dto.EnumeratedValueInfo;
 
 import javax.xml.namespace.QName;
 import java.util.*;

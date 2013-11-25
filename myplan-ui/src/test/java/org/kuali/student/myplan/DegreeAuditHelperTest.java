@@ -3,25 +3,29 @@ package org.kuali.student.myplan;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kuali.student.common.versionmanagement.dto.VersionInfo;
-import org.kuali.student.lum.course.dto.CourseInfo;
-import org.kuali.student.lum.course.service.CourseService;
-import org.kuali.student.lum.course.service.assembler.CourseAssemblerConstants;
-import org.kuali.student.lum.lrc.dto.ResultComponentInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.audit.form.PlanAuditForm;
+import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
+import org.kuali.student.r2.core.versionmanagement.dto.VersionInfo;
+import org.kuali.student.r2.lum.course.dto.CourseInfo;
+import org.kuali.student.r2.lum.course.service.CourseService;
+import org.kuali.student.r2.lum.course.service.assembler.CourseAssemblerConstants;
+import org.kuali.student.r2.lum.lrc.dto.ResultValuesGroupInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -1388,22 +1392,22 @@ public class DegreeAuditHelperTest {
         courseInfo.setCourseNumberSuffix(suffix);
         VersionInfo versionInfo = new VersionInfo();
         versionInfo.setVersionIndId(versionId);
-        courseInfo.setVersionInfo(versionInfo);
+        courseInfo.setVersion(versionInfo);
 
-        List<ResultComponentInfo> options = new ArrayList<ResultComponentInfo>();
+        List<ResultValuesGroupInfo> options = new ArrayList<ResultValuesGroupInfo>();
 
-        ResultComponentInfo resultComponentInfo = new ResultComponentInfo();
+        ResultValuesGroupInfo resultComponentInfo = new ResultValuesGroupInfo();
         resultComponentInfo.setType(creditType);
 
-        Map<String, String> attributes = new HashMap<String, String>();
+        List<AttributeInfo> attributes = new ArrayList<AttributeInfo>();
         if (CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED.equals(creditType)) {
-            attributes.put(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_FIXED_CREDIT_VALUE, credit);
+            attributes.add(new AttributeInfo(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_FIXED_CREDIT_VALUE, credit));
         } else if (CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_MULTIPLE.equals(creditType)) {
-            resultComponentInfo.setResultValues(Arrays.asList(credit.split(",")));
+            resultComponentInfo.setResultValueKeys(Arrays.asList(credit.split(",")));
         } else if (CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_VARIABLE.equals(creditType)) {
             String[] credits = credit.split("-");
-            attributes.put(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MIN_CREDIT_VALUE, credits[0]);
-            attributes.put(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MAX_CREDIT_VALUE, credits[1]);
+            attributes.add(new AttributeInfo(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MIN_CREDIT_VALUE, credits[0]));
+            attributes.add(new AttributeInfo(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MAX_CREDIT_VALUE, credits[1]));
         }
 
         resultComponentInfo.setAttributes(attributes);
@@ -1411,7 +1415,7 @@ public class DegreeAuditHelperTest {
         courseInfo.setCreditOptions(options);
 
         try {
-            getCourseServiceMock().createCourse(courseInfo);
+            getCourseServiceMock().createCourse(courseInfo, DegreeAuditConstants.CONTEXT_INFO);
         } catch (Exception e) {
             logger.error("failed to create course");
         }

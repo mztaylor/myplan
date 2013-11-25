@@ -19,13 +19,13 @@ var popupOptionsDefault = {
  * @param courseId - GUID string of course to open in popup
  * @param e - An object containing data that will be passed to the event handler.
  */
-function openCourse(courseId, e) {
+function openCourse(courseId, courseCd, e) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if (jQuery(target).parents(".jquerypopover.jquerypopover-default").length > 0) {
-        window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseId;
+        window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseId + "&courseCd=" + courseCd;
     } else {
-        var retrieveData = {action: "plan", viewId: "PlannedCourse-FormView", methodToCall: "startAddPlannedCourseForm", courseId: courseId};
+        var retrieveData = {action: "plan", viewId: "PlannedCourse-FormView", methodToCall: "startAddPlannedCourseForm", courseId: courseId, code: courseCd};
         var popupStyle = {width: "300px", height: "16px"};
         var popupOptions = {tail: {align: "left"}, align: "left", position: "bottom", close: true};
         openPopup("add_remove_course_popover_page", retrieveData, "plan", popupStyle, popupOptions, e);

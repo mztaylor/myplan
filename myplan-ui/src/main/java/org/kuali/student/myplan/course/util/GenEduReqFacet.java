@@ -2,11 +2,11 @@ package org.kuali.student.myplan.course.util;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
+import org.kuali.student.r2.core.enumerationmanagement.dto.EnumeratedValueInfo;
 
 import java.util.*;
 

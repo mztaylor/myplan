@@ -10,6 +10,8 @@ package org.kuali.student.myplan.audit.dataobject;
 public class CourseItem {
     private String courseId;
     private String courseCode;
+    private String subject;
+    private String number;
     private String sectionCode;
     private String secondaryActivityCode;
     private String atpId;
@@ -70,5 +72,21 @@ public class CourseItem {
 
     public void setSecondaryActivityCode(String secondaryActivityCode) {
         this.secondaryActivityCode = secondaryActivityCode;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }

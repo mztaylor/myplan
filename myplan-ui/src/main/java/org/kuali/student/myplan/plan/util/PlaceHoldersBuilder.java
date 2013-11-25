@@ -4,9 +4,9 @@ import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
-import org.kuali.student.core.enumerationmanagement.dto.EnumeratedValueInfo;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.r2.core.enumerationmanagement.dto.EnumeratedValueInfo;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,40 +2,38 @@ package edu.uw.kuali.student.myplan.tests.unit;
 
 import edu.uw.kuali.student.myplan.util.TermInfoComparator;
 import org.junit.Test;
-import org.kuali.student.core.atp.dto.AtpTypeInfo;
+import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.assertFalse;
 
 public class TermInfoComparatorTest {
 
     @Test
     public void circularTermListExerciseTerms() {
-        AtpTypeInfo t1 = new AtpTypeInfo();
-        t1.setId("kuali.uw.atp.type.spring");
+        TypeInfo t1 = new TypeInfo();
+        t1.setKey("kuali.uw.atp.type.Spring");
 
-        AtpTypeInfo t2 = new AtpTypeInfo();
-        t2.setId("kuali.uw.atp.type.winter");
+        TypeInfo t2 = new TypeInfo();
+        t2.setKey("kuali.uw.atp.type.Winter");
 
-        AtpTypeInfo t3 = new AtpTypeInfo();
-        t3.setId("kuali.uw.atp.type.autumn");
+        TypeInfo t3 = new TypeInfo();
+        t3.setKey("kuali.uw.atp.type.Fall");
 
-        AtpTypeInfo t4 = new AtpTypeInfo();
-        t4.setId("kuali.uw.atp.type.summer");
+        TypeInfo t4 = new TypeInfo();
+        t4.setKey("kuali.uw.atp.type.Summer");
 
-        List<AtpTypeInfo> sorted = new ArrayList<AtpTypeInfo>();
+        List<TypeInfo> sorted = new ArrayList<TypeInfo>();
         sorted.add(t3);
         sorted.add(t2);
         sorted.add(t1);
         sorted.add(t4);
         sorted.add(t4);
 
-        List<AtpTypeInfo> mixed = new ArrayList<AtpTypeInfo>();
+        List<TypeInfo> mixed = new ArrayList<TypeInfo>();
         mixed.add(t4);
         mixed.add(t1);
         mixed.add(t2);

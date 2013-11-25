@@ -2,13 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 
 
-          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
-
-          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
     <context:annotation-config/>
 
@@ -35,10 +32,14 @@
                   value="org.kuali.student.myplan.util.DegreeAuditAtpHelper.setAcademicCalendarService"/>
         <property name="arguments">
             <list>
-                <ref bean="acalService"/>
+                <ref bean="academicCalenderService"/>
             </list>
         </property>
     </bean>
+
+    <bean id="academicCalenderService" class="org.kuali.student.myplan.service.mock.AcademicCalenderServiceMockImpl"/>
+
+
 
     <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
         <property name="staticMethod"
@@ -51,13 +52,13 @@
     </bean>
 
 
-    <bean id="acalService" class="org.kuali.student.myplan.service.mock.AcademicCalenderServiceMockImpl">
+    <!--<bean id="acalService" class="org.kuali.student.myplan.service.mock.AcademicCalenderServiceMockImpl">
 
-    </bean>
+    </bean>-->
 
     <!--<bean id="personImpl" class="org.kuali.student.myplan.service.mock.PersonMockImpl"/>-->
-    <bean id="academicPlanService"
-          class="org.kuali.student.myplan.academicplan.service.mock.AcademicPlanServiceMockImpl"/>
+    <!--<bean id="academicPlanService"
+          class="org.kuali.student.myplan.academicplan.service.mock.AcademicPlanServiceMockImpl"/>-->
 
 
     <bean id="courseLinkBuilder" class="org.kuali.student.myplan.util.CourseLinkBuilder">

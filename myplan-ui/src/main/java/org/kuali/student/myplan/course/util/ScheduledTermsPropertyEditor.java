@@ -17,6 +17,7 @@ package org.kuali.student.myplan.course.util;
 
 import org.apache.commons.lang.StringUtils;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 
 import java.beans.PropertyEditorSupport;
 import java.security.PrivateKey;
@@ -43,10 +44,8 @@ public class ScheduledTermsPropertyEditor extends PropertyEditorSupport {
             for (Object term : courseSummaryDetails.getScheduledTerms()) {
                 String text = term.toString();
                 // Convert Winter 2012 to WI 12
-                Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(text);
-                if (m.matches()) {
-                    text = m.group(1).substring(0, 2).toUpperCase() + " " + m.group(2);
-                }
+                text = AtpHelper.termToYearTerm(text).toShortTermName();
+
                 formattedText.append(String.format("<%s class=\"%s\">%s</%s>", listType.getListItemElementName(), text.replaceAll("\\d*$", "").trim(), text, listType.getListItemElementName()));
             }
         } else {

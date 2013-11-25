@@ -43,7 +43,7 @@
                                 jQuery('#@{dataObject.courseSummaryDetails.courseId}_sections_collection a.lightBoxLink').each(function() {
                                     createLightBoxLink(jQuery(this).attr('id'), {helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, false);
                                 });
-                                getActivityEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}','atpId':'@{dataObject.sectionAtp}'}, '@{dataObject.courseSummaryDetails.courseId}_sections_collection');
+                                    getActivityEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}','atpId':'@{dataObject.sectionAtp}','courseCd':'@{dataObject.courseSummaryDetails.code}'}, '@{dataObject.courseSummaryDetails.courseId}_sections_collection');
                             "/>
                             <property name="render" value="true"/>
                             <property name="header.render" value="false"/>

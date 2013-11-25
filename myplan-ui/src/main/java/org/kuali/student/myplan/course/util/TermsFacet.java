@@ -1,11 +1,12 @@
 package org.kuali.student.myplan.course.util;
 
-import org.kuali.student.core.atp.dto.AtpTypeInfo;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
+import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
-import java.util.regex.Matcher;
 
 /**
  * Logic for building list of FacetItems and coding CourseSearchItems.
@@ -41,8 +42,8 @@ public class TermsFacet extends AbstractFacet {
         Set<String> facetKeys = new HashSet<String>();
 
         //  Terms
-        if (null != course.getTermInfoList() && 0 != course.getTermInfoList().size()) {
-            for (AtpTypeInfo term : course.getTermInfoList()) {
+        if (!CollectionUtils.isEmpty(course.getTermInfoList())) {
+            for (TypeInfo term : course.getTermInfoList()) {
                 //  Title-case the term name.
                 String termName = PROJECTED_TERM_PREFIX + term.getName().substring(0, 2).toUpperCase();
                 String key = FACET_KEY_DELIMITER + termName + FACET_KEY_DELIMITER;
@@ -57,7 +58,7 @@ public class TermsFacet extends AbstractFacet {
         }
 
         //  Scheduled terms.
-        if ((null == course.getScheduledTermsList() || 0 == course.getScheduledTermsList().size()) && 0 == facetKeys.size()) {
+        if (CollectionUtils.isEmpty(course.getScheduledTermsList()) && CollectionUtils.isEmpty(facetKeys)) {
             String key = FACET_KEY_DELIMITER + getUnknownFacetKey() + FACET_KEY_DELIMITER;
             facetKeys.add(key);
         } else {
@@ -66,11 +67,7 @@ public class TermsFacet extends AbstractFacet {
 
                 String termFacetKey = t;
 
-                // Convert Winter 2012 to WI 12
-                Matcher m = CourseSearchConstants.TERM_PATTERN.matcher(termFacetKey);
-                if (m.matches()) {
-                    termFacetKey = m.group(1).substring(0, 2).toUpperCase() + " " + m.group(2);
-                }
+                termFacetKey = AtpHelper.termToYearTerm(termFacetKey).toShortTermName();
 
                 String key = FACET_KEY_DELIMITER + termFacetKey + FACET_KEY_DELIMITER;
                 if (isNewFacetKey(key)) {
