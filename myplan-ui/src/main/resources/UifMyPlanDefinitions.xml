@@ -261,7 +261,7 @@
     </bean>
 
     <bean id="KSAP-HelpImage" parent="Uif-HelpImage"
-          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/icon_help.png" p:altText="" p:title="">
+          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/icon_help.png" p:altText="" p:title="" p:cssClasses="helpImage">
     </bean>
 
     <bean id="KSAP-Tooltip" parent="Uif-Tooltip">

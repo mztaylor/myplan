@@ -15,18 +15,30 @@
 }
 
 .courseDetails__fieldLabel {
-    width: 150px;
-    & label {
-        .bold();
+    width: 165px;
+    text-align: right;
+    & .uif-label {
+        display: block;
+
+        & label {
+            .bold();
+        }
     }
+
+    & .helpImage {
+        position: relative;
+        top: -4px;
+        margin: 0;
+    }
+
     & > .uif-horizontalBoxLayout {
         float: right;
     }
 }
 
 .courseDetails__field {
-    width: 515px;
-    margin: 0 0 0 @marginLarge !important;
+    width: 505px;
+    margin: 0 @marginDefault 0 @marginLarge !important;
 
     & .uif-boxLayoutHorizontalItem {
         margin: 0 0 0 @marginSmall;

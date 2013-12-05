@@ -169,7 +169,7 @@
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-HorizontalBoxGroup">
+                            <bean parent="KSAP-VerticalBoxGroup">
                                 <property name="cssClasses" value="courseDetails__fieldLabel"/>
                                 <property name="items">
                                     <list>
@@ -208,11 +208,11 @@
                       p:render="@{dataObject.courseSummaryDetails.crossListings.size() gt 0}">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-HorizontalBoxGroup" p:style="text-align:right;">
+                            <bean parent="KSAP-VerticalBoxGroup">
                                 <property name="cssClasses" value="courseDetails__fieldLabel"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-Label" p:labelText="Jointly Offered &lt;br/&gt; Course(s)"
+                                        <bean parent="Uif-Label" p:labelText="Jointly Offered Course(s)"
                                               p:renderColon="false"/>
                                         <ref bean="course_cross_listings_help_icon"/>
                                     </list>
@@ -238,7 +238,7 @@
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-HorizontalBoxGroup">
+                            <bean parent="KSAP-VerticalBoxGroup">
                                 <property name="cssClasses" value="courseDetails__fieldLabel"/>
                                 <property name="items">
                                     <list>
@@ -273,7 +273,7 @@
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-HorizontalBoxGroup">
+                            <bean parent="KSAP-VerticalBoxGroup">
                                 <property name="cssClasses" value="courseDetails__fieldLabel"/>
                                 <property name="items">
                                     <list>
@@ -359,7 +359,7 @@
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-HorizontalBoxGroup">
+                            <bean parent="KSAP-VerticalBoxGroup">
                                 <property name="cssClasses" value="courseDetails__fieldLabel"/>
                                 <property name="items">
                                     <list>
@@ -390,7 +390,7 @@
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-HorizontalBoxGroup">
+                            <bean parent="KSAP-VerticalBoxGroup">
                                 <property name="cssClasses" value="courseDetails__fieldLabel"/>
                                 <property name="items">
                                     <list>
