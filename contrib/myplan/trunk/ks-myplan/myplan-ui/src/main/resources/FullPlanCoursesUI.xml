@@ -47,6 +47,11 @@
                                         </bean>
                                         <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Print">
                                             <property name="actionScript" value="window.print();"/>
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>right</value>
+                                                </list>
+                                            </property>
                                         </bean>
                                     </list>
                                 </property>
@@ -60,29 +65,29 @@
 
     <bean id="full_planned_courses" parent="KSAP-VerticalBoxGroup" p:headerText="Student Academic Plan (MyPlan)">
         <property name="header">
-            <bean parent="KSAP-HeaderOne"/>
+            <bean parent="KSAP-HeaderOne" p:cssClasses="planPreview__section"/>
         </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-VerticalBoxGroup">
+                <bean parent="KSAP-VerticalBoxGroup" p:cssClasses="defaultTopMargin planPreview__section">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-MessageField" p:label="Prepared for"
+                            <bean parent="KSAP-MessageField" p:label="Prepared for" p:cssClasses="bold"
                                   p:messageText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentName()} (@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentNumber() ne null ? T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentNumber() : 'No student number'})">
                                 <property name="fieldLabel">
-                                    <bean parent="Uif-Label"/>
+                                    <bean parent="Uif-Label" p:cssClasses="normal"/>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-MessageField" p:label="Document is accurate at the time of creation"
+                            <bean parent="KSAP-MessageField" p:label="Document is accurate at the time of creation" p:cssClasses="bold"
                                   p:messageText="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).displayCurrentDateTime('MM/dd/yy - h:mm a')}">
                                 <property name="fieldLabel">
-                                    <bean parent="Uif-Label"/>
+                                    <bean parent="Uif-Label" p:cssClasses="normal"/>
                                 </property>
                             </bean>
                         </list>
                     </property>
                 </bean>
-                <bean parent="KSAP-VerticalBoxGroup">
+                <bean parent="KSAP-VerticalBoxGroup" p:cssClasses="planPreview__section">
                     <property name="items">
                         <list>
                             <bean parent="KSAP-Message"
@@ -139,21 +144,22 @@
             </list>
         </property>
     </bean>
-    <bean id="planNotesCollection" parent="Uif-ListCollectionSection" p:headerText="[0] NOTES">
+    <bean id="planNotesCollection" parent="KSAP-StackedCollectionGroup" p:headerText="[0] NOTES">
+        <property name="cssClasses" value="planPreview__notes"/>
         <property name="header">
             <bean parent="KSAP-HeaderFour">
                 <property name="inlineComponents">
                     <list>
                         <bean parent="Uif-Image"
-                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/iconNote12.png"
-                              p:cssClasses="itemNote"/>
+                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/icon_note_12.png"
+                              p:cssClasses="planPreview__noteImage"/>
                     </list>
                 </property>
             </bean>
         </property>
-        <property name="validationMessages">
+        <!--<property name="validationMessages">
             <null/>
-        </property>
+        </property>-->
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject"/>
         <property name="propertyName" value="lookupResults"/>
@@ -260,12 +266,12 @@
                         <list>
                             <bean parent="KSAP-MessageField"
                                   p:messageText="@{#line.placeHolderCode eq null ? #line.courseDetails.code : #line.placeHolderCode}"/>
-                            <bean parent="KSAP-MessageField" p:messageText="@{#line.sections}"/>
-                            <bean parent="KSAP-MessageField"
+                            <bean parent="KSAP-MessageField" p:messageText="@{#line.sections}" p:cssClasses="planPreview__itemActivities ellipsisItem"/>
+                            <bean parent="KSAP-MessageField" p:cssClasses="planPreview__itemCredit"
                                   p:render="@{#line.placeHolderCredit NE null OR #line.credit NE null}"
                                   p:messageText="(@{#line.placeHolderCredit EQ null ? #line.credit : #line.placeHolderCredit})"/>
-                            <bean parent="Uif-ImageField" p:render="@{#line.note NE null}"
-                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/iconNote8.png"/>
+                            <bean parent="Uif-ImageField" p:render="@{#line.note NE null}" p:cssClasses="planPreview__itemNote"
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/icon_note_8.png"/>
                         </list>
                     </property>
                 </bean>

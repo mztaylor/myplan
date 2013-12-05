@@ -1,8 +1,13 @@
+.planPreview__section {
+    border-bottom: @baseBorderStyle;
+    padding-bottom: @paddingDefault;
+}
+
 .planPreview {
     width: 660px;
     margin: 0 auto;
     border: @baseBorderStyle;
-    border-bottom: none;
+    .border-radius(@baseBorderRadius);
 
     & .uif-boxLayoutVerticalItem,
     & .uif-boxLayoutHorizontalItem {
@@ -13,7 +18,6 @@
         width: 60px;
         height: 20px;
         padding: @paddingMini 0;
-        border-bottom: @baseBorderStyle;
         & h4 {
             visibility: hidden;
         }
@@ -24,11 +28,10 @@
         text-align: center;
         padding: @paddingMini 0;
         border-left: @baseBorderStyle;
-        border-bottom: @baseBorderStyle;
     }
 
     & .planPreview__year {
-        border-bottom: @baseBorderStyle;
+        border-top: @baseBorderStyle;
         width: 660px;
         font-size: @fontSizeSmall;
 
@@ -36,6 +39,7 @@
             float: left;
             width: 50px;
             padding: @paddingSmall;
+            line-height: @fontSizeLarge;
             .bold();
         }
 
@@ -60,6 +64,17 @@
                 padding: @paddingSmall;
             }
 
+            & .planPreview__itemActivities,
+            & .planPreview__itemCredit,
+            & .planPreview__itemNote {
+                margin: 0 0 0 @marginMini !important;
+            }
+
+            & .planPreview__itemNote img {
+                position: relative;
+                top: -2px;
+            }
+
             & .planPreview__termFooter {
                 border-top: @dottedBorderStyle;
                 padding: @paddingMini @paddingSmall;
@@ -78,4 +93,41 @@
             }
         }
     }
+}
+
+.planPreview__notes {
+    width: 640px;
+    margin: @marginLarge auto 0;
+    padding: @paddingDefault;
+    border: solid 1px #ede6fc;
+    background: #fbf7ff;
+    .border-radius(@baseBorderRadius);
+
+    & ul {
+        list-style: none;
+        margin: @marginDefault 0 0 0;
+
+        & h5 {
+            text-transform: uppercase;
+            color: @textColorLight;
+            margin: 0 0 @marginDefault 0;
+        }
+
+        & li {
+            list-style: none;
+            margin: 0;
+            font-size: @fontSizeSmall;
+
+            & label {
+                .bold();
+            }
+        }
+    }
+
+}
+
+.planPreview__noteImage {
+    position: relative;
+    top: -1px;
+    margin: 0 2px 0 0;
 }
