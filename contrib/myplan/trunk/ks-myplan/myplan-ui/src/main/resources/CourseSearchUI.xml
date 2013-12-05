@@ -207,7 +207,7 @@
         <property name="onDocumentReadyScript" value="
             jQuery('#course_search_results').on('PLAN_ITEM_DELETED', function(event, data){
                 if (data.planItemType === 'wishlist') {
-                    restoreSearchAddButton(data.courseId, data.subject, data.number, data.courseCd);
+                    restoreSearchAddButton(data);
                 }
             }).on('PLAN_ITEM_ADDED', function(event, data){
                 if (data.planItemType === 'wishlist') {
