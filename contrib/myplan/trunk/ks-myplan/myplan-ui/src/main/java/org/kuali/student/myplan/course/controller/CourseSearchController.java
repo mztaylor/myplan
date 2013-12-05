@@ -381,7 +381,7 @@ public class CourseSearchController extends UifControllerBase {
             } else if (getUserSessionHelper().isAdviser()) {
                 status = String.format("<span id=\\\"%s_%s_%s_status\\\">%s</span>", courseId, item.getSubject().trim(), item.getNumber().trim(), CourseSearchItem.EMPTY_RESULT_VALUE_KEY);
             } else {
-                status = String.format("<span id=\\\"%s_%s_%s_status\\\"><input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"/student/ks-myplan/images/pixel.gif\\\" alt=\\\"Bookmark or Add to Plan\\\" class=\\\"courseResults__itemAdd\\\" data-courseid= \\\"%s\\\" data-coursecd= \\\"%s\\\" data-subject= \\\"%s\\\" data-number= \\\"%s\\\" onclick=\\\"openMenu('%s_add','add_course_items',null,event,null,'popover__menu popover__menu--small',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>", courseId, item.getSubject().trim(), item.getNumber().trim(), courseId, item.getCode().trim(), item.getSubject().trim(), item.getNumber().trim(), courseId);
+                status = String.format("<span id=\\\"%s_%s_%s_status\\\"><input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"/student/themes/ksap/images/pixel.gif\\\" alt=\\\"Bookmark or Add to Plan\\\" class=\\\"courseResults__itemAdd\\\" data-courseid= \\\"%s\\\" data-coursecd= \\\"%s\\\" data-subject= \\\"%s\\\" data-number= \\\"%s\\\" onclick=\\\"openMenu('%s_add','add_course_items',null,event,null,'popover__menu popover__menu--small',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>", courseId, item.getSubject().trim(), item.getNumber().trim(), courseId, item.getCode().trim(), item.getSubject().trim(), item.getNumber().trim(), courseId);
             }
 
             String courseName = "";
@@ -397,7 +397,7 @@ public class CourseSearchController extends UifControllerBase {
 
             jsonString.append("[\"").append(item.getCode()).
                     append("\",\" <a href=\\\"inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=").
-                    append(courseId + "&courseCd=" + item.getCode()).append("\\\" target=\\\"_self\\\" title=\\\"").append(courseName).append("\\\" class=\\\"ellipsisItem\\\">").
+                    append(courseId + "&courseCd=" + item.getCode().replace("&", "%26")).append("\\\" target=\\\"_self\\\" title=\\\"").append(courseName).append("\\\" class=\\\"ellipsisItem\\\">").
                     append(courseName).append("</a>\",\"").
                     append(item.getCredit()).append("\",").append(scheduledAndOfferedTerms).append(",\"").
                     append(item.getGenEduReq()).append("\",\"").append(status).
