@@ -23,7 +23,7 @@ function openCourse(courseId, courseCd, e) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     if (jQuery(target).parents(".jquerypopover.jquerypopover-default").length > 0) {
-        window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseId + "&courseCd=" + courseCd;
+        window.location = "inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=" + courseId + "&courseCd=" + courseCd.replace("&", "%26");
     } else {
         var retrieveData = {action: "plan", viewId: "PlannedCourse-FormView", methodToCall: "startAddPlannedCourseForm", courseId: courseId, code: courseCd};
         var popupStyle = {width: "300px", height: "16px"};

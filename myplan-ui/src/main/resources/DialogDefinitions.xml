@@ -789,7 +789,7 @@
                 <bean parent="Uif-Link" p:linkText="View more details" p:cssClasses="blockLink">
                     <property name="title" value="View more details about @{courseSummaryDetails.code}"/>
                     <property name="href"
-                              value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseSummaryDetails.courseId}&amp;courseCd=@{courseSummaryDetails.code}"/>
+                              value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseSummaryDetails.courseId}&amp;courseCd=@{courseSummaryDetails.code.replace('&amp;','%26')}"/>
                 </bean>
             </list>
         </property>
@@ -1040,7 +1040,7 @@
         <property name="title"
                   value="@{courseSummaryDetails.code} @{courseSummaryDetails.courseTitle} (@{courseSummaryDetails.credit})"/>
         <property name="href"
-                  value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseSummaryDetails.courseId}&amp;courseCd=@{courseSummaryDetails.code}"/>
+                  value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseSummaryDetails.courseId}&amp;courseCd=@{courseSummaryDetails.code.replace('&amp;','%26')}"/>
         <property name="cssClasses" value="popover__title"/>
     </bean>
 
