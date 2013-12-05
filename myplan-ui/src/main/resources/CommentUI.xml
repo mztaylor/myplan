@@ -544,11 +544,16 @@
                         <list>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="lastCommentDate"
                                   p:escapeHtmlInPropertyValue="false">
+                                <property name="render" value="@{#line.lastCommentDate NE null}"/>
                                 <property name="propertyEditor" ref="last_comment_formatter"/>
                             </bean>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="lastCommentBy" p:label="by">
                                 <property name="render" value="@{#line.lastCommentBy NE null}"/>
                                 <property name="cssClasses" value="removeSort removeMargin"/>
+                            </bean>
+                            <bean parent="KSAP-MessageField">
+                                <property name="messageText" value="--"/>
+                                <property name="render" value="@{#line.lastCommentBy EQ null}"/>
                             </bean>
                         </list>
                     </property>
