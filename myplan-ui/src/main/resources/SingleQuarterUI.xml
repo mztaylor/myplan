@@ -460,7 +460,7 @@
                             </bean>
                             <bean parent="Uif-Link" p:linkText="@{#line.courseTitle}">
                                 <property name="href"
-                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}"/>
+                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode}"/>
                                 <property name="cssClasses">
                                     <list merge="true">
                                         <value>myplan-text-ellipsis</value>
@@ -959,7 +959,7 @@
         <property name="linkText" value="@{#line.courseDetails.courseTitle}"/>
         <property name="title" value="@{#line.courseDetails.courseTitle}"/>
         <property name="href"
-                  value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}"/>
+                  value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}&amp;courseCd=@{#line.courseDetails.code}"/>
         <property name="cssClasses" value="termPlanItem__title ellipsisItem"/>
     </bean>
 
