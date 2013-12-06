@@ -84,7 +84,7 @@ function openPopup(getId, retrieveData, formAction, popupStyle, popupOptions, e)
         } else {
             var pageId = jQuery("#pageId", htmlContent).val();
             var errorMessage = jQuery("#" + pageId, htmlContent).data("validation_messages").serverErrors[0];
-            component = jQuery("<div />").addClass("alert alert-error alert-unboxed").html(errorMessage);
+            component = jQuery('<div style="width:300px;" />').append('<h4>Error</h4>').append(jQuery("<div />").addClass("alert alert-error alert-unboxed uif-boxLayoutVerticalItem").html(errorMessage));
         }
         if (jQuery("#KSAP-Popover").length) {
             popupItem.SetPopOverInnerHtml(component);
@@ -187,13 +187,13 @@ function openDialog(sText, e, close) {
     var popupBoxId = popupBox.GetPopOverID();
     popupBox.FreezePopOver();
 
-    if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerypopover-innerHtml").append('<img src="../ks-myplan/images/btnClose.png" class="myplan-popup-close"/>');
+    if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerypopover-innerHtml").append('<img src="' + getConfigParam("ksapImageLocation") + 'icons/close.png" class="popover__close"/>');
 
     fnPositionPopUp(popupBoxId);
 
     clickOutsidePopOver(popupBoxId, popupBox);
 
-    jQuery("#" + popupBoxId + " img.myplan-popup-close").on('click', function () {
+    jQuery("#" + popupBoxId + " img.popover__close").on('click', function () {
         popupBox.HidePopOver();
         fnCloseAllPopups();
     });

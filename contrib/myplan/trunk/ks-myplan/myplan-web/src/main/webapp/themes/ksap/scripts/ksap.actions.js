@@ -46,8 +46,8 @@ function submitPopupForm(additionalFormData, e, bDialog) {
             case 'error':
                 data.message = data.messages.serverErrors[0];
                 if (bDialog) {
-                    var sContent = jQuery("<div />").append(data.message).addClass(data.cssClasses + " alert-unboxed");
-                    var sHtml = jQuery("<div />").append('<div class="uif-headerField uif-sectionHeaderField"><h3 class="uif-header">' + targetText + '</h3></div>').append(sContent);
+                    var sContent = jQuery("<div />").append(data.message).addClass(data.cssClasses + " alert-unboxed uif-boxLayoutVerticalItem");
+                    var sHtml = jQuery("<div />").append('<h4>' + targetText + '</h4>').append(sContent);
                     if (jQuery("body").HasPopOver()) jQuery("body").HidePopOver();
                     openDialog(sHtml.html(), e);
                 } else {
