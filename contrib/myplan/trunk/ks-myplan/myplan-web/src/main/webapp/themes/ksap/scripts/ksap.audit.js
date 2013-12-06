@@ -170,7 +170,7 @@ function collapseReq(obj, onload) {
             overflow: "hidden",
             textOverflow: "ellipsis"
         });
-        jQuery(this).find(".header .title .text").not(':first').hide();
+        obj.find(".header .title .text").not(':first').hide();
     } else {
         obj.removeClass("expanded").addClass("collapsed").animate({
             height: height + "px"
@@ -199,19 +199,20 @@ function expandReq(obj, onload) {
             overflow: "auto",
             textOverflow: "ellipsis"
         });
-        jQuery(this).find(".header .title .text").not(':first').show();
+        obj.find(".header .title .text").not(':first').show();
     } else {
         obj.removeClass("collapsed").addClass("expanded").animate({
-                height: height
-            }, 300
-        ).children(".header").find(".title").css({
-            height: "auto"
-        }).find(".text:first").css({
-            whiteSpace: "normal",
-            overflow: "auto",
-            textOverflow: "ellipsis"
+            height: height + "px"
+        }, 300, function() {
+            jQuery(this).children(".header").find(".title").css({
+                height: "auto"
+            }).find(".text:first").css({
+                whiteSpace: "normal",
+                overflow: "auto",
+                textOverflow: "ellipsis"
+            });
+            jQuery(this).find(".header .title .text").not(':first').show();
         });
-        jQuery(this).find(".header .title .text").not(':first').show();
     }
 }
 
