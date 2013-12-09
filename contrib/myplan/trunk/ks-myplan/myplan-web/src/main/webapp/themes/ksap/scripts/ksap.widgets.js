@@ -135,15 +135,18 @@ function toggleSectionDetails(sectionRow, obj, expandText, collapseText) {
 }
 
 function toggleRegisteredDetails(sectionRow, obj) {
+    if (typeof obj.data("hidden") == "undefined") {
+        obj.data("hidden", true);
+    }
     var collapsibleRow = sectionRow.next("tr.collapsible");
-    if (collapsibleRow.is(":visible")) {
-        obj.parents("td").attr("rowspan", "1");
-        collapsibleRow.hide();
-        obj.find("img.uif-image").toggleClass("expanded");
-    } else {
+    if (obj.data("hidden")) {
         obj.parents("td").attr("rowspan", "2");
         collapsibleRow.show();
-        obj.find("img.uif-image").toggleClass("expanded");
+        obj.data("hidden", false).find("img").toggleClass("expanded");
+    } else {
+        obj.parents("td").attr("rowspan", "1");
+        collapsibleRow.hide();
+        obj.data("hidden", true).find("img").toggleClass("expanded");
     }
 }
 

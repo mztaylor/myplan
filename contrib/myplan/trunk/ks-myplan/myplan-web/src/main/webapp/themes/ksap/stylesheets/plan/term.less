@@ -9,6 +9,47 @@
             border-top: @baseBorderStyle;
         }
     }
+
+    & .courseActivities__table--registered {
+        & td {
+            height: 50px;
+        }
+
+        & .courseActivities__code {
+            text-align: left;
+            font-size: @fontSizeLarge;
+            .bold();
+        }
+
+        & .courseActivities__title {
+            font-size: @fontSizeTiny;
+            width: 150px;
+        }
+
+        & .courseActivities--primary td:first-child {
+            background: #a58dce;
+        }
+
+        & .courseActivities--secondary td:first-child {
+            background: #c1b1dd;
+        }
+
+        & .courseActivities--primary td,
+        & .courseActivities--secondary td {
+            border-top-width: 3px;
+        }
+
+        & .courseActivities--primary td:first-child img,
+        & .courseActivities--secondary td:first-child img {
+            width: 16px;
+            height: 16px;
+            background: url('../images/icon_sprite.png') no-repeat -32px -32px;
+
+            &.expanded {
+                background-position: -32px -16px;
+            }
+        }
+    }
 }
 
 .planTerm__header {

@@ -387,10 +387,31 @@
         <property name="propertyName" value="academicRecord"/>
         <property name="cssClasses" value="removeMargin"/>
         <property name="onDocumentReadyScript" value="
-            var tableHead = jQuery('table#academicRecord_@{dataObject.atpId} thead');
+            var table = jQuery('table#academicRecord_@{dataObject.atpId}');
+            var tableHead = table.find('thead');
             tableHead.find('tr:gt(0)').remove();
             tableHead.find('tr th').last().attr('colspan', '2').prev('th').attr('colspan', '2');
-            jQuery('table#@{dataObject.atpId} tfoot').remove();
+            tableHead.before('
+                &lt;col style=&quot;width: 22px;&quot;&gt;
+                &lt;col style=&quot;width: 157px;&quot;&gt;
+                &lt;col style=&quot;width: 87px;&quot;&gt;
+                &lt;col style=&quot;width: 171px;&quot;&gt;
+                &lt;col style=&quot;width: 90px;&quot;&gt;
+                &lt;col style=&quot;width: 111px;&quot;&gt;
+                &lt;col style=&quot;width: 70px;&quot;&gt;
+            ');
+            table.find('.courseActivities__meetingData, .courseActivities__instructor, .courseActivities__other').parents('td').each(function() {
+                jQuery(this).attr('colspan', '2');
+            });
+            table.find('.courseActivities__additionalDetails').parents('td').each(function() {
+                jQuery(this).attr('colspan', '3');
+            });
+            table.find('.courseActivities__regCode').parents('td').each(function() {
+                jQuery(this).attr('colspan', '1');
+            });
+            table.find('.courseActivities__additionalDetails').parents('tr').each(function() {
+                jQuery(this).addClass('collapsible');
+            });
         "/>
         <property name="width" value="708px"/>
         <property name="header">
@@ -412,75 +433,48 @@
         <property name="header.lowerGroup.render" value="false"/>
         <property name="layoutManager.numberOfColumns" value="5"/>
         <property name="layoutManager.id" value="academicRecord_@{dataObject.atpId}"/>
+        <property name="layoutManager.cssClasses" value="courseActivities__table courseActivities__table--registered"/>
         <property name="items">
             <list>
                 <bean parent="Uif-ImageField" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
-                      p:colSpan="1" p:rowSpan="1" p:width="16px">
+                      p:colSpan="1" p:rowSpan="1">
                     <property name="id" value="button_@{#line.uuid}"/>
                     <property name="source"
                               value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+                    <property name="onClickScript"
+                              value="toggleRegisteredDetails(jQuery('#button_@{#line.uuid}').parents('tr'), jQuery(this))"/>
+                    <property name="cssClasses" value="courseActivities__toggle"/>
                     <property name="onDocumentReadyScript" value="
                         var row = jQuery('#button_@{#line.uuid}').parents('tr');
-                        var cell = jQuery('#button_@{#line.uuid}').parents('td');
-                        row.find('.activityMeetingData').parents('td').attr('colspan', '2');
-                        row.find('.activityInstructor').parents('td').attr('colspan', '2');
                         if (@{#line.activityOfferingItem.primary}) {
-                            cell.addClass('primary');
+                            row.addClass('courseActivities--primary');
                         } else {
-                            cell.addClass('secondary');
+                            row.addClass('courseActivities--secondary');
                         }
                     "/>
-                    <property name="onClickScript"
-                              value="toggleRegisteredDetails(jQuery('#button_@{#line.uuid}').parents('tr.row'), jQuery(this))"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>activityAction</value>
-                        </list>
-                    </property>
                 </bean>
                 <bean parent="KSAP-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
-                      p:rowSpan="1" p:width="137px">
+                      p:rowSpan="1">
                     <property name="fieldLabel.render" value="true"/>
                     <property name="label" value="Section"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>activityCourseTitle</value>
-                        </list>
-                    </property>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-MessageField" p:messageText="@{#line.courseCode} @{#line.activityCode}">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>ksap-text-bold</value>
-                                        <value>fl-font-size-140</value>
-                                        <value>ksap-text-darygray</value>
-                                    </list>
-                                </property>
+                                <property name="cssClasses" value="courseActivities__code"/>
                             </bean>
                             <bean parent="Uif-Link" p:linkText="@{#line.courseTitle}">
                                 <property name="href"
                                           value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode.replace('&amp;','%26')}"/>
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>myplan-text-ellipsis</value>
-                                        <value>fl-font-size-80</value>
-                                    </list>
-                                </property>
+                                <property name="cssClasses" value="courseActivities__title ellipsisItem removeMargin"/>
                             </bean>
                         </list>
                     </property>
                 </bean>
                 <bean parent="KSAP-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
-                      p:rowSpan="1" p:width="51px">
+                      p:rowSpan="1">
                     <property name="fieldLabel.render" value="true"/>
                     <property name="label" value="Type"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>activityType</value>
-                            <value>fl-text-align-center</value>
-                        </list>
-                    </property>
+                    <property name="cssClasses" value="capitalize center"/>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-SimpleDataField"
@@ -488,57 +482,29 @@
                             </bean>
                             <bean parent="KSAP-MessageField" p:messageText="(@{#line.credit})"
                                   p:render="@{#line.activityOfferingItem.primary}">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>ksap-noMargin</value>
-                                        <value>ksap-text-darygray</value>
-                                    </list>
-                                </property>
+                                <property name="cssClasses" value="removeMargin"/>
                             </bean>
                         </list>
                     </property>
                 </bean>
                 <bean parent="activityMeetingData" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
-                      p:rowSpan="1" p:width="254px">
+                      p:rowSpan="1">
                     <property name="propertyName" value="activityOfferingItem.activityItem"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>activityMeetingData</value>
-                        </list>
-                    </property>
                 </bean>
                 <bean parent="KSAP-SimpleDataField" p:render="@{#line.activityOfferingItem ne null}" p:colSpan="1"
-                      p:rowSpan="1" p:width="126px">
+                      p:rowSpan="1">
                     <property name="propertyName" value="activityOfferingItem.instructor"/>
                     <property name="fieldLabel.render" value="true"/>
                     <property name="label" value="Instructor"/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>activityInstructor</value>
-                        </list>
-                    </property>
+                    <property name="cssClasses" value="courseActivities__instructor"/>
                 </bean>
-
                 <bean parent="KSAP-HorizontalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
-                      p:colSpan="1" p:rowSpan="1" p:width="367px">
-                    <property name="id" value="details_@{#line.uuid}"/>
-                    <property name="onDocumentReadyScript" value="
-                        var collapsibleRow = jQuery('#details_@{#line.uuid}').parents('tr');
-                        collapsibleRow.addClass('collapsible').hide();
-                        collapsibleRow.find('.activityAdditionalDetails').parents('td').attr('colspan', '3');
-                        collapsibleRow.find('.activityOther').parents('td').attr('colspan', '2');
-                        collapsibleRow.find('.activityRegCode').parents('td').attr('colspan', '1');
-                    "/>
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>activityAdditionalDetails</value>
-                        </list>
-                    </property>
+                      p:colSpan="1" p:rowSpan="1">
+                    <property name="cssClasses" value="courseActivities__additionalDetails"/>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-NoSpanMessage"
                                   p:messageText="@{#line.activityOfferingItem.summerTerm}&lt;br/&gt;"
-
                                   p:render="@{#line.activityOfferingItem.summerTerm ne null}"/>
                             <bean parent="KSAP-NoSpanMessage"
                                   p:messageText="@{#line.activityOfferingItem.sectionComments}"
@@ -551,14 +517,9 @@
                         </list>
                     </property>
                 </bean>
-
                 <bean parent="KSAP-VerticalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
-                      p:colSpan="1" p:rowSpan="1" p:width="140px">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>activityOther</value>
-                        </list>
-                    </property>
+                      p:colSpan="1" p:rowSpan="1">
+                    <property name="cssClasses" value="courseActivities__other"/>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-NoSpanMessage"
@@ -599,14 +560,9 @@
                         </list>
                     </property>
                 </bean>
-
                 <bean parent="KSAP-HorizontalFieldGroup" p:render="@{#line.activityOfferingItem ne null}" p:valign="TOP"
-                      p:colSpan="3" p:rowSpan="1" p:width="70px">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>activityRegCode</value>
-                        </list>
-                    </property>
+                      p:colSpan="3" p:rowSpan="1">
+                    <property name="cssClasses" value="courseActivities__regCode"/>
                     <property name="items">
                         <list>
                             <bean parent="current_section_status"
@@ -617,7 +573,6 @@
                         </list>
                     </property>
                 </bean>
-
             </list>
         </property>
         <property name="propertyReplacers">
@@ -715,11 +670,6 @@
         <property name="header.render" value="false"/>
         <property name="propertyName" value="planActivities"/>
         <property name="layoutManager.id" value="@{#line.courseDetails.courseId}_sections"/>
-        <property name="cssClasses">
-            <list merge="true">
-                <value>myplan-course-sections</value>
-            </list>
-        </property>
         <property name="onDocumentReadyScript" value="
             var selected = @{#line.planActivities.size()};
             if (selected &gt; 0) {
@@ -797,31 +747,22 @@
                                 <property name="items">
                                     <list>
                                         <bean p:id="@{#line.atpId}-@{#line.registrationCode}"
-                                              parent="KSAP-SimpleDataField" p:propertyName="code" p:label="Section">
+                                              parent="KSAP-SimpleDataField" p:propertyName="code" p:label="Section"
+                                              p:cssClasses="courseActivities__code--secondary">
                                         </bean>
                                         <bean parent="KSAP-MessageField">
                                             <property name="messageText" value="PCE"/>
                                             <property name="title" value="UW Professional &amp; Continuing Education"/>
                                             <property name="render" value="@{#line.instituteCode.startsWith('95')}"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>ksap-noMargin</value>
-                                                    <value>fl-font-size-80</value>
-                                                </list>
-                                            </property>
+                                            <property name="cssClasses" value="courseActivities__code--small"/>
                                         </bean>
                                         <bean parent="Uif-ActionLink"
                                               p:id="toggle_@{#line.atpId}-@{#line.registrationCode}">
                                             <property name="actionLabel" value="View more"/>
                                             <property name="actionScript"
-                                                      value="toggleSectionDetails(jQuery(this).parents('tr.row'), jQuery(this), 'View more', 'View less')"/>
+                                                      value="toggleSectionDetails(jQuery(this).parents('tr'), jQuery(this), 'View more', 'View less')"/>
                                             <property name="render" value="@{#line.stateKey EQ 'active'}"/>
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>ksap-noMargin</value>
-                                                    <value>fl-font-size-80</value>
-                                                </list>
-                                            </property>
+                                            <property name="cssClasses" value="courseActivities__code--small"/>
                                         </bean>
                                     </list>
                                 </property>
@@ -959,7 +900,9 @@
         <property name="linkText" value="@{#line.courseDetails.courseTitle}"/>
         <property name="title" value="@{#line.courseDetails.courseTitle}"/>
         <property name="href"
-                  value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}&amp;courseCd=@{#line.courseDetails.code.replace('&amp;','%26')}"/>
+                          value="#"/>
+       <!-- <property name="href"
+                  value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}&amp;courseCd=@{#line.courseDetails.code.replace('&amp;','%26')}"/>-->
         <property name="cssClasses" value="termPlanItem__title ellipsisItem"/>
     </bean>
 
