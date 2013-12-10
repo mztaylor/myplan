@@ -93,7 +93,7 @@
                                                                     <list>
                                                                         <bean parent="KSAP-SimpleDataField" p:propertyName="code">
                                                                             <property name="label" value="Section"/>
-                                                                            <property name="id" value="@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"/>
+                                                                            <property name="id" value="@{#line.atpId}-@{#line.registrationCode}"/>
                                                                             <property name="cssClasses" value="courseActivities__code--secondary"/>
                                                                         </bean>
                                                                         <bean parent="KSAP-Message">
@@ -104,7 +104,7 @@
                                                                         </bean>
                                                                         <bean parent="Uif-ActionLink" p:actionLabel="View more"
                                                                               p:render="@{#line.stateKey EQ 'active'}">
-                                                                            <property name="id" value="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"/>
+                                                                            <property name="id" value="toggle_@{#line.atpId}-@{#line.registrationCode}"/>
                                                                             <property name="cssClasses" value="courseActivities__code--small"/>
                                                                             <property name="actionScript"
                                                                                       value="toggleSectionDetails(jQuery(this).parents('tr'), jQuery(this), 'View more', 'View less')"/>
@@ -167,7 +167,7 @@
                                                                               p:valign="@{#line.stateKey EQ 'active' ? 'TOP':'MIDDLE'}">
                                                                             <property name="items">
                                                                                 <list>
-                                                                                    <bean p:id="@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"
+                                                                                    <bean p:id="@{#line.atpId}-@{#line.registrationCode}"
                                                                                           parent="KSAP-SimpleDataField" p:propertyName="code"
                                                                                           p:label="Section" p:cssClasses="courseActivities__code--secondary"/>
                                                                                     <bean parent="KSAP-Message">
@@ -178,7 +178,7 @@
                                                                                     </bean>
                                                                                     <bean parent="Uif-ActionLink" p:actionLabel="View more"
                                                                                           p:render="@{#line.stateKey EQ 'active'}">
-                                                                                        <property name="id" value="toggle_@{#line.atpId.replace('.','-')}-@{#line.registrationCode}"/>
+                                                                                        <property name="id" value="toggle_@{#line.atpId}-@{#line.registrationCode}"/>
                                                                                         <property name="cssClasses" value="courseActivities__code--small"/>
                                                                                         <property name="actionScript"
                                                                                                 value="toggleSectionDetails(jQuery(this).parents('tr'), jQuery(this), 'View more', 'View less')"/>
