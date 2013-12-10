@@ -251,7 +251,7 @@ function initAuditActions() {
             }
         });
 
-        var jAuditMessage = jQuery(".myplan-status.audit-filtered");
+        var jAuditMessage = jQuery(".alert.audit-filtered");
         if (data == "all") {
             jAuditMessage.hide();
         } else {
@@ -259,7 +259,7 @@ function initAuditActions() {
         }
 
         jQuery(".section").each(function () {
-            var jSectionMessage = jQuery(this).find(".myplan-status.all-reqs-filtered");
+            var jSectionMessage = jQuery(this).find(".alert.all-reqs-filtered");
             if (jQuery(this).find(".requirement:visible").length > 0) {
                 jSectionMessage.hide();
             } else {

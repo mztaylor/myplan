@@ -819,7 +819,16 @@
                                         <bean p:id="addUpdatePlanItem" parent="KSAP-PrimaryActionButton-Small"
                                               p:actionLabel="Add to Plan">
                                             <property name="actionScript" value="
-                                                var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', courseId:'@{courseSummaryDetails.courseId}', code:'@{courseSummaryDetails.code}', courseCd: '@{courseCd NE null ? courseCd : null}',generalPlaceholder: '@{generalPlaceholder NE null ? generalPlaceholder : null}', type: '@{type}' ,pageId: '@{(generalPlaceholder NE null OR courseCd NE null) ? 'recommended_dialog_page' : null}'};
+                                                var additionalFormData = {
+                                                    viewId: 'PlannedCourse-FormView',
+                                                    methodToCall: 'addUpdatePlanItem',
+                                                    courseId: '@{courseSummaryDetails.courseId}',
+                                                    code: '@{courseSummaryDetails.code}',
+                                                    courseCd: '@{courseCd NE null ? courseCd : null}',
+                                                    generalPlaceholder: '@{generalPlaceholder NE null ? generalPlaceholder : null}',
+                                                    type: '@{type}',
+                                                    pageId: '@{(generalPlaceholder NE null OR courseCd NE null) ? 'recommended_dialog_page' : null}'
+                                                };
                                                 submitPopupForm(additionalFormData, e, false);
                                             "/>
                                             <property name="onDocumentReadyScript" value="
@@ -835,7 +844,7 @@
                                         <bean p:id="cancelAddPlannedCourse" parent="KSAP-SecondaryActionButton-Small"
                                               p:actionLabel="Cancel">
                                             <property name="actionScript"
-                                                      value="fnPopoverSlider('course_details_info', 'course_popover_group', 'right');"/>
+                                                      value="fnPopoverSlider('@{!recommended ? 'course_details_info':'recommended_item'}', '@{!recommended ? 'course_popover_group':'recommended_popover_group'}', 'right');"/>
                                         </bean>
                                     </list>
                                 </property>
