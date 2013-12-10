@@ -395,7 +395,7 @@ function planItemTemplate(data) {
     var action = jQuery("<div/>").attr("id", itemId).attr({
         "title": data.planItemShortTitle + " " + ((data.sections != null && data.sections != "") ? data.sections + " " : "") + "'" + data.planItemLongTitle + "'",
         "class": "uif-horizontalFieldGroup planItem__action uif-tooltip uif-boxLayoutHorizontalItem" + ((data.note) ? " planItem__action--hasNote":""),
-        "data-atpid": data.atpId.replace(/-/g, "."),
+        "data-atpid": data.atpId,
         "data-planitemid": data.planItemId,
         "data-placeholder": data.placeHolder,
         "data-type": data.planItemType,
@@ -426,9 +426,9 @@ function planItemTemplate(data) {
     var clickEvent = "jQuery('#" + itemId + "').on('click', function(e) {";
 
     if (!getConfigParam("adviser")) {
-        clickEvent += "openMenu('" + data.planItemId + "-" + data.planItemType + "','" + data.planItemType + "_" + ((data.placeHolder == "true") ? "placeholder" : "course" ) + "_menu','" + data.atpId.replace(/-/g, ".") + "',e,null,'popover__menu popover__menu--large',{tail:{align:'top'},align:'top',position:'right'},false);";
+        clickEvent += "openMenu('" + data.planItemId + "-" + data.planItemType + "','" + data.planItemType + "_" + ((data.placeHolder == "true") ? "placeholder" : "course" ) + "_menu','" + data.atpId + "',e,null,'popover__menu popover__menu--large',{tail:{align:'top'},align:'top',position:'right'},false);";
     } else {
-        clickEvent += "var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'" + data.planItemId + "', atpId:'" + data.atpId.replace(/-/g, ".") + "', pageId:'recommended_dialog_page'" + ((data.placeHolder != "true") ? ", courseId:'" + data.courseId + "'" : "" ) + "}; openPopup('recommended_dialog_page', retrieveData, 'plan', {width:'300px', height:'16px'}, {tail:{hidden:true}, position:'right', align:'middle', close:true}, e);";
+        clickEvent += "var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'" + data.planItemId + "', atpId:'" + data.atpId + "', pageId:'recommended_dialog_page'" + ((data.placeHolder != "true") ? ", courseId:'" + data.courseId + "'" : "" ) + "}; openPopup('recommended_dialog_page', retrieveData, 'plan', {width:'300px', height:'16px'}, {tail:{hidden:true}, position:'right', align:'middle', close:true}, e);";
     }
 
     clickEvent += "});";
@@ -450,7 +450,7 @@ function planItemTemplate(data) {
         itemGroup.append(note);
         var decoded = jQuery("<div/>").html(data.note).text();
         var popoverTheme = "note";
-        var editNote = "<p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId.replace(/-/g, ".") + " onclick=editNote(jQuery(this),event);>Edit Note</a></p>";
+        var editNote = "<p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId + " onclick=editNote(jQuery(this),event);>Edit Note</a></p>";
 
         if (data.planItemType == "recommended") {
             popoverTheme = "adviser";
@@ -499,7 +499,7 @@ function updatePlanItem(data) {
 function updateNote(data) {
     var noteId = data.planItemType + "-" + data.atpId + "-" + data.planItemId + "-note";
     jQuery("#" + noteId).off();
-    var createTooltip = "createTooltip('" + noteId + "', ' <p>" + data.note + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId.replace(/-/g, ".") + " onclick=editNote(jQuery(this),event);>Edit Note</a></p> ', {position:'top',align:'left',alwaysVisible:false,tail:{align:'left',hidden:false},themePath:'../themes/ksap/images/popover-theme/',themeName:'note',selectable:true,width:'250px',openingSpeed:50,closingSpeed:50,openingDelay:500,closingDelay:0,themeMargins:{total:'17px',difference:'10px'},distance:'0px'},true,true);";
+    var createTooltip = "createTooltip('" + noteId + "', ' <p>" + data.note + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId + " onclick=editNote(jQuery(this),event);>Edit Note</a></p> ', {position:'top',align:'left',alwaysVisible:false,tail:{align:'left',hidden:false},themePath:'../themes/ksap/images/popover-theme/',themeName:'note',selectable:true,width:'250px',openingSpeed:50,closingSpeed:50,openingDelay:500,closingDelay:0,themeMargins:{total:'17px',difference:'10px'},distance:'0px'},true,true);";
     var noteScript = jQuery("input[data-for='" + noteId + "'][data-role='script']")[0];
     jQuery(noteScript).attr("name", "script").removeAttr("script").val(createTooltip);
     evalHiddenScript(jQuery(noteScript));
@@ -649,12 +649,12 @@ function toggleSectionAction(actionId, regId, action, data, primaryPlan) {
         case "added":
             component.removeClass("courseActivities__itemAdd").addClass("courseActivities__itemDelete").attr("data-planned", "true").data("planned", true);
             row.addClass("courseActivities--planned").next("tr.collapsible").addClass("courseActivities--planned").next("tr.collapsible").addClass("courseActivities--planned");
-            script = "jQuery('#' + '" + actionId + "').click(function(e) { var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'removeItem', planItemId:'" + planItemId + "', sectionCode:'" + component.data("coursesection") + "', atpId:'" + data.atpId.replace(/-/g, '.') + "', instituteCode:'" + data.InstituteCode + "', registrationCode:'" + regId + "', primary:" + component.data("primary") + "}; submitHiddenForm('plan', additionalFormData, e); }); ";
+            script = "jQuery('#' + '" + actionId + "').click(function(e) { var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'removeItem', planItemId:'" + planItemId + "', sectionCode:'" + component.data("coursesection") + "', atpId:'" + data.atpId + "', instituteCode:'" + data.InstituteCode + "', registrationCode:'" + regId + "', primary:" + component.data("primary") + "}; submitHiddenForm('plan', additionalFormData, e); }); ";
             break;
         case "deleted":
             component.removeClass("courseActivities__itemDelete").addClass("courseActivities__itemAdd").attr("data-planned", "false").data("planned", false);
             row.removeClass("courseActivities--planned").next("tr.collapsible").removeClass("courseActivities--planned").next("tr.collapsible").removeClass("courseActivities--planned");
-            script = "jQuery('#' + '" + actionId + "').click(function(e) { var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', courseId:'" + data.courseId + "', sectionCode:'" + component.data("coursesection") + "', atpId:'" + data.atpId.replace(/-/g, '.') + "', instituteCode:'" + data.InstituteCode + "', registrationCode:'" + regId + "', primary:" + component.data("primary") + "}; submitHiddenForm('plan', additionalFormData, e); }); ";
+            script = "jQuery('#' + '" + actionId + "').click(function(e) { var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', courseId:'" + data.courseId + "', sectionCode:'" + component.data("coursesection") + "', atpId:'" + data.atpId + "', instituteCode:'" + data.InstituteCode + "', registrationCode:'" + regId + "', primary:" + component.data("primary") + "}; submitHiddenForm('plan', additionalFormData, e); }); ";
             if (jQuery("#" + data.courseId + "_toggle").data("hidden")) {
                 row.hide().next("tr.collapsible").hide().next("tr.collapsible").hide();
             }

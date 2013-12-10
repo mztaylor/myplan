@@ -2864,6 +2864,7 @@ public class PlanController extends UifControllerBase {
         params.put("courseCd", courseCd);
         params.put("subject", subject);
         params.put("number", number);
+        params.put("credit", credit);
         params.put("note", note);
 
 
