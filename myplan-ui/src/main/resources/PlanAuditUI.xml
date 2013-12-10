@@ -756,7 +756,7 @@
                                 <property name="linkText" value="@{#line.courseCode} @{#line.courseTitle}"/>
                                 <property name="title" value="@{#line.courseCode} @{#line.courseTitle}"/>
                                 <property name="href"
-                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode.replace('&amp;','%26')}"/>
+                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode NE null ? #line.courseCode.replace('&amp;','%26') : #line.courseCode}"/>
                             </bean>
 
                             <!-- Adviser with null credit selection -->
@@ -891,7 +891,7 @@
                             <bean parent="Uif-Link" p:linkText="@{#line.courseCode}">
                                 <property name="title" value="@{#line.courseCode}"/>
                                 <property name="href"
-                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode.replace('&amp;','%26')}"/>
+                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode NE null ? #line.courseCode.replace('&amp;','%26') : #line.courseCode}"/>
                             </bean>
                         </list>
                     </property>

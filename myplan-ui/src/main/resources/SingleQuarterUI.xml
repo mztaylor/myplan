@@ -343,7 +343,7 @@
                             <bean parent="KSAP-SimpleDataField" p:propertyName="courseCode"/>
                             <bean parent="Uif-Link" p:linkText="@{#line.courseTitle}" p:render="@{#line.courseId NE ''}">
                                 <property name="href"
-                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode.replace('&amp;','%26')}"/>
+                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode NE null ? #line.courseCode.replace('&amp;','%26') : #line.courseCode}"/>
                                 <property name="cssClasses" value="ellipsisItem"/>
                             </bean>
                         </list>
@@ -464,7 +464,7 @@
                             </bean>
                             <bean parent="Uif-Link" p:linkText="@{#line.courseTitle}">
                                 <property name="href"
-                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode.replace('&amp;','%26')}"/>
+                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode NE null ? #line.courseCode.replace('&amp;','%26') : #line.courseCode}"/>
                                 <property name="cssClasses" value="courseActivities__title ellipsisItem removeMargin"/>
                             </bean>
                         </list>
@@ -900,9 +900,7 @@
         <property name="linkText" value="@{#line.courseDetails.courseTitle}"/>
         <property name="title" value="@{#line.courseDetails.courseTitle}"/>
         <property name="href"
-                          value="#"/>
-       <!-- <property name="href"
-                  value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}&amp;courseCd=@{#line.courseDetails.code.replace('&amp;','%26')}"/>-->
+                  value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}&amp;courseCd=@{#line.courseDetails.code NE null ? #line.courseDetails.code.replace('&amp;','%26') : #line.courseDetails.code}"/>
         <property name="cssClasses" value="termPlanItem__title ellipsisItem"/>
     </bean>
 
