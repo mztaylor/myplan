@@ -227,7 +227,7 @@
                             <bean parent="Uif-Link" p:width="420px"
                                   p:linkText="@{#line.courseDetails.code} @{#line.courseDetails.courseTitle} (@{#line.courseDetails.credit})">
                                 <property name="href"
-                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}&amp;courseCd=@{#line.courseDetails.code.replace('&amp;','%26')}"/>
+                                          value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseDetails.courseId}&amp;courseCd=@{#line.courseDetails.code NE null ? #line.courseDetails.code.replace('&amp;','%26') : #line.courseDetails.code}"/>
                                 <property name="cssClasses" value="ellipsisItem removeMargin"/>
                             </bean>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="courseDetails.abbrGenEdRequirements"
