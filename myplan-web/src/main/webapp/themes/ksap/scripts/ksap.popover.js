@@ -136,7 +136,7 @@ function openMenu(id, getId, atpId, e, selector, popupClasses, popupOptions, clo
                 getId = "completed_placeholder_menu";
             }
             if (getId == "planned_course_menu" || getId == "backup_course_menu") {
-                getId = "completed_course_menu";
+                getId = "completed_plan_items_menu";
             }
         }
     }

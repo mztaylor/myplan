@@ -51,7 +51,7 @@
                             <ref bean="planned_placeholder_menu"/>
                             <ref bean="backup_course_menu"/>
                             <ref bean="backup_placeholder_menu"/>
-                            <ref bean="completed_course_menu"/>
+                            <ref bean="completed_plan_items_menu"/>
                             <ref bean="completed_placeholder_menu"/>
                             <ref bean="academic_course_menu"/>
                             <bean id="hidden_new_user_flag" parent="KSAP-SimpleDataField" p:propertyName="newUser"
@@ -278,11 +278,11 @@
 
 
     <!--Completed planned/backup Menu Items-->
-    <bean id="completed_course_menu" parent="KSAP-VerticalBoxGroup" p:hidden="true"
+    <bean id="completed_plan_items_menu" parent="KSAP-VerticalBoxGroup" p:hidden="true"
           p:cssClasses="popover__menu popover__menu--large">
         <property name="items">
             <list>
-                <bean parent="menuOptionCourseSummary"/>
+                <bean parent="menuOptionPlanItemSummary"/>
                 <bean parent="menuOptionMove"/>
                 <bean parent="menuOptionDelete"/>
                 <bean parent="menuTextDelete"/>
