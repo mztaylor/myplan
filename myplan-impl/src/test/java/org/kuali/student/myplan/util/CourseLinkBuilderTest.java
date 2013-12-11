@@ -43,25 +43,25 @@ public class CourseLinkBuilderTest {
             * ABC 123
             * */
             getLuServiceImpl().createClu("GEOG 371:WORLD HUNGER AND AGRICULTURAL DEVELOPMENT", null, null);
-            assertTrue("<a onclick=\"openCourse('GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">GEOG 371</a>".equals(getCourseLinkBuilder().makeLinks("GEOG 371")));
+            assertTrue("<a onclick=\"openCourse('GEOG 371','GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">GEOG 371</a>".equals(getCourseLinkBuilder().makeLinks("GEOG 371")));
 
             /*coursePattern + non linked numPattern Test
             * ABC 100, 101
             * */
-            assertTrue("<a onclick=\"openCourse('GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">GEOG 371</a>, 401".equals(getCourseLinkBuilder().makeLinks("GEOG 371, 401")));
+            assertTrue("<a onclick=\"openCourse('GEOG 371','GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">GEOG 371</a>, 401".equals(getCourseLinkBuilder().makeLinks("GEOG 371, 401")));
 
             /*coursePattern + linked numPattern Test*/
             getLuServiceImpl().createClu("GEOG 401:WORLD HUNGER AND AGRICULTURAL DEVELOPMENT", null, null);
-            assertTrue("<a onclick=\"openCourse('GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">GEOG 371</a>, <a onclick=\"openCourse('GEOG 401', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">401</a>".equals(getCourseLinkBuilder().makeLinks("GEOG 371, 401")));
-            assertTrue("<a onclick=\"openCourse('GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">GEOG 371</a> or <a onclick=\"openCourse('GEOG 401', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">401</a>".equals(getCourseLinkBuilder().makeLinks("GEOG 371 or 401")));
-            assertTrue("<a onclick=\"openCourse('GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">GEOG 371</a> - <a onclick=\"openCourse('GEOG 401', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">401</a>".equals(getCourseLinkBuilder().makeLinks("GEOG 371 - 401")));
-            assertTrue("<a onclick=\"openCourse('GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">GEOG 371</a>, <a onclick=\"openCourse('GEOG 401', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">401</a>, 136 and 324 or <a onclick=\"openCourse('GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">371</a>".equals(getCourseLinkBuilder().makeLinks("GEOG 371, 401, 136 and 324 or 371")));
+            assertTrue("<a onclick=\"openCourse('GEOG 371','GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">GEOG 371</a>, <a onclick=\"openCourse('GEOG 401','GEOG 401', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">401</a>".equals(getCourseLinkBuilder().makeLinks("GEOG 371, 401")));
+            assertTrue("<a onclick=\"openCourse('GEOG 371','GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">GEOG 371</a> or <a onclick=\"openCourse('GEOG 401','GEOG 401', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">401</a>".equals(getCourseLinkBuilder().makeLinks("GEOG 371 or 401")));
+            assertTrue("<a onclick=\"openCourse('GEOG 371','GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">GEOG 371</a> - <a onclick=\"openCourse('GEOG 401','GEOG 401', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">401</a>".equals(getCourseLinkBuilder().makeLinks("GEOG 371 - 401")));
+            assertTrue("<a onclick=\"openCourse('GEOG 371','GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">GEOG 371</a>, <a onclick=\"openCourse('GEOG 401','GEOG 401', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">401</a>, 136 and 324 or <a onclick=\"openCourse('GEOG 371','GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">371</a>".equals(getCourseLinkBuilder().makeLinks("GEOG 371, 401, 136 and 324 or 371")));
 
 
             /*jointPattern Test
             * ABC 100, 101
             * */
-            assertTrue("<a onclick=\"openCourse('GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">COM/GEOG 371</a>".equals(getCourseLinkBuilder().makeLinks("COM/GEOG 371")));
+            assertTrue("<a onclick=\"openCourse('GEOG 371','GEOG 371', event);\" href=\"#\" title=\"WORLD HUNGER AND AGRICULTURAL DEVELOPMENT\">COM/GEOG 371</a>".equals(getCourseLinkBuilder().makeLinks("COM/GEOG 371")));
 
 
             /*courseNoSpacePattern Test

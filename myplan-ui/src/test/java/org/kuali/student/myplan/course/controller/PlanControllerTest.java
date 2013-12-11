@@ -22,6 +22,7 @@ import org.kuali.student.r2.core.versionmanagement.dto.VersionInfo;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.service.CourseService;
 import org.kuali.student.r2.lum.course.service.assembler.CourseAssemblerConstants;
+import org.kuali.student.r2.lum.lrc.dto.ResultValueRangeInfo;
 import org.kuali.student.r2.lum.lrc.dto.ResultValuesGroupInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -71,14 +72,14 @@ public class PlanControllerTest {
     @Test
     public void startAddPlannedCourseFormTest() {
         PlanForm planForm = new PlanForm();
-        String atpId = "kuali.uw.atp.2013.4";
+        String atpId = "20141";
         String subject = "ENGL";
         String suffix = "242";
         String credit = "5";
         String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
         planForm.setCourseId(courseId);
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         PlanController controller = getPlanController();
         controller.start(planForm, null, null, null);
         assertTrue(planForm.getCourseSummaryDetails() != null);
@@ -88,13 +89,13 @@ public class PlanControllerTest {
     @Test
     public void startAddPlannedCourseFormTest2() {
         PlanForm planForm = new PlanForm();
-        String atpId = "kuali.uw.atp.2013.4";
+        String atpId = "20141";
         String subject = "ENGL";
         String suffix = "242";
         String credit = "5";
         String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), courseId, PlanConstants.COURSE_TYPE, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), courseId, PlanConstants.COURSE_TYPE, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         planForm.setPlanItemId(planItemInfo.getId());
         getPlanController().start(planForm, null, null, null);
         assertTrue(planForm.getCourseSummaryDetails() != null);
@@ -105,7 +106,7 @@ public class PlanControllerTest {
     public void addPlannedCourseTest() {
         createStudentUserSession();
         PlanForm planForm = new PlanForm();
-        String atpId = "kuali.uw.atp.2013.4";
+        String atpId = "20141";
         String subject = "COM";
         String suffix = "202";
         String credit = "5";
@@ -113,6 +114,7 @@ public class PlanControllerTest {
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
         planForm.setCourseId(courseId);
         planForm.setAtpId(atpId);
+        planForm.setCode(String.format("%s %s", subject, suffix));
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED);
@@ -124,7 +126,7 @@ public class PlanControllerTest {
     public void addSavedCourseTest() {
         createStudentUserSession();
         PlanForm planForm = new PlanForm();
-        String atpId = "kuali.uw.atp.2013.4";
+        String atpId = "20141";
         String subject = "COM";
         String suffix = "401";
         String credit = "5";
@@ -132,6 +134,7 @@ public class PlanControllerTest {
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
         planForm.setCourseId(courseId);
         planForm.setAtpId(atpId);
+        planForm.setCode(String.format("%s %s", subject, suffix));
         getPlanController().addSavedCourse(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED);
@@ -143,20 +146,20 @@ public class PlanControllerTest {
     @Test
     public void removePlanItemTest() {
         createStudentUserSession();
-        String atpId = "kuali.uw.atp.2013.4";
+        String atpId = "20141";
         String subject = "COM";
         String suffix = "201";
         String credit = "5";
         String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), courseId, PlanConstants.COURSE_TYPE, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), courseId, PlanConstants.COURSE_TYPE, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         getPlanController().removePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> removeEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED);
         assertTrue(StringUtils.hasText(removeEvents.get("planItemId")) && removeEvents.get("planItemId").equals(planItemInfo.getId()));
-        assertTrue(StringUtils.hasText(removeEvents.get("atpId")) && removeEvents.get("atpId").equals("kuali-uw-atp-2013-4"));
+        assertTrue(StringUtils.hasText(removeEvents.get("atpId")) && removeEvents.get("atpId").equals("20141"));
 
     }
 
@@ -172,7 +175,7 @@ public class PlanControllerTest {
         createStudentUserSession();
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("COM 2xx");
-        planForm.setAtpId("kuali.uw.atp.2014.2");
+        planForm.setAtpId("20142");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
@@ -186,7 +189,7 @@ public class PlanControllerTest {
         createStudentUserSession();
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("COM");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
@@ -199,7 +202,7 @@ public class PlanControllerTest {
         createStudentUserSession();
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("BLAH 2xx");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
@@ -212,7 +215,7 @@ public class PlanControllerTest {
         createStudentUserSession();
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("COM 2xx");
-        planForm.setAtpId("kuali.uw.atp.2012.3");
+        planForm.setAtpId("20123");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
@@ -226,7 +229,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("COM 2xx");
         planForm.setCredit("5");
-        planForm.setAtpId("kuali.uw.atp.2014.4");
+        planForm.setAtpId("20144");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
@@ -240,7 +243,7 @@ public class PlanControllerTest {
         createStudentUserSession();
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
@@ -255,7 +258,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.elective|uw.academicplan.placeholder");
-        planForm.setAtpId("kuali.uw.atp.2014.4");
+        planForm.setAtpId("20144");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
@@ -271,7 +274,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.other|uw.academicplan.placeholder");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
@@ -285,7 +288,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.other|uw.academicplan.placeholder");
-        planForm.setAtpId("kuali.uw.atp.2014.2");
+        planForm.setAtpId("20142");
         planForm.setNote("This is a test Note");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
@@ -303,7 +306,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.foreignlanguage|uw.academicplan.placeholder");
-        planForm.setAtpId("kuali.uw.atp.2014.3");
+        planForm.setAtpId("20143");
         planForm.setNote("This is a test Note");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
@@ -321,7 +324,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.tjhkjdahsd|uw.academicplan.hkfajs");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setNote("This is a test Note");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
@@ -334,12 +337,12 @@ public class PlanControllerTest {
     @Test
     public void updateCoursePlaceHolderTest1() {
         createStudentUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "COM 2xx", PlanConstants.PLACE_HOLDER_TYPE, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, "5", "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "COM 2xx", PlanConstants.PLACE_HOLDER_TYPE, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, "5", "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         planForm.setCourseCd("MATH 3xx");
         planForm.setCredit("10");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
@@ -356,7 +359,7 @@ public class PlanControllerTest {
         planForm.setPlanItemId("mockId");
         planForm.setCourseCd("MATH 3xx");
         planForm.setCredit("10");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
@@ -367,12 +370,12 @@ public class PlanControllerTest {
     @Test
     public void updateGeneralPlaceHolderTest1() {
         createStudentUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.foreignlanguage", "uw.academicplan.placeholder", "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.foreignlanguage", "uw.academicplan.placeholder", "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
 
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.other|uw.academicplan.placeholder");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setNote("This is a test Note");
         planForm.setPlanItemId(planItemInfo.getId());
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
@@ -392,7 +395,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.other|uw.academicplan.placeholder");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setNote("This is a test Note");
         planForm.setPlanItemId("mockId");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
@@ -404,18 +407,18 @@ public class PlanControllerTest {
     @Test
     public void updateCourseToCoursePlaceHolderTest() {
         createStudentUserSession();
-        String atpId = "kuali.uw.atp.2013.4";
+        String atpId = "20141";
         String subject = "COM";
         String suffix = "489";
         String credit = "5";
         String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), courseId, PlanConstants.COURSE_TYPE, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), courseId, PlanConstants.COURSE_TYPE, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         planForm.setCourseCd("COM 3xx");
         planForm.setCredit("10");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
@@ -430,17 +433,17 @@ public class PlanControllerTest {
     @Test
     public void updateCourseToGeneralPlaceHolderTest() {
         createStudentUserSession();
-        String atpId = "kuali.uw.atp.2013.4";
+        String atpId = "20141";
         String subject = "ENGL";
         String suffix = "111";
         String credit = "5";
         String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), courseId, PlanConstants.COURSE_TYPE, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), courseId, PlanConstants.COURSE_TYPE, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.other|uw.academicplan.placeholder");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setNote("This is a test Note");
         planForm.setPlanItemId(planItemInfo.getId());
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
@@ -458,11 +461,11 @@ public class PlanControllerTest {
     @Test
     public void updateCoursePlaceHolderToGeneralPlaceHolderTest() {
         createStudentUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "COM 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "COM 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.other|uw.academicplan.placeholder");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setNote("This is a test Note");
         planForm.setPlanItemId(planItemInfo.getId());
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
@@ -480,12 +483,12 @@ public class PlanControllerTest {
     @Test
     public void updateGeneralPlaceHolderToCoursePlaceHolderTest() {
         createStudentUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         planForm.setCourseCd("COM 3xx");
         planForm.setCredit("10");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
@@ -500,18 +503,18 @@ public class PlanControllerTest {
     @Test
     public void updateGeneralPlaceHolderToCourseTest() {
         createStudentUserSession();
-        String atpId = "kuali.uw.atp.2013.4";
+        String atpId = "20141";
         String subject = "COM";
         String suffix = "201";
         String credit = "5";
         String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
 
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         planForm.setCourseCd("COM 201");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
@@ -526,18 +529,18 @@ public class PlanControllerTest {
     @Test
     public void updateCoursePlaceHolderToCourseTest() {
         createStudentUserSession();
-        String atpId = "kuali.uw.atp.2013.4";
+        String atpId = "20141";
         String subject = "COM";
         String suffix = "201";
         String credit = "5";
         String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
 
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         planForm.setCourseCd("COM 201");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
         getPlanController().addUpdatePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
@@ -552,83 +555,83 @@ public class PlanControllerTest {
     @Test
     public void copyCoursePlaceHolder() {
         createStudentUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
-        planForm.setAtpId("kuali.uw.atp.2014.3");
+        planForm.setAtpId("20143");
         getPlanController().copyPlannedCourse(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED);
         assertTrue(StringUtils.hasText(addEvents.get("planItemId")) && !addEvents.get("planItemId").equals(planItemInfo.getId()));
-        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("kuali-uw-atp-2014-3"));
+        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("20143"));
     }
 
     @Test
     public void moveCoursePlaceHolder() {
         createStudentUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
-        planForm.setAtpId("kuali.uw.atp.2014.3");
+        planForm.setAtpId("20143");
         getPlanController().movePlannedCourse(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED);
         assertTrue(StringUtils.hasText(addEvents.get("planItemId")) && addEvents.get("planItemId").equals(planItemInfo.getId()));
-        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("kuali-uw-atp-2014-3"));
+        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("20143"));
     }
 
     @Test
     public void removeCoursePlaceHolder() {
         createStudentUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         getPlanController().removePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> removeEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED);
         assertTrue(StringUtils.hasText(removeEvents.get("planItemId")) && removeEvents.get("planItemId").equals(planItemInfo.getId()));
-        assertTrue(StringUtils.hasText(removeEvents.get("atpId")) && removeEvents.get("atpId").equals("kuali-uw-atp-2013-4"));
+        assertTrue(StringUtils.hasText(removeEvents.get("atpId")) && removeEvents.get("atpId").equals("20141"));
     }
 
 
     @Test
     public void copyGeneralPlaceHolder() {
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
-        planForm.setAtpId("kuali.uw.atp.2014.1");
+        planForm.setAtpId("20141");
         getPlanController().copyPlannedCourse(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED);
         assertTrue(StringUtils.hasText(addEvents.get("planItemId")) && !addEvents.get("planItemId").equals(planItemInfo.getId()));
-        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("kuali-uw-atp-2014-1"));
+        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("20141"));
     }
 
     @Test
     public void moveGeneralPlaceHolder() {
         createStudentUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
-        planForm.setAtpId("kuali.uw.atp.2014.1");
+        planForm.setAtpId("20141");
         getPlanController().movePlannedCourse(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED);
         assertTrue(StringUtils.hasText(addEvents.get("planItemId")) && addEvents.get("planItemId").equals(planItemInfo.getId()));
-        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("kuali-uw-atp-2014-1"));
+        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("20141"));
     }
 
     @Test
     public void removeGeneralPlaceHolder() {
         createStudentUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         getPlanController().removePlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> removeEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED);
         assertTrue(StringUtils.hasText(removeEvents.get("planItemId")) && removeEvents.get("planItemId").equals(planItemInfo.getId()));
-        assertTrue(StringUtils.hasText(removeEvents.get("atpId")) && removeEvents.get("atpId").equals("kuali-uw-atp-2013-4"));
+        assertTrue(StringUtils.hasText(removeEvents.get("atpId")) && removeEvents.get("atpId").equals("20141"));
     }
 
 
@@ -641,11 +644,11 @@ public class PlanControllerTest {
     @Test
     public void updateNoteTest1() {
         createStudentUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, "This is original note", "5", "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, "This is original note", "5", "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         planForm.setType(PlanConstants.GENERAL_TYPE);
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setNote("This is a updated Note");
         planForm.setPlanItemId(planItemInfo.getId());
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
@@ -662,11 +665,11 @@ public class PlanControllerTest {
     @Test
     public void updateNoteTest2() {
         createStudentUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, "This is original note", "5", "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, "This is original note", "5", "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         planForm.setType(PlanConstants.GENERAL_TYPE);
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setNote("");
         planForm.setPlanItemId(planItemInfo.getId());
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
@@ -679,11 +682,11 @@ public class PlanControllerTest {
     @Test
     public void updateNoteTest3() {
         createStudentUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, "5", "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, "5", "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         planForm.setType(PlanConstants.GENERAL_TYPE);
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setNote("This is a updated Note");
         planForm.setPlanItemId(planItemInfo.getId());
         planForm.setPageId(PlanConstants.ADD_DIALOG_PAGE);
@@ -706,7 +709,7 @@ public class PlanControllerTest {
     @Test
     public void recommendedCourseTest1() {
         createAdviserUserSession();
-        String atpId = "kuali.uw.atp.2013.4";
+        String atpId = "20141";
         String subject = "COM";
         String suffix = "220";
         String credit = "5";
@@ -716,7 +719,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         planForm.setCourseCd("COM 220");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.SUCCESS));
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
@@ -734,7 +737,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         planForm.setCourseCd("COM 201");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
         assertTrue(GlobalVariables.getMessageMap().getErrorMessages().get("plan_item_action_response_page").get(0).getErrorKey().equalsIgnoreCase(PlanConstants.ERROR_KEY_OPERATION_FAILED));
@@ -746,7 +749,7 @@ public class PlanControllerTest {
     @Test
     public void recommendedCourseTest3() {
         createAdviserUserSession();
-        String atpId = "kuali.uw.atp.2013.4";
+        String atpId = "20141";
         String subject = "COM";
         String suffix = "201";
         String credit = "5";
@@ -756,7 +759,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         planForm.setCourseCd("COM 201");
-        planForm.setAtpId("kuali.uw.atp.2013.3");
+        planForm.setAtpId("20133");
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
         assertTrue(GlobalVariables.getMessageMap().getErrorMessages().get("plan_item_action_response_page").get(0).getErrorKey().equalsIgnoreCase(PlanConstants.ERROR_KEY_HISTORICAL_ATP));
@@ -770,7 +773,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         planForm.setCourseCd("COM 2xx");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED);
@@ -783,17 +786,17 @@ public class PlanControllerTest {
     @Test
     public void recommendedCourseTest5() {
         createAdviserUserSession();
-        String atpId = "kuali.uw.atp.2013.4";
+        String atpId = "20141";
         String subject = "BIOL";
         String suffix = "180";
         String credit = "5";
         String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), courseId, PlanConstants.COURSE_TYPE, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, null, null, "7EDFB986D97A4CD084F26C43813D4B90");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), courseId, PlanConstants.COURSE_TYPE, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, null, null, "7EDFB986D97A4CD084F26C43813D4B90");
         PlanForm planForm = new PlanForm();
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         planForm.setCourseCd("BIOL 180");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
         assertTrue(GlobalVariables.getMessageMap().getErrorMessages().get("plan_item_action_response_page").get(0).getErrorKey().equalsIgnoreCase(PlanConstants.ERROR_KEY_OPERATION_FAILED));
@@ -808,7 +811,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.other|uw.academicplan.placeholder");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setNote("This is a test Note");
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
@@ -828,7 +831,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.other|uw.academicplan.placeholder");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
@@ -842,7 +845,7 @@ public class PlanControllerTest {
         createAdviserUserSession();
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("COM");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
@@ -856,7 +859,7 @@ public class PlanControllerTest {
         createAdviserUserSession();
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("BLAH 2xx");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
@@ -870,7 +873,7 @@ public class PlanControllerTest {
         createAdviserUserSession();
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
@@ -885,7 +888,7 @@ public class PlanControllerTest {
         createAdviserUserSession();
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("fjhsjflksjfls");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
@@ -899,7 +902,7 @@ public class PlanControllerTest {
         createAdviserUserSession();
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("COM 2xx");
-        planForm.setAtpId("kuali.uw.atp.2013.4kjhs");
+        planForm.setAtpId("20141kjhs");
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
@@ -913,7 +916,7 @@ public class PlanControllerTest {
         createAdviserUserSession();
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("COM 2xx COM 4xx");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
@@ -927,7 +930,7 @@ public class PlanControllerTest {
         createStudentUserSession();
         PlanForm planForm = new PlanForm();
         planForm.setCourseCd("COM 2xx");
-        planForm.setAtpId("kuali.uw.atp.2013.4");
+        planForm.setAtpId("20141");
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
         assertTrue(planForm.getRequestStatus().equals(PlanForm.REQUEST_STATUS.ERROR));
@@ -939,13 +942,13 @@ public class PlanControllerTest {
     @Test
     public void deleteRecommendedCourseTest1() {
         createAdviserUserSession();
-        String atpId = "kuali.uw.atp.2013.4";
+        String atpId = "20141";
         String subject = "COM";
         String suffix = "233";
         String credit = "5";
         String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
         addCourseInfo(courseId, courseId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), courseId, PlanConstants.COURSE_TYPE, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, null, null, "7EDFB986D97A4CD084F26C43813D4B90");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), courseId, PlanConstants.COURSE_TYPE, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, null, null, "7EDFB986D97A4CD084F26C43813D4B90");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         getPlanController().removeRecommendedItem(planForm, null, null, null);
@@ -953,7 +956,7 @@ public class PlanControllerTest {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED);
         assertTrue(StringUtils.hasText(addEvents.get("planItemId")) && addEvents.get("planItemId").equals(planItemInfo.getId()));
-        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equalsIgnoreCase("kuali-uw-atp-2013-4"));
+        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equalsIgnoreCase("20141"));
         assertTrue(StringUtils.hasText(addEvents.get("planItemType")) && addEvents.get("planItemType").equalsIgnoreCase("recommended"));
     }
 
@@ -962,7 +965,7 @@ public class PlanControllerTest {
     @Test
     public void deleteRecommendedCourseTest2() {
         createAdviserUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, null, "5", "7EDFB986D97A4CD084F26C43813D4B90");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, null, "5", "7EDFB986D97A4CD084F26C43813D4B90");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         getPlanController().removeRecommendedItem(planForm, null, null, null);
@@ -970,7 +973,7 @@ public class PlanControllerTest {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED);
         assertTrue(StringUtils.hasText(addEvents.get("planItemId")) && addEvents.get("planItemId").equals(planItemInfo.getId()));
-        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equalsIgnoreCase("kuali-uw-atp-2013-4"));
+        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equalsIgnoreCase("20141"));
         assertTrue(StringUtils.hasText(addEvents.get("planItemType")) && addEvents.get("planItemType").equalsIgnoreCase("recommended"));
     }
 
@@ -978,7 +981,7 @@ public class PlanControllerTest {
     @Test
     public void deleteRecommendedCourseTest3() {
         createAdviserUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, null, null, "7EDFB986D97A4CD084F26C43813D4B90");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, null, null, "7EDFB986D97A4CD084F26C43813D4B90");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         getPlanController().removeRecommendedItem(planForm, null, null, null);
@@ -986,7 +989,7 @@ public class PlanControllerTest {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_DELETED);
         assertTrue(StringUtils.hasText(addEvents.get("planItemId")) && addEvents.get("planItemId").equals(planItemInfo.getId()));
-        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equalsIgnoreCase("kuali-uw-atp-2013-4"));
+        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equalsIgnoreCase("20141"));
         assertTrue(StringUtils.hasText(addEvents.get("planItemType")) && addEvents.get("planItemType").equalsIgnoreCase("recommended"));
     }
 
@@ -994,7 +997,7 @@ public class PlanControllerTest {
     @Test
     public void deleteRecommendedCourseTest4() {
         createAdviserUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFF"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, null, null, "CD1C227DE3094092B257CBDD4869CABA");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFF"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, null, null, "CD1C227DE3094092B257CBDD4869CABA");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         getPlanController().removeRecommendedItem(planForm, null, null, null);
@@ -1019,7 +1022,7 @@ public class PlanControllerTest {
     @Test
     public void deleteRecommendedCourseTest6() {
         createStudentUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "kuali.uw.atp.2013.4", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "CD1C227DE3094092B257CBDD4869CABA");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "com 2xx", PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL, "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "CD1C227DE3094092B257CBDD4869CABA");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
         getPlanController().removeRecommendedItem(planForm, null, null, null);
@@ -1145,6 +1148,7 @@ public class PlanControllerTest {
         courseInfo.setId(courseId);
         courseInfo.setSubjectArea(subject);
         courseInfo.setCourseNumberSuffix(suffix);
+        courseInfo.setCode(String.format("%s %s", subject, suffix));
         VersionInfo versionInfo = new VersionInfo();
         versionInfo.setVersionIndId(versionId);
         courseInfo.setVersion(versionInfo);
@@ -1165,7 +1169,21 @@ public class PlanControllerTest {
             attributes.add(new AttributeInfo(CourseAssemblerConstants.COURSE_RESULT_COMP_ATTR_MAX_CREDIT_VALUE, credits[1]));
         }
 
-        resultComponentInfo.setAttributes(attributes);
+        ResultValueRangeInfo resultValueRangeInfo = new ResultValueRangeInfo();
+        if (CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED.equals(creditType)) {
+            resultValueRangeInfo.setMaxValue(credit);
+            resultValueRangeInfo.setMinValue(credit);
+        } else if (CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_MULTIPLE.equals(creditType)) {
+            String[] credits = credit.split(",");
+            resultValueRangeInfo.setMaxValue(credits[0]);
+            resultValueRangeInfo.setMinValue(credits[1]);
+        } else if (CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_VARIABLE.equals(creditType)) {
+            String[] credits = credit.split("-");
+            resultValueRangeInfo.setMaxValue(credits[0]);
+            resultValueRangeInfo.setMinValue(credits[1]);
+        }
+
+        resultComponentInfo.setResultValueRange(resultValueRangeInfo);
         options.add(resultComponentInfo);
         courseInfo.setCreditOptions(options);
 

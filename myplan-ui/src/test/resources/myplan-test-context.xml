@@ -17,6 +17,8 @@
 
     <import resource="classpath:myplan-search-config.xml"/>
     <import resource="classpath:ks-services-test-context.xml"/>
+    <bean id="atpServiceImpl" class="org.kuali.student.myplan.service.mock.AtpServiceMockImpl"/>
+    <bean id="emServiceImpl" class="org.kuali.student.myplan.service.mock.EnumerationManagementServiceMockImpl"/>
 
 
     <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
