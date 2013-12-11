@@ -55,7 +55,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     private CourseService courseService;
     private AtpService atpService;
     private CluService luService;
-    private PersonService personService;    
+    private PersonService personService;
 
     /**
      * This method provides a way to manually provide a CourseService implementation during testing.
@@ -464,13 +464,17 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
 
             for (AttributeInfo attributeInfo : planItem.getAttributes()) {
-                for (PlanItemAttributeEntity planItemAttributeEntity : tempAttributeEntities) {
-                    if (planItemAttributeEntity.getKey().equals(attributeInfo.getKey())) {
-                        planItemAttributeEntity.setValue(attributeInfo.getValue());
-                        attributeEntities.add(planItemAttributeEntity);
-                    }else{
-                        attributeEntities.add(new PlanItemAttributeEntity(attributeInfo,planItemEntity));
+                if (!CollectionUtils.isEmpty(tempAttributeEntities)) {
+                    for (PlanItemAttributeEntity planItemAttributeEntity : tempAttributeEntities) {
+                        if (planItemAttributeEntity.getKey().equals(attributeInfo.getKey())) {
+                            planItemAttributeEntity.setValue(attributeInfo.getValue());
+                            attributeEntities.add(planItemAttributeEntity);
+                        } else {
+                            attributeEntities.add(new PlanItemAttributeEntity(attributeInfo, planItemEntity));
+                        }
                     }
+                } else {
+                    attributeEntities.add(new PlanItemAttributeEntity(attributeInfo, planItemEntity));
                 }
 
             }
@@ -740,8 +744,8 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                             for (PlanItemAttributeEntity attributeEntity : p.getAttributes()) {
                                 if (AcademicPlanServiceConstants.CROSS_LISTED_COURSE_ATTR_KEY.equals(attributeEntity.getKey()) && StringUtils.hasText(attributeEntity.getValue())) {
                                     plannedCrossListedCourse = attributeEntity.getValue();
-                        }
-                    }
+                                }
+                            }
 
                             if (StringUtils.hasText(plannedCrossListedCourse) && StringUtils.hasText(crossListedCourse)) {
                                 String[] str = plannedCrossListedCourse.split(AcademicPlanServiceConstants.SPLIT_DIGITS_ALPHABETS);
@@ -768,15 +772,15 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                     if (StringUtils.hasText(plannedCrossListedCourse) && StringUtils.hasText(crossListedCourse)) {
                         String[] str = plannedCrossListedCourse.split(AcademicPlanServiceConstants.SPLIT_DIGITS_ALPHABETS);
                         if (crossListedSubject.equals(str[0].trim()) && crossListedNumber.equals(str[1].trim())) {
-                    throw new AlreadyExistsException(String.format("A plan item for plan [%s] and course id [%s] already exists.",
-                            p.getLearningPlan().getId(), courseId));
-                }
+                            throw new AlreadyExistsException(String.format("A plan item for plan [%s] and course id [%s] already exists.",
+                                    p.getLearningPlan().getId(), courseId));
+                        }
                     } else if (StringUtils.isEmpty(plannedCrossListedCourse) && StringUtils.isEmpty(crossListedCourse)) {
                         throw new AlreadyExistsException(String.format("A plan item for plan [%s] and course id [%s] already exists.",
                                 p.getLearningPlan().getId(), courseId));
+                    }
+                }
             }
-        }
-    }
         }
     }
 
