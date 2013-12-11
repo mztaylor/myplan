@@ -212,7 +212,7 @@
                                 <property name="cssClasses" value="courseDetails__fieldLabel"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-Label" p:labelText="Jointly Offered Course(s)"
+                                        <bean parent="Uif-Label" p:labelText="Offered Jointly With"
                                               p:renderColon="false"/>
                                         <ref bean="course_cross_listings_help_icon"/>
                                     </list>
