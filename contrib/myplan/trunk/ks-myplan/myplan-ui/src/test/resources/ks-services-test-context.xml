@@ -15,7 +15,7 @@
 
     <import resource="classpath:ks-myplan-test-dao-context.xml"/>
 
-    <bean id="atpEntityManagerFactory" parent="defaultEntityManagerFactory" autowire-candidate="false" autowire="no">
+    <!--<bean id="atpEntityManagerFactory" parent="defaultEntityManagerFactory" autowire-candidate="false" autowire="no">
         <property name="persistenceUnitName" value="Atp"/>
         <property name="persistenceXmlLocation" value="classpath:META-INF/atp-core-persistence.xml"/>
         <property name="dataSource" ref="myplanDataSourceXAPool"/>
@@ -29,16 +29,16 @@
     <bean id="atpDao"
           class="org.kuali.student.r2.core.class1.atp.dao.AtpDao">
         <property name="em" ref="atpEntityManager"/>
-    </bean>
+    </bean>-->
 
-    <bean id="atpServiceImpl"
+    <!--<bean id="atpServiceImpl"
           class="org.kuali.student.r2.core.class1.atp.service.impl.AtpServiceImpl">
         <property name="atpDao" ref="atpDao"/>
-        <!-- Currently Search or create are not used by MyPlan in ATP. -->
-        <!--<property name="searchManager" ref="atpSearchManager"/>-->
-        <!--<property name="dictionaryServiceDelegate" ref="coreDictionaryService" />-->
-        <!--<property name="validatorFactory" ref="coreValidatorFactory"/>-->
-    </bean>
+        &lt;!&ndash; Currently Search or create are not used by MyPlan in ATP. &ndash;&gt;
+        &lt;!&ndash;<property name="searchManager" ref="atpSearchManager"/>&ndash;&gt;
+        &lt;!&ndash;<property name="dictionaryServiceDelegate" ref="coreDictionaryService" />&ndash;&gt;
+        &lt;!&ndash;<property name="validatorFactory" ref="coreValidatorFactory"/>&ndash;&gt;
+    </bean>-->
 
 
     <!-- Lu Service Config -->
@@ -61,8 +61,14 @@
           class="org.kuali.student.r2.common.class1.search.SearchManagerImpl">
         <constructor-arg index="0"
                          value="classpath:myplan-search-config.xml"/>
+        <property name="dao" ref="luSearchableDao"/>
         <!--<property name="crossSearchManager" ref="lumCrossServiceSearchManager"/>-->
     </bean>
+    <bean id="luSearchableDao"
+          class="org.kuali.student.r2.common.dao.impl.SearchableCrudDaoImpl">
+        <property name="em" ref="luEntityManager"/>
+    </bean>
+
 
     <bean id="luServiceImpl" class="org.kuali.student.r2.lum.lu.service.impl.CluServiceImpl">
         <property name="luDao" ref="luDao"/>
@@ -78,7 +84,7 @@
     <bean id="lrcClient"
           class="org.kuali.rice.ksb.messaging.KSBClientProxyFactoryBean">
         <property name="serviceEndpointInterface"
-                  value="org.kuali.student.lum.lrc.service.LrcService"/>
+                  value="org.kuali.student.r2.lum.lrc.service.LRCService"/>
         <property name="serviceQName"
                   value="{http://student.kuali.org/wsdl/lrc}LearningResultService"/>
     </bean>
@@ -116,9 +122,8 @@
     </bean>
 
 
-
     <!-- Enumeration Service Config -->
-    <bean id="emEntityManagerFactory" parent="defaultEntityManagerFactory">
+    <!--<bean id="emEntityManagerFactory" parent="defaultEntityManagerFactory">
         <property name="persistenceUnitName" value="EnumerationManagement"/>
         <property name="persistenceXmlLocation"
                   value="classpath:META-INF/enumeration-persistence.xml" />
@@ -142,6 +147,6 @@
           class="org.kuali.student.r2.core.class1.enumerationmanagement.service.impl.EnumerationManagementServiceImpl">
         <property name="enumDao" ref="emDao" />
         <property name="searchManager" ref="emSearchManager"/>
-    </bean>
+    </bean>-->
 
 </beans>

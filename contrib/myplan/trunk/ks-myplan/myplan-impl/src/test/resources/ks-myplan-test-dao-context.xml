@@ -51,7 +51,7 @@
         </property>
     </bean>
 
-    <bean id="myplanDataSourceXAPool" class="org.kuali.rice.core.framework.persistence.jdbc.datasource.XAPoolDataSource">
+    <bean id="myplanDataSourceXAPool" class="org.kuali.rice.student.core.database.DerbyXAPoolDataSource">
         <property name="transactionManager" ref="transactionManagerXAPool"/>
         <property name="driverClassName" value="${ks.myplan.datasource.driver.name}"/>
         <property name="url" value="${ks.myplan.datasource.url}"/>

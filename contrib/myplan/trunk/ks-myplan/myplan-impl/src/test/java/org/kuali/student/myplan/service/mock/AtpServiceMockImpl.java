@@ -24,7 +24,7 @@ public class AtpServiceMockImpl implements AtpService {
 
     @Override
     public AtpInfo getAtp(@WebParam(name = "atpId") String s, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        throw new RuntimeException("Not implemented");
+        return new AtpInfo();
     }
 
     @Override
