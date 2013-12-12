@@ -695,6 +695,18 @@
                         <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
+                <bean p:id="hidden_courseItem_course_subject" parent="KSAP-SimpleInputField" p:propertyName="subject"
+                      p:hidden="true">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_courseItem_course_number" parent="KSAP-SimpleInputField" p:propertyName="number"
+                      p:hidden="true">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
                 <bean p:id="hidden_courseItem_section_code" parent="KSAP-SimpleInputField" p:propertyName="sectionCode">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
@@ -827,6 +839,18 @@
                     </property>
                 </bean>
                 <bean p:id="hidden_course_code" parent="KSAP-SimpleInputField" p:propertyName="courseCode"
+                      p:hidden="true">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_course_subject" parent="KSAP-SimpleInputField" p:propertyName="subject"
+                      p:hidden="true">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean p:id="hidden_course_number" parent="KSAP-SimpleInputField" p:propertyName="number"
                       p:hidden="true">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
