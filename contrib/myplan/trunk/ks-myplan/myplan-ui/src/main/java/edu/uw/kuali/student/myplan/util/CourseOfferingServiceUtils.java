@@ -115,7 +115,7 @@ public class CourseOfferingServiceUtils {
         String typeName = sectionNode.elementText("SectionType");
         info.setTypeName(typeName);
 
-        String campus = sectionNode.elementText("course.campus");
+        String campus = sectionNode.elementText("CourseCampus");
 
 
         {
