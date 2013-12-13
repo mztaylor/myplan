@@ -10,6 +10,8 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
     public static final String DEFAULT_SELECT = "Select Credit amount";
     public static final String DEFAULT_SELECT_AND_MORE = "Select Credit amount and more";
     public static final String DEFAULT_VALUE = "Select a degree program or minor";
+    public static final String AUDIT_TYPE_DEGREE = "degree";
+    public static final String AUDIT_TYPE_PLAN = "plan";
     public static final String AUDIT_PARAM_ID = "auditId";
     public static final String AUDIT_PARAM_TYPE = "auditType";
     public static final String AUDIT_EMPTY_PAGE = "degree_audit_empty_page";
@@ -48,14 +50,10 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
 
     public static final String APPLICATION_URL = "application.url";
 
-    public static final String AUDIT_FAILED_HTML = "<div class=\"ksap-validationMessages " +
-            "ksap-validationMessages-error\">" +
-            "<ul>" +
-            "<li>"+
+    public static final String AUDIT_FAILED_HTML = "<div class=\"alert alert-error\">" +
             "Audit processing failed due to '%s'" +
-            "</li>" +
-            "</ul>" +
-            "<input name=\"script\" type=\"hidden\" data-role=\"script\" value=\"removeCookie();\"/></div>";
+            "<input name=\"script\" type=\"hidden\" data-role=\"script\" value=\"jQuery.event.trigger('AUDIT_ERROR', {'auditType':'%s'});\"/>" +
+            "</div>";
     public static final String IS_AUDIT_SERVICE_UP = "isAuditServiceRunning";
 
     public static final String AUDIT_STATUS_ERROR_MSG = "audit status returned error";

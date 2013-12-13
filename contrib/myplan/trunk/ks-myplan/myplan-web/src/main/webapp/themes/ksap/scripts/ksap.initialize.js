@@ -83,9 +83,11 @@ function setUrlParam(key, value) {
 /* This is for DOM changes to refresh the view on back to keep the view updated */
 if (readUrlHash("modified")) {
     var url = window.location.href;
+    var newParams = window.location.search.substring(1);
+    if (readUrlParam('planAudit.auditId') != false || readUrlParam('degreeAudit.auditId') != false) newParams = removeUrlParams(window.location.search, ["formKey", "cacheKey", "planAudit.auditId", "degreeAudit.auditId"]);
     var aHash = window.location.href.split("#")[1].replace("#", "").split("&");
     aHash.splice(aHash.indexOf("modified=true"), 1);
-    window.location.assign(url.split("#")[0] + ((aHash.length > 0) ? "#" + aHash.join("&") : ""));
+    window.location.assign(window.location.protocol + "//" + window.location.host + window.location.pathname + "?" + newParams + ((aHash.length > 0) ? "#" + aHash.join("&") : ""));
 }
 
 var _gaq = _gaq || [];
@@ -163,4 +165,21 @@ function openDocument(url) {
     } else {
         window.location.assign(newUrl);
     }
+}
+
+function removeUrlParams(url, removeList) {
+    var tempArray = url.substring(1).split("&");
+    var tempObject = {};
+    jQuery.each(tempArray, function (index, value) {
+        tempObject[value.split('=')[0]] = value.split('=')[1];
+    });
+    jQuery.each(removeList, function (index, value) {
+        delete tempObject[value];
+    });
+    tempArray = [];
+    for (var key in tempObject) {
+        if (key !== "" && tempObject[key] !== "") tempArray.push(encodeURIComponent(key) + "=" + encodeURIComponent(tempObject[key]));
+    }
+
+    return tempArray.join("&");
 }

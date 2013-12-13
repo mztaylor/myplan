@@ -71,14 +71,23 @@
         <property name="cssClasses" value="module"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses" value="module__item"/>
         <property name="onDocumentReadyScript" value="
-            getPendingAudit('degree_audits_summary', 'degree');
+            var pendingAudit = jQuery.cookie('pendingAudit');
+            if (pendingAudit) getPendingAudit('degree_audits_summary', 'degree', pendingAudit);
             if (readUrlParam('viewId') == 'DegreeAudit-FormView') {
                 indicateViewingAudit('degree_audits_summary','degree');
             }
-            jQuery('#degree_audits_summary').on('REFRESH_AUDITS AUDIT_COMPLETE', function(event, data){
+            jQuery('#degree_audits_summary').on('AUDIT_COMPLETE AUDIT_ERROR', function(event, data) {
+                removeCookie('pendingAudit');
+            });
+            jQuery('#degree_audits_summary').on('REFRESH_AUDITS AUDIT_ERROR', function(event, data) {
+                if( data.auditType == 'degree' ) {
+                    customRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'});
+                }
+            });
+            jQuery('#degree_audits_summary').on('AUDIT_COMPLETE', function(event, data) {
                 if( data.auditType == 'degree' ) {
                     var newAudit = jQuery('.auditReport__html--' + data.auditType + ' .myplan-audit-report').attr('auditid');
-                    customRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'}, (newAudit &amp;&amp; event.type == 'AUDIT_COMPLETE' ? 'link_' + newAudit : null));
+                    customRetrieveComponent('degree_audits_summary','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'}, 'link_' + newAudit);
                 }
             });
         "/>

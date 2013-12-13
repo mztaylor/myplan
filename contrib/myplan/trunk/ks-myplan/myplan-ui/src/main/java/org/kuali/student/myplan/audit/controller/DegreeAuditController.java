@@ -305,7 +305,7 @@ public class DegreeAuditController extends UifControllerBase {
                     String[] params = {};
                     GlobalVariables.getMessageMap().putError(DEGREE_AUDIT_PROGRAM_PARAM_SEATTLE,
                             DegreeAuditConstants.AUDIT_RUN_FAILED, params);
-                    form.setAuditHtml(String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, DegreeAuditConstants.AUDIT_STATUS_ERROR_MSG));
+                    form.setAuditHtml(String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, DegreeAuditConstants.AUDIT_STATUS_ERROR_MSG, DegreeAuditConstants.AUDIT_TYPE_DEGREE));
                 }
             }
 
@@ -324,7 +324,7 @@ public class DegreeAuditController extends UifControllerBase {
                 String message = cause.getMessage();
                 if (message != null) {
                     String errorMessage = getErrorMessageFromXml(message);
-                    String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, errorMessage);
+                    String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, errorMessage, DegreeAuditConstants.AUDIT_TYPE_DEGREE);
                     form.setAuditHtml(html);
                 }
             }
@@ -376,7 +376,7 @@ public class DegreeAuditController extends UifControllerBase {
                     String[] params = {};
                     GlobalVariables.getMessageMap().putError(PLAN_AUDIT_PROGRAM_PARAM_SEATTLE,
                             DegreeAuditConstants.AUDIT_RUN_FAILED, params);
-                    form.setAuditHtml(String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, DegreeAuditConstants.AUDIT_STATUS_ERROR_MSG));
+                    form.setAuditHtml(String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, DegreeAuditConstants.AUDIT_STATUS_ERROR_MSG, DegreeAuditConstants.AUDIT_TYPE_PLAN));
                 }
             }
 
@@ -396,7 +396,7 @@ public class DegreeAuditController extends UifControllerBase {
                 String message = cause.getMessage();
                 if (message != null) {
                     String errorMessage = getErrorMessageFromXml(message);
-                    String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, errorMessage);
+                    String html = String.format(DegreeAuditConstants.AUDIT_FAILED_HTML, errorMessage, DegreeAuditConstants.AUDIT_TYPE_PLAN);
                     form.setAuditHtml(html);
                 }
             }
