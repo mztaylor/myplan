@@ -47,8 +47,8 @@ var blockPendingAuditStyle = {
     }
 };
 
-function removeCookie() {
-    jQuery.cookie("pendingAudit", null, {expires: new Date().setTime(0)});
+function removeCookie(name) {
+    jQuery.cookie(name, null, {expires: new Date().setTime(0)});
 }
 
 function setPendingAudit(obj, minutes) {
@@ -89,18 +89,18 @@ function setPendingAudit(obj, minutes) {
     }
 }
 
-function getPendingAudit(id, type) {
-    if (jQuery.cookie('pendingAudit')) {
-        var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie('pendingAudit')));
-        if (type == data.auditType) {
-            var component = jQuery("#" + id + " .uif-stackedCollectionLayout");
-            if (data) {
-                var item = jQuery("<div />").addClass("module__item module__item--pending").html('<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_small.gif" class="icon"/><span>Auditing</span> ' + data.programName);
-                component.prepend(item);
-                pollPendingAudit(data.programId, data.recentAuditId, data.auditType);
-            }
+function getPendingAudit(id, type, data) {
+    var auditData = jQuery.parseJSON(decodeURIComponent(data));
+    if (type == auditData.auditType) {
+        var component = jQuery("#" + id + " .uif-stackedCollectionLayout");
+        if (auditData) {
+            var item = jQuery("<div />").addClass("module__item module__item--pending").html('<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_small.gif" class="icon"/><span>Auditing</span> ' + auditData.programName);
+            component.prepend(item);
             if (component.prev(".module__empty").length > 0) {
                 component.prev(".module__empty").remove();
+            }
+            if ((readUrlParam('viewId') != 'DegreeAudit-FormView' && readUrlParam('viewId') != 'PlanAudit-FormView') && readUrlParam(auditData.auditType + 'Audit.auditId') == false) {
+                pollPendingAudit(auditData.programId, auditData.recentAuditId, auditData.auditType);
             }
         }
     }
@@ -110,19 +110,31 @@ function blockPendingAudit(data, refresh) {
     var id = "audit_section";
     if (data.auditType == "plan") id = "plan_audit_section";
     var elementToBlock = jQuery("#" + id);
-    jQuery("body").data("showAuditGrowl", !refresh);
     blockPendingAuditStyle.message = 'We are currently auditing your ' + data.auditType + " for '<strong>" + data.programName + "</strong>'.";
     elementToBlock.block(blockPendingAuditStyle);
-    jQuery("#" + id).on('AUDIT_COMPLETE', function (event, data) {
+    jQuery("body").on('AUDIT_COMPLETE AUDIT_ERROR', function (event, data) {
         if (refresh) {
             window.location.assign(window.location.href.split("#")[0]);
         } else {
+            if ((readUrlParam('viewId') == 'DegreeAudit-FormView' || readUrlParam('viewId') == 'PlanAudit-FormView') && readUrlParam(data.auditType + 'Audit.auditId') != false) {
+                setUrlHash('modified', 'true');
+            }
             elementToBlock.unblock();
         }
     });
 }
 
 function pollPendingAudit(programId, recentAuditId, auditType) {
+    var auditData = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("pendingAudit")));
+    var title = auditType.charAt(0).toUpperCase() + auditType.slice(1); + " Audit";
+
+    jQuery("body").on('AUDIT_COMPLETE', function (event, data) {
+        showGrowl(auditData.programName + " " + title + " is ready to view.", title + " Completed", "infoGrowl");
+    });
+    jQuery("body").on('AUDIT_ERROR', function (event, data) {
+        showGrowl("Your " + title + " was unable to complete.", title + " Error", "errorGrowl");
+    });
+
     jQuery.ajaxPollSettings.pollingType = "interval";
     jQuery.ajaxPollSettings.interval = 250; // polling interval in milliseconds
 
@@ -135,25 +147,21 @@ function pollPendingAudit(programId, recentAuditId, auditType) {
             return (response.status == 'DONE' || response.status == 'FAILED' || jQuery.cookie("pendingAudit") == null);
         },
         success: function (response) {
+            if (jQuery.cookie("pendingAudit") == null || response.status == 'FAILED') {
+                jQuery.event.trigger("AUDIT_ERROR", {"auditType": auditType});
+            } else {
+                jQuery.event.trigger("AUDIT_COMPLETE", {"auditType": auditType});
+            }
+            /*
             var showAuditGrowl = true;
             if (readUrlParam("viewId") == "DegreeAudit-FormView" || readUrlParam("viewId") == "PlanAudit-FormView") {
                 showAuditGrowl = jQuery("body").data("showAuditGrowl");
                 if (readUrlParam(auditType + "Audit.auditId") != false) jQuery("body").on('AUDIT_COMPLETE', function (event, data) {
-                    setUrlParam(auditType + "Audit.auditId", "");
+                    showAuditGrowl = false;
+
                 });
             }
-            var title = "Degree Audit";
-            if (auditType == "plan") {
-                title = "Plan Audit";
-            }
-            if (jQuery.cookie("pendingAudit") == null || response.status == 'FAILED') {
-                showGrowl("Your " + title + " was unable to complete.", title + " Error", "errorGrowl");
-            } else {
-                var data = jQuery.parseJSON(decodeURIComponent(jQuery.cookie("pendingAudit")));
-                if (showAuditGrowl) showGrowl(data.programName + " " + title + " is ready to view.", title + " Completed", "infoGrowl");
-            }
-            jQuery.cookie("pendingAudit", null, {expires: new Date().setTime(0)});
-            //jQuery.event.trigger("AUDIT_COMPLETE", {"auditType": auditType});
+            */
         }
     });
 }

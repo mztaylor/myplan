@@ -202,7 +202,6 @@
                     </property>
                 </bean>
 
-
                 <!--Cross Listings -->
                 <bean parent="KSAP-HorizontalFieldGroup"
                       p:render="@{dataObject.courseSummaryDetails.crossListings.size() gt 0}">
