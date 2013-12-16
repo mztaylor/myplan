@@ -3,7 +3,6 @@ package org.kuali.student.myplan.util;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.r2.common.dto.ContextInfo;
-import org.kuali.student.r2.common.util.constants.LuServiceConstants;
 import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
 import org.kuali.student.r2.core.search.infc.SearchResult;
 import org.kuali.student.r2.core.search.infc.SearchResultCell;
@@ -26,6 +25,8 @@ public class CourseLinkBuilder {
     private transient static CluService luService;
 
     static String link = "<a onclick=\"openCourse('%s','%s %s', event);\" href=\"#\" title=\"%s\">%s</a>";
+
+    public static final ContextInfo CONTEXT_INFO = new ContextInfo();
 
     /**
      * References to course (subject + number) are found and converted to links.
@@ -209,7 +210,7 @@ public class CourseLinkBuilder {
                 searchRequest.addParam("lastScheduledTerm", DegreeAuditAtpHelper.getLastScheduledAtpId());
 
 
-                SearchResult searchResult = getLuService().search(searchRequest, new ContextInfo());
+                SearchResult searchResult = getLuService().search(searchRequest, CONTEXT_INFO);
                 for (SearchResultRow row : searchResult.getRows()) {
                     String courseId = getCellValue(row, "lu.resultColumn.cluId");
                     String title = getCellValue(row, "id.lngName");
