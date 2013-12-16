@@ -46,15 +46,6 @@
         </property>
     </bean>
 
-    <!-- Layout for Empty Course Search Form Page  -->
-    <bean id="course_search_section" parent="KSAP-VerticalBoxGroup" p:width="710px">
-        <property name="items">
-            <list>
-                <ref bean="course_search_panel"/>
-            </list>
-        </property>
-    </bean>
-
     <!-- Layout for Course Search Result Page -->
     <bean id="course_search_result_section" parent="KSAP-VerticalBoxGroup" p:width="710px">
         <property name="items">
@@ -92,12 +83,13 @@
                                 if (readUrlHash('searchQuery')) {
                                     jQuery('#searchQuery_control').val(readUrlHash('searchQuery'));
                                 }
-                                "/>
+                            "/>
                             <property name="onKeyPressScript" value="
                                 var code = (e.keyCode ? e.keyCode : e.which);
                                 if (code == 13) {
                                     e.preventDefault ? e.preventDefault() : e.returnValue = false;
                                     jQuery('button.courseSearch__submit').click();
+                                    jQuery(this).blur();
                                 }
                             "/>
                         </bean>

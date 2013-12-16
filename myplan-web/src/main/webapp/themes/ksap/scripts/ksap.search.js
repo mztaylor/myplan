@@ -145,6 +145,7 @@ jQuery.fn.iterateSorted = function (sorter, print) {
 }(jQuery));
 
 function searchForCourses(id, parentId) {
+    jQuery(".courseSearch__field, .courseSearch__input, .courseSearch__submit").addClass("disabled").prop("disabled", true);
     var results = jQuery("#" + parentId + " > .uif-horizontalBoxLayout"); // course_search_results_panel
     results.fadeOut("fast");
     var sQuery = jQuery("input[name='searchQuery']").val();
@@ -234,8 +235,9 @@ function searchForCourses(id, parentId) {
                         fadeOut: 0,
                         overlayCSS: {
                             backgroundColor: '#fff',
-                            opacity: 0,
-                            cursor: 'wait'
+                            opacity: 0.9,
+                            cursor: 'wait',
+                            border: 'none'
                         },
                         css: {
                             top: '20px',
@@ -253,6 +255,7 @@ function searchForCourses(id, parentId) {
                 },
                 complete: function () {
                     jQuery("#" + parentId).unblock();
+                    jQuery(".courseSearch__field, .courseSearch__input, .courseSearch__submit").removeClass("disabled").prop("disabled", false);
                 }
             });
         },
@@ -267,7 +270,7 @@ function searchForCourses(id, parentId) {
         sAjaxSource: '/student/myplan/course/search?queryText=' + escape(sQuery) + '&termParam=' + sTerm + '&campusParam=' + aCampus + '&time=' + new Date().getTime(),
         sCookiePrefix: "course_search_",
         sDom: "ilrtSp",
-        sPaginationType: "full_numbers",
+        sPaginationType: "full_numbers"
     });
 }
 
