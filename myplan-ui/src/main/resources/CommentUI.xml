@@ -271,7 +271,7 @@
                 </bean>
                 <bean p:id="cancelMessage" parent="KSAP-PrimaryActionButton" p:actionLabel="Cancel"
                       p:render="@{!#form.feedBackMode}">
-                    <property name="actionScript" value="jQuery.fancybox.close(true);"/>
+                    <property name="actionScript" value="parent.jQuery.fancybox.close(true);"/>
                 </bean>
                 <ref bean="comment_sent"/>
                 <ref bean="comment_close"/>
