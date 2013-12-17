@@ -304,16 +304,16 @@ public class CourseSearchController extends UifControllerBase {
                     if ((divisionsQueried.size() == 1 && !divisionsQueried.contains(course.getSubject())) || (numbersQueried.size() == 1 && !numbersQueried.contains(course.getNumber()))) {
                         continue;
                     }
-                //       loadScheduledTerms(course);
-                subjectArea.add(course.getSubject());
-                loadTermsOffered(course);
-                loadGenEduReqs(course);
+                    //       loadScheduledTerms(course);
+                    subjectArea.add(course.getSubject());
+                    loadTermsOffered(course);
+                    loadGenEduReqs(course);
                     String key = String.format("%s:%s:%s", course.getCourseVersionIndependentId(), course.getSubject().trim(), course.getNumber().trim());
                     if (courseStatusMap.containsKey(key)) {
 
                         course.setStatus(courseStatusMap.get(key));
-                }
-                courseList.add(course);
+                    }
+                    courseList.add(course);
                 }
                 if (courseList.size() >= maxCount) {
                     break;
@@ -477,6 +477,9 @@ public class CourseSearchController extends UifControllerBase {
     private Set<String> getDivisionsFromSearchRequests(List<SearchRequestInfo> requestInfos) {
         Set<String> divisions = new HashSet<String>();
         for (SearchRequestInfo searchRequestInfo : requestInfos) {
+            if ("myplan.lu.search.title".equals(searchRequestInfo.getSearchKey()) || "myplan.lu.search.description".equals(searchRequestInfo.getSearchKey()) || "myplan.lu.search.fulltext".equals(searchRequestInfo.getSearchKey())) {
+                return new HashSet<String>();
+            }
             for (SearchParamInfo requestParam : searchRequestInfo.getParams()) {
                 if ("division".equals(requestParam.getKey())) {
                     divisions.add(requestParam.getValues().get(0).trim());
@@ -495,6 +498,9 @@ public class CourseSearchController extends UifControllerBase {
     private Set<String> getNumbersFromSearchRequests(List<SearchRequestInfo> requestInfos) {
         Set<String> numbers = new HashSet<String>();
         for (SearchRequestInfo searchRequestInfo : requestInfos) {
+            if ("myplan.lu.search.title".equals(searchRequestInfo.getSearchKey()) || "myplan.lu.search.description".equals(searchRequestInfo.getSearchKey()) || "myplan.lu.search.fulltext".equals(searchRequestInfo.getSearchKey())) {
+                return new HashSet<String>();
+            }
             for (SearchParamInfo requestParam : searchRequestInfo.getParams()) {
                 if ("code".equals(requestParam.getKey())) {
                     numbers.add(requestParam.getValues().get(0).trim());
@@ -534,10 +540,10 @@ public class CourseSearchController extends UifControllerBase {
                 if (!courseIds.contains(id)) {
                 /* hitCourseID(courseMap, id);*/
                     courseIds.add(id);
-                Hit hit = new Hit(id);
-                tempHits.add(hit);
+                    Hit hit = new Hit(id);
+                    tempHits.add(hit);
 
-            }
+                }
 
             }
             tempHits.removeAll(hits);
@@ -626,7 +632,7 @@ public class CourseSearchController extends UifControllerBase {
             }
             if (atpTypeInfo != null) {
                 termsOffered.add(atpTypeInfo);
-        }
+            }
         }
 
         Collections.sort(termsOffered, getAtpTypeComparator());
@@ -688,23 +694,23 @@ public class CourseSearchController extends UifControllerBase {
          *  For each plan item in each plan set the state based on the type.
          */
         List<String> planItemTypes = Arrays.asList(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST, PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP);
-            List<PlanItemInfo> planItemList = getPlanHelper().getPlanItemsByTypes(getUserSessionHelper().getStudentId(), planItemTypes);
+        List<PlanItemInfo> planItemList = getPlanHelper().getPlanItemsByTypes(getUserSessionHelper().getStudentId(), planItemTypes);
         for (PlanItemInfo planItem : planItemList) {
             if (PlanConstants.COURSE_TYPE.equals(planItem.getRefObjectType())) {
-            String courseID = planItem.getRefObjectId();
+                String courseID = planItem.getRefObjectId();
                 String crossListedCourse = getPlanHelper().getCrossListedCourse(planItem.getAttributes());
                 CourseInfo courseInfo = getCourseHelper().getCourseInfoByIdAndCd(courseID, crossListedCourse);
-            CourseSearchItem.PlanState state;
-            if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
-                state = CourseSearchItem.PlanState.SAVED;
-            } else if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)
-                    || planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-                state = CourseSearchItem.PlanState.IN_PLAN;
-            } else {
-                throw new RuntimeException("Unknown plan item type.");
-            }
+                CourseSearchItem.PlanState state;
+                if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST)) {
+                    state = CourseSearchItem.PlanState.SAVED;
+                } else if (planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)
+                        || planItem.getTypeKey().equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+                    state = CourseSearchItem.PlanState.IN_PLAN;
+                } else {
+                    throw new RuntimeException("Unknown plan item type.");
+                }
                 savedCourseSet.put(String.format("%s:%s:%s", courseID, courseInfo.getSubjectArea().trim(), courseInfo.getCourseNumberSuffix().trim()), state);
-        }
+            }
         }
         logger.info("End of method getCourseStatusMap of CourseSearchController:" + System.currentTimeMillis());
         return savedCourseSet;
@@ -827,12 +833,12 @@ public class CourseSearchController extends UifControllerBase {
             req = EnumerationHelper.getEnumAbbrValForCodeByType(req, PlanConstants.GEN_EDU_ENUM_KEY);
             /*Doing this to fix a bug in IE8 which is trimming off the I&S as I*/
             if (StringUtils.hasText(req)) {
-            if (req.contains("&")) {
-                req = req.replace("&", "&amp;");
-            }
+                if (req.contains("&")) {
+                    req = req.replace("&", "&amp;");
+                }
 
-            genEdsOut.append(req);
-        }
+                genEdsOut.append(req);
+            }
         }
         return genEdsOut.toString();
     }
