@@ -116,9 +116,7 @@ function blockPendingAudit(data, refresh) {
         if (refresh) {
             window.location.assign(window.location.href.split("#")[0]);
         } else {
-            if ((readUrlParam('viewId') == 'DegreeAudit-FormView' || readUrlParam('viewId') == 'PlanAudit-FormView') && readUrlParam(data.auditType + 'Audit.auditId') != false) {
-                setUrlHash('modified', 'true');
-            }
+            setUrlHash('modified', 'true');
             elementToBlock.unblock();
         }
     });
