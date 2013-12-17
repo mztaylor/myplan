@@ -837,7 +837,7 @@
                                                          actionFeedback('actionButtonsGroup', false, null, data.cssClasses, data.message);
                                                     }
                                                 }).on('ERROR', function(event, data){
-                                                    actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
+                                                    actionFeedback('addErrorPlaceholder', false, null, data.cssClasses, data.message);
                                                 });
                                             "/>
                                         </bean>
@@ -849,7 +849,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="errorPlaceholder"/>
+                            <bean parent="errorPlaceholder" p:id="addErrorPlaceholder"/>
                             <ref bean="recommendation_info"/>
                         </list>
                     </property>
@@ -900,7 +900,7 @@
                                                jQuery('#deleteCourseYesButton').on('PLAN_ITEM_DELETED', function(event, data) {
                                                    actionFeedback('actionButtonsGroup2', false, null, data.cssClasses + ' defaultTopMargin', data.message);
                                                }).on('ERROR', function(event, data) {
-                                                   actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
+                                                   actionFeedback('deleteErrorPlaceholder', false, null, data.cssClasses, data.message);
                                                });"/>
                                         </bean>
                                         <bean p:id="deleteCourseNoButton" parent="KSAP-SecondaryActionButton-Small"
@@ -911,7 +911,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="errorPlaceholder"/>
+                            <bean parent="errorPlaceholder" p:id="deleteErrorPlaceholder"/>
                         </list>
                     </property>
                 </bean>
