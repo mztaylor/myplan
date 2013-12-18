@@ -654,7 +654,7 @@ function toggleSectionAction(actionId, regId, action, data, primaryPlan) {
         case "deleted":
             component.removeClass("courseActivities__itemDelete").addClass("courseActivities__itemAdd").attr("data-planned", "false").data("planned", false);
             row.removeClass("courseActivities--planned").next("tr.collapsible").removeClass("courseActivities--planned").next("tr.collapsible").removeClass("courseActivities--planned");
-            script = "jQuery('#' + '" + actionId + "').click(function(e) { var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', courseId:'" + data.courseId + "', sectionCode:'" + component.data("coursesection") + "', atpId:'" + data.atpId + "', instituteCode:'" + data.InstituteCode + "', registrationCode:'" + regId + "', primary:" + component.data("primary") + "}; submitHiddenForm('plan', additionalFormData, e); }); ";
+            script = "jQuery('#' + '" + actionId + "').click(function(e) { var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', code:'" + data.courseCd + "',courseId:'" + data.courseId + "', sectionCode:'" + component.data("coursesection") + "', atpId:'" + data.atpId + "', instituteCode:'" + data.InstituteCode + "', registrationCode:'" + regId + "', primary:" + component.data("primary") + "}; submitHiddenForm('plan', additionalFormData, e); }); ";
             if (jQuery("#" + data.courseId + "_toggle").data("hidden")) {
                 row.hide().next("tr.collapsible").hide().next("tr.collapsible").hide();
             }
