@@ -84,7 +84,7 @@ function setUrlParam(key, value) {
 if (readUrlHash("modified")) {
     var url = window.location.href;
     var newParams = window.location.search.substring(1);
-    if (readUrlParam('planAudit.auditId') != false || readUrlParam('degreeAudit.auditId') != false) newParams = removeUrlParams(window.location.search, ["formKey", "cacheKey", "planAudit.auditId", "degreeAudit.auditId"]);
+    if (readUrlParam('viewId') == "DegreeAudit-FormView" || readUrlParam('viewId') == "PlanAudit-FormView") newParams = removeUrlParams(window.location.search, ["formKey", "cacheKey", "planAudit.auditId", "degreeAudit.auditId"]);
     var aHash = window.location.href.split("#")[1].replace("#", "").split("&");
     aHash.splice(aHash.indexOf("modified=true"), 1);
     window.location.assign(window.location.protocol + "//" + window.location.host + window.location.pathname + "?" + newParams + ((aHash.length > 0) ? "#" + aHash.join("&") : ""));

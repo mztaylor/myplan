@@ -110,7 +110,12 @@
                                                           parent="KSAP-PrimaryActionButton-Small"
                                                           p:actionLabel="Add to Plan">
                                                         <property name="actionScript" value="
-                                                            var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', courseId:'@{courseSummaryDetails.courseId}', code:'@{courseSummaryDetails.code}'};
+                                                            var additionalFormData = {
+                                                                viewId:'PlannedCourse-FormView',
+                                                                methodToCall:'addUpdatePlanItem',
+                                                                courseId:'@{courseSummaryDetails.courseId}',
+                                                                code:'@{courseSummaryDetails.code}'
+                                                            };
                                                             submitPopupForm(additionalFormData, e, false);
                                                         "/>
                                                         <property name="onDocumentReadyScript" value="
@@ -161,7 +166,11 @@
                                                           parent="KSAP-PrimaryActionButton-Small"
                                                           p:actionLabel="Move">
                                                         <property name="actionScript" value="
-                                                            var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'movePlannedCourse', planItemId:'@{planItemId}'};
+                                                            var additionalFormData = {
+                                                                viewId:'PlannedCourse-FormView',
+                                                                methodToCall:'movePlannedCourse',
+                                                                planItemId:'@{planItemId}'
+                                                            };
                                                             submitPopupForm(additionalFormData, e, false);
                                                         "/>
                                                         <property name="onDocumentReadyScript" value="
@@ -248,7 +257,12 @@
                                                           p:render="@{setToPlanning eq false and planItemId eq null}"
                                                           p:actionLabel="Copy">
                                                         <property name="actionScript" value="
-                                                            var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', courseId:'@{courseId}', code:'@{code}'};
+                                                            var additionalFormData = {
+                                                                viewId:'PlannedCourse-FormView',
+                                                                methodToCall:'addUpdatePlanItem',
+                                                                courseId:'@{courseId}',
+                                                                code:'@{code}'
+                                                            };
                                                             submitPopupForm(additionalFormData, e, false);
                                                         "/>
                                                         <property name="onDocumentReadyScript" value="
@@ -1290,7 +1304,12 @@
             });
         "/>
         <property name="actionScript" value="
-            var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:'@{courseSummaryDetails.courseId}'};
+            var additionalFormData = {
+                viewId: 'PlannedCourse-FormView',
+                methodToCall: 'addSavedCourse',
+                courseId: '@{courseSummaryDetails.courseId}',
+                code: '@{courseSummaryDetails.code}'
+            };
             submitPopupForm(additionalFormData, e, false);
         "/>
     </bean>
