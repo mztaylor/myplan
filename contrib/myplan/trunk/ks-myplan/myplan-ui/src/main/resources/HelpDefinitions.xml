@@ -130,7 +130,7 @@
     <bean id="course_cross_listings_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
             <bean parent="KSAP-TooltipLeft"
-                  p:tooltipContent="&lt;strong&gt;A jointly offered course is a course offered by two or more departments.&lt;/strong&gt;&lt;a target=_blank href=&quot;http://depts.washington.edu/registra/curriculum/jointCourses.php&quot;&gt;Learn More&lt;/a&gt;"/>
+                  p:tooltipContent="&lt;strong&gt;A jointly offered course is a course offered by two or more departments.&lt;/strong&gt;&lt;a target=_blank href=&quot;javascript:openHelpWindow('http://depts.washington.edu/registra/curriculum/jointCourses.php')&quot;&gt;Learn More&lt;/a&gt;"/>
         </property>
     </bean>
 
