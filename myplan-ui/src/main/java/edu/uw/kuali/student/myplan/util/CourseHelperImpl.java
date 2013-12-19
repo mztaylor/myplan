@@ -210,7 +210,10 @@ public class CourseHelperImpl implements CourseHelper {
 
         CourseInfo courseInfo = null;
         try {
-            courseInfo = getCourseService().getCourse(getVerifiedCourseId(courseId), CourseSearchConstants.CONTEXT_INFO);
+            String versionVerifiedId = getVerifiedCourseId(courseId);
+            if (StringUtils.isNotEmpty(versionVerifiedId)) {
+                courseInfo = getCourseService().getCourse(versionVerifiedId, CourseSearchConstants.CONTEXT_INFO);
+            }
         } catch (DoesNotExistException e) {
             throw new RuntimeException(String.format("Course [%s] not found.", courseId), e);
         } catch (Exception e) {

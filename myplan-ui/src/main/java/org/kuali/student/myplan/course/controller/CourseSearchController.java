@@ -709,7 +709,9 @@ public class CourseSearchController extends UifControllerBase {
                 } else {
                     throw new RuntimeException("Unknown plan item type.");
                 }
-                savedCourseSet.put(String.format("%s:%s:%s", courseID, courseInfo.getSubjectArea().trim(), courseInfo.getCourseNumberSuffix().trim()), state);
+                if (courseInfo != null) {
+                    savedCourseSet.put(String.format("%s:%s:%s", courseID, courseInfo.getSubjectArea().trim(), courseInfo.getCourseNumberSuffix().trim()), state);
+                }
             }
         }
         logger.info("End of method getCourseStatusMap of CourseSearchController:" + System.currentTimeMillis());
