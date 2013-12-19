@@ -502,7 +502,7 @@
         <property name="layoutManager.id" value="course_details_institution_data_multi"/>
         <!-- Tab Label -->
         <property name="layoutManager.lineGroupPrototype">
-            <bean p:id="@{#line.code}" parent="Uif-VerticalBoxSection">
+            <bean p:id="institution_@{#line.code}" parent="Uif-VerticalBoxSection">
                 <property name="header.render" value="false"/>
             </bean>
         </property>
