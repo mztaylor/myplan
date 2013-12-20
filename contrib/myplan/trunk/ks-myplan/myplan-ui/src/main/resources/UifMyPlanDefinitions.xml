@@ -356,9 +356,9 @@
         <property name="subCollectionFieldGroupPrototype">
             <bean parent="Uif-VerticalFieldGroup" p:cssClasses="uif-subCollection"/>
         </property>
-        <property name="validationMessages">
+        <!--<property name="validationMessages">
             <null/>
-        </property>
+        </property>-->
     </bean>
 
 

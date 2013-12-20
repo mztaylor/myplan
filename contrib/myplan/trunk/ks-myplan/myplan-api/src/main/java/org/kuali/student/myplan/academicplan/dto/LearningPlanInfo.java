@@ -15,7 +15,7 @@ import java.util.List;
  * Date: 1/5/12
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "LearningPlanInfo", propOrder = {"studentId", "id", "typeKey", "stateKey", "shared", "descr", "meta", "attributes", "_futureElements"})
+@XmlType(name = "LearningPlanInfo", propOrder = {"studentId", "id", "typeKey", "stateKey", "shared", "name", "planProgram", "descr", "meta", "attributes", "_futureElements"})
 public class LearningPlanInfo extends TypeStateEntityInfo implements LearningPlan {
 
     @XmlAttribute
@@ -29,6 +29,12 @@ public class LearningPlanInfo extends TypeStateEntityInfo implements LearningPla
 
     @XmlElement
     private Boolean shared;
+
+    @XmlElement
+    private String name;
+
+    @XmlElement
+    private String planProgram;
 
     @XmlAnyElement
     private List<Element> _futureElements;
@@ -44,7 +50,7 @@ public class LearningPlanInfo extends TypeStateEntityInfo implements LearningPla
     public LearningPlanInfo(LearningPlan plan) {
         super(plan);
 
-        if(null != plan) {
+        if (null != plan) {
             this.id = plan.getId();
             this.studentId = plan.getStudentId();
             this.descr = (null != plan.getDescr()) ? new RichTextInfo(plan.getDescr()) : null;
@@ -85,5 +91,24 @@ public class LearningPlanInfo extends TypeStateEntityInfo implements LearningPla
 
     public void setShared(Boolean shared) {
         this.shared = shared;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+
+    public String getPlanProgram() {
+        return planProgram;
+    }
+
+    public void setPlanProgram(String planProgram) {
+        this.planProgram = planProgram;
     }
 }

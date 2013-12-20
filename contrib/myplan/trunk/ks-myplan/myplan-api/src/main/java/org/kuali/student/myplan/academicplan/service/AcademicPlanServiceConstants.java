@@ -27,6 +27,8 @@ public class AcademicPlanServiceConstants {
     public static final String LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY = "kuali.academicplan.planitem.state.active";
     public static final String LEARNING_PLAN_ITEM_ACCEPTED_STATE_KEY = "kuali.academicplan.planitem.state.accepted";
     public static final String LEARNING_PLAN_ITEM_PROPOSED_STATE_KEY = "kuali.academicplan.planitem.state.proposed";
+    public static final String LEARNING_PLAN_ITEM_DRAFT_STATE_KEY = "kuali.academicplan.planitem.state.draft";
+    public static final String LEARNING_PLAN_ITEM_PUBLISHED_STATE_KEY = "kuali.academicplan.planitem.state.published";
     public static final String LEARNING_PLAN_ITEM_SHARED_TRUE_KEY = "true";
     public static final String LEARNING_PLAN_ITEM_SHARED_FALSE_KEY = "false";
 
