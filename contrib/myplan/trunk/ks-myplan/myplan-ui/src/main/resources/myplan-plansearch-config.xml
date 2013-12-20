@@ -46,7 +46,7 @@
     <bean id="queryMap-parent" class="org.springframework.beans.factory.config.MapFactoryBean">
         <property name="sourceMap">
             <map>
-                <entry key="myplan.plan.id">
+                <entry key="learningPlan.id.by.programAndName">
                     <value>NATIVE:
                         SELECT ID
                         FROM
