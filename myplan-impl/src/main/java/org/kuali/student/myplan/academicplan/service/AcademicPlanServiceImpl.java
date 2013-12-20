@@ -635,25 +635,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                                            @WebParam(name = "learningPlanInfo") LearningPlanInfo learningPlanInfo,
                                                            @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, AlreadyExistsException {
-        if (AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_TEMPLATE.equals(learningPlanInfo.getTypeKey())) {
-            try {
-                SearchRequestInfo req = new SearchRequestInfo("learningPlan.id.by.programAndName");
-                req.addParam("planProgram", learningPlanInfo.getPlanProgram());
-                req.addParam("planType", AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_TEMPLATE);
-                req.addParam("name", learningPlanInfo.getName());
-                SearchResultInfo result = search(req, new ContextInfo());
-                for (SearchResultRow row : result.getRows()) {
-                    for (SearchResultCell cell : row.getCells()) {
-                        if ("learningPlan.id".equals(cell.getKey()) && StringUtils.hasText(cell.getValue())) {
-                            throw new AlreadyExistsException();
-                        }
-                    }
-                }
-
-            } catch (Exception e) {
-                throw new OperationFailedException();
-            }
-        }
         return new ArrayList<ValidationResultInfo>();
     }
 
