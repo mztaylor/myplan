@@ -365,7 +365,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
             List<String> terms = new ArrayList<String>();
             terms.add(term);
             List<CourseOfferingInstitution> courseOfferingInstitutions = courseHelper.getCourseOfferingInstitutionsById(courseDetails.getCourseSummaryDetails().getCourseId(), terms);
-            if (AtpHelper.getPublishedTerms().contains(yearTerm.toATP()) && courseOfferingInstitutions != null && courseOfferingInstitutions.size() > 0) {
+            if (AtpHelper.getPublishedTerms().contains(yearTerm.toATP()) && !CollectionUtils.isEmpty(courseOfferingInstitutions)) {
                 sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=" + AtpHelper.getAtpIdFromTermYear(term), sectionSln);
             } else {
                 sec = sectionSln;

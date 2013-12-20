@@ -243,7 +243,7 @@ public class CourseHelperImpl implements CourseHelper {
         CourseInfo courseInfo = getCourseInfo(courseId);
 
         /*If requested courseInfo is for a crossListed course then CrossListed course becomes the main course info and the rest becomes the crossListings*/
-        if (!StringUtils.isEmpty(courseCd)) {
+        if (!StringUtils.isEmpty(courseCd) && courseInfo != null) {
             DeconstructedCourseCode courseCode = getCourseDivisionAndNumber(courseCd);
             List<CourseCrossListingInfo> courseCrossListingInfos = new ArrayList<CourseCrossListingInfo>();
             if (!courseCode.getSubject().trim().equals(courseInfo.getSubjectArea().trim()) || !courseCode.getNumber().trim().equals(courseInfo.getCourseNumberSuffix().trim())) {

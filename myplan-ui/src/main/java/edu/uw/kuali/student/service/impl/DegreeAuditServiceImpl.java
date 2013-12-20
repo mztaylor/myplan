@@ -322,50 +322,52 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
                     String crossListedCourse = getPlanHelper().getCrossListedCourse(planItem.getAttributes());
                     try {
                         String latestCourseId = getCourseHelper().getVerifiedCourseId(versionIndependentId);
-                        CourseInfo courseInfo = getCourseHelper().getCourseInfoByIdAndCd(latestCourseId, crossListedCourse);
+                        if (latestCourseId != null) {
+                            CourseInfo courseInfo = getCourseHelper().getCourseInfoByIdAndCd(latestCourseId, crossListedCourse);
 
-                        DegreeAuditCourseRequest course = new DegreeAuditCourseRequest();
-                        course.curric = courseInfo.getSubjectArea().trim();
-                        course.number = courseInfo.getCourseNumberSuffix().trim();
-                        course.credit = String.valueOf(planItem.getCredit().intValue());
-                        course.activity = section;
-                        {
-                            course.campus = "Seattle";
-                            List<OrgInfo> campusList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
+                            DegreeAuditCourseRequest course = new DegreeAuditCourseRequest();
+                            course.curric = courseInfo.getSubjectArea().trim();
+                            course.number = courseInfo.getCourseNumberSuffix().trim();
+                            course.credit = String.valueOf(planItem.getCredit().intValue());
+                            course.activity = section;
+                            {
+                                course.campus = "Seattle";
+                                List<OrgInfo> campusList = OrgHelper.getOrgInfo(CourseSearchConstants.CAMPUS_LOCATION_ORG_TYPE, CourseSearchConstants.ORG_QUERY_SEARCH_BY_TYPE_REQUEST, CourseSearchConstants.ORG_TYPE_PARAM);
 
-                            List<AttributeInfo> attributes = courseInfo.getAttributes();
-                            String campusId = null;
-                            for (AttributeInfo attributeInfo : attributes) {
-                                if (CourseSearchConstants.CAMPUS_LOCATION_COURSE_ATTRIBUTE.equals(attributeInfo.getKey())) {
-                                    campusId = attributeInfo.getValue();
-                                }
-                            }
-                            if (StringUtils.hasText(campusId)) {
-                                for (OrgInfo campusOrg : campusList) {
-                                    if (campusOrg.getId().equals(campusId)) {
-                                        course.campus = campusOrg.getLongName();
+                                List<AttributeInfo> attributes = courseInfo.getAttributes();
+                                String campusId = null;
+                                for (AttributeInfo attributeInfo : attributes) {
+                                    if (CourseSearchConstants.CAMPUS_LOCATION_COURSE_ATTRIBUTE.equals(attributeInfo.getKey())) {
+                                        campusId = attributeInfo.getValue();
                                     }
                                 }
+                                if (StringUtils.hasText(campusId)) {
+                                    for (OrgInfo campusOrg : campusList) {
+                                        if (campusOrg.getId().equals(campusId)) {
+                                            course.campus = campusOrg.getLongName();
+                                        }
+                                    }
+                                }
+
                             }
 
-                        }
+                            String atpId = planItem.getPlanPeriods().get(0);
+                            AtpHelper.YearTerm yt = AtpHelper.atpToYearTerm(atpId);
+                            course.quarter = yt.getTermAsID();
+                            course.year = yt.getYearAsString();
+                            req.courses.add(course);
+                            totalPlanned++;
+                            //Adding new course request if a secondary activity exists
+                            //NOTE: secondary activity courses should no pass credit
+                            if (StringUtils.hasText(secondaryActivity)) {
+                                DegreeAuditCourseRequest secondaryActivityCourse = (DegreeAuditCourseRequest) course.clone();
+                                secondaryActivityCourse.credit = "0";
+                                secondaryActivityCourse.activity = secondaryActivity;
+                                req.courses.add(secondaryActivityCourse);
+                            }
 
-                        String atpId = planItem.getPlanPeriods().get(0);
-                        AtpHelper.YearTerm yt = AtpHelper.atpToYearTerm(atpId);
-                        course.quarter = yt.getTermAsID();
-                        course.year = yt.getYearAsString();
-                        req.courses.add(course);
-                        totalPlanned++;
-                        //Adding new course request if a secondary activity exists
-                        //NOTE: secondary activity courses should no pass credit
-                        if (StringUtils.hasText(secondaryActivity)) {
-                            DegreeAuditCourseRequest secondaryActivityCourse = (DegreeAuditCourseRequest) course.clone();
-                            secondaryActivityCourse.credit = "0";
-                            secondaryActivityCourse.activity = secondaryActivity;
-                            req.courses.add(secondaryActivityCourse);
+                            totalCredits = totalCredits + Integer.parseInt(course.credit);
                         }
-
-                        totalCredits = totalCredits + Integer.parseInt(course.credit);
                     } catch (Exception e) {
                         logger.warn("whatever", e);
                     }
@@ -952,7 +954,7 @@ public class DegreeAuditServiceImpl implements DegreeAuditService {
     }
 
     public UserSessionHelper getUserSessionHelper() {
-        if(userSessionHelper == null){
+        if (userSessionHelper == null) {
             userSessionHelper = new UserSessionHelperImpl();
         }
         return userSessionHelper;

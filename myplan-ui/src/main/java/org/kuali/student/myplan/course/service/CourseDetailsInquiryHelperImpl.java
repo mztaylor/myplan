@@ -392,7 +392,10 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
          * else get the same id as the provided course version specific Id
          */
         CourseInfo course = getCourseHelper().getCourseInfoByIdAndCd(courseId, courseCd);
-        return getPlannedCourseSummary(course, studentId);
+        if (course != null) {
+            return getPlannedCourseSummary(course, studentId);
+        }
+        return null;
     }
 
 
@@ -406,108 +409,110 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
      */
     public PlannedCourseSummary getPlannedCourseSummary(CourseInfo course, String studentId) {
 
-        PlannedCourseSummary plannedCourseSummary = new PlannedCourseSummary();
+        PlannedCourseSummary plannedCourseSummary = null;
 
 
-        // Planned, backup and Saved Item
-        AcademicPlanService academicPlanService = getAcademicPlanService();
+        if (course != null) {
+            plannedCourseSummary = new PlannedCourseSummary();
+            // Planned, backup and Saved Item
+            AcademicPlanService academicPlanService = getAcademicPlanService();
 
-        boolean isCrossListedCourse = false;
-        CourseInfo courseInfo = getCourseHelper().getCourseInfo(course.getId());
-        try {
-            isCrossListedCourse = getCourseHelper().isCrossListedCourse(courseInfo, course.getCode());
-        } catch (DoesNotExistException e) {
-            logger.error("Could not find courseOffering for courseCd" + course.getCode());
-        }
+            boolean isCrossListedCourse = false;
+            CourseInfo courseInfo = getCourseHelper().getCourseInfo(course.getId());
+            try {
+                isCrossListedCourse = getCourseHelper().isCrossListedCourse(courseInfo, course.getCode());
+            } catch (DoesNotExistException e) {
+                logger.error("Could not find courseOffering for courseCd" + course.getCode());
+            }
 
 
-        //   Get the first learning plan. There should only be one ...
-        String planTypeKey = AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
-        try {
-            List<LearningPlanInfo> plans = academicPlanService.getLearningPlansForStudentByType(studentId, planTypeKey, PlanConstants.CONTEXT_INFO);
-            if (!CollectionUtils.isEmpty(plans)) {
-                LearningPlan plan = plans.get(0);
+            //   Get the first learning plan. There should only be one ...
+            String planTypeKey = AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN;
+            try {
+                List<LearningPlanInfo> plans = academicPlanService.getLearningPlansForStudentByType(studentId, planTypeKey, PlanConstants.CONTEXT_INFO);
+                if (!CollectionUtils.isEmpty(plans)) {
+                    LearningPlan plan = plans.get(0);
 
-                //  Fetch the plan items which are associated with the plan.
-                List<PlanItemInfo> planItemsInPlan = academicPlanService.getPlanItemsInPlan(plan.getId(), PlanConstants.CONTEXT_INFO);
+                    //  Fetch the plan items which are associated with the plan.
+                    List<PlanItemInfo> planItemsInPlan = academicPlanService.getPlanItemsInPlan(plan.getId(), PlanConstants.CONTEXT_INFO);
 
-                //  Iterate through the plan items and set flags to indicate whether the item is a planned/backup or saved course.
-                for (PlanItemInfo planItemInPlanTemp : planItemsInPlan) {
-                    if (planItemInPlanTemp.getRefObjectId().equals(course.getVersion().getVersionIndId())) {
-                        //  Assuming type is planned or backup if not wishList.
-                        String typeKey = planItemInPlanTemp.getTypeKey();
-                        String crossListedCourseCd = getPlanHelper().getCrossListedCourse(planItemInPlanTemp.getAttributes());
-                        CourseInfo info = getCourseHelper().getCourseInfo(planItemInPlanTemp.getRefObjectId());
-                        if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST) && getCourseHelper().isSimilarCourses(course.getCode(), StringUtils.hasText(crossListedCourseCd) ? crossListedCourseCd : info.getCode())) {
+                    //  Iterate through the plan items and set flags to indicate whether the item is a planned/backup or saved course.
+                    for (PlanItemInfo planItemInPlanTemp : planItemsInPlan) {
+                        if (planItemInPlanTemp.getRefObjectId().equals(course.getVersion().getVersionIndId())) {
+                            //  Assuming type is planned or backup if not wishList.
+                            String typeKey = planItemInPlanTemp.getTypeKey();
+                            String crossListedCourseCd = getPlanHelper().getCrossListedCourse(planItemInPlanTemp.getAttributes());
+                            CourseInfo info = getCourseHelper().getCourseInfo(planItemInPlanTemp.getRefObjectId());
+                            if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_WISHLIST) && getCourseHelper().isSimilarCourses(course.getCode(), StringUtils.hasText(crossListedCourseCd) ? crossListedCourseCd : info.getCode())) {
 
-                            plannedCourseSummary.setSavedItemId(planItemInPlanTemp.getId());
-                            String dateStr = planItemInPlanTemp.getMeta().getCreateTime().toString();
-                            dateStr = DateFormatHelper.getDateFomatted(dateStr);
-                            plannedCourseSummary.setSavedItemDateCreated(dateStr);
+                                plannedCourseSummary.setSavedItemId(planItemInPlanTemp.getId());
+                                String dateStr = planItemInPlanTemp.getMeta().getCreateTime().toString();
+                                dateStr = DateFormatHelper.getDateFomatted(dateStr);
+                                plannedCourseSummary.setSavedItemDateCreated(dateStr);
 
-                        } else if (getCourseHelper().isSimilarCourses(course.getCode(), StringUtils.hasText(crossListedCourseCd) ? crossListedCourseCd : info.getCode())) {
-                            PlanItemDataObject planItem = PlanItemDataObject.build(planItemInPlanTemp);
-                            if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
-                                plannedCourseSummary.getPlannedList().add(planItem);
-                            } else if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
-                                plannedCourseSummary.getBackupList().add(planItem);
+                            } else if (getCourseHelper().isSimilarCourses(course.getCode(), StringUtils.hasText(crossListedCourseCd) ? crossListedCourseCd : info.getCode())) {
+                                PlanItemDataObject planItem = PlanItemDataObject.build(planItemInPlanTemp);
+                                if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED)) {
+                                    plannedCourseSummary.getPlannedList().add(planItem);
+                                } else if (typeKey.equals(PlanConstants.LEARNING_PLAN_ITEM_TYPE_BACKUP)) {
+                                    plannedCourseSummary.getBackupList().add(planItem);
+                                }
                             }
-                        }
 
+                        }
                     }
                 }
+            } catch (org.kuali.student.r2.common.exceptions.DoesNotExistException e) {
+                // Ignore and not load any plan data
+            } catch (Exception e1) {
+                logger.error(" Error loading plan information for course :" + course.getCode() + " " + e1.getMessage());
             }
-        } catch (org.kuali.student.r2.common.exceptions.DoesNotExistException e) {
-            // Ignore and not load any plan data
-        } catch (Exception e1) {
-            logger.error(" Error loading plan information for course :" + course.getCode() + " " + e1.getMessage());
-        }
 
-        // Get  Academic Record Data from the SWS and set that to CourseDetails acadRecordList
-        try {
-            List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
-            for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
-                AcademicRecordDataObject acadrec = new AcademicRecordDataObject();
-                acadrec.setAtpId(studentInfo.getTermName());
-                acadrec.setPersonId(studentInfo.getPersonId());
-                acadrec.setCourseCode(studentInfo.getCourseCode());
-                acadrec.setCourseTitle(studentInfo.getCourseTitle());
-                acadrec.setCourseId(studentInfo.getId());
-                acadrec.setCredit(studentInfo.getCreditsEarned());
-                acadrec.setGrade(studentInfo.getCalculatedGradeValue());
-                acadrec.setRepeated(studentInfo.getIsRepeated());
-                acadrec.setActivityCode(studentInfo.getActivityCode());
+            // Get  Academic Record Data from the SWS and set that to CourseDetails acadRecordList
+            try {
+                List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
+                for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
+                    AcademicRecordDataObject acadrec = new AcademicRecordDataObject();
+                    acadrec.setAtpId(studentInfo.getTermName());
+                    acadrec.setPersonId(studentInfo.getPersonId());
+                    acadrec.setCourseCode(studentInfo.getCourseCode());
+                    acadrec.setCourseTitle(studentInfo.getCourseTitle());
+                    acadrec.setCourseId(studentInfo.getId());
+                    acadrec.setCredit(studentInfo.getCreditsEarned());
+                    acadrec.setGrade(studentInfo.getCalculatedGradeValue());
+                    acadrec.setRepeated(studentInfo.getIsRepeated());
+                    acadrec.setActivityCode(studentInfo.getActivityCode());
 
-                if (course.getId().equalsIgnoreCase(studentInfo.getId())) {
-                    plannedCourseSummary.getAcadRecList().add(acadrec);
-                    plannedCourseSummary.getAcademicTerms().add(AtpHelper.atpIdToTermName(studentInfo.getTermName()));
+                    if (course.getId().equalsIgnoreCase(studentInfo.getId())) {
+                        plannedCourseSummary.getAcadRecList().add(acadrec);
+                        plannedCourseSummary.getAcademicTerms().add(AtpHelper.atpIdToTermName(studentInfo.getTermName()));
+                    }
                 }
-            }
 
 
             /*Getting the recommended items for all quarters*/
-            List<RecommendedItemDataObject> recommendedItemDataObjects = getPlanHelper().getRecommendedItems(course.getVersion().getVersionIndId());
+                List<RecommendedItemDataObject> recommendedItemDataObjects = getPlanHelper().getRecommendedItems(course.getVersion().getVersionIndId());
 
-            if (!CollectionUtils.isEmpty(recommendedItemDataObjects)) {
+                if (!CollectionUtils.isEmpty(recommendedItemDataObjects)) {
 
-                Collections.sort(recommendedItemDataObjects, new Comparator<RecommendedItemDataObject>() {
-                    @Override
-                    public int compare(RecommendedItemDataObject item1, RecommendedItemDataObject item2) {
-                        return item1.getAtpId().compareTo(item2.getAtpId());
-                    }
-                });
+                    Collections.sort(recommendedItemDataObjects, new Comparator<RecommendedItemDataObject>() {
+                        @Override
+                        public int compare(RecommendedItemDataObject item1, RecommendedItemDataObject item2) {
+                            return item1.getAtpId().compareTo(item2.getAtpId());
+                        }
+                    });
 
                 /*Adding to request session so that the TermsListBuilder can pick up from session and add recommendation info in dropDown list*/
-                HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-                request.setAttribute("recommendedItems", recommendedItemDataObjects);
+                    HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+                    request.setAttribute("recommendedItems", recommendedItemDataObjects);
 
-                plannedCourseSummary.setRecommendedItemDataObjects(recommendedItemDataObjects);
+                    plannedCourseSummary.setRecommendedItemDataObjects(recommendedItemDataObjects);
+                }
+
+            } catch (Exception e) {
+                logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
             }
-
-        } catch (Exception e) {
-            logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
         }
-
 
         return plannedCourseSummary;
 
@@ -528,7 +533,11 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
          * else get the same id as the provided course version specific Id
          */
         CourseInfo course = getCourseHelper().getCourseInfoByIdAndCd(courseId, null);
-        return getCourseOfferingInstitutions(course, terms);
+        if (course != null) {
+            return getCourseOfferingInstitutions(course, terms);
+        }
+
+        return new ArrayList<CourseOfferingInstitution>();
     }
 
 
@@ -644,24 +653,25 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
      * @param termId
      * @return
      */
-    public List<ActivityOfferingItem> getActivityOfferingItemsByIdAndCd(String courseId,String courseCd, String termId) {
+    public List<ActivityOfferingItem> getActivityOfferingItemsByIdAndCd(String courseId, String courseCd, String termId) {
 
         List<ActivityOfferingItem> activityOfferingItems = new ArrayList<ActivityOfferingItem>();
 
         CourseInfo course = getCourseHelper().getCourseInfoByIdAndCd(courseId, courseCd);
-        try {
+        if (course != null) {
+            try {
 
             /*TODO: Replace the getCourseOfferingsByCourseAndTerm() with new one which accepts a composite key or courseId + course Cd instead of just a courseId*/
-            String id = getCourseHelper().getKeyForCourseOffering(course.getId(), course.getSubjectArea().trim(), course.getCourseNumberSuffix().trim());
-            List<CourseOfferingInfo> courseOfferingInfoList = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(id, termId, CourseSearchConstants.CONTEXT_INFO);
+                String id = getCourseHelper().getKeyForCourseOffering(course.getId(), course.getSubjectArea().trim(), course.getCourseNumberSuffix().trim());
+                List<CourseOfferingInfo> courseOfferingInfoList = getCourseOfferingService().getCourseOfferingsByCourseAndTerm(id, termId, CourseSearchConstants.CONTEXT_INFO);
 
-            Map<String, Map<String, PlanItem>> planItemsByTerm = loadStudentsPlanItems();
-            activityOfferingItems = getActivityOfferingItems(course, courseOfferingInfoList, termId, planItemsByTerm.get(termId));
+                Map<String, Map<String, PlanItem>> planItemsByTerm = loadStudentsPlanItems();
+                activityOfferingItems = getActivityOfferingItems(course, courseOfferingInfoList, termId, planItemsByTerm.get(termId));
 
-        } catch (Exception e) {
-            throw new RuntimeException("Query failed.", e);
+            } catch (Exception e) {
+                throw new RuntimeException("Query failed.", e);
+            }
         }
-
         return activityOfferingItems;
     }
 
