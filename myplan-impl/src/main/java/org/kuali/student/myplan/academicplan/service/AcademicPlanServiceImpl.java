@@ -16,7 +16,6 @@ import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
 import org.kuali.student.myplan.academicplan.model.*;
-import org.kuali.student.myplan.util.DegreeAuditAtpHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
@@ -25,12 +24,13 @@ import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.infc.Attribute;
 import org.kuali.student.r2.common.infc.ValidationResult;
 import org.kuali.student.r2.core.atp.service.AtpService;
+import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
 import org.kuali.student.r2.core.search.dto.SearchResultInfo;
 import org.kuali.student.r2.core.search.infc.SearchResultCell;
 import org.kuali.student.r2.core.search.infc.SearchResultRow;
+import org.kuali.student.r2.core.search.service.SearchManager;
 import org.kuali.student.r2.lum.clu.service.CluService;
-import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.service.CourseService;
 import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
 import org.kuali.student.r2.lum.util.constants.CourseServiceConstants;
@@ -56,6 +56,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     private AtpService atpService;
     private CluService luService;
     private PersonService personService;
+    private SearchManager searchManager;
 
     /**
      * This method provides a way to manually provide a CourseService implementation during testing.
@@ -132,6 +133,14 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     public void setLearningPlanTypeDao(LearningPlanTypeDao learningPlanTypeDao) {
         this.learningPlanTypeDao = learningPlanTypeDao;
+    }
+
+    public SearchManager getSearchManager() {
+        return searchManager;
+    }
+
+    public void setSearchManager(SearchManager searchManager) {
+        this.searchManager = searchManager;
     }
 
     @Override
@@ -267,6 +276,24 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
+    public List<LearningPlanInfo> getLearningPlansForPlanProgramByType(@WebParam(name = "name") String planProgram,
+                                                                       @WebParam(name = "planTypeKey") String planTypeKey,
+                                                                       @WebParam(name = "context") ContextInfo context)
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        List<LearningPlanEntity> lpeList = learningPlanDao.getLearningPlansByTypeAndProgram(planProgram, planTypeKey);
+        List<LearningPlanInfo> learningPlanDtos = new ArrayList<LearningPlanInfo>();
+        for (LearningPlanEntity lpe : lpeList) {
+            learningPlanDtos.add(lpe.toDto());
+        }
+        Collections.sort(learningPlanDtos, new Comparator<LearningPlanInfo>() {
+            public int compare(LearningPlanInfo lp1, LearningPlanInfo lp2) {
+                return lp1.getMeta().getUpdateTime().compareTo(lp2.getMeta().getUpdateTime());
+            }
+        });
+        return learningPlanDtos;
+    }
+
+    @Override
     @Transactional
     public LearningPlanInfo createLearningPlan(@WebParam(name = "learningPlan") LearningPlanInfo learningPlan,
                                                @WebParam(name = "context") ContextInfo context)
@@ -379,7 +406,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                                @WebParam(name = "learningPlan") LearningPlanInfo learningPlan,
                                                @WebParam(name = "context") ContextInfo context)
             throws DataValidationErrorException, InvalidParameterException,
-            MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException {
+            MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException, AlreadyExistsException {
 
         LearningPlanEntity lpe = learningPlanDao.find(learningPlanId);
         if (lpe == null) {
@@ -607,7 +634,26 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     public List<ValidationResultInfo> validateLearningPlan(@WebParam(name = "validationType") String validationType,
                                                            @WebParam(name = "learningPlanInfo") LearningPlanInfo learningPlanInfo,
                                                            @WebParam(name = "context") ContextInfo context)
-            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, AlreadyExistsException {
+        if (AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_TEMPLATE.equals(learningPlanInfo.getTypeKey())) {
+            try {
+                SearchRequestInfo req = new SearchRequestInfo("learningPlan.id.by.programAndName");
+                req.addParam("planProgram", learningPlanInfo.getPlanProgram());
+                req.addParam("planType", AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_TEMPLATE);
+                req.addParam("name", learningPlanInfo.getName());
+                SearchResultInfo result = search(req, new ContextInfo());
+                for (SearchResultRow row : result.getRows()) {
+                    for (SearchResultCell cell : row.getCells()) {
+                        if ("learningPlan.id".equals(cell.getKey()) && StringUtils.hasText(cell.getValue())) {
+                            throw new AlreadyExistsException();
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                throw new OperationFailedException();
+            }
+        }
         return new ArrayList<ValidationResultInfo>();
     }
 
@@ -816,6 +862,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                 lpe.getAttributes().add(attEntity);
             }
         }
+        lpe.setState(learningPlan.getStateKey());
+        lpe.setName(learningPlan.getName());
+        lpe.setPlanProgram(learningPlan.getPlanProgram());
         return lpe;
     }
 
@@ -959,5 +1008,21 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     public void setPersonService(PersonService personService) {
         this.personService = personService;
+    }
+
+    @Override
+    public List<TypeInfo> getSearchTypes(@WebParam(name = "contextInfo") ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public TypeInfo getSearchType(@WebParam(name = "searchTypeKey") String searchTypeKey, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public SearchResultInfo search(SearchRequestInfo searchRequestInfo, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws MissingParameterException, InvalidParameterException, OperationFailedException, PermissionDeniedException {
+
+        return searchManager.search(searchRequestInfo, contextInfo);
     }
 }

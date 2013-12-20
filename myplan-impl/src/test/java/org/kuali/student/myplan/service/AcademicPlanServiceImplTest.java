@@ -130,7 +130,7 @@ public class AcademicPlanServiceImplTest {
 
     @Test
     public void updateLearningPlanTimestamp() throws InvalidParameterException, DataValidationErrorException, MissingParameterException,
-            DoesNotExistException, PermissionDeniedException, OperationFailedException {
+            DoesNotExistException, PermissionDeniedException, OperationFailedException, AlreadyExistsException {
 
         //   Create a new learning plan so that all the meta data is properly initialized.
         LearningPlanInfo learningPlan = new LearningPlanInfo();

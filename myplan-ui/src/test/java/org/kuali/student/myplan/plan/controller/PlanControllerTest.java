@@ -1,4 +1,4 @@
-package org.kuali.student.myplan.course.controller;
+package org.kuali.student.myplan.plan.controller;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -12,7 +12,6 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.plan.controller.PlanController;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
@@ -596,29 +595,29 @@ public class PlanControllerTest {
 
     @Test
     public void copyGeneralPlaceHolder() {
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "20142", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
-        planForm.setAtpId("20141");
+        planForm.setAtpId("20142");
         getPlanController().copyPlannedCourse(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED);
         assertTrue(StringUtils.hasText(addEvents.get("planItemId")) && !addEvents.get("planItemId").equals(planItemInfo.getId()));
-        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("20141"));
+        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("20142"));
     }
 
     @Test
     public void moveGeneralPlaceHolder() {
         createStudentUserSession();
-        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "20141", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
+        PlanItemInfo planItemInfo = addPlanItem(getLearningPlan("730FA4DCAE3411D689DA0004AC494FFE"), "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "20142", PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, null, null, "730FA4DCAE3411D689DA0004AC494FFE");
         PlanForm planForm = new PlanForm();
         planForm.setPlanItemId(planItemInfo.getId());
-        planForm.setAtpId("20141");
+        planForm.setAtpId("20142");
         getPlanController().movePlannedCourse(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED);
         assertTrue(StringUtils.hasText(addEvents.get("planItemId")) && addEvents.get("planItemId").equals(planItemInfo.getId()));
-        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("20141"));
+        assertTrue(StringUtils.hasText(addEvents.get("atpId")) && addEvents.get("atpId").equals("20142"));
     }
 
     @Test
@@ -773,7 +772,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         planForm.setCourseCd("COM 2xx");
-        planForm.setAtpId("20141");
+        planForm.setAtpId("20142");
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = planForm.getJavascriptEvents();
         Map<String, String> addEvents = events.get(PlanConstants.JS_EVENT_NAME.PLAN_ITEM_ADDED);
@@ -811,7 +810,7 @@ public class PlanControllerTest {
         PlanForm planForm = new PlanForm();
         planForm.setType(PlanConstants.GENERAL_TYPE);
         planForm.setGeneralPlaceholder("uw.academicplan.placeholder.other|uw.academicplan.placeholder");
-        planForm.setAtpId("20141");
+        planForm.setAtpId("20142");
         planForm.setNote("This is a test Note");
         planForm.setPageId(PlanConstants.ADD_RECOMMENDED_DIALOG_PAGE);
         getPlanController().addRecommendedPlanItem(planForm, null, null, null);

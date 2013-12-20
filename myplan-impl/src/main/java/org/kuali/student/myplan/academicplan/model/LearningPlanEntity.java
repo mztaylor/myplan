@@ -15,22 +15,31 @@ import java.util.Set;
 public class LearningPlanEntity extends MetaEntity
         implements AttributeOwner<LearningPlanAttributeEntity>, Comparable<LearningPlanEntity> {
 
-    @Column(name="STUDENT_ID")
-	private String studentId;
+    @Column(name = "STUDENT_ID")
+    private String studentId;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "RT_DESCR_ID")
     private LearningPlanRichTextEntity descr;
 
-    @ManyToOne(optional=false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "TYPE_ID")
     private LearningPlanTypeEntity learningPlanType;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
-    private  Set<LearningPlanAttributeEntity> attributes;
+    private Set<LearningPlanAttributeEntity> attributes;
 
-    @Column(name="SHARED")
+    @Column(name = "SHARED")
     private Boolean shared;
+
+    @Column(name = "STATE")
+    private String state;
+
+    @Column(name = "NAME")
+    private String name;
+
+    @Column(name = "PLAN_PROGRAM")
+    private String planProgram;
 
     public LearningPlanEntity() {
         super();
@@ -78,6 +87,30 @@ public class LearningPlanEntity extends MetaEntity
         this.shared = shared;
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPlanProgram() {
+        return planProgram;
+    }
+
+    public void setPlanProgram(String planProgram) {
+        this.planProgram = planProgram;
+    }
+
     @Override
     public String toString() {
         return String.format("LearningPlan [%s, %s]: %s", this.getId(), this.getObjectId(), this.getDescr().getPlain());
@@ -85,6 +118,7 @@ public class LearningPlanEntity extends MetaEntity
 
     /**
      * Provides and data transfer object representation of the plan.
+     *
      * @return LearningPlanInfo
      */
     public LearningPlanInfo toDto() {
@@ -109,7 +143,9 @@ public class LearningPlanEntity extends MetaEntity
             }
         }
         dto.setAttributes(attributes);
-
+        dto.setStateKey(this.state);
+        dto.setPlanProgram(this.planProgram);
+        dto.setName(this.name);
         return dto;
     }
 
@@ -122,14 +158,14 @@ public class LearningPlanEntity extends MetaEntity
         }
 
         //  First check student id.
-        if (! other.getStudentId().equals(this.getStudentId())) {
+        if (!other.getStudentId().equals(this.getStudentId())) {
             return this.getStudentId().compareTo(other.getStudentId());
         }
 
         //  Could check type here.
 
         //  Check description text
-        if (! this.getDescr().getPlain().equals(other.getDescr().getPlain())) {
+        if (!this.getDescr().getPlain().equals(other.getDescr().getPlain())) {
             return this.getDescr().getPlain().compareTo(other.getDescr().getPlain());
         }
 
