@@ -154,45 +154,45 @@ public class DegreeAuditController extends UifControllerBase {
                 planAuditForm.setCampusParam(DEFAULT_CAMPUS_ID);
 
                 if (DegreeAuditConstants.DEGREE_AUDIT_VIEW_ID.equals(auditForm.getViewId())) {
-                Date startDate = new Date();
-                Date endDate = new Date();
+                    Date startDate = new Date();
+                    Date endDate = new Date();
 
 
-                List<AuditReportInfo> reportList = degreeAuditService.getAuditsForStudentInDateRange(regId, startDate,
+                    List<AuditReportInfo> reportList = degreeAuditService.getAuditsForStudentInDateRange(regId, startDate,
                             endDate, DegreeAuditConstants.CONTEXT_INFO);
 
-                Map<String, PlanAuditItem> auditsInLearningPlan = getDegreeAuditHelper().getPlanItemSnapShots(regId);
+                    Map<String, PlanAuditItem> auditsInLearningPlan = getDegreeAuditHelper().getPlanItemSnapShots(regId);
 
-                if (degreeAuditId == null) {
-                    // Grab first degree audit
-                    for (AuditReportInfo report : reportList) {
-                        if (!report.isWhatIfAudit() && !auditsInLearningPlan.containsKey(report.getAuditId())) {
-                            degreeAuditId = report.getAuditId();
-                            break;
+                    if (degreeAuditId == null) {
+                        // Grab first degree audit
+                        for (AuditReportInfo report : reportList) {
+                            if (!report.isWhatIfAudit() && !auditsInLearningPlan.containsKey(report.getAuditId())) {
+                                degreeAuditId = report.getAuditId();
+                                break;
+                            }
                         }
                     }
-                }
-                // TODO: For now we are getting the auditType from the end user. This needs to be removed before going
-                // live and hard coded to audit type key html
-                if (StringUtils.hasText(degreeAuditId)) {
-                    AuditReportInfo degreeReport = degreeAuditService.getAuditReport(degreeAuditId,
+                    // TODO: For now we are getting the auditType from the end user. This needs to be removed before going
+                    // live and hard coded to audit type key html
+                    if (StringUtils.hasText(degreeAuditId)) {
+                        AuditReportInfo degreeReport = degreeAuditService.getAuditReport(degreeAuditId,
                                 degreeAuditForm.getAuditType(), DegreeAuditConstants.CONTEXT_INFO);
-                    degreeAuditForm.setAuditId(degreeAuditId);
-                    getDegreeAuditHelper().copyCampusToForm(degreeReport, degreeAuditForm);
-                    copyReportToForm(degreeReport, degreeAuditForm);
-                }
+                        degreeAuditForm.setAuditId(degreeAuditId);
+                        getDegreeAuditHelper().copyCampusToForm(degreeReport, degreeAuditForm);
+                        copyReportToForm(degreeReport, degreeAuditForm);
+                    }
                 }
                 if (DegreeAuditConstants.PLAN_AUDIT_VIEW_ID.equals(auditForm.getViewId())) {
-                if (planAuditId == null) {
-                    // Grab first plan audit Id
-                    planAuditId = getRecentPlanAudit(regId);
-                }
-                if (StringUtils.hasText(planAuditId)) {
+                    if (planAuditId == null) {
+                        // Grab first plan audit Id
+                        planAuditId = getRecentPlanAudit(regId);
+                    }
+                    if (StringUtils.hasText(planAuditId)) {
                         AuditReportInfo planReport = degreeAuditService.getAuditReport(planAuditId, planAuditForm.getAuditType(), DegreeAuditConstants.CONTEXT_INFO);
-                    planAuditForm.setAuditId(planAuditId);
-                    getDegreeAuditHelper().copyCampusToForm(planReport, planAuditForm);
-                    copyReportToForm(planReport, planAuditForm);
-                }
+                        planAuditForm.setAuditId(planAuditId);
+                        getDegreeAuditHelper().copyCampusToForm(planReport, planAuditForm);
+                        copyReportToForm(planReport, planAuditForm);
+                    }
                 }
 
             }
@@ -423,9 +423,11 @@ public class DegreeAuditController extends UifControllerBase {
                 if (isCourse && isPlanned) {
                     String crossListedCourse = getPlanHelper().getCrossListedCourse(item.getAttributes());
                     CourseInfo courseInfo = getCourseHelper().getCourseInfoByIdAndCd(item.getRefObjectId(), crossListedCourse);
-                    // Version independent id + term = key
-                    String key = item.getRefObjectId() + item.getPlanPeriods().get(0) + courseInfo.getSubjectArea().trim() + courseInfo.getCourseNumberSuffix().trim();
-                    planItemInfoMap.put(key, item);
+                    if (courseInfo != null) {
+                        // Version independent id + term = key
+                        String key = item.getRefObjectId() + item.getPlanPeriods().get(0) + courseInfo.getSubjectArea().trim() + courseInfo.getCourseNumberSuffix().trim();
+                        planItemInfoMap.put(key, item);
+                    }
                 }
             }
 

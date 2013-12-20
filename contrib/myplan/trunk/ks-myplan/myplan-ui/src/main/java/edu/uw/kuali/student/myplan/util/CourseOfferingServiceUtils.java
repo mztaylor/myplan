@@ -362,11 +362,13 @@ public class CourseOfferingServiceUtils {
         // If course info not specified calculate the courseVersionId and courseInfo from courseHelper
         if (courseInfo == null) {
             info.setCourseId(getCourseHelper().getCourseIdForTerm(subject, number, yearTerm.toATP()));
-            courseInfo = getCourseHelper().getCourseInfoByIdAndCd(info.getCourseId(), String.format("%s %s", subject,number));
+            courseInfo = getCourseHelper().getCourseInfoByIdAndCd(info.getCourseId(), String.format("%s %s", subject, number));
         } else {
             info.setCourseId(courseInfo.getId());
         }
-        info.setCourseCode(courseInfo.getCode());
+        if (courseInfo != null) {
+            info.setCourseCode(courseInfo.getCode());
+        }
         info.getAttributes().add(new AttributeInfo("CourseComments", courseComments.toString()));
         info.getAttributes().add(new AttributeInfo("CurriculumComments", curriculumComments.toString()));
         info.getAttributes().add(new AttributeInfo("PrimarySectionCd", primarySectionNode.elementText("SectionID")));

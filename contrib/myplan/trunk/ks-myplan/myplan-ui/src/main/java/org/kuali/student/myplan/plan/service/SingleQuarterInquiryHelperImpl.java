@@ -161,9 +161,12 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
                         //  If the course info lookup fails just log the error and omit the item.
                         try {
-
-                            plannedCourse.setCourseDetails(getCourseDetailsInquiryHelper().retrieveCourseSummaryByIdAndCd(courseID, crossListedCode));
-
+                            if (getCourseDetailsInquiryHelper().isCourseIdValid(courseID, crossListedCode)) {
+                                CourseSummaryDetails courseDetails = getCourseDetailsInquiryHelper().retrieveCourseSummaryByIdAndCd(courseID, crossListedCode);
+                                plannedCourse.setCourseDetails(courseDetails);
+                            } else {
+                                continue;
+                            }
                             // TODO: Add Plan activities to this view
 
                         } catch (Exception e) {
@@ -297,7 +300,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
                 }
             }
             for (PlannedCourseDataObject plannedCourse : plannedCoursesList) {
-                if (!plannedCourse.isPlaceHolder()) {
+                if (!plannedCourse.isPlaceHolder() && plannedCourse.getCourseDetails() != null) {
                     String key = generateKey(plannedCourse.getCourseDetails().getSubjectArea(), plannedCourse.getCourseDetails().getCourseNumber(), plannedCourse.getPlanItemDataObject().getAtp());
                     List<ActivityOfferingItem> activityOfferingItems = plannedSections.get(key);
                     if (activityOfferingItems != null && activityOfferingItems.size() > 0) {

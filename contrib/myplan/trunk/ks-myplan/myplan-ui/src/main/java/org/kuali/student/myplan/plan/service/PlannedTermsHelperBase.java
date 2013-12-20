@@ -618,7 +618,7 @@ public class PlannedTermsHelperBase {
     }
 
     public static UserSessionHelper getUserSessionHelper() {
-        if(userSessionHelper == null){
+        if (userSessionHelper == null) {
             userSessionHelper = new UserSessionHelperImpl();
         }
         return userSessionHelper;
@@ -673,13 +673,15 @@ public class PlannedTermsHelperBase {
                     String credit = null;
                     if (PlanConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType())) {
                         CourseInfo courseInfo = getCourseHelper().getCourseInfoByIdAndCd(planItemInfo.getRefObjectId(), null);
-                        String key = generateKey(courseInfo.getSubjectArea().trim(), courseInfo.getCourseNumberSuffix());
-                        List<String> sectionCreditRangeList = courseSectionCreditsMap.get(key);
+                        if (courseInfo != null) {
+                            String key = generateKey(courseInfo.getSubjectArea().trim(), courseInfo.getCourseNumberSuffix());
+                            List<String> sectionCreditRangeList = courseSectionCreditsMap.get(key);
 
-                        if (sectionCreditRangeList != null && sectionCreditRangeList.size() > 0) {
-                            credit = unionCreditList(sectionCreditRangeList);
-                        } else {
-                            credit = CreditsFormatter.formatCredits(courseInfo);
+                            if (sectionCreditRangeList != null && sectionCreditRangeList.size() > 0) {
+                                credit = unionCreditList(sectionCreditRangeList);
+                            } else {
+                                credit = CreditsFormatter.formatCredits(courseInfo);
+                            }
                         }
                     } else {
                         if ((PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItemInfo.getRefObjectType()) ||
