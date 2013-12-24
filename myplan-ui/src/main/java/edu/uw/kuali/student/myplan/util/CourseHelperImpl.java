@@ -650,6 +650,20 @@ public class CourseHelperImpl implements CourseHelper {
         return false;
     }
 
+    /**
+     * Course code seperated by a space is returned back.
+     * Eg: For Values COM,201 --> COM 201
+     * For Values COM,2xx --> COM 2xx
+     *
+     * @param courseCd
+     * @param suffix
+     * @return
+     */
+    @Override
+    public String getKeyForCourse(String courseCd, String suffix) {
+        return String.format("%s %s", courseCd, suffix);
+    }
+
     protected CluService getLuService() {
         if (luService == null) {
             luService = (CluService) GlobalResourceLoader.getService(new QName(CluServiceConstants.CLU_NAMESPACE, "CluService"));

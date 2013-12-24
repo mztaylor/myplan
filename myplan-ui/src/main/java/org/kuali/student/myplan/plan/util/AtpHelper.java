@@ -55,6 +55,8 @@ public class AtpHelper {
     public static final String PRIORITY_ONE_REGISTRATION_END = "priority_one_registration_end";
     public static final String LAST_ADD_DAY = "last_add_day";
 
+    public static enum TERMS {Autumn, Winter, Spring, Summer};
+
     private static transient AcademicCalendarService academicCalendarService;
 
     private static transient AcademicPlanService academicPlanService;
@@ -227,7 +229,7 @@ public class AtpHelper {
     public static String[] atpIdToTermAndYear(String atpId) {
         YearTerm yearTerm = atpToYearTerm(atpId);
         return new String[]{yearTerm.getTermAsString(), yearTerm.getYearAsString()};
-        }
+    }
 
 
     /**
@@ -239,7 +241,7 @@ public class AtpHelper {
      */
     public static String getAtpIdFromTermAndYear(String termName, String year) {
         return getAtpIdFromTermYear(String.format("%s %s", termName, year));
-        }
+    }
 
     /*  Returns ATP ID in format 19911 for term="Winter 1991"*/
     public static String getAtpIdFromTermYear(String termYear) {
@@ -389,7 +391,7 @@ public class AtpHelper {
         List<YearTerm> publishedTerms = new ArrayList<YearTerm>();
         for (String publishedTerm : getPublishedTerms()) {
             publishedTerms.add(atpToYearTerm(publishedTerm));
-            }
+        }
         return publishedTerms;
     }
 
@@ -516,6 +518,16 @@ public class AtpHelper {
 
     public static boolean isAtpIdFormatValid(String atpId) {
         return atpId.matches(ATP_VALID_FORMAT);
+    }
+
+
+    /*Returns List of terms Available*/
+    public static List<String> getTerms() {
+        List<String> terms = new ArrayList<String>();
+        for (TERMS terms1 : TERMS.values()) {
+            terms.add(terms1.name());
+        }
+        return terms;
     }
 
 
@@ -719,7 +731,7 @@ public class AtpHelper {
             TypeInfo atpType = getTypeService().getType(atpTypeKey, PlanConstants.CONTEXT_INFO);
             if (atpType != null && !StringUtils.isEmpty(atpType.getName())) {
                 typeName = WordUtils.capitalizeFully(atpType.getName().replace("quarter", "")).trim();
-                }
+            }
         } catch (Exception e) {
             logger.error("ATP types lookup failed.", e);
         }

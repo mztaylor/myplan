@@ -5,7 +5,6 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.keyvalues.KeyValuesBase;
-import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.util.constants.ProgramServiceConstants;
 import org.kuali.student.r2.lum.program.dto.MajorDisciplineInfo;
 import org.kuali.student.r2.lum.program.service.ProgramService;
@@ -20,8 +19,8 @@ import java.util.*;
  * Time: 11:51 AM
  * To change this template use File | Settings | File Templates.
  */
-public class DegreePrograms extends KeyValuesBase {
-    private final Logger logger = Logger.getLogger(DegreePrograms.class);
+public class ProgramKeyValues extends KeyValuesBase {
+    private final Logger logger = Logger.getLogger(ProgramKeyValues.class);
 
     private transient ProgramService programService;
 
@@ -43,7 +42,7 @@ public class DegreePrograms extends KeyValuesBase {
     }
 
 
-    public DegreePrograms() {
+    public ProgramKeyValues() {
         super();
     }
 
