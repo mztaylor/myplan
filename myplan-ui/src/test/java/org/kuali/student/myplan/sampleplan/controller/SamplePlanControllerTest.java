@@ -12,6 +12,7 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.sampleplan.dataobject.SamplePlanItem;
 import org.kuali.student.myplan.sampleplan.dataobject.SamplePlanTerm;
 import org.kuali.student.myplan.sampleplan.dataobject.SamplePlanYear;
@@ -413,7 +414,7 @@ public class SamplePlanControllerTest {
             samplePlanYear.setYearName(String.format(SamplePlanConstants.SAMPLE_PLAN_YEAR, i));
             samplePlanYear.setYear(i);
             List<SamplePlanTerm> samplePlanTerms = samplePlanYear.getSamplePlanTerms();
-            for (String term : SamplePlanConstants.TERM_LABELS_LIST) {
+            for (String term : AtpHelper.getTerms()) {
                 SamplePlanTerm samplePlanTerm = new SamplePlanTerm();
                 samplePlanTerm.setTermName(term);
                 samplePlanTerm.setYear(i);
