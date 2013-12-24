@@ -158,6 +158,7 @@
         <property name="entryPageId" value="sample_plan_create_page"/>
         <property name="items">
             <list>
+                <!--********************************************Sample Plan Create/Edit Page**************************************************-->
                 <bean parent="Uif-Page" p:id="sample_plan_create_page"
                       p:headerText="Create Sample Plan">
                     <property name="instructionalMessage">
@@ -187,7 +188,8 @@
                                         <ref bean="sample_plan_table"/>
                                         <ref bean="sample_plan_general_notes"/>
                                         <ref bean="sample_plan_main_actions"/>
-                                        <bean parent="KSAP-SimpleInputField" p:propertyName="learningPlanId" p:hidden="true">
+                                        <bean parent="KSAP-SimpleInputField" p:propertyName="learningPlanId"
+                                              p:hidden="true">
                                             <property name="control">
                                                 <bean parent="Uif-HiddenControl"/>
                                             </property>
@@ -199,6 +201,7 @@
                     </property>
                 </bean>
 
+                <!--********************************************Sample Plan Preview Page**************************************************-->
                 <bean parent="Uif-Page" p:id="sample_plan_preview_page"
                       p:headerText="@{degreeProgramTitle}: @{planTitle}">
                     <property name="instructionalMessage">
@@ -227,7 +230,8 @@
                                         <ref bean="sample_plan_table"/>
                                         <ref bean="sample_plan_general_notes"/>
                                         <ref bean="sample_plan_main_actions"/>
-                                        <bean parent="KSAP-SimpleInputField" p:propertyName="learningPlanId" p:hidden="true">
+                                        <bean parent="KSAP-SimpleInputField" p:propertyName="learningPlanId"
+                                              p:hidden="true">
                                             <property name="control">
                                                 <bean parent="Uif-HiddenControl"/>
                                             </property>
@@ -302,106 +306,8 @@
         </property>
     </bean>
 
-    <bean id="sample_plan_table" parent="KSAP-StackedCollectionGroup">
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.sampleplan.dataobject.SamplePlanYear"/>
-        <property name="propertyName" value="samplePlanYears"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses" value="planPreview__year"/>
-        <property name="layoutManager.subCollectionFieldGroupPrototype.cssClasses" value="planPreview__yearData"/>
-        <property name="items">
-            <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
-                    <property name="items">
-                        <list>
-                            <bean parent="KSAP-SimpleInputField" p:propertyName="yearName" p:readOnly="true">
-                            </bean>
-                            <bean p:id="add_summer_@{#line.year}" parent="Uif-LinkField">
-                                <property name="linkText" value="ADD SU QTR"/>
-                                <property name="title" value="ADD SU QTR"/>
-                                <property name="href"
-                                          value="#"/>
-                                <property name="onClickScript"
-                                          value="jQuery('#Summer_year_'+@{#line.year}).show();jQuery('#add_summer_'+@{#line.year}).hide();"/>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
-                <bean parent="KSAP-SimpleInputField" p:propertyName="year" p:hidden="true">
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
-            </list>
-        </property>
-        <property name="subCollections">
-            <list>
-                <ref bean="sample_plan_terms"/>
-            </list>
-        </property>
-    </bean>
-
-    <!--<bean id="sample_plan_table" parent="Uif-StackedCollectionGroup" p:style="margin:0;">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="cssClasses" value=""/>
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.sampleplan.dataobject.SamplePlanYear"/>
-        <property name="propertyName" value="samplePlanYears"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
-        <property name="layoutManager">
-            <bean parent="Uif-StackedCollectionLayout-WithGridItems">
-                <property name="subCollectionFieldGroupPrototype">
-                    <bean parent="Uif-VerticalFieldGroup">
-                        <property name="fieldLabel.render" value="false"/>
-
-                    </bean>
-                </property>
-                <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionGridItem">
-                        <property name="hidden" value="@{#index gt 3}"/>
-                        <property name="footer.render" value="false"/>
-                        <property name="validationMessages">
-                            <null/>
-                        </property>
-                    </bean>
-                </property>
-            </bean>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
-                    <property name="items">
-                        <list>
-                            <bean parent="KSAP-SimpleInputField" p:propertyName="yearName" p:readOnly="true">
-                            </bean>
-                            <bean p:id="add_summer_@{#line.year}" parent="Uif-LinkField">
-                                <property name="linkText" value="ADD SU QTR"/>
-                                <property name="title" value="ADD SU QTR"/>
-                                <property name="href"
-                                          value="#"/>
-                                <property name="onClickScript"
-                                          value="jQuery('#Summer_year_'+@{#line.year}).show();jQuery('#add_summer_'+@{#line.year}).hide();"/>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
-                <bean parent="KSAP-SimpleInputField" p:propertyName="year" p:hidden="true">
-                    <property name="control">
-                        <bean parent="Uif-HiddenControl"/>
-                    </property>
-                </bean>
-            </list>
-        </property>
-        <property name="subCollections">
-            <list>
-                <ref bean="sample_plan_terms"/>
-            </list>
-        </property>
-    </bean>-->
-
-    <bean id="sample_plan_general_notes" parent="KSAP-VerticalBoxGroup" p:style="margin-top: 10px;margin-bottom: 10px;" p:render="@{samplePlanYears.size() gt 0}">
+    <bean id="sample_plan_general_notes" parent="KSAP-VerticalBoxGroup" p:style="margin-top: 10px;margin-bottom: 10px;"
+          p:render="@{samplePlanYears.size() gt 0}">
         <property name="cssClasses" value="courseSearch__query"/>
         <property name="items">
             <list>
@@ -429,30 +335,38 @@
         </property>
     </bean>
 
-    <!--<bean id="sample_plan_terms" parent="KSAP-HorizontalStackedCollectionLayout">
+    <!--********************************************Main Sample Plan Form**************************************************-->
+
+    <bean id="sample_plan_table" parent="KSAP-StackedCollectionGroup">
         <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.sampleplan.dataobject.SamplePlanTerm"/>
-        <property name="propertyName" value="samplePlanTerms"/>
+                  value="org.kuali.student.myplan.sampleplan.dataobject.SamplePlanYear"/>
+        <property name="propertyName" value="samplePlanYears"/>
         <property name="bindingInfo.bindToForm" value="true"/>
-        <property name="layoutManager">
-            <bean parent="KSAP-HorizontalStackedCollectionLayout">
-                <property name="subCollectionFieldGroupPrototype">
-                    <bean parent="Uif-VerticalFieldGroup" p:style="width: 600px;padding-bottom: 5px;">
-                    </bean>
-                </property>
-                <property name="lineGroupPrototype">
-                    <bean p:id="@{#line.termName+'_year_'+#line.year}" parent="Uif-CollectionHorizontalBoxItem">
-                        <property name="hidden" value="@{#index eq 3}"/>
-                    </bean>
-                </property>
-            </bean>
-        </property>
+        <property name="readOnly" value="false"/>
         <property name="items">
             <list>
-                <bean parent="Uif-DataField" p:propertyName="termName">
-                    <property name="fieldLabel.render" value="false"/>
+                <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-SimpleInputField" p:propertyName="yearName" p:readOnly="true">
+                            </bean>
+                            <bean p:id="add_summer_@{#line.year}" parent="Uif-LinkField">
+                                <property name="linkText" value="ADD SU QTR"/>
+                                <property name="title" value="ADD SU QTR"/>
+                                <property name="href"
+                                          value="#"/>
+                                <property name="onClickScript"
+                                          value="jQuery('#Summer_year_'+@{#line.year}).show();jQuery('#add_summer_'+@{#line.year}).hide();"/>
+                            </bean>
+                        </list>
+                    </property>
                 </bean>
-                <bean parent="KSAP-SimpleInputField" p:propertyName="termName" p:hidden="true">
+                <bean parent="KSAP-SimpleInputField" p:propertyName="year" p:hidden="true">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+                <bean parent="KSAP-SimpleInputField" p:propertyName="yearName" p:hidden="true">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
@@ -461,15 +375,17 @@
         </property>
         <property name="subCollections">
             <list>
-                <bean parent="samplePlanItemsCollection"/>
+                <ref bean="sample_plan_terms"/>
             </list>
         </property>
-    </bean>-->
+    </bean>
+
 
     <bean id="sample_plan_terms" parent="KSAP-HorizontalStackedSubCollection-WithinSection">
         <property name="validationMessages">
             <null/>
         </property>
+        <property name="readOnly" value="false"/>
         <property name="cssClasses" value="myplan-remove-margin"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.sampleplan.dataobject.SamplePlanTerm"/>
@@ -505,6 +421,11 @@
                         <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
+                <bean parent="KSAP-SimpleInputField" p:propertyName="year" p:hidden="true">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
             </list>
         </property>
         <property name="subCollections">
@@ -519,6 +440,8 @@
                   value="org.kuali.student.myplan.sampleplan.dataobject.SamplePlanItem"/>
         <property name="propertyName" value="samplePlanItems"/>
         <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="renderAddLine" value="false"/>
+        <property name="renderLineActions" value="false"/>
         <property name="header">
             <bean parent="KSAP-HeaderSix" p:cssClasses="planPreview__itemsHeader"
                   p:headerTagCssClasses="planPreview__itemsHeaderText"/>
@@ -555,68 +478,6 @@
             </list>
         </property>
     </bean>
-
-    <!--<bean id="samplePlanItemsCollection" parent="Uif-StackedCollectionGroup">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="header">
-            <bean parent="Uif-HeaderFour"/>
-        </property>
-        <property name="header.render" value="false"/>
-        <property name="layoutManager">
-            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
-                <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem"
-                          p:id=""
-                          p:style="width: 600px;padding-bottom: 5px;">
-                        <property name="footer.render" value="false"/>
-                        <property name="validationMessages">
-                            <null/>
-                        </property>
-                    </bean>
-                </property>
-            </bean>
-        </property>
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.sampleplan.dataobject.SamplePlanItem"/>
-        <property name="propertyName" value="samplePlanItems"/>
-        <property name="renderAddLine" value="false"/>
-        <property name="renderLineActions" value="false"/>
-        <property name="bindingInfo.bindToForm" value="true"/>
-        <property name="disclosure.render" value="false"/>
-        <property name="items">
-            <list>
-                <bean parent="Uif-HorizontalFieldGroup">
-                    <property name="group.validationMessages">
-                        <null/>
-                    </property>
-                    <property name="items">
-                        <list>
-
-                            &lt;!&ndash;Input Fields for Edit mode&ndash;&gt;
-                            <bean parent="Uif-InputField"
-                                  p:propertyName="code" p:width="auto" p:render="@{!#form.preview}">
-                            </bean>
-                            <bean parent="KSAP-SimpleInputField"
-                                  p:propertyName="credit" p:width="auto" p:render="@{!#form.preview}">
-                                <property name="control">
-                                    <bean parent="dropDownCredits"/>
-                                </property>
-                            </bean>
-                            <bean parent="KSAP-SimpleInputField" p:propertyName="note" p:width="auto"
-                                  p:render="@{!#form.preview}"/>
-
-                            &lt;!&ndash;ReadOnly for Preview mode&ndash;&gt;
-                            <bean parent="KSAP-MessageField" p:messageText="@{#line.code} (@{#line.credit})"
-                                  p:render="@{#form.preview}"/>
-                            <bean parent="KSAP-MessageField" p:messageText="@{#line.note}" p:render="@{#form.preview}"/>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>-->
 
     <bean id="dropDownCredits" parent="Uif-DropdownControl" p:disabled="false">
         <property name="options">
