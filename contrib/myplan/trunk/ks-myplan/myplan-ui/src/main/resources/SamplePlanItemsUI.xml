@@ -291,7 +291,7 @@
                         <bean parent="Uif-DropdownControl"/>
                     </property>
                     <property name="optionsFinder">
-                        <bean class="org.kuali.student.myplan.sampleplan.util.DegreePrograms"/>
+                        <bean class="org.kuali.student.myplan.sampleplan.util.ProgramKeyValues"/>
                     </property>
                 </bean>
                 <bean id="searchQuery" parent="KSAP-SimpleInputField" p:propertyName="planTitle">

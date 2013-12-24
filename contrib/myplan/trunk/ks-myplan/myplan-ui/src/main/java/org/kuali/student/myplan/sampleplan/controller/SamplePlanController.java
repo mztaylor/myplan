@@ -23,6 +23,7 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.sampleplan.dataobject.SamplePlanItem;
@@ -152,6 +153,7 @@ public class SamplePlanController extends UifControllerBase {
                 samplePlanForm.setGeneralNotes(generalNotes);
                 List<PlanItemInfo> planItemInfos = getAcademicPlanService().getPlanItemsInPlan(learningPlanInfo.getId(), PlanConstants.CONTEXT_INFO);
                 List<SamplePlanYear> samplePlanYears = getDefaultSamplePlanTable();
+                List<String> availableTerms = AtpHelper.getTerms();
                 for (PlanItemInfo planItemInfo : planItemInfos) {
 
                     if (!CollectionUtils.isEmpty(samplePlanYears) && !StringUtils.isEmpty(planItemInfo.getPlanPeriods())) {
@@ -159,7 +161,7 @@ public class SamplePlanController extends UifControllerBase {
                         String[] str = atpId.split("Year");
                         String term = str[0].trim();
                         int samplePlanYearIndex = Integer.parseInt(str[1].trim()) - 1;
-                        int samplePlanTermIndex = SamplePlanConstants.TERM_LABELS_LIST.indexOf(term);
+                        int samplePlanTermIndex = availableTerms.indexOf(term);
                         SamplePlanYear samplePlanYear = samplePlanYears.get(samplePlanYearIndex);
                         SamplePlanTerm samplePlanTerm = samplePlanYear.getSamplePlanTerms().get(samplePlanTermIndex);
                         for (SamplePlanItem samplePlanItem : samplePlanTerm.getSamplePlanItems()) {
@@ -256,7 +258,7 @@ public class SamplePlanController extends UifControllerBase {
                                     }
                                 } else if (samplePlanItem.getCode().matches(CourseSearchConstants.UNFORMATTED_COURSE_PLACE_HOLDER_REGEX)) {
                                     DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(samplePlanItem.getCode());
-                                    String refObjId = String.format("%s %s", courseCode.getSubject(), courseCode.getNumber());
+                                    String refObjId = getCourseHelper().getKeyForCourse(courseCode.getSubject(), courseCode.getNumber());
                                     String refObjType = PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL;
 
                                     /*Newly added courses PlaceHolders are added to planItem (OR) Already existing planItems which are updated with notes or credit then planItem is updated*/
@@ -530,7 +532,7 @@ public class SamplePlanController extends UifControllerBase {
             samplePlanYear.setYearName(String.format(SamplePlanConstants.SAMPLE_PLAN_YEAR, i));
             samplePlanYear.setYear(i);
             List<SamplePlanTerm> samplePlanTerms = samplePlanYear.getSamplePlanTerms();
-            for (String term : SamplePlanConstants.TERM_LABELS_LIST) {
+            for (String term : AtpHelper.getTerms()) {
                 SamplePlanTerm samplePlanTerm = new SamplePlanTerm();
                 samplePlanTerm.setTermName(term);
                 samplePlanTerm.setYear(i);

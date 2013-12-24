@@ -56,7 +56,7 @@ public interface CourseHelper {
      * @return
      */
     public boolean isCourseInOfferingIds(String subjectArea, String courseNumber, Set<String> courseOfferingIds);
-    
+
     public boolean isValidCourseLevel(String division, String level);
 
     public String getKeyForCourseOffering(String courseId, String subject, String number);
@@ -64,4 +64,6 @@ public interface CourseHelper {
     public boolean isCrossListedCourse(CourseInfo courseInfo, String courseCd) throws DoesNotExistException;
 
     public boolean isSimilarCourses(String courseCd1, String courseCd2);
+
+    public String getKeyForCourse(String courseCd, String suffix);
 }
