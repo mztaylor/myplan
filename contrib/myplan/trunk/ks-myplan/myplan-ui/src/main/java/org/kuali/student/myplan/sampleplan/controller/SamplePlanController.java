@@ -361,7 +361,16 @@ public class SamplePlanController extends UifControllerBase {
                                             } catch (Exception e) {
                                                 logger.error("Could Not load planItem for planId: " + samplePlanItem.getPlanItemId(), e);
                                             }
-                                            if (actualPlanItem != null && ((actualPlanItem.getCredit() != null && !actualPlanItem.getCredit().equals(samplePlanItem.getCredit())) || !actualPlanItem.getRefObjectId().equals(refObjId) || !actualPlanItem.getRefObjectType().equals(refObjType) || (actualPlanItem.getDescr() != null && !actualPlanItem.getDescr().getPlain().equals(samplePlanItem.getNote())))) {
+                                            if ( actualPlanItem != null &&
+                                                 (    (actualPlanItem.getCredit() != null &&
+                                                       !actualPlanItem.getCredit().equals(samplePlanItem.getCredit()))
+                                                   || (actualPlanItem.getRefObjectId() != null &&
+                                                       !actualPlanItem.getRefObjectId().equals(refObjId) )
+                                                   || (actualPlanItem.getRefObjectType() != null &&
+                                                       !actualPlanItem.getRefObjectType().equals(refObjType) )
+                                                   || (actualPlanItem.getDescr() != null &&
+                                                       actualPlanItem.getDescr().getPlain() != null &&
+                                                       !actualPlanItem.getDescr().getPlain().equals(samplePlanItem.getNote())))) {
                                                 actualPlanItem = buildPlanItem(learningPlan, refObjId, refObjType, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), samplePlanItem.getCredit(), null, actualPlanItem.getId());
                                                 addOrUpdate = true;
                                             }
