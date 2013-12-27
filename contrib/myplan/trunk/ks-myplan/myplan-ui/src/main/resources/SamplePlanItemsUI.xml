@@ -294,7 +294,7 @@
                         <bean class="org.kuali.student.myplan.sampleplan.util.ProgramKeyValues"/>
                     </property>
                 </bean>
-                <bean id="searchQuery" parent="KSAP-SimpleInputField" p:propertyName="planTitle">
+                <bean id="searchQuery" parent="Uif-InputField" p:propertyName="planTitle">
                     <property name="fieldLabel.render" value="false"/>
                     <property name="control">
                         <bean parent="Uif-TextControl" p:watermarkText="e.g. Track 1">
@@ -472,6 +472,12 @@
                             <bean parent="KSAP-MessageField" p:messageText="@{#line.code} (@{#line.credit})"
                                   p:render="@{#form.preview}"/>
                             <bean parent="KSAP-MessageField" p:messageText="@{#line.note}" p:render="@{#form.preview}"/>
+
+                            <bean parent="KSAP-SimpleInputField" p:propertyName="planItemId" p:hidden="true">
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
