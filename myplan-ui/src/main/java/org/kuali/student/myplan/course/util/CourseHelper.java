@@ -4,6 +4,7 @@ import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
 import org.dom4j.DocumentException;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
 
@@ -66,4 +67,8 @@ public interface CourseHelper {
     public boolean isSimilarCourses(String courseCd1, String courseCd2);
 
     public String getKeyForCourse(String courseCd, String suffix);
+
+    public ValidationResultInfo isValidCoursePlaceHolder(String courseCd);
+
+    public ValidationResultInfo isValidPlaceHolder(String placeHolderKey, String note);
 }
