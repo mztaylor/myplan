@@ -125,7 +125,7 @@ public class SamplePlanControllerTest {
      * Testing to save a new Sample plan learning Plan
      */
     @Test
-    public void saveSamplePlanTest1() {
+    public void saveSamplePlanTest() {
         SamplePlanForm samplePlanForm = new SamplePlanForm();
         samplePlanForm.setDescription("This is a short Description");
         samplePlanForm.setPlanTitle("Track 1");
