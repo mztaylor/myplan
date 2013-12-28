@@ -25,6 +25,9 @@
         <property name="onLoadScript" value=""/>
         <property name="headerText" value="Plan"/>
         <property name="header.render" value="false"/>
+        <property name="applicationHeader">
+            <bean parent="KSAP-SamplePlanApplicationHeader"/>
+        </property>
         <property name="viewName" value="SamplePlan-LookupView"/>
         <property name="dataObjectClassName"
                   value="org.kuali.student.myplan.sampleplan.dataobject.SamplePlanDataObject"/>
@@ -155,6 +158,9 @@
     <bean id="SamplePlan-FormView" parent="MyPlanFormView">
         <property name="id" value="SamplePlan-FormView"/>
         <property name="header.render" value="false"/>
+        <property name="applicationHeader">
+            <bean parent="KSAP-SamplePlanApplicationHeader"/>
+        </property>
         <property name="entryPageId" value="sample_plan_create_page"/>
         <property name="items">
             <list>

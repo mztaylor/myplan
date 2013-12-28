@@ -198,6 +198,10 @@
         </property>
     </bean>
 
+    <bean id="KSAP-SamplePlanApplicationHeader" parent="Uif-GlobalApplicationHeader" p:templateName="ksap_app_header"
+          p:template="/ks-myplan/WEB-INF/ftl/templates/SamplePlanApplicationHeader.ftl" p:render="true"/>
+
+
     <bean id="KSAP-GlobalApplicationHeader" parent="Uif-GlobalApplicationHeader" p:templateName="ksap_app_header"
           p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl" p:render="true"/>
 

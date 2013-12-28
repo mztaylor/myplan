@@ -2,7 +2,12 @@ package org.kuali.student.myplan.sampleplan.service;
 
 import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
+import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.kim.api.permission.PermissionService;
+import org.kuali.rice.kim.api.services.KimApiServiceLocator;
+import org.kuali.rice.krad.UserSession;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
@@ -19,9 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,46 +39,43 @@ public class SamplePlanLookupableHelperImpl extends MyPlanLookupableImpl {
 
     private transient AcademicPlanService academicPlanService;
 
-    private transient ProgramService programService;
 
     @Autowired
     private UserSessionHelper userSessionHelper;
 
+
     @Override
     protected List<SamplePlanDataObject> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
+        /*Authorizing*/
+        if (GlobalVariables.getUserSession().retrieveObject(PlanConstants.SESSION_KEY_IS_ADVISER_MANAGE_PLAN) == null) {
+            return new ArrayList<SamplePlanDataObject>();
+        }
+
+        if (GlobalVariables.getUserSession().retrieveObject(PlanConstants.SESSION_KEY_ADVISER_MAJORS) == null) {
+            return new ArrayList<SamplePlanDataObject>();
+        }
+
         List<SamplePlanDataObject> samplePlanDataObjects = new ArrayList<SamplePlanDataObject>();
 
-        List<MajorDisciplineInfo> majorDisciplineInfos = null;
         try {
-            majorDisciplineInfos = getProgramService().getMajorDisciplinesByIds(new ArrayList<String>(), SamplePlanConstants.CONTEXT_INFO);
-            List<LearningPlanInfo> learningPlanInfos = new ArrayList<LearningPlanInfo>();
 
+            List<MajorDisciplineInfo> majorDisciplineInfos = (List<MajorDisciplineInfo>) GlobalVariables.getUserSession().retrieveObject(PlanConstants.SESSION_KEY_ADVISER_MAJORS);
             for (MajorDisciplineInfo majorDisciplineInfo : majorDisciplineInfos) {
                 List<LearningPlanInfo> infos = getAcademicPlanService().getLearningPlansForPlanProgramByType(majorDisciplineInfo.getId(), PlanConstants.LEARNING_PLAN_TYPE_PLAN_TEMPLATE, PlanConstants.CONTEXT_INFO);
                 if (!CollectionUtils.isEmpty(infos)) {
-                    learningPlanInfos.addAll(infos);
-                }
-            }
-
-            if (!CollectionUtils.isEmpty(learningPlanInfos)) {
-                for (LearningPlanInfo learningPlanInfo : learningPlanInfos) {
-                    SamplePlanDataObject samplePlanDataObject = new SamplePlanDataObject();
-                    samplePlanDataObject.setCreatedBy(getUserSessionHelper().getFirstName(learningPlanInfo.getMeta().getCreateId()));
-                    String dateAdded = DateFormatHelper.getDateFomatted(learningPlanInfo.getMeta().getCreateTime().toString());
-                    String dateUpdated = DateFormatHelper.getDateFomatted(learningPlanInfo.getMeta().getUpdateTime().toString());
-                    samplePlanDataObject.setLastCreated(dateAdded);
-                    samplePlanDataObject.setLastUpdated(dateUpdated);
-                    samplePlanDataObject.setStatus(PlanConstants.LEARNING_PLAN_ITEM_PUBLISHED_STATE_KEY.equals(learningPlanInfo.getStateKey()) ? SamplePlanConstants.PUBLISHED : SamplePlanConstants.DRAFT);
-                    MajorDisciplineInfo majorDisciplineInfo = null;
-                    try {
-                        majorDisciplineInfo = getProgramService().getMajorDiscipline(learningPlanInfo.getPlanProgram(), SamplePlanConstants.CONTEXT_INFO);
-                    } catch (Exception e) {
-                        logger.error("Could not load degree program for Id:" + learningPlanInfo.getPlanProgram(), e);
+                    for (LearningPlanInfo learningPlanInfo : infos) {
+                        SamplePlanDataObject samplePlanDataObject = new SamplePlanDataObject();
+                        samplePlanDataObject.setCreatedBy(getUserSessionHelper().getFirstName(learningPlanInfo.getMeta().getCreateId()));
+                        String dateAdded = DateFormatHelper.getDateFomatted(learningPlanInfo.getMeta().getCreateTime().toString());
+                        String dateUpdated = DateFormatHelper.getDateFomatted(learningPlanInfo.getMeta().getUpdateTime().toString());
+                        samplePlanDataObject.setLastCreated(dateAdded);
+                        samplePlanDataObject.setLastUpdated(dateUpdated);
+                        samplePlanDataObject.setStatus(PlanConstants.LEARNING_PLAN_ITEM_PUBLISHED_STATE_KEY.equals(learningPlanInfo.getStateKey()) ? SamplePlanConstants.PUBLISHED : SamplePlanConstants.DRAFT);
+                        samplePlanDataObject.setDegreeProgramTitle(majorDisciplineInfo.getCode());
+                        samplePlanDataObject.setPlanTitle(learningPlanInfo.getName());
+                        samplePlanDataObject.setLearningPlanId(learningPlanInfo.getId());
+                        samplePlanDataObjects.add(samplePlanDataObject);
                     }
-                    samplePlanDataObject.setDegreeProgramTitle(majorDisciplineInfo != null && majorDisciplineInfo.getId() != null ? majorDisciplineInfo.getCode() : null);
-                    samplePlanDataObject.setPlanTitle(learningPlanInfo.getName());
-                    samplePlanDataObject.setLearningPlanId(learningPlanInfo.getId());
-                    samplePlanDataObjects.add(samplePlanDataObject);
                 }
             }
 
@@ -84,6 +84,7 @@ public class SamplePlanLookupableHelperImpl extends MyPlanLookupableImpl {
         }
         return samplePlanDataObjects;
     }
+
 
     public AcademicPlanService getAcademicPlanService() {
         if (academicPlanService == null) {
@@ -108,16 +109,5 @@ public class SamplePlanLookupableHelperImpl extends MyPlanLookupableImpl {
         this.userSessionHelper = userSessionHelper;
     }
 
-    public ProgramService getProgramService() {
-        if (programService == null) {
-            programService = (ProgramService)
-                    GlobalResourceLoader.getService(new QName(ProgramServiceConstants.PROGRAM_NAMESPACE, "ProgramService"));
-        }
-        return programService;
-    }
-
-    public void setProgramService(ProgramService programService) {
-        this.programService = programService;
-    }
 
 }
