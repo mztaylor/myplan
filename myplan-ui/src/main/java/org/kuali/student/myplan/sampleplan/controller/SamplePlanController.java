@@ -126,10 +126,12 @@ public class SamplePlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=startNew")
     public ModelAndView startNew(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                                  HttpServletRequest request, HttpServletResponse response) {
-        /*TODO: Add this check
-        if (!isAuthorizedUser()) {
-            return new ModelAndView("redirect:/myplan/unauthorized");
-        }*/
+
+        /*Authorization check*/
+        if (GlobalVariables.getUserSession().retrieveObject(PlanConstants.SESSION_KEY_IS_ADVISER_MANAGE_PLAN) == null) {
+            return new ModelAndView("redirect:/samplePlan/unauthorized");
+        }
+
         SamplePlanForm samplePlanForm = (SamplePlanForm) form;
         if (StringUtils.hasText(samplePlanForm.getLearningPlanId())) {
             try {
@@ -178,13 +180,13 @@ public class SamplePlanController extends UifControllerBase {
                                     }
                                     samplePlanItem.setCode(samplePlanForm.isPreview() ? placeHolderCode : String.format("%s|%s", planItemInfo.getRefObjectId(), planItemInfo.getRefObjectType()));
                                     samplePlanItem.setPlanItemId(planItemInfo.getId());
-                                    samplePlanItem.setCredit(planItemInfo.getCredit()!=null ? planItemInfo.getCredit().toString() : null);
+                                    samplePlanItem.setCredit(planItemInfo.getCredit() != null ? planItemInfo.getCredit().toString() : null);
                                     samplePlanItem.setNote(planItemInfo.getDescr().getPlain());
                                     break;
                                 } else if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItemInfo.getRefObjectType())) {
                                     samplePlanItem.setCode(planItemInfo.getRefObjectId());
                                     samplePlanItem.setPlanItemId(planItemInfo.getId());
-                                    samplePlanItem.setCredit(planItemInfo.getCredit()!=null ? planItemInfo.getCredit().toString() : null);
+                                    samplePlanItem.setCredit(planItemInfo.getCredit() != null ? planItemInfo.getCredit().toString() : null);
                                     samplePlanItem.setNote(planItemInfo.getDescr().getPlain());
                                     break;
                                 }
@@ -215,10 +217,10 @@ public class SamplePlanController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=saveSamplePlan")
     public ModelAndView saveSamplePlan(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result,
                                        HttpServletRequest request, HttpServletResponse response) {
-        /*TODO: Add this check
-        if (!isAuthorizedUser()) {
-            return new ModelAndView("redirect:/myplan/unauthorized");
-        }*/
+         /*Authorization check*/
+        if (GlobalVariables.getUserSession().retrieveObject(PlanConstants.SESSION_KEY_IS_ADVISER_MANAGE_PLAN) == null) {
+            return new ModelAndView("redirect:/samplePlan/unauthorized");
+        }
         SamplePlanForm samplePlanForm = (SamplePlanForm) form;
         if (isValidSamplePlan(samplePlanForm)) {
             try {
@@ -746,30 +748,6 @@ public class SamplePlanController extends UifControllerBase {
             return getAcademicPlanService().createLearningPlan(plan, contextInfo);
         }
 
-    }
-
-
-    /**
-     * Advisers are the only authorized users.
-     *
-     * @return
-     */
-    private boolean isAuthorizedUser() {
-        UserSession session = GlobalVariables.getUserSession();
-
-        //Initialize the permission service and name space codes
-        getPermissionService();
-        boolean authorized = false;
-        for (String adviseNm : advisePermNames) {
-            if (getPermissionService().hasPermission(session.getPrincipalId(), ADVISE_NM_CODE, adviseNm.trim())) {
-                authorized = true;
-                break;
-            }
-
-            logger.info("Adviser authz failed for " + session.getPrincipalName() + " Data|" + session.getPrincipalId() + "|" + ADVISE_NM_CODE + "|" + adviseNm);
-        }
-
-        return authorized;
     }
 
     /**

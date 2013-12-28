@@ -191,6 +191,17 @@ public class MyplanInterceptor implements HandlerInterceptor {
             } catch (DataRetrievalFailureException drfe) {
                 logger.info("UNAUTHORIZED Access: " + GlobalVariables.getUserSession().getPerson().getPrincipalId());
                 request.getRequestDispatcher(USER_UNAUTHORIZED).forward(request, response);
+                return;
+            }
+        }
+        /*If a adviser comes from sample Plan to myplan using myplan url with out student regId as req param*/
+        else {
+            try {
+                String studentNumber = getUserSessionHelper().getStudentNumber();
+            } catch (RuntimeException e) {
+                logger.info("UNAUTHORIZED Access: " + GlobalVariables.getUserSession().getPerson().getPrincipalId());
+                request.getRequestDispatcher(USER_UNAUTHORIZED).forward(request, response);
+                return;
             }
         }
     }
@@ -209,7 +220,7 @@ public class MyplanInterceptor implements HandlerInterceptor {
     }
 
     public UserSessionHelper getUserSessionHelper() {
-        if(userSessionHelper == null){
+        if (userSessionHelper == null) {
             userSessionHelper = new UserSessionHelperImpl();
         }
         return userSessionHelper;
