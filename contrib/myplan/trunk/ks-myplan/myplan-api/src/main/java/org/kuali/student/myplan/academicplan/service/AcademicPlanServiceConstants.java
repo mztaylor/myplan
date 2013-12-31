@@ -39,6 +39,7 @@ public class AcademicPlanServiceConstants {
     public static final String PLACE_HOLDER_TYPE_GEN_ED = "uw.course.genedrequirement";  // from KSEM_ENUM_T.enum_key
     public static final String PLACE_HOLDER_TYPE = "uw.academicplan.placeholder";  // from KSEM_ENUM_T.enum_key
     public static final String PLACE_HOLDER_TYPE_COURSE_LEVEL = "uw.cluset.type.course.level";
+    public static final String STATEMENT_TYPE = "uw.academicplan.statement";
 
     /* Keys for storing info in the session. */
     public static final String SESSION_KEY_IS_ADVISER = "kuali.uw.authz.adviser";

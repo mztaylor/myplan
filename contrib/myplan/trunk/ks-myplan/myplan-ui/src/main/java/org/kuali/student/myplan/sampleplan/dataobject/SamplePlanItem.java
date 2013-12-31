@@ -14,7 +14,12 @@ public class SamplePlanItem {
     private String planItemId;
     private String alternateCode;
     private String alternateCredit;
-    private String alternatePlanItemId;
+
+
+    /*Required for Error notification to a specific item*/
+    private int yearIndex;
+    private int termIndex;
+    private int itemIndex;
 
     public String getCode() {
         return code;
@@ -64,11 +69,27 @@ public class SamplePlanItem {
         this.planItemId = planItemId;
     }
 
-    public String getAlternatePlanItemId() {
-        return alternatePlanItemId;
+    public int getYearIndex() {
+        return yearIndex;
     }
 
-    public void setAlternatePlanItemId(String alternatePlanItemId) {
-        this.alternatePlanItemId = alternatePlanItemId;
+    public void setYearIndex(int yearIndex) {
+        this.yearIndex = yearIndex;
+    }
+
+    public int getTermIndex() {
+        return termIndex;
+    }
+
+    public void setTermIndex(int termIndex) {
+        this.termIndex = termIndex;
+    }
+
+    public int getItemIndex() {
+        return itemIndex;
+    }
+
+    public void setItemIndex(int itemIndex) {
+        this.itemIndex = itemIndex;
     }
 }

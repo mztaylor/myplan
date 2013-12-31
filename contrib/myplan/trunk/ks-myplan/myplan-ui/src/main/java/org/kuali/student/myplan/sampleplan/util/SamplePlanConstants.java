@@ -22,7 +22,10 @@ public class SamplePlanConstants {
     public static final String SAMPLE_PLAN_YEAR = "YEAR %s";
     public static final String SAMPLE_PLAN_ATP_FORMAT = "%sYear%s";
     public static final String CODE_VALIDATION_ERROR_FORMAT = "samplePlanYears[%s].samplePlanTerms[%s].samplePlanItems[%s].code";
+    public static final String ALT_CODE_VALIDATION_ERROR_FORMAT = "samplePlanYears[%s].samplePlanTerms[%s].samplePlanItems[%s].alternateCode";
+
     public static final String DUPLICATE_ERROR = "myplan.text.error.samplePlan.alreadyExists";
+    public static final String REG_COURSE_MISSING = "myplan.text.error.samplePlan.regCourseMissing";
 
 
     public static final String PUBLISHED = "Published";
@@ -31,8 +34,10 @@ public class SamplePlanConstants {
     public static final String STATEMENT_TYPE_RECOMMENDED = "Kuali.statement.type.academicplan.recommendation";
     public static final String REQ_COMP_TYPE_COURSE = "Kuali.reqComponent.type.planitem.course";
     public static final String REQ_COMP_TYPE_PLACEHOLDER = "Kuali.reqComponent.type.planitem.placeholder";
+    public static final String REQ_COMP_FIELD_TYPE_CREDIT = "Kuali.reqComponent.field.type.planitem.credit";
     public static final String REQ_COMP_FIELD_TYPE_COURSE = "Kuali.reqComponent.field.type.planitem.course";
     public static final String REQ_COMP_FIELD_TYPE_PLACEHOLDER = "Kuali.reqComponent.field.type.planitem.placeholder";
+    public static final String REQ_COMP_FIELD_TYPE_COURSE_PLACEHOLDER = "Kuali.reqComponent.field.type.planitem.course.placeholder";
 
     //  Global context info for use in service methods which need caching, but don't use the context argument.
     public static final ContextInfo CONTEXT_INFO = new ContextInfo();
