@@ -1,5 +1,7 @@
 package org.kuali.student.myplan.sampleplan.dataobject;
 
+import org.kuali.student.myplan.course.util.CreditsFormatter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +18,7 @@ public class SamplePlanTerm {
     /*Required in UI to show/hide SU*/
     private int year;
     private List<SamplePlanItem> samplePlanItems;
+    private String totalTermCredits;
 
     public String getTermName() {
         return termName;
@@ -50,5 +53,17 @@ public class SamplePlanTerm {
 
     public void setSamplePlanItems(List<SamplePlanItem> samplePlanItems) {
         this.samplePlanItems = samplePlanItems;
+    }
+
+    public String getTotalTermCredits() {
+        return totalTermCredits;
+    }
+
+    public void setTotalTermCredits(String totalTermCredits) {
+        this.totalTermCredits = totalTermCredits;
+    }
+
+    public void addCredit(String credits) {
+        setTotalTermCredits(CreditsFormatter.addStringCredits(credits, totalTermCredits));
     }
 }
