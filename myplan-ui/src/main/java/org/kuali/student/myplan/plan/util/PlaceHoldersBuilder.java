@@ -49,4 +49,35 @@ public class PlaceHoldersBuilder extends KeyValuesBase {
 
         return kvList;
     }
+
+    /**
+     * PlaceHolders Id and values are returned as key&Value separated by ':'
+     * Used for SamplePlans ComboBox
+     *
+     * @return
+     */
+    public static List<String> getAllKeyValues() {
+        List<String> keyValues = new ArrayList<String>();
+        String value, key;
+        List<EnumeratedValueInfo> enums = EnumerationHelper.getEnumsByContext(
+                CourseSearchConstants.ENUM_CONTEXT_KEY_SEARCH_PLACEHOLDER_KEY);
+        for (EnumeratedValueInfo enumValue : enums) {
+            key = String.format("%s|%s", enumValue.getCode(), enumValue.getEnumerationKey());
+            // arbitrarily, we sometimes use both AbbrevValue and Value, sometimes not
+            if (enumValue.getAbbrevValue().equals(enumValue.getValue()) ||
+                    enumValue.getAbbrevValue().equals("Elective")) {
+                value = String.format("%s", enumValue.getAbbrevValue());
+            } else {
+                value = String.format("%s (%s)", enumValue.getAbbrevValue(), enumValue.getValue());
+            }
+            if (enumValue.getEnumerationKey().equals(PlanConstants.GEN_EDU_ENUM_KEY)) {
+                value += " - Gen. Ed. Req.";
+            }
+            if (enumValue.getCode().equals(PlanConstants.PLACE_HOLDER_OTHER_CODE)) {
+                value += " - Enter description in 'Notes' below (REQUIRED)";
+            }
+            keyValues.add(String.format("%s:%s", key, value));
+        }
+        return keyValues;
+    }
 }
