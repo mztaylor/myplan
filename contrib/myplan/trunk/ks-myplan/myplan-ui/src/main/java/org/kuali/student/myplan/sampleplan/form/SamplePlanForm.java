@@ -30,6 +30,8 @@ public class SamplePlanForm extends UifFormBase {
 
     private boolean preview;
 
+    private boolean copyPlan;
+
     private String totalPlanCredits;
 
 
@@ -103,4 +105,13 @@ public class SamplePlanForm extends UifFormBase {
     public void addCredit(String credits) {
         setTotalPlanCredits(CreditsFormatter.addStringCredits(credits, totalPlanCredits));
     }
+
+    public boolean isCopyPlan() {
+        return copyPlan;
+    }
+
+    public void setCopyPlan(boolean copyPlan) {
+        this.copyPlan = copyPlan;
+    }
+
 }

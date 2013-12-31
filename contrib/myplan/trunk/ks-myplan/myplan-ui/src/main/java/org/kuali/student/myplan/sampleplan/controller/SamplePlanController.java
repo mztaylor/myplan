@@ -146,6 +146,11 @@ public class SamplePlanController extends UifControllerBase {
                 String generalNotes = !CollectionUtils.isEmpty(commentInfos) && commentInfos.size() > 0 ? (samplePlanForm.isPreview() ? commentInfos.get(0).getCommentText().getFormatted() : commentInfos.get(0).getCommentText().getPlain()) : null;
 
                 samplePlanForm.setGeneralNotes(generalNotes);
+
+                if (samplePlanForm.isCopyPlan()) {
+                    return getUIFModelAndView(samplePlanForm);
+                }
+
                 List<PlanItemInfo> planItemInfos = getAcademicPlanService().getPlanItemsInPlan(learningPlanInfo.getId(), PlanConstants.CONTEXT_INFO);
                 List<SamplePlanYear> samplePlanYears = getDefaultSamplePlanTable();
                 List<String> availableTerms = AtpHelper.getTerms();
@@ -238,6 +243,11 @@ public class SamplePlanController extends UifControllerBase {
         SamplePlanForm samplePlanForm = (SamplePlanForm) form;
         if (isValidSamplePlan(samplePlanForm)) {
             try {
+
+                if (samplePlanForm.isCopyPlan()) {
+                    // TBD
+                    return getUIFModelAndView(samplePlanForm);
+                }
 
                 /*Learning Plan created when no learning plan exists (OR) Updated when a learning plan exists and description in that is updated*/
                 LearningPlanInfo learningPlan = null;

@@ -208,6 +208,47 @@
                     </property>
                 </bean>
 
+                <!--********************************************Copy Plan Major & Name Page**************************************************-->
+                <bean parent="Uif-Page" p:id="sample_plan_copy_page"
+                      p:headerText="Copy Sample Plan">
+                    <property name="instructionalMessage">
+                        <bean parent="KSAP-Message" p:cssClasses="">
+                            <property name="messageText"
+                                      value="Select the major or degree program associated with your Sample Plan, then
+                                      enter a name and a brief description. Click 'Create Plan' to continue."/>
+                        </bean>
+                    </property>
+                    <property name="cssClasses">
+                        <list merge="true">
+                            <value>fl-container-950</value>
+                        </list>
+                    </property>
+                    <property name="header">
+                        <bean parent="Uif-HeaderTwo"/>
+                    </property>
+                    <property name="layoutManager">
+                        <bean parent="Uif-VerticalBoxLayout"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-VerticalBoxGroup">
+                                <property name="items">
+                                    <list>
+                                        <ref bean="sample_plan_panel"/>
+                                        <ref bean="sample_plan_main_actions"/>
+                                        <bean parent="KSAP-SimpleInputField" p:propertyName="learningPlanId"
+                                              p:hidden="true">
+                                            <property name="control">
+                                                <bean parent="Uif-HiddenControl"/>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
                 <!--********************************************Sample Plan Preview Page**************************************************-->
                 <bean parent="Uif-Page" p:id="sample_plan_preview_page"
                       p:headerText="@{degreeProgramTitle}: @{planTitle}">
@@ -613,7 +654,7 @@
         <property name="linkText" value="Copy"/>
         <property name="title" value="Copy"/>
         <property name="href"
-                  value="#"/>
+                  value="samplePlan?methodToCall=startNew&amp;viewId=SamplePlan-FormView&amp;copyPlan=true&amp;pageId=sample_plan_copy_page&amp;learningPlanId=@{#line.learningPlanId}"/>
     </bean>
 
     <bean id="audit" parent="Uif-LinkField">
