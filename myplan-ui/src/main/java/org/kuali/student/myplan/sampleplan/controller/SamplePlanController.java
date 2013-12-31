@@ -163,6 +163,11 @@ public class SamplePlanController extends UifControllerBase {
                                     samplePlanItem.setCode(courseInfo.getCode());
                                     samplePlanItem.setPlanItemId(planItemInfo.getId());
                                     samplePlanItem.setCredit(CreditsFormatter.formatCredits(courseInfo));
+                                    if (samplePlanForm.isPreview()) {
+                                        samplePlanTerm.addCredit(samplePlanItem.getCredit());
+                                        samplePlanYear.addCredit(samplePlanItem.getCredit());
+                                        samplePlanForm.addCredit(samplePlanItem.getCredit());
+                                    }
                                     samplePlanItem.setNote(planItemInfo.getDescr().getPlain());
                                     break;
                                 } else if (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItemInfo.getRefObjectType()) ||
@@ -176,12 +181,22 @@ public class SamplePlanController extends UifControllerBase {
                                     samplePlanItem.setCode(samplePlanForm.isPreview() ? placeHolderCode : String.format("%s|%s", planItemInfo.getRefObjectId(), planItemInfo.getRefObjectType()));
                                     samplePlanItem.setPlanItemId(planItemInfo.getId());
                                     samplePlanItem.setCredit(planItemInfo.getCredit() != null ? planItemInfo.getCredit().toString() : null);
+                                    if (samplePlanForm.isPreview()) {
+                                        samplePlanTerm.addCredit(samplePlanItem.getCredit());
+                                        samplePlanYear.addCredit(samplePlanItem.getCredit());
+                                        samplePlanForm.addCredit(samplePlanItem.getCredit());
+                                    }
                                     samplePlanItem.setNote(planItemInfo.getDescr().getPlain());
                                     break;
                                 } else if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItemInfo.getRefObjectType())) {
                                     samplePlanItem.setCode(planItemInfo.getRefObjectId());
                                     samplePlanItem.setPlanItemId(planItemInfo.getId());
                                     samplePlanItem.setCredit(planItemInfo.getCredit() != null ? planItemInfo.getCredit().toString() : null);
+                                    if (samplePlanForm.isPreview()) {
+                                        samplePlanTerm.addCredit(samplePlanItem.getCredit());
+                                        samplePlanYear.addCredit(samplePlanItem.getCredit());
+                                        samplePlanForm.addCredit(samplePlanItem.getCredit());
+                                    }
                                     samplePlanItem.setNote(planItemInfo.getDescr().getPlain());
                                     break;
                                 }

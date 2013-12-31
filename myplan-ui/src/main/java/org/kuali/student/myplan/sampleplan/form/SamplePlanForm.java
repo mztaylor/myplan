@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.sampleplan.form;
 
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.sampleplan.dataobject.SamplePlanYear;
 
 import java.util.ArrayList;
@@ -28,6 +29,9 @@ public class SamplePlanForm extends UifFormBase {
     private String learningPlanId;
 
     private boolean preview;
+
+    private String totalPlanCredits;
+
 
     public List<SamplePlanYear> getSamplePlanYears() {
         if (samplePlanYears == null) {
@@ -86,5 +90,17 @@ public class SamplePlanForm extends UifFormBase {
 
     public void setPreview(boolean preview) {
         this.preview = preview;
+    }
+
+    public String getTotalPlanCredits() {
+        return totalPlanCredits;
+    }
+
+    public void setTotalPlanCredits(String totalPlanCredits) {
+        this.totalPlanCredits = totalPlanCredits;
+    }
+
+    public void addCredit(String credits) {
+        setTotalPlanCredits(CreditsFormatter.addStringCredits(credits, totalPlanCredits));
     }
 }
