@@ -592,60 +592,6 @@ public class SamplePlanController extends UifControllerBase {
         return isValidSamplePlan;
     }
 
-
-    /**
-     * Adds a course to Plan Item or ReqComponent based on boolean toReqComponent
-     *
-     * @param learningPlan
-     * @param samplePlanItem
-     * @param atpId
-     */
-    private PlanItemInfo addCourse(LearningPlan learningPlan, SamplePlanItem samplePlanItem, String atpId) {
-        PlanItemInfo actualPlanItem = null;
-        DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(samplePlanItem.getCode());
-        String courseId = getCourseHelper().getCourseId(courseCode.getSubject(), courseCode.getNumber());
-        if (StringUtils.hasText(courseId)) {
-            boolean isCrossListedCourse = false;
-            CourseInfo courseInfo = getCourseHelper().getCourseInfo(courseId);
-            try {
-                isCrossListedCourse = getCourseHelper().isCrossListedCourse(courseInfo, samplePlanItem.getCode());
-            } catch (DoesNotExistException e) {
-                logger.error("Course not found" + samplePlanItem.getCode(), e);
-            }
-
-            if (courseInfo != null) {
-
-                if (StringUtils.hasText(samplePlanItem.getPlanItemId())) {
-                    try {
-                        actualPlanItem = getAcademicPlanService().getPlanItem(samplePlanItem.getPlanItemId(), SamplePlanConstants.CONTEXT_INFO);
-                    } catch (Exception e) {
-                        logger.error("Could Not load planItem for planId: " + samplePlanItem.getPlanItemId(), e);
-                    }
-                    if (actualPlanItem != null && actualPlanItem.getRefObjectId().equals(courseInfo.getVersion().getVersionIndId()) && (actualPlanItem.getDescr() != null && actualPlanItem.getDescr().getPlain() != null && !actualPlanItem.getDescr().getPlain().equals(samplePlanItem.getNote()))) {
-                        actualPlanItem = buildPlanItem(learningPlan, courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), null, isCrossListedCourse ? samplePlanItem.getCode() : null, actualPlanItem.getId());
-                    } else if (actualPlanItem != null && !actualPlanItem.getRefObjectId().equals(courseInfo.getVersion().getVersionIndId())) {
-                        PlanItemInfo planItemInfo = getExistingPlanItem(courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, learningPlan.getId(), atpId);
-                        if (planItemInfo != null) {
-
-                        } else {
-                            actualPlanItem = buildPlanItem(learningPlan, courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), null, isCrossListedCourse ? samplePlanItem.getCode() : null, planItemInfo != null ? planItemInfo.getId() : null);
-
-                        }
-                    }
-                } else {
-                  /*Newly added courses are added as a new planItem*/
-                    PlanItemInfo planItemInfo = getExistingPlanItem(courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, learningPlan.getId(), atpId);
-                    if ((planItemInfo == null) || (planItemInfo != null && planItemInfo.getDescr().getPlain() != null && !planItemInfo.getDescr().getPlain().equals(samplePlanItem.getNote())) || (planItemInfo != null && actualPlanItem != null && planItemInfo.getRefObjectId().equals(actualPlanItem.getRefObjectId()))) {
-                        actualPlanItem = buildPlanItem(learningPlan, courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), null, isCrossListedCourse ? samplePlanItem.getCode() : null, planItemInfo != null ? planItemInfo.getId() : null);
-                    }
-                }
-
-            }
-
-        }
-        return actualPlanItem;
-    }
-
     /**
      * Saved the general text as comment with reference Id as learningPlanId
      *
