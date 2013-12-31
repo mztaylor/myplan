@@ -12,9 +12,9 @@ public class SamplePlanItem {
     private String credit;
     private String note;
     private String planItemId;
-    private String orCode;
-    private String orCredit;
-    private String orPlanItemId;
+    private String alternateCode;
+    private String alternateCredit;
+    private String alternatePlanItemId;
 
     public String getCode() {
         return code;
@@ -40,20 +40,20 @@ public class SamplePlanItem {
         this.note = note;
     }
 
-    public String getOrCode() {
-        return orCode;
+    public String getAlternateCode() {
+        return alternateCode;
     }
 
-    public void setOrCode(String orCode) {
-        this.orCode = orCode;
+    public void setAlternateCode(String alternateCode) {
+        this.alternateCode = alternateCode;
     }
 
-    public String getOrCredit() {
-        return orCredit;
+    public String getAlternateCredit() {
+        return alternateCredit;
     }
 
-    public void setOrCredit(String orCredit) {
-        this.orCredit = orCredit;
+    public void setAlternateCredit(String alternateCredit) {
+        this.alternateCredit = alternateCredit;
     }
 
     public String getPlanItemId() {
@@ -64,11 +64,11 @@ public class SamplePlanItem {
         this.planItemId = planItemId;
     }
 
-    public String getOrPlanItemId() {
-        return orPlanItemId;
+    public String getAlternatePlanItemId() {
+        return alternatePlanItemId;
     }
 
-    public void setOrPlanItemId(String orPlanItemId) {
-        this.orPlanItemId = orPlanItemId;
+    public void setAlternatePlanItemId(String alternatePlanItemId) {
+        this.alternatePlanItemId = alternatePlanItemId;
     }
 }

@@ -157,6 +157,7 @@
     <!--**********************************************************************************************Form View****************************************************************************************************-->
     <bean id="SamplePlan-FormView" parent="MyPlanFormView">
         <property name="id" value="SamplePlan-FormView"/>
+        <property name="persistFormToSession" value="true"/>
         <property name="header.render" value="false"/>
         <property name="applicationHeader">
             <bean parent="KSAP-SamplePlanApplicationHeader"/>
@@ -465,6 +466,24 @@
                             <bean parent="Uif-InputField"
                                   p:propertyName="code" p:width="auto" p:render="@{!#form.preview}" p:readOnly="false">
                             </bean>
+
+                            <!--<bean parent="Uif-InputField" p:propertyName="code">
+                                <property name="suggest">
+                                    <bean parent="KSAP-ComboBox" p:render="true" p:retrieveAllSuggestions="true">
+                                        <property name="suggestQuery">
+                                            <bean parent="Uif-AttributeQueryConfig"
+                                                  p:queryMethodInvokerConfig.staticMethod="org.kuali.student.myplan.plan.util.PlaceHoldersBuilder.getAllKeyValues"/>
+                                        </property>
+                                        <property name="templateOptions">
+                                            <map merge="true">
+                                                <entry key="minLength" value="0"/>
+                                            </map>
+                                        </property>
+                                    </bean>
+                                </property>
+                            </bean>-->
+
+
                             <bean parent="Uif-InputField"
                                   p:propertyName="credit" p:width="auto" p:render="@{!#form.preview}"
                                   p:readOnly="false">

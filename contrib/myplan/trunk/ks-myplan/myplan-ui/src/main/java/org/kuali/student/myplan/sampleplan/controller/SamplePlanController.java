@@ -8,7 +8,6 @@ import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kim.api.permission.PermissionService;
 import org.kuali.rice.kim.api.services.KimApiServiceLocator;
-import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.datadictionary.exception.DuplicateEntryException;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
@@ -34,10 +33,6 @@ import org.kuali.student.myplan.sampleplan.util.SamplePlanConstants;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.UrlLinkBuilder;
 import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.kuali.student.r1.core.statement.dto.ReqCompFieldInfo;
-import org.kuali.student.r1.core.statement.dto.ReqComponentInfo;
-import org.kuali.student.r1.core.statement.dto.StatementInfo;
-import org.kuali.student.r1.core.statement.dto.StatementOperatorTypeKey;
 import org.kuali.student.r1.core.statement.service.StatementService;
 import org.kuali.student.r2.common.dto.*;
 import org.kuali.student.r2.common.exceptions.*;
@@ -258,7 +253,7 @@ public class SamplePlanController extends UifControllerBase {
 
                         for (SamplePlanItem samplePlanItem : samplePlanTerm.getSamplePlanItems()) {
                             /*If No "OR" courses are specified*/
-                            if (StringUtils.isEmpty(samplePlanItem.getOrCode()) && StringUtils.hasText(samplePlanItem.getCode())) {
+                            if (StringUtils.isEmpty(samplePlanItem.getAlternateCode()) && StringUtils.hasText(samplePlanItem.getCode())) {
                                 PlanItemInfo actualPlanItem = null;
                                 boolean addOrUpdate = false;
                                 if (samplePlanItem.getCode().matches(CourseSearchConstants.UNFORMATTED_COURSE_CODE_REGEX)) {
@@ -432,14 +427,14 @@ public class SamplePlanController extends UifControllerBase {
                             }
 
                             /*If "OR" courses are specified*/
-                            else if (StringUtils.hasText(samplePlanItem.getOrCode()) && StringUtils.hasText(samplePlanItem.getCode())) {
+                            else if (StringUtils.hasText(samplePlanItem.getAlternateCode()) && StringUtils.hasText(samplePlanItem.getCode())) {
 
                             /*TODO: Implement Logic for adding OR conditional Items*/
 
                             }
 
                             /*Deleting "OR" PlanItems which are removed from UI*/
-                            if (StringUtils.isEmpty(samplePlanItem.getOrCode()) && StringUtils.hasText(samplePlanItem.getOrPlanItemId())) {
+                            if (StringUtils.isEmpty(samplePlanItem.getAlternateCode()) && StringUtils.hasText(samplePlanItem.getAlternatePlanItemId())) {
                               /*TODO: Implement Logic for deleting OR conditional Items*/
                             }
 
