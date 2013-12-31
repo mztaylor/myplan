@@ -33,6 +33,10 @@ import org.kuali.student.myplan.sampleplan.util.SamplePlanConstants;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.UrlLinkBuilder;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r1.core.statement.dto.ReqCompFieldInfo;
+import org.kuali.student.r1.core.statement.dto.ReqComponentInfo;
+import org.kuali.student.r1.core.statement.dto.StatementOperatorTypeKey;
+import org.kuali.student.r1.core.statement.dto.StatementTreeViewInfo;
 import org.kuali.student.r1.core.statement.service.StatementService;
 import org.kuali.student.r2.common.dto.*;
 import org.kuali.student.r2.common.exceptions.*;
@@ -250,206 +254,57 @@ public class SamplePlanController extends UifControllerBase {
                 if (CollectionUtils.isEmpty(commentInfos) || (!CollectionUtils.isEmpty(commentInfos) && StringUtils.hasText(samplePlanForm.getGeneralNotes()) && !samplePlanForm.getGeneralNotes().equals(commentInfos.get(0).getCommentText().getPlain()))) {
                     saveUpdateGeneralNotes(learningPlan.getId(), samplePlanForm.getGeneralNotes(), !CollectionUtils.isEmpty(commentInfos) ? commentInfos.get(0) : null);
                 }
-                boolean isValidSamplePlan = true;
                 Map<SamplePlanItem, PlanItemInfo> addOrUpdatePlanItems = new HashMap<SamplePlanItem, PlanItemInfo>();
 
 
                 List<SamplePlanItem> deletePlanItems = new ArrayList<SamplePlanItem>();
-                int yearIndex = 0;
                 for (SamplePlanYear samplePlanYear : samplePlanForm.getSamplePlanYears()) {
                     int year = samplePlanYear.getYear();
-                    int termIndex = 0;
                     for (SamplePlanTerm samplePlanTerm : samplePlanYear.getSamplePlanTerms()) {
                         String atpId = String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, samplePlanTerm.getTermName(), year);
-                        int itemIndex = 0;
-                        List<String> refObjIdsAdded = new ArrayList<String>();
+                        Map<String, Integer> refObjIdsAdded = new HashMap<String, Integer>();
 
-                        Map<Integer, PlanItemInfo> additionalCheckPlanItems = new HashMap<Integer, PlanItemInfo>();
+                        Map<SamplePlanItem, PlanItemInfo> additionalCheckPlanItems = new HashMap<SamplePlanItem, PlanItemInfo>();
 
                         for (SamplePlanItem samplePlanItem : samplePlanTerm.getSamplePlanItems()) {
-                            /*If No "OR" courses are specified*/
+
+                            /*If "Alternate" course is not specified and regular course is specified*/
                             if (StringUtils.isEmpty(samplePlanItem.getAlternateCode()) && StringUtils.hasText(samplePlanItem.getCode())) {
-                                PlanItemInfo actualPlanItem = null;
-                                boolean addOrUpdate = false;
                                 if (samplePlanItem.getCode().matches(CourseSearchConstants.UNFORMATTED_COURSE_CODE_REGEX)) {
-                                    /*Validate Course and Build PlanItem*/
-                                    DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(samplePlanItem.getCode());
-                                    String courseId = getCourseHelper().getCourseId(courseCode.getSubject(), courseCode.getNumber());
-                                    if (StringUtils.hasText(courseId)) {
-                                        boolean isCrossListedCourse = false;
-                                        CourseInfo courseInfo = getCourseHelper().getCourseInfo(courseId);
-                                        try {
-                                            isCrossListedCourse = getCourseHelper().isCrossListedCourse(courseInfo, samplePlanItem.getCode());
-                                        } catch (DoesNotExistException e) {
-                                            logger.error("Course not found" + samplePlanItem.getCode(), e);
-                                        }
-                                        if (courseInfo != null) {
-                                            //String key = getCourseHelper().joinStringsByDelimiter(':', courseInfo.getSubjectArea().trim(), courseInfo.getCourseNumberSuffix().trim(), atpId);
-                                            if (StringUtils.hasText(samplePlanItem.getPlanItemId())) {
-                                                try {
-                                                    actualPlanItem = getAcademicPlanService().getPlanItem(samplePlanItem.getPlanItemId(), SamplePlanConstants.CONTEXT_INFO);
-                                                } catch (Exception e) {
-                                                    logger.error("Could Not load planItem for planId: " + samplePlanItem.getPlanItemId(), e);
-                                                }
-                                                /*PlanItem exists and has same refObjId and only the note is modified*/
-                                                if (actualPlanItem != null && actualPlanItem.getRefObjectId().equals(courseInfo.getVersion().getVersionIndId()) && (actualPlanItem.getDescr() != null && actualPlanItem.getDescr().getPlain() != null && !actualPlanItem.getDescr().getPlain().equals(samplePlanItem.getNote()))) {
-                                                    if (refObjIdsAdded.contains(courseInfo.getVersion().getVersionIndId())) {
-                                                        /*PlanItem with same refObjId for given term already exists*/
-                                                        isValidSamplePlan = false;
-                                                        String[] params = {courseCode.getCourseCode(), atpId};
-                                                        GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, yearIndex, termIndex, itemIndex), PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
-                                                    } else {
-                                                        actualPlanItem = buildPlanItem(learningPlan, courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), null, isCrossListedCourse ? samplePlanItem.getCode() : null, actualPlanItem.getId());
-                                                        addOrUpdate = true;
-                                                    }
-                                                }
-                                                /*PlanItem exists and has different refObjId*/
-                                                else if (actualPlanItem != null && (!actualPlanItem.getRefObjectId().equals(courseInfo.getVersion().getVersionIndId()) || !PlanConstants.COURSE_TYPE.equals(actualPlanItem.getRefObjectType()))) {
-                                                    PlanItemInfo planItemInfo = getExistingPlanItem(courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, learningPlan.getId(), atpId);
-                                                    if (planItemInfo != null) {
-                                                        actualPlanItem = buildPlanItem(learningPlan, courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), null, isCrossListedCourse ? samplePlanItem.getCode() : null, null);
-                                                        additionalCheckPlanItems.put(itemIndex, actualPlanItem);
-                                                    } else if (refObjIdsAdded.contains(courseInfo.getVersion().getVersionIndId())) {
-                                                        /*PlanItem with same refObjId for given term already exists*/
-                                                        isValidSamplePlan = false;
-                                                        String[] params = {courseCode.getCourseCode(), atpId};
-                                                        GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, yearIndex, termIndex, itemIndex), PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
-                                                    } else {
-                                                        actualPlanItem = buildPlanItem(learningPlan, courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), null, isCrossListedCourse ? samplePlanItem.getCode() : null, actualPlanItem.getId());
-                                                        addOrUpdate = true;
-                                                    }
-                                                }
-                                            }
-                                            /*Creating a planItem for first time*/
-                                            else {
-                                                PlanItemInfo planItemInfo = getExistingPlanItem(courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, learningPlan.getId(), atpId);
-                                                if (planItemInfo != null) {
-                                                    actualPlanItem = buildPlanItem(learningPlan, courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), null, isCrossListedCourse ? samplePlanItem.getCode() : null, null);
-                                                    additionalCheckPlanItems.put(itemIndex, actualPlanItem);
-                                                } else if (refObjIdsAdded.contains(courseInfo.getVersion().getVersionIndId())) {
-                                                        /*PlanItem with same refObjId for given term already exists*/
-                                                    isValidSamplePlan = false;
-                                                    String[] params = {courseCode.getCourseCode(), atpId};
-                                                    GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, yearIndex, termIndex, itemIndex), PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
-                                                } else {
-                                                    actualPlanItem = buildPlanItem(learningPlan, courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), null, isCrossListedCourse ? samplePlanItem.getCode() : null, null);
-                                                    addOrUpdate = true;
-                                                }
-                                            }
-                                            refObjIdsAdded.add(courseInfo.getVersion().getVersionIndId());
 
-                                        }
-                                        /*Invalid Course*/
-                                        else {
-                                            isValidSamplePlan = false;
-                                            String[] params = {courseCode.getCourseCode()};
-                                            GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, yearIndex, termIndex, itemIndex), PlanConstants.COURSE_NOT_FOUND, params);
-                                        }
-
-                                    }
-                                    /*Invalid Course*/
-                                    else {
-                                        isValidSamplePlan = false;
-                                        String[] params = {courseCode.getCourseCode()};
-                                        GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, yearIndex, termIndex, itemIndex), PlanConstants.COURSE_NOT_FOUND, params);
-                                    }
-
-                                    if (actualPlanItem != null && addOrUpdate) {
-                                        addOrUpdatePlanItems.put(samplePlanItem, actualPlanItem);
-                                    }
+                                    addCourseItem(learningPlan, samplePlanItem, refObjIdsAdded, additionalCheckPlanItems, addOrUpdatePlanItems, atpId);
                                 } else if (samplePlanItem.getCode().matches(CourseSearchConstants.UNFORMATTED_COURSE_PLACE_HOLDER_REGEX)) {
-                                    DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(samplePlanItem.getCode());
 
-
-                                    /*Validate Course PlaceHolder and Build PlanItem*/
-                                    ValidationResultInfo validationResultInfo = getCourseHelper().isValidCoursePlaceHolder(samplePlanItem.getCode());
-                                    if (validationResultInfo == null) {
-                                        String refObjId = getCourseHelper().getKeyForCourse(courseCode.getSubject(), courseCode.getNumber());
-                                        String refObjType = PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL;
-
-                                        if (StringUtils.hasText(samplePlanItem.getPlanItemId())) {
-                                            try {
-                                                actualPlanItem = getAcademicPlanService().getPlanItem(samplePlanItem.getPlanItemId(), SamplePlanConstants.CONTEXT_INFO);
-                                            } catch (Exception e) {
-                                                logger.error("Could Not load planItem for planId: " + samplePlanItem.getPlanItemId(), e);
-                                            }
-                                            if ( actualPlanItem != null &&
-                                                 (    (actualPlanItem.getCredit() != null &&
-                                                       !actualPlanItem.getCredit().equals(samplePlanItem.getCredit()))
-                                                   || (actualPlanItem.getRefObjectId() != null &&
-                                                       !actualPlanItem.getRefObjectId().equals(refObjId) )
-                                                   || (actualPlanItem.getRefObjectType() != null &&
-                                                       !actualPlanItem.getRefObjectType().equals(refObjType) )
-                                                   || (actualPlanItem.getDescr() != null &&
-                                                       actualPlanItem.getDescr().getPlain() != null &&
-                                                       !actualPlanItem.getDescr().getPlain().equals(samplePlanItem.getNote())))) {
-                                                actualPlanItem = buildPlanItem(learningPlan, refObjId, refObjType, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), samplePlanItem.getCredit(), null, actualPlanItem.getId());
-                                                addOrUpdate = true;
-                                            }
-
-                                        } else {
-                                            actualPlanItem = buildPlanItem(learningPlan, refObjId, refObjType, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), samplePlanItem.getCredit(), null, null);
-                                            addOrUpdate = true;
-                                        }
-                                        if (actualPlanItem != null && addOrUpdate) {
-                                            addOrUpdatePlanItems.put(samplePlanItem, actualPlanItem);
-                                        }
-                                    } else {
-                                        /*Invalid Item*/
-                                        isValidSamplePlan = false;
-                                        String[] params = {courseCode.getSubject()};
-                                        GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, yearIndex, termIndex, itemIndex), validationResultInfo.getMessage(), params);
-                                    }
+                                    addCoursePlaceHolderItem(learningPlan, samplePlanItem, addOrUpdatePlanItems, atpId);
 
                                 } else if (samplePlanItem.getCode().contains(PlanConstants.PLACEHOLDER_KEY_SEPARATOR)) {
-                                    /*validating placeHolder*/
-                                    ValidationResultInfo validationResultInfo = getCourseHelper().isValidPlaceHolder(samplePlanItem.getCode(), samplePlanItem.getNote());
-                                    if (validationResultInfo == null) {
-                                        String[] placeHolder = samplePlanItem.getCode().split(PlanConstants.CODE_KEY_SEPARATOR);
-                                        String placeHolderId = placeHolder[0];
-                                        String placeHolderType = placeHolder[1];
 
-                                        if (StringUtils.hasText(samplePlanItem.getPlanItemId())) {
-                                            try {
-                                                actualPlanItem = getAcademicPlanService().getPlanItem(samplePlanItem.getPlanItemId(), SamplePlanConstants.CONTEXT_INFO);
-                                            } catch (Exception e) {
-                                                logger.error("Could Not load planItem for planId: " + samplePlanItem.getPlanItemId(), e);
-                                            }
-                                            if (actualPlanItem != null && ((actualPlanItem.getCredit() != null && !actualPlanItem.getCredit().equals(samplePlanItem.getCredit())) || !actualPlanItem.getRefObjectId().equals(placeHolderId) || !actualPlanItem.getRefObjectType().equals(placeHolderType) || (actualPlanItem.getDescr() != null && !actualPlanItem.getDescr().getPlain().equals(samplePlanItem.getNote())))) {
-                                                actualPlanItem = buildPlanItem(learningPlan, placeHolderId, placeHolderType, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), samplePlanItem.getCredit(), null, actualPlanItem.getId());
-                                                addOrUpdate = true;
-                                            }
+                                    addPlaceHolderItem(learningPlan, samplePlanItem, addOrUpdatePlanItems, atpId);
 
-                                        } else {
-                                            actualPlanItem = buildPlanItem(learningPlan, placeHolderId, placeHolderType, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), samplePlanItem.getCredit(), null, null);
-                                            addOrUpdate = true;
-                                        }
-                                        if (actualPlanItem != null && addOrUpdate) {
-                                            addOrUpdatePlanItems.put(samplePlanItem, actualPlanItem);
-                                        }
-                                    } else {
-                                        /*Invalid Item*/
-                                        isValidSamplePlan = false;
-                                        String[] params = {};
-                                        GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, yearIndex, termIndex, itemIndex), validationResultInfo.getMessage(), params);
-                                    }
                                 } else {
                                     /*Invalid Item*/
-                                    isValidSamplePlan = false;
                                     String[] params = {};
-                                    GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, yearIndex, termIndex, itemIndex), PlanConstants.ERROR_KEY_UNKNOWN_COURSE, params);
+                                    GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, samplePlanItem.getYearIndex(), samplePlanItem.getTermIndex(), samplePlanItem.getItemIndex()), PlanConstants.ERROR_KEY_UNKNOWN_COURSE, params);
                                 }
                             }
 
-                            /*If "OR" courses are specified*/
+                            /*If "Alternate" course is specified and regular course is specified*/
                             else if (StringUtils.hasText(samplePlanItem.getAlternateCode()) && StringUtils.hasText(samplePlanItem.getCode())) {
 
                             /*TODO: Implement Logic for adding OR conditional Items*/
 
+
+                            }
+
+                            /*If "Alternate" course is specified and regular course is Not specified*/
+                            else if (StringUtils.hasText(samplePlanItem.getAlternateCode()) && StringUtils.isEmpty(samplePlanItem.getCode())) {
+                               /*Invalid Item*/
+                                String[] params = {};
+                                GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, samplePlanItem.getYearIndex(), samplePlanItem.getTermIndex(), samplePlanItem.getItemIndex()), SamplePlanConstants.REG_COURSE_MISSING, params);
                             }
 
                             /*Deleting "OR" PlanItems which are removed from UI*/
-                            if (StringUtils.isEmpty(samplePlanItem.getAlternateCode()) && StringUtils.hasText(samplePlanItem.getAlternatePlanItemId())) {
+                            if (StringUtils.isEmpty(samplePlanItem.getAlternateCode()) && StringUtils.hasText(samplePlanItem.getPlanItemId())) {
                               /*TODO: Implement Logic for deleting OR conditional Items*/
                             }
 
@@ -458,31 +313,24 @@ public class SamplePlanController extends UifControllerBase {
                                 deletePlanItems.add(samplePlanItem);
                             }
 
-
-                            itemIndex++;
                         }
 
                         /*Duplicate course planItems re-validated as already planned items may have been updated now*/
-                        for (Integer index : additionalCheckPlanItems.keySet()) {
-                            PlanItemInfo actualPlanItem = additionalCheckPlanItems.get(index);
-                            if (refObjIdsAdded.contains(actualPlanItem.getRefObjectId())) {
+                        for (SamplePlanItem samplePlanItem : additionalCheckPlanItems.keySet()) {
+                            PlanItemInfo actualPlanItem = additionalCheckPlanItems.get(samplePlanItem);
+                            if (refObjIdsAdded.containsKey(actualPlanItem.getRefObjectId()) && refObjIdsAdded.get(actualPlanItem.getRefObjectId()) > 1) {
                                 /*PlanItem with same refObjId for given term already exists*/
-                                isValidSamplePlan = false;
                                 String[] params = {getCourseHelper().getCourseInfo(actualPlanItem.getRefObjectId()).getCode(), atpId};
-                                GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, yearIndex, termIndex, index), PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
+                                GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, samplePlanItem.getYearIndex(), samplePlanItem.getTermIndex(), samplePlanItem.getItemIndex()), PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
 
                             } else {
-                                addOrUpdatePlanItems.put(samplePlanTerm.getSamplePlanItems().get(index), actualPlanItem);
+                                addOrUpdatePlanItems.put(samplePlanItem, actualPlanItem);
                             }
                         }
-
-
-                        termIndex++;
                     }
-                    yearIndex++;
                 }
 
-                if (isValidSamplePlan) {
+                if (CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages())) {
 
                     /*Deleting planItems*/
                     for (SamplePlanItem samplePlanItem : deletePlanItems) {
@@ -529,6 +377,225 @@ public class SamplePlanController extends UifControllerBase {
             }
         }
         return getUIFModelAndView(samplePlanForm);
+    }
+
+
+    /**
+     * Validate Course and Builds PlanItem
+     *
+     * @param learningPlan
+     * @param samplePlanItem
+     * @param refObjIdsAdded
+     * @param additionalCheckPlanItems
+     * @param addOrUpdatePlanItems
+     * @param atpId
+     */
+    private void addCourseItem(LearningPlanInfo learningPlan, SamplePlanItem samplePlanItem, Map<String, Integer> refObjIdsAdded, Map<SamplePlanItem, PlanItemInfo> additionalCheckPlanItems, Map<SamplePlanItem, PlanItemInfo> addOrUpdatePlanItems, String atpId) {
+        PlanItemInfo actualPlanItem = null;
+        boolean addOrUpdate = false;
+        String code = samplePlanItem.getCode();
+        String courseId = getCourseHelper().getCourseIdForCode(code);
+        if (StringUtils.hasText(courseId)) {
+            boolean isCrossListedCourse = false;
+            CourseInfo courseInfo = getCourseHelper().getCourseInfo(courseId);
+            try {
+                isCrossListedCourse = getCourseHelper().isCrossListedCourse(courseInfo, code);
+            } catch (DoesNotExistException e) {
+                logger.error("Course not found" + code, e);
+            }
+            if (courseInfo != null) {
+                if (StringUtils.hasText(samplePlanItem.getPlanItemId())) {
+
+                    try {
+                        actualPlanItem = getAcademicPlanService().getPlanItem(samplePlanItem.getPlanItemId(), SamplePlanConstants.CONTEXT_INFO);
+                    } catch (Exception e) {
+                        logger.error("Could Not load planItem for planId: " + samplePlanItem.getPlanItemId(), e);
+                    }
+
+
+                    if (actualPlanItem != null) {
+                        if (PlanConstants.STATEMENT_TYPE.equals(actualPlanItem.getRefObjectType())) {
+                            /*TODO: Implement logic for deleting  statementTreeViewInfo, planItem and creating planItem for course*/
+
+                        } else {
+                            String versionIndId = actualPlanItem.getRefObjectId();
+                            /*PlanItem exists and has same refObjId and only the note is modified*/
+                            if (versionIndId.equals(courseInfo.getVersion().getVersionIndId()) && (actualPlanItem.getDescr() != null && actualPlanItem.getDescr().getPlain() != null && !actualPlanItem.getDescr().getPlain().equals(samplePlanItem.getNote()))) {
+                                if (refObjIdsAdded.containsKey(courseInfo.getVersion().getVersionIndId())) {
+                                    /*PlanItem with same refObjId for given term already exists*/
+                                    String[] params = {courseInfo.getCode(), atpId};
+                                    GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, samplePlanItem.getYearIndex(), samplePlanItem.getTermIndex(), samplePlanItem.getItemIndex()), PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
+                                } else {
+                                    actualPlanItem = buildPlanItem(learningPlan, courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), null, isCrossListedCourse ? code : null, actualPlanItem.getId());
+                                    addOrUpdate = true;
+                                }
+                            }
+                                                /*PlanItem exists and has different refObjId*/
+                            else if (actualPlanItem != null && (!versionIndId.equals(courseInfo.getVersion().getVersionIndId()) || !PlanConstants.COURSE_TYPE.equals(actualPlanItem.getRefObjectType()))) {
+                                PlanItemInfo planItemInfo = getExistingPlanItem(courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, learningPlan.getId(), atpId);
+                                if (planItemInfo != null) {
+                                    actualPlanItem = buildPlanItem(learningPlan, courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), null, isCrossListedCourse ? code : null, null);
+                                    additionalCheckPlanItems.put(samplePlanItem, actualPlanItem);
+                                } else if (refObjIdsAdded.containsKey(courseInfo.getVersion().getVersionIndId())) {
+                                    /*PlanItem with same refObjId for given term already exists*/
+                                    String[] params = {courseInfo.getCode(), atpId};
+                                    GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, samplePlanItem.getYearIndex(), samplePlanItem.getTermIndex(), samplePlanItem.getItemIndex()), PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
+                                } else {
+                                    actualPlanItem = buildPlanItem(learningPlan, courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), null, isCrossListedCourse ? code : null, actualPlanItem.getId());
+                                    addOrUpdate = true;
+                                }
+                            }
+                        }
+
+
+                    } else {
+                        /*out of sync*/
+                        String[] params = {};
+                        GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, samplePlanItem.getYearIndex(), samplePlanItem.getTermIndex(), samplePlanItem.getItemIndex()), PlanConstants.ERROR_KEY_PAGE_RESET_REQUIRED, params);
+                    }
+
+
+                }
+                                            /*Creating a planItem for first time*/
+                else {
+                    PlanItemInfo planItemInfo = getExistingPlanItem(courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, learningPlan.getId(), atpId);
+                    if (planItemInfo != null) {
+                        actualPlanItem = buildPlanItem(learningPlan, courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), null, isCrossListedCourse ? code : null, null);
+                        additionalCheckPlanItems.put(samplePlanItem, actualPlanItem);
+                    } else if (refObjIdsAdded.containsKey(courseInfo.getVersion().getVersionIndId())) {
+                        /*PlanItem with same refObjId for given term already exists*/
+                        String[] params = {courseInfo.getCode(), atpId};
+                        GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, samplePlanItem.getYearIndex(), samplePlanItem.getTermIndex(), samplePlanItem.getItemIndex()), PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS, params);
+                    } else {
+                        actualPlanItem = buildPlanItem(learningPlan, courseInfo.getVersion().getVersionIndId(), PlanConstants.COURSE_TYPE, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), null, isCrossListedCourse ? code : null, null);
+                        addOrUpdate = true;
+                    }
+                }
+
+                if (refObjIdsAdded.containsKey(courseInfo.getVersion().getVersionIndId())) {
+                    refObjIdsAdded.put(courseInfo.getVersion().getVersionIndId(), refObjIdsAdded.get(courseInfo.getVersion().getVersionIndId()) + 1);
+                } else {
+                    refObjIdsAdded.put(courseInfo.getVersion().getVersionIndId(), 1);
+                }
+
+            }
+            /*Invalid Course*/
+            else {
+                String[] params = {courseInfo.getCode()};
+                GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, samplePlanItem.getYearIndex(), samplePlanItem.getTermIndex(), samplePlanItem.getItemIndex()), PlanConstants.COURSE_NOT_FOUND, params);
+            }
+
+        }
+                                    /*Invalid Course*/
+        else {
+            String[] params = {code};
+            GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, samplePlanItem.getYearIndex(), samplePlanItem.getTermIndex(), samplePlanItem.getItemIndex()), PlanConstants.COURSE_NOT_FOUND, params);
+        }
+
+        if (actualPlanItem != null && addOrUpdate) {
+            addOrUpdatePlanItems.put(samplePlanItem, actualPlanItem);
+        }
+
+    }
+
+    /**
+     * Validate Course PlaceHolder and Builds PlanItem
+     *
+     * @param learningPlan
+     * @param samplePlanItem
+     * @param addOrUpdatePlanItems
+     * @param atpId
+     */
+    private void addCoursePlaceHolderItem(LearningPlanInfo learningPlan, SamplePlanItem samplePlanItem, Map<SamplePlanItem, PlanItemInfo> addOrUpdatePlanItems, String atpId) {
+
+        PlanItemInfo actualPlanItem = null;
+        boolean addOrUpdate = false;
+        DeconstructedCourseCode courseCode = getCourseHelper().getCourseDivisionAndNumber(samplePlanItem.getCode());
+
+
+                                    /*Validate Course PlaceHolder and Build PlanItem*/
+        ValidationResultInfo validationResultInfo = getCourseHelper().isValidCoursePlaceHolder(samplePlanItem.getCode());
+        if (validationResultInfo == null) {
+            String refObjId = getCourseHelper().getKeyForCourse(courseCode.getSubject(), courseCode.getNumber());
+            String refObjType = PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL;
+
+            if (StringUtils.hasText(samplePlanItem.getPlanItemId())) {
+                try {
+                    actualPlanItem = getAcademicPlanService().getPlanItem(samplePlanItem.getPlanItemId(), SamplePlanConstants.CONTEXT_INFO);
+                } catch (Exception e) {
+                    logger.error("Could Not load planItem for planId: " + samplePlanItem.getPlanItemId(), e);
+                }
+                if (actualPlanItem != null &&
+                        ((actualPlanItem.getCredit() != null &&
+                                !actualPlanItem.getCredit().equals(samplePlanItem.getCredit()))
+                                || (actualPlanItem.getRefObjectId() != null &&
+                                !actualPlanItem.getRefObjectId().equals(refObjId))
+                                || (actualPlanItem.getRefObjectType() != null &&
+                                !actualPlanItem.getRefObjectType().equals(refObjType))
+                                || (actualPlanItem.getDescr() != null &&
+                                actualPlanItem.getDescr().getPlain() != null &&
+                                !actualPlanItem.getDescr().getPlain().equals(samplePlanItem.getNote())))) {
+                    actualPlanItem = buildPlanItem(learningPlan, refObjId, refObjType, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), samplePlanItem.getCredit(), null, actualPlanItem.getId());
+                    addOrUpdate = true;
+                }
+
+            } else {
+                actualPlanItem = buildPlanItem(learningPlan, refObjId, refObjType, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), samplePlanItem.getCredit(), null, null);
+                addOrUpdate = true;
+            }
+            if (actualPlanItem != null && addOrUpdate) {
+                addOrUpdatePlanItems.put(samplePlanItem, actualPlanItem);
+            }
+        } else {
+            /*Invalid Item*/
+            String[] params = {courseCode.getSubject()};
+            GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, samplePlanItem.getYearIndex(), samplePlanItem.getTermIndex(), samplePlanItem.getItemIndex()), validationResultInfo.getMessage(), params);
+        }
+
+
+    }
+
+    /**
+     * Validate PlaceHolder and Builds PlanItem
+     *
+     * @param learningPlan
+     * @param samplePlanItem
+     * @param addOrUpdatePlanItems
+     * @param atpId
+     */
+    private void addPlaceHolderItem(LearningPlanInfo learningPlan, SamplePlanItem samplePlanItem, Map<SamplePlanItem, PlanItemInfo> addOrUpdatePlanItems, String atpId) {
+        /*validating placeHolder*/
+        PlanItemInfo actualPlanItem = null;
+        boolean addOrUpdate = false;
+        ValidationResultInfo validationResultInfo = getCourseHelper().isValidPlaceHolder(samplePlanItem.getCode(), samplePlanItem.getNote());
+        if (validationResultInfo == null) {
+            String[] placeHolder = samplePlanItem.getCode().split(PlanConstants.CODE_KEY_SEPARATOR);
+            String placeHolderId = placeHolder[0];
+            String placeHolderType = placeHolder[1];
+
+            if (StringUtils.hasText(samplePlanItem.getPlanItemId())) {
+                try {
+                    actualPlanItem = getAcademicPlanService().getPlanItem(samplePlanItem.getPlanItemId(), SamplePlanConstants.CONTEXT_INFO);
+                } catch (Exception e) {
+                    logger.error("Could Not load planItem for planId: " + samplePlanItem.getPlanItemId(), e);
+                }
+                if (actualPlanItem != null && ((actualPlanItem.getCredit() != null && !actualPlanItem.getCredit().equals(samplePlanItem.getCredit())) || !actualPlanItem.getRefObjectId().equals(placeHolderId) || !actualPlanItem.getRefObjectType().equals(placeHolderType) || (actualPlanItem.getDescr() != null && !actualPlanItem.getDescr().getPlain().equals(samplePlanItem.getNote())))) {
+                    actualPlanItem = buildPlanItem(learningPlan, placeHolderId, placeHolderType, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), samplePlanItem.getCredit(), null, actualPlanItem.getId());
+                    addOrUpdate = true;
+                }
+
+            } else {
+                actualPlanItem = buildPlanItem(learningPlan, placeHolderId, placeHolderType, atpId, PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, samplePlanItem.getNote(), samplePlanItem.getCredit(), null, null);
+                addOrUpdate = true;
+            }
+            if (actualPlanItem != null && addOrUpdate) {
+                addOrUpdatePlanItems.put(samplePlanItem, actualPlanItem);
+            }
+        } else {
+                                        /*Invalid Item*/
+            String[] params = {};
+            GlobalVariables.getMessageMap().putError(String.format(SamplePlanConstants.CODE_VALIDATION_ERROR_FORMAT, samplePlanItem.getYearIndex(), samplePlanItem.getTermIndex(), samplePlanItem.getItemIndex()), validationResultInfo.getMessage(), params);
+        }
     }
 
     /**
@@ -655,20 +722,46 @@ public class SamplePlanController extends UifControllerBase {
             samplePlanYear.setYearName(String.format(SamplePlanConstants.SAMPLE_PLAN_YEAR, i));
             samplePlanYear.setYear(i);
             List<SamplePlanTerm> samplePlanTerms = samplePlanYear.getSamplePlanTerms();
+            int termIndex = 0;
             for (String term : AtpHelper.getTerms()) {
                 SamplePlanTerm samplePlanTerm = new SamplePlanTerm();
                 samplePlanTerm.setTermName(term);
                 samplePlanTerm.setYear(i);
                 List<SamplePlanItem> planItems = samplePlanTerm.getSamplePlanItems();
                 for (int j = 1; j <= SamplePlanConstants.SAMPLE_PLAN_ITEMS_COUNT; j++) {
-                    planItems.add(new SamplePlanItem());
+                    SamplePlanItem samplePlanItem = new SamplePlanItem();
+                    samplePlanItem.setYearIndex(i - 1);
+                    samplePlanItem.setTermIndex(termIndex);
+                    samplePlanItem.setItemIndex(j - 1);
+                    planItems.add(samplePlanItem);
                 }
                 samplePlanTerms.add(samplePlanTerm);
+                termIndex++;
             }
             samplePlanYear.setSamplePlanTerms(samplePlanTerms);
             samplePlanYears.add(samplePlanYear);
         }
         return samplePlanYears;
+    }
+
+
+    /**
+     * Builds Statement TreeViewInfo for given reqComponents
+     *
+     * @param reqComponentInfo1
+     * @param reqComponentInfo2
+     * @return
+     */
+    private StatementTreeViewInfo buildStatementTreeViewInfo(ReqComponentInfo reqComponentInfo1, ReqComponentInfo reqComponentInfo2) {
+        StatementTreeViewInfo statementTreeViewInfo = new StatementTreeViewInfo();
+
+        statementTreeViewInfo.setType(SamplePlanConstants.STATEMENT_TYPE_RECOMMENDED);
+        statementTreeViewInfo.setOperator(StatementOperatorTypeKey.OR);
+
+        statementTreeViewInfo.setReqComponents(Arrays.asList(reqComponentInfo1, reqComponentInfo2));
+
+        return statementTreeViewInfo;
+
     }
 
 
@@ -710,58 +803,34 @@ public class SamplePlanController extends UifControllerBase {
      * Adds or Updates Req Component for given value and type
      *
      * @param value
-     * @param type
-     * @param reqComponentInfo
+     * @param credit
      * @return
      */
-    /*protected ReqComponentInfo addUpdateReqComponent(String value, String type, ReqComponentInfo reqComponentInfo) {
-        if (reqComponentInfo != null) {
+    protected ReqComponentInfo buildReqComponent(String reqComponentType, String reqCompFieldType, String value, String credit) {
 
-        } else {
-            ReqComponentInfo componentInfo = new ReqComponentInfo();
-            componentInfo.setType(type);
-            componentInfo.setState("ACTIVE");
-            List<ReqCompFieldInfo> reqCompFieldInfos = new ArrayList<ReqCompFieldInfo>();
-            ReqCompFieldInfo fieldInfo = new ReqCompFieldInfo();
-            fieldInfo.setValue(value);
-            fieldInfo.setType(type);
-            reqCompFieldInfos.add(fieldInfo);
-            componentInfo.setReqCompFields(reqCompFieldInfos);
-            try {
-                componentInfo = getStatementService().createReqComponent(type, componentInfo);
-            } catch (Exception e) {
-                logger.error("Could not create reqComponentField item.", e);
-            }
-            return componentInfo;
-        }
-        return null;
-    }*/
+        ReqComponentInfo componentInfo = new ReqComponentInfo();
+        componentInfo.setType(reqComponentType);
+        componentInfo.setState("ACTIVE");
 
+        List<ReqCompFieldInfo> reqCompFieldInfos = new ArrayList<ReqCompFieldInfo>();
 
-    /**
-     * Adds or Updates statement Info using reqComponentId's
-     *
-     * @param reqComponentIds
-     * @param statementInfo
-     * @return
-     */
-    /*protected StatementInfo addUpdateStatement(List<String> reqComponentIds, StatementInfo statementInfo) {
-        if (statementInfo != null) {
+            /*Creating a course/placeholder field*/
+        ReqCompFieldInfo fieldInfo = new ReqCompFieldInfo();
+        fieldInfo.setValue(value);
+        fieldInfo.setType(reqCompFieldType);
+        reqCompFieldInfos.add(fieldInfo);
+        componentInfo.setReqCompFields(reqCompFieldInfos);
 
-        } else {
-            StatementInfo stInfo = new StatementInfo();
-            stInfo.setType(SamplePlanConstants.STATEMENT_TYPE_RECOMMENDED);
-            stInfo.setOperator(StatementOperatorTypeKey.OR);
-            stInfo.setReqComponentIds(reqComponentIds);
-            try {
-                stInfo = getStatementService().createStatement(SamplePlanConstants.STATEMENT_TYPE_RECOMMENDED, stInfo);
-            } catch (Exception e) {
-                logger.error("Could not create Statement item.", e);
-            }
-            return stInfo;
-        }
-        return null;
-    }*/
+            /*Creating a credit field*/
+        ReqCompFieldInfo creditField = new ReqCompFieldInfo();
+        creditField.setValue(credit);
+        creditField.setType(SamplePlanConstants.REQ_COMP_FIELD_TYPE_CREDIT);
+        reqCompFieldInfos.add(creditField);
+        componentInfo.setReqCompFields(reqCompFieldInfos);
+
+        return componentInfo;
+
+    }
 
 
     /**

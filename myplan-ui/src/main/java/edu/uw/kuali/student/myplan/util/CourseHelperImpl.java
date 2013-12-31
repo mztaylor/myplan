@@ -667,6 +667,16 @@ public class CourseHelperImpl implements CourseHelper {
     }
 
 
+    @Override
+    public String getCourseIdForCode(String courseCd) {
+        if (StringUtils.isNotEmpty(courseCd)) {
+            DeconstructedCourseCode courseCode = getCourseDivisionAndNumber(courseCd);
+            if (courseCd != null && StringUtils.isNotEmpty(courseCode.getSubject()) && StringUtils.isNotEmpty(courseCode.getNumber())) {
+                return getCourseId(courseCode.getSubject(), courseCode.getNumber());
+            }
+        }
+        return null;
+    }
 
 
     /**

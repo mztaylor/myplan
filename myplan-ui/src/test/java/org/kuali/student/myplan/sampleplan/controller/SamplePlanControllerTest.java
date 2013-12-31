@@ -176,6 +176,9 @@ public class SamplePlanControllerTest {
         addCourseInfo(courseId2, versionId2, subject2, suffix2, credit2, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setCode(String.format("%s %s", subject2, suffix2));
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setNote("This is a note updated Note");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setItemIndex(0);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getCode().equals(String.format("%s %s", subject2, suffix2)));
@@ -184,6 +187,9 @@ public class SamplePlanControllerTest {
         /*updating course ---> course PlaceHolder*/
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setCode("COM 2xx");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setNote("This is to test note for COM 2xx");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setItemIndex(0);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getCode().equals("COM 2xx"));
@@ -200,6 +206,9 @@ public class SamplePlanControllerTest {
         addCourseInfo(courseId3, versionId3, subject3, suffix3, credit3, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setCode(String.format("%s %s", subject3, suffix3));
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setNote("This is a note updated Note");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setItemIndex(0);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getCode().equals(String.format("%s %s", subject3, suffix3)));
@@ -215,6 +224,9 @@ public class SamplePlanControllerTest {
         addCourseInfo(courseId4, versionId4, subject4, suffix4, credit4, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCode(String.format("%s %s", subject4, suffix4));
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setNote("This is a note for planned course");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals(String.format("%s %s", subject4, suffix4)));
@@ -225,6 +237,9 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCode("uw.academicplan.placeholder.elective|uw.academicplan.placeholder");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setNote("This is a note for placeHolder");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCredit("5");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals("uw.academicplan.placeholder.elective|uw.academicplan.placeholder"));
@@ -235,6 +250,9 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCode("COM 2xx");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setNote("This is to test note for COM 2xx");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCredit(null);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals("COM 2xx"));
@@ -245,6 +263,9 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCode("MATH 2xx");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCredit("5");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setNote("This is to test note for MATH 2xx");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals("MATH 2xx"));
@@ -255,6 +276,9 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCode("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setNote("This is a note for placeHolder");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCredit("5");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement"));
@@ -265,6 +289,9 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCode("uw.academicplan.placeholder.studyabroad|uw.academicplan.placeholder");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setNote("This is a note for placeHolder");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCredit(null);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals("uw.academicplan.placeholder.studyabroad|uw.academicplan.placeholder"));
@@ -281,6 +308,9 @@ public class SamplePlanControllerTest {
         addCourseInfo(courseId5, versionId5, subject5, suffix5, credit5, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCode(String.format("%s %s", subject5, suffix5));
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setNote("This is a note for planned course");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals(String.format("%s %s", subject5, suffix5)));
@@ -290,6 +320,9 @@ public class SamplePlanControllerTest {
         /*Adding a other placeHolder with no note*/
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setCode("uw.academicplan.placeholder.other|uw.academicplan.placeholder");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setCredit("5");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code")) && PlanConstants.NOTE_REQUIRED.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code").get(0).getErrorKey()));
         GlobalVariables.getMessageMap().clearErrorMessages();
@@ -300,6 +333,9 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setCode("BOY 2xx");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setCredit("5");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setNote("This is to test note for MATH 2xx");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code")) && PlanConstants.CURRIC_NOT_FOUND.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code").get(0).getErrorKey()));
         GlobalVariables.getMessageMap().clearErrorMessages();
@@ -307,6 +343,9 @@ public class SamplePlanControllerTest {
         /*Adding a non existing place holder test*/
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setCode("uw.academicplan.placeholder.abcdefg|uw.academicplan.placeholder");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setNote("This is a note for placeHolder");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code")) && PlanConstants.ERROR_KEY_UNKNOWN_COURSE.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code").get(0).getErrorKey()));
         GlobalVariables.getMessageMap().clearErrorMessages();
@@ -314,6 +353,9 @@ public class SamplePlanControllerTest {
         /*Adding a invalid place holder*/
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setCode("uw.academicplan.placeholder.abcdefg|");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setNote("This is a note for placeHolder");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code")) && PlanConstants.ERROR_KEY_UNKNOWN_COURSE.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code").get(0).getErrorKey()));
         GlobalVariables.getMessageMap().clearErrorMessages();
@@ -322,6 +364,9 @@ public class SamplePlanControllerTest {
         /*Adding just course code*/
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setCode("MATH");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setCredit("5");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code")) && PlanConstants.ERROR_KEY_UNKNOWN_COURSE.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code").get(0).getErrorKey()));
         GlobalVariables.getMessageMap().clearErrorMessages();
@@ -336,6 +381,9 @@ public class SamplePlanControllerTest {
         addCourseInfo(courseId6, versionId6, subject6, suffix6, credit6, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setCode(String.format("%s %s", subject6, suffix6));
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setNote("This is a note for planned course");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code")) && PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code").get(0).getErrorKey()));
         GlobalVariables.getMessageMap().clearErrorMessages();
@@ -344,6 +392,9 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setCode("uw.academicplan.placeholder.studyabroad|uw.academicplan.placeholder");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setNote("This is a note for placeHolder");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setCredit(null);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).getCode().equals("uw.academicplan.placeholder.studyabroad|uw.academicplan.placeholder"));
@@ -354,6 +405,9 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setCode("course.genedrequirement.aofk.is_ind|uw.course.genedrequirement");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setNote("This is a note for placeHolder");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setCredit(null);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setItemIndex(3);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).getCode().equals("course.genedrequirement.aofk.is_ind|uw.course.genedrequirement"));
@@ -365,6 +419,9 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(1).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setCode("COM 2xx");
         samplePlanForm.getSamplePlanYears().get(1).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setNote("This is to test note for COM 2xx");
         samplePlanForm.getSamplePlanYears().get(1).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setCredit(null);
+        samplePlanForm.getSamplePlanYears().get(1).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setYearIndex(1);
+        samplePlanForm.getSamplePlanYears().get(1).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setTermIndex(1);
+        samplePlanForm.getSamplePlanYears().get(1).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setItemIndex(0);
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(1).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).getCode().equals("COM 2xx"));

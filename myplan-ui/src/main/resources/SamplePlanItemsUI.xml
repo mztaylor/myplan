@@ -503,6 +503,26 @@
                                     <bean parent="Uif-HiddenControl"/>
                                 </property>
                             </bean>
+
+
+                            <!--Hidden input fields for Indexes of samplePlanItem-->
+                            <bean parent="KSAP-SimpleInputField" p:propertyName="yearIndex" p:hidden="true">
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <bean parent="KSAP-SimpleInputField" p:propertyName="termIndex" p:hidden="true">
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+                            <bean parent="KSAP-SimpleInputField" p:propertyName="itemIndex" p:hidden="true">
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
+
+
                         </list>
                     </property>
                 </bean>

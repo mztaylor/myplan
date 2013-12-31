@@ -68,6 +68,8 @@ public interface CourseHelper {
 
     public String getKeyForCourse(String courseCd, String suffix);
 
+    public String getCourseIdForCode(String courseCd);
+
     public ValidationResultInfo isValidCoursePlaceHolder(String courseCd);
 
     public ValidationResultInfo isValidPlaceHolder(String placeHolderKey, String note);
