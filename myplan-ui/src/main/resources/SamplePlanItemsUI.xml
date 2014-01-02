@@ -276,6 +276,7 @@
                                     <list>
                                         <ref bean="sample_plan_panel"/>
                                         <ref bean="sample_plan_table"/>
+                                        <bean parent="Uif-DataField" p:propertyName="totalPlanCredits" p:label="Total Plan Credits"/>
                                         <ref bean="sample_plan_general_notes"/>
                                         <ref bean="sample_plan_main_actions"/>
                                         <bean parent="KSAP-SimpleInputField" p:propertyName="learningPlanId"
@@ -419,6 +420,7 @@
                         <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
+                <bean parent="Uif-DataField" p:propertyName="totalYearCredits" p:label="Year Total Credits" p:render="@{preview}"/>
             </list>
         </property>
         <property name="subCollections">
@@ -474,6 +476,7 @@
                         <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
+                <bean parent="Uif-DataField" p:propertyName="totalTermCredits" p:label="Total Term Credits" p:render="@{preview}"/>
             </list>
         </property>
         <property name="subCollections">
