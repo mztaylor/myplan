@@ -31,13 +31,13 @@ public class SamplePlanConstants {
     public static final String PUBLISHED = "Published";
     public static final String DRAFT = "Draft";
 
-    public static final String STATEMENT_TYPE_RECOMMENDED = "Kuali.statement.type.academicplan.recommendation";
-    public static final String REQ_COMP_TYPE_COURSE = "Kuali.reqComponent.type.planitem.course";
-    public static final String REQ_COMP_TYPE_PLACEHOLDER = "Kuali.reqComponent.type.planitem.placeholder";
-    public static final String REQ_COMP_FIELD_TYPE_CREDIT = "Kuali.reqComponent.field.type.planitem.credit";
-    public static final String REQ_COMP_FIELD_TYPE_COURSE = "Kuali.reqComponent.field.type.planitem.course";
-    public static final String REQ_COMP_FIELD_TYPE_PLACEHOLDER = "Kuali.reqComponent.field.type.planitem.placeholder";
-    public static final String REQ_COMP_FIELD_TYPE_COURSE_PLACEHOLDER = "Kuali.reqComponent.field.type.planitem.course.placeholder";
+    public static final String STATEMENT_TYPE_RECOMMENDED = "kuali.statement.type.academicplan.recommendation";
+    public static final String REQ_COMP_TYPE_COURSE = "kuali.reqComponent.type.planitem.course";
+    public static final String REQ_COMP_TYPE_PLACEHOLDER = "kuali.reqComponent.type.planitem.placeholder";
+    public static final String REQ_COMP_FIELD_TYPE_CREDIT = "kuali.reqComponent.field.type.planitem.credit";
+    public static final String REQ_COMP_FIELD_TYPE_COURSE = "kuali.reqComponent.field.type.planitem.course";
+    public static final String REQ_COMP_FIELD_TYPE_PLACEHOLDER = "kuali.reqComponent.field.type.planitem.placeholder";
+    public static final String REQ_COMP_FIELD_TYPE_COURSE_PLACEHOLDER = "kuali.reqComponent.field.type.planitem.course.placeholder";
 
     //  Global context info for use in service methods which need caching, but don't use the context argument.
     public static final ContextInfo CONTEXT_INFO = new ContextInfo();

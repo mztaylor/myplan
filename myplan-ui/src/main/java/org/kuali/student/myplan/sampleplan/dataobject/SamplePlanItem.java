@@ -8,12 +8,15 @@ package org.kuali.student.myplan.sampleplan.dataobject;
  * To change this template use File | Settings | File Templates.
  */
 public class SamplePlanItem {
+    private String atpId;
     private String code;
     private String credit;
     private String note;
     private String planItemId;
+    private String reqComponentId;
     private String alternateCode;
     private String alternateCredit;
+    private String alternateReqComponentId;
 
 
     /*Required for Error notification to a specific item*/
@@ -69,6 +72,22 @@ public class SamplePlanItem {
         this.planItemId = planItemId;
     }
 
+    public String getAlternateReqComponentId() {
+        return alternateReqComponentId;
+    }
+
+    public void setAlternateReqComponentId(String alternateReqComponentId) {
+        this.alternateReqComponentId = alternateReqComponentId;
+    }
+
+    public String getReqComponentId() {
+        return reqComponentId;
+    }
+
+    public void setReqComponentId(String reqComponentId) {
+        this.reqComponentId = reqComponentId;
+    }
+
     public int getYearIndex() {
         return yearIndex;
     }
@@ -91,5 +110,13 @@ public class SamplePlanItem {
 
     public void setItemIndex(int itemIndex) {
         this.itemIndex = itemIndex;
+    }
+
+    public String getAtpId() {
+        return atpId;
+    }
+
+    public void setAtpId(String atpId) {
+        this.atpId = atpId;
     }
 }

@@ -60,6 +60,7 @@
             <modules>
                 <module>myplan-api</module>
                 <module>myplan-impl</module>
+                <module>myplan-sql</module>
                 <module>myplan-ui</module>
                 <module>myplan-web</module>
             </modules>
@@ -69,6 +70,7 @@
             <modules>
                 <module>myplan-api</module>
                 <module>myplan-impl</module>
+                <module>myplan-sql</module>
                 <module>myplan-ui</module>
                 <module>myplan-web</module>
             </modules>

@@ -225,6 +225,20 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
+    public List<PlanItemInfo> getPlanItemsInPlanByAtpAndRefObjType(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "atpKey") String atpKey, @WebParam(name = "refObjectType") String refObjectType, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        List<PlanItemEntity> planItemsList = planItemDao.getLearningPlanItemsByRefObjectType(learningPlanId, refObjectType);
+
+        List<PlanItemInfo> planItemDtos = new ArrayList<PlanItemInfo>();
+        for (PlanItemEntity pie : planItemsList) {
+            if (pie.getPlanPeriods().contains(atpKey)) {
+                planItemDtos.add(pie.toDto());
+            }
+        }
+
+        return planItemDtos;
+    }
+
+    @Override
     public List<PlanItemInfo> getPlanItemsInPlanByRefObjectIdByRefObjectType(@WebParam(name = "learningPlanId") String learningPlanId,
                                                                              @WebParam(name = "refObjectId") String refObjectId,
                                                                              @WebParam(name = "refObjectType") String refObjectType,

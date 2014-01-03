@@ -504,42 +504,84 @@
                   value="false"/>
         <property name="items">
             <list>
-                <bean parent="KSAP-HorizontalFieldGroup" p:style="padding-bottom: 5px;">
+                <bean parent="KSAP-VerticalFieldGroup" p:style="padding-bottom: 5px; border-bottom: 1px black dotted;">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-InputField"
-                                  p:propertyName="code" p:width="auto" p:render="@{!#form.preview}" p:readOnly="false">
+                            <bean parent="KSAP-HorizontalBoxGroup" p:style="padding-bottom: 5px;">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-InputField"
+                                              p:propertyName="code" p:width="auto" p:render="@{!#form.preview}"
+                                              p:readOnly="false">
+                                            <property name="control">
+                                                <bean parent="Uif-TextControl">
+                                                    <property name="size" value="18"/>
+                                                </bean>
+                                            </property>
+                                        </bean>
+
+                                        <!--<bean parent="Uif-InputField" p:propertyName="code">
+                                            <property name="suggest">
+                                                <bean parent="KSAP-ComboBox" p:render="true" p:retrieveAllSuggestions="true">
+                                                    <property name="suggestQuery">
+                                                        <bean parent="Uif-AttributeQueryConfig"
+                                                              p:queryMethodInvokerConfig.staticMethod="org.kuali.student.myplan.plan.util.PlaceHoldersBuilder.getAllKeyValues"/>
+                                                    </property>
+                                                    <property name="templateOptions">
+                                                        <map merge="true">
+                                                            <entry key="minLength" value="0"/>
+                                                        </map>
+                                                    </property>
+                                                </bean>
+                                            </property>
+                                        </bean>-->
+
+                                        <bean parent="Uif-InputField"
+                                              p:propertyName="credit" p:width="auto" p:render="@{!#form.preview}"
+                                              p:readOnly="false">
+                                            <property name="control">
+                                                <bean parent="dropDownCredits"/>
+                                            </property>
+                                        </bean>
+
+                                    </list>
+                                </property>
                             </bean>
 
-                            <!--<bean parent="Uif-InputField" p:propertyName="code">
-                                <property name="suggest">
-                                    <bean parent="KSAP-ComboBox" p:render="true" p:retrieveAllSuggestions="true">
-                                        <property name="suggestQuery">
-                                            <bean parent="Uif-AttributeQueryConfig"
-                                                  p:queryMethodInvokerConfig.staticMethod="org.kuali.student.myplan.plan.util.PlaceHoldersBuilder.getAllKeyValues"/>
-                                        </property>
-                                        <property name="templateOptions">
-                                            <map merge="true">
-                                                <entry key="minLength" value="0"/>
-                                            </map>
-                                        </property>
-                                    </bean>
-                                </property>
-                            </bean>-->
+                            <bean parent="KSAP-HorizontalBoxGroup" p:style="padding-bottom: 5px;">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-InputField"
+                                              p:propertyName="alternateCode" p:width="auto" p:render="@{!#form.preview}"
+                                              p:readOnly="false">
+                                            <property name="control">
+                                                <bean parent="Uif-TextControl">
+                                                    <property name="size" value="18"/>
+                                                </bean>
+                                            </property>
+                                        </bean>
 
-
-                            <bean parent="Uif-InputField"
-                                  p:propertyName="credit" p:width="auto" p:render="@{!#form.preview}"
-                                  p:readOnly="false">
-                                <property name="control">
-                                    <bean parent="dropDownCredits"/>
+                                        <bean parent="Uif-InputField"
+                                              p:propertyName="alternateCredit" p:width="auto"
+                                              p:render="@{!#form.preview}"
+                                              p:readOnly="false">
+                                            <property name="control">
+                                                <bean parent="dropDownCredits"/>
+                                            </property>
+                                        </bean>
+                                    </list>
                                 </property>
                             </bean>
+
                             <bean parent="Uif-InputField" p:propertyName="note" p:width="auto"
                                   p:render="@{!#form.preview}" p:readOnly="false"/>
+
                             <!--ReadOnly for Preview mode-->
                             <bean parent="KSAP-MessageField" p:messageText="@{#line.code} (@{#line.credit})"
                                   p:render="@{#form.preview}"/>
+                            <bean parent="KSAP-MessageField"
+                                  p:messageText=" OR @{#line.alternateCode} (@{#line.alternateCredit})"
+                                  p:render="@{#form.preview AND #line.alternateCode NE null}"/>
                             <bean parent="KSAP-MessageField" p:messageText="@{#line.note}" p:render="@{#form.preview}"/>
 
                             <bean parent="KSAP-SimpleInputField" p:propertyName="planItemId" p:hidden="true">
@@ -548,6 +590,11 @@
                                 </property>
                             </bean>
 
+                            <bean parent="KSAP-SimpleInputField" p:propertyName="atpId" p:hidden="true">
+                                <property name="control">
+                                    <bean parent="Uif-HiddenControl"/>
+                                </property>
+                            </bean>
 
                             <!--Hidden input fields for Indexes of samplePlanItem-->
                             <bean parent="KSAP-SimpleInputField" p:propertyName="yearIndex" p:hidden="true">
@@ -565,8 +612,6 @@
                                     <bean parent="Uif-HiddenControl"/>
                                 </property>
                             </bean>
-
-
                         </list>
                     </property>
                 </bean>
@@ -613,11 +658,18 @@
           p:style="margin-top: 10px;margin-bottom: 10px;">
         <property name="items">
             <list>
+
                 <bean parent="KSAP-PrimaryActionButton" p:methodToCall="saveSamplePlan"
-                      p:actionLabel="SAVE &amp; PROCEED"
-                      p:render="@{!preview}"/>
-                <bean parent="KSAP-PrimaryActionButton" p:methodToCall="saveSamplePlan" p:actionLabel="SAVE PROGRESS"
-                      p:render="@{!preview}"/>
+                      p:actionLabel="Update"
+                      p:render="@{!preview AND learningPlanId NE null}"/>
+                <bean parent="preview"
+                      p:href="samplePlan?methodToCall=startNew&amp;viewId=SamplePlan-FormView&amp;learningPlanId=@{learningPlanId}&amp;preview=true"
+                      p:render="@{!preview AND learningPlanId NE null}"/>
+
+                <bean parent="KSAP-PrimaryActionButton" p:methodToCall="saveSamplePlan"
+                      p:actionLabel="Create Plan"
+                      p:render="@{!preview AND learningPlanId EQ null}"/>
+
                 <bean parent="edit"
                       p:href="samplePlan?methodToCall=startNew&amp;viewId=SamplePlan-FormView&amp;learningPlanId=@{learningPlanId}"
                       p:render="@{preview}"/>
