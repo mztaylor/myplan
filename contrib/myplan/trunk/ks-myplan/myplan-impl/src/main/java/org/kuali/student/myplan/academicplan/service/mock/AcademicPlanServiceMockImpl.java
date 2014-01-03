@@ -111,6 +111,12 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
     }
 
     @Override
+    public List<PlanItemInfo> getPlanItemsInPlanByAtpAndRefObjType(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "atpKey") String atpKey, @WebParam(name = "refObjectType") String refObjectType, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();
+        return planItemInfos;
+    }
+
+    @Override
     public List<PlanItemInfo> getPlanItemsInPlanByRefObjectIdByRefObjectType(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "refObjectId") String refObjectId, @WebParam(name = "refObjectType") String refObjectType, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();
         if (planItemsMap.containsKey(learningPlanId)) {

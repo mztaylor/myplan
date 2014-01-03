@@ -38,7 +38,13 @@ import java.util.Set;
                         "pi.learningPlan = p " +
                         "and p.id =:learningPlanId " +
                         "and pi.refObjectTypeKey = :refObjectTypeKey " +
-                        "and pi.refObjectId = :refObjectId")
+                        "and pi.refObjectId = :refObjectId"),
+
+        @NamedQuery(name = "LearningPlanItem.getPlanItemsByRefObjectType",
+                query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p  WHERE " +
+                        "pi.learningPlan = p " +
+                        "and p.id =:learningPlanId " +
+                        "and pi.refObjectTypeKey = :refObjectTypeKey ")
 })
 public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanItemAttributeEntity> {
 
