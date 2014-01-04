@@ -276,7 +276,8 @@
                                     <list>
                                         <ref bean="sample_plan_panel"/>
                                         <ref bean="sample_plan_table"/>
-                                        <bean parent="Uif-DataField" p:propertyName="totalPlanCredits" p:label="Total Plan Credits"/>
+                                        <bean parent="Uif-DataField" p:propertyName="totalPlanCredits"
+                                              p:label="Total Plan Credits"/>
                                         <ref bean="sample_plan_general_notes"/>
                                         <ref bean="sample_plan_main_actions"/>
                                         <bean parent="KSAP-SimpleInputField" p:propertyName="learningPlanId"
@@ -392,6 +393,33 @@
         <property name="propertyName" value="samplePlanYears"/>
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="readOnly" value="false"/>
+        <property name="layoutManager">
+            <bean parent="KSAP-HorizontalStackedCollectionLayout">
+                <property name="addLineGroup">
+                    <bean parent="Uif-CollectionHorizontalBoxItem">
+                        <property name="cssClasses">
+                            <list merge="true">
+                                <value>uif-collectionAddItem</value>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionHorizontalBoxItem">
+                        <property name="validationMessages">
+                            <null/>
+                        </property>
+                        <property name="footer.render" value="false"/>
+                    </bean>
+                </property>
+                <property name="subCollectionFieldGroupPrototype">
+                    <bean parent="Uif-HorizontalFieldGroup" p:cssClasses="uif-subCollection"/>
+                </property>
+                <!--<property name="validationMessages">
+                    <null/>
+                </property>-->
+            </bean>
+        </property>
         <property name="items">
             <list>
                 <bean parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false">
@@ -420,7 +448,8 @@
                         <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
-                <bean parent="Uif-DataField" p:propertyName="totalYearCredits" p:label="Year Total Credits" p:render="@{preview}"/>
+                <bean parent="Uif-DataField" p:propertyName="totalYearCredits" p:label="Year Total Credits"
+                      p:render="@{preview}"/>
             </list>
         </property>
         <property name="subCollections">
@@ -451,11 +480,11 @@
         <property name="layoutManager">
             <bean parent="KSAP-HorizontalStackedCollectionLayout">
                 <property name="subCollectionFieldGroupPrototype">
-                    <bean parent="Uif-HorizontalFieldGroup" p:style="width: 600px;padding-bottom: 5px;">
+                    <bean parent="Uif-VerticalFieldGroup" p:style="padding-bottom: 5px;">
                     </bean>
                 </property>
                 <property name="lineGroupPrototype">
-                    <bean p:id="@{#line.termName+'_year_'+#line.year}" parent="Uif-CollectionHorizontalBoxItem">
+                    <bean p:id="@{#line.termName+'_year_'+#line.year}" parent="Uif-CollectionVerticalBoxItem">
                         <property name="hidden" value="@{#index eq 3}"/>
                     </bean>
                 </property>
@@ -476,7 +505,8 @@
                         <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
-                <bean parent="Uif-DataField" p:propertyName="totalTermCredits" p:label="Total Term Credits" p:render="@{preview}"/>
+                <bean parent="Uif-DataField" p:propertyName="totalTermCredits" p:label="Total Term Credits"
+                      p:render="@{preview}"/>
             </list>
         </property>
         <property name="subCollections">
@@ -507,7 +537,7 @@
                 <bean parent="KSAP-VerticalFieldGroup" p:style="padding-bottom: 5px; border-bottom: 1px black dotted;">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-HorizontalBoxGroup" p:style="padding-bottom: 5px;">
+                            <bean parent="KSAP-HorizontalBoxGroup" p:style="padding-bottom: 5px;padding-top: 5px;">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-InputField"
@@ -548,7 +578,7 @@
                                 </property>
                             </bean>
 
-                            <bean parent="KSAP-HorizontalBoxGroup" p:style="padding-bottom: 5px;">
+                            <bean parent="KSAP-HorizontalBoxGroup" p:style="padding-bottom: 5px; padding-top: 5px;">
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-InputField"
@@ -574,7 +604,12 @@
                             </bean>
 
                             <bean parent="Uif-InputField" p:propertyName="note" p:width="auto"
-                                  p:render="@{!#form.preview}" p:readOnly="false"/>
+                                  p:render="@{!#form.preview}" p:readOnly="false">
+                                <property name="control">
+                                    <bean parent="Uif-TextControl"
+                                          p:watermarkText="Type or click the icon to add course notes"/>
+                                </property>
+                            </bean>
 
                             <!--ReadOnly for Preview mode-->
                             <bean parent="KSAP-MessageField" p:messageText="@{#line.code} (@{#line.credit})"
