@@ -20,6 +20,7 @@ import org.kuali.student.myplan.sampleplan.form.SamplePlanForm;
 import org.kuali.student.myplan.sampleplan.util.SamplePlanConstants;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.UrlLinkBuilder;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.MetaInfo;
@@ -68,9 +69,13 @@ public class SamplePlanControllerTest {
     @Autowired
     public CourseService courseServiceMock;
 
+    @Autowired
+    private UserSessionHelper userSessionHelper;
+
 
     @Test
     public void startNewSamplePlanFormTest1() {
+        createAdviserUserSession();
         SamplePlanForm samplePlanForm = new SamplePlanForm();
         samplePlanController.startNew(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(samplePlanForm.getSamplePlanYears()));
@@ -78,6 +83,7 @@ public class SamplePlanControllerTest {
 
     @Test
     public void startNewSamplePlanFormTest2() {
+        createAdviserUserSession();
         SamplePlanForm samplePlanForm = new SamplePlanForm();
         LearningPlanInfo learningPlanInfo = createLearningPlan("This is short descr", "Track 1", "00-1-6BSCE", SamplePlanConstants.DRAFT);
         samplePlanForm.setLearningPlanId(learningPlanInfo.getId());
@@ -89,6 +95,7 @@ public class SamplePlanControllerTest {
 
     @Test
     public void startNewSamplePlanFormTest3() {
+        createAdviserUserSession();
         SamplePlanForm samplePlanForm = new SamplePlanForm();
         LearningPlanInfo learningPlanInfo = createLearningPlan("This is short descr", "Track 2", "00-1-6BSCE", SamplePlanConstants.DRAFT);
         String atpId = "20141";
@@ -108,6 +115,7 @@ public class SamplePlanControllerTest {
 
     @Test
     public void startNewSamplePlanFormTest4() {
+        createAdviserUserSession();
         SamplePlanForm samplePlanForm = new SamplePlanForm();
         LearningPlanInfo learningPlanInfo = createLearningPlan("This is short descr", "Track 3", "00-1-6BSCE", SamplePlanConstants.DRAFT);
         PlanItemInfo planItemInfo = addPlanItem(learningPlanInfo, "uw.academicplan.placeholder.other", "uw.academicplan.placeholder", "AutumnYear1", PlanConstants.LEARNING_PLAN_ITEM_TYPE_RECOMMENDED, null, "5", null);
@@ -126,6 +134,7 @@ public class SamplePlanControllerTest {
      */
     @Test
     public void saveSamplePlanTest() {
+        createAdviserUserSession();
         SamplePlanForm samplePlanForm = new SamplePlanForm();
         samplePlanForm.setDescription("This is a short Description");
         samplePlanForm.setPlanTitle("Track 1");
@@ -179,6 +188,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setItemIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getCode().equals(String.format("%s %s", subject2, suffix2)));
@@ -190,6 +200,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setItemIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getCode().equals("COM 2xx"));
@@ -209,6 +220,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setItemIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getCode().equals(String.format("%s %s", subject3, suffix3)));
@@ -227,6 +239,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals(String.format("%s %s", subject4, suffix4)));
@@ -240,6 +253,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals("uw.academicplan.placeholder.elective|uw.academicplan.placeholder"));
@@ -253,6 +267,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals("COM 2xx"));
@@ -266,6 +281,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals("MATH 2xx"));
@@ -279,6 +295,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement"));
@@ -292,6 +309,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals("uw.academicplan.placeholder.studyabroad|uw.academicplan.placeholder"));
@@ -311,6 +329,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals(String.format("%s %s", subject5, suffix5)));
@@ -323,6 +342,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code")) && PlanConstants.NOTE_REQUIRED.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code").get(0).getErrorKey()));
         GlobalVariables.getMessageMap().clearErrorMessages();
@@ -336,6 +356,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code")) && PlanConstants.CURRIC_NOT_FOUND.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code").get(0).getErrorKey()));
         GlobalVariables.getMessageMap().clearErrorMessages();
@@ -346,6 +367,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code")) && PlanConstants.ERROR_KEY_UNKNOWN_COURSE.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code").get(0).getErrorKey()));
         GlobalVariables.getMessageMap().clearErrorMessages();
@@ -356,6 +378,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code")) && PlanConstants.ERROR_KEY_UNKNOWN_COURSE.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code").get(0).getErrorKey()));
         GlobalVariables.getMessageMap().clearErrorMessages();
@@ -367,6 +390,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code")) && PlanConstants.ERROR_KEY_UNKNOWN_COURSE.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code").get(0).getErrorKey()));
         GlobalVariables.getMessageMap().clearErrorMessages();
@@ -384,6 +408,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code")) && PlanConstants.ERROR_KEY_PLANNED_ITEM_ALREADY_EXISTS.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[2].code").get(0).getErrorKey()));
         GlobalVariables.getMessageMap().clearErrorMessages();
@@ -395,6 +420,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).getCode().equals("uw.academicplan.placeholder.studyabroad|uw.academicplan.placeholder"));
@@ -408,6 +434,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setYearIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setTermIndex(0);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setItemIndex(3);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).getCode().equals("course.genedrequirement.aofk.is_ind|uw.course.genedrequirement"));
@@ -422,6 +449,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(1).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setYearIndex(1);
         samplePlanForm.getSamplePlanYears().get(1).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setTermIndex(1);
         samplePlanForm.getSamplePlanYears().get(1).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setItemIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Winter", 2));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
         assertTrue(samplePlanForm.getSamplePlanYears().get(1).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).getCode().equals("COM 2xx"));
@@ -437,6 +465,133 @@ public class SamplePlanControllerTest {
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).getCode().equals("uw.academicplan.placeholder.studyabroad|uw.academicplan.placeholder"));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).getCode().equals("course.genedrequirement.aofk.is_ind|uw.course.genedrequirement"));
         assertTrue(samplePlanForm.getSamplePlanYears().get(1).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).getCode().equals("COM 2xx"));
+
+
+    }
+
+
+    /**
+     * Testing to save a new Sample plan learning Plan
+     */
+    @Test
+    public void saveSamplePlanTest2() {
+        createAdviserUserSession();
+        SamplePlanForm samplePlanForm = new SamplePlanForm();
+        samplePlanForm.setDescription("This is a short Description");
+        samplePlanForm.setPlanTitle("Track 1");
+        samplePlanForm.setDegreeProgramTitle("00-1-6BSCE");
+        samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
+        assertTrue(StringUtils.hasText(samplePlanForm.getLearningPlanId()));
+
+         /*Testing sample plan with a empty sample form*/
+        samplePlanForm.setSamplePlanYears(getDefaultSamplePlanTable());
+        assertTrue(StringUtils.hasText(samplePlanForm.getLearningPlanId()) && StringUtils.isEmpty(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getCode()));
+
+
+        /*Adding a course and Alternate Course with a non existing course*/
+        String atpId = "20141";
+        String subject = "CHEM";
+        String suffix = "210";
+        String credit = "5";
+        String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
+        String versionId = getCourseHelper().getCourseVersionIdByTerm(courseId, atpId);
+        addCourseInfo(courseId, versionId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
+        String alternateAtpId = "20141";
+        String alternateSubject = "COM";
+        String alternateSuffix = "210";
+        String alternateCredit = "5";
+        String alternateCourseId = getCourseHelper().getCourseIdForTerm(alternateSubject, alternateSuffix, alternateAtpId);
+        String alternateVersionId = getCourseHelper().getCourseVersionIdByTerm(alternateCourseId, alternateAtpId);
+        addCourseInfo(alternateCourseId, alternateVersionId, alternateSubject, alternateSuffix, alternateCredit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setCode(String.format("%s %s", subject, suffix));
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setNote("This is a note updated Note");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAlternateCode(String.format("%s %s", alternateSubject, alternateSuffix));
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setItemIndex(0);
+        samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
+        assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[0].code")) && PlanConstants.COURSE_NOT_FOUND.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[0].code").get(0).getErrorKey()));
+        GlobalVariables.getMessageMap().clearErrorMessages();
+
+        /**
+         * ---------------------------------------------
+         *  Regular Type |   Alternate Type
+         * ---------------------------------------------
+         *  Course Type  |  Course Type
+         */
+        String atpId1 = "20141";
+        String subject1 = "COM";
+        String suffix1 = "210";
+        String credit1 = "5";
+        String courseId1 = getCourseHelper().getCourseIdForTerm(subject1, suffix1, atpId1);
+        String versionId1 = getCourseHelper().getCourseVersionIdByTerm(courseId1, atpId1);
+        addCourseInfo(courseId1, versionId1, subject1, suffix1, credit1, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
+        String alternateAtpId1 = "20141";
+        String alternateSubject1 = "COM";
+        String alternateSuffix1 = "220";
+        String alternateCredit1 = "5";
+        String alternateCourseId1 = getCourseHelper().getCourseIdForTerm(alternateSubject1, alternateSuffix1, alternateAtpId1);
+        String alternateVersionId1 = getCourseHelper().getCourseVersionIdByTerm(alternateCourseId1, alternateAtpId1);
+        addCourseInfo(alternateCourseId1, alternateVersionId1, alternateSubject1, alternateSuffix1, alternateCredit1, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setCode(String.format("%s %s", subject1, suffix1));
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setCredit(credit1);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setNote("This is a note updated Note");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAlternateCode(String.format("%s %s", alternateSubject1, alternateSuffix1));
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAlternateCredit(alternateCredit1);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setItemIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
+        samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
+        assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getCode().equals(String.format("%s %s", subject1, suffix1)));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getAlternateCode().equals(String.format("%s %s", alternateSubject1, alternateSuffix1)));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getNote().equals("This is a note updated Note"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getCredit().equals(credit1));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getAlternateCredit().equals(alternateCredit1));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getPlanItemId()));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getReqComponentId()));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getAlternateReqComponentId()));
+
+        /**
+         * ---------------------------------------------
+         *  Regular Type |   Alternate Type
+         * ---------------------------------------------
+         *  Course Type  |  Course PlaceHolder Type
+         */
+        String atpId2 = "20141";
+        String subject2 = "COM";
+        String suffix2 = "210";
+        String credit2 = "5";
+        String courseId2 = getCourseHelper().getCourseIdForTerm(subject2, suffix2, atpId2);
+        String versionId2 = getCourseHelper().getCourseVersionIdByTerm(courseId2, atpId2);
+        addCourseInfo(courseId2, versionId2, subject2, suffix2, credit2, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCode(String.format("%s %s", subject1, suffix1));
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCredit(credit1);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setNote("This is a note updated Note");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setAlternateCode("COM 2xx");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setAlternateCredit("2");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setItemIndex(1);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
+        samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
+        assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals(String.format("%s %s", subject1, suffix1)));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getAlternateCode().equals("COM 2xx"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getNote().equals("This is a note updated Note"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCredit().equals(credit2));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getAlternateCredit().equals("2"));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getPlanItemId()));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getReqComponentId()));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getAlternateReqComponentId()));
+
+        samplePlanController.startNew(samplePlanForm, null, null, null);
+
+        /*Verifying expected items in sample Plan form*/
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getCode().equals(String.format("%s %s", subject1, suffix1)));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getAlternateCode().equals(String.format("%s %s", alternateSubject1, alternateSuffix1)));
 
 
     }
@@ -628,6 +783,27 @@ public class SamplePlanControllerTest {
         return samplePlanYears;
     }
 
+
+    /**
+     * Creates a mock user session
+     *
+     * @param principleId
+     * @param name
+     * @param isAdviser
+     * @param externalIdentifier
+     */
+    private void makeDefaultUserSession(String principleId, String name, String isAdviser, String isAdviserManagePlan, String externalIdentifier, String studentNumber) {
+        getUserSessionHelper().getName(String.format("principleId=%s|name=%s|isAdviser=%s|isAdviserManagePlan=%s|externalIdentifier=%s|studentNumber=%s", principleId, name, isAdviser, isAdviserManagePlan, externalIdentifier, studentNumber));
+    }
+
+    private void createAdviserUserSession() {
+        makeDefaultUserSession("7EDFB986D97A4CD084F26C43813D4B90", "Tom", "true", "true", null, null);
+    }
+
+    private void createStudentUserSession() {
+        makeDefaultUserSession("730FA4DCAE3411D689DA0004AC494FFE", "JJulius", "false", "false", "000018235", "1033333");
+    }
+
     public SamplePlanController getSamplePlanController() {
         return samplePlanController;
     }
@@ -658,5 +834,13 @@ public class SamplePlanControllerTest {
 
     public void setCourseServiceMock(CourseService courseServiceMock) {
         this.courseServiceMock = courseServiceMock;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
     }
 }

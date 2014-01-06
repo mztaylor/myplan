@@ -47,11 +47,7 @@ public class SamplePlanLookupableHelperImpl extends MyPlanLookupableImpl {
     @Override
     protected List<SamplePlanDataObject> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         /*Authorizing*/
-        if (GlobalVariables.getUserSession().retrieveObject(PlanConstants.SESSION_KEY_IS_ADVISER_MANAGE_PLAN) == null) {
-            return new ArrayList<SamplePlanDataObject>();
-        }
-
-        if (GlobalVariables.getUserSession().retrieveObject(PlanConstants.SESSION_KEY_ADVISER_MAJORS) == null) {
+        if (!getUserSessionHelper().isAdviserForManagePlan()) {
             return new ArrayList<SamplePlanDataObject>();
         }
 

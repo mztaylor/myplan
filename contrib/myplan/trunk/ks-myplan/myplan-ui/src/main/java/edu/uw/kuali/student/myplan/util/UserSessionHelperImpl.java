@@ -83,6 +83,17 @@ public class UserSessionHelperImpl implements UserSessionHelper {
     }
 
     /**
+     * Returns true if a user has adviser affiliation and is working on samplePlans.
+     *
+     * @return True if user is an adviser and coming through samplePlan page.
+     */
+    @Override
+    public boolean isAdviserForManagePlan() {
+        UserSession session = GlobalVariables.getUserSession();
+        return session.retrieveObject(PlanConstants.SESSION_KEY_IS_ADVISER_MANAGE_PLAN) != null && session.retrieveObject(PlanConstants.SESSION_KEY_ADVISER_MAJORS) != null;
+    }
+
+    /**
      * @return true if the user is a student
      */
     @Override
@@ -138,7 +149,6 @@ public class UserSessionHelperImpl implements UserSessionHelper {
     }
 
     /**
-     *
      * @return Student Name in firstName LastName format
      */
     @Override
