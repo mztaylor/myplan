@@ -159,61 +159,63 @@ public class SamplePlanController extends UifControllerBase {
 
                     if (!CollectionUtils.isEmpty(samplePlanYears) && !StringUtils.isEmpty(planItemInfo.getPlanPeriods())) {
                         String atpId = planItemInfo.getPlanPeriods().get(0);
-                        String[] str = atpId.split("Year");
-                        String term = str[0].trim();
-                        int samplePlanYearIndex = Integer.parseInt(str[1].trim()) - 1;
-                        int samplePlanTermIndex = availableTerms.indexOf(term);
-                        SamplePlanYear samplePlanYear = samplePlanYears.get(samplePlanYearIndex);
-                        SamplePlanTerm samplePlanTerm = samplePlanYear.getSamplePlanTerms().get(samplePlanTermIndex);
-                        for (SamplePlanItem samplePlanItem : samplePlanTerm.getSamplePlanItems()) {
-                            if (StringUtils.isEmpty(samplePlanItem.getCode())) {
-                                if (PlanConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType())) {
-                                    String crossListedCourse = getPlanHelper().getCrossListedCourse(planItemInfo.getAttributes());
-                                    CourseInfo courseInfo = getCourseHelper().getCourseInfoByIdAndCd(planItemInfo.getRefObjectId(), crossListedCourse);
-                                    samplePlanItem.setCode(courseInfo.getCode());
-                                    samplePlanItem.setPlanItemId(planItemInfo.getId());
-                                    samplePlanItem.setCredit(CreditsFormatter.formatCredits(courseInfo));
-                                    if (samplePlanForm.isPreview()) {
-                                        samplePlanTerm.addCredit(samplePlanItem.getCredit());
-                                        samplePlanYear.addCredit(samplePlanItem.getCredit());
-                                        samplePlanForm.addCredit(samplePlanItem.getCredit());
+                        if (StringUtils.hasText(atpId)) {
+                            String[] str = atpId.split("Year");
+                            String term = str[0].trim();
+                            int samplePlanYearIndex = Integer.parseInt(str[1].trim()) - 1;
+                            int samplePlanTermIndex = availableTerms.indexOf(term);
+                            SamplePlanYear samplePlanYear = samplePlanYears.get(samplePlanYearIndex);
+                            SamplePlanTerm samplePlanTerm = samplePlanYear.getSamplePlanTerms().get(samplePlanTermIndex);
+                            for (SamplePlanItem samplePlanItem : samplePlanTerm.getSamplePlanItems()) {
+                                if (StringUtils.isEmpty(samplePlanItem.getCode())) {
+                                    if (PlanConstants.COURSE_TYPE.equals(planItemInfo.getRefObjectType())) {
+                                        String crossListedCourse = getPlanHelper().getCrossListedCourse(planItemInfo.getAttributes());
+                                        CourseInfo courseInfo = getCourseHelper().getCourseInfoByIdAndCd(planItemInfo.getRefObjectId(), crossListedCourse);
+                                        samplePlanItem.setCode(courseInfo.getCode());
+                                        samplePlanItem.setPlanItemId(planItemInfo.getId());
+                                        samplePlanItem.setCredit(CreditsFormatter.formatCredits(courseInfo));
+                                        if (samplePlanForm.isPreview()) {
+                                            samplePlanTerm.addCredit(samplePlanItem.getCredit());
+                                            samplePlanYear.addCredit(samplePlanItem.getCredit());
+                                            samplePlanForm.addCredit(samplePlanItem.getCredit());
+                                        }
+                                        samplePlanItem.setNote(planItemInfo.getDescr().getPlain());
+                                        break;
+                                    } else if (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItemInfo.getRefObjectType()) ||
+                                            PlanConstants.PLACE_HOLDER_TYPE.equals(planItemInfo.getRefObjectType())) {
+                                        String placeHolderCode = EnumerationHelper.getEnumAbbrValForCodeByType(planItemInfo.getRefObjectId(), planItemInfo.getRefObjectType());
+                                        //String placeHolderValue = EnumerationHelper.getEnumValueForCodeByType(planItemInfo.getRefObjectId(), PlanConstants.PLACE_HOLDER_ENUM_KEY);
+                                        samplePlanItem.setCode(samplePlanForm.isPreview() ? placeHolderCode : String.format("%s|%s", planItemInfo.getRefObjectId(), planItemInfo.getRefObjectType()));
+                                        samplePlanItem.setPlanItemId(planItemInfo.getId());
+                                        samplePlanItem.setCredit(planItemInfo.getCredit() != null ? planItemInfo.getCredit().toString() : null);
+                                        if (samplePlanForm.isPreview()) {
+                                            samplePlanTerm.addCredit(samplePlanItem.getCredit());
+                                            samplePlanYear.addCredit(samplePlanItem.getCredit());
+                                            samplePlanForm.addCredit(samplePlanItem.getCredit());
+                                        }
+                                        samplePlanItem.setNote(planItemInfo.getDescr().getPlain());
+                                        break;
+                                    } else if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItemInfo.getRefObjectType())) {
+                                        samplePlanItem.setCode(planItemInfo.getRefObjectId());
+                                        samplePlanItem.setPlanItemId(planItemInfo.getId());
+                                        samplePlanItem.setCredit(planItemInfo.getCredit() != null ? planItemInfo.getCredit().toString() : null);
+                                        if (samplePlanForm.isPreview()) {
+                                            samplePlanTerm.addCredit(samplePlanItem.getCredit());
+                                            samplePlanYear.addCredit(samplePlanItem.getCredit());
+                                            samplePlanForm.addCredit(samplePlanItem.getCredit());
+                                        }
+                                        samplePlanItem.setNote(planItemInfo.getDescr().getPlain());
+                                        break;
+                                    } else if (PlanConstants.STATEMENT_TYPE.equals(planItemInfo.getRefObjectType())) {
+                                        StatementTreeViewInfo statementTreeViewInfo = null;
+                                        try {
+                                            statementTreeViewInfo = getStatementService().getStatementTreeView(planItemInfo.getRefObjectId());
+                                        } catch (Exception e) {
+                                            logger.error("Could not load statement tree view for statementId: " + planItemInfo.getRefObjectId(), e);
+                                        }
+                                        populateSamplePlanItemForStatement(samplePlanForm, samplePlanItem, statementTreeViewInfo, planItemInfo.getId(), planItemInfo.getDescr().getPlain());
+                                        break;
                                     }
-                                    samplePlanItem.setNote(planItemInfo.getDescr().getPlain());
-                                    break;
-                                } else if (PlanConstants.PLACE_HOLDER_TYPE_GEN_ED.equals(planItemInfo.getRefObjectType()) ||
-                                        PlanConstants.PLACE_HOLDER_TYPE.equals(planItemInfo.getRefObjectType())) {
-                                    String placeHolderCode = EnumerationHelper.getEnumAbbrValForCodeByType(planItemInfo.getRefObjectId(), planItemInfo.getRefObjectType());
-                                    //String placeHolderValue = EnumerationHelper.getEnumValueForCodeByType(planItemInfo.getRefObjectId(), PlanConstants.PLACE_HOLDER_ENUM_KEY);
-                                    samplePlanItem.setCode(samplePlanForm.isPreview() ? placeHolderCode : String.format("%s|%s", planItemInfo.getRefObjectId(), planItemInfo.getRefObjectType()));
-                                    samplePlanItem.setPlanItemId(planItemInfo.getId());
-                                    samplePlanItem.setCredit(planItemInfo.getCredit() != null ? planItemInfo.getCredit().toString() : null);
-                                    if (samplePlanForm.isPreview()) {
-                                        samplePlanTerm.addCredit(samplePlanItem.getCredit());
-                                        samplePlanYear.addCredit(samplePlanItem.getCredit());
-                                        samplePlanForm.addCredit(samplePlanItem.getCredit());
-                                    }
-                                    samplePlanItem.setNote(planItemInfo.getDescr().getPlain());
-                                    break;
-                                } else if (PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL.equals(planItemInfo.getRefObjectType())) {
-                                    samplePlanItem.setCode(planItemInfo.getRefObjectId());
-                                    samplePlanItem.setPlanItemId(planItemInfo.getId());
-                                    samplePlanItem.setCredit(planItemInfo.getCredit() != null ? planItemInfo.getCredit().toString() : null);
-                                    if (samplePlanForm.isPreview()) {
-                                        samplePlanTerm.addCredit(samplePlanItem.getCredit());
-                                        samplePlanYear.addCredit(samplePlanItem.getCredit());
-                                        samplePlanForm.addCredit(samplePlanItem.getCredit());
-                                    }
-                                    samplePlanItem.setNote(planItemInfo.getDescr().getPlain());
-                                    break;
-                                } else if (PlanConstants.STATEMENT_TYPE.equals(planItemInfo.getRefObjectType())) {
-                                    StatementTreeViewInfo statementTreeViewInfo = null;
-                                    try {
-                                        statementTreeViewInfo = getStatementService().getStatementTreeView(planItemInfo.getRefObjectId());
-                                    } catch (Exception e) {
-                                        logger.error("Could not load statement tree view for statementId: " + planItemInfo.getRefObjectId(), e);
-                                    }
-                                    populateSamplePlanItemForStatement(samplePlanForm, samplePlanItem, statementTreeViewInfo, planItemInfo.getId(), planItemInfo.getDescr().getPlain());
-                                    break;
                                 }
                             }
                         }
