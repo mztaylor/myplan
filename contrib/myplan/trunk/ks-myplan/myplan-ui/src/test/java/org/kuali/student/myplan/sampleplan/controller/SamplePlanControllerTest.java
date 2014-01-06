@@ -487,33 +487,6 @@ public class SamplePlanControllerTest {
         samplePlanForm.setSamplePlanYears(getDefaultSamplePlanTable());
         assertTrue(StringUtils.hasText(samplePlanForm.getLearningPlanId()) && StringUtils.isEmpty(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getCode()));
 
-
-        /*Adding a course and Alternate Course with a non existing course*/
-        String atpId = "20141";
-        String subject = "CHEM";
-        String suffix = "210";
-        String credit = "5";
-        String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
-        String versionId = getCourseHelper().getCourseVersionIdByTerm(courseId, atpId);
-        addCourseInfo(courseId, versionId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
-        String alternateAtpId = "20141";
-        String alternateSubject = "COM";
-        String alternateSuffix = "210";
-        String alternateCredit = "5";
-        String alternateCourseId = getCourseHelper().getCourseIdForTerm(alternateSubject, alternateSuffix, alternateAtpId);
-        String alternateVersionId = getCourseHelper().getCourseVersionIdByTerm(alternateCourseId, alternateAtpId);
-        addCourseInfo(alternateCourseId, alternateVersionId, alternateSubject, alternateSuffix, alternateCredit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
-        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setCode(String.format("%s %s", subject, suffix));
-        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setNote("This is a note updated Note");
-        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAlternateCode(String.format("%s %s", alternateSubject, alternateSuffix));
-        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
-        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setYearIndex(0);
-        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setTermIndex(0);
-        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).setItemIndex(0);
-        samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
-        assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[0].code")) && PlanConstants.COURSE_NOT_FOUND.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[0].samplePlanItems[0].code").get(0).getErrorKey()));
-        GlobalVariables.getMessageMap().clearErrorMessages();
-
         /**
          * ---------------------------------------------
          *  Regular Type |   Alternate Type
@@ -567,7 +540,7 @@ public class SamplePlanControllerTest {
         String courseId2 = getCourseHelper().getCourseIdForTerm(subject2, suffix2, atpId2);
         String versionId2 = getCourseHelper().getCourseVersionIdByTerm(courseId2, atpId2);
         addCourseInfo(courseId2, versionId2, subject2, suffix2, credit2, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
-        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCode(String.format("%s %s", subject1, suffix1));
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCode(String.format("%s %s", subject2, suffix2));
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setCredit(credit1);
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setNote("This is a note updated Note");
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setAlternateCode("COM 2xx");
@@ -578,7 +551,7 @@ public class SamplePlanControllerTest {
         samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
         samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
         assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
-        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals(String.format("%s %s", subject1, suffix1)));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals(String.format("%s %s", subject2, suffix2)));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getAlternateCode().equals("COM 2xx"));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getNote().equals("This is a note updated Note"));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCredit().equals(credit2));
@@ -587,11 +560,168 @@ public class SamplePlanControllerTest {
         assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getReqComponentId()));
         assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getAlternateReqComponentId()));
 
+        /**
+         * ---------------------------------------------
+         *  Regular Type |   Alternate Type
+         * ---------------------------------------------
+         *  Course Type  |  PlaceHolder Type
+         */
+        String atpId3 = "20141";
+        String subject3 = "COM";
+        String suffix3 = "201";
+        String credit3 = "5";
+        String courseId3 = getCourseHelper().getCourseIdForTerm(subject3, suffix3, atpId3);
+        String versionId3 = getCourseHelper().getCourseVersionIdByTerm(courseId3, atpId3);
+        addCourseInfo(courseId3, versionId3, subject3, suffix3, credit3, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setCode(String.format("%s %s", subject3, suffix3));
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setCredit(credit1);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setNote("This is a note updated Note");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setAlternateCode("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setAlternateCredit("4");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setItemIndex(2);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
+        samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
+        assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).getCode().equals(String.format("%s %s", subject3, suffix3)));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).getAlternateCode().equals("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).getNote().equals("This is a note updated Note"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).getCredit().equals(credit3));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).getAlternateCredit().equals("4"));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).getPlanItemId()));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).getReqComponentId()));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).getAlternateReqComponentId()));
+
+
+        /**
+         * ---------------------------------------------
+         *  Regular Type             |   Alternate Type
+         * ---------------------------------------------
+         *  Course PlaceHolder Type  |  PlaceHolder Type
+         */
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setCode("COM 5xx");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setCredit("3");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setNote("This is a note updated Note");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setAlternateCode("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setAlternateCredit("4");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setItemIndex(3);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
+        samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
+        assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).getCode().equals("COM 5xx"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).getAlternateCode().equals("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).getNote().equals("This is a note updated Note"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).getCredit().equals("3"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).getAlternateCredit().equals("4"));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).getPlanItemId()));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).getReqComponentId()));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).getAlternateReqComponentId()));
+
+        /**
+         * ---------------------------------------------
+         *  Regular Type             |   Alternate Type
+         * ---------------------------------------------
+         *  Course PlaceHolder Type  |  Course PlaceHolder Type
+         */
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).setCode("COM 5xx");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).setCredit("3");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).setNote("This is a note updated Note");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).setAlternateCode("COM 4xx");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).setAlternateCredit("4");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).setItemIndex(4);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
+        samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
+        assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).getCode().equals("COM 5xx"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).getAlternateCode().equals("COM 4xx"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).getNote().equals("This is a note updated Note"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).getCredit().equals("3"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).getAlternateCredit().equals("4"));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).getPlanItemId()));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).getReqComponentId()));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).getAlternateReqComponentId()));
+
+
+        /**
+         * ---------------------------------------------
+         *  Regular Type      |   Alternate Type
+         * ---------------------------------------------
+         *  PlaceHolder Type  |  PlaceHolder Type
+         */
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).setCode("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).setCredit("3");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).setNote("This is a note updated Note");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).setAlternateCode("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).setAlternateCredit("4");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).setTermIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).setItemIndex(5);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Autumn", 1));
+        samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
+        assertTrue(CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).getCode().equals("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).getAlternateCode().equals("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).getNote().equals("This is a note updated Note"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).getCredit().equals("3"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).getAlternateCredit().equals("4"));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).getPlanItemId()));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).getReqComponentId()));
+        assertTrue(StringUtils.hasText(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).getAlternateReqComponentId()));
+
+
+        /***************************************************************Failure Cases***************************************************************************************************************************************/
+        /*Adding a course and Alternate Course with a non existing course*/
+        String atpId = "20141";
+        String subject = "CHEM";
+        String suffix = "210";
+        String credit = "5";
+        String courseId = getCourseHelper().getCourseIdForTerm(subject, suffix, atpId);
+        String versionId = getCourseHelper().getCourseVersionIdByTerm(courseId, atpId);
+        addCourseInfo(courseId, versionId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
+        String alternateAtpId = "20141";
+        String alternateSubject = "COM";
+        String alternateSuffix = "210";
+        String alternateCredit = "5";
+        String alternateCourseId = getCourseHelper().getCourseIdForTerm(alternateSubject, alternateSuffix, alternateAtpId);
+        String alternateVersionId = getCourseHelper().getCourseVersionIdByTerm(alternateCourseId, alternateAtpId);
+        addCourseInfo(alternateCourseId, alternateVersionId, alternateSubject, alternateSuffix, alternateCredit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setCode(String.format("%s %s", subject, suffix));
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setNote("This is a note updated Note");
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setAlternateCode(String.format("%s %s", alternateSubject, alternateSuffix));
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setAtpId(String.format(SamplePlanConstants.SAMPLE_PLAN_ATP_FORMAT, "Winter", 1));
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setYearIndex(0);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setTermIndex(1);
+        samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(1).getSamplePlanItems().get(0).setItemIndex(0);
+        samplePlanController.saveSamplePlan(samplePlanForm, null, null, null);
+        assertTrue(!CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages()) && !CollectionUtils.isEmpty(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[1].samplePlanItems[0].code")) && PlanConstants.COURSE_NOT_FOUND.equals(GlobalVariables.getMessageMap().getErrorMessages().get("samplePlanYears[0].samplePlanTerms[1].samplePlanItems[0].code").get(0).getErrorKey()));
+        GlobalVariables.getMessageMap().clearErrorMessages();
+
         samplePlanController.startNew(samplePlanForm, null, null, null);
 
         /*Verifying expected items in sample Plan form*/
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getCode().equals(String.format("%s %s", subject1, suffix1)));
         assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(0).getAlternateCode().equals(String.format("%s %s", alternateSubject1, alternateSuffix1)));
+
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getCode().equals(String.format("%s %s", subject2, suffix2)));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(1).getAlternateCode().equals("COM 2xx"));
+
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).getCode().equals(String.format("%s %s", subject3, suffix3)));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(2).getAlternateCode().equals("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement"));
+
+
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).getCode().equals("COM 5xx"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(3).getAlternateCode().equals("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement"));
+
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).getCode().equals("COM 5xx"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(4).getAlternateCode().equals("COM 4xx"));
+
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).getCode().equals("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement"));
+        assertTrue(samplePlanForm.getSamplePlanYears().get(0).getSamplePlanTerms().get(0).getSamplePlanItems().get(5).getAlternateCode().equals("course.genedrequirement.aofk.vlpa_ind|uw.course.genedrequirement"));
 
 
     }
