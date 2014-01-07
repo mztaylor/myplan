@@ -213,7 +213,7 @@ public class SamplePlanController extends UifControllerBase {
                                         } catch (Exception e) {
                                             logger.error("Could not load statement tree view for statementId: " + planItemInfo.getRefObjectId(), e);
                                         }
-                                        populateSamplePlanItemForStatement(samplePlanForm, samplePlanItem, statementTreeViewInfo, planItemInfo.getId(), planItemInfo.getDescr().getPlain());
+                                        populateSamplePlanItemForStatement(samplePlanForm, samplePlanYear, samplePlanTerm, samplePlanItem, statementTreeViewInfo, planItemInfo.getId(), planItemInfo.getDescr().getPlain());
                                         break;
                                     }
                                 }
@@ -524,7 +524,9 @@ public class SamplePlanController extends UifControllerBase {
                                     planItemInfo = getAcademicPlanService().createPlanItem(planItemInfo, getUserSessionHelper().makeContextInfoInstance());
                                     samplePlanItem.setCode(null);
                                     samplePlanItem.setAlternateCode(null);
-                                    populateSamplePlanItemForStatement(samplePlanForm, samplePlanItem, statementTreeViewInfo, planItemInfo.getId(), planItemInfo.getDescr().getPlain());
+                                    SamplePlanYear samplePlanYear = samplePlanForm.getSamplePlanYears().get(samplePlanItem.getYearIndex());
+                                    SamplePlanTerm samplePlanTerm = samplePlanForm.getSamplePlanYears().get(samplePlanItem.getYearIndex()).getSamplePlanTerms().get(samplePlanItem.getTermIndex());
+                                    populateSamplePlanItemForStatement(samplePlanForm, samplePlanYear, samplePlanTerm, samplePlanItem, statementTreeViewInfo, planItemInfo.getId(), planItemInfo.getDescr().getPlain());
 
                                 } catch (Exception e) {
                                     logger.error("Could not add Plan Item", e);
@@ -556,9 +558,7 @@ public class SamplePlanController extends UifControllerBase {
      * @param planItemId
      * @param note
      */
-    private void populateSamplePlanItemForStatement(SamplePlanForm samplePlanForm, SamplePlanItem samplePlanItem, StatementTreeViewInfo statementTreeViewInfo, String planItemId, String note) {
-        SamplePlanYear samplePlanYear = samplePlanForm.getSamplePlanYears().get(samplePlanItem.getYearIndex());
-        SamplePlanTerm samplePlanTerm = samplePlanForm.getSamplePlanYears().get(samplePlanItem.getYearIndex()).getSamplePlanTerms().get(samplePlanItem.getTermIndex());
+    private void populateSamplePlanItemForStatement(SamplePlanForm samplePlanForm, SamplePlanYear samplePlanYear, SamplePlanTerm samplePlanTerm, SamplePlanItem samplePlanItem, StatementTreeViewInfo statementTreeViewInfo, String planItemId, String note) {
 
         if (statementTreeViewInfo != null) {
             for (ReqComponentInfo reqComponentInfo : statementTreeViewInfo.getReqComponents()) {
