@@ -79,10 +79,10 @@ public class AcademicPlanServiceValidationDecorator
     }
 
     @Override
-    public LearningPlanInfo copyLearningPlan(String fromLearningPlanId, String planTypeKey, ContextInfo context)
+    public LearningPlanInfo copyLearningPlan(String fromLearningPlanId, ContextInfo context)
             throws AlreadyExistsException, DoesNotExistException, InvalidParameterException, MissingParameterException,
             OperationFailedException {
-        return getNextDecorator().copyLearningPlan(fromLearningPlanId, planTypeKey, context);
+        return getNextDecorator().copyLearningPlan(fromLearningPlanId, context);
     }
 
     @Override
