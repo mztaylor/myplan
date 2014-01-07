@@ -1295,7 +1295,7 @@ public class SamplePlanController extends UifControllerBase {
     private boolean isValidSamplePlan(SamplePlanForm samplePlanForm) {
         boolean isValidSamplePlan = true;
         LearningPlanInfo learningPlanInfo = getExistingLearningPlan(samplePlanForm.getDegreeProgramTitle(), samplePlanForm.getPlanTitle());
-        if (learningPlanInfo != null && learningPlanInfo.getId().equals(samplePlanForm.getLearningPlanId())) {
+        if (learningPlanInfo != null && !learningPlanInfo.getId().equals(samplePlanForm.getLearningPlanId())) {
             String[] params = {samplePlanForm.getDegreeProgramTitle(), samplePlanForm.getPlanTitle()};
             GlobalVariables.getMessageMap().putError("planTitle", SamplePlanConstants.DUPLICATE_ERROR, params);
             isValidSamplePlan = false;

@@ -18,6 +18,9 @@ public class SamplePlanItem {
     private String alternateCredit;
     private String alternateReqComponentId;
 
+    /*required for comboBox Display purpose*/
+    private String displayCode;
+    private String displayAlternateCode;
 
     /*Required for Error notification to a specific item*/
     private int yearIndex;
@@ -118,5 +121,21 @@ public class SamplePlanItem {
 
     public void setAtpId(String atpId) {
         this.atpId = atpId;
+    }
+
+    public String getDisplayCode() {
+        return displayCode;
+    }
+
+    public void setDisplayCode(String displayCode) {
+        this.displayCode = displayCode;
+    }
+
+    public String getDisplayAlternateCode() {
+        return displayAlternateCode;
+    }
+
+    public void setDisplayAlternateCode(String displayAlternateCode) {
+        this.displayAlternateCode = displayAlternateCode;
     }
 }
