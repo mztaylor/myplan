@@ -540,7 +540,7 @@
                             <bean parent="KSAP-HorizontalBoxGroup" p:style="padding-bottom: 5px;padding-top: 5px;">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-InputField"
+                                        <!--<bean parent="Uif-InputField"
                                               p:propertyName="code" p:width="auto" p:render="@{!#form.preview}"
                                               p:readOnly="false">
                                             <property name="control">
@@ -548,9 +548,9 @@
                                                     <property name="size" value="18"/>
                                                 </bean>
                                             </property>
-                                        </bean>
+                                        </bean>-->
 
-                                        <!--<bean parent="Uif-InputField"
+                                        <bean parent="Uif-InputField"
                                               p:propertyName="displayCode" p:additionalHiddenPropertyNames="code" p:render="@{!#form.preview}">
                                             <property name="suggest">
                                                 <bean parent="KSAP-ComboBox" p:render="true" p:retrieveAllSuggestions="true">
@@ -564,10 +564,22 @@
                                                             <entry key="delay" value="0"/>
                                                             <entry key="select">
                                                                 <value>
-                                                                    function( event, ui ) {
-                                                                    jQuery( "input[name='samplePlanYears[@{#line.yearIndex}].samplePlanTerms[@{#line.termIndex}].samplePlanItems[@{#line.itemIndex}].code']" ).val( ui.item.value );
-                                                                    jQuery( "input[name='samplePlanYears[@{#line.yearIndex}].samplePlanTerms[@{#line.termIndex}].samplePlanItems[@{#line.itemIndex}].displayCode']" ).val( ui.item.label );
+                                                                    function(event, ui) {
+                                                                    jQuery("input[name='samplePlanYears[@{#line.yearIndex}].samplePlanTerms[@{#line.termIndex}].samplePlanItems[@{#line.itemIndex}].code']").val( ui.item.value );
+                                                                    jQuery("input[name='samplePlanYears[@{#line.yearIndex}].samplePlanTerms[@{#line.termIndex}].samplePlanItems[@{#line.itemIndex}].displayCode']").val( ui.item.label );
                                                                     return false;
+                                                                    }
+                                                                </value>
+                                                            </entry>
+                                                            <entry key="change">
+                                                                <value>
+                                                                    function (event, ui) {
+                                                                        if (ui.item) {
+                                                                            jQuery("input[name='samplePlanYears[@{#line.yearIndex}].samplePlanTerms[@{#line.termIndex}].samplePlanItems[@{#line.itemIndex}].code']").val( ui.item.value );
+                                                                        } else {
+                                                                            jQuery("input[name='samplePlanYears[@{#line.yearIndex}].samplePlanTerms[@{#line.termIndex}].samplePlanItems[@{#line.itemIndex}].code']").val( jQuery("input[name='samplePlanYears[@{#line.yearIndex}].samplePlanTerms[@{#line.termIndex}].samplePlanItems[@{#line.itemIndex}].displayCode']").val() );
+                                                                        }
+                                                                        return false;
                                                                     }
                                                                 </value>
                                                             </entry>
@@ -576,7 +588,7 @@
                                                     </property>
                                                 </bean>
                                             </property>
-                                        </bean>-->
+                                        </bean>
 
 
                                         <bean parent="Uif-InputField"
@@ -594,7 +606,7 @@
                             <bean parent="KSAP-HorizontalBoxGroup" p:style="padding-bottom: 5px; padding-top: 5px;">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-InputField"
+                                        <!--<bean parent="Uif-InputField"
                                               p:propertyName="alternateCode" p:width="auto" p:render="@{!#form.preview}"
                                               p:readOnly="false">
                                             <property name="control">
@@ -602,15 +614,14 @@
                                                     <property name="size" value="18"/>
                                                 </bean>
                                             </property>
-                                        </bean>
+                                        </bean>-->
 
-                                        <!--<bean parent="Uif-InputField"
+                                        <bean parent="Uif-InputField"
                                               p:propertyName="displayAlternateCode" p:additionalHiddenPropertyNames="alternateCode" p:render="@{!#form.preview}">
                                             <property name="suggest">
                                                 <bean parent="KSAP-ComboBox" p:render="true" p:retrieveAllSuggestions="true">
                                                     <property name="suggestQuery">
-                                                        <bean parent="Uif-AttributeQueryConfig" p:queryMethodInvokerConfig.staticMethod=
-                                                                "org.kuali.student.myplan.plan.util.PlaceHoldersBuilder.getAllKeyValueObjects"/>
+                                                        <bean parent="Uif-AttributeQueryConfig" p:queryMethodInvokerConfig.staticMethod="org.kuali.student.myplan.plan.util.PlaceHoldersBuilder.getAllKeyValueObjects"/>
                                                     </property>
                                                     <property name="templateOptions">
                                                         <map>
@@ -618,10 +629,22 @@
                                                             <entry key="delay" value="0"/>
                                                             <entry key="select">
                                                                 <value>
-                                                                    function( event, ui ) {
-                                                                    jQuery( "input[name='samplePlanYears[@{#line.yearIndex}].samplePlanTerms[@{#line.termIndex}].samplePlanItems[@{#line.itemIndex}].alternateCode']" ).val( ui.item.value );
-                                                                    jQuery( "input[name='samplePlanYears[@{#line.yearIndex}].samplePlanTerms[@{#line.termIndex}].samplePlanItems[@{#line.itemIndex}].displayAlternateCode']" ).val( ui.item.label );
-                                                                    return false;
+                                                                    function(event, ui) {
+                                                                        jQuery("input[name='samplePlanYears[@{#line.yearIndex}].samplePlanTerms[@{#line.termIndex}].samplePlanItems[@{#line.itemIndex}].alternateCode']").val( ui.item.value );
+                                                                        jQuery("input[name='samplePlanYears[@{#line.yearIndex}].samplePlanTerms[@{#line.termIndex}].samplePlanItems[@{#line.itemIndex}].displayAlternateCode']").val( ui.item.label );
+                                                                        return false;
+                                                                    }
+                                                                </value>
+                                                            </entry>
+                                                            <entry key="change">
+                                                                <value>
+                                                                    function (event, ui) {
+                                                                        if (ui.item) {
+                                                                            jQuery("input[name='samplePlanYears[@{#line.yearIndex}].samplePlanTerms[@{#line.termIndex}].samplePlanItems[@{#line.itemIndex}].alternateCode']").val( ui.item.value );
+                                                                        } else {
+                                                                            jQuery("input[name='samplePlanYears[@{#line.yearIndex}].samplePlanTerms[@{#line.termIndex}].samplePlanItems[@{#line.itemIndex}].alternateCode']").val( jQuery("input[name='samplePlanYears[@{#line.yearIndex}].samplePlanTerms[@{#line.termIndex}].samplePlanItems[@{#line.itemIndex}].displayAlternateCode']").val() );
+                                                                        }
+                                                                        return false;
                                                                     }
                                                                 </value>
                                                             </entry>
@@ -630,7 +653,7 @@
                                                     </property>
                                                 </bean>
                                             </property>
-                                        </bean>-->
+                                        </bean>
 
                                         <bean parent="Uif-InputField"
                                               p:propertyName="alternateCredit" p:width="auto"
