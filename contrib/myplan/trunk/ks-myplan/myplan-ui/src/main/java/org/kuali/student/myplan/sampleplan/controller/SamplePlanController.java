@@ -254,7 +254,40 @@ public class SamplePlanController extends UifControllerBase {
             try {
 
                 if (samplePlanForm.isCopyPlan()) {
-                    // TBD
+                    // maybe move this up and check for dupe name/major directly instead of calling  isValidSamplePlan()
+                    // either way, at this point the name/major are not dupes
+                    ContextInfo contextInfo = new ContextInfo();
+                    contextInfo.setPrincipalId(getUserSessionHelper().getCurrentUserId());
+                    LearningPlanInfo newCopyLPI = getAcademicPlanService().copyLearningPlan(samplePlanForm.getLearningPlanId(), contextInfo);
+                    // update the name, major/program and description
+                    // if we finish Sample Plan:
+                    //      this doesn't seem to work, might save correctly in db, but display didn't work.
+                    if (!samplePlanForm.getPlanTitle().equals(newCopyLPI.getName()))  {
+                        newCopyLPI.setName(samplePlanForm.getPlanTitle());
+                    }
+                    if (!samplePlanForm.getDegreeProgramTitle().equals(newCopyLPI.getPlanProgram()))  {
+                        newCopyLPI.setPlanProgram(samplePlanForm.getDegreeProgramTitle());
+                    }
+                    if ( samplePlanForm.getDescription() != null &&
+                         newCopyLPI.getDescr() != null &&
+                         !samplePlanForm.getDescription().equals(newCopyLPI.getDescr().getPlain())) {
+                        newCopyLPI.getDescr().setPlain(samplePlanForm.getDescription());
+                    }
+                    // if there wasn't a RichTextInfo for descr before, allocate and fill one in now
+                    // I don't know if this could ever happen
+                    if ( samplePlanForm.getDescription() != null &&
+                         newCopyLPI.getDescr() == null) {
+                        RichTextInfo rti = new RichTextInfo();
+                        rti.setFormatted(samplePlanForm.getDescription());
+                        rti.setPlain(samplePlanForm.getDescription());
+                        newCopyLPI.setDescr(rti);
+                    }
+
+                    // if we finish Sample Plan:
+                    // the code below just shows the user the Copy page again, should probably go back to
+                    // main list of Sample Plans.
+                    getAcademicPlanService().updateLearningPlan(newCopyLPI.getId(), newCopyLPI, contextInfo);
+
                     return getUIFModelAndView(samplePlanForm);
                 }
 
@@ -509,6 +542,8 @@ public class SamplePlanController extends UifControllerBase {
                 logger.error("Could not save sample plan", e);
             }
         }
+        // if we finish Sample Plan:
+        //      deal with dupe major and name.
         return getUIFModelAndView(samplePlanForm);
     }
 

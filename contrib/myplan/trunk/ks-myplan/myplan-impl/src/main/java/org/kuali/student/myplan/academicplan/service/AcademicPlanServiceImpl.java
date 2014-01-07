@@ -327,7 +327,9 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         return learningPlanDao.find(lpe.getId()).toDto();
     }
 
-    @Override
+
+
+   // @Override
     @Transactional
     public LearningPlanInfo copyLearningPlan(@WebParam(name = "learningPlanId") String fromLearningPlanId,
                                              @WebParam(name = "planTypeKey") String planTypeKey,
@@ -385,6 +387,68 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         return learningPlanDao.find(newLearningPlan.getId()).toDto();
     }
 
+    /*   copyLearningPlan
+     * @param fromLearningPlanId - the id of the existing learning plan to duplicate
+     * @param context - a ContextInfo. we only use the principalId.
+     *
+     * copy an existing learning plan, that is, make a dupe of it.
+     *
+     */
+     // if we finish Sample Plan:
+     //     we can delete the version of  copyLearningPlan() above,
+    //      change degreeAudit to call this new version
+    //      move the degreeAudit specific code back to degreeAudit somewhere,
+    //          ie., the code that create the dynamic  attributes.
+
+    @Override
+    @Transactional
+    public LearningPlanInfo copyLearningPlan(@WebParam(name = "learningPlanId") String fromLearningPlanId,
+                                             @WebParam(name = "context") ContextInfo context)
+            throws AlreadyExistsException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+
+        //  Get the learningPlanInfo for the given learningPlanId
+        LearningPlanEntity lpe = learningPlanDao.find(fromLearningPlanId);
+        if (null == lpe) {
+            throw new DoesNotExistException(fromLearningPlanId);
+        }
+        LearningPlanInfo dto = lpe.toDto();
+
+        //  Creating a new LearningPlanEntity from above learningPLanInfo with new PlanTypeKey
+        LearningPlanEntity newLearningPlan = populateLearningPlanEntity(dto, context);
+        LearningPlanEntity alreadyExisting = learningPlanDao.find(newLearningPlan.getId());
+        if (alreadyExisting != null) {
+            throw new AlreadyExistsException();
+        }
+
+        //  Create a copy of learningPlan
+        learningPlanDao.persist(newLearningPlan);
+
+        // copy all the planItems
+        int nbrUpdates = 0;
+        List<PlanItemEntity> planItems = planItemDao.getLearningPlanItems(fromLearningPlanId);
+        for (PlanItemEntity pie : planItems) {
+            if (AcademicPlanServiceConstants.SECTION_TYPE.equals(pie.getRefObjectTypeKey()) ||
+                // if we finish Sample Plan:
+                // need to handle more types, esp uw.cluset.type.course.level which is used for CHEM 3xx
+                AcademicPlanServiceConstants.COURSE_TYPE.equals(pie.getRefObjectTypeKey())) {
+                PlanItemInfo planItemInfo = pie.toDto();
+                planItemInfo.setLearningPlanId(newLearningPlan.getId());
+                PlanItemEntity planItemEntity = populatePlanItemEntity(planItemInfo, context);
+                //  Save the new plan item.
+                planItemDao.persist(planItemEntity);
+                nbrUpdates++;
+            }
+        }
+        // update the learningPlan
+        if (nbrUpdates > 0) {
+            newLearningPlan.setUpdateId(context.getPrincipalId());
+            newLearningPlan.setUpdateTime(new Date());
+            learningPlanDao.update(newLearningPlan);
+        }
+
+        return learningPlanDao.find(newLearningPlan.getId()).toDto();
+    }
+
 
     @Override
     @Transactional
@@ -428,8 +492,11 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         }
 
         lpe.setStudentId(learningPlan.getStudentId());
+        // if we finish Sample Plan:
+        // need to make sure these 3 lines work.
         lpe.setDescr(new LearningPlanRichTextEntity(learningPlan.getDescr()));
-
+        lpe.setPlanProgram(learningPlan.getName());
+        lpe.setPlanProgram(learningPlan.getPlanProgram());
 
         lpe.setAttributes(new HashSet<LearningPlanAttributeEntity>());
         if (null != learningPlan.getAttributes()) {
