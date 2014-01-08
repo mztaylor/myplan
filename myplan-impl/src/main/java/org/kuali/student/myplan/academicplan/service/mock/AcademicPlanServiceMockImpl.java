@@ -243,7 +243,22 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     @Override
     public StatusInfo deletePlanItem(@WebParam(name = "planItemId") String planItemId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        PlanItemInfo planItemInfo = null;
+        String learningPlan = null;
+        for (String learningPlanId : planItemsMap.keySet()) {
+            for (PlanItemInfo planItemInfo1 : planItemsMap.get(learningPlanId)) {
+                if (planItemInfo1.getId().equals(planItemId)) {
+                    planItemInfo = planItemInfo1;
+                    learningPlan = learningPlanId;
+                    break;
+                }
+            }
+        }
+        if (planItemInfo != null) {
+            planItemInfos.remove(planItemInfo);
+            planItemsMap.get(learningPlan).remove(planItemInfo);
+        }
+        return new StatusInfo();
     }
 
     @Override
