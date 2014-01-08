@@ -157,7 +157,7 @@ public class SamplePlanController extends UifControllerBase {
                 List<String> availableTerms = AtpHelper.getTerms();
                 for (PlanItemInfo planItemInfo : planItemInfos) {
 
-                    if (!CollectionUtils.isEmpty(samplePlanYears) && !StringUtils.isEmpty(planItemInfo.getPlanPeriods())) {
+                    if (!CollectionUtils.isEmpty(samplePlanYears) && !CollectionUtils.isEmpty(planItemInfo.getPlanPeriods())) {
                         String atpId = planItemInfo.getPlanPeriods().get(0);
                         if (StringUtils.hasText(atpId)) {
                             String[] str = atpId.split("Year");
@@ -262,21 +262,21 @@ public class SamplePlanController extends UifControllerBase {
                     // update the name, major/program and description
                     // if we finish Sample Plan:
                     //      this doesn't seem to work, might save correctly in db, but display didn't work.
-                    if (!samplePlanForm.getPlanTitle().equals(newCopyLPI.getName()))  {
+                    if (!samplePlanForm.getPlanTitle().equals(newCopyLPI.getName())) {
                         newCopyLPI.setName(samplePlanForm.getPlanTitle());
                     }
-                    if (!samplePlanForm.getDegreeProgramTitle().equals(newCopyLPI.getPlanProgram()))  {
+                    if (!samplePlanForm.getDegreeProgramTitle().equals(newCopyLPI.getPlanProgram())) {
                         newCopyLPI.setPlanProgram(samplePlanForm.getDegreeProgramTitle());
                     }
-                    if ( samplePlanForm.getDescription() != null &&
-                         newCopyLPI.getDescr() != null &&
-                         !samplePlanForm.getDescription().equals(newCopyLPI.getDescr().getPlain())) {
+                    if (samplePlanForm.getDescription() != null &&
+                            newCopyLPI.getDescr() != null &&
+                            !samplePlanForm.getDescription().equals(newCopyLPI.getDescr().getPlain())) {
                         newCopyLPI.getDescr().setPlain(samplePlanForm.getDescription());
                     }
                     // if there wasn't a RichTextInfo for descr before, allocate and fill one in now
                     // I don't know if this could ever happen
-                    if ( samplePlanForm.getDescription() != null &&
-                         newCopyLPI.getDescr() == null) {
+                    if (samplePlanForm.getDescription() != null &&
+                            newCopyLPI.getDescr() == null) {
                         RichTextInfo rti = new RichTextInfo();
                         rti.setFormatted(samplePlanForm.getDescription());
                         rti.setPlain(samplePlanForm.getDescription());
@@ -471,10 +471,19 @@ public class SamplePlanController extends UifControllerBase {
                             if (PlanConstants.STATEMENT_TYPE.equals(planItemInfo.getRefObjectType())) {
                                 /*deleteing statementTreeViewInfo*/
                                 getStatementService().deleteStatementTreeView(planItemInfo.getRefObjectId());
+                                samplePlanItem.setReqComponentId(null);
+                                samplePlanItem.setAlternateCode(null);
+                                samplePlanItem.setAlternateReqComponentId(null);
+                                samplePlanItem.setDisplayAlternateCode(null);
+                                samplePlanItem.setAlternateCredit(null);
                             }
 
                             getAcademicPlanService().deletePlanItem(samplePlanItem.getPlanItemId(), SamplePlanConstants.CONTEXT_INFO);
-
+                            samplePlanItem.setCode(null);
+                            samplePlanItem.setNote(null);
+                            samplePlanItem.setPlanItemId(null);
+                            samplePlanItem.setCredit(null);
+                            samplePlanItem.setDisplayCode(null);
                         } catch (Exception e) {
                             logger.error("Could not delete plaItem with Id: " + samplePlanItem.getPlanItemId(), e);
                         }
