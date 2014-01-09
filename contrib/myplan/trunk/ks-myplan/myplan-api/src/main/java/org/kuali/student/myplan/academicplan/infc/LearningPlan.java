@@ -13,7 +13,6 @@ public interface LearningPlan extends HasId, TypeStateEntity {
 
     /**
      * A description of the Learning Plan
-     *
      * @name Description
      */
 
@@ -21,24 +20,13 @@ public interface LearningPlan extends HasId, TypeStateEntity {
 
     /**
      * Plan's associated student id
-     *
      * @name Student Id
      */
     public String getStudentId();
 
     /**
+     *
      * @name Shared
      */
     public Boolean getShared();
-
-
-    /**
-     * @name Name
-     */
-    public String getName();
-
-    /**
-     * @name PlanProgram
-     */
-    public String getPlanProgram();
 }

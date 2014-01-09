@@ -11,8 +11,6 @@ public interface UserSessionHelper {
 
     public boolean isAdviser();
 
-    public boolean isAdviserForManagePlan();
-
     public boolean isStudent();
 
     public boolean isUserSession();

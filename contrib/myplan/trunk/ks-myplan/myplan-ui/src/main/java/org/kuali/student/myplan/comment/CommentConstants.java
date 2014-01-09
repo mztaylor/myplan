@@ -10,7 +10,6 @@ public class CommentConstants extends CommentServiceConstants {
     public static final String COMMENT_TYPE = "kuali.comment.type.academicplan.comment";
     public static final String MESSAGE_REF_TYPE = "kuali.uw.comment.reference.type.person";
     public static final String COMMENT_REF_TYPE = "kuali.uw.comment.reference.type.academicPlanning.message";
-    public static final String PLAN_REF_TYPE = "kuali.uw.comment.reference.type.academicPlanning.id";
 
     public static final String SUBJECT_ATTRIBUTE_NAME = "subject";
     public static final String CREATED_BY_USER_ATTRIBUTE_NAME = "createdBy";

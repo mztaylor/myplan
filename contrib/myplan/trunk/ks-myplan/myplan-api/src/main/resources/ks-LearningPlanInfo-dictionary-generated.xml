@@ -110,15 +110,6 @@ Plan's associated student id
 		<property name="name" value="stateKey"/>
 	</bean>
 
-    <bean id="LearningPlanInfo.name-generated" abstract="true" parent="BaseKuali.name">
-        <property name="name" value="name"/>
-    </bean>
-
-    <bean id="LearningPlanInfo.planProgram-generated" abstract="true" parent="BaseKuali.string">
-        <property name="name" value="planProgram"/>
-    </bean>
-
-
 	<bean id="LearningPlanInfo.descr-generated" abstract="true" parent="ComplexAttributeDefinition">
 		<property name="name" value="descr"/>
 		<property name="shortLabel" value="Descr"/>

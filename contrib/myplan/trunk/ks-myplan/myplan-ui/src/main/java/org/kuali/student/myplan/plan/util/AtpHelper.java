@@ -55,8 +55,6 @@ public class AtpHelper {
     public static final String PRIORITY_ONE_REGISTRATION_END = "priority_one_registration_end";
     public static final String LAST_ADD_DAY = "last_add_day";
 
-    public static enum TERMS {Autumn, Winter, Spring, Summer};
-
     private static transient AcademicCalendarService academicCalendarService;
 
     private static transient AcademicPlanService academicPlanService;
@@ -518,16 +516,6 @@ public class AtpHelper {
 
     public static boolean isAtpIdFormatValid(String atpId) {
         return atpId.matches(ATP_VALID_FORMAT);
-    }
-
-
-    /*Returns List of terms Available*/
-    public static List<String> getTerms() {
-        List<String> terms = new ArrayList<String>();
-        for (TERMS terms1 : TERMS.values()) {
-            terms.add(terms1.name());
-        }
-        return terms;
     }
 
 

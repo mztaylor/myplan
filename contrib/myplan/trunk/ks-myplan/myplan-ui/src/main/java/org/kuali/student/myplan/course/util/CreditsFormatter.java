@@ -3,7 +3,6 @@ package org.kuali.student.myplan.course.util;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.student.myplan.sampleplan.util.ItemCredits;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
@@ -129,43 +128,4 @@ public class CreditsFormatter {
     public static void setLrcService(LRCService lrcService) {
         CreditsFormatter.lrcService = lrcService;
     }
-
-    public static String addStringCredits(String newCredits, String totalCredits) {
-        int minCredits, maxCredits;
-        ItemCredits parsedNewCredits, parsedTotalCredits;
-        String sumCredits = null;
-
-        if (newCredits == null) {
-            return totalCredits;
-        }
-        if (totalCredits == null) {
-            return newCredits;
-        }
-
-        // must be able to add any of the following: "5", "5, 15", "5-15"
-        // add fixed credit + multiple : result is (fixed + multiple-min),  (fixed + multiple-max)
-        // add fixed credit + range    : result is (fixed + range-min)   -  (fixed + range-max)
-        // add range + multiple        : result is a range :  (multiple-min+range-min) - (multiple-max+range-max)
-
-        parsedNewCredits   = new ItemCredits(newCredits);
-        parsedTotalCredits = new ItemCredits(totalCredits);
-
-        // add the credits
-        minCredits =  parsedNewCredits.getMin() + parsedTotalCredits.getMin();
-        maxCredits =  parsedNewCredits.getMax() + parsedTotalCredits.getMax();
-
-        // format credits as needed.
-        if (parsedNewCredits.isRangeType() || parsedTotalCredits.isRangeType()) {
-            sumCredits = Integer.toString(minCredits) + "-" + Integer.toString(maxCredits);
-        }
-        else if (parsedNewCredits.isMultipleType() || parsedTotalCredits.isMultipleType()) {
-            sumCredits = Integer.toString(minCredits) + "," + Integer.toString(maxCredits);
-        }
-        else if (parsedNewCredits.isFixedType() && parsedTotalCredits.isFixedType()){
-            sumCredits = Integer.toString(minCredits);
-        }  // else, leave the string = null
-
-        return sumCredits;
-    }
-
 }

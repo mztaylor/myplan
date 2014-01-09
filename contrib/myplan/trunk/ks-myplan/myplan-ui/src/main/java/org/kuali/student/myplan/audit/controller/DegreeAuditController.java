@@ -358,10 +358,8 @@ public class DegreeAuditController extends UifControllerBase {
                             getAcademicPlanService().getLearningPlansForStudentByType(regid, LEARNING_PLAN_TYPE_PLAN,
                                     CONTEXT_INFO);
                     for (LearningPlanInfo learningPlan : learningPlanList) {
-                        /*LearningPlanInfo learningPlanInfo = getAcademicPlanService().copyLearningPlan(learningPlan.getId(),
-                                AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT, context);*/
                         LearningPlanInfo learningPlanInfo = getAcademicPlanService().copyLearningPlan(learningPlan.getId(),
-                                context);
+                                AcademicPlanServiceConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT, context);
                         String learningPlanInfoId = learningPlanInfo.getId();
 
                         savePlanItemSnapshots(form, learningPlanInfoId);

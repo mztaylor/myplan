@@ -103,7 +103,7 @@ public class DegreeAuditHelperTest {
         String suffix = "202";
         String credit = "5";       
 
-        addUpdatePlanItem("planItem1", versionId, PlanConstants.COURSE_TYPE, atpId, true);
+        addPlanItem("planItem1", versionId, PlanConstants.COURSE_TYPE, atpId, true);
 
         addCourseInfo(courseId, versionId, subject, suffix, credit, CourseAssemblerConstants.COURSE_RESULT_COMP_TYPE_CREDIT_FIXED);
 

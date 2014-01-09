@@ -18,7 +18,7 @@
 
     <groupId>org.kuali.student.myplan</groupId>
     <artifactId>ks-myplan</artifactId>
-    <version>1.8.0-SNAPSHOT</version>
+    <version>1.7.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Kuali Student MyPlan Module</name>
     <description>
@@ -60,7 +60,6 @@
             <modules>
                 <module>myplan-api</module>
                 <module>myplan-impl</module>
-                <module>myplan-sql</module>
                 <module>myplan-ui</module>
                 <module>myplan-web</module>
             </modules>
@@ -70,7 +69,6 @@
             <modules>
                 <module>myplan-api</module>
                 <module>myplan-impl</module>
-                <module>myplan-sql</module>
                 <module>myplan-ui</module>
                 <module>myplan-web</module>
             </modules>

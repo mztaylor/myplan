@@ -169,7 +169,7 @@ public class CourseSearchController extends UifControllerBase {
             return null;
 
         }
-        response.sendRedirect(String.format(COURSE_DETAILS_URL, courseId, getCourseHelper().getKeyForCourse(subject.trim(), number)));
+        response.sendRedirect(String.format(COURSE_DETAILS_URL, courseId, String.format("%s %s", subject.trim(), number)));
         return null;
     }
 
