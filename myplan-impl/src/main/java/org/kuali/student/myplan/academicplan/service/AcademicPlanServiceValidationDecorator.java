@@ -79,10 +79,10 @@ public class AcademicPlanServiceValidationDecorator
     }
 
     @Override
-    public LearningPlanInfo copyLearningPlan(String fromLearningPlanId, ContextInfo context)
+    public LearningPlanInfo copyLearningPlan(String fromLearningPlanId, String planTypeKey, ContextInfo context)
             throws AlreadyExistsException, DoesNotExistException, InvalidParameterException, MissingParameterException,
             OperationFailedException {
-        return getNextDecorator().copyLearningPlan(fromLearningPlanId, context);
+        return getNextDecorator().copyLearningPlan(fromLearningPlanId, planTypeKey, context);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class AcademicPlanServiceValidationDecorator
 
     @Override
     public List<ValidationResultInfo> validateLearningPlan(String validationType, LearningPlanInfo learningPlanInfo, ContextInfo context)
-            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, AlreadyExistsException {
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
 
         List<ValidationResultInfo> errors = null;
         try {
@@ -157,7 +157,7 @@ public class AcademicPlanServiceValidationDecorator
      * Data dictionary validation for LearningPlanInfo.
      */
     private void fullValidation(LearningPlanInfo learningPlanInfo, ContextInfo context)
-            throws DataValidationErrorException, OperationFailedException, InvalidParameterException, MissingParameterException, AlreadyExistsException {
+            throws DataValidationErrorException, OperationFailedException, InvalidParameterException, MissingParameterException {
 
         if (learningPlanInfo == null) {
             throw new MissingParameterException("learningPlanInfo was null.");
@@ -198,7 +198,7 @@ public class AcademicPlanServiceValidationDecorator
     @Override
     public LearningPlanInfo updateLearningPlan(String learningPlanId, LearningPlanInfo learningPlan, ContextInfo context)
             throws DataValidationErrorException, InvalidParameterException,
-            MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException, AlreadyExistsException {
+            MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException {
         fullValidation(learningPlan, context);
         return getNextDecorator().updateLearningPlan(learningPlanId, learningPlan, context);
     }

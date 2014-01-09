@@ -27,11 +27,6 @@ public class UserSessionHelperMockImpl implements UserSessionHelper {
     }
 
     @Override
-    public boolean isAdviserForManagePlan() {
-        return Boolean.valueOf(mockData.get("isAdviserManagePlan"));
-    }
-
-    @Override
     public boolean isStudent() {
         return !Boolean.valueOf(mockData.get("isAdviser"));
     }

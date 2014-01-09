@@ -21,10 +21,8 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.SearchHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
-import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
 import org.kuali.student.r2.core.search.dto.SearchResultInfo;
@@ -650,91 +648,6 @@ public class CourseHelperImpl implements CourseHelper {
             return courseCode1.getSubject().equals(courseCode2.getSubject()) && courseCode1.getNumber().equals(courseCode2.getNumber());
         }
         return false;
-    }
-
-    /**
-     * Course code seperated by a space is returned back.
-     * Eg: For Values COM,201 --> COM 201
-     * For Values COM,2xx --> COM 2xx
-     *
-     * @param courseCd
-     * @param suffix
-     * @return
-     */
-    @Override
-    public String getKeyForCourse(String courseCd, String suffix) {
-        return String.format("%s %s", courseCd, suffix);
-    }
-
-
-    @Override
-    public String getCourseIdForCode(String courseCd) {
-        if (StringUtils.isNotEmpty(courseCd)) {
-            DeconstructedCourseCode courseCode = getCourseDivisionAndNumber(courseCd);
-            if (courseCd != null && StringUtils.isNotEmpty(courseCode.getSubject()) && StringUtils.isNotEmpty(courseCode.getNumber())) {
-                return getCourseId(courseCode.getSubject(), courseCode.getNumber());
-            }
-        }
-        return null;
-    }
-
-
-    /**
-     * Validates course placeHolder
-     *
-     * @param courseCd
-     * @return
-     */
-    @Override
-    public ValidationResultInfo isValidCoursePlaceHolder(String courseCd) {
-        ValidationResultInfo validationResultInfo = null;
-        if (courseCd.matches(CourseSearchConstants.UNFORMATTED_COURSE_PLACE_HOLDER_REGEX)) {
-            DeconstructedCourseCode courseCode = getCourseDivisionAndNumber(courseCd);
-            /*Validate the subject in course placeholder*/
-            HashMap<String, String> divisionMap = fetchCourseDivisions();
-            ArrayList<String> divisions = new ArrayList<String>();
-            extractDivisions(divisionMap, courseCode.getSubject(), divisions, false);
-            if (CollectionUtils.isEmpty(divisions)) {
-                validationResultInfo = new ValidationResultInfo();
-                validationResultInfo.setMessage(PlanConstants.CURRIC_NOT_FOUND);
-            }
-        } else {
-            validationResultInfo = new ValidationResultInfo();
-            validationResultInfo.setMessage(PlanConstants.CURRIC_NOT_FOUND);
-        }
-        return validationResultInfo;
-    }
-
-
-    /**
-     * Validates placeHolders
-     * For Other PlaceHolder note is required
-     *
-     * @param placeHolderKey
-     * @return
-     */
-    @Override
-    public ValidationResultInfo isValidPlaceHolder(String placeHolderKey, String note) {
-        ValidationResultInfo validationResultInfo = null;
-        /*Validate the placeHolder*/
-        String[] placeHolder = placeHolderKey.split(PlanConstants.CODE_KEY_SEPARATOR);
-        if (org.springframework.util.StringUtils.isEmpty(placeHolder) || placeHolder.length != 2) {
-            validationResultInfo = new ValidationResultInfo();
-            validationResultInfo.setMessage(PlanConstants.ERROR_KEY_UNKNOWN_COURSE);
-        } else {
-            String placeHolderId = placeHolder[0];
-            String placeHolderType = placeHolder[1];
-            String placeHolderCd = EnumerationHelper.getEnumAbbrValForCodeByType(placeHolderId, placeHolderType);
-            if (org.springframework.util.StringUtils.isEmpty(placeHolderCd)) {
-                validationResultInfo = new ValidationResultInfo();
-                validationResultInfo.setMessage(PlanConstants.ERROR_KEY_UNKNOWN_COURSE);
-            }
-            if (PlanConstants.PLACE_HOLDER_OTHER_CODE.equals(placeHolderId) && org.springframework.util.StringUtils.isEmpty(note)) {
-                validationResultInfo = new ValidationResultInfo();
-                validationResultInfo.setMessage(PlanConstants.NOTE_REQUIRED);
-            }
-        }
-        return validationResultInfo;
     }
 
     protected CluService getLuService() {

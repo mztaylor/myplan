@@ -1219,7 +1219,7 @@ public class PlanController extends UifControllerBase {
                                 Map<String, String> subjectAreas = OrgHelper.getTrimmedSubjectAreas();
                                 addPlaceHolder = true;
                                 placeHolderType = PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL;
-                                placeHolderId = getCourseHelper().getKeyForCourse(divisions.get(0).trim(), number);
+                                placeHolderId = String.format("%s %s", divisions.get(0).trim(), number);
                                 placeHolderCd = placeHolderId;
                                 String subjectTitle = subjectAreas.get(courseCode.getSubject());
                                 String subjectLevel = courseCode.getNumber().toUpperCase().replace(CourseSearchConstants.COURSE_LEVEL_XX, CourseSearchConstants.COURSE_LEVEL_ZERO);
@@ -1697,7 +1697,7 @@ public class PlanController extends UifControllerBase {
                             ArrayList<String> divisions = new ArrayList<String>();
                             getCourseHelper().extractDivisions(divisionMap, subject, divisions, false);
                             if (divisions.size() > 0) {
-                                planItemInfo.setRefObjectId(getCourseHelper().getKeyForCourse(divisions.get(0).trim(), number));
+                                planItemInfo.setRefObjectId(String.format("%s %s", divisions.get(0).trim(), number));
                                 planItemInfo.setRefObjectType(PlanConstants.PLACE_HOLDER_TYPE_COURSE_LEVEL);
                                 String subjectLevel = number.toUpperCase().replace(CourseSearchConstants.COURSE_LEVEL_XX, CourseSearchConstants.COURSE_LEVEL_ZERO);
                                 if (!getCourseHelper().isValidCourseLevel(courseCode.getSubject(), subjectLevel)) {

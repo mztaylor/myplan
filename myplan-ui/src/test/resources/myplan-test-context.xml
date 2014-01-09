@@ -155,9 +155,6 @@
     <!-- UW's Implementation of User Session Helper -->
     <bean id="userSessionHelper" class="edu.uw.kuali.student.myplan.util.mock.UserSessionHelperMockImpl"/>
 
-    <!-- UW's Implementation of StatementService -->
-    <bean id="statementService" class="org.kuali.student.myplan.service.mock.StatementServiceMockImpl"/>
-
     <bean id="commentHelper" class="edu.uw.kuali.student.myplan.util.CommentHelperImpl">
         <property name="commentService" ref="commentServiceImpl"/>
         <property name="mailService" ref="mailServiceImpl"/>
@@ -196,19 +193,6 @@
         <property name="userSessionHelper" ref="userSessionHelper"/>
         <property name="plannedTermsHelper" ref="plannedTermsHelper"/>
     </bean>
-
-    <bean id="samplePlanController" class="org.kuali.student.myplan.sampleplan.controller.SamplePlanController">
-        <!--<property name="person" ref="personimpl"/>-->
-        <property name="academicPlanService" ref="academicPlanService"/>
-        <property name="courseHelper" ref="courseHelper"/>
-        <property name="commentService" ref="commentServiceImpl"/>
-        <property name="userSessionHelper" ref="userSessionHelper"/>
-        <property name="planHelper" ref="planHelper"/>
-        <property name="programService" ref="programService"/>
-        <property name="statementService" ref="statementService"/>
-    </bean>
-
-    <bean id="programService" class="org.kuali.student.myplan.service.mock.ProgramServiceMockImpl"/>
 
     <bean name="plannedTermsHelper" class="org.kuali.student.myplan.plan.service.PlannedTermsHelperBase">
         <property name="academicPlanService" ref="academicPlanService"/>

@@ -824,7 +824,7 @@ public class UwCourseOfferingServiceImpl implements CourseOfferingService {
 
             CourseService courseService = getCourseService();
             String courseVersionId = getCourseHelper().getCourseVersionIdByTerm(id, termId);
-            CourseInfo courseInfo = getCourseHelper().getCourseInfoByIdAndCd(courseVersionId, getCourseHelper().getKeyForCourse(curric, num));
+            CourseInfo courseInfo = getCourseHelper().getCourseInfoByIdAndCd(courseVersionId, String.format("%s %s", curric, num));
 
             String response = studentServiceClient.getCurriculumForSubject(year, quarter, curric);
             int count = Integer.parseInt(offeringServiceUtils.newXPath("//s:SearchResults/s:TotalCount").selectSingleNode(offeringServiceUtils.newDocument(response)).getText());

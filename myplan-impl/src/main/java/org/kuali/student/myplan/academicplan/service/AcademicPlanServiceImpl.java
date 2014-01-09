@@ -16,6 +16,7 @@ import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
 import org.kuali.student.myplan.academicplan.model.*;
+import org.kuali.student.myplan.util.DegreeAuditAtpHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
@@ -24,13 +25,12 @@ import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.infc.Attribute;
 import org.kuali.student.r2.common.infc.ValidationResult;
 import org.kuali.student.r2.core.atp.service.AtpService;
-import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
 import org.kuali.student.r2.core.search.dto.SearchResultInfo;
 import org.kuali.student.r2.core.search.infc.SearchResultCell;
 import org.kuali.student.r2.core.search.infc.SearchResultRow;
-import org.kuali.student.r2.core.search.service.SearchManager;
 import org.kuali.student.r2.lum.clu.service.CluService;
+import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.service.CourseService;
 import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
 import org.kuali.student.r2.lum.util.constants.CourseServiceConstants;
@@ -56,7 +56,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     private AtpService atpService;
     private CluService luService;
     private PersonService personService;
-    private SearchManager searchManager;
 
     /**
      * This method provides a way to manually provide a CourseService implementation during testing.
@@ -133,14 +132,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     public void setLearningPlanTypeDao(LearningPlanTypeDao learningPlanTypeDao) {
         this.learningPlanTypeDao = learningPlanTypeDao;
-    }
-
-    public SearchManager getSearchManager() {
-        return searchManager;
-    }
-
-    public void setSearchManager(SearchManager searchManager) {
-        this.searchManager = searchManager;
     }
 
     @Override
@@ -225,20 +216,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public List<PlanItemInfo> getPlanItemsInPlanByAtpAndRefObjType(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "atpKey") String atpKey, @WebParam(name = "refObjectType") String refObjectType, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        List<PlanItemEntity> planItemsList = planItemDao.getLearningPlanItemsByRefObjectType(learningPlanId, refObjectType);
-
-        List<PlanItemInfo> planItemDtos = new ArrayList<PlanItemInfo>();
-        for (PlanItemEntity pie : planItemsList) {
-            if (pie.getPlanPeriods().contains(atpKey)) {
-                planItemDtos.add(pie.toDto());
-            }
-        }
-
-        return planItemDtos;
-    }
-
-    @Override
     public List<PlanItemInfo> getPlanItemsInPlanByRefObjectIdByRefObjectType(@WebParam(name = "learningPlanId") String learningPlanId,
                                                                              @WebParam(name = "refObjectId") String refObjectId,
                                                                              @WebParam(name = "refObjectType") String refObjectType,
@@ -290,24 +267,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
-    public List<LearningPlanInfo> getLearningPlansForPlanProgramByType(@WebParam(name = "name") String planProgram,
-                                                                       @WebParam(name = "planTypeKey") String planTypeKey,
-                                                                       @WebParam(name = "context") ContextInfo context)
-            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        List<LearningPlanEntity> lpeList = learningPlanDao.getLearningPlansByTypeAndProgram(planProgram, planTypeKey);
-        List<LearningPlanInfo> learningPlanDtos = new ArrayList<LearningPlanInfo>();
-        for (LearningPlanEntity lpe : lpeList) {
-            learningPlanDtos.add(lpe.toDto());
-        }
-        Collections.sort(learningPlanDtos, new Comparator<LearningPlanInfo>() {
-            public int compare(LearningPlanInfo lp1, LearningPlanInfo lp2) {
-                return lp1.getMeta().getUpdateTime().compareTo(lp2.getMeta().getUpdateTime());
-            }
-        });
-        return learningPlanDtos;
-    }
-
-    @Override
     @Transactional
     public LearningPlanInfo createLearningPlan(@WebParam(name = "learningPlan") LearningPlanInfo learningPlan,
                                                @WebParam(name = "context") ContextInfo context)
@@ -327,9 +286,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         return learningPlanDao.find(lpe.getId()).toDto();
     }
 
-
-
-   // @Override
+    @Override
     @Transactional
     public LearningPlanInfo copyLearningPlan(@WebParam(name = "learningPlanId") String fromLearningPlanId,
                                              @WebParam(name = "planTypeKey") String planTypeKey,
@@ -387,68 +344,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         return learningPlanDao.find(newLearningPlan.getId()).toDto();
     }
 
-    /*   copyLearningPlan
-     * @param fromLearningPlanId - the id of the existing learning plan to duplicate
-     * @param context - a ContextInfo. we only use the principalId.
-     *
-     * copy an existing learning plan, that is, make a dupe of it.
-     *
-     */
-     // if we finish Sample Plan:
-     //     we can delete the version of  copyLearningPlan() above,
-    //      change degreeAudit to call this new version
-    //      move the degreeAudit specific code back to degreeAudit somewhere,
-    //          ie., the code that create the dynamic  attributes.
-
-    @Override
-    @Transactional
-    public LearningPlanInfo copyLearningPlan(@WebParam(name = "learningPlanId") String fromLearningPlanId,
-                                             @WebParam(name = "context") ContextInfo context)
-            throws AlreadyExistsException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-
-        //  Get the learningPlanInfo for the given learningPlanId
-        LearningPlanEntity lpe = learningPlanDao.find(fromLearningPlanId);
-        if (null == lpe) {
-            throw new DoesNotExistException(fromLearningPlanId);
-        }
-        LearningPlanInfo dto = lpe.toDto();
-
-        //  Creating a new LearningPlanEntity from above learningPLanInfo with new PlanTypeKey
-        LearningPlanEntity newLearningPlan = populateLearningPlanEntity(dto, context);
-        LearningPlanEntity alreadyExisting = learningPlanDao.find(newLearningPlan.getId());
-        if (alreadyExisting != null) {
-            throw new AlreadyExistsException();
-        }
-
-        //  Create a copy of learningPlan
-        learningPlanDao.persist(newLearningPlan);
-
-        // copy all the planItems
-        int nbrUpdates = 0;
-        List<PlanItemEntity> planItems = planItemDao.getLearningPlanItems(fromLearningPlanId);
-        for (PlanItemEntity pie : planItems) {
-            if (AcademicPlanServiceConstants.SECTION_TYPE.equals(pie.getRefObjectTypeKey()) ||
-                // if we finish Sample Plan:
-                // need to handle more types, esp uw.cluset.type.course.level which is used for CHEM 3xx
-                AcademicPlanServiceConstants.COURSE_TYPE.equals(pie.getRefObjectTypeKey())) {
-                PlanItemInfo planItemInfo = pie.toDto();
-                planItemInfo.setLearningPlanId(newLearningPlan.getId());
-                PlanItemEntity planItemEntity = populatePlanItemEntity(planItemInfo, context);
-                //  Save the new plan item.
-                planItemDao.persist(planItemEntity);
-                nbrUpdates++;
-            }
-        }
-        // update the learningPlan
-        if (nbrUpdates > 0) {
-            newLearningPlan.setUpdateId(context.getPrincipalId());
-            newLearningPlan.setUpdateTime(new Date());
-            learningPlanDao.update(newLearningPlan);
-        }
-
-        return learningPlanDao.find(newLearningPlan.getId()).toDto();
-    }
-
 
     @Override
     @Transactional
@@ -484,7 +379,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                                                @WebParam(name = "learningPlan") LearningPlanInfo learningPlan,
                                                @WebParam(name = "context") ContextInfo context)
             throws DataValidationErrorException, InvalidParameterException,
-            MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException, AlreadyExistsException {
+            MissingParameterException, OperationFailedException, PermissionDeniedException, DoesNotExistException {
 
         LearningPlanEntity lpe = learningPlanDao.find(learningPlanId);
         if (lpe == null) {
@@ -492,11 +387,8 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         }
 
         lpe.setStudentId(learningPlan.getStudentId());
-        // if we finish Sample Plan:
-        // need to make sure these 3 lines work.
         lpe.setDescr(new LearningPlanRichTextEntity(learningPlan.getDescr()));
-        lpe.setPlanProgram(learningPlan.getName());
-        lpe.setPlanProgram(learningPlan.getPlanProgram());
+
 
         lpe.setAttributes(new HashSet<LearningPlanAttributeEntity>());
         if (null != learningPlan.getAttributes()) {
@@ -715,7 +607,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     public List<ValidationResultInfo> validateLearningPlan(@WebParam(name = "validationType") String validationType,
                                                            @WebParam(name = "learningPlanInfo") LearningPlanInfo learningPlanInfo,
                                                            @WebParam(name = "context") ContextInfo context)
-            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, AlreadyExistsException {
+            throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return new ArrayList<ValidationResultInfo>();
     }
 
@@ -924,9 +816,6 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
                 lpe.getAttributes().add(attEntity);
             }
         }
-        lpe.setState(learningPlan.getStateKey());
-        lpe.setName(learningPlan.getName());
-        lpe.setPlanProgram(learningPlan.getPlanProgram());
         return lpe;
     }
 
@@ -1070,21 +959,5 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
     public void setPersonService(PersonService personService) {
         this.personService = personService;
-    }
-
-    @Override
-    public List<TypeInfo> getSearchTypes(@WebParam(name = "contextInfo") ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public TypeInfo getSearchType(@WebParam(name = "searchTypeKey") String searchTypeKey, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public SearchResultInfo search(SearchRequestInfo searchRequestInfo, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws MissingParameterException, InvalidParameterException, OperationFailedException, PermissionDeniedException {
-
-        return searchManager.search(searchRequestInfo, contextInfo);
     }
 }

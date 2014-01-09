@@ -67,16 +67,6 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
     <!-- insert any overrides to the generated attribute definitions here -->
     </bean>
 
-    <bean id="LearningPlanInfo.name" parent="LearningPlanInfo.name-parent"/>
-    <bean id="LearningPlanInfo.name-parent" abstract="true" parent="LearningPlanInfo.name-generated">
-        <!-- insert any overrides to the generated attribute definitions here -->
-    </bean>
-
-    <bean id="LearningPlanInfo.planProgram" parent="LearningPlanInfo.planProgram-parent"/>
-    <bean id="LearningPlanInfo.planProgram-parent" abstract="true" parent="LearningPlanInfo.planProgram-generated">
-        <!-- insert any overrides to the generated attribute definitions here -->
-    </bean>
-
 	<bean id="LearningPlanInfo.descr" parent="LearningPlanInfo.descr-parent"/>
 	<bean id="LearningPlanInfo.descr-parent" abstract="true" parent="LearningPlanInfo.descr-generated">
 	<!-- insert any overrides to the generated attribute definitions here -->

@@ -32,15 +32,6 @@ public class LearningPlanEntity extends MetaEntity
     @Column(name = "SHARED")
     private Boolean shared;
 
-    @Column(name = "STATE")
-    private String state;
-
-    @Column(name = "NAME")
-    private String name;
-
-    @Column(name = "PLAN_PROGRAM")
-    private String planProgram;
-
     public LearningPlanEntity() {
         super();
     }
@@ -87,30 +78,6 @@ public class LearningPlanEntity extends MetaEntity
         this.shared = shared;
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPlanProgram() {
-        return planProgram;
-    }
-
-    public void setPlanProgram(String planProgram) {
-        this.planProgram = planProgram;
-    }
-
     @Override
     public String toString() {
         return String.format("LearningPlan [%s, %s]: %s", this.getId(), this.getObjectId(), this.getDescr().getPlain());
@@ -118,7 +85,6 @@ public class LearningPlanEntity extends MetaEntity
 
     /**
      * Provides and data transfer object representation of the plan.
-     *
      * @return LearningPlanInfo
      */
     public LearningPlanInfo toDto() {
@@ -143,9 +109,7 @@ public class LearningPlanEntity extends MetaEntity
             }
         }
         dto.setAttributes(attributes);
-        dto.setStateKey(this.state);
-        dto.setPlanProgram(this.planProgram);
-        dto.setName(this.name);
+
         return dto;
     }
 

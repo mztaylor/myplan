@@ -6,16 +6,10 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
-import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
-import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
-import org.kuali.student.r2.core.search.dto.SearchResultInfo;
-import org.kuali.student.r2.core.search.infc.SearchResultCell;
-import org.kuali.student.r2.core.search.infc.SearchResultRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -108,13 +102,6 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
         }
 
-        /*TODO: REMOVE THIS TEST*/
-        try {
-
-        } catch (Exception e) {
-            logger.error("version verified Id retrieval failed", e);
-        }
-        /******************************************************************************************************************************/
 
         List<PlannedTerm> perfectPlannedTerms = PlannedTermsHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList, recommendedCoursesList, studentCourseRecordInfos, focusAtpId, 6, false);
         return perfectPlannedTerms;

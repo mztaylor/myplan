@@ -24,7 +24,6 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String PLACE_HOLDER_OTHER_CODE = "uw.academicplan.placeholder.other";
 
     public static final String CODE_KEY_SEPARATOR = "\\|";
-    public static final String PLACEHOLDER_KEY_SEPARATOR = "|";
 
 
     // CRUD operations positive feedback.
