@@ -35,6 +35,11 @@
                 </property>
             </bean>
         </property>
+        <property name="additionalScriptFiles">
+            <list merge="true">
+                <value>themes/ksap/scripts/ksap.widgets.js</value>
+            </list>
+        </property>
     </bean>
 
     <bean id="course_details_section" parent="KSAP-VerticalBoxGroup" p:width="710px">
@@ -69,7 +74,7 @@
                 }
             }).on('PLAN_ITEM_DELETED', function(event, data){
                 if (data.planItemType === 'wishlist' &amp;&amp; data.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
-                    restoreDetailsBookmarkButton(data.courseId);
+                    restoreDetailsBookmarkButton(data);
                 }
             });
         "/>
@@ -127,9 +132,9 @@
                                               p:messageText="Advisers are unable to add or bookmark courses and sections. [0]">
                                             <property name="inlineComponents">
                                                 <list>
-                                                    <bean parent="Uif-Link" p:linkText="Learn more about Adviser View.">
+                                                    <bean parent="Uif-Link" p:linkText="Learn more about Adviser View." p:target="_blank">
                                                         <property name="href"
-                                                                  value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
+                                                                  value="https://depts.washington.edu/myplan/adviser-help/#view"/>
                                                     </bean>
                                                 </list>
                                             </property>
@@ -1086,33 +1091,7 @@
                                     	createLightBoxLink(jQuery(this).attr('id'), {helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, false);
                                     });
                                     jQuery('body').on('SECTION_ITEM_ADDED', function(event, data){
-                                        var link = jQuery('&lt;a/&gt;').text('Added').attr({
-                                            'href': 'inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=' + data.atpId,
-                                            'title': data.SectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.',
-                                            'data-courseid': data.courseId,
-                                            'data-coursesection': data.SectionCode,
-                                            'data-primary': data.Primary,
-                                            'data-planned': true,
-                                            'data-primarysection': data.PrimarySectionCode
-                                        });
-                                        jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).parents('tr').addClass('courseActivities--planned');
-                                        actionFeedback('button_' + data.atpId + '_' + data.RegistrationCode, true, 'button_' + data.atpId + '_' + data.RegistrationCode, null, link);
-                                        if (data.ItemsToUpdate != null) {
-                                            var items = data.ItemsToUpdate.split(',');
-                                            jQuery.each(items, function (index, value) {
-                                                var primaryLink = jQuery('&lt;a/&gt;').text('Added').attr({
-                                                    'href': 'inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=' + data.atpId,
-                                                    'title': data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.',
-                                                    'data-courseid': data.courseId,
-                                                    'data-coursesection': data.PrimarySectionCode,
-                                                    'data-primary': true,
-                                                    'data-planned': true,
-                                                    'data-primarysection': data.PrimarySectionCode
-                                                });
-                                                jQuery('#button_' + data.atpId + '_' + items[index]).parents('tr').addClass('courseActivities--planned');
-                                                actionFeedback('button_' + data.atpId + '_' + items[index], true, 'button_' + data.atpId + '_' + items[index], null, primaryLink);
-                                            });
-                                        }
+                                        addSectionAddedLink(data);
                                     });
                             getActivityEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}', 'courseCd':'@{dataObject.courseSummaryDetails.code}'});
                                 "/>

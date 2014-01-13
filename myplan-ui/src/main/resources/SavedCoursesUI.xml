@@ -129,9 +129,15 @@
                     <list>
                         <bean parent="Uif-Link">
                             <property name="linkText"
+                                      value="View full list in detail"/>
+                            <property name="title"
+                                      value="View full list in detail"/>
+                            <!--
+                            <property name="linkText"
                                       value="View @{(lookupResults eq null or lookupResults.size() lt 2) ? 'course' : 'all '+lookupResults.size()+' courses'} in full details"/>
                             <property name="title"
                                       value="View @{(lookupResults eq null or lookupResults.size() lt 2) ? 'course' : 'all '+lookupResults.size()+' courses'} in full details"/>
+                            -->
                             <property name="href"
                                       value="lookup?methodToCall=search&amp;viewId=SavedCoursesDetail-LookupView"/>
                         </bean>
@@ -382,9 +388,9 @@
                       p:messageText="Advisers are unable to edit bookmarked courses. [0]">
                     <property name="inlineComponents">
                         <list>
-                            <bean parent="Uif-Link" p:linkText="Learn more about Adviser View.">
+                            <bean parent="Uif-Link" p:linkText="Learn more about Adviser View." p:target="_blank">
                                 <property name="href"
-                                          value="javascript:openHelpWindow('https://depts.washington.edu/myplan/adviser-help/#view');"/>
+                                          value="https://depts.washington.edu/myplan/adviser-help/#view"/>
                             </bean>
                         </list>
                     </property>

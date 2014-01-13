@@ -263,7 +263,7 @@ function editNote(obj, e) {
     var atpId = obj.data("atpid");
     var planItemType = obj.data("planitemtype");
     var backupFlag = (planItemType == "backup");
-    jQuery("#" + planItemType + "_" + atpId + "_" + planItemId + "_note").HideBubblePopup();
+    jQuery("#" + planItemType + "-" + atpId + "-" + planItemId + "-note").HideBubblePopup();
     var retrieveData = {
         action: 'plan',
         viewId: 'PlannedCourse-FormView',

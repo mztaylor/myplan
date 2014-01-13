@@ -298,8 +298,8 @@
                     <property name="inlineComponents">
                         <list>
                             <bean parent="Uif-Link" p:linkText="Some programs are not included"
-                                  p:style="text-decoration:underline;"
-                                  p:href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#855');"/>
+                                  p:style="text-decoration:underline;" p:target="_blank"
+                                  p:href="http://depts.washington.edu/myplan/help-site/#855"/>
                         </list>
                     </property>
                 </bean>

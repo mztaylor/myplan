@@ -448,7 +448,7 @@ function planItemTemplate(data) {
             "class": "planItem__note uif-boxLayoutHorizontalItem uif-tooltip"
         }).append(image.clone());
         itemGroup.append(note);
-        var decoded = jQuery("<div/>").html(data.note).text();
+        var decoded = data.note.replace(/&lt;br\/&gt;/g, '<br/>');; //jQuery("<div/>").html(data.note).text();
         var popoverTheme = "note";
         var editNote = "<p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId + " onclick=editNote(jQuery(this),event);>Edit Note</a></p>";
 
@@ -498,11 +498,14 @@ function updatePlanItem(data) {
 }
 function updateNote(data) {
     var noteId = data.planItemType + "-" + data.atpId + "-" + data.planItemId + "-note";
+    jQuery("#" + noteId).SetBubblePopupInnerHtml("<p>" + data.note + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId + " onclick=editNote(jQuery(this),event);>Edit Note</a></p>", true);
+    /*
     jQuery("#" + noteId).off();
     var createTooltip = "createTooltip('" + noteId + "', ' <p>" + data.note + "</p><p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId + " onclick=editNote(jQuery(this),event);>Edit Note</a></p> ', {position:'top',align:'left',alwaysVisible:false,tail:{align:'left',hidden:false},themePath:'../themes/ksap/images/popover-theme/',themeName:'note',selectable:true,width:'250px',openingSpeed:50,closingSpeed:50,openingDelay:500,closingDelay:0,themeMargins:{total:'17px',difference:'10px'},distance:'0px'},true,true);";
     var noteScript = jQuery("input[data-for='" + noteId + "'][data-role='script']")[0];
     jQuery(noteScript).attr("name", "script").removeAttr("script").val(createTooltip);
     evalHiddenScript(jQuery(noteScript));
+    */
 }
 /*
  #################################################################
@@ -572,7 +575,7 @@ function updateCredits(atpId, termCredits) {
     });
 }
 
-function actionFeedback(targetId, needsParent, replacementId, cssClasses, replacementHtml) {
+function actionFeedback(targetId, needsParent, replacementId, cssClasses, replacementHtml, ignoreDecode) {
     jQuery("#" + targetId).fadeOut(250, function() {
         if (needsParent) {
             var container = jQuery("<div />").attr({
@@ -586,7 +589,12 @@ function actionFeedback(targetId, needsParent, replacementId, cssClasses, replac
             targetId = replacementId;
         }
         if (cssClasses) jQuery("#" + targetId).addClass(cssClasses);
-        var decoded = jQuery("<div/>").html(replacementHtml).text();
+        var decoded;
+        if (ignoreDecode) {
+            decoded = replacementHtml;
+        } else {
+            decoded = jQuery("<div/>").html(replacementHtml).text();
+        }
         jQuery("#" + targetId).html(decoded).fadeIn(250);
     });
 }
@@ -605,6 +613,7 @@ function restoreSearchAddButton(data) {
         "src": getConfigParam("ksapImageLocation") + "pixel.gif",
         "class": "courseResults__itemAdd",
         "data-courseid": data.courseId,
+        "data-coursecd": data.courseCd,
         "onclick": "openMenu('" + data.courseId + "_add','add_course_items',null,event,null,'popover__menu popover__menu--small',{tail:{align:'middle'},align:'middle',position:'right'},false);"
     });
     jQuery(oNodes).find("#" + data.courseId + "_" + data.subject + "_" + data.number + "_status").fadeOut(250, function () {
@@ -617,23 +626,53 @@ function restoreSearchAddButton(data) {
  Function: restore add button for saving courses on course details
  #################################################################
  */
-function restoreDetailsBookmarkButton(courseId) {
+function restoreDetailsBookmarkButton(data) {
     var button = jQuery("<button />").attr({
-        "id": courseId + "_addSavedCourse",
+        "id": data.courseId + "_addSavedCourse",
         "class": "btn btn-secondary uif-boxLayoutHorizontalItem",
-        "data-onclick": "e.preventDefault();if(jQuery(this).hasClass('disabled')){ return false; } var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:'" + courseId + "'}; submitHiddenForm('plan', additionalFormData, e);",
+        "data-onclick": "e.preventDefault();if(jQuery(this).hasClass('disabled')){ return false; } var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:'" + data.courseId + "', code:'" + data.courseCd + "'}; submitHiddenForm('plan', additionalFormData, e);",
         "data-loadingmessage": "Loading...",
         "data-cleardirtyonaction": "false",
         "data-dirtyonaction": "false",
         "data-disableblocking": "false",
         "data-ajaxsubmit": "true",
-        "data-submit_data": "{&quot;focusId&quot;:&quot;" + courseId + "_addSavedCourse&quot;,&quot;jumpToId&quot;:&quot;" + courseId + "_addSavedCourse&quot;}",
+        "data-submit_data": "{&quot;focusId&quot;:&quot;" + data.courseId + "_addSavedCourse&quot;,&quot;jumpToId&quot;:&quot;" + data.courseId + "_addSavedCourse&quot;}",
         "data-validate": "false"
     }).html("Bookmark Course");
-    jQuery("#" + courseId + "_bookmarked").fadeOut(250, function (){
+    jQuery("#" + data.courseId + "_bookmarked").fadeOut(250, function (){
         jQuery(this).replaceWith(button);
-        jQuery("#" + courseId + "_addSavedCourse").fadeIn(250);
+        jQuery("#" + data.courseId + "_addSavedCourse").fadeIn(250);
     });
+}
+
+function addSectionAddedLink(data) {
+    var link = jQuery('<a/>').text('Added').attr({
+        'href': 'inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=' + data.atpId,
+        'title': data.SectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.',
+        'data-courseid': data.courseId,
+        'data-coursesection': data.SectionCode,
+        'data-primary': data.Primary,
+        'data-planned': true,
+        'data-primarysection': data.PrimarySectionCode
+    });
+    jQuery('#button_' + data.atpId + '_' + data.RegistrationCode).parents('tr').addClass('courseActivities--planned');
+    actionFeedback('button_' + data.atpId + '_' + data.RegistrationCode, true, 'button_' + data.atpId + '_' + data.RegistrationCode, null, link[0].outerHTML, true);
+    if (data.ItemsToUpdate != null) {
+        var items = data.ItemsToUpdate.split(',');
+        jQuery.each(items, function (index, value) {
+            var primaryLink = jQuery('<a/>').text('Added').attr({
+                'href': 'inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=' + data.atpId,
+                'title': data.PrimarySectionCode + ' is added. To delete or move, go to ' + data.termName + ' Plan.',
+                'data-courseid': data.courseId,
+                'data-coursesection': data.PrimarySectionCode,
+                'data-primary': true,
+                'data-planned': true,
+                'data-primarysection': data.PrimarySectionCode
+            });
+            jQuery('#button_' + data.atpId + '_' + items[index]).parents('tr').addClass('courseActivities--planned');
+            actionFeedback('button_' + data.atpId + '_' + items[index], true, 'button_' + data.atpId + '_' + items[index], null, primaryLink[0].outerHTML, true);
+        });
+    }
 }
 
 function toggleSectionAction(actionId, regId, action, data, primaryPlan) {

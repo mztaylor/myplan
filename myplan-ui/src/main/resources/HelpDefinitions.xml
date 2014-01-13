@@ -22,7 +22,7 @@
     <bean id="quarter_facet_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
             <bean parent="KSAP-TooltipLeft"
-                  p:tooltipContent="Projected courses indicate which quarter the course might be offered next. Contact the department for verification. Scheduled courses appear in the current Time Schedule. &lt;br&gt; &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#820&quot;);&gt;Learn more&lt;/a&gt;"/>
+                  p:tooltipContent="Projected courses indicate which quarter the course might be offered next. Contact the department for verification. Scheduled courses appear in the current Time Schedule. &lt;br&gt; &lt;a target=_blank href=http://depts.washington.edu/myplan/help-site/#820&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
@@ -30,7 +30,7 @@
     <bean id="bookmarks_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
             <bean parent="KSAP-TooltipRight"
-                  p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you&#39;ve added it to your Plan or deleted it. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#821&quot;);&gt;Learn more&lt;/a&gt;"/>
+                  p:tooltipContent="Bookmark a course to save it for future planning. The course remains in your bookmarks until you&#39;ve added it to your Plan or deleted it. &lt;a target=_blank href=http://depts.washington.edu/myplan/help-site/#821&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
@@ -38,14 +38,14 @@
     <bean id="recent_degree_audits_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
             <bean parent="KSAP-TooltipRight"
-                  p:tooltipContent="Recent Degree Audits (DARS) displays the last seven Degree Audits run through MyPlan. Degree Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#822&quot;);&gt;Learn more&lt;/a&gt;"/>
+                  p:tooltipContent="Recent Degree Audits (DARS) displays the last seven Degree Audits run through MyPlan. Degree Audits are cleared at the end of each quarter. &lt;a target=_blank href=http://depts.washington.edu/myplan/help-site/#822&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
     <bean id="recent_plan_audits_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
             <bean parent="KSAP-TooltipRight"
-                  p:tooltipContent="Recent Plan Audits displays up to the last seven Plan Audits run in MyPlan. Plan Audits are cleared at the end of each quarter. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#822&quot;);&gt;Learn more&lt;/a&gt;"/>
+                  p:tooltipContent="Recent Plan Audits displays up to the last seven Plan Audits run in MyPlan. Plan Audits are cleared at the end of each quarter. &lt;a target=_blank href=http://depts.washington.edu/myplan/help-site/#822&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
@@ -68,7 +68,7 @@
     <bean id="planned_help_icon" parent="KSAP-HelpImage" p:render="@{#line.displayPlannedHelp}">
         <property name="toolTip">
             <bean parent="KSAP-TooltipLeft"
-                  p:tooltipContent="MyPlan allows you to add courses to your plan, but does not register you. Check the Time Schedule each quarter to verify whether your planned courses will be offered. &lt;a href=javascript:openHelpWindow(&quot;http://depts.washington.edu/myplan/help-site/#825&quot;);&gt;Learn more&lt;/a&gt;"/>
+                  p:tooltipContent="MyPlan allows you to add courses to your plan, but does not register you. Check the Time Schedule each quarter to verify whether your planned courses will be offered. &lt;a target=_blank href=http://depts.washington.edu/myplan/help-site/#825&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
@@ -90,7 +90,7 @@
         <property name="toolTip">
             <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="&lt;strong&gt;Prerequisite&lt;/strong&gt; - a course that must be completed satisfactorily before you can take the course in question. &lt;/br&gt; &lt;/br&gt;
-                                    &lt;strong&gt;Co-requisite&lt;/strong&gt; - a course that must be taken at the same time as the course in question.Co-requisites are sometimes listed in the Time Schedule as &quot;concurrent registration required in....&quot;"/>
+                                    &lt;strong&gt;Co-requisite&lt;/strong&gt; - a course that must be taken at the same time as the course in question. Co-requisites are sometimes listed in the Time Schedule as &quot;concurrent registration required in...&quot;"/>
         </property>
     </bean>
 
@@ -98,7 +98,7 @@
         <property name="toolTip">
             <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="Projected courses indicate which quarter the course might be offered next. Contact the department for verification. Scheduled courses appear in the current Time Schedule. &lt;br&gt;
-                                    &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site#820');&gt;Learn more&lt;/a&gt;"/>
+                                    &lt;a target=_blank href=http://depts.washington.edu/myplan/help-site#820&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
@@ -108,7 +108,7 @@
                   p:tooltipContent="&lt;strong&gt;Variable Credits&lt;/strong&gt; &lt;/br&gt;
                                     &lt;strong&gt;(1-5)-&lt;/strong&gt; You can enroll for any number of credits in the range that's given. These are typically independent study courses that you and the professor decide on the number of credits.&lt;/br&gt;&lt;/br&gt;
                                     &lt;strong&gt;(3/5) -&lt;/strong&gt; A course you can enroll in for either 3 or 5 credits.&lt;/br&gt;
-                                    &lt;/br&gt; &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#823');&gt;Learn more about credits&lt;/a&gt;"/>
+                                    &lt;/br&gt; &lt;a target=_blank href=http://depts.washington.edu/myplan/help-site/#823&gt;Learn more about credits&lt;/a&gt;"/>
         </property>
     </bean>
 
@@ -123,7 +123,7 @@
                                     &lt;strong&gt;I&amp;S&lt;/strong&gt; - Individuals and Societies&lt;/br&gt;
                                     &lt;strong&gt;NW&lt;/strong&gt; - Natural World&lt;/br&gt;
                                     &lt;strong&gt;None&lt;/strong&gt; - Does not count towards General Education Requirements&lt;/br&gt;
-                                    &lt;/br&gt; &lt;a target=_blank href=&quot;http://www.washington.edu/uaa/advising/degreeplanning/gereqs.php&quot;&gt;Learn More on the UAA Advising Website&lt;/a&gt;"/>
+                                    &lt;/br&gt; &lt;a target=_blank href=http://www.washington.edu/uaa/advising/degreeplanning/gereqs.php&gt;Learn More on the UAA Advising Website&lt;/a&gt;"/>
         </property>
     </bean>
 
@@ -142,7 +142,7 @@
                   &lt;strong&gt;OTHER&lt;/strong&gt; = additional information for each section&lt;/br&gt;
                   &lt;strong&gt;PCE&lt;/strong&gt; = UW Professional &amp; Continuing Education&lt;/br&gt;
                   &lt;/br&gt;
-                  &lt;a href=javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#1308');&gt;Learn more about section details.&lt;/a&gt;
+                  &lt;a target=_blank href=http://depts.washington.edu/myplan/help-site/#1308&gt;Learn more about section details.&lt;/a&gt;
                   "/>
         </property>
     </bean>

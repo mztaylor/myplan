@@ -384,8 +384,8 @@
                     <property name="inlineComponents">
                         <list>
                             <bean parent="Uif-Link" p:linkText="Some programs are not included"
-                                  p:style="text-decoration:underline;"
-                                  p:href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#855');"/>
+                                  p:style="text-decoration:underline;" p:target="_blank"
+                                  p:href="http://depts.washington.edu/myplan/help-site/#855"/>
                         </list>
                     </property>
                 </bean>
@@ -577,8 +577,8 @@
                             </property>
                             <property name="inlineComponents">
                                 <list>
-                                    <bean parent="Uif-Link" p:linkText="Learn more."
-                                          p:href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/')"/>
+                                    <bean parent="Uif-Link" p:linkText="Learn more." p:target="_blank"
+                                          p:href="http://depts.washington.edu/myplan/help-site/"/>
                                 </list>
                             </property>
                         </bean>
@@ -601,8 +601,8 @@
                                                       value="We are unable to generate a Plan Audit because more information is needed from @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentName( )}. [0]"/>
                                             <property name="inlineComponents">
                                                 <list>
-                                                    <bean parent="Uif-Link" p:linkText="Learn more."
-                                                          p:href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/')"/>
+                                                    <bean parent="Uif-Link" p:linkText="Learn more." p:target="_blank"
+                                                          p:href="http://depts.washington.edu/myplan/help-site/"/>
                                                 </list>
                                             </property>
                                         </bean>

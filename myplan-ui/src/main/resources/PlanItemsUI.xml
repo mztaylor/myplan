@@ -536,8 +536,8 @@
                           value="Create your plan by finding and adding courses and their sections to any quarter. [0]"/>
                 <property name="inlineComponents">
                     <list>
-                        <bean parent="Uif-Link" p:linkText="Learn more"
-                              p:href="javascript:openHelpWindow('http://depts.washington.edu/myplan/help-site/#824')"/>
+                        <bean parent="Uif-Link" p:linkText="Learn more" p:target="_blank"
+                              p:href="http://depts.washington.edu/myplan/help-site/#824"/>
                     </list>
                 </property>
             </bean>
@@ -738,7 +738,7 @@
                     <property name="toolTip">
                         <bean parent="KSAP-TooltipLeft">
                             <property name="tooltipContent"
-                                      value="@{#line.note NE null ? '&quot;' + #line.note.replaceAll('\n','&lt;br&gt;') + '&quot; - ' + #line.adviserName : ''}"/>
+                                      value="@{#line.note NE null ? '&quot;' + T(org.springframework.web.util.HtmlUtils).htmlEscape(#line.note).replaceAll('\n','&lt;br&gt;') + '&quot; - ' + #line.adviserName : ''}"/>
                             <property name="templateOptions">
                                 <map merge="true">
                                     <entry key="themeMargins" value="{ total:'17px', difference:'10px' }"/>
@@ -912,9 +912,10 @@
         <property name="id" value="@{#line.planItemDataObject.type}-@{#line.planItemDataObject.atp}-@{#line.planItemDataObject.id}-note"/>
         <property name="cssClasses" value="planItem__note"/>
         <property name="toolTip">
+            <!--T(org.springframework.web.util.HtmlUtils).htmlEscape(#line.note.replaceAll('\n','&lt;br&gt;'))-->
             <bean parent="KSAP-TooltipLeft">
                 <property name="tooltipContent" value="
-                    &lt;p&gt;@{#line.note NE null ? #line.note.replaceAll('\n','&lt;br&gt;') : ''}&lt;/p&gt;
+                    &lt;p&gt;@{#line.note NE null ? T(org.springframework.web.util.HtmlUtils).htmlEscape(#line.note).replaceAll('\n','&lt;br&gt;') : ''}&lt;/p&gt;
                     &lt;p&gt;&lt;a data-planitemtype=@{#line.planItemDataObject.type} data-planitemid=@{#line.planItemDataObject.id} data-atpid=@{#line.planItemDataObject.atp} onclick=editNote(jQuery(this),event);&gt;Edit Note&lt;/a&gt;&lt;/p&gt;
                 "/>
                 <property name="templateOptions">
@@ -932,7 +933,7 @@
                     <property name="replacement">
                         <bean parent="KSAP-TooltipLeft">
                             <property name="tooltipContent"
-                                      value="@{#line.note NE null ? #line.note.replaceAll('\n','&lt;br&gt;') : ''}"/>
+                                      value="@{#line.note NE null ? T(org.springframework.web.util.HtmlUtils).htmlEscape(#line.note).replaceAll('\n','&lt;br&gt;') : ''}"/>
                             <property name="templateOptions">
                                 <map merge="true">
                                     <entry key="themeMargins" value="{ total:'17px', difference:'10px' }"/>

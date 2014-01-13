@@ -37,13 +37,13 @@
             <bean parent="KSAP-Page" p:id="course_sections_page">
                 <property name="items">
                     <list>
-                        <bean p:id="@{dataObject.courseSummaryDetails.courseId}_sections_collection"
+                        <bean p:id="@{dataObject.courseSummaryDetails.courseId}_@{dataObject.courseSummaryDetails.code.replace(' ','')}_sections_collection"
                               parent="course_details_institution_data_single">
                             <property name="onDocumentReadyScript" value="
-                                jQuery('#@{dataObject.courseSummaryDetails.courseId}_sections_collection a.lightBoxLink').each(function() {
+                                jQuery('#@{dataObject.courseSummaryDetails.courseId}_@{dataObject.courseSummaryDetails.code.replace(' ','')}_sections_collection a.lightBoxLink').each(function() {
                                     createLightBoxLink(jQuery(this).attr('id'), {helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, false);
                                 });
-                                    getActivityEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}','atpId':'@{dataObject.sectionAtp}','courseCd':'@{dataObject.courseSummaryDetails.code}'}, '@{dataObject.courseSummaryDetails.courseId}_sections_collection');
+                                    getActivityEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}','atpId':'@{dataObject.sectionAtp}','courseCd':'@{dataObject.courseSummaryDetails.code}'}, '@{dataObject.courseSummaryDetails.courseId}_@{dataObject.courseSummaryDetails.code.replace(' ','')}_sections_collection');
                             "/>
                             <property name="render" value="true"/>
                             <property name="header.render" value="false"/>
