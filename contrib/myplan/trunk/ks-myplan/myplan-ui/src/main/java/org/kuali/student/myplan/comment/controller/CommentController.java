@@ -103,8 +103,7 @@ public class CommentController extends UifControllerBase {
         Person user = GlobalVariables.getUserSession().getPerson();
         String principleId = user.getPrincipalId();
         CommentInfo messageInfo = null;
-        String commentBodyText = WordUtils.wrap(form.getCommentBody(), 80, "<br />", true);
-        commentBodyText = commentBodyText.replace("\n", "<br />");
+        String commentBodyText = form.getCommentBody();
         String messageText = form.getCommentBody();
         if (messageText.length() > 100) {
             messageText = messageText.substring(0, 100);
@@ -191,8 +190,7 @@ public class CommentController extends UifControllerBase {
             return doErrorPage(form, CommentConstants.EMPTY_MESSAGE, params, CommentConstants.MESSAGE_RESPONSE_PAGE, section);
         }
 
-        String bodyText = WordUtils.wrap(form.getBody(), 80, "<br />", true);
-        bodyText = bodyText.replace("\n", "<br />");
+        String bodyText = form.getBody();
         String messageText = form.getBody();
         if (messageText.length() > 100) {
             messageText = messageText.substring(0, 100);

@@ -149,8 +149,7 @@
                     </property>
                 </bean>
                 <bean parent="KSAP-SimpleDataField" p:propertyName="subject" p:cssClasses="messagesForm__subject"/>
-                <bean parent="KSAP-SimpleDataField" p:propertyName="body"
-                      p:escapeHtmlInPropertyValue="false"/>
+                <bean parent="KSAP-MessageField" p:messageText="@{T(org.springframework.web.util.HtmlUtils).htmlEscape(#form.body).replaceAll('\n','&lt;br&gt;')}"/>
                 <bean parent="KSAP-SimpleInputField" p:propertyName="messageId"
                       p:defaultValue="@{#form.messageId}" p:hidden="true">
                     <property name="control">
@@ -197,7 +196,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-SimpleDataField" p:propertyName="body" p:escapeHtmlInPropertyValue="false"/>
+                            <bean parent="KSAP-MessageField" p:messageText="@{T(org.springframework.web.util.HtmlUtils).htmlEscape(#line.body).replaceAll('\n','&lt;br&gt;')}"/>
                         </list>
                     </property>
                 </bean>
