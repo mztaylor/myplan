@@ -63,10 +63,10 @@
                                                 <bean parent="activityOfferingTableCollection">
                                                     <property name="id" value=""/>
                                                     <property name="layoutManager.id"
-                                                              value="@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_sections"/>
+                                                              value="@{dataObject.courseSummaryDetails.courseId}_@{dataObject.courseSummaryDetails.code.replace(' ','')}_@{#line.instituteCode}_sections"/>
                                                     <property name="propertyName" value="activityOfferingItemList"/>
                                                     <property name="onDocumentReadyScript" value="
-                                                        var table = jQuery('table#@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_sections');
+                                                        var table = jQuery('table#@{dataObject.courseSummaryDetails.courseId}_@{dataObject.courseSummaryDetails.code.replace(' ','')}_@{#line.instituteCode}_sections');
                                                         var tableHead = table.find('thead');
                                                         tableHead.before('
                                                             &lt;col style=&quot;width: 62px;&quot;&gt;

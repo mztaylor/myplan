@@ -654,7 +654,7 @@
     </bean>
 
     <bean id="activityOfferingTableCollection" parent="course_details_activity_data">
-        <property name="id" value="@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replace(' ','') : #line.courseDetails.code}_sections_collection"/>
+        <property name="id" value="@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replaceAll(' ','') : #line.courseDetails.code}_sections_collection"/>
         <property name="headerText" value=""/>
         <property name="header">
             <bean parent="Uif-HeaderFour"/>
@@ -673,7 +673,7 @@
         <property name="onDocumentReadyScript" value="
             var selected = @{#line.planActivities.size()};
             if (selected &gt; 0) {
-                getActivityEnrollment('/student/myplan/plan/enroll', {'courseId':'@{#line.courseDetails.courseId}', 'atpId':'@{dataObject.atpId}'}, '@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replace(' ','') : #line.courseDetails.code}_sections_collection');
+                getActivityEnrollment('/student/myplan/plan/enroll', {'courseId':'@{#line.courseDetails.courseId}', 'atpId':'@{dataObject.atpId}'}, '@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replaceAll(' ','') : #line.courseDetails.code}_sections_collection');
                 var table = jQuery('table#@{#line.courseDetails.courseId}_sections');
                 var tableHead = table.find('thead');
                 tableHead.before('
@@ -828,12 +828,12 @@
         </property>
     </bean>
 
-    <bean id="termSectionsToggle" p:id="@{#line.courseDetails.courseId}_toggle" parent="Uif-ActionLink" p:cssClasses="inlineBlock"
+    <bean id="termSectionsToggle" p:id="@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replaceAll(' ','') : #line.courseDetails.code}_toggle" parent="Uif-ActionLink" p:cssClasses="inlineBlock"
           p:actionLabel="Show all scheduled sections">
         <property name="actionScript" value="
-            jQuery('#@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replace(' ','') : #line.courseDetails.code}_sections_collection').css('min-height','18px');
-            customRetrieveComponent('@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replace(' ','') : #line.courseDetails.code}_sections_collection','@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replace(' ','') : #line.courseDetails.code}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}',loadActivityOffering:'true', courseCd: '@{#line.courseDetails.code}'},null,{css:{border:'none',width:'16px',height:'16px',lineHeight:'16px',top:'1px',left:'1px'},overlayCSS:{backgroundColor:'#fff',opacity:'0.5'}});
-            switchFetchAction('@{#line.courseDetails.courseId}_toggle', '@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replace(' ','') : #line.courseDetails.code}_sections_collection');
+            jQuery('#@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replaceAll(' ','') : #line.courseDetails.code}_sections_collection').css('min-height','18px');
+            customRetrieveComponent('@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replaceAll(' ','') : #line.courseDetails.code}_sections_collection','@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replaceAll(' ','') : #line.courseDetails.code}_sections_collection','start','inquiry',{viewId:'CourseSections-InquiryView',section_term:'@{#line.planItemDataObject.atp}',courseId:'@{#line.courseDetails.courseId}',loadActivityOffering:'true', courseCd: '@{#line.courseDetails.code}'},null,{css:{border:'none',width:'16px',height:'16px',lineHeight:'16px',top:'1px',left:'1px'},overlayCSS:{backgroundColor:'#fff',opacity:'0.5'}});
+            switchFetchAction('@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replaceAll(' ','') : #line.courseDetails.code}_toggle', '@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replaceAll(' ','') : #line.courseDetails.code}_sections_collection');
         "/>
         <property name="dataAttributes">
             <map merge="true">
