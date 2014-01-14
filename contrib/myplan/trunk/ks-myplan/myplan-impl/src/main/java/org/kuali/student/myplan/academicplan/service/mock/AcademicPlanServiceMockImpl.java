@@ -161,6 +161,18 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
         return list;
     }
 
+
+    @Override
+    public List<PlanItemInfo> getPlanItemsInPlanByCategory(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "category") AcademicPlanServiceConstants.ItemCategory category, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        List<PlanItemInfo> planItemInfoList = new ArrayList<PlanItemInfo>();
+        for (PlanItemInfo planItemInfo : planItemInfos) {
+            if (planItemInfo.getCategory().equals(category)) {
+                planItemInfoList.add(planItemInfo);
+            }
+        }
+        return planItemInfoList;
+    }
+
     @Override
     public List<PlanItemInfo> getPlanItemsInPlanByAtp(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "atpKey") String atpKey, @WebParam(name = "planItemTypeKey") String planItemTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();

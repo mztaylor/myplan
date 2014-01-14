@@ -197,6 +197,21 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     }
 
     @Override
+    public List<PlanItemInfo> getPlanItemsInPlanByCategory(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "category") AcademicPlanServiceConstants.ItemCategory category, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();
+        List<PlanItemEntity> planItemEntities = planItemDao.getLearningPlanItems(learningPlanId, category);
+        if (null == planItemEntities) {
+            throw new DoesNotExistException(String.format("Plan item with learning plan Id [%s] and category (%s) does not exist",
+                    learningPlanId,category.toString()));
+        } else {
+            for (PlanItemEntity planItemEntity : planItemEntities) {
+                planItemInfos.add(planItemEntity.toDto());
+            }
+        }
+        return planItemInfos;
+    }
+
+    @Override
     public List<PlanItemInfo> getPlanItemsInPlanByAtp(@WebParam(name = "learningPlanId") String learningPlanId,
                                                       @WebParam(name = "atpKey") String atpKey,
                                                       @WebParam(name = "planItemTypeKey") String planItemTypeKey,
