@@ -1,9 +1,9 @@
 package org.kuali.student.myplan.schedulebuilder.util;
 
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.lum.course.infc.Course;
@@ -105,7 +105,7 @@ public final class PlanItemControllerHelper {
 
     public static UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }

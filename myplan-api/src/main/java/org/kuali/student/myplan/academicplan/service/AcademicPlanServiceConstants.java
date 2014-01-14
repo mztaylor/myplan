@@ -62,4 +62,6 @@ public class AcademicPlanServiceConstants {
 
     }
 
+    public static final String LEARNING_PLAN_ITEM_TYPE_COURSE = "kuali.academicplan.type.item.course";
+
 }

@@ -1,31 +1,18 @@
 package org.kuali.student.myplan.schedulebuilder.util;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
-import edu.uw.kuali.student.myplan.util.PlanHelperImpl;
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.rice.core.api.search.Range;
-import org.kuali.student.enrollment.acal.infc.Term;
-import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
-import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.PlanHelper;
-import org.kuali.student.myplan.schedulebuilder.support.DefaultScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.support.DefaultShoppingCartStrategy;
 import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.kuali.student.r2.common.exceptions.DoesNotExistException;
-import org.kuali.student.r2.common.exceptions.InvalidParameterException;
-import org.kuali.student.r2.common.exceptions.MissingParameterException;
-import org.kuali.student.r2.common.exceptions.OperationFailedException;
-import org.kuali.student.r2.common.infc.Attribute;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
-import org.kuali.student.r2.lum.course.infc.Course;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
@@ -36,7 +23,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -566,7 +552,7 @@ public class PlanEventUtils {
 
     public static PlanHelper getPlanHelper() {
         if (planHelper == null) {
-            planHelper = new PlanHelperImpl();
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
         }
         return planHelper;
     }
@@ -577,7 +563,7 @@ public class PlanEventUtils {
 
     public static  UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }
@@ -600,7 +586,7 @@ public class PlanEventUtils {
 
     public static CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }

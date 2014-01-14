@@ -1,8 +1,8 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.krad.util.GlobalVariables;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo;
@@ -246,7 +246,7 @@ public class DefaultShoppingCartForm extends AbstractPlanItemForm implements Sho
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }

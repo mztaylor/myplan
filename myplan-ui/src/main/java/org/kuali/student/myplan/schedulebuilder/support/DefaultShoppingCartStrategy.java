@@ -1,6 +1,5 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.infc.Term;
@@ -8,6 +7,7 @@ import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
@@ -291,7 +291,7 @@ public class DefaultShoppingCartStrategy implements ShoppingCartStrategy,
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }
