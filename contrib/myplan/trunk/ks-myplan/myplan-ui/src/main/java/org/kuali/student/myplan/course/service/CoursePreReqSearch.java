@@ -1,7 +1,7 @@
 package org.kuali.student.myplan.course.service;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.util.SearchHelper;
@@ -10,21 +10,25 @@ import org.kuali.student.r2.core.search.dto.SearchResultInfo;
 import org.kuali.student.r2.core.search.infc.SearchResultRow;
 import org.kuali.student.r2.lum.clu.service.CluService;
 import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@Component
 public class CoursePreReqSearch {
 
     private transient CluService luService;
 
+    @Autowired
     private CourseHelper courseHelper;
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }

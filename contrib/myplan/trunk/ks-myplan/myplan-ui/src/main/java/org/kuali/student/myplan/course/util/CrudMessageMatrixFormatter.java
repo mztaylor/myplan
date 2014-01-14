@@ -1,11 +1,10 @@
 package org.kuali.student.myplan.course.util;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
 import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
@@ -17,6 +16,7 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -31,6 +31,7 @@ import java.util.*;
  * Time: 10:46 AM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
     private final static Logger logger = Logger.getLogger(CrudMessageMatrixFormatter.class);
 
@@ -47,7 +48,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }
@@ -58,7 +59,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
 
     public UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper =  UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }

@@ -1,21 +1,19 @@
 package org.kuali.student.myplan.course.util;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.apache.log4j.Logger;
-import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
-import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
-import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
-import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.springframework.util.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.xml.namespace.QName;
 import java.beans.PropertyEditorSupport;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,17 +22,19 @@ import java.util.*;
  * Time: 10:46 AM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 public class RecommendationsFormatter extends PropertyEditorSupport {
     private final static Logger logger = Logger.getLogger(RecommendationsFormatter.class);
 
     private transient CourseOfferingService courseOfferingService;
 
+    @Autowired
     private CourseHelper courseHelper;
 
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }

@@ -1,7 +1,5 @@
 package org.kuali.student.myplan.audit.service;
 
-import edu.uw.kuali.student.myplan.util.DegreeAuditHelperImpl;
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
@@ -10,14 +8,17 @@ import org.kuali.student.myplan.audit.dataobject.PlanAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.util.DegreeAuditDataObjectHelper;
 import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.xml.namespace.QName;
 import java.util.*;
 
+@Component
 public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     private final Logger logger = Logger.getLogger(CourseDetailsInquiryHelperImpl.class);
@@ -78,22 +79,24 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     public DegreeAuditHelper getDegreeAuditHelper() {
         if (degreeAuditHelper == null) {
-            degreeAuditHelper = new DegreeAuditHelperImpl();
+            degreeAuditHelper = UwMyplanServiceLocator.getInstance().getDegreeAuditHelper();
         }
         return degreeAuditHelper;
     }
 
+    @Autowired
     public void setDegreeAuditHelper(DegreeAuditHelper degreeAuditHelper) {
         this.degreeAuditHelper = degreeAuditHelper;
     }
 
     public UserSessionHelper getUserSessionHelper() {
         if(userSessionHelper == null){
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper =  UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }
 
+    @Autowired
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
     }

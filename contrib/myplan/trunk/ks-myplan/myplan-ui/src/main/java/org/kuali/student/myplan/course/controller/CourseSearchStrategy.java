@@ -1,8 +1,8 @@
 package org.kuali.student.myplan.course.controller;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
@@ -12,6 +12,9 @@ import org.kuali.student.r2.core.organization.dto.OrgInfo;
 import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
 import org.kuali.student.r2.lum.clu.service.CluService;
 import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.xml.namespace.QName;
@@ -19,6 +22,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class CourseSearchStrategy {
     private final Logger logger = Logger.getLogger(CourseSearchStrategy.class);
 
@@ -27,6 +31,7 @@ public class CourseSearchStrategy {
     private HashMap<String, List<OrgInfo>> orgTypeCache;
     private HashMap<String, Map<String, String>> hashMap;
 
+    @Autowired
     private CourseHelper courseHelper;
 
     public HashMap<String, List<OrgInfo>> getOrgTypeCache() {
@@ -427,7 +432,7 @@ public class CourseSearchStrategy {
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }

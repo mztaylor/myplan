@@ -1,16 +1,18 @@
 package org.kuali.student.myplan.plan.service;
 
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.kuali.rice.krad.web.form.LookupForm;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class SavedCoursesLookupableHelperImpl extends PlanItemLookupableHelperBase {
 
     @Autowired
@@ -30,7 +32,7 @@ public class SavedCoursesLookupableHelperImpl extends PlanItemLookupableHelperBa
 
     public UserSessionHelper getUserSessionHelper() {
         if(userSessionHelper == null){
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper =  UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }

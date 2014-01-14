@@ -1,16 +1,17 @@
 package org.kuali.student.myplan.comment.service;
 
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.myplan.comment.CommentConstants;
 import org.kuali.student.myplan.comment.dataobject.CommentDataObject;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.core.comment.dto.CommentInfo;
 import org.kuali.student.r2.core.comment.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+@Component
 public class CommentQueryHelper {
 
     private final Logger logger = Logger.getLogger(CommentQueryHelper.class);
@@ -156,7 +158,7 @@ public class CommentQueryHelper {
 
     public UserSessionHelper getUserSessionHelper() {
         if(userSessionHelper == null){
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper =  UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }

@@ -1,8 +1,5 @@
 package org.kuali.student.myplan.course.service;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
-import edu.uw.kuali.student.myplan.util.PlanHelperImpl;
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
@@ -21,12 +18,16 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.dataobject.*;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.plan.dataobject.*;
+import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
+import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
+import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
+import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.myplan.plan.util.*;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
@@ -51,6 +52,7 @@ import org.kuali.student.r2.lum.course.service.CourseService;
 import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
 import org.kuali.student.r2.lum.util.constants.CourseServiceConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -62,7 +64,7 @@ import java.util.*;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 
-
+@Component
 public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     private final Logger logger = Logger.getLogger(CourseDetailsInquiryHelperImpl.class);
@@ -94,15 +96,13 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
     private transient AcademicRecordService academicRecordService;
 
 
-    @Autowired
     private CourseHelper courseHelper;
 
-    @Autowired
+
     private PlanHelper planHelper;
 
     @Autowired
     private UserSessionHelper userSessionHelper;
-
 
     @Override
     public CourseDetails retrieveDataObject(Map fieldValues) {
@@ -1146,33 +1146,36 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }
 
+    @Autowired
     public void setCourseHelper(CourseHelper courseHelper) {
         this.courseHelper = courseHelper;
     }
 
     public PlanHelper getPlanHelper() {
         if (planHelper == null) {
-            planHelper = new PlanHelperImpl();
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
         }
         return planHelper;
     }
 
+    @Autowired
     public void setPlanHelper(PlanHelper planHelper) {
         this.planHelper = planHelper;
     }
 
     public UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }
 
+    @Autowired
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
     }

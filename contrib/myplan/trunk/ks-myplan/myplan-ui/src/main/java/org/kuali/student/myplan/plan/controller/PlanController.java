@@ -15,8 +15,6 @@
  */
 package org.kuali.student.myplan.plan.controller;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
@@ -44,6 +42,7 @@ import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
 import org.kuali.student.myplan.comment.service.CommentQueryHelper;
 import org.kuali.student.myplan.comment.util.CommentHelper;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
@@ -3012,6 +3011,9 @@ public class PlanController extends UifControllerBase {
     }
 
     public CommentHelper getCommentHelper() {
+        if (commentHelper == null) {
+            commentHelper = UwMyplanServiceLocator.getInstance().getCommentHelper();
+        }
         return commentHelper;
     }
 
@@ -3033,7 +3035,7 @@ public class PlanController extends UifControllerBase {
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }
@@ -3063,7 +3065,7 @@ public class PlanController extends UifControllerBase {
 
     public UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper =  UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }

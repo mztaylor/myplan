@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.utils;
 
 import org.kuali.student.r2.common.dto.ContextInfo;
+import org.springframework.stereotype.Component;
 
 /**
  * Provides an initialized Context which can be used for service requests.

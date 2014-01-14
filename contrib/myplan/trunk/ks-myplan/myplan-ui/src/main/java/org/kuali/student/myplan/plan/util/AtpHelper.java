@@ -1,8 +1,5 @@
 package org.kuali.student.myplan.plan.util;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
-import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -17,20 +14,21 @@ import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.kuali.student.r2.common.constants.CommonServiceConstants;
 import org.kuali.student.r2.common.dto.AttributeInfo;
-import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.kuali.student.r2.core.atp.dto.AtpInfo;
 import org.kuali.student.r2.core.atp.service.AtpService;
+import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 import org.kuali.student.r2.core.class1.type.service.TypeService;
 import org.kuali.student.r2.core.constants.TypeServiceConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -71,7 +69,9 @@ public class AtpHelper {
 
     private static transient TypeService typeService;
 
+    @Autowired
     private static transient CourseHelper courseHelper;
+
 
     @Autowired
     private static UserSessionHelper userSessionHelper;
@@ -852,7 +852,7 @@ public class AtpHelper {
 
     public static CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }
@@ -929,10 +929,11 @@ public class AtpHelper {
 
     public static UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }
+
 
     public static void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         AtpHelper.userSessionHelper = userSessionHelper;

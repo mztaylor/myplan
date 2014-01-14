@@ -1,19 +1,20 @@
 package org.kuali.student.myplan.comment.service;
 
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.myplan.comment.dataobject.MessageDataObject;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.core.comment.service.CommentService;
 import org.kuali.student.r2.core.constants.CommentServiceConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.xml.namespace.QName;
 import java.util.*;
-
+@Component
 public class MessagesLookupableHelperImpl extends MyPlanLookupableImpl {
 
     private final Logger logger = Logger.getLogger(MessagesLookupableHelperImpl.class);
@@ -21,7 +22,6 @@ public class MessagesLookupableHelperImpl extends MyPlanLookupableImpl {
     private transient CommentService commentService;
     private transient CommentQueryHelper commentQueryHelper;
 
-    @Autowired
     private UserSessionHelper userSessionHelper;
 
     @Override
@@ -71,9 +71,10 @@ public class MessagesLookupableHelperImpl extends MyPlanLookupableImpl {
         return commentQueryHelper;
     }
 
+
     public UserSessionHelper getUserSessionHelper() {
         if(userSessionHelper == null){
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper =  UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }
