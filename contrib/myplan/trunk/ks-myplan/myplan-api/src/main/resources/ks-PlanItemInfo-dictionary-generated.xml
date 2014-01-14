@@ -146,6 +146,10 @@ Credit hours for the plan item, used for placeholders.
 		<property name="required" value="false"/>
 	</bean>
 
+    <bean id="PlanItemInfo.category-generated" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="category"/>
+    </bean>
+
 	<bean id="PlanItemInfo.planPeriods-generated" abstract="true" parent="CollectionDefinition">
 		<property name="name" value="planPeriods"/>
 		<property name="shortLabel" value="Plan Periods"/>
