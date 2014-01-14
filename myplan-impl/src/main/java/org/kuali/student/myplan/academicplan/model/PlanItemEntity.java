@@ -38,7 +38,19 @@ import java.util.Set;
                         "pi.learningPlan = p " +
                         "and p.id =:learningPlanId " +
                         "and pi.refObjectTypeKey = :refObjectTypeKey " +
-                        "and pi.refObjectId = :refObjectId")
+                        "and pi.refObjectId = :refObjectId"),
+
+        @NamedQuery(name = "LearningPlanItem.getPlanItemsByRefObjectType",
+                query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p  WHERE " +
+                        "pi.learningPlan = p " +
+                        "and p.id =:learningPlanId " +
+                        "and pi.refObjectTypeKey = :refObjectTypeKey "),
+
+        @NamedQuery(name = "LearningPlanItem.getPlanItemsByCategory",
+                query = "SELECT pi FROM PlanItemEntity pi, LearningPlanEntity p WHERE " +
+                        "pi.learningPlan = p " +
+                        "and p.id =:learningPlanId " +
+                        "and pi.category =:category")
 })
 public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanItemAttributeEntity> {
 
@@ -76,6 +88,9 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
 
     @Column(name = "STATE")
     private String state;
+
+    @Column(name = "CATEGORY")
+    private String category;
 
     public PlanItemEntity() {
         super();
@@ -155,6 +170,14 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
         this.state = state;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     /**
      * Add an ATP id to the set. No nulls or empty strings.
      *
@@ -193,6 +216,7 @@ public class PlanItemEntity extends MetaEntity implements AttributeOwner<PlanIte
         /*TODO: remove this check and make it defaulted to the state once all the states in planItem table are having active state instead of null*/
         dto.setStateKey(this.getState()!=null ? this.getState() : AcademicPlanServiceConstants.LEARNING_PLAN_ITEM_ACTIVE_STATE_KEY);
         dto.setCredit(this.getCredit());
+        dto.setCategory(AcademicPlanServiceConstants.ItemCategory.PLANNED);
 
         if (this.getDescr() != null) {
             dto.setDescr(this.getDescr().toDto());
