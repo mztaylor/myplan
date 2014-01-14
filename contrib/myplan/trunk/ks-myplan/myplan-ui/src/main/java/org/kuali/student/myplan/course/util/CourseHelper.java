@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.course.util;
 
 import org.dom4j.DocumentException;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
@@ -63,4 +64,8 @@ public interface CourseHelper {
     public boolean isCrossListedCourse(CourseInfo courseInfo, String courseCd) throws DoesNotExistException;
 
     public boolean isSimilarCourses(String courseCd1, String courseCd2);
+
+    public void frontLoad(List<String> courseIds, String... termId);
+
+    public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysByCourseAndTerm(String courseId, String termId);
 }
