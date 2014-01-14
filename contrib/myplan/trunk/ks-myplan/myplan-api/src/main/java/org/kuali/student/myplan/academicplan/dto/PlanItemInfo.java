@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.academicplan.dto;
 
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
+import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.dto.TypeStateEntityInfo;
 import org.w3c.dom.Element;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PlanItemInfo", propOrder = {"refObjectId", "refObjectType", "learningPlanId", "planPeriods", "id",
-        "credit", "typeKey", "stateKey", "descr", "meta", "attributes", "_futureElements"})
+        "credit","category", "typeKey", "stateKey", "descr", "meta", "attributes", "_futureElements"})
 public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
 
     @XmlAttribute
@@ -42,6 +43,9 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
     @XmlElement
     private BigDecimal credit;
 
+    @XmlElement
+    private AcademicPlanServiceConstants.ItemCategory category;
+
     @XmlAnyElement
     private List<Element> _futureElements;
 
@@ -63,6 +67,7 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
             this.refObjectId = item.getRefObjectId();
             this.refObjectType = item.getRefObjectType();
             this.learningPlanId = item.getLearningPlanId();
+            this.category = item.getCategory();
 
             if(null != item.getPlanPeriods()) {
                 for(String atpId : item.getPlanPeriods()) {
@@ -129,5 +134,13 @@ public class PlanItemInfo extends TypeStateEntityInfo implements PlanItem {
 
     public void setCredit(BigDecimal credit) {
          this.credit = credit;
+    }
+
+    public AcademicPlanServiceConstants.ItemCategory getCategory() {
+        return this.category;
+    }
+
+    public void setCategory(AcademicPlanServiceConstants.ItemCategory category) {
+        this.category = category;
     }
 }
