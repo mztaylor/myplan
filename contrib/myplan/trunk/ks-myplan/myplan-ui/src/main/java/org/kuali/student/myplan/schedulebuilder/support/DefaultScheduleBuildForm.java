@@ -1,18 +1,15 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
-import edu.uw.kuali.student.myplan.util.TermHelperImpl;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
-import org.kuali.student.myplan.course.dataobject.CourseDetails;
-import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
-import org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
@@ -516,7 +513,7 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
 
     public TermHelper getTermHelper() {
         if (termHelper == null) {
-            termHelper = new TermHelperImpl();
+            termHelper = UwMyplanServiceLocator.getInstance().getTermHelper();
         }
         return termHelper;
     }
