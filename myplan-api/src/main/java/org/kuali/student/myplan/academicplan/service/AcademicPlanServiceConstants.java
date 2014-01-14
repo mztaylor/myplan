@@ -53,4 +53,13 @@ public class AcademicPlanServiceConstants {
     /*Regex to Split Digits and alphabets Eg: COM 348 --> COM  348*/
     public static final String SPLIT_DIGITS_ALPHABETS = "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)";
 
+    public static enum ItemCategory {
+        PLANNED, BACKUP, WISHLIST, WHATIF, CART, COMPLETE;
+
+        public static ItemCategory fromString(String enumString) {
+            return ItemCategory.valueOf(enumString.toUpperCase());
+        }
+
+    }
+
 }
