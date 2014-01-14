@@ -1,12 +1,12 @@
 package edu.uw.kuali.student.myplan.tests.unit;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.infc.AuditReport;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
@@ -14,6 +14,7 @@ import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +35,6 @@ import static org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants
 public class DegreeAuditServiceImplTest {
 
 
-    CourseHelperImpl courseHelper = new CourseHelperImpl();
-
     @Resource
     DegreeAuditService degreeAuditService = null;
 
@@ -50,7 +49,7 @@ public class DegreeAuditServiceImplTest {
     @Test
     public void intellijIsJustShortOfPerfect() {
         String courseCd = "PSYCH 2XX01   ";
-        DeconstructedCourseCode courseCode = courseHelper.getCourseDivisionAndNumber(courseCd);
+        DeconstructedCourseCode courseCode = getCourseDivisionAndNumber(courseCd);
         System.out.println(courseCode.getSubject());
         System.out.println(courseCode.getNumber());
     }
@@ -146,6 +145,33 @@ public class DegreeAuditServiceImplTest {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+    }
+
+    public DeconstructedCourseCode getCourseDivisionAndNumber(String courseCode) {
+        String subject = null;
+        String number = null;
+        String activityCd = null;
+        if (courseCode.matches(CourseSearchConstants.FORMATTED_COURSE_CODE_REGEX)) {
+            String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
+            subject = splitStr[0].trim();
+            number = splitStr[1].trim();
+        } else if (courseCode.matches(CourseSearchConstants.COURSE_CODE_WITH_SECTION_REGEX)) {
+            activityCd = courseCode.substring(courseCode.lastIndexOf(" "), courseCode.length()).trim();
+            courseCode = courseCode.substring(0, courseCode.lastIndexOf(" ")).trim();
+            String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
+            subject = splitStr[0].trim();
+            number = splitStr[1].trim();
+        } else if (courseCode.matches(CourseSearchConstants.UNFORMATTED_COURSE_CODE_REGEX)) {
+            String[] splitStr = courseCode.toUpperCase().split(CourseSearchConstants.SPLIT_DIGITS_ALPHABETS);
+            subject = splitStr[0].trim();
+            number = splitStr[1].trim();
+        } else if (courseCode.matches(CourseSearchConstants.UNFORMATTED_COURSE_PLACE_HOLDER_REGEX)) {
+            int size = courseCode.length();
+            int splitIndex = size - 3;
+            subject = courseCode.substring(0, splitIndex).trim();
+            number = courseCode.substring(splitIndex, size).toLowerCase();
+        }
+        return new DeconstructedCourseCode(subject, number, activityCd);
     }
 
 }

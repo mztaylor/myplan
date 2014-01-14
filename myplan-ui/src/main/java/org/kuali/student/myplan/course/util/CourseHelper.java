@@ -1,6 +1,5 @@
 package org.kuali.student.myplan.course.util;
 
-import edu.uw.kuali.student.lib.client.studentservice.ServiceException;
 import org.dom4j.DocumentException;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
@@ -16,7 +15,7 @@ public interface CourseHelper {
 
 
     public void getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt,
-                                    String curric, String num) throws ServiceException, DocumentException;
+                                    String curric, String num) throws DocumentException;
 
     public DeconstructedCourseCode getCourseDivisionAndNumber(String courseCode);
 

@@ -1,8 +1,5 @@
 package org.kuali.student.myplan.plan.service;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
-import edu.uw.kuali.student.myplan.util.PlanHelperImpl;
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
@@ -12,6 +9,7 @@ import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
@@ -33,6 +31,7 @@ import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -45,6 +44,7 @@ import static org.kuali.student.myplan.plan.PlanConstants.LEARNING_PLAN_TYPE_PLA
 /**
  * Base lookup helper for plan items.
  */
+@Component
 public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     private final Logger logger = Logger.getLogger(PlanItemLookupableHelperBase.class);
     private transient AcademicPlanService academicPlanService;
@@ -422,7 +422,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }
@@ -433,7 +433,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
 
     public UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper =  UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }
@@ -444,7 +444,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
 
     public PlanHelper getPlanHelper() {
         if (planHelper == null) {
-            planHelper = new PlanHelperImpl();
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
         }
         return planHelper;
     }

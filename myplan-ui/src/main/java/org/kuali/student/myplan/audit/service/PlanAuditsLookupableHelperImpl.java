@@ -1,28 +1,29 @@
 package org.kuali.student.myplan.audit.service;
 
-import edu.uw.kuali.student.myplan.util.DegreeAuditHelperImpl;
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
-import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.audit.dataobject.PlanAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import javax.xml.namespace.QName;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
-import static org.kuali.student.myplan.plan.PlanConstants.CONTEXT_INFO;
-import static org.kuali.student.myplan.plan.PlanConstants.LEARNING_PLAN_TYPE_PLAN_AUDIT;
-
+@Component
 public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     private final Logger logger = Logger.getLogger(CourseDetailsInquiryHelperImpl.class);
@@ -31,10 +32,9 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     private transient AcademicPlanService academicPlanService;
 
-    private DegreeAuditHelper degreeAuditHelper;
+    private transient DegreeAuditHelper degreeAuditHelper;
 
-    @Autowired
-    private UserSessionHelper userSessionHelper;
+    private transient UserSessionHelper userSessionHelper;
 
     @Override
     protected List<PlanAuditItem> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
@@ -100,22 +100,24 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     public DegreeAuditHelper getDegreeAuditHelper() {
         if (degreeAuditHelper == null) {
-            degreeAuditHelper = new DegreeAuditHelperImpl();
+            degreeAuditHelper = UwMyplanServiceLocator.getInstance().getDegreeAuditHelper();
         }
         return degreeAuditHelper;
     }
 
+    @Autowired
     public void setDegreeAuditHelper(DegreeAuditHelper degreeAuditHelper) {
         this.degreeAuditHelper = degreeAuditHelper;
     }
 
     public UserSessionHelper getUserSessionHelper() {
-        if(userSessionHelper == null){
-            userSessionHelper = new UserSessionHelperImpl();
+        if (userSessionHelper == null) {
+            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }
 
+    @Autowired
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
     }

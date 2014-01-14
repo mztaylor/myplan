@@ -15,11 +15,6 @@
  */
 package org.kuali.student.myplan.audit.controller;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
-import edu.uw.kuali.student.myplan.util.DegreeAuditHelperImpl;
-import edu.uw.kuali.student.myplan.util.DegreeAuditHelperImpl.Choice;
-import edu.uw.kuali.student.myplan.util.PlanHelperImpl;
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.util.GlobalVariables;
@@ -30,10 +25,7 @@ import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
-import org.kuali.student.myplan.audit.dataobject.CourseItem;
-import org.kuali.student.myplan.audit.dataobject.MessyItem;
-import org.kuali.student.myplan.audit.dataobject.MessyTermDataObject;
-import org.kuali.student.myplan.audit.dataobject.PlanAuditItem;
+import org.kuali.student.myplan.audit.dataobject.*;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.form.AuditForm;
 import org.kuali.student.myplan.audit.form.DegreeAuditForm;
@@ -42,6 +34,7 @@ import org.kuali.student.myplan.audit.service.DegreeAuditConstants;
 import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
@@ -651,7 +644,7 @@ public class DegreeAuditController extends UifControllerBase {
 
     public PlanHelper getPlanHelper() {
         if (planHelper == null) {
-            planHelper = new PlanHelperImpl();
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
         }
         return planHelper;
     }
@@ -662,11 +655,12 @@ public class DegreeAuditController extends UifControllerBase {
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }
 
+    @Autowired
     public void setCourseHelper(CourseHelper courseHelper) {
         this.courseHelper = courseHelper;
     }
@@ -716,14 +710,14 @@ public class DegreeAuditController extends UifControllerBase {
 
     public DegreeAuditHelper getDegreeAuditHelper() {
         if (degreeAuditHelper == null) {
-            degreeAuditHelper = new DegreeAuditHelperImpl();
+            degreeAuditHelper = UwMyplanServiceLocator.getInstance().getDegreeAuditHelper();
         }
         return degreeAuditHelper;
     }
 
     public UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper =  UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }

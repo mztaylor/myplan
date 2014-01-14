@@ -1,11 +1,11 @@
 package org.kuali.student.myplan.plan.service;
 
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
@@ -14,6 +14,7 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
@@ -30,6 +31,7 @@ import java.util.Map;
  * Time: 1:49 PM
  * To change this template use File | Settings | File Templates.
  */
+@Component
 public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperBase {
 
     private final Logger logger = Logger.getLogger(FullPlanItemsLookupableHelperImpl.class);
@@ -123,7 +125,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
 
     public UserSessionHelper getUserSessionHelper() {
         if(userSessionHelper == null){
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper =  UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }

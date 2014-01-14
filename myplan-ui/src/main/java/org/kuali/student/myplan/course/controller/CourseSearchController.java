@@ -15,9 +15,6 @@
  */
 package org.kuali.student.myplan.course.controller;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
-import edu.uw.kuali.student.myplan.util.TermInfoComparator;
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.config.property.ConfigContext;
@@ -30,9 +27,9 @@ import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
-import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
 import org.kuali.student.myplan.course.dataobject.FacetItem;
 import org.kuali.student.myplan.course.form.CourseSearchForm;
@@ -63,7 +60,6 @@ import org.kuali.student.r2.lum.course.service.assembler.CourseAssemblerConstant
 import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -110,7 +106,7 @@ public class CourseSearchController extends UifControllerBase {
 
 
     @Autowired
-    private TermInfoComparator atpTypeComparator;
+    private Comparator<TypeInfo> atpTypeComparator;
 
     @Autowired
     private CourseSearchStrategy searcher = new CourseSearchStrategy();
@@ -121,7 +117,7 @@ public class CourseSearchController extends UifControllerBase {
     @Autowired
     private PlanHelper planHelper;
 
-
+    @Autowired
     private CourseHelper courseHelper;
 
     private CampusSearch campusSearch = new CampusSearch();
@@ -904,17 +900,20 @@ public class CourseSearchController extends UifControllerBase {
         this.academicCalendarService = academicCalendarService;
     }
 
-    public TermInfoComparator getAtpTypeComparator() {
+    public Comparator<TypeInfo> getAtpTypeComparator() {
+        if (atpTypeComparator == null) {
+            atpTypeComparator = UwMyplanServiceLocator.getInstance().getAtpTypeComparator();
+        }
         return atpTypeComparator;
     }
 
-    public void setAtpTypeComparator(TermInfoComparator atpTypeComparator) {
+    public void setAtpTypeComparator(Comparator<TypeInfo> atpTypeComparator) {
         this.atpTypeComparator = atpTypeComparator;
     }
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }
@@ -941,7 +940,7 @@ public class CourseSearchController extends UifControllerBase {
 
     public UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }
