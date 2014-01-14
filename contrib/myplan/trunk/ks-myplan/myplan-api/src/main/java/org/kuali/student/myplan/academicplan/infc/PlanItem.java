@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.academicplan.infc;
 
+import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.r2.common.infc.HasId;
 import org.kuali.student.r2.common.infc.RichText;
 import org.kuali.student.r2.common.infc.TypeStateEntity;
@@ -49,5 +50,7 @@ public interface PlanItem extends HasId, TypeStateEntity {
      * @name Credits
      */
     public BigDecimal getCredit();
+
+    public AcademicPlanServiceConstants.ItemCategory getCategory();
 
 }
