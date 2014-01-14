@@ -1,9 +1,5 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
-import edu.uw.kuali.student.myplan.util.PlanHelperImpl;
-import edu.uw.kuali.student.myplan.util.TermHelperImpl;
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.UifFormBase;
@@ -12,6 +8,7 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.PlanHelper;
@@ -238,7 +235,7 @@ public abstract class AbstractPlanItemForm extends UifFormBase implements PlanIt
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }
@@ -249,7 +246,7 @@ public abstract class AbstractPlanItemForm extends UifFormBase implements PlanIt
 
     public TermHelper getTermHelper() {
         if (termHelper == null) {
-            termHelper = new TermHelperImpl();
+            termHelper = UwMyplanServiceLocator.getInstance().getTermHelper();
         }
         return termHelper;
     }
@@ -260,7 +257,7 @@ public abstract class AbstractPlanItemForm extends UifFormBase implements PlanIt
 
     public PlanHelper getPlanHelper() {
         if (planHelper == null) {
-            planHelper = new PlanHelperImpl();
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
         }
         return planHelper;
     }
@@ -271,7 +268,7 @@ public abstract class AbstractPlanItemForm extends UifFormBase implements PlanIt
 
     public UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }

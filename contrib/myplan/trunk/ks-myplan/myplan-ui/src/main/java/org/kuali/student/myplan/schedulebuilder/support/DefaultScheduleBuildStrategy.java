@@ -1,8 +1,5 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
-import edu.uw.kuali.student.myplan.util.CourseHelperImpl;
-import edu.uw.kuali.student.myplan.util.TermHelperImpl;
-import edu.uw.kuali.student.myplan.util.UserSessionHelperImpl;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
@@ -14,6 +11,7 @@ import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -26,7 +24,6 @@ import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.TimeOfDayInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.infc.Attribute;
-import org.kuali.student.r2.common.util.constants.LuiServiceConstants;
 import org.kuali.student.r2.core.room.infc.Room;
 import org.kuali.student.r2.core.scheduling.constants.SchedulingServiceConstants;
 import org.kuali.student.r2.core.scheduling.dto.ScheduleDisplayInfo;
@@ -168,11 +165,9 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
         learningPlanInfo.setAttributes(attributes);
         try {
-            try {
-                getAcademicPlanService().updateLearningPlan(learningPlanInfo.getId(), learningPlanInfo, PlanConstants.CONTEXT_INFO);
-            } catch (AlreadyExistsException e) {
 
-            }
+            getAcademicPlanService().updateLearningPlan(learningPlanInfo.getId(), learningPlanInfo, PlanConstants.CONTEXT_INFO);
+
         } catch (DataValidationErrorException e) {
             throw new IllegalArgumentException(
                     "Error saving reserved time attributes in learning plan", e);
@@ -1057,7 +1052,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = new CourseHelperImpl();
+            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }
@@ -1068,7 +1063,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
     public TermHelper getTermHelper() {
         if (termHelper == null) {
-            termHelper = new TermHelperImpl();
+            termHelper = UwMyplanServiceLocator.getInstance().getTermHelper();
         }
         return termHelper;
     }
@@ -1079,7 +1074,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
     public UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper = new UserSessionHelperImpl();
+            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }
