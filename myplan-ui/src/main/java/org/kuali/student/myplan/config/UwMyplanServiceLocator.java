@@ -4,6 +4,7 @@ import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
 import org.kuali.student.myplan.comment.util.CommentHelper;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
+import org.kuali.student.myplan.schedulebuilder.util.TermHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 
@@ -78,6 +79,14 @@ public class UwMyplanServiceLocator {
         this.atpTypeComparator = atpTypeComparator;
     }
 
+    public TermHelper getTermHelper() {
+        return termHelper;
+    }
+
+    public void setTermHelper(TermHelper termHelper) {
+        this.termHelper = termHelper;
+    }
+
     private CourseHelper courseHelper;
 
     private PlanHelper planHelper;
@@ -87,6 +96,8 @@ public class UwMyplanServiceLocator {
     private DegreeAuditHelper degreeAuditHelper;
 
     private CommentHelper commentHelper;
+
+    private TermHelper termHelper;
 
     private Comparator<TypeInfo> atpTypeComparator;
 
