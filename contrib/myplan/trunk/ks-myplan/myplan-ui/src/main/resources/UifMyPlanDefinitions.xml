@@ -713,7 +713,7 @@
         </property>
     </bean>
 
-    <bean id="KSAP-PopoverPage" parent="Uif-Page">
+    <bean id="KSAP-PopoverPage" parent="Uif-Page" class="org.kuali.rice.krad.uif.container.extension.KSAPPageGroup">
         <property name="validationMessages">
             <null/>
         </property>

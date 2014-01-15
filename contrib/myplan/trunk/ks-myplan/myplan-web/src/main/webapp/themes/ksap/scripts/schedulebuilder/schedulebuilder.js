@@ -41,7 +41,7 @@ var KsapScheduleBuild = {
 				sb.possibleSchedules = newPossibleSchedules;
 				KsapSbCalendar.clear();
 
-				jQuery("#sb_possible_options > .uif-boxLayout").empty();
+				jQuery("#sb_possible_options > .uif-verticalBoxLayout, #sb_possible_options > .uif-horizontalBoxLayout").empty();
 				for (var i in sb.possibleSchedules.possible)
 					sb.appendPossibleOption(sb.possibleSchedules.possible[i]);
 				if (sb.possibleSchedules.possible.length == 0)
@@ -54,18 +54,18 @@ var KsapScheduleBuild = {
 				else
 					jQuery(".ksap-sb-morelink").hide();
 
-				jQuery("#sb_saved_schedules > .uif-boxLayout").empty();
+				jQuery("#sb_saved_schedules > .uif-verticalBoxLayout, #sb_saved_schedules > .uif-horizontalBoxLayout").empty();
 				for (var i in sb.possibleSchedules.saved)
 					sb.appendSavedOption(sb.possibleSchedules.saved[i]);
 
-				jQuery("#sb_reserved_times_possible > .uif-boxLayout").empty();
-				jQuery("#sb_reserved_times_saved > .uif-boxLayout").empty();
+				jQuery("#sb_reserved_times_possible > .uif-verticalBoxLayout, #sb_reserved_times_possible > .uif-horizontalBoxLayout").empty();
+				jQuery("#sb_reserved_times_saved > .uif-verticalBoxLayout, #sb_reserved_times_saved > .uif-horizontalBoxLayout").empty();
 				for (var i=0; i<sb.possibleSchedules.reserved.length; i++) {
 					sb.appendReservedTime(i, "sb_reserved_times_possible");
 					sb.appendReservedTime(i, "sb_reserved_times_saved");
 				}
 
-				var weekgroups = jQuery("#sb_week_group_area > .uif-boxLayout");
+				var weekgroups = jQuery("#sb_week_group_area > .uif-verticalBoxLayout, #sb_week_group_area > .uif-horizontalBoxLayout");
 				weekgroups.empty();
 				for (var i=0; i<sb.possibleSchedules.weeks.length; i++) sb.appendWeekGroup(i);
 
@@ -105,11 +105,11 @@ var KsapScheduleBuild = {
 	},
 
 	appendPossibleOption : function(schedule) {
-		appendScheduleOption(schedule, jQuery("#sb_possible_options > .uif-boxLayout"));
+		appendScheduleOption(schedule, jQuery("#sb_possible_options > .uif-verticalBoxLayout, #sb_possible_options > .uif-horizontalBoxLayout"));
 	},
 
 	appendSavedOption : function(schedule) {
-		appendScheduleOption(schedule, jQuery("#sb_saved_schedules > .uif-boxLayout"));
+		appendScheduleOption(schedule, jQuery("#sb_saved_schedules > .uif-verticalBoxLayout, #sb_saved_schedules > .uif-horizontalBoxLayout"));
 	},
 
 	moveUp : function(uniqueId) {
@@ -141,7 +141,7 @@ var KsapScheduleBuild = {
 
 	appendReservedTime : function(i, containerId) {
 		var reserved = this.possibleSchedules.reserved[i];
-		var container = jQuery("#"+containerId+" > .uif-boxLayout");
+		var container = jQuery("#"+containerId+" > .uif-verticalBoxLayout, #"+containerId+" > .uif-horizontalBoxLayout");
 		var template = jQuery("#sb_reserved_time_template").html();
 
 		var uid = reserved.uniqueId;
@@ -193,7 +193,7 @@ var KsapScheduleBuild = {
 
 	appendWeekGroup : function(i) {
 		var week = this.possibleSchedules.weeks[i];
-		var container = jQuery("#sb_week_group_area > .uif-boxLayout");
+		var container = jQuery("#sb_week_group_area > .uif-verticalBoxLayout, #sb_week_group_area > .uif-horizontalBoxLayout");
 		var template = jQuery("#sb_weekgroup_template").html();
 
 		template = template.replace(/__KSAP_TITLE__/gi, week.title);
@@ -215,7 +215,7 @@ var KsapScheduleBuild = {
 		row.on('click', function(){
 			var t = jQuery(this);
 			KsapSbCalendar.gotoDate(t.data('year'), t.data('month'), t.data('date'));
-			jQuery("#sb_week_group_area > .uif-boxLayout .ksap-sb-weekGroup").each(function() {
+			jQuery("#sb_week_group_area > .uif-verticalBoxLayout .ksap-sb-weekGroup, #sb_week_group_area > .uif-horizontalBoxLayout .ksap-sb-weekGroup").each(function() {
 				var t = jQuery(this);
 				t.removeClass("ksap-sb-selected");
 				t.addClass("ksap-sb-deselected");
@@ -237,7 +237,7 @@ function moreSchedules() {
 // Possible/Saved schedule options section support
 
 function fixUpDownIcons() {
-	jQuery("#sb_saved_schedules > .uif-boxLayout, #sb_possible_options > .uif-boxLayout")
+	jQuery("#sb_saved_schedules > .uif-verticalBoxLayout, #sb_possible_options > .uif-horizontalBoxLayout, #sb_saved_schedules > .uif-verticalBoxLayout, #sb_possible_options > .uif-horizontalBoxLayout")
 		.children().each(function(){
 			var trow = jQuery(this);
 			if (trow.prev().length > 0) {
@@ -350,7 +350,7 @@ function removeSavedScheduleOption(uniqueId) {
 	star.addClass("ksap-sb-schedule-savedicon");
 
 	var pomodel = null;
-	var possibleContainer = jQuery("#sb_possible_options > .uif-boxLayout");
+	var possibleContainer = jQuery("#sb_possible_options > .uif-verticalBoxLayout, #sb_possible_options > .uif-horizontalBoxLayout");
 	possibleContainer.children().each(function(){
 		var prow = jQuery(this);
 		var pmodel = KsapScheduleBuild.getSchedule(prow.attr("id"));
@@ -370,7 +370,7 @@ function removeSavedScheduleOption(uniqueId) {
 		},
 		dataType : 'json',
 		success : function(response, textStatus, jqXHR) {
-			var savedContainer = jQuery("#sb_saved_schedules > .uif-boxLayout");
+			var savedContainer = jQuery("#sb_saved_schedules > .uif-verticalBoxLayout, #sb_saved_schedules > .uif-horizontalBoxLayout");
 			savedContainer.children().each(function(){
 				var srow = jQuery(this);
 				var smodel = KsapScheduleBuild.getSchedule(srow.attr("id"));
