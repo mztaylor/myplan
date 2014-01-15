@@ -7,6 +7,7 @@ import org.dom4j.Element;
 import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
+import org.kuali.rice.krad.web.controller.extension.KsapControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
@@ -34,7 +35,7 @@ import java.util.*;
 
 @Controller
 @RequestMapping(value = "/sb")
-public class ScheduleBuildController extends UifControllerBase {
+public class ScheduleBuildController extends KsapControllerBase {
 
     private static final Logger LOG = Logger
             .getLogger(ScheduleBuildController.class);

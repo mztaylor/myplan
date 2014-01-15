@@ -37,7 +37,7 @@
 				<value>themes/ksap/scripts/schedulebuilder/fullcalendar/fullcalendar.min.js</value>
 				<value>themes/ksap/scripts/schedulebuilder/calendar.js</value>
 				<value>themes/ksap/scripts/schedulebuilder/schedulebuilder.js</value>
-				<value>themes/ksap/scripts/schedulebuilder/cart.js</value>
+				<!--<value>themes/ksap/scripts/schedulebuilder/cart.js</value>-->
 			</list>
 		</property>
 		<property name="items">
@@ -45,7 +45,11 @@
 				<ref bean="schedule_build_page" />
 			</list>
 		</property>
-		<property name="onDocumentReadyScript" value="KsapScheduleBuild.initialize(new Date(@{term.startDate.time}))" />
+		<property name="onDocumentReadyScript" value="
+		    jQuery(window).load(function() {
+		        KsapScheduleBuild.initialize(new Date(@{term.startDate.time}));
+		    });
+		"/>
 		<property name="header.render" value="false" />
 		<property name="footer.render" value="false" />
 	</bean>
@@ -148,7 +152,7 @@
 
 	<bean id="sb_schedule_icon" parent="Uif-ActionImage" abstract="true">
 		<property name="actionImage">
-			<bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.ap.externalizable.images.url']}pixel.gif" />
+			<bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif" />
 		</property>
 	</bean>
 
@@ -177,7 +181,7 @@
 									</list>
 								</property>
 							</bean>
-							<bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.ap.externalizable.images.url']}pixel.gif"
+							<bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"
 									p:additionalCssClasses="ksap-sb-schedule-noupicon" />
 							<bean parent="sb_schedule_icon" p:actionScript="KsapScheduleBuild.moveUp('__KSAP_UID__')">
 								<property name="cssClasses">
@@ -186,7 +190,7 @@
 									</list>
 								</property>
 							</bean>
-							<bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.ap.externalizable.images.url']}pixel.gif"
+							<bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"
 									p:additionalCssClasses="ksap-sb-schedule-nodownicon" />
 							<bean parent="sb_schedule_icon" p:actionScript="KsapScheduleBuild.moveDown('__KSAP_UID__')">
 								<property name="cssClasses">
@@ -360,7 +364,7 @@
 														</list>
 													</property>
 													<property name="actionImage">
-														<bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.ap.externalizable.images.url']}pixel.gif" />
+														<bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif" />
 													</property>
 												</bean>
 											</property>
@@ -507,7 +511,7 @@
 										<bean parent="Uif-ActionImage" p:id="ksap-sb-secondary-disclosure-icon-@{#line.uniqueId}"
 												p:actionScript="showHideSecondaryOptions('@{#line.uniqueId}')" p:cssClasses="ksap-sb-secondary-disclosure-icon-closed">
 											<property name="actionImage">
-												<bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.ap.externalizable.images.url']}pixel.gif" />
+												<bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif" />
 											</property>
 										</bean>
 									</list>
