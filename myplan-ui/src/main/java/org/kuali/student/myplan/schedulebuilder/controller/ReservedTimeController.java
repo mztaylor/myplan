@@ -6,8 +6,8 @@ import org.kuali.rice.krad.datadictionary.validation.result.DictionaryValidation
 import org.kuali.rice.krad.service.KRADServiceLocatorWeb;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.schedulebuilder.form.ReservedTimeForm;
-import org.kuali.student.myplan.schedulebuilder.support.DefaultScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.PlanEventUtils;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
@@ -169,7 +169,7 @@ public class ReservedTimeController extends UifControllerBase {
 
     public static ScheduleBuildStrategy getScheduleBuildStrategy() {
         if(scheduleBuildStrategy == null){
-            scheduleBuildStrategy = new DefaultScheduleBuildStrategy();
+            scheduleBuildStrategy = UwMyplanServiceLocator.getInstance().getScheduleBuildStrategy();
         }
         return scheduleBuildStrategy;
     }

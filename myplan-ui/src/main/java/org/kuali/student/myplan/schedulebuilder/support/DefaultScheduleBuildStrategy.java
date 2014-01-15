@@ -12,8 +12,9 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseHelper;
-import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.schedulebuilder.dto.*;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
@@ -32,6 +33,7 @@ import org.kuali.student.r2.core.scheduling.infc.TimeSlot;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.infc.Course;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -56,6 +58,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     private transient TermHelper termHelper;
     private transient AcademicRecordService academicRecordService;
     private transient ShoppingCartStrategy shoppingCartStrategy;
+    private CourseDetailsInquiryHelperImpl courseDetailsHelper;
     private static final long serialVersionUID = -3524818039744728212L;
 
     private static final String SCHEDULE_BUILD_ATTR = ScheduleBuildStrategy.class
@@ -102,11 +105,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         ScheduleBuildAttribute rv;
         if (scheduleBuildAttribute != null) {
             @SuppressWarnings("deprecation")
-            ScheduleBuildAttribute schduleBuildInfo = XmlMarshalUtil
-                    .unmarshal(scheduleBuildAttribute.getValue(),
-                            ScheduleBuildAttribute.class,
-                            ReservedTimeInfo.class,
-                            PossibleScheduleOptionInfo.class);
+            ScheduleBuildAttribute schduleBuildInfo = XmlMarshalUtil.unmarshal(scheduleBuildAttribute.getValue(), ScheduleBuildAttribute.class, ReservedTimeInfo.class, PossibleScheduleOptionInfo.class);
             rv = schduleBuildInfo;
         } else {
             rv = new ScheduleBuildAttribute();
@@ -310,14 +309,11 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         activityOption.setCourseOfferingCode((campusCode == null ? ""
                 : campusCode + " ") + aodi.getCourseOfferingCode());
         activityOption.setActivityName(aodi.getName());
-        activityOption.setRegistrationCode(aodi
-                .getActivityOfferingCode());
-        /*activityOption
-                .setClosed(!LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY
-                        .equals(aodi.getStateKey()));*/
+        activityOption.setRegistrationCode(aodi.getActivityOfferingCode());
+        /*activityOption.setClosed(!LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY
+                .equals(aodi.getStateKey()));*/
         activityOption
-                .setClosed(!"active"
-                        .equals(aodi.getStateKey()));
+                .setClosed(!"active".equals(aodi.getStateKey()));
         activityOption.setTotalSeats(aodi.getMaximumEnrollment() != null ? aodi.getMaximumEnrollment() : 0);
         if (msg != null)
             msg.append("\nActivity ")
@@ -447,8 +443,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     @Override
-    public List<CourseOption> getCourseOptions(List<String> courseIds,
-                                               String termId) {
+    public List<CourseOption> getCourseOptions(List<String> courseIds, String termId) {
         Term term = getTermHelper().getTermByAtpId(termId);
         CourseHelper courseHelper = getCourseHelper();
         ShoppingCartStrategy cartStrategy = getShoppingCartStrategy();
@@ -459,11 +454,11 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         Calendar edcal = Calendar.getInstance();
         Calendar tcal = Calendar.getInstance();
         List<CourseOption> rv = new LinkedList<CourseOption>();
-        //courseHelper.frontLoad(courseIds, termId);
+        courseHelper.frontLoad(courseIds, termId);
         int courseIndex = -1;
         for (String courseId : courseIds) {
             courseIndex++;
-            CourseInfo c = courseHelper.getCourseInfo(courseId);
+            Course c = courseHelper.getCourseInfo(courseId);
             if (c == null)
                 continue;
             CourseOptionInfo courseOption = new CourseOptionInfo();
@@ -472,18 +467,11 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
             StringBuilder code = new StringBuilder();
             String campusCode = null;
-            for (AttributeInfo attributeInfo : c.getAttributes()) {
-                if (CourseSearchConstants.CAMPUS_LOCATION_COURSE_ATTRIBUTE.equals(attributeInfo.getKey())) {
-                    campusCode = attributeInfo.getValue();
-                    code.append(campusCode = attributeInfo.getValue()).append(" ");
-                    break;
-                }
-            }
-            /*for (Attribute ca : c.getAttributes())
+            for (Attribute ca : c.getAttributes())
                 if ("campusCode".equals(ca.getKey()))
                     code.append(campusCode = ca.getValue()).append(" ");
             if (!cartStrategy.isCartAvailable(termId, campusCode))
-                continue;*/
+                continue;
 
             code.append(c.getCode());
             courseOption.setCourseCode(code.toString());
@@ -497,8 +485,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 msg = new StringBuilder();
             for (ActivityOfferingDisplayInfo aodi : courseHelper.getActivityOfferingDisplaysByCourseAndTerm(courseId,
                     termId)) {
-                ActivityOptionInfo activityOption = getActivityOption(term, aodi, courseIndex,
-                        courseId, campusCode, msg, tdf, udf, ddf, sdcal, edcal, tcal);
+                ActivityOptionInfo activityOption = getActivityOption(term, aodi, courseIndex, courseId, campusCode, msg, tdf, udf, ddf, sdcal, edcal, tcal);
 
                 boolean enrollmentGroup = false;
                 String primaryOfferingId = null;
@@ -610,12 +597,8 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 msg.append("\nSelections :");
                 msg.append(courseIdsActivityCodes);
             }
-            Queue<ActivityOptionInfo> toCourseLockIn = courseLockIn
-                    ? new LinkedList<ActivityOptionInfo>() : null;
-            for (CourseOption co : getCourseOptions(new ArrayList<String>(
-                    courseIdsActivityCodes.keySet()), termId)) {
-                //List<String> acodes = courseIdsActivityCodes.get(co.getCourseId());
-                /*because we use version independent Id*/
+            Queue<ActivityOptionInfo> toCourseLockIn = courseLockIn ? new LinkedList<ActivityOptionInfo>() : null;
+            for (CourseOption co : getCourseOptions(new ArrayList<String>(courseIdsActivityCodes.keySet()), termId)) {
                 List<String> acodes = courseIdsActivityCodes.get(co.getCourseId());
                 if (msg != null) {
                     msg.append("\n  Course ").append(co.getCourseCode());
@@ -633,8 +616,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                             toCourseLockIn.add(aoi);
 
                     boolean foundHere = false;
-                    if (acodes.isEmpty()
-                            || acodes.contains(ao.getRegistrationCode())) {
+                    if (acodes.isEmpty() || acodes.contains(ao.getRegistrationCode())) {
                         aoi.setSelected(true);
                         if (lockIn)
                             aoi.setLockedIn(true);
@@ -660,10 +642,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                                     else
                                         toCourseLockIn.add(saoi);
 
-                                boolean select = foundHere
-                                        && (acodes.isEmpty() || acodes
-                                        .contains(sao
-                                                .getRegistrationCode()));
+                                boolean select = foundHere && (acodes.isEmpty() || acodes.contains(sao.getRegistrationCode()));
                                 if (select) {
                                     saoi.setSelected(true);
                                     if (lockIn)
@@ -703,16 +682,14 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     @Override
-    public List<CourseOption> getCourseOptions(String learningPlanId,
-                                               String termId) {
+    public List<CourseOption> getCourseOptions(String learningPlanId, String termId) {
         String studentId = getUserSessionHelper().getStudentId();
 
         AcademicPlanService academicPlanService = getAcademicPlanService();
         ContextInfo context = PlanConstants.CONTEXT_INFO;
         List<PlanItemInfo> planItems;
         try {
-            planItems = academicPlanService.getPlanItemsInPlan(learningPlanId,
-                    context);
+            planItems = academicPlanService.getPlanItemsInPlan(learningPlanId, context);
         } catch (DoesNotExistException e) {
             throw new IllegalArgumentException("CO lookup failure", e);
         } catch (InvalidParameterException e) {
@@ -770,45 +747,45 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
             if (periods == null || !periods.contains(termId))
                 continue;
 
-            String acodeattr = planItem.getAttributeValue("activityCode");
-            List<String> acodes;
-            if (acodeattr == null) {
-                acodes = Collections.emptyList();
-            } else {
-                acodes = Arrays.asList(acodeattr.split(","));
+
+            CourseInfo courseInfo = getCourseHelper().getCourseInfo(planItem.getRefObjectId());
+            if (courseInfo == null)
+                continue;
+
+            /*ActivityOfferings for the courseId is fetched*/
+            List<ActivityOfferingItem> activityOfferingItems = getCourseDetailsHelper().getActivityOfferingItemsByIdAndCd(courseInfo.getId(), courseInfo.getCode(), termId);
+
+            List<String> acodes = new ArrayList<String>();
+
+            /*Activities that are planned are added to acodes*/
+            for (ActivityOfferingItem activityOfferingItem : activityOfferingItems) {
+                if (StringUtils.hasText(activityOfferingItem.getPlanItemId())) {
+                    acodes.add(activityOfferingItem.getCode());
+                }
             }
 
             AcademicPlanServiceConstants.ItemCategory category = planItem.getCategory();
-            CourseInfo courseInfo = getCourseHelper().getCourseInfo(planItem.getRefObjectId());
+
             if (courseInfo != null) {
                 String courseId = courseInfo.getId();
-                if (AcademicPlanServiceConstants.ItemCategory.CART
-                        .equals(category))
-                    cartCourseIdsAndActivityCodes.put(courseId,
-                            acodes);
-                else if (AcademicPlanServiceConstants.ItemCategory.PLANNED
-                        .equals(category))
-                    plannedCourseIdsAndActivityCodes.put(courseId,
-                            acodes);
-                else if (AcademicPlanServiceConstants.ItemCategory.BACKUP
-                        .equals(category))
+                if (AcademicPlanServiceConstants.ItemCategory.CART.equals(category))
+                    cartCourseIdsAndActivityCodes.put(courseId, acodes);
+                else if (AcademicPlanServiceConstants.ItemCategory.PLANNED.equals(category))
+                    plannedCourseIdsAndActivityCodes.put(courseId, acodes);
+                else if (AcademicPlanServiceConstants.ItemCategory.BACKUP.equals(category))
                     backupCourseIds.add(courseId);
             }
         }
 
-        List<CourseOption> rv = new ArrayList<CourseOption>(
-                registeredCourseIdsAndActivityCodes.size()
-                        + cartCourseIdsAndActivityCodes.size()
-                        + plannedCourseIdsAndActivityCodes.size()
-                        + backupCourseIds.size());
-        buildCourseOptions(termId, true, true, registeredCourseIdsAndActivityCodes,
-                rv);
+        List<CourseOption> rv = new ArrayList<CourseOption>(registeredCourseIdsAndActivityCodes.size() + cartCourseIdsAndActivityCodes.size() + plannedCourseIdsAndActivityCodes.size() + backupCourseIds.size());
+        buildCourseOptions(termId, true, true, registeredCourseIdsAndActivityCodes, rv);
         buildCourseOptions(termId, false, true, cartCourseIdsAndActivityCodes, rv);
         buildCourseOptions(termId, false, false, plannedCourseIdsAndActivityCodes, rv);
-        if (!backupCourseIds.isEmpty())
-            for (CourseOption co : getCourseOptions(backupCourseIds, termId))
+        if (!backupCourseIds.isEmpty()) {
+            for (CourseOption co : getCourseOptions(backupCourseIds, termId)) {
                 rv.add(co);
-
+            }
+        }
         return rv;
     }
 
@@ -884,8 +861,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     // TODO: Convert from dynamic attributes to DAO service
     public List<ReservedTime> getReservedTimes(String requestedLearningPlanId)
             throws PermissionDeniedException {
-        return new ArrayList<ReservedTime>(
-                getScheduleBuildAttribute(requestedLearningPlanId).reservedTime);
+        return new ArrayList<ReservedTime>(getScheduleBuildAttribute(requestedLearningPlanId).reservedTime);
     }
 
     @Override
@@ -1104,5 +1080,16 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
     public void setShoppingCartStrategy(ShoppingCartStrategy shoppingCartStrategy) {
         this.shoppingCartStrategy = shoppingCartStrategy;
+    }
+
+    public CourseDetailsInquiryHelperImpl getCourseDetailsHelper() {
+        if (courseDetailsHelper == null) {
+            courseDetailsHelper = UwMyplanServiceLocator.getInstance().getCourseDetailsHelper();
+        }
+        return courseDetailsHelper;
+    }
+
+    public void setCourseDetailsHelper(CourseDetailsInquiryHelperImpl courseDetailsHelper) {
+        this.courseDetailsHelper = courseDetailsHelper;
     }
 }

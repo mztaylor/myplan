@@ -280,7 +280,7 @@ public class DefaultShoppingCartStrategy implements ShoppingCartStrategy,
 
     public ScheduleBuildStrategy getScheduleBuildStrategy() {
         if (scheduleBuildStrategy == null) {
-            scheduleBuildStrategy = new DefaultScheduleBuildStrategy();
+            scheduleBuildStrategy = UwMyplanServiceLocator.getInstance().getScheduleBuildStrategy();
         }
         return scheduleBuildStrategy;
     }

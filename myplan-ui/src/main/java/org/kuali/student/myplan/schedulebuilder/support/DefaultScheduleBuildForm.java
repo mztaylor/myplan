@@ -68,7 +68,7 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
         overload = false;
         includeClosed = false;
 
-        /*TermHelper th = getTermHelper();
+        TermHelper th = getTermHelper();
         if (termId == null)
             throw new IllegalArgumentException("Missing term ID");
         if (th.isCompleted(termId))
@@ -79,12 +79,6 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
                     + " is no longer open for planning.");
         if (termId == null)
             throw new IllegalArgumentException("Missing term ID");
-        if (AtpHelper.isAtpCompletedTerm(termId))
-            throw new IllegalArgumentException("Term " + termId
-                    + " has already been completed.");
-        if (!AtpHelper.isAtpSetToPlanning(termId))
-            throw new IllegalArgumentException("Term " + termId
-                    + " is no longer open for planning.");
 
 
         term = null;
@@ -101,59 +95,14 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
 
         ScheduleBuildStrategy strategy = getScheduleBuildStrategy();
         try {
-            courseOptions = strategy.getCourseOptions(
-                    strategy.getLearningPlan(requestedLearningPlanId).getId(),
-                    termId);
-            reservedTimes = strategy.getReservedTimes(requestedLearningPlanId);
-        } catch (PermissionDeniedException e) {
-            throw new IllegalArgumentException(
-                    "Course options not permitted for requested learning plan",
-                    e);
-        } */
-
-        if (termId == null) {
-            throw new IllegalArgumentException("Missing term ID");
-        }
-        if (AtpHelper.isAtpCompletedTerm(termId)) {
-            throw new IllegalArgumentException("Term " + termId
-                    + " has already been completed.");
-        }
-        if (!AtpHelper.isAtpSetToPlanning(termId)) {
-            throw new IllegalArgumentException("Term " + termId
-                    + " is no longer open for planning.");
-        }
-
-
-        term = null;
-        StringBuilder pubs = new StringBuilder();
-        List<TermInfo> termInfos = null;
-        try {
-            termInfos = getAcademicCalendarService().searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
-            for (TermInfo t : termInfos) {
-                pubs.append(" ").append(t.getId());
-                if (t.getId().equals(termId)) {
-                    term = t;
-                }
-            }
-        } catch (Exception e) {
-            LOG.error("Query to Academic Calendar Service failed.", e);
-        }
-
-        if (term == null)
-            throw new IllegalArgumentException("Term " + termId
-                    + " is not currently published." + pubs);
-
-        ScheduleBuildStrategy strategy = getScheduleBuildStrategy();
-        try {
-            courseOptions = strategy.getCourseOptions(
-                    strategy.getLearningPlan(requestedLearningPlanId).getId(),
-                    termId);
+            courseOptions = strategy.getCourseOptions(strategy.getLearningPlan(requestedLearningPlanId).getId(), termId);
             reservedTimes = strategy.getReservedTimes(requestedLearningPlanId);
         } catch (PermissionDeniedException e) {
             throw new IllegalArgumentException(
                     "Course options not permitted for requested learning plan",
                     e);
         }
+
     }
 
     private void updateReservedTimesOnBuild() {
@@ -502,7 +451,7 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
 
     public ScheduleBuildStrategy getScheduleBuildStrategy() {
         if (scheduleBuildStrategy == null) {
-            scheduleBuildStrategy = new DefaultScheduleBuildStrategy();
+            scheduleBuildStrategy = UwMyplanServiceLocator.getInstance().getScheduleBuildStrategy();
         }
         return scheduleBuildStrategy;
     }

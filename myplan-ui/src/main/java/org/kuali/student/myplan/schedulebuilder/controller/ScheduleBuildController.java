@@ -9,9 +9,8 @@ import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.enrollment.acal.infc.Term;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
-import org.kuali.student.myplan.schedulebuilder.support.DefaultScheduleBuildForm;
-import org.kuali.student.myplan.schedulebuilder.support.DefaultScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ShoppingCartForm;
@@ -58,7 +57,7 @@ public class ScheduleBuildController extends UifControllerBase {
                             HttpServletResponse response) throws IOException {
         super.start(form, result, request, response);
 
-        DefaultScheduleBuildForm sbform = (DefaultScheduleBuildForm) form;
+        ScheduleBuildForm sbform = (ScheduleBuildForm) form;
         try {
             sbform.reset();
             // Generate test case for ScheduleBuildMavenTest - not for
@@ -603,7 +602,7 @@ public class ScheduleBuildController extends UifControllerBase {
 
     public ScheduleBuildStrategy getScheduleBuildStrategy() {
         if (scheduleBuildStrategy == null) {
-            scheduleBuildStrategy = new DefaultScheduleBuildStrategy();
+            scheduleBuildStrategy = UwMyplanServiceLocator.getInstance().getScheduleBuildStrategy();
         }
         return scheduleBuildStrategy;
     }
