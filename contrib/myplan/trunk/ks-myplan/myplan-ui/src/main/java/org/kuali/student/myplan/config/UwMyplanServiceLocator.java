@@ -2,8 +2,11 @@ package org.kuali.student.myplan.config;
 
 import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
 import org.kuali.student.myplan.comment.util.CommentHelper;
+import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.TermHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
@@ -87,6 +90,30 @@ public class UwMyplanServiceLocator {
         this.termHelper = termHelper;
     }
 
+    public ScheduleBuildStrategy getScheduleBuildStrategy() {
+        return scheduleBuildStrategy;
+    }
+
+    public void setScheduleBuildStrategy(ScheduleBuildStrategy scheduleBuildStrategy) {
+        this.scheduleBuildStrategy = scheduleBuildStrategy;
+    }
+
+    public ScheduleBuildForm getScheduleBuildForm() {
+        return scheduleBuildForm;
+    }
+
+    public void setScheduleBuildForm(ScheduleBuildForm scheduleBuildForm) {
+        this.scheduleBuildForm = scheduleBuildForm;
+    }
+
+    public CourseDetailsInquiryHelperImpl getCourseDetailsHelper() {
+        return courseDetailsHelper;
+    }
+
+    public void setCourseDetailsHelper(CourseDetailsInquiryHelperImpl courseDetailsHelper) {
+        this.courseDetailsHelper = courseDetailsHelper;
+    }
+
     private CourseHelper courseHelper;
 
     private PlanHelper planHelper;
@@ -100,5 +127,11 @@ public class UwMyplanServiceLocator {
     private TermHelper termHelper;
 
     private Comparator<TypeInfo> atpTypeComparator;
+
+    private ScheduleBuildStrategy scheduleBuildStrategy;
+
+    private ScheduleBuildForm scheduleBuildForm;
+
+    private CourseDetailsInquiryHelperImpl courseDetailsHelper;
 
 }

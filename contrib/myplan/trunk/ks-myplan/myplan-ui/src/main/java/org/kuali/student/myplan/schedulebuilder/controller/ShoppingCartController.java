@@ -10,10 +10,10 @@ import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
-import org.kuali.student.myplan.schedulebuilder.support.DefaultScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.support.DefaultShoppingCartStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.*;
 import org.kuali.student.r2.common.dto.AttributeInfo;
@@ -424,7 +424,7 @@ public class ShoppingCartController extends UifControllerBase {
 
     public ScheduleBuildStrategy getScheduleBuildStrategy() {
         if(scheduleBuildStrategy == null){
-            scheduleBuildStrategy = new DefaultScheduleBuildStrategy();
+            scheduleBuildStrategy = UwMyplanServiceLocator.getInstance().getScheduleBuildStrategy();
         }
         return scheduleBuildStrategy;
     }
