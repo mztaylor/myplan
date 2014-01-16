@@ -1,4 +1,13 @@
 /**
+ * Used to append additional data for an institution when calling back to the controller
+ *
+ * @param additionalData
+ * @return {*}
+ */
+function ksapAdditionalFormData(additionalData) {
+    return additionalData;
+}
+/**
  *
  *
  * @param additionalFormData -
