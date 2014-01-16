@@ -90,8 +90,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
      *                                   learning plan.
      * @see #getLearningPlan(String)
      */
-    private ScheduleBuildAttribute getScheduleBuildAttribute(
-            String requestedLearningPlanId) throws PermissionDeniedException {
+    private ScheduleBuildAttribute getScheduleBuildAttribute(String requestedLearningPlanId) throws PermissionDeniedException {
         LearningPlanInfo learningPlanInfo = (LearningPlanInfo) getLearningPlan(requestedLearningPlanId);
         List<AttributeInfo> attributes = learningPlanInfo.getAttributes();
         Iterator<AttributeInfo> attributeIterator = attributes.iterator();
@@ -138,16 +137,10 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         LearningPlanInfo learningPlanInfo = (LearningPlanInfo) getLearningPlan(requestedLearningPlanId);
 
         @SuppressWarnings("deprecation")
-        AttributeInfo newScheduleBuildAttribute = new AttributeInfo(
-                SCHEDULE_BUILD_ATTR,
-                XmlMarshalUtil.marshal(
-                        scheduleBuildInfo, ReservedTimeInfo.class,
-                        PossibleScheduleOptionInfo.class));
+        AttributeInfo newScheduleBuildAttribute = new AttributeInfo(SCHEDULE_BUILD_ATTR, XmlMarshalUtil.marshal(scheduleBuildInfo, ReservedTimeInfo.class, PossibleScheduleOptionInfo.class));
 
-        List<AttributeInfo> attributes = new ArrayList<AttributeInfo>(
-                learningPlanInfo.getAttributes());
-        ListIterator<AttributeInfo> attributeListIterator = attributes
-                .listIterator();
+        List<AttributeInfo> attributes = new ArrayList<AttributeInfo>(learningPlanInfo.getAttributes());
+        ListIterator<AttributeInfo> attributeListIterator = attributes.listIterator();
 
         boolean found = false;
         while (!found && attributeListIterator.hasNext()) {
@@ -796,8 +789,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
             throw new PermissionDeniedException(
                     "Must be a student to build a schedule");
         }
-        String studentId = getUserSessionHelper()
-                .getStudentId();
+        String studentId = getUserSessionHelper().getStudentId();
         ContextInfo ctx = PlanConstants.CONTEXT_INFO;
         if (requestedLearningPlanId != null) {
             try {
@@ -941,17 +933,14 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     public PossibleScheduleOption createSchedule(
             String requestedLearningPlanId, PossibleScheduleOption schedule)
             throws PermissionDeniedException {
-        PossibleScheduleOptionInfo createSchedule = new PossibleScheduleOptionInfo(
-                schedule);
-        assert createSchedule.getId() == null : "Already has an Id "
-                + createSchedule.getId();
+        PossibleScheduleOptionInfo createSchedule = new PossibleScheduleOptionInfo(schedule);
+        assert createSchedule.getId() == null : "Already has an Id " + createSchedule.getId();
         createSchedule.setId(UUID.randomUUID().toString());
         createSchedule.setUniqueId(UUID.randomUUID().toString());
         createSchedule.setSelected(true);
 
         ScheduleBuildAttribute scheduleBuildInfo = getScheduleBuildAttribute(requestedLearningPlanId);
-        createSchedule.setDescription("Saved "
-                + (++scheduleBuildInfo.savedScheduleSequence));
+        createSchedule.setDescription("Saved " + (++scheduleBuildInfo.savedScheduleSequence));
         scheduleBuildInfo.schedule.add(createSchedule);
         updateScheduleBuildAttribute(requestedLearningPlanId, scheduleBuildInfo);
         return createSchedule;
