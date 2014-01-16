@@ -32,6 +32,9 @@ public class LearningPlanEntity extends MetaEntity
     @Column(name = "SHARED")
     private Boolean shared;
 
+    @Column(name = "STATE")
+    private String  state;
+
     public LearningPlanEntity() {
         super();
     }
@@ -78,6 +81,14 @@ public class LearningPlanEntity extends MetaEntity
         this.shared = shared;
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     @Override
     public String toString() {
         return String.format("LearningPlan [%s, %s]: %s", this.getId(), this.getObjectId(), this.getDescr().getPlain());
@@ -94,6 +105,7 @@ public class LearningPlanEntity extends MetaEntity
         dto.setStudentId(this.studentId);
         dto.setTypeKey(this.getLearningPlanType().getId());
         dto.setShared(this.shared);
+        dto.setStateKey(this.state);
 
         dto.setMeta(super.toDTO());
 
