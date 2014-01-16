@@ -35,7 +35,7 @@ import java.util.*;
 
 @Controller
 @RequestMapping(value = "/sb")
-public class ScheduleBuildController extends KsapControllerBase {
+public class ScheduleBuildController extends UifControllerBase {
 
     private static final Logger LOG = Logger
             .getLogger(ScheduleBuildController.class);
