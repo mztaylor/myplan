@@ -13,6 +13,7 @@ public class TimeStringMillisConverter {
     public static final long MILLIS_PER_MINUTE = 60L * MILLIS_PER_SECOND;
     public static final long MILLIS_PER_HOUR = 60L * MILLIS_PER_MINUTE;
     public static final long MILLIS_PER_DAY = 60L * MILLIS_PER_HOUR;
+    public static final String defaultDate = "1970-01-01";
 
     public final static Pattern militaryTimeRegex = Pattern.compile("([0-9][0-9]):([0-9][0-9])");
 
@@ -22,21 +23,25 @@ public class TimeStringMillisConverter {
             int hours = Integer.parseInt(m.group(1));
             int minutes = Integer.parseInt(m.group(2));
             if (hours < 24 && minutes < 60) {
-                long timeofday = hours * MILLIS_PER_HOUR;
-                timeofday += minutes * MILLIS_PER_MINUTE;
-                return timeofday;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String inputString = String.format("%s:%s:00", hours, minutes);
+                try {
+                    Date date = sdf.parse(String.format("%s %s", defaultDate, inputString));
+                    return date.getTime();
+                } catch (Exception e) {
+                    throw new NumberFormatException(time);
+                }
             }
+
         }
         throw new NumberFormatException(time);
     }
 
     public static String millisToMilitaryTime(long millis) {
         // Limit to 24 hours (one day) max
-        millis = millis % MILLIS_PER_DAY;
-        long minutes = millis % MILLIS_PER_HOUR;
-        long hours = millis - minutes;
-        minutes = minutes / MILLIS_PER_MINUTE;
-        hours = hours / MILLIS_PER_HOUR;
+        Date date = new Date(millis);
+        int hours = date.getHours();
+        int minutes = date.getMinutes();
         String time = String.format("%02d:%02d", hours, minutes);
         return time;
     }
@@ -50,12 +55,10 @@ public class TimeStringMillisConverter {
 
     public static String millisToStandardTime(long millis) {
         // Limit to 24 hours (one day) max
-        millis = millis % MILLIS_PER_DAY;
         boolean am = true;
-        long minutes = millis % MILLIS_PER_HOUR;
-        long hours = millis - minutes;
-        minutes = minutes / MILLIS_PER_MINUTE;
-        hours = hours / MILLIS_PER_HOUR;
+        Date date = new Date(millis);
+        int hours = date.getHours();
+        int minutes = date.getMinutes();
         if (hours > 11) {
             am = false;
             hours -= 12;
