@@ -52,35 +52,14 @@ public class ScheduleBuildController extends UifControllerBase {
         return (UifFormBase) getScheduleBuildStrategy().getInitialForm();
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView get(@ModelAttribute("KualiForm") UifFormBase form,
-                            BindingResult result, HttpServletRequest request,
-                            HttpServletResponse response) throws IOException {
+    @RequestMapping(params = "methodToCall=start")
+    public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form,
+                              BindingResult result, HttpServletRequest request,
+                              HttpServletResponse response) {
         super.start(form, result, request, response);
 
         ScheduleBuildForm sbform = (ScheduleBuildForm) form;
-        try {
-            sbform.reset();
-            // Generate test case for ScheduleBuildMavenTest - not for
-            // production.
-            //			File out = new File("/tmp/CourseOptions.ser");
-            //			FileOutputStream fout = new FileOutputStream(out);
-            //			ObjectOutputStream oos = new ObjectOutputStream(fout);
-            //			oos.writeObject(((ScheduleBuildForm) form).getCourseOptions());
-            //			oos.flush();
-            //			oos.close();
-            //			fout.flush();
-            //			fout.close();
-            //			LOG.debug("Written to " + out);
-        } catch (IllegalArgumentException e) {
-            LOG.error("Failed to initialize schedule build form", e);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                    "Failed to initialize schedule build form");
-            return null;
-        }
-
-        form.setViewId(SB_FORM);
-        form.setView(super.getViewService().getViewById(SB_FORM));
+        sbform.reset();
         return getUIFModelAndView(form);
     }
 
