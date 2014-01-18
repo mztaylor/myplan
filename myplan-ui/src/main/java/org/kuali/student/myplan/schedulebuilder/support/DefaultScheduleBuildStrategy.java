@@ -51,9 +51,9 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         Serializable {
 
     private transient AcademicPlanService academicPlanService;
-    @Autowired
+
     private transient CourseHelper courseHelper;
-    @Autowired
+
     private UserSessionHelper userSessionHelper;
     private transient TermHelper termHelper;
     private transient AcademicRecordService academicRecordService;
@@ -85,7 +85,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
      *
      * @param requestedLearningPlanId The requested learning plan ID.
      * @return The schedule build saved info, stored as a dynamic attribute on
-     *         the requested learning plan.
+     * the requested learning plan.
      * @throws PermissionDeniedException If the current user does not have access to the requested
      *                                   learning plan.
      * @see #getLearningPlan(String)
@@ -126,7 +126,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
      *
      * @param requestedLearningPlanId The requested learning plan ID.
      * @return The saved data, to be stored as a dynamic attribute on the
-     *         requested learning plan.
+     * requested learning plan.
      * @throws PermissionDeniedException If the current user does not have access to the requested
      *                                   learning plan.
      * @see #getLearningPlan(String)
@@ -144,8 +144,10 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
         boolean found = false;
         while (!found && attributeListIterator.hasNext()) {
-            if (attributeListIterator.next().getKey()
+            AttributeInfo attributeInfo = attributeListIterator.next();
+            if (attributeInfo.getKey()
                     .equals(SCHEDULE_BUILD_ATTR)) {
+                newScheduleBuildAttribute.setId(attributeInfo.getId());
                 attributeListIterator.set(newScheduleBuildAttribute);
                 found = true;
             }
@@ -938,6 +940,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         createSchedule.setId(UUID.randomUUID().toString());
         createSchedule.setUniqueId(UUID.randomUUID().toString());
         createSchedule.setSelected(true);
+        createSchedule.setTermId(schedule.getTermId());
 
         ScheduleBuildAttribute scheduleBuildInfo = getScheduleBuildAttribute(requestedLearningPlanId);
         createSchedule.setDescription("Saved " + (++scheduleBuildInfo.savedScheduleSequence));
