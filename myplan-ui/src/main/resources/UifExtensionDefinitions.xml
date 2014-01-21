@@ -53,7 +53,6 @@
         </property>
     </bean>
 
-
     <bean id="Uif-KSAPTabs" parent="Uif-KSAPTabs-parentBean"/>
     <bean id="Uif-KSAPTabs-parentBean" abstract="true" class="org.kuali.rice.krad.uif.widget.extension.KSAPTabs" scope="prototype"
           parent="Uif-WidgetBase">
@@ -61,12 +60,23 @@
         <property name="templateName" value="uif_tabs"/>
     </bean>
 
-
     <!-- List based Data Field that supports dl and dd -->
     <bean id="Uif-ListDataField" parent="Uif-DataField-parentBean" class="org.kuali.rice.krad.uif.container.extension.ListDataField"/>
 
     <!-- TODO: Temporary Fix for KULRICE-9215 -->
     <bean id="Uif-MultiRowTableCollectionLayout" parent="Uif-TableCollectionLayout-parentBean" class="org.kuali.rice.krad.uif.layout.extension.MultiRowSpanTableLayoutManager"/>
 
+    <bean id="KSAP-Calendar" parent="KSAP-Calendar-parentBean"/>
+    <bean id="KSAP-Calendar-parentBean" parent="Uif-ContentElementBase" scope="prototype"
+        class="org.kuali.rice.krad.uif.element.extension.ScheduleBuildCalendarComponent" p:cssClasses="ksap-sb-calendar"
+        p:template="/WEB-INF/ftl/schedulebuilder/sb_calendar.ftl" p:templateName="sb_calendar">
+        <property name="templateOptions">
+            <map merge="true">
+                <entry key="year" value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).displayCurrentDateTime('y')}"/>
+                <entry key="month" value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).displayCurrentDateTime('M') - 1}"/>
+                <entry key="date" value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).displayCurrentDateTime('d')}"/>
+            </map>
+        </property>
+    </bean>
 
 </beans>

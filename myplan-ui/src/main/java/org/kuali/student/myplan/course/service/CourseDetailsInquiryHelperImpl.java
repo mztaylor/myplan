@@ -828,10 +828,10 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     TimeOfDayInfo endInfo = timeSlot.getEndTime();
                     if (startInfo != null && endInfo != null) {
                         long startTimeMillis = startInfo.getMilliSeconds();
-                        String startTime = TimeStringMillisConverter.millisToStandardTime(startTimeMillis);
+                        String startTime = TimeStringMillisConverter.millisToStandardTime(startTimeMillis, null);
 
                         long endTimeMillis = endInfo.getMilliSeconds();
-                        String endTime = TimeStringMillisConverter.millisToStandardTime(endTimeMillis);
+                        String endTime = TimeStringMillisConverter.millisToStandardTime(endTimeMillis, null);
 
                         String time = startTime + " - " + endTime;
 

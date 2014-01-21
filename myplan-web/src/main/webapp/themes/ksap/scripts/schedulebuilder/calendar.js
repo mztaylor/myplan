@@ -18,7 +18,7 @@ var KsapSbCalendar = {
 			allDayText : 'to be arranged',
 			defaultView : 'agendaWeek',
 			timeFormat : {
-				agenda : 'h(:mm)t{ - h(:mm)t}',
+				agenda : 'h(:mm)t{ - h(:mm)t}'
 			},
 			columnFormat : {
 				week : 'dddd'
