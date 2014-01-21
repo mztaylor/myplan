@@ -6,228 +6,236 @@ function uuid() {
 	});
 }
 
-var KsapScheduleBuild = {
-	triggerEnabled : true,
-	pendingBuild : 0,
-	possibleSchedules : null,
+var KsapScheduleBuild = {};
+var KsapSbCalendar;
 
-	initialize : function(termStartDate) {
-		KsapSbCalendar.initialize('#sb_calendar', termStartDate);
-		this.build(false);
-	},
+function createScheduleBuilder(calendarId) {
+    KsapSbCalendar = jQuery("#" + calendarId);
 
-	trigger : function() {
-		if (!this.triggerEnabled)
-			return;
-		if (this.pendingBuild != 0)
-			clearTimeout(this.pendingBuild);
-		this.pendingBuild = setTimeout("KsapScheduleBuild.build(false)", 1250);
-	},
+    KsapScheduleBuild = {
+        triggerEnabled : true,
+        pendingBuild : 0,
+        possibleSchedules : null,
 
-	build : function(more, removeReserved) {
-		var sb = this;
-		sb.triggerEnabled = false;
-		showLoading("Building...");
-		jQuery("#kualiForm").ajaxSubmit({
-			data : {
-				"methodToCall" : "build",
-				"more" : more,
-				"removeReserved" : removeReserved
-			},
-			dataType : 'json',
-			success : function(newPossibleSchedules, textStatus, jqXHR) {
-				if (newPossibleSchedules.todo != null)
-					showGrowl(newPossibleSchedules.todo);
-				sb.possibleSchedules = newPossibleSchedules;
-				KsapSbCalendar.clear();
+        initialize : function() {
+            this.build(false);
+        },
 
-				jQuery("#sb_possible_options > .uif-verticalBoxLayout, #sb_possible_options > .uif-horizontalBoxLayout").empty();
-				for (var i in sb.possibleSchedules.possible)
-					sb.appendPossibleOption(sb.possibleSchedules.possible[i]);
-				if (sb.possibleSchedules.possible.length == 0)
-					jQuery(".ksap-sb-noschedules").show();
-				else
-					jQuery(".ksap-sb-noschedules").hide();
+        trigger : function() {
+            if (!this.triggerEnabled)
+                return;
+            if (this.pendingBuild != 0)
+                clearTimeout(this.pendingBuild);
+            this.pendingBuild = setTimeout("KsapScheduleBuild.build(false)", 1250);
+        },
 
-				if (sb.possibleSchedules.more)
-					jQuery(".ksap-sb-morelink").show();
-				else
-					jQuery(".ksap-sb-morelink").hide();
+        build : function(more, removeReserved) {
+            var sb = this;
+            sb.triggerEnabled = false;
+            showLoading("Building...", KsapSbCalendar);
+            jQuery("#kualiForm").ajaxSubmit({
+                data : {
+                    "methodToCall" : "build",
+                    "more" : more,
+                    "removeReserved" : removeReserved
+                },
+                dataType : 'json',
+                success : function(newPossibleSchedules, textStatus, jqXHR) {
+                    if (newPossibleSchedules.todo != null)
+                        showGrowl(newPossibleSchedules.todo);
+                    sb.possibleSchedules = newPossibleSchedules;
+                    KsapSbCalendar.fullCalendar('removeEvents');
 
-				jQuery("#sb_saved_schedules > .uif-verticalBoxLayout, #sb_saved_schedules > .uif-horizontalBoxLayout").empty();
-				for (var i in sb.possibleSchedules.saved)
-					sb.appendSavedOption(sb.possibleSchedules.saved[i]);
+                    jQuery("#sb_possible_options > .uif-verticalBoxLayout, #sb_possible_options > .uif-horizontalBoxLayout").empty();
+                    for (var i in sb.possibleSchedules.possible)
+                        sb.appendPossibleOption(sb.possibleSchedules.possible[i]);
+                    if (sb.possibleSchedules.possible.length == 0)
+                        jQuery(".ksap-sb-noschedules").show();
+                    else
+                        jQuery(".ksap-sb-noschedules").hide();
 
-				jQuery("#sb_reserved_times_possible > .uif-verticalBoxLayout, #sb_reserved_times_possible > .uif-horizontalBoxLayout").empty();
-				jQuery("#sb_reserved_times_saved > .uif-verticalBoxLayout, #sb_reserved_times_saved > .uif-horizontalBoxLayout").empty();
-				for (var i=0; i<sb.possibleSchedules.reserved.length; i++) {
-					sb.appendReservedTime(i, "sb_reserved_times_possible");
-					sb.appendReservedTime(i, "sb_reserved_times_saved");
-				}
+                    if (sb.possibleSchedules.more)
+                        jQuery(".ksap-sb-morelink").show();
+                    else
+                        jQuery(".ksap-sb-morelink").hide();
 
-				var weekgroups = jQuery("#sb_week_group_area > .uif-verticalBoxLayout, #sb_week_group_area > .uif-horizontalBoxLayout");
-				weekgroups.empty();
-				for (var i=0; i<sb.possibleSchedules.weeks.length; i++) sb.appendWeekGroup(i);
+                    jQuery("#sb_saved_schedules > .uif-verticalBoxLayout, #sb_saved_schedules > .uif-horizontalBoxLayout").empty();
+                    for (var i in sb.possibleSchedules.saved)
+                        sb.appendSavedOption(sb.possibleSchedules.saved[i]);
 
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-				if (textStatus == "parsererror")
-					textStatus = "JSON Parse Error";
-				showGrowl(errorThrown, jqXHR.status + " " + textStatus);
-			},
-			complete : function() {
-				hideLoading();
-				sb.triggerEnabled = true;
-			}
-		});
-	},
+                    jQuery("#sb_reserved_times_possible > .uif-verticalBoxLayout, #sb_reserved_times_possible > .uif-horizontalBoxLayout").empty();
+                    jQuery("#sb_reserved_times_saved > .uif-verticalBoxLayout, #sb_reserved_times_saved > .uif-horizontalBoxLayout").empty();
+                    for (var i=0; i<sb.possibleSchedules.reserved.length; i++) {
+                        sb.appendReservedTime(i, "sb_reserved_times_possible");
+                        sb.appendReservedTime(i, "sb_reserved_times_saved");
+                    }
 
-	isSaved : function(uniqueId) {
-		if (this.possibleSchedules == null) return false;
-		if (this.possibleSchedules.saved != null)
-			for (var i in this.possibleSchedules.saved)
-				if (this.possibleSchedules.saved[i].uniqueId == uniqueId)
-					return true;
-		return false;
-	},
-	
-	getSchedule : function(uniqueId) {
-		if (this.possibleSchedules == null) return null;
-		if (this.possibleSchedules.possible != null)
-			for (var i in this.possibleSchedules.possible)
-				if (this.possibleSchedules.possible[i].uniqueId == uniqueId)
-					return this.possibleSchedules.possible[i];
-		if (this.possibleSchedules.saved != null)
-			for (var i in this.possibleSchedules.saved)
-				if (this.possibleSchedules.saved[i].uniqueId == uniqueId)
-					return this.possibleSchedules.saved[i];
-		return null;
-	},
+                    var weekgroups = jQuery("#sb_week_group_area > .uif-verticalBoxLayout, #sb_week_group_area > .uif-horizontalBoxLayout");
+                    weekgroups.empty();
+                    for (var i=0; i<sb.possibleSchedules.weeks.length; i++) sb.appendWeekGroup(i);
 
-	appendPossibleOption : function(schedule) {
-		appendScheduleOption(schedule, jQuery("#sb_possible_options > .uif-verticalBoxLayout, #sb_possible_options > .uif-horizontalBoxLayout"));
-	},
+                },
+                error : function(jqXHR, textStatus, errorThrown) {
+                    if (textStatus == "parsererror")
+                        textStatus = "JSON Parse Error";
+                    showGrowl(errorThrown, jqXHR.status + " " + textStatus);
+                },
+                complete : function() {
+                    hideLoading(KsapSbCalendar);
+                    sb.triggerEnabled = true;
+                }
+            });
+        },
 
-	appendSavedOption : function(schedule) {
-		appendScheduleOption(schedule, jQuery("#sb_saved_schedules > .uif-verticalBoxLayout, #sb_saved_schedules > .uif-horizontalBoxLayout"));
-	},
+        isSaved : function(uniqueId) {
+            if (this.possibleSchedules == null) return false;
+            if (this.possibleSchedules.saved != null)
+                for (var i in this.possibleSchedules.saved)
+                    if (this.possibleSchedules.saved[i].uniqueId == uniqueId)
+                        return true;
+            return false;
+        },
 
-	moveUp : function(uniqueId) {
-		moveScheduleOption(uniqueId, false);
-	},
+        getSchedule : function(uniqueId) {
+            if (this.possibleSchedules == null) return null;
+            if (this.possibleSchedules.possible != null)
+                for (var i in this.possibleSchedules.possible)
+                    if (this.possibleSchedules.possible[i].uniqueId == uniqueId)
+                        return this.possibleSchedules.possible[i];
+            if (this.possibleSchedules.saved != null)
+                for (var i in this.possibleSchedules.saved)
+                    if (this.possibleSchedules.saved[i].uniqueId == uniqueId)
+                        return this.possibleSchedules.saved[i];
+            return null;
+        },
 
-	moveDown : function(uniqueId) {
-		moveScheduleOption(uniqueId, true);
-	},
+        appendPossibleOption : function(schedule) {
+            appendScheduleOption(schedule, jQuery("#sb_possible_options > .uif-verticalBoxLayout, #sb_possible_options > .uif-horizontalBoxLayout"));
+        },
 
-	trash : function(uniqueId) {
-		trashScheduleOption(uniqueId);
-	},
+        appendSavedOption : function(schedule) {
+            appendScheduleOption(schedule, jQuery("#sb_saved_schedules > .uif-verticalBoxLayout, #sb_saved_schedules > .uif-horizontalBoxLayout"));
+        },
 
-	save : function(uniqueId) {
-		saveOrRemoveScheduleOption(uniqueId);
-	},
+        moveUp : function(uniqueId) {
+            moveScheduleOption(uniqueId, false);
+        },
 
-	sendToCart : function(uniqueId, termId, e) {
-		ksapSbOpenDialog("sb_cart_add_from_sb", "sb/cart", {"possibleScheduleId" : uniqueId, "termId": termId}, e.target, e);
-	},
+        moveDown : function(uniqueId) {
+            moveScheduleOption(uniqueId, true);
+        },
 
-	getReservedTime : function(index) {
-		if (this.possibleSchedules == null ||
-				this.possibleSchedules.reserved == null ||
-				this.possibleSchedules.reserved.length <= index) return null;
-		return this.possibleSchedules.reserved[index];
-	},
+        trash : function(uniqueId) {
+		    trashScheduleOption(uniqueId);
+        },
 
-	appendReservedTime : function(i, containerId) {
-		var reserved = this.possibleSchedules.reserved[i];
-		var container = jQuery("#"+containerId+" > .uif-verticalBoxLayout, #"+containerId+" > .uif-horizontalBoxLayout");
-		var template = jQuery("#sb_reserved_time_template").html();
+        save : function(uniqueId) {
+            saveOrRemoveScheduleOption(uniqueId);
+        },
 
-		var uid = reserved.uniqueId;
-		var row = jQuery("#sb-reserved-time-row-" + uid);
-		if (row.length > 0) {
-			uid = uuid();
-			row.parent().data("altuid", uid);
-		}
+        sendToCart : function(uniqueId, termId, e) {
+            ksapSbOpenDialog("sb_cart_add_from_sb", "sb/cart", {"possibleScheduleId" : uniqueId, "termId": termId}, e.target, e);
+        },
 
-		template = template.replace(/__KSAP_UID__/gi, uid);
-		template = template.replace(/__KSAP_INDEX__/gi, i);
-		template = template.replace(/__KSAP_DESCR__/gi, reserved.descr);
-		template = template.replace(/__KSAP_START__/gi, reserved.startDate);
-		template = template.replace(/__KSAP_UNTIL__/gi, reserved.untilDate);
-		template = template.replace(/__KSAP_DAYSTIMES__/gi, reserved.daysTimes);
-		template = template.replace(/id=\"(u\d+)/gi, "id=\""+uid+"_$1");
-		row = jQuery(template);
+        getReservedTime : function(index) {
+            if (this.possibleSchedules == null ||
+                    this.possibleSchedules.reserved == null ||
+                    this.possibleSchedules.reserved.length <= index) return null;
+            return this.possibleSchedules.reserved[index];
+        },
 
-		var _cb = row.find(":hidden[name='_selected']");
-		var cb = row.find(":checkbox");
-		cb.prop("checked", reserved.selected);
+        appendReservedTime : function(i, containerId) {
+            var reserved = this.possibleSchedules.reserved[i];
+            var container = jQuery("#"+containerId+" > .uif-verticalBoxLayout, #"+containerId+" > .uif-horizontalBoxLayout");
+            var template = jQuery("#sb_reserved_time_template").html();
 
-		if (uid == reserved.uniqueId) {
-			_cb.attr("name", "_reservedTimes["+i+"].selected");
-			cb.attr("name", "reservedTimes["+i+"].selected");
-		} else {
-			_cb.removeAttr("name");
-			cb.removeAttr("name");
-		}
+            var uid = reserved.uniqueId;
+            var row = jQuery("#sb-reserved-time-row-" + uid);
+            if (row.length > 0) {
+                uid = uuid();
+                row.parent().data("altuid", uid);
+            }
 
-		container.append(row);
-		row.find("input[data-role='script']").removeAttr("script").attr("name", "script");
-		evaluateScripts(row);
-		
-		row.data("realuid", reserved.uniqueId);
-		row.data("altuid", uid);
-		toggleReservedTimeSelect(uid);
-		row.show();
-	},
+            template = template.replace(/__KSAP_UID__/gi, uid);
+            template = template.replace(/__KSAP_INDEX__/gi, i);
+            template = template.replace(/__KSAP_DESCR__/gi, reserved.descr);
+            template = template.replace(/__KSAP_START__/gi, reserved.startDate);
+            template = template.replace(/__KSAP_UNTIL__/gi, reserved.untilDate);
+            template = template.replace(/__KSAP_DAYSTIMES__/gi, reserved.daysTimes);
+            template = template.replace(/id=\"(u\d+)/gi, "id=\""+uid+"_$1");
+            row = jQuery(template);
 
-	trashReservedTime : function(uniqueId) {
-		var row = jQuery("#sb-reserved-time-row-" + uniqueId);
-		if (row.length == 0) return;
-		var i = row.data("index");
-		if (i < 0 || i >= this.possibleSchedules.reserved.length) return;
-		this.build(false,i);
-		row.parent().remove();
-	},
+            var _cb = row.find(":hidden[name='_selected']");
+            var cb = row.find(":checkbox");
+            cb.prop("checked", reserved.selected);
 
-	appendWeekGroup : function(i) {
-		var week = this.possibleSchedules.weeks[i];
-		var container = jQuery("#sb_week_group_area > .uif-verticalBoxLayout, #sb_week_group_area > .uif-horizontalBoxLayout");
-		var template = jQuery("#sb_weekgroup_template").html();
+            if (uid == reserved.uniqueId) {
+                _cb.attr("name", "_reservedTimes["+i+"].selected");
+                cb.attr("name", "reservedTimes["+i+"].selected");
+            } else {
+                _cb.removeAttr("name");
+                cb.removeAttr("name");
+            }
 
-		template = template.replace(/__KSAP_TITLE__/gi, week.title);
-		template = template.replace(/__KSAP_SUBTITLE__/gi, week.subtitle);
-		template = template.replace(/id=\"(u\d+)/gi, "id=\"$1_"+i);
-		var row = jQuery(template).children(".uif-boxGroup");
-		if (i == 0) {
-			KsapSbCalendar.gotoDate(week.gotoYear, week.gotoMonth, week.gotoDate);
-		} else {
-			row.removeClass("ksap-sb-selected");
-			row.addClass("ksap-sb-deselected");
-		}
-		
-		container.append(row);
-		
-		row.data('year', week.gotoYear);
-		row.data('month', week.gotoMonth);
-		row.data('date', week.gotoDate);
-		row.on('click', function(){
-			var t = jQuery(this);
-			KsapSbCalendar.gotoDate(t.data('year'), t.data('month'), t.data('date'));
-			jQuery("#sb_week_group_area > .uif-verticalBoxLayout .ksap-sb-weekGroup, #sb_week_group_area > .uif-horizontalBoxLayout .ksap-sb-weekGroup").each(function() {
-				var t = jQuery(this);
-				t.removeClass("ksap-sb-selected");
-				t.addClass("ksap-sb-deselected");
-			});
-			t.addClass("ksap-sb-selected");
-			t.removeClass("ksap-sb-deselected");
-		});
-		
-		row.show();
-	}
+            container.append(row);
+            row.find("input[data-role='script']").removeAttr("script").attr("name", "script");
+            evaluateScripts(row);
 
-};
+            row.data("realuid", reserved.uniqueId);
+            row.data("altuid", uid);
+		        toggleReservedTimeSelect(uid);
+            row.show();
+        },
+
+        trashReservedTime : function(uniqueId) {
+            var row = jQuery("#sb-reserved-time-row-" + uniqueId);
+            if (row.length == 0) return;
+            var i = row.data("index");
+            if (i < 0 || i >= this.possibleSchedules.reserved.length) return;
+            this.build(false,i);
+            row.parent().remove();
+        },
+
+        appendWeekGroup : function(i) {
+            var week = this.possibleSchedules.weeks[i];
+            var container = jQuery("#sb_week_group_area > .uif-verticalBoxLayout, #sb_week_group_area > .uif-horizontalBoxLayout");
+            var template = jQuery("#sb_weekgroup_template").html();
+
+            template = template.replace(/__KSAP_TITLE__/gi, week.title);
+            template = template.replace(/__KSAP_SUBTITLE__/gi, week.subtitle);
+            template = template.replace(/id=\"(u\d+)/gi, "id=\"$1_"+i);
+            var row = jQuery(template).children(".uif-boxGroup");
+            if (i == 0) {
+                KsapSbCalendar.fullCalendar('gotoDate', week.gotoYear, week.gotoMonth-1, week.gotoDate);
+            } else {
+                row.removeClass("ksap-sb-selected");
+                row.addClass("ksap-sb-deselected");
+            }
+
+            container.append(row);
+
+            row.data('year', week.gotoYear);
+            row.data('month', week.gotoMonth);
+            row.data('date', week.gotoDate);
+            row.on('click', function(){
+                var t = jQuery(this);
+                KsapSbCalendar.fullCalendar('gotoDate', t.data('year'), t.data('month')-1, t.data('date'));
+                jQuery("#sb_week_group_area > .uif-verticalBoxLayout .ksap-sb-weekGroup, #sb_week_group_area > .uif-horizontalBoxLayout .ksap-sb-weekGroup").each(function() {
+                    var t = jQuery(this);
+                    t.removeClass("ksap-sb-selected");
+                    t.addClass("ksap-sb-deselected");
+                });
+                t.addClass("ksap-sb-selected");
+                t.removeClass("ksap-sb-deselected");
+            });
+
+            row.show();
+        }
+
+    };
+
+    KsapScheduleBuild.initialize();
+}
 
 function moreSchedules() {
 	KsapScheduleBuild.build(true);
@@ -323,7 +331,7 @@ function trashScheduleOption(uniqueId) {
 	var model = KsapScheduleBuild.getSchedule(uniqueId);
 	if (model == null) return;
 	
-	KsapSbCalendar.remove(model);
+	KsapSbCalendar.fullCalendar('removeEventSource', model);
 
 	// remove from view
 	var row = jQuery("#" + uniqueId);
@@ -376,7 +384,7 @@ function removeSavedScheduleOption(uniqueId) {
 				var smodel = KsapScheduleBuild.getSchedule(srow.attr("id"));
 				
 				if (model.id == smodel.id) {
-					KsapSbCalendar.remove(smodel);
+					KsapSbCalendar.fullCalendar('removeEventSource', smodel);
 					srow.remove();
 				}
 			});
@@ -455,7 +463,7 @@ function toggleScheduleOptionSelect(uniqueId) {
 		if (schedule != null) {
 			for (var i in schedule.eventClass)
 				row.addClass(schedule.eventClass[i]);
-			KsapSbCalendar.add(schedule);
+			KsapSbCalendar.fullCalendar('addEventSource', schedule);
 		}
 	} else {
 		row.removeClass("ksap-sb-selected");
@@ -464,7 +472,7 @@ function toggleScheduleOptionSelect(uniqueId) {
 		if (schedule != null) {
 			for (var i in schedule.eventClass)
 				row.removeClass(schedule.eventClass[i]);
-			KsapSbCalendar.remove(schedule);
+			KsapSbCalendar.fullCalendar('removeEventSource', schedule);
 		}
 	}
 }
@@ -482,10 +490,10 @@ function ksapSbOpenDialog(pageId, action, data, target, e) {
 		tail : {
 			hidden : true
 		},
-		align : 'top',
 		close : true ,
 		sticky : true ,
-		themeName : 'transparent'
+        position : "right" ,
+		themeName : "transparent"
 	};
 	jQuery("#popupForm").remove();
 	fnClosePopup();
@@ -611,7 +619,7 @@ function toggleReservedTimeSelect(uniqueId) {
 			}
 			if (!reserved.visible) {
 				reserved.visible = true;
-				KsapSbCalendar.add(reserved);
+				KsapSbCalendar.fullCalendar('addEventSource', reserved);
 			}
 		}
 	} else {
@@ -626,7 +634,7 @@ function toggleReservedTimeSelect(uniqueId) {
 			}
 			if (reserved.visible) {
 				reserved.visible = false;
-				KsapSbCalendar.remove(reserved);
+				KsapSbCalendar.fullCalendar('removeEventSource', reserved);
 			}
 		}
 	}

@@ -1,5 +1,7 @@
 package org.kuali.student.myplan.utils;
 
+import org.springframework.util.StringUtils;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Date;
@@ -53,7 +55,7 @@ public class TimeStringMillisConverter {
         return dateFormat.format(date);
     }
 
-    public static String millisToStandardTime(long millis) {
+    public static String millisToStandardTime(long millis, String format) {
         // Limit to 24 hours (one day) max
         boolean am = true;
         Date date = new Date(millis);
@@ -66,8 +68,13 @@ public class TimeStringMillisConverter {
         if (hours == 0) {
             hours = 12;
         }
-        String time = String.format("%d:%02d %s", hours, minutes, am ? "AM" : "PM");
-        return time;
+        if (StringUtils.hasText(format)) {
+            DateFormat dateFormat = new SimpleDateFormat(format);
+            Date dateSt = new Date(millis);
+            return dateFormat.format(dateSt);
+        } else {
+            return String.format("%d:%02d %s", hours, minutes, am ? "AM" : "PM");
+        }
     }
 
 
@@ -104,7 +111,7 @@ public class TimeStringMillisConverter {
     private static void testStandardToMilitary(String example, String expected) {
         try {
             long timeofday = militaryTimeToMillis(example);
-            String time = millisToStandardTime(timeofday);
+            String time = millisToStandardTime(timeofday, null);
             System.out.printf("\n%s == %s -> %b", time, expected, expected.equals(time));
         } catch (Exception e) {
             e.printStackTrace();

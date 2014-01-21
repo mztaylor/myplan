@@ -725,6 +725,10 @@ function fnUpdateQuarterViewCredits(termCredits) {
     }
 }
 
+function createCalendar(id, options) {
+    jQuery("#" + id).fullCalendar(options);
+}
+
 (function ($) {
     // TODO remove publish method after old audits have been purged as audit FTL inline scripted a publish call
     $.publish = function (event) {
