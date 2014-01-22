@@ -17,6 +17,8 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String PLAN_ITEM_RESPONSE_PAGE_ID = "plan_item_action_response_page";
     public static final String PLAN_PAGE_ID = "planned_courses_detail_page";
+    public static final String PLAN_COMPONENT_ID = "planned_courses_detail";
+    public static final String TERM_PAGE_ID = "term_planned_courses_detail_page";
     public static final String ACTION_MENU_PAGE_ID = "add_planned_course";
 
     public static final String GEN_EDU_ENUM_KEY = "uw.course.genedrequirement";
@@ -69,6 +71,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String ERROR_TECHNICAL_PROBLEMS = "myplan.text.error.technicalProblems";
     public static final String ERROR_PLAN_AUDIT_QUARTER_EMPTY = "myplan.text.error.planAuditQuarterEmpty";
     public static final String ERROR_PLAN_AUDIT_INVALID_QUARTER = "myplan.text.error.planAuditInvalidQuarter";
+    public static final String ERROR_ACA_RECORD_SWS_PROBLEMS = "myplan.text.error.SwsProblems";
 
     public static final String ERROR_KEY_NO_STUDENT_PROXY_ID = "myplan.text.error.adviser.noStudentId";
     public static final String WARNING_STUDENT_CONTEXT_SWITCH = "myplan.text.warning.adviser.studentSwitch";
