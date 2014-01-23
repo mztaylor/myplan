@@ -414,6 +414,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         }
 
         lpe.setShared(learningPlan.getShared());
+        lpe.setState(learningPlan.getStateKey());
         //  Update meta data.
         lpe.setUpdateId(context.getPrincipalId());
         lpe.setUpdateTime(new Date());
@@ -824,6 +825,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         lpe.setUpdateId(context.getPrincipalId());
         lpe.setUpdateTime(new Date());
         lpe.setShared(learningPlan.getShared());
+        lpe.setState(learningPlan.getStateKey());
         lpe.setAttributes(new HashSet<LearningPlanAttributeEntity>());
         if (learningPlan.getAttributes() != null) {
             for (Attribute att : learningPlan.getAttributes()) {
