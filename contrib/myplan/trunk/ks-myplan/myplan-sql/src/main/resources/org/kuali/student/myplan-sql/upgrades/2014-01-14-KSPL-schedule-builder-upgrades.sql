@@ -6,4 +6,4 @@ COMMIT;
 ALTER TABLE KSPL_LRNG_PLAN_ATTR DROP COLUMN ATTR_VALUE;
 ALTER TABLE KSPL_LRNG_PLAN_ATTR RENAME COLUMN TEMP_ATTR_VALUE TO ATTR_VALUE;
 
-UPDATE KSPL_LRNG_PLAN set STATE = 'kuali.academicplan.plan.state.active' where TYPE_ID = 'kuali.academicplan.type.plan' and STATE is NULL
+UPDATE KSPL_LRNG_PLAN set STATE = 'kuali.academicplan.plan.state.active' where TYPE_ID = 'kuali.academicplan.type.plan' and STATE is NULL;
