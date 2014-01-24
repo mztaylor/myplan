@@ -140,8 +140,8 @@ public class ScheduleBuildController extends UifControllerBase {
                             + (cal.get(Calendar.MINUTE) > 0 ? 1 : 0));
         }
 
-        public void updateWeekends(boolean weekends) {
-            weekends &= weekends;
+        public void updateWeekends(boolean weekend) {
+            weekends = weekend;
         }
 
         private Date addOneWeek(Date eventStart) {

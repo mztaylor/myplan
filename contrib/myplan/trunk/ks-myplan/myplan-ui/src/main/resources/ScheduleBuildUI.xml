@@ -42,11 +42,6 @@
 				<ref bean="schedule_build_page" />
 			</list>
 		</property>
-		<!--<property name="onDocumentReadyScript" value="
-		    jQuery(window).load(function() {
-		        KsapScheduleBuild.initialize(new Date(@{term.startDate.time}));
-		    });
-		"/>-->
 		<property name="header.render" value="false" />
 		<property name="footer.render" value="false" />
 	</bean>
@@ -135,6 +130,7 @@
 
     <bean id="sb_possible_options" parent="sb_possible_options-parent" />
 	<bean id="sb_possible_options-parent" abstract="true" parent="KSAP-VerticalBoxGroup" p:id="sb_possible_options">
+        <property name="layoutManager.additionalCssClasses" value="ksap-sb-possible-options-container"/>
 		<property name="items">
 			<list />
 		</property>
@@ -222,14 +218,19 @@
 			<bean parent="KSAP-HeaderThree" />
 		</property>
 		<property name="headerText" value="Saved Schedules" />
+        <property name="layoutManager.additionalCssClasses" value="ksap-sb-saved-schedules-container"/>
 		<property name="items">
 			<list>
 			</list>
 		</property>
 	</bean>
 
-	<bean id="sb_reserved_times_possible" parent="sb_reserved_times_possible-parent" />
-	<bean id="sb_reserved_times_saved" parent="sb_reserved_times_saved-parent" />
+	<bean id="sb_reserved_times_possible" parent="sb_reserved_times_possible-parent">
+        <property name="layoutManager.additionalCssClasses" value="ksap-sb-reserved-times-possible-container"/>
+	</bean>
+	<bean id="sb_reserved_times_saved" parent="sb_reserved_times_saved-parent">
+        <property name="layoutManager.additionalCssClasses" value="ksap-sb-reserved-times-saved-container"/>
+    </bean>
 	<bean abstract="true" id="sb_reserved_times_possible-parent" parent="sb_reserved_times-parent" p:id="sb_reserved_times_possible" />
 	<bean abstract="true" id="sb_reserved_times_saved-parent" parent="sb_reserved_times-parent" p:id="sb_reserved_times_saved" />
 	<bean abstract="true" id="sb_reserved_times-parent" parent="Uif-VerticalBoxSection">
@@ -356,7 +357,7 @@
 									</list>
 								</property>
 							</bean>
-							<bean parent="sb_activity_options" p:propertyName="activityOptions"
+							<!--<bean parent="sb_activity_options" p:propertyName="activityOptions"
 									p:additionalCssClasses="ksap-sb-disclosure-closed,ksap-sb-primary-options" p:id="sb_activity_options_@{#line.uniqueId}">
 								<property name="items">
 									<list>
@@ -371,7 +372,7 @@
 										</bean>
 									</list>
 								</property>
-							</bean>
+							</bean>-->
 						</list>
 					</property>
 				</bean>
@@ -562,6 +563,7 @@
 		<property name="items">
 			<list>
 				<bean parent="KSAP-HorizontalBoxGroup" p:id="sb_week_group_area">
+                    <property name="layoutManager.additionalCssClasses" value="ksap-sb-week-group-area-container"/>
 					<property name="items">
 						<list>
 							<bean parent="KSAP-VerticalBoxGroup" p:additionalCssClasses="ksap-sb-weekGroup,ksap-sb-selected">
@@ -585,7 +587,7 @@
                             <entry key="header" value="false"/>
                             <entry key="contentHeight" value="9999"/>
                             <entry key="columnFormat" value="{ week : 'dddd' }"/>
-                            <entry key="firstDay" value="1"/>
+                            <!--<entry key="firstDay" value="1"/>-->
                             <entry key="hiddenDays" value="[0]"/>
                             <entry key="allDayText" value="to be arranged"/>
                             <entry key="minTime" value="7"/>
@@ -601,9 +603,6 @@
                         </map>
                     </property>
                 </bean>
-				<!--<bean parent="Uif-ContentElementBase" p:id="sb_calendar" scope="prototype"
-						class="org.kuali.rice.krad.uif.element.extension.ScheduleBuildCalendarComponent" p:cssClasses="ksap-sb-calendar"
-						p:template="/WEB-INF/ftl/schedulebuilder/sb_calendar.ftl" p:templateName="sb_calendar" />-->
 			</list>
 		</property>
 	</bean>

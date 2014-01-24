@@ -35,11 +35,6 @@
                 </property>
             </bean>
         </property>
-        <property name="additionalScriptFiles">
-            <list merge="true">
-                <value>themes/ksap/scripts/ksap.widgets.js</value>
-            </list>
-        </property>
     </bean>
 
     <bean id="course_details_section" parent="KSAP-VerticalBoxGroup" p:width="710px">

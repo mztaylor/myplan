@@ -202,6 +202,24 @@ function customRetrieveComponent(id, getId, methodToCall, action, retrieveOption
 
         runHiddenScripts(getId);
 
+        var getPage = jQuery("[data-type='Page']", htmlContent);
+        var getPageId = getPage.attr("id");
+        var data = getValidationData(getPage, true);
+
+        calculateMessageTotals(getPageId, data);
+        if (data && data.messageTotal > 0) {
+            if (data) {
+                var messageMap = data.messageMap;
+                if (!messageMap) {
+                    messageMap = {};
+                    data.messageMap = messageMap;
+                }
+            }
+            var page = jQuery("[data-type='Page']");
+            var pageId = page.attr("id");
+            writeMessagesForGroup(pageId, data, false, true);
+        }
+
         if (jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).length > 0) {
             eval(jQuery("input[data-role='script'][data-for='" + getId + "']", htmlContent).val());
         }

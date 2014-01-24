@@ -213,6 +213,22 @@
 .courseActivities__tabGroup {
     margin-top: -@marginLarge !important;
 
+    // Remove jQuery UI styling
+    & .ui-tabs {
+        background: none;
+        border: none;
+        color: inherit;
+        .border-radius(0);
+        font-family: inherit;
+
+        & .ui-tabs-panel {
+            background: none;
+            border: none;
+            color: inherit;
+            .border-radius(0);
+        }
+    }
+
     & .ui-tabs .ui-tabs-nav {
         list-style: none;
         border-right: @baseBorderStyle;
@@ -220,6 +236,11 @@
         #gradient > .vertical(#f5f5f5, #ebebeb);
         margin: 0 0 @marginLarge;
         padding: 0;
+        border-top: none;
+        border-left: none;
+        color: inherit;
+        font-weight: inherit;
+        .border-radius(0);
 
         & li {
             display: inline-block;
@@ -229,6 +250,8 @@
             top: 0px;
             margin-bottom: -1px;
             .border-radius(0);
+            border: none;
+            background: none;
 
             &:first-child {
                 border-left: @baseBorderStyle;
@@ -237,6 +260,7 @@
             &.ui-state-active {
                 border-right: @baseBorderStyle;
                 border-left: @baseBorderStyle;
+                border-top: none;
                 background: @white;
                 border-bottom: solid 1px @white;
 
