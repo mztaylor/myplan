@@ -69,7 +69,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     private final Logger logger = Logger.getLogger(CourseDetailsInquiryHelperImpl.class);
 
-    private final static String[] WEEKDAYS_FIRST_LETTER = {"M", "T", "W", "Th", "F", "Sa", "Su"};
+    private final static String[] WEEKDAYS_FIRST_LETTER = {"Su", "M", "T", "W", "Th", "F", "Sa"};
 
     private final static List<String> QUARTERS = Arrays.asList("Autumn", "Winter", "Spring", "Summer");
 
