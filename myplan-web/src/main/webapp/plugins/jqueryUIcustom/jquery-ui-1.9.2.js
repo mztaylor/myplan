@@ -13184,7 +13184,8 @@ function getNextTabId() {
 }
 
 function isLocal( anchor ) {
-    var anchorUrl, locationUrl;
+// Begin KSAP Modification ###############################################################
+	var anchorUrl, locationUrl;
 
     // support: IE7
     // IE7 doesn't normalize the href property when set via script (#9317)
@@ -13202,16 +13203,7 @@ function isLocal( anchor ) {
     } catch ( error ) {}
 
     return anchor.hash.length > 1 && anchorUrl === locationUrl;
-
-    /*
-    return anchor.hash.length > 1 &&
-		anchor.href.replace( rhash, "" ) ===
-			location.href.replace( rhash, "" )
-				// support: Safari 5.1
-				// Safari 5.1 doesn't encode spaces in window.location
-				// but it does encode spaces from anchors (#8777)
-				.replace( /\s/g, "%20" );
-    */
+// End KSAP Modification #################################################################
 }
 
 $.widget( "ui.tabs", {
