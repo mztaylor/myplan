@@ -394,7 +394,7 @@
     <property name="layoutManager">
 			<bean parent="Uif-StackedCollectionLayout-WithBoxItems">
 				<property name="lineGroupPrototype">
-					<bean id="vertical_box_4" parent="Uif-CollectionVerticalBoxItem" p:footer.render="false"
+					<bean parent="Uif-CollectionVerticalBoxItem" p:footer.render="false"
 							p:render="@{((includeClosed or !#line.closed) and !#line.courseLockedIn) or #line.lockedIn}" />
 				</property>
 			</bean>
@@ -445,7 +445,7 @@
 								<property name="layoutManager">
 									<bean parent="Uif-StackedCollectionLayout-WithBoxItems">
 										<property name="lineGroupPrototype">
-											<bean id="vertical_box_1" parent="Uif-CollectionVerticalBoxItem" p:additionalCssClasses="ksap-sb-activity-classtimes-row" />
+											<bean parent="Uif-CollectionVerticalBoxItem" p:additionalCssClasses="ksap-sb-activity-classtimes-row" />
 										</property>
 									</bean>
 								</property>
