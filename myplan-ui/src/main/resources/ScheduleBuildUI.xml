@@ -293,102 +293,108 @@
 		</property>
 	</bean>
 
-	<bean abstract="true" id="sb_option_control-parent" parent="Uif-InputField" p:fieldLabel.render="false">
+	<bean abstract="true" id="sb_option_control-parent" parent="Uif-InputField" p:fieldLabel.render="false" p:readOnly="false">
 		<property name="control">
 			<bean parent="Uif-CheckboxControl" />
 		</property>
 	</bean>
 
     <bean id="sb_course_options" parent="sb_course_options-parent"/>
-	<bean id="sb_course_options-parent" abstract="true" parent="Uif-StackedCollectionGroup" p:id="sb_course_options"
-			p:renderAddLine="false" p:renderSaveLineActions="false" p:renderLineActions="false" p:render="@{courseOptions NE null}">
-		<property name="propertyName" value="courseOptions" />
-		<property name="collectionObjectClass" value="org.kuali.student.myplan.schedulebuilder.infc.CourseOption" />
-    <property name="layoutManager">
-			<bean parent="Uif-StackedCollectionLayout-WithBoxItems">
-				<property name="lineGroupPrototype">
-					<bean parent="Uif-CollectionVerticalBoxItem" p:footer.render="false" />
-				</property>
-			</bean>
-		</property>
-		<property name="items">
-			<list>
-				<bean parent="KSAP-VerticalFieldGroup">
-					<property name="items">
-						<list>
-							<bean parent="KSAP-HorizontalBoxGroup" p:id="sb-course-option-row-@{#line.uniqueId}"
-									p:additionalCssClasses="ksap-sb-course-row,ksap-sb-@{#line.selected?'selected':'deselected'}">
-								<property name="items">
-									<list>
-										<bean parent="sb_option_control-parent" p:propertyName="selected" p:id="sb-course-option-select-@{#line.uniqueId}"
-												p:control.render="@{#line.getActivityCount(includeClosed) gt 0 and !#line.lockedIn}"
-												p:additionalCssClasses="ksap-sb-course-select" p:onChangeScript="toggleCourseOptionSelect('@{#line.uniqueId}')" />
-										<bean parent="KSAP-VerticalFieldGroup" p:onClickScript="toggleCourseOption('@{#line.uniqueId}')">
-											<property name="items">
-												<list>
-													<bean parent="KSAP-Message" p:messageText="@{#line.courseCode}" p:title="@{#line.courseTitle}"
-															p:additionalCssClasses="ksap-sb-course-title" />
-													<bean parent="KSAP-Message" p:id="sb-course-selected-message-@{#line.uniqueId}" p:additionalCssClasses="ksap-sb-course-subtext"
-															p:render="@{#line.getActivityCount(includeClosed) le 0}"
-															p:messageText="No@{includeClosed?'t':' open sections'} offered in @{term.name}" />
-													<bean parent="KSAP-Message" p:id="sb-course-selected-message-@{#line.uniqueId}" p:additionalCssClasses="ksap-sb-course-subtext"
-															p:render="@{#line.getActivityCount(includeClosed) gt 0 and #line.lockedIn and #line.selected}"
-															p:messageText="Registered for @{term.name}" />
-													<bean parent="KSAP-Message" p:id="sb-course-selected-message-@{#line.uniqueId}" p:additionalCssClasses="ksap-sb-course-subtext"
-															p:render="@{#line.getActivityCount(includeClosed) gt 0 and !#line.lockedIn}"
-															p:messageText="@{#line.getSelectedActivityCount(includeClosed)} / @{#line.getActivityCount(includeClosed)} selected" />
-												</list>
-											</property>
-										</bean>
-										<bean parent="Uif-ActionField">
-											<property name="action">
-												<bean parent="Uif-ActionImage" p:id="ksap-sb-course-disclosure-icon-@{#line.uniqueId}" p:actionScript="showHideActivityOptions('@{#line.uniqueId}')">
-													<property name="cssClasses">
-														<list merge="true">
-															<value>ksap-sb-course-disclosure-icon-closed</value>
-														</list>
-													</property>
-													<property name="actionImage">
-														<bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif" />
-													</property>
-												</bean>
-											</property>
-										</bean>
-									</list>
-								</property>
-							</bean>
-							<!--<bean parent="sb_activity_options" p:propertyName="activityOptions"
-									p:additionalCssClasses="ksap-sb-disclosure-closed,ksap-sb-primary-options" p:id="sb_activity_options_@{#line.uniqueId}">
-								<property name="items">
-									<list>
-										<bean parent="KSAP-VerticalFieldGroup">
-											<property name="items">
-												<list>
-													<bean parent="sb_activity_option_row" p:id="sb-activity-row-@{#line.uniqueId}" />
-													<bean parent="sb_secondary_options" p:propertyName="secondaryOptions" p:render="@{#line.secondaryOptions ne null and !#line.secondaryOptions.empty}"
-															p:additionalCssClasses="ksap-sb-secondary-options-wrapper" p:id="sb_secondary_options_@{#line.uniqueId}" />
-												</list>
-											</property>
-										</bean>
-									</list>
-								</property>
-							</bean>-->
-						</list>
-					</property>
-				</bean>
-			</list>
-		</property>
-	</bean>
+    <bean id="sb_course_options-parent" parent="Uif-ListCollectionSection" p:id="sb_course_options">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.schedulebuilder.infc.CourseOption"/>
+        <property name="propertyName" value="courseOptions"/>
+        <property name="header.render" value="false"/>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-List"/>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-VerticalFieldGroup">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-HorizontalBoxGroup" p:id="sb-course-option-row-@{#line.uniqueId}"
+                                  p:additionalCssClasses="ksap-sb-course-row,ksap-sb-@{#line.selected?'selected':'deselected'}">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="sb_option_control-parent" p:propertyName="selected" p:id="sb-course-option-select-@{#line.uniqueId}"
+                                              p:control.render="@{#line.getActivityCount(includeClosed) gt 0 and !#line.lockedIn}"
+                                              p:additionalCssClasses="ksap-sb-course-select" p:onChangeScript="toggleCourseOptionSelect('@{#line.uniqueId}')" />
+                                        <bean parent="KSAP-VerticalFieldGroup" p:onClickScript="toggleCourseOption('@{#line.uniqueId}')">
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="KSAP-Message" p:messageText="@{#line.courseCode}" p:title="@{#line.courseTitle}"
+                                                          p:additionalCssClasses="ksap-sb-course-title" />
+                                                    <bean parent="KSAP-Message" p:id="sb-course-selected-message-@{#line.uniqueId}" p:additionalCssClasses="ksap-sb-course-subtext"
+                                                          p:render="@{#line.getActivityCount(includeClosed) le 0}"
+                                                          p:messageText="No@{includeClosed?'t':' open sections'} offered in @{term.name}" />
+                                                    <bean parent="KSAP-Message" p:id="sb-course-selected-message-@{#line.uniqueId}" p:additionalCssClasses="ksap-sb-course-subtext"
+                                                          p:render="@{#line.getActivityCount(includeClosed) gt 0 and #line.lockedIn and #line.selected}"
+                                                          p:messageText="Registered for @{term.name}" />
+                                                    <bean parent="KSAP-Message" p:id="sb-course-selected-message-@{#line.uniqueId}" p:additionalCssClasses="ksap-sb-course-subtext"
+                                                          p:render="@{#line.getActivityCount(includeClosed) gt 0 and !#line.lockedIn}"
+                                                          p:messageText="@{#line.getSelectedActivityCount(includeClosed)} / @{#line.getActivityCount(includeClosed)} selected" />
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean parent="Uif-ActionField">
+                                            <property name="action">
+                                                <bean parent="Uif-ActionImage" p:id="ksap-sb-course-disclosure-icon-@{#line.uniqueId}" p:actionScript="showHideActivityOptions('@{#line.uniqueId}')">
+                                                    <property name="cssClasses">
+                                                        <list merge="true">
+                                                            <value>ksap-sb-course-disclosure-icon-closed</value>
+                                                        </list>
+                                                    </property>
+                                                    <property name="actionImage">
+                                                        <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif" />
+                                                    </property>
+                                                </bean>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+        <property name="subCollections">
+            <list>
+                <bean parent="sb_activity_options" p:propertyName="activityOptions"
+                      p:additionalCssClasses="ksap-sb-disclosure-closed,ksap-sb-primary-options" p:id="sb_activity_options_@{#line.uniqueId}">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-VerticalFieldGroup">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="sb_activity_option_row" p:id="sb-activity-row-@{#line.uniqueId}"/>
+                                        <bean parent="sb_secondary_options" p:propertyName="secondaryOptions" p:render="@{#line.secondaryOptions ne null and !#line.secondaryOptions.empty}"
+                                              p:additionalCssClasses="ksap-sb-secondary-options-wrapper" p:id="sb_secondary_options_@{#line.uniqueId}"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+    </bean>
 
     <bean id="sb_activity_options" parent="sb_activity_options-parent"/>
-	<bean id="sb_activity_options-parent" parent="Uif-StackedCollectionGroup" p:id="sb_activity_options"
+	<bean id="sb_activity_options-parent" parent="KSAP-StackedCollectionGroup" p:id="sb_activity_options"
 			p:renderAddLine="false" p:renderSaveLineActions="false" p:renderLineActions="false" abstract="true">
 		<property name="propertyName" value="activityOptions" />
 		<property name="collectionObjectClass" value="org.kuali.student.myplan.schedulebuilder.infc.ActivityOption" />
     <property name="layoutManager">
 			<bean parent="Uif-StackedCollectionLayout-WithBoxItems">
 				<property name="lineGroupPrototype">
-					<bean parent="Uif-CollectionVerticalBoxItem" p:footer.render="false"
+					<bean id="vertical_box_4" parent="Uif-CollectionVerticalBoxItem" p:footer.render="false"
 							p:render="@{((includeClosed or !#line.closed) and !#line.courseLockedIn) or #line.lockedIn}" />
 				</property>
 			</bean>
@@ -417,9 +423,9 @@
 							<bean parent="KSAP-HorizontalBoxGroup">
 								<property name="items">
 									<list>
-										<bean parent="KSAP-MessageField" p:messageText="@{#line.registrationCode}"
+										<bean parent="KSAP-Message" p:messageText="@{#line.registrationCode}"
 												p:title="@{#line.courseOfferingCode} @{#line.activityName}" p:additionalCssClasses="ksap-sb-activity-title" />
-										<bean parent="KSAP-MessageField" p:messageText="@{#line.activityTypeDescription}"
+										<bean parent="KSAP-Message" p:messageText="@{#line.activityTypeDescription}"
 												p:title="@{#line.courseOfferingCode} @{#line.activityName}" p:additionalCssClasses="ksap-sb-activity-subtitle" />
 										<bean parent="KSAP-Message" p:messageText="@{#line.closed?'Closed ':'Open '}@{#line.openSeats}/@{#line.totalSeats}" p:render="@{!#line.enrollmentGroup}"
 												p:title="@{#line.openSeats} seat@{#line.openSeats ne 1?'s':''} available out of @{#line.totalSeats}" p:additionalCssClasses="ksap-sb-activity-seats" />
@@ -432,14 +438,14 @@
 									p:render="@{!#line.enrollmentGroup || #line.secondaryOptions.empty}" />
 							<bean parent="KSAP-Message" p:messageText="Permission Required" p:render="@{#line.requiresPermission}"
 									p:additionalCssClasses="ksap-sb-activity-permission" />
-							<bean parent="Uif-StackedCollectionGroup" p:id="sb_activity_classtimes_@{#line.uniqueId}"
+							<bean parent="KSAP-StackedCollectionGroup" p:id="sb_activity_classtimes_@{#line.uniqueId}"
 									p:renderAddLine="false" p:renderSaveLineActions="false" p:renderLineActions="false" p:render="@{!#line.enrollmentGroup || #line.secondaryOptions.empty}">
 								<property name="propertyName" value="classMeetingTimes" />
 								<property name="collectionObjectClass" value="org.kuali.student.myplan.schedulebuilder.infc.ClassMeetingTime" />
 								<property name="layoutManager">
 									<bean parent="Uif-StackedCollectionLayout-WithBoxItems">
 										<property name="lineGroupPrototype">
-											<bean parent="Uif-CollectionVerticalBoxItem" p:additionalCssClasses="ksap-sb-activity-classtimes-row" />
+											<bean id="vertical_box_1" parent="Uif-CollectionVerticalBoxItem" p:additionalCssClasses="ksap-sb-activity-classtimes-row" />
 										</property>
 									</bean>
 								</property>
@@ -466,58 +472,64 @@
 	</bean>
 
     <bean id="sb_secondary_options" parent="sb_secondary_options-parent"/>
-	<bean id="sb_secondary_options-parent" abstract="true" parent="Uif-StackedCollectionGroup" p:id="sb_secondary_options"
-			p:renderAddLine="false" p:renderSaveLineActions="false" p:renderLineActions="false">
-		<property name="propertyName" value="secondaryOptions" />
-		<property name="collectionObjectClass" value="org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions" />
-    <property name="layoutManager">
-			<bean parent="Uif-StackedCollectionLayout-WithBoxItems">
-				<property name="lineGroupPrototype">
-					<bean parent="Uif-CollectionVerticalBoxItem" p:footer.render="false" />
-				</property>
-			</bean>
-		</property>
-		<property name="items">
-			<list>
-				<bean parent="KSAP-VerticalFieldGroup">
-					<property name="items">
-						<list>
-							<bean parent="KSAP-HorizontalBoxGroup" p:id="sb-secondary-row-@{#line.uniqueId}"
-									p:additionalCssClasses="ksap-sb-secondary-option-row,ksap-sb-@{#line.getSelectedActivityCount(includeClosed) gt 0?'selected':'deselected'}">
-								<property name="items">
-									<list>
-										<bean parent="KSAP-Message" p:messageText="@{#line.getActivityCount(includeClosed)} included"
-												p:render="@{#line.enrollmentGroup}" p:additionalCssClasses="ksap-sb-secondary-title" />
-										<bean parent="KSAP-Message" p:messageText="@{#line.getActivityCount(includeClosed)} @{#line.activityTypeDescription matches '.*y$' and #line.getActivityCount(includeClosed) ne 1?#line.activityTypeDescription.substring(0,#line.activityTypeDescription.length()-1):#line.activityTypeDescription}@{#line.activityTypeDescription matches '.*y$' and #line.getActivityCount(includeClosed) ne 1?'ie':''}@{#line.getActivityCount(includeClosed) eq 1?'':'s'}" p:render="@{!#line.enrollmentGroup}" p:additionalCssClasses="ksap-sb-secondary-title" />
-										<bean parent="Uif-ActionImage" p:id="ksap-sb-secondary-disclosure-icon-@{#line.uniqueId}"
-												p:actionScript="showHideSecondaryOptions('@{#line.uniqueId}')" p:cssClasses="ksap-sb-secondary-disclosure-icon-closed">
-											<property name="actionImage">
-												<bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif" />
-											</property>
-										</bean>
-									</list>
-								</property>
-							</bean>
-							<bean parent="sb_activity_options" p:propertyName="activityOptions"
-									p:additionalCssClasses="ksap-sb-disclosure-closed,ksap-sb-secondary-options" p:id="sb_activity_options_@{#line.uniqueId}">
-								<property name="items">
-									<list>
-										<bean parent="KSAP-VerticalFieldGroup">
-											<property name="items">
-												<list>
-													<bean parent="sb_activity_option_row" p:id="sb-activity-row-@{#line.uniqueId}" />
-												</list>
-											</property>
-										</bean>
-									</list>
-								</property>
-							</bean>
-						</list>
-					</property>
-				</bean>
-			</list>
-		</property>
-	</bean>
+    <bean id="sb_secondary_options-parent" parent="Uif-ListCollectionSection" p:id="sb_secondary_options">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions"/>
+        <property name="propertyName" value="secondaryOptions"/>
+        <property name="header.render" value="false"/>
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-List"/>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-VerticalFieldGroup">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-HorizontalBoxGroup" p:id="sb-secondary-row-@{#line.uniqueId}"
+                                  p:additionalCssClasses="ksap-sb-secondary-option-row,ksap-sb-@{#line.getSelectedActivityCount(includeClosed) gt 0?'selected':'deselected'}">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-Message" p:messageText="@{#line.getActivityCount(includeClosed)} included"
+                                              p:render="@{#line.enrollmentGroup}" p:additionalCssClasses="ksap-sb-secondary-title" />
+                                        <bean parent="KSAP-Message" p:messageText="@{#line.getActivityCount(includeClosed)} @{#line.activityTypeDescription matches '.*y$' and #line.getActivityCount(includeClosed) ne 1?#line.activityTypeDescription.substring(0,#line.activityTypeDescription.length()-1):#line.activityTypeDescription}@{#line.activityTypeDescription matches '.*y$' and #line.getActivityCount(includeClosed) ne 1?'ie':''}@{#line.getActivityCount(includeClosed) eq 1?'':'s'}" p:render="@{!#line.enrollmentGroup}" p:additionalCssClasses="ksap-sb-secondary-title" />
+                                        <bean parent="Uif-ActionImage" p:id="ksap-sb-secondary-disclosure-icon-@{#line.uniqueId}"
+                                              p:actionScript="showHideSecondaryOptions('@{#line.uniqueId}')" p:cssClasses="ksap-sb-secondary-disclosure-icon-closed">
+                                            <property name="actionImage">
+                                                <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif" />
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+        <property name="subCollections">
+            <list>
+                <bean parent="sb_activity_options" p:propertyName="activityOptions"
+                      p:additionalCssClasses="ksap-sb-disclosure-closed,ksap-sb-secondary-options" p:id="sb_activity_options_@{#line.uniqueId}">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-VerticalFieldGroup">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="sb_activity_option_row" p:id="sb-activity-row-@{#line.uniqueId}" />
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+    </bean>
 
 	<bean id="sb_classes" parent="sb_classes-parent" />
 	<bean abstract="true" id="sb_classes-parent" parent="Uif-VerticalBoxSection" p:id="sb_classes">

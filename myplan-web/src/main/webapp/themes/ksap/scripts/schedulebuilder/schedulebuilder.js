@@ -783,7 +783,7 @@ function toggleActivitySelect(primary, uniqueId, parentUniqueId) {
 							var t = jQuery(this);
 							t.find(".uif-checkboxControl").prop("checked",
 									selected && t.hasClass("ksap-sb-activity-open"));
-							toggleActivitySelect(t.data("primary").toLowerCase() == "true", t.data("uniqueid"), uniqueId);
+							toggleActivitySelect(t.data("primary").toString().toLowerCase() == "true", t.data("uniqueid"), uniqueId);
 						});
 	} else {
 		updatePrimarySelectedCount(parentUniqueId);
