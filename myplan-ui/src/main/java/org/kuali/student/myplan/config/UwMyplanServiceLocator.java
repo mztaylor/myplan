@@ -7,7 +7,7 @@ import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
-import org.kuali.student.myplan.schedulebuilder.util.TermHelper;
+import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 

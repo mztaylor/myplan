@@ -2,6 +2,8 @@ package org.kuali.student.myplan.schedulebuilder.support;
 
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.acal.infc.Term;
@@ -1031,7 +1033,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
     public TermHelper getTermHelper() {
         if (termHelper == null) {
-            termHelper = UwMyplanServiceLocator.getInstance().getTermHelper();
+            termHelper = KsapFrameworkServiceLocator.getTermHelper();
         }
         return termHelper;
     }

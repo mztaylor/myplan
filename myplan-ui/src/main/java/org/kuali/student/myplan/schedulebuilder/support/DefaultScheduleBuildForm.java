@@ -1,15 +1,11 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
-import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.UifFormBase;
-import org.kuali.student.enrollment.acal.dto.TermInfo;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
-import org.kuali.student.myplan.course.util.CourseSearchConstants;
-import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
@@ -18,7 +14,7 @@ import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
-import org.kuali.student.myplan.schedulebuilder.util.TermHelper;
+import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.slf4j.Logger;
@@ -28,8 +24,6 @@ import javax.xml.namespace.QName;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 
 public class DefaultScheduleBuildForm extends UifFormBase implements
         ScheduleBuildForm {
@@ -462,7 +456,7 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
 
     public TermHelper getTermHelper() {
         if (termHelper == null) {
-            termHelper = UwMyplanServiceLocator.getInstance().getTermHelper();
+            termHelper = KsapFrameworkServiceLocator.getTermHelper();
         }
         return termHelper;
     }
