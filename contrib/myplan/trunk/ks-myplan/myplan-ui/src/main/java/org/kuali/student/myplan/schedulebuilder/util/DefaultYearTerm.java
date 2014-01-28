@@ -1,8 +1,9 @@
 package org.kuali.student.myplan.schedulebuilder.util;
 
 import org.apache.log4j.Logger;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
-import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 
 /**
  * Data Storage for the Term and Year of a single atp. Formats different output
@@ -111,7 +112,7 @@ public class DefaultYearTerm implements YearTerm, Comparable<YearTerm> {
 
     public TermHelper getTermHelper() {
         if (termHelper == null) {
-            termHelper = UwMyplanServiceLocator.getInstance().getTermHelper();
+            termHelper = KsapFrameworkServiceLocator.getTermHelper();
         }
         return termHelper;
     }

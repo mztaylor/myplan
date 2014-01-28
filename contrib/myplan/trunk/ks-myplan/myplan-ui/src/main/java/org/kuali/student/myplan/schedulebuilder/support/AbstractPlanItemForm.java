@@ -3,6 +3,7 @@ package org.kuali.student.myplan.schedulebuilder.support;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.infc.PlanItem;
@@ -13,7 +14,7 @@ import org.kuali.student.myplan.course.util.CourseHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.util.PlanItemForm;
-import org.kuali.student.myplan.schedulebuilder.util.TermHelper;
+import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
@@ -246,7 +247,7 @@ public abstract class AbstractPlanItemForm extends UifFormBase implements PlanIt
 
     public TermHelper getTermHelper() {
         if (termHelper == null) {
-            termHelper = UwMyplanServiceLocator.getInstance().getTermHelper();
+            termHelper = KsapFrameworkServiceLocator.getTermHelper();
         }
         return termHelper;
     }
