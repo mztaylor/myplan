@@ -325,7 +325,12 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 				.<SecondaryActivityOptions> unmodifiableList(secondaryOptions);
 	}
 
-	public void setSecondaryOptions(
+    @Override
+    public ActivityOption getActivity() {
+        return this;
+    }
+
+    public void setSecondaryOptions(
 			List<SecondaryActivityOptions> secondaryOptions) {
 		if (secondaryOptions != null) {
 			List<SecondaryActivityOptionsInfo> secondaryOpts = new ArrayList<SecondaryActivityOptionsInfo>(
