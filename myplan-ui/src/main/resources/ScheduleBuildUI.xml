@@ -438,7 +438,7 @@
 									p:render="@{!#line.enrollmentGroup || #line.secondaryOptions.empty}" />
 							<bean parent="KSAP-Message" p:messageText="Permission Required" p:render="@{#line.requiresPermission}"
 									p:additionalCssClasses="ksap-sb-activity-permission" />
-							<bean parent="KSAP-StackedCollectionGroup" p:id="sb_activity_classtimes_@{#line.uniqueId}"
+							<!--<bean parent="KSAP-StackedCollectionGroup" p:id="sb_activity_classtimes_@{#line.uniqueId}"
 									p:renderAddLine="false" p:renderSaveLineActions="false" p:renderLineActions="false" p:render="@{!#line.enrollmentGroup || #line.secondaryOptions.empty}">
 								<property name="propertyName" value="classMeetingTimes" />
 								<property name="collectionObjectClass" value="org.kuali.student.myplan.schedulebuilder.infc.ClassMeetingTime" />
@@ -463,6 +463,12 @@
 										</bean>
 									</list>
 								</property>
+                            </bean>-->
+                            <bean parent="KSAP-SimpleDataField" p:id="sb_activity_classtimes_@{#line.uniqueId}">
+                                <property name="label" value="Meeting Time &amp; Location"/>
+                                <property name="propertyName" value="activity"/>
+                                <property name="escapeHtmlInPropertyValue" value="false"/>
+                                <property name="propertyEditor" ref="class_meeting_time_formatter"/>
 							</bean>
 						</list>
 					</property>
@@ -470,6 +476,10 @@
 			</list>
 		</property>
 	</bean>
+
+    <bean id="class_meeting_time_formatter"
+          class="org.kuali.student.myplan.course.util.ClassMeetingsPropertyEditor">
+    </bean>
 
     <bean id="sb_secondary_options" parent="sb_secondary_options-parent"/>
     <bean id="sb_secondary_options-parent" parent="Uif-ListCollectionSection" p:id="sb_secondary_options">
