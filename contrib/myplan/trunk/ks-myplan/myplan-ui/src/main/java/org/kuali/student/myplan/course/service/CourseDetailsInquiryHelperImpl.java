@@ -815,8 +815,8 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
                     String days = "";
                     for (int weekday : timeSlot.getWeekdays()) {
-                        if (weekday > -1 && weekday < 7) {
-                            String letter = WEEKDAYS_FIRST_LETTER[weekday];
+                        if (weekday > 0 && weekday < 8) {
+                            String letter = WEEKDAYS_FIRST_LETTER[weekday - 1];
                             days += letter;
                         }
                     }
