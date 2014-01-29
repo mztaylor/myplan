@@ -48,7 +48,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            UwMyplanServiceLocator.getInstance().getCourseHelper();
+            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
         }
         return courseHelper;
     }
