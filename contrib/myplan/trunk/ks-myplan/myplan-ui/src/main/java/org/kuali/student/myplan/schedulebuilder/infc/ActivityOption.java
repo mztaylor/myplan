@@ -183,7 +183,7 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
     /**
      * This is to return this ActivityOption.
      * Only used in property editor purpose()
-     *
+     * TODO: Remove this once KULRICE-9735 is fixed.
      * @return This activityOption Object
      */
     ActivityOption getActivity();
