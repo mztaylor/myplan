@@ -598,7 +598,7 @@ public class PlanEventUtils {
 
     public static ShoppingCartStrategy getShoppingCartStrategy() {
         if (shoppingCartStrategy == null) {
-            shoppingCartStrategy = new DefaultShoppingCartStrategy();
+            shoppingCartStrategy = UwMyplanServiceLocator.getInstance().getShoppingCartStrategy();
         }
         return shoppingCartStrategy;
     }

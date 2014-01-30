@@ -413,7 +413,7 @@ public class ShoppingCartController extends UifControllerBase {
 
     public ShoppingCartStrategy getShoppingCartStrategy() {
         if (shoppingCartStrategy == null) {
-            shoppingCartStrategy = new DefaultShoppingCartStrategy();
+            shoppingCartStrategy = UwMyplanServiceLocator.getInstance().getShoppingCartStrategy();
         }
         return shoppingCartStrategy;
     }
