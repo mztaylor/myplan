@@ -49,10 +49,8 @@ public class PlannedTermsHelperBase {
 
     private transient CourseOfferingService courseOfferingService;
 
-    @Autowired
     private transient CourseHelper courseHelper;
 
-    @Autowired
     private static UserSessionHelper userSessionHelper;
 
 
@@ -198,8 +196,6 @@ public class PlannedTermsHelperBase {
         /*
         * Used for sorting the planItemDataobjects
         */
-        List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
-
         Collections.sort(plannedTerms, new Comparator<PlannedTerm>() {
             @Override
             public int compare(PlannedTerm plannedTerm1, PlannedTerm plannedTerm2) {
@@ -233,29 +229,47 @@ public class PlannedTermsHelperBase {
                     }
                 }
             }
+            Map<String, Map<String, AcademicRecordDataObject>> academicRecordsByTerm = new HashMap<String, Map<String, AcademicRecordDataObject>>();
             if (studentCourseRecordInfos != null && studentCourseRecordInfos.size() > 0) {
                 for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
                     if (termsList.containsKey(studentInfo.getTermName())) {
-                        AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
-                        academicRecordDataObject.setAtpId(studentInfo.getTermName());
-                        academicRecordDataObject.setPersonId(studentInfo.getPersonId());
-                        academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
+                        /*Say If a course has A and AB activities then A is already added to the list then the next AB activity should not be created as a separate academicRecordDataObject it should be added the list of activities in academicRecordDataObject*/
+                        if (academicRecordsByTerm.get(studentInfo.getTermName()) == null || (academicRecordsByTerm.get(studentInfo.getTermName()) != null && academicRecordsByTerm.get(studentInfo.getTermName()).get(studentInfo.getId()) == null)) {
+                            AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
+                            academicRecordDataObject.setAtpId(studentInfo.getTermName());
+                            academicRecordDataObject.setPersonId(studentInfo.getPersonId());
+                            academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
                         /*TODO: StudentCourseRecordInfo does not have a courseId property so using Id to set the course Id*/
-                        academicRecordDataObject.setCourseId(studentInfo.getId());
-                        academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
-                        academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
-                        if (AtpHelper.isAtpSetToPlanning(studentInfo.getTermName())) {
-                            academicRecordDataObject.setActivityCode(studentInfo.getActivityCode());
+                            academicRecordDataObject.setCourseId(studentInfo.getId());
+                            academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
+                            academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
+                            if (AtpHelper.isAtpSetToPlanning(studentInfo.getTermName())) {
+                                List<String> activities = new ArrayList<String>();
+                                activities.add(studentInfo.getActivityCode());
+                                academicRecordDataObject.setActivityCode(activities);
+                            }
+                            if (!"X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue())) {
+                                academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
+                            } else if ("X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue()) && AtpHelper.isAtpCompletedTerm(studentInfo.getTermName())) {
+                                academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
+                            }
+                            academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
+                            Map<String, AcademicRecordDataObject> academicRecordDataObjectMap = academicRecordsByTerm.get(studentInfo.getTermName());
+                            if (academicRecordDataObjectMap == null) {
+                                academicRecordDataObjectMap = new HashMap<String, AcademicRecordDataObject>();
+                            }
+                            academicRecordDataObjectMap.put(studentInfo.getId(), academicRecordDataObject);
+                            academicRecordsByTerm.put(studentInfo.getTermName(), academicRecordDataObjectMap);
+                        } else {
+                            academicRecordsByTerm.get(studentInfo.getTermName()).get(studentInfo.getId()).getActivityCode().add(studentInfo.getActivityCode());
                         }
-                        if (!"X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue())) {
-                            academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
-                        } else if ("X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue()) && AtpHelper.isAtpCompletedTerm(studentInfo.getTermName())) {
-                            academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
-                        }
-                        academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
-                        academicRecordDataObjectList.add(academicRecordDataObject);
-                        termsList.get(studentInfo.getTermName()).getAcademicRecord().add(academicRecordDataObject);
                     }
+                }
+            }
+            for (String term : academicRecordsByTerm.keySet()) {
+                for (String courseId : academicRecordsByTerm.get(term).keySet()) {
+                    AcademicRecordDataObject academicRecordDataObject = academicRecordsByTerm.get(term).get(courseId);
+                    termsList.get(term).getAcademicRecord().add(academicRecordDataObject);
                 }
             }
             List<PlannedTerm> perfectPlannedTerms = new ArrayList<PlannedTerm>();
@@ -620,7 +634,7 @@ public class PlannedTermsHelperBase {
 
     public static UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper =  UwMyplanServiceLocator.getInstance().getUserSessionHelper();
+            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }

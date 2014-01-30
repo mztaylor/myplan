@@ -471,25 +471,42 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             // Get  Academic Record Data from the SWS and set that to CourseDetails acadRecordList
             try {
                 List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
+                Map<String, Map<String, AcademicRecordDataObject>> academicRecordsByTerm = new HashMap<String, Map<String, AcademicRecordDataObject>>();
                 for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
-                    AcademicRecordDataObject acadrec = new AcademicRecordDataObject();
-                    acadrec.setAtpId(studentInfo.getTermName());
-                    acadrec.setPersonId(studentInfo.getPersonId());
-                    acadrec.setCourseCode(studentInfo.getCourseCode());
-                    acadrec.setCourseTitle(studentInfo.getCourseTitle());
-                    acadrec.setCourseId(studentInfo.getId());
-                    acadrec.setCredit(studentInfo.getCreditsEarned());
-                    acadrec.setGrade(studentInfo.getCalculatedGradeValue());
-                    acadrec.setRepeated(studentInfo.getIsRepeated());
-                    acadrec.setActivityCode(studentInfo.getActivityCode());
 
-                    if (course.getId().equalsIgnoreCase(studentInfo.getId())) {
-                        plannedCourseSummary.getAcadRecList().add(acadrec);
-                        plannedCourseSummary.getAcademicTerms().add(AtpHelper.atpIdToTermName(studentInfo.getTermName()));
+                    if (academicRecordsByTerm.get(studentInfo.getTermName()) == null || (academicRecordsByTerm.get(studentInfo.getTermName()) != null && academicRecordsByTerm.get(studentInfo.getTermName()).get(studentInfo.getId()) == null)) {
+                        AcademicRecordDataObject acadrec = new AcademicRecordDataObject();
+                        acadrec.setAtpId(studentInfo.getTermName());
+                        acadrec.setPersonId(studentInfo.getPersonId());
+                        acadrec.setCourseCode(studentInfo.getCourseCode());
+                        acadrec.setCourseTitle(studentInfo.getCourseTitle());
+                        acadrec.setCourseId(studentInfo.getId());
+                        acadrec.setCredit(studentInfo.getCreditsEarned());
+                        acadrec.setGrade(studentInfo.getCalculatedGradeValue());
+                        acadrec.setRepeated(studentInfo.getIsRepeated());
+                        List<String> activities = new ArrayList<String>();
+                        activities.add(studentInfo.getActivityCode());
+                        acadrec.setActivityCode(activities);
+                        Map<String, AcademicRecordDataObject> academicRecordDataObjectMap = academicRecordsByTerm.get(studentInfo.getTermName());
+                        if (academicRecordDataObjectMap == null) {
+                            academicRecordDataObjectMap = new HashMap<String, AcademicRecordDataObject>();
+                        }
+                        academicRecordDataObjectMap.put(studentInfo.getId(), acadrec);
+                        academicRecordsByTerm.put(studentInfo.getTermName(), academicRecordDataObjectMap);
+                    } else {
+                        academicRecordsByTerm.get(studentInfo.getTermName()).get(studentInfo.getId()).getActivityCode().add(studentInfo.getActivityCode());
                     }
+
+
                 }
 
-
+                for (String term : academicRecordsByTerm.keySet()) {
+                    AcademicRecordDataObject academicRecordDataObject = academicRecordsByTerm.get(term).get(course.getId());
+                    if (academicRecordDataObject != null) {
+                        plannedCourseSummary.getAcadRecList().add(academicRecordDataObject);
+                        plannedCourseSummary.getAcademicTerms().add(AtpHelper.atpIdToTermName(term));
+                    }
+                }
             /*Getting the recommended items for all quarters*/
                 List<RecommendedItemDataObject> recommendedItemDataObjects = getPlanHelper().getRecommendedItems(course.getVersion().getVersionIndId());
 
@@ -1097,10 +1114,11 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
      * returns planItemInfo if exists otherwise returns empty PlanItemInfo.
      *
      * @param refObjId
+     * @param courseCd
      * @param atpId
      * @return
      */
-    public PlanItemInfo getPlanItem(String refObjId, String atpId, String courseCd) {
+    public PlanItemInfo getPlanItem(String refObjId, String courseCd, String atpId) {
         try {
             PlanItemInfo planItem = getPlanHelper().getPlannedOrBackupPlanItem(refObjId, courseCd, atpId);
             if (planItem != null) {
