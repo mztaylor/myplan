@@ -106,71 +106,57 @@ public class SingleQuarterHelperBase {
 
 
         }
-        Map<String, Map<String, AcademicRecordDataObject>> academicRecordsByTerm = new HashMap<String, Map<String, AcademicRecordDataObject>>();
+
+        List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
+        Map<String, List<ActivityOfferingItem>> activitiesMap = new HashMap<String, List<ActivityOfferingItem>>();
+
         /*********** Implementation to populate the plannedTerm list with academic record and planned terms ******************/
         if (studentCourseRecordInfos.size() > 0) {
             for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
                 if (termAtp.equalsIgnoreCase(studentInfo.getTermName())) {
-                    /*Say If a course has A and AB activities then A is already added to the list then the next AB activity should not be created as a separate academicRecordDataObject it should be added the list of activities in academicRecordDataObject*/
-                    if (academicRecordsByTerm.get(studentInfo.getTermName()) == null || (academicRecordsByTerm.get(studentInfo.getTermName()) != null && academicRecordsByTerm.get(studentInfo.getTermName()).get(studentInfo.getId()) == null)) {
-                        AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
-                        academicRecordDataObject.setAtpId(studentInfo.getTermName());
-                        academicRecordDataObject.setPersonId(studentInfo.getPersonId());
-                        academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
+                    AcademicRecordDataObject academicRecordDataObject = new AcademicRecordDataObject();
+                    academicRecordDataObject.setAtpId(studentInfo.getTermName());
+                    academicRecordDataObject.setPersonId(studentInfo.getPersonId());
+                    academicRecordDataObject.setCourseCode(studentInfo.getCourseCode());
 
                     /*TODO: StudentCourseRecordInfo does not have a courseId property so using Id to set the course Id*/
-                        academicRecordDataObject.setCourseId(studentInfo.getId());
-                        academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
-                        academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
-                        if (!"X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue())) {
-                            academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
-                        } else if ("X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue()) && !AtpHelper.isAtpSetToPlanning(studentInfo.getTermName())) {
-                            academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
-                        }
-                        if (AtpHelper.isAtpSetToPlanning(studentInfo.getTermName())) {
-                            List<String> activities = new ArrayList<String>();
-                            activities.add(studentInfo.getActivityCode());
-                            academicRecordDataObject.setActivityCode(activities);
-                        }
-                        academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
-                        Map<String, AcademicRecordDataObject> academicRecordDataObjectMap = academicRecordsByTerm.get(studentInfo.getTermName());
-                        if (academicRecordDataObjectMap == null) {
-                            academicRecordDataObjectMap = new HashMap<String, AcademicRecordDataObject>();
-                        }
-                        academicRecordDataObjectMap.put(studentInfo.getId(), academicRecordDataObject);
-                        academicRecordsByTerm.put(studentInfo.getTermName(), academicRecordDataObjectMap);
-                    } else {
-                        academicRecordsByTerm.get(studentInfo.getTermName()).get(studentInfo.getId()).getActivityCode().add(studentInfo.getActivityCode());
+                    academicRecordDataObject.setCourseId(studentInfo.getId());
+                    academicRecordDataObject.setCourseTitle(studentInfo.getCourseTitle());
+                    academicRecordDataObject.setCredit(studentInfo.getCreditsEarned());
+                    if (!"X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue())) {
+                        academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
+                    } else if ("X".equalsIgnoreCase(studentInfo.getCalculatedGradeValue()) && !AtpHelper.isAtpSetToPlanning(studentInfo.getTermName())) {
+                        academicRecordDataObject.setGrade(studentInfo.getCalculatedGradeValue());
                     }
-                }
-            }
-        }
-
-        List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
-        for (String term : academicRecordsByTerm.keySet()) {
-            for (String courseId : academicRecordsByTerm.get(term).keySet()) {
-                AcademicRecordDataObject academicRecordDataObject = academicRecordsByTerm.get(term).get(courseId);
-                List<String> registeredActivities = academicRecordDataObject.getActivityCode();
-                if (academicRecordDataObject.getCourseId() != null) {
-                    List<ActivityOfferingItem> activityOfferingItemList = getCourseDetailsHelper().getActivityOfferingItemsByIdAndCd(academicRecordDataObject.getCourseId(), academicRecordDataObject.getCourseCode(), academicRecordDataObject.getAtpId());
-                    for (ActivityOfferingItem activityOfferingItem : activityOfferingItemList) {
-                        /*TODO: uncomment or remove once decision whether we have to show both primary and secondary activities is made
-                        if (registeredActivities.contains(activityOfferingItem.getCode())) {
-                            academicRecordDataObject.getActivityOfferingItem().add(activityOfferingItem);
-                        } */
-                        /*TODO: remove this if decision is to show both primary and secondary activities*/
-                        if (registeredActivities.contains(activityOfferingItem.getCode()) && activityOfferingItem.isPrimary()) {
-                            academicRecordDataObject.setActivityOfferingItem(activityOfferingItem);
-                            break;
-                        }
-
+                    if (AtpHelper.isAtpSetToPlanning(studentInfo.getTermName())) {
+                        List<String> activities = new ArrayList<String>();
+                        activities.add(studentInfo.getActivityCode());
+                        academicRecordDataObject.setActivityCode(activities);
                     }
+                    academicRecordDataObject.setRepeated(studentInfo.getIsRepeated());
+
+                    //TODO: We should move these methods out of courseDetailsInquiryHelper
+                    if (academicRecordDataObject.getCourseId() != null) {
+                        List<ActivityOfferingItem> activityOfferingItemList = null;
+                        if (activitiesMap.containsKey(academicRecordDataObject.getCourseId())) {
+                            activityOfferingItemList = activitiesMap.get(academicRecordDataObject.getCourseId());
+                        } else {
+                            activityOfferingItemList = getCourseDetailsHelper().getActivityOfferingItemsByIdAndCd(academicRecordDataObject.getCourseId(), academicRecordDataObject.getCourseCode(), academicRecordDataObject.getAtpId());
+                        }
+                        for (ActivityOfferingItem activityOfferingItem : activityOfferingItemList) {
+                            if (academicRecordDataObject.getActivityCode().contains(activityOfferingItem.getCode())) {
+                                academicRecordDataObject.setActivityOfferingItem(activityOfferingItem);
+                                break;
+                            }
+
+                        }
+                    }
+
+
                     academicRecordDataObjectList.add(academicRecordDataObject);
                 }
-
             }
         }
-
 
         plannedTerm.setAcademicRecord(academicRecordDataObjectList);
 
