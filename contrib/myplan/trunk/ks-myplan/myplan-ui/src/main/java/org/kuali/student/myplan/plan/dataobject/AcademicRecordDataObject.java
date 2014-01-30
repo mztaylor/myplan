@@ -25,7 +25,6 @@ public class AcademicRecordDataObject {
     private transient String grade;
     private transient String credit;
     private transient boolean isRepeated;
-    /*TODO: make this a list if we are going to show more than one activity(primary and secondary) information (Used in SingleQuarter)*/
     private transient ActivityOfferingItem activityOfferingItem;
 
     public AcademicRecordDataObject() {
@@ -112,6 +111,9 @@ public class AcademicRecordDataObject {
     }
 
     public List<String> getActivityCode() {
+        if (activityCode == null) {
+            activityCode = new ArrayList<String>();
+        }
         return activityCode;
     }
 
