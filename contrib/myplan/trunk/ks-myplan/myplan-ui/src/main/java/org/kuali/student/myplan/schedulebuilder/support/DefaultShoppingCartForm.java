@@ -2,8 +2,9 @@ package org.kuali.student.myplan.schedulebuilder.support;
 
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.krad.util.GlobalVariables;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
-import org.kuali.student.myplan.course.util.CourseHelper;
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
@@ -33,7 +34,7 @@ public class DefaultShoppingCartForm extends AbstractPlanItemForm implements Sho
     private transient List<CourseOption> keepInCart;
     private transient ScheduleBuildStrategy scheduleBuildStrategy;
 
-    @Autowired
+
     private transient CourseHelper courseHelper;
 
     private void createActivityLists() {
@@ -246,7 +247,7 @@ public class DefaultShoppingCartForm extends AbstractPlanItemForm implements Sho
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
+            courseHelper = KsapFrameworkServiceLocator.getCourseHelper();
         }
         return courseHelper;
     }

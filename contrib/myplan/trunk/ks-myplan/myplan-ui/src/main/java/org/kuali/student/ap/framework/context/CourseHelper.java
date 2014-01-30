@@ -1,11 +1,13 @@
-package org.kuali.student.myplan.course.util;
+package org.kuali.student.ap.framework.context;
 
 import org.dom4j.DocumentException;
+import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
+import org.kuali.student.r2.lum.course.infc.Course;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -14,11 +16,20 @@ import java.util.Set;
 
 public interface CourseHelper {
 
+    public void frontLoad(List<String> courseIds, String... termId);
+
+    public CourseInfo getCourseInfo(String courseId);
+
+    public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysByCourseAndTerm(String courseId, String termId);
 
     public void getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt,
                                     String curric, String num) throws DocumentException;
 
     public DeconstructedCourseCode getCourseDivisionAndNumber(String courseCode);
+
+    public String getLastOfferedTermId(Course course);
+
+    public List<String> getScheduledTerms(Course course);
 
     public String getCourseId(String subjectArea, String number);
 
@@ -30,15 +41,22 @@ public interface CourseHelper {
 
     public String joinStringsByDelimiter(char delimiter, String... list);
 
-    public CourseInfo getCourseInfo(String courseId);
-
-    public CourseInfo getCourseInfoByIdAndCd(String courseId, String courseCd);
-
     public String getVerifiedCourseId(String courseId);
 
     public String getCourseCdFromActivityId(String activityId);
 
     public String getCodeFromActivityId(String activityId);
+
+    public List<Course> getCoursesByCode(String courseCd);
+
+    /**
+     * Determines whether a course is in a specific term.
+     *
+     * @param term
+     * @param course
+     * @return
+     */
+    boolean isCourseOffered(Term term, Course course);
 
     public String getCourseVersionIdByTerm(String courseId, String termId);
 
@@ -65,7 +83,5 @@ public interface CourseHelper {
 
     public boolean isSimilarCourses(String courseCd1, String courseCd2);
 
-    public void frontLoad(List<String> courseIds, String... termId);
-
-    public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysByCourseAndTerm(String courseId, String termId);
+    public CourseInfo getCourseInfoByIdAndCd(String courseId, String courseCd);
 }

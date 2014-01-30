@@ -1,8 +1,9 @@
 package org.kuali.student.myplan.course.service;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
-import org.kuali.student.myplan.course.util.CourseHelper;
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.util.SearchHelper;
 import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
@@ -23,12 +24,12 @@ public class CoursePreReqSearch {
 
     private transient CluService luService;
 
-    @Autowired
+
     private CourseHelper courseHelper;
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
+            courseHelper = KsapFrameworkServiceLocator.getCourseHelper();
         }
         return courseHelper;
     }

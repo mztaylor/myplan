@@ -56,10 +56,10 @@ public class CommentController extends UifControllerBase {
 
     private transient CommentQueryHelper commentQueryHelper;
 
-    @Autowired
+
     private CommentHelper commentHelper;
 
-    @Autowired
+
     private UserSessionHelper userSessionHelper;
 
     @Override

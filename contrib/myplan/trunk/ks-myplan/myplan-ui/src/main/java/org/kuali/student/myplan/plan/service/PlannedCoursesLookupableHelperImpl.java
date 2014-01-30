@@ -35,7 +35,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
     private transient AcademicRecordService academicRecordService;
 
-    @Autowired
+
     private UserSessionHelper userSessionHelper;
 
     public AcademicRecordService getAcademicRecordService() {

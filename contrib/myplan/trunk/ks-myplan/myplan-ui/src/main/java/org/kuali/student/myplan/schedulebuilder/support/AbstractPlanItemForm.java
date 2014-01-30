@@ -10,7 +10,7 @@ import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
-import org.kuali.student.myplan.course.util.CourseHelper;
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.util.PlanItemForm;
@@ -43,12 +43,10 @@ public abstract class AbstractPlanItemForm extends UifFormBase implements PlanIt
     private AcademicPlanServiceConstants.ItemCategory expectedPlanItemCategory;
 
     private transient AcademicPlanService academicPlanService;
-    @Autowired
+
     private transient CourseHelper courseHelper;
-    @Autowired
     private UserSessionHelper userSessionHelper;
 
-    @Autowired
     private PlanHelper planHelper;
 
     private transient LearningPlan learningPlan;
@@ -236,7 +234,7 @@ public abstract class AbstractPlanItemForm extends UifFormBase implements PlanIt
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
+            courseHelper = KsapFrameworkServiceLocator.getCourseHelper();
         }
         return courseHelper;
     }

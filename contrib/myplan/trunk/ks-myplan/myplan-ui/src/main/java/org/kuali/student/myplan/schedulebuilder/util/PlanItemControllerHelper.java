@@ -17,7 +17,7 @@ import java.util.List;
 
 public final class PlanItemControllerHelper {
 
-    @Autowired
+
     private static UserSessionHelper userSessionHelper;
 
 	public static LearningPlan getAuthorizedLearningPlan(PlanItemForm form, HttpServletRequest request,

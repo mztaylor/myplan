@@ -27,7 +27,7 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
     private DegreeAuditHelper degreeAuditHelper;
 
-    @Autowired
+
     private UserSessionHelper userSessionHelper;
 
     @Override
@@ -84,7 +84,7 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
         return degreeAuditHelper;
     }
 
-    @Autowired
+
     public void setDegreeAuditHelper(DegreeAuditHelper degreeAuditHelper) {
         this.degreeAuditHelper = degreeAuditHelper;
     }
@@ -96,7 +96,7 @@ public class DegreeAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
         return userSessionHelper;
     }
 
-    @Autowired
+
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
     }

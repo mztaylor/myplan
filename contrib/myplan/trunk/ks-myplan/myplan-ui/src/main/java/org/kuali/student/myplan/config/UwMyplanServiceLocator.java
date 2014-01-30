@@ -3,7 +3,7 @@ package org.kuali.student.myplan.config;
 import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
 import org.kuali.student.myplan.comment.util.CommentHelper;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
-import org.kuali.student.myplan.course.util.CourseHelper;
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;

@@ -20,13 +20,12 @@
 
     <bean class="org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator" factory-method="getInstance">
         <property name="ksapTermHelper" ref="ksapTermHelper"/>
-
+        <property name="ksapCourseHelper" ref="ksapCourseHelper"/>
         <!--<property name="ksapContext" ref="ksapContext"/>-->
         <!--<property name="ksapTextHelper" ref="ksapTextHelper"/>-->
         <!--<property name="ksapUserSessionHelper" ref="ksapUserSessionHelper"/>-->
         <!--<property name="ksapEnumerationHelper" ref="ksapEnumerationHelper"/>-->
         <!--<property name="ksapOrgHelper" ref="ksapOrgHelper"/>-->
-        <!--<property name="ksapCourseHelper" ref="ksapCourseHelper"/>-->
         <!--<property name="shoppingCartHelper" ref="shoppingCartHelper"/>-->
         <!--<property name="planHelper" ref="planHelper"/>-->
         <!--<property name="courseSearchStrategy" ref="courseSearchStrategy"/>-->
@@ -130,7 +129,7 @@
 
     <!--<bean name="enrollStatusHelper" class="org.kuali.student.ap.framework.context.support.DefaultEnrollmentStatusHelper" />-->
 
-    <!--<bean id="ksapCourseHelper" class="org.kuali.student.ap.framework.context.support.DefaultCourseHelper" />-->
+    <bean id="ksapCourseHelper" class="org.kuali.student.ap.framework.context.support.DefaultCourseHelper" />
 
     <!--<bean name="shoppingCartHelper" class="org.kuali.student.ap.framework.context.support.MockShoppingCartHelper" />-->
 

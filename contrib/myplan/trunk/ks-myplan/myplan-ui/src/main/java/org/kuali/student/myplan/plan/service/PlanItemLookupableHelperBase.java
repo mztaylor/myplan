@@ -3,6 +3,7 @@ package org.kuali.student.myplan.plan.service;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.LookupForm;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
@@ -13,7 +14,7 @@ import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
-import org.kuali.student.myplan.course.util.CourseHelper;
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -50,13 +51,13 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
     private transient AcademicPlanService academicPlanService;
     private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper;
     private transient CourseOfferingService courseOfferingService;
-    @Autowired
+
     private CourseHelper courseHelper;
 
-    @Autowired
+
     private UserSessionHelper userSessionHelper;
 
-    @Autowired
+
     private PlanHelper planHelper;
 
     protected List<PlannedCourseDataObject> getPlanItems(String planItemType, String studentId, boolean includePlaceHolders)
@@ -422,7 +423,7 @@ public class PlanItemLookupableHelperBase extends MyPlanLookupableImpl {
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
+            courseHelper = KsapFrameworkServiceLocator.getCourseHelper();
         }
         return courseHelper;
     }
