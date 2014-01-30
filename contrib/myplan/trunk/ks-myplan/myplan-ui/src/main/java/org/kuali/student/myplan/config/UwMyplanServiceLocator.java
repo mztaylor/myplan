@@ -8,6 +8,7 @@ import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.ap.framework.context.TermHelper;
+import org.kuali.student.myplan.schedulebuilder.util.ShoppingCartStrategy;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 
@@ -114,6 +115,14 @@ public class UwMyplanServiceLocator {
         this.courseDetailsHelper = courseDetailsHelper;
     }
 
+    public ShoppingCartStrategy getShoppingCartStrategy() {
+        return shoppingCartStrategy;
+    }
+
+    public void setShoppingCartStrategy(ShoppingCartStrategy shoppingCartStrategy) {
+        this.shoppingCartStrategy = shoppingCartStrategy;
+    }
+
     private CourseHelper courseHelper;
 
     private PlanHelper planHelper;
@@ -133,5 +142,7 @@ public class UwMyplanServiceLocator {
     private ScheduleBuildForm scheduleBuildForm;
 
     private CourseDetailsInquiryHelperImpl courseDetailsHelper;
+
+    private ShoppingCartStrategy shoppingCartStrategy;
 
 }

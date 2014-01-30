@@ -187,10 +187,10 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         return new DefaultScheduleBuildForm();
     }
 
-    private ClassMeetingTime adaptClassMeeting(TimeSlot timeSlot,
-                                               ScheduleComponentDisplay scdi, Calendar tcal, Calendar sdcal,
-                                               Calendar edcal, DateFormat tdf, DateFormat ddf, String instructor,
-                                               Date sessionStartDate, Date sessionEndDate) {
+    protected ClassMeetingTime adaptClassMeeting(TimeSlot timeSlot,
+                                                 ScheduleComponentDisplay scdi, Calendar tcal, Calendar sdcal,
+                                                 Calendar edcal, DateFormat tdf, DateFormat ddf, String instructor,
+                                                 Date sessionStartDate, Date sessionEndDate) {
         ClassMeetingTimeInfo meeting = new ClassMeetingTimeInfo();
         sdcal.setTime(sessionStartDate);
         edcal.setTime(sessionEndDate);
@@ -292,10 +292,10 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         return meeting;
     }
 
-    private ActivityOptionInfo getActivityOption(Term term, ActivityOfferingDisplayInfo aodi,
-                                                 int courseIndex, String courseId, String campusCode, StringBuilder msg,
-                                                 DateFormat tdf, DateFormat udf, DateFormat ddf, Calendar sdcal, Calendar edcal,
-                                                 Calendar tcal) {
+    protected ActivityOptionInfo getActivityOption(Term term, ActivityOfferingDisplayInfo aodi,
+                                                   int courseIndex, String courseId, String campusCode, StringBuilder msg,
+                                                   DateFormat tdf, DateFormat udf, DateFormat ddf, Calendar sdcal, Calendar edcal,
+                                                   Calendar tcal) {
 
         ActivityOptionInfo activityOption = new ActivityOptionInfo();
         activityOption.setCourseIndex(courseIndex);
@@ -414,10 +414,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         if (course == null)
             return null;
 
-        String campusCode = null;
-        for (Attribute ca : course.getAttributes())
-            if ("campusCode".equals(ca.getKey()))
-                campusCode = ca.getValue();
+        String campusCode = getCampusCode(course);
 
         Term term = getTermHelper().getTermByAtpId(termId);
         if (term == null)
@@ -461,10 +458,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
             courseOption.setCourseId(c.getId());
 
             StringBuilder code = new StringBuilder();
-            String campusCode = null;
-            for (Attribute ca : c.getAttributes())
-                if ("campusCode".equals(ca.getKey()))
-                    code.append(campusCode = ca.getValue()).append(" ");
+            String campusCode = getCampusCode(c);
             if (!cartStrategy.isCartAvailable(termId, campusCode))
                 continue;
 
@@ -578,8 +572,8 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         return rv;
     }
 
-    private void buildCourseOptions(String termId, boolean courseLockIn, boolean lockIn,
-                                    Map<String, List<String>> courseIdsActivityCodes, List<CourseOption> rv) {
+    protected void buildCourseOptions(String termId, boolean courseLockIn, boolean lockIn,
+                                      Map<String, List<String>> courseIdsActivityCodes, List<CourseOption> rv) {
         if (!courseIdsActivityCodes.isEmpty()) {
             StringBuilder msg = null;
             if (LOG.isDebugEnabled()) {
@@ -1002,6 +996,16 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     @Override
+    public String getCampusCode(Course course) {
+        String campusCode = null;
+        for (Attribute ca : course.getAttributes())
+            if ("campusCode".equals(ca.getKey()))
+                campusCode = ca.getValue();
+        return campusCode;
+    }
+
+
+    @Override
     public ShoppingCartForm getInitialCartForm() {
         return new DefaultShoppingCartForm();
     }
@@ -1065,7 +1069,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
     public ShoppingCartStrategy getShoppingCartStrategy() {
         if (shoppingCartStrategy == null) {
-            shoppingCartStrategy = new DefaultShoppingCartStrategy();
+            shoppingCartStrategy = UwMyplanServiceLocator.getInstance().getShoppingCartStrategy();
         }
         return shoppingCartStrategy;
     }
