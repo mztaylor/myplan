@@ -3,6 +3,7 @@ package org.kuali.student.myplan.plan.dataobject;
 import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,11 +20,12 @@ public class AcademicRecordDataObject {
     private transient String courseId;
     private transient String courseTitle;
     private transient String courseCode;
-    private transient String activityCode;
+    private transient List<String> activityCode;
     private transient String atpId;
     private transient String grade;
     private transient String credit;
     private transient boolean isRepeated;
+    /*TODO: make this a list if we are going to show more than one activity(primary and secondary) information (Used in SingleQuarter)*/
     private transient ActivityOfferingItem activityOfferingItem;
 
     public AcademicRecordDataObject() {
@@ -99,7 +101,7 @@ public class AcademicRecordDataObject {
     }
 
     public ActivityOfferingItem getActivityOfferingItem() {
-        if(activityOfferingItem == null){
+        if (activityOfferingItem == null) {
             activityOfferingItem = new ActivityOfferingItem();
         }
         return activityOfferingItem;
@@ -109,11 +111,11 @@ public class AcademicRecordDataObject {
         this.activityOfferingItem = activityOfferingItem;
     }
 
-    public String getActivityCode() {
+    public List<String> getActivityCode() {
         return activityCode;
     }
 
-    public void setActivityCode(String activityCode) {
+    public void setActivityCode(List<String> activityCode) {
         this.activityCode = activityCode;
     }
 }

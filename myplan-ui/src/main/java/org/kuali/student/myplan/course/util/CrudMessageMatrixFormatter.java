@@ -354,8 +354,8 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
         List<String> sections = new ArrayList<String>();
         List<String> sectionAndSln = new ArrayList<String>();
         for (AcademicRecordDataObject acr : courseDetails.getPlannedCourseSummary().getAcadRecList()) {
-            if (acr.getAtpId().equalsIgnoreCase(AtpHelper.getAtpIdFromTermYear(term)) && StringUtils.hasText(acr.getActivityCode())) {
-                sections.add(acr.getActivityCode());
+            if (acr.getAtpId().equalsIgnoreCase(AtpHelper.getAtpIdFromTermYear(term)) && !CollectionUtils.isEmpty(acr.getActivityCode())) {
+                sections.addAll(acr.getActivityCode());
             }
         }
         for (String section : sections) {
