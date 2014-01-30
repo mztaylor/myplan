@@ -27,6 +27,7 @@ import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.TimeOfDayInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.infc.Attribute;
+import org.kuali.student.r2.common.util.constants.LuiServiceConstants;
 import org.kuali.student.r2.core.room.infc.Room;
 import org.kuali.student.r2.core.scheduling.constants.SchedulingServiceConstants;
 import org.kuali.student.r2.core.scheduling.dto.ScheduleDisplayInfo;
@@ -307,10 +308,8 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 : campusCode + " ") + aodi.getCourseOfferingCode());
         activityOption.setActivityName(aodi.getName());
         activityOption.setRegistrationCode(aodi.getActivityOfferingCode());
-        /*activityOption.setClosed(!LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY
-                .equals(aodi.getStateKey()));*/
-        activityOption
-                .setClosed(!"active".equals(aodi.getStateKey()));
+        activityOption.setClosed(!LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY
+                .equals(aodi.getStateKey()));
         activityOption.setTotalSeats(aodi.getMaximumEnrollment() != null ? aodi.getMaximumEnrollment() : 0);
         if (msg != null)
             msg.append("\nActivity ")
