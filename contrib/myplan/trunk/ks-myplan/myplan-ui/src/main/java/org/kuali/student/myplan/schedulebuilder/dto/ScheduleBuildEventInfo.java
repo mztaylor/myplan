@@ -27,7 +27,7 @@ public class ScheduleBuildEventInfo implements ScheduleBuildEvent {
 	private Date startDate;
 
 	@XmlAttribute
-	private Date endTime;
+	private Date endTime;  // doesn't seem to be used anywhere, prob a mistake since untilDate is used for endTime
 
 	@XmlAttribute
 	private Date untilDate;
