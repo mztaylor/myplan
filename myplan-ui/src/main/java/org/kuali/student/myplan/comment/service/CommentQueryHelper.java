@@ -26,7 +26,7 @@ public class CommentQueryHelper {
 
     private transient CommentService commentService;
 
-    @Autowired
+
     private UserSessionHelper userSessionHelper;
 
     private CommentService getCommentService() {

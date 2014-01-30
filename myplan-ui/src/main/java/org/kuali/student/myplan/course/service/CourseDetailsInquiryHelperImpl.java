@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
@@ -20,7 +21,7 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.dataobject.*;
-import org.kuali.student.myplan.course.util.CourseHelper;
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -101,7 +102,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     private PlanHelper planHelper;
 
-    @Autowired
+
     private UserSessionHelper userSessionHelper;
 
     @Override
@@ -1164,12 +1165,12 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
+            courseHelper = KsapFrameworkServiceLocator.getCourseHelper();
         }
         return courseHelper;
     }
 
-    @Autowired
+
     public void setCourseHelper(CourseHelper courseHelper) {
         this.courseHelper = courseHelper;
     }
@@ -1181,7 +1182,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         return planHelper;
     }
 
-    @Autowired
+
     public void setPlanHelper(PlanHelper planHelper) {
         this.planHelper = planHelper;
     }
@@ -1193,7 +1194,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         return userSessionHelper;
     }
 
-    @Autowired
+
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
     }

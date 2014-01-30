@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
 @ContextConfiguration(locations = {"classpath:myplan-test-context.xml"})
 public class CourseSearchControllerTest {
 
-    @Autowired
+
     private CourseSearchController searchController;
 
     public CourseSearchController getSearchController() {
@@ -42,7 +42,6 @@ public class CourseSearchControllerTest {
         this.searchController = searchController;
     }
 
-    @Autowired
     private CourseSearchStrategy courseSearchStrategy = null;
 
     public CourseSearchStrategy getCourseSearchStrategy() {
@@ -53,7 +52,6 @@ public class CourseSearchControllerTest {
         this.courseSearchStrategy = strategy;
     }
 
-    @Autowired
     private AcademicPlanService academicPlanService;
 
     public AcademicPlanService getAcademicPlanService() {

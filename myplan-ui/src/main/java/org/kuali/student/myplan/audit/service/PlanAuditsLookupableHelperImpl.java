@@ -105,7 +105,7 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
         return degreeAuditHelper;
     }
 
-    @Autowired
+
     public void setDegreeAuditHelper(DegreeAuditHelper degreeAuditHelper) {
         this.degreeAuditHelper = degreeAuditHelper;
     }
@@ -117,7 +117,7 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
         return userSessionHelper;
     }
 
-    @Autowired
+
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
     }

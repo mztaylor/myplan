@@ -15,7 +15,7 @@ import java.util.Map;
 @Component
 public class SavedCoursesLookupableHelperImpl extends PlanItemLookupableHelperBase {
 
-    @Autowired
+
     private UserSessionHelper userSessionHelper;
 
     @Override

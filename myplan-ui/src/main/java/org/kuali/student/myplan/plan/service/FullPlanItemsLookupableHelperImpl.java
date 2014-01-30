@@ -38,7 +38,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
 
     private transient AcademicRecordService academicRecordService;
 
-    @Autowired
+
     private UserSessionHelper userSessionHelper;
 
     public AcademicRecordService getAcademicRecordService() {

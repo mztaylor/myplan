@@ -3,6 +3,8 @@ package org.kuali.student.myplan.course.util;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.dataobject.CourseDetails;
@@ -18,7 +20,6 @@ import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
 import java.beans.PropertyEditorSupport;
@@ -39,16 +40,16 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
 
     private boolean excludeRecommendations;
 
-    @Autowired
+
     private CourseHelper courseHelper;
 
-    @Autowired
+
     private UserSessionHelper userSessionHelper;
 
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
+            courseHelper = KsapFrameworkServiceLocator.getCourseHelper();
         }
         return courseHelper;
     }

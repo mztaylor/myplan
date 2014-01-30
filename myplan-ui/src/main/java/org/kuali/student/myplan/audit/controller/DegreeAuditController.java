@@ -20,6 +20,7 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
@@ -35,7 +36,7 @@ import org.kuali.student.myplan.audit.service.DegreeAuditService;
 import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
-import org.kuali.student.myplan.course.util.CourseHelper;
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.AtpHelper;
@@ -92,13 +93,13 @@ public class DegreeAuditController extends UifControllerBase {
 
     private CourseOfferingService courseOfferingService;
 
-    @Autowired
+
     private CourseHelper courseHelper;
 
-    @Autowired
+
     private UserSessionHelper userSessionHelper;
 
-    @Autowired
+
     private PlanHelper planHelper;
 
     private DegreeAuditHelper degreeAuditHelper;
@@ -655,12 +656,12 @@ public class DegreeAuditController extends UifControllerBase {
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
-            courseHelper = UwMyplanServiceLocator.getInstance().getCourseHelper();
+            courseHelper = KsapFrameworkServiceLocator.getCourseHelper();
         }
         return courseHelper;
     }
 
-    @Autowired
+
     public void setCourseHelper(CourseHelper courseHelper) {
         this.courseHelper = courseHelper;
     }

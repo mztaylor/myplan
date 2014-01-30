@@ -16,7 +16,7 @@ import java.util.Map;
 @Deprecated
 public class SavedCoursesSummaryLookupableHelperImpl extends PlanItemLookupableHelperBase {
 
-    @Autowired
+
     private UserSessionHelper userSessionHelper;
 
     @Override

@@ -1,6 +1,10 @@
 package org.kuali.student.ap.framework.config;
 
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.ap.framework.context.TermHelper;
+
+import javax.ejb.EJB;
+
 //import org.kuali.student.ap.schedulebuilder.ShoppingCartStrategy;
 //import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 //import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
@@ -16,16 +20,14 @@ import org.kuali.student.ap.framework.context.TermHelper;
 //import org.kuali.student.r2.lum.lrc.service.LRCService;
 //import org.kuali.student.r2.lum.program.service.ProgramService;
 
-import javax.ejb.EJB;
-
 
 /**
  * Convenience factory for acquiring KSAP provided service.
- * 
+ *
  * <p>
  * Remote services commonly used by ks-ap are also provided by this locator.
  * </p>
- * 
+ *
  * @author Mark Fyffe <mwfyffe@indiana.edu>
  * @version 0.4.5
  * @since 0.1.1
@@ -44,7 +46,7 @@ public final class KsapFrameworkServiceLocator {
 	 * bean in an auto-wiring container in order to populate {@link EJB}
 	 * instances.
 	 * </p>
-	 * 
+	 *
 	 * <pre>
 	 * &lt;bean class=&quot;org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator&quot;
 	 * 	factory-method=&quot;getInstance&quot; /&gt;
@@ -201,7 +203,7 @@ public final class KsapFrameworkServiceLocator {
 
 	/**
 	 * Get the ATP helper.
-	 * 
+	 *
 	 * @return The ATP help.
 	 */
 	public static TermHelper getTermHelper() {
@@ -226,15 +228,16 @@ public final class KsapFrameworkServiceLocator {
 //		return getInstance().ksapOrgHelper;
 //	}
 //
-//	/**
-//	 * Get the course helper.
-//	 *
-//	 * @return The course helper.
-//	 */
-//	public static CourseHelper getCourseHelper() {
-//		return getInstance().ksapCourseHelper;
-//	}
-//
+	/**
+	 * Get the course helper.
+	 *
+	 * @return The course helper.
+	 */
+	public static CourseHelper getCourseHelper() {
+		return getInstance().ksapCourseHelper;
+	}
+
+    //
 //	/**
 //	 * Get the academic plan service.
 //	 *
@@ -387,9 +390,9 @@ public final class KsapFrameworkServiceLocator {
 //        getInstance().ksapOrgHelper = ksapOrgHelper;
 //    }
 //
-//    public void setKsapCourseHelper(CourseHelper ksapCourseHelper) {
-//        getInstance().ksapCourseHelper = ksapCourseHelper;
-//    }
+    public void setKsapCourseHelper(CourseHelper ksapCourseHelper) {
+        getInstance().ksapCourseHelper = ksapCourseHelper;
+    }
 //
 //    public void setKsapTextHelper(TextHelper ksapTextHelper) {
 //        getInstance().ksapTextHelper = ksapTextHelper;
@@ -465,8 +468,8 @@ public final class KsapFrameworkServiceLocator {
 //	private transient EnumerationHelper ksapEnumerationHelper;
 //	@EJB
 //	private transient OrgHelper ksapOrgHelper;
-//	@EJB
-//	private transient CourseHelper ksapCourseHelper;
+	@EJB
+	private transient CourseHelper ksapCourseHelper;
 //	@EJB
 //	private transient TextHelper ksapTextHelper;
 //	@EJB
