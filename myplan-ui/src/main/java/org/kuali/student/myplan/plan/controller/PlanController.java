@@ -3057,6 +3057,9 @@ public class PlanController extends UifControllerBase {
     }
 
     public PlanHelper getPlanHelper() {
+        if (planHelper == null) {
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
+        }
         return planHelper;
     }
 
@@ -3066,7 +3069,7 @@ public class PlanController extends UifControllerBase {
 
     public UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper =  UwMyplanServiceLocator.getInstance().getUserSessionHelper();
+            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }
