@@ -35,14 +35,6 @@ public class UwMyplanServiceLocator {
         UwMyplanServiceLocator.instance = instance;
     }
 
-    public CourseHelper getCourseHelper() {
-        return courseHelper;
-    }
-
-    public void setCourseHelper(CourseHelper courseHelper) {
-        this.courseHelper = courseHelper;
-    }
-
     public PlanHelper getPlanHelper() {
         return planHelper;
     }
@@ -83,14 +75,6 @@ public class UwMyplanServiceLocator {
         this.atpTypeComparator = atpTypeComparator;
     }
 
-    public TermHelper getTermHelper() {
-        return termHelper;
-    }
-
-    public void setTermHelper(TermHelper termHelper) {
-        this.termHelper = termHelper;
-    }
-
     public ScheduleBuildStrategy getScheduleBuildStrategy() {
         return scheduleBuildStrategy;
     }
@@ -123,8 +107,6 @@ public class UwMyplanServiceLocator {
         this.shoppingCartStrategy = shoppingCartStrategy;
     }
 
-    private CourseHelper courseHelper;
-
     private PlanHelper planHelper;
 
     private UserSessionHelper userSessionHelper;
@@ -132,8 +114,6 @@ public class UwMyplanServiceLocator {
     private DegreeAuditHelper degreeAuditHelper;
 
     private CommentHelper commentHelper;
-
-    private TermHelper termHelper;
 
     private Comparator<TypeInfo> atpTypeComparator;
 
