@@ -21,6 +21,7 @@
     <bean class="org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator" factory-method="getInstance">
         <property name="ksapTermHelper" ref="ksapTermHelper"/>
         <property name="ksapCourseHelper" ref="ksapCourseHelper"/>
+        <property name="ksapCalendarUtil" ref="ksapCalendarUtil"/>
         <!--<property name="ksapContext" ref="ksapContext"/>-->
         <!--<property name="ksapTextHelper" ref="ksapTextHelper"/>-->
         <!--<property name="ksapUserSessionHelper" ref="ksapUserSessionHelper"/>-->
@@ -289,5 +290,30 @@
 
     <!--<bean id="shoppingCartStrategy"-->
           <!--class="org.kuali.student.ap.schedulebuilder.support.DefaultShoppingCartStrategy" />-->
+
+    <bean id="ksapCalendarUtil" class="org.kuali.student.myplan.utils.CalendarUtil">
+        <constructor-arg>
+            <list>
+                <value>SUNDAY</value>
+                <value>MONDAY</value>
+                <value>TUESDAY</value>
+                <value>WEDNESDAY</value>
+                <value>THURSDAY</value>
+                <value>FRIDAY</value>
+                <value>SATURDAY</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg>
+            <list>
+                <value>Su</value>
+                <value>Mo</value>
+                <value>Tu</value>
+                <value>We</value>
+                <value>Th</value>
+                <value>Fr</value>
+                <value>Sa</value>
+            </list>
+        </constructor-arg>
+    </bean>
 
 </beans>
