@@ -2,6 +2,7 @@ package org.kuali.student.ap.framework.config;
 
 import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.ap.framework.context.TermHelper;
+import org.kuali.student.myplan.utils.CalendarUtil;
 
 import javax.ejb.EJB;
 
@@ -23,7 +24,7 @@ import javax.ejb.EJB;
 
 /**
  * Convenience factory for acquiring KSAP provided service.
- *
+ * <p/>
  * <p>
  * Remote services commonly used by ks-ap are also provided by this locator.
  * </p>
@@ -34,28 +35,28 @@ import javax.ejb.EJB;
  */
 public final class KsapFrameworkServiceLocator {
 
-	/**
-	 * Internally managed singleton instance.
-	 */
-	private static KsapFrameworkServiceLocator instance;
+    /**
+     * Internally managed singleton instance.
+     */
+    private static KsapFrameworkServiceLocator instance;
 
-	/**
-	 * Get a singleton instance.
-	 * <p>
-	 * This method should be indicated as the factory method by at least one
-	 * bean in an auto-wiring container in order to populate {@link EJB}
-	 * instances.
-	 * </p>
-	 *
-	 * <pre>
-	 * &lt;bean class=&quot;org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator&quot;
-	 * 	factory-method=&quot;getInstance&quot; /&gt;
-	 * </pre>
-	 */
-	public static KsapFrameworkServiceLocator getInstance() {
-		return instance == null ? instance = new KsapFrameworkServiceLocator()
-				: instance;
-	}
+    /**
+     * Get a singleton instance.
+     * <p>
+     * This method should be indicated as the factory method by at least one
+     * bean in an auto-wiring container in order to populate {@link EJB}
+     * instances.
+     * </p>
+     * <p/>
+     * <pre>
+     * &lt;bean class=&quot;org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator&quot;
+     * 	factory-method=&quot;getInstance&quot; /&gt;
+     * </pre>
+     */
+    public static KsapFrameworkServiceLocator getInstance() {
+        return instance == null ? instance = new KsapFrameworkServiceLocator()
+                : instance;
+    }
 
 //	/**
 //	 * Get the ks-core remote ATP service.
@@ -201,14 +202,14 @@ public final class KsapFrameworkServiceLocator {
 //		return getInstance().ksapUserSessionHelper;
 //	}
 
-	/**
-	 * Get the ATP helper.
-	 *
-	 * @return The ATP help.
-	 */
-	public static TermHelper getTermHelper() {
-		return getInstance().ksapTermHelper;
-	}
+    /**
+     * Get the ATP helper.
+     *
+     * @return The ATP help.
+     */
+    public static TermHelper getTermHelper() {
+        return getInstance().ksapTermHelper;
+    }
 
 //	/**
 //	 * Get the Enumeration helper.
@@ -228,14 +229,15 @@ public final class KsapFrameworkServiceLocator {
 //		return getInstance().ksapOrgHelper;
 //	}
 //
-	/**
-	 * Get the course helper.
-	 *
-	 * @return The course helper.
-	 */
-	public static CourseHelper getCourseHelper() {
-		return getInstance().ksapCourseHelper;
-	}
+
+    /**
+     * Get the course helper.
+     *
+     * @return The course helper.
+     */
+    public static CourseHelper getCourseHelper() {
+        return getInstance().ksapCourseHelper;
+    }
 
     //
 //	/**
@@ -314,6 +316,16 @@ public final class KsapFrameworkServiceLocator {
 //        return getInstance().learningPlanReviewStrategy;
 //    }
 
+    /**
+     * Get the Calendar util.
+     *
+     * @return The Calendar Util.
+     */
+    public static CalendarUtil getCalendarUtil() {
+        return getInstance().ksapCalendarUtil;
+    }
+
+
 //    public void setKsCoreAtpService(AtpService ksCoreAtpService) {
 //        getInstance().ksCoreAtpService = ksCoreAtpService;
 //    }
@@ -382,7 +394,7 @@ public final class KsapFrameworkServiceLocator {
         getInstance().ksapTermHelper = ksapTermHelper;
     }
 
-//    public void setKsapEnumerationHelper(EnumerationHelper ksapEnumerationHelper) {
+    //    public void setKsapEnumerationHelper(EnumerationHelper ksapEnumerationHelper) {
 //        getInstance().ksapEnumerationHelper = ksapEnumerationHelper;
 //    }
 //
@@ -430,7 +442,12 @@ public final class KsapFrameworkServiceLocator {
 //        getInstance().scheduleBuildStrategy = scheduleBuildStrategy;
 //    }
 
-//	@EJB
+
+    public void setKsapCalendarUtil(CalendarUtil ksapCalendarUtil) {
+        getInstance().ksapCalendarUtil = ksapCalendarUtil;
+    }
+
+    //	@EJB
 //	private transient AtpService ksCoreAtpService;
 //	@EJB
 //	private transient TypeService ksCoreTypeService;
@@ -462,14 +479,14 @@ public final class KsapFrameworkServiceLocator {
 //	private transient KsapContext ksapContext;
 //	@EJB
 //	private transient UserSessionHelper ksapUserSessionHelper;
-	@EJB
-	private transient TermHelper ksapTermHelper;
-//	@EJB
+    @EJB
+    private transient TermHelper ksapTermHelper;
+    //	@EJB
 //	private transient EnumerationHelper ksapEnumerationHelper;
 //	@EJB
 //	private transient OrgHelper ksapOrgHelper;
-	@EJB
-	private transient CourseHelper ksapCourseHelper;
+    @EJB
+    private transient CourseHelper ksapCourseHelper;
 //	@EJB
 //	private transient TextHelper ksapTextHelper;
 //	@EJB
@@ -481,7 +498,7 @@ public final class KsapFrameworkServiceLocator {
 //    @EJB
 //    private transient PlanHelper planHelper;
 
-	// provided by ks-ap-ui or institution override
+    // provided by ks-ap-ui or institution override
 //	@EJB
 //    @OptionalResource
 //    private transient CourseSearchStrategy courseSearchStrategy;
@@ -498,7 +515,10 @@ public final class KsapFrameworkServiceLocator {
 //    @EJB
 //    private transient ShoppingCartStrategy shoppingCartStrategy;
 
-	private KsapFrameworkServiceLocator() {
-	}
+    @EJB
+    private transient CalendarUtil ksapCalendarUtil;
+
+    private KsapFrameworkServiceLocator() {
+    }
 
 }

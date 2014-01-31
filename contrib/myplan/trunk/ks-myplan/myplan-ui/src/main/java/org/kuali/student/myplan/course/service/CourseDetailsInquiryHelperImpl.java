@@ -32,6 +32,7 @@ import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.myplan.plan.util.*;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
+import org.kuali.student.myplan.utils.CalendarUtil;
 import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
@@ -70,8 +71,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     private final Logger logger = Logger.getLogger(CourseDetailsInquiryHelperImpl.class);
 
-    private final static String[] WEEKDAYS_FIRST_LETTER = {"Su", "M", "T", "W", "Th", "F", "Sa"};
-
     private final static List<String> QUARTERS = Arrays.asList("Autumn", "Winter", "Spring", "Summer");
 
     public static final String NOT_OFFERED_IN_LAST_TEN_YEARS = "Not offered for more than 10 years.";
@@ -104,6 +103,8 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
 
     private UserSessionHelper userSessionHelper;
+
+    private CalendarUtil calendarUtil;
 
     @Override
     public CourseDetails retrieveDataObject(Map fieldValues) {
@@ -834,7 +835,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     String days = "";
                     for (int weekday : timeSlot.getWeekdays()) {
                         if (weekday > 0 && weekday < 8) {
-                            String letter = WEEKDAYS_FIRST_LETTER[weekday - 1];
+                            String letter = getCalendarUtil().getShortName(weekday);
                             days += letter;
                         }
                     }
@@ -1197,5 +1198,16 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
+    }
+
+    public CalendarUtil getCalendarUtil() {
+        if (calendarUtil == null) {
+            calendarUtil = KsapFrameworkServiceLocator.getCalendarUtil();
+        }
+        return calendarUtil;
+    }
+
+    public void setCalendarUtil(CalendarUtil calendarUtil) {
+        this.calendarUtil = calendarUtil;
     }
 }
