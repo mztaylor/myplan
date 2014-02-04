@@ -107,7 +107,6 @@ public class CourseSearchController extends UifControllerBase {
     private transient TypeService typeService;
 
 
-
     private Comparator<TypeInfo> atpTypeComparator;
 
 
@@ -952,6 +951,9 @@ public class CourseSearchController extends UifControllerBase {
     }
 
     public PlanHelper getPlanHelper() {
+        if (planHelper == null) {
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
+        }
         return planHelper;
     }
 
