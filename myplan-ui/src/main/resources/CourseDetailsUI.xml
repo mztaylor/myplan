@@ -903,8 +903,6 @@
                 <bean parent="KSAP-MessageField" p:messageText="@{#line.instructor}">
                     <property name="cssClasses" value="removeMargin"/>
                 </bean>
-                <!--
-                TODO: Uncomment to enable Course Syllabus link
                 <bean id="syllabus_link" parent="Uif-LinkField" p:cssClasses="removeMargin" p:render="@{#line.hasSyllabus}">
                     <property name="linkText" value="View syllabus description"/>
                     <property name="title" value="View syllabus description"/>
@@ -920,7 +918,7 @@
                             </property>
                         </bean>
                     </property>
-                </bean>-->
+                </bean>
             </list>
         </property>
     </bean>
