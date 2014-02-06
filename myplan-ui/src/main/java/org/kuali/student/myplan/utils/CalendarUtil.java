@@ -1,5 +1,8 @@
 package org.kuali.student.myplan.utils;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -85,6 +88,37 @@ public class CalendarUtil {
             return days.indexOf(dayOfWeek.toUpperCase()) + 1;
         }
         return -1;
+    }
+
+
+    /**
+     * Provides Monday of next week if the given date is not monday
+     *
+     * @param today
+     * @return Date with day as monday
+     */
+    public Date getNextMonday(Date today) {
+        Calendar now = new GregorianCalendar();
+        now.setTime(today);
+        int weekday = now.get(Calendar.DAY_OF_WEEK);
+        if (weekday != Calendar.MONDAY) {
+            int days = (Calendar.SATURDAY - weekday + 2) % 7;
+            now.add(Calendar.DAY_OF_YEAR, days);
+        }
+        return now.getTime();
+    }
+
+    /**
+     * Get no
+     *
+     * @param today
+     * @return Date with day as monday
+     */
+    public Date getDateAfterXdays(Date today, int days) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(today);
+        c.add(Calendar.DATE, days);
+        return c.getTime();
     }
 
 
