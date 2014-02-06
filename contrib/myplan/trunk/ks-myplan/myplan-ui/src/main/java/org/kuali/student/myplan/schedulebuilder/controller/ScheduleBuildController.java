@@ -8,12 +8,14 @@ import org.kuali.rice.krad.UserSession;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ShoppingCartForm;
+import org.kuali.student.myplan.utils.CalendarUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -44,6 +46,8 @@ public class ScheduleBuildController extends UifControllerBase {
 
     private ScheduleBuildStrategy scheduleBuildStrategy;
 
+    private static CalendarUtil calendarUtil;
+
 
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
@@ -65,6 +69,7 @@ public class ScheduleBuildController extends UifControllerBase {
         private final Calendar cal = Calendar.getInstance();
         private final Date minDate;
         private final Date maxDate;
+        private final Date displayDate;
         private final Set<Date> breakDates = new TreeSet<Date>();
 
         private boolean weekends;
@@ -72,9 +77,10 @@ public class ScheduleBuildController extends UifControllerBase {
         private int maxTime = 17;
         private Date lastUntilDate;
 
-        private EventAggregateData(Date minDate, Date maxDate) {
+        private EventAggregateData(Date minDate, Date maxDate, Date displayDate) {
             this.minDate = minDate;
             this.maxDate = maxDate;
+            this.displayDate = displayDate;
         }
 
         private Date getDatePortion(Date date) {
@@ -181,24 +187,34 @@ public class ScheduleBuildController extends UifControllerBase {
     private static void addEvents(Term term, ScheduleBuildEvent meeting,
                                   String description, ActivityOption ao, String cssClass,
                                   JsonArrayBuilder jevents, EventAggregateData aggregate) {
-        Date startDate = aggregate.getDatePortion(meeting.getStartDate());
-        if (startDate == null || startDate.before(term.getStartDate()))
-            startDate = aggregate.getDatePortion(term.getStartDate());
+        /**
+         * This is used to adjust minDate and maxDate which is a week from min date and adjust min date to be monday if it is not.
+         * Used in building a week worth of schedules instead of whole term.
+         * */
+        Date termStartDate = getCalendarUtil().getNextMonday(term.getStartDate());
+        Date termEndDate = getCalendarUtil().getDateAfterXdays(termStartDate, 6);
+        Date meetingStartDate = getCalendarUtil().getNextMonday(meeting.getStartDate());
+        Date meetingEndDate = getCalendarUtil().getDateAfterXdays(termStartDate, 6);
+
+
+        Date startDate = aggregate.getDatePortion(meetingStartDate);
+        if (startDate == null || startDate.before(termStartDate))
+            startDate = aggregate.getDatePortion(termStartDate);
         aggregate.addBreakDate(startDate);
 
-        Date untilDate = aggregate.getDatePortion(meeting.getUntilDate());
-        if (untilDate == null || untilDate.after(term.getEndDate()))
-            untilDate = aggregate.getDatePortion(term.getEndDate());
+        Date untilDate = aggregate.getDatePortion(meetingEndDate);
+        if (untilDate == null || untilDate.after(termEndDate))
+            untilDate = aggregate.getDatePortion(termEndDate);
         aggregate.updateLastUntilDate(untilDate);
 
         aggregate.updateWeekends(meeting.isSunday() || meeting.isSaturday());
 
-        Date eventStart = aggregate.getTimePortion(meeting.getStartDate());
+        Date eventStart = aggregate.getTimePortion(meetingStartDate);
         long durationSeconds;
         if (meeting.isAllDay())
             durationSeconds = 0L;
         else {
-            Date eventEnd = aggregate.getTimePortion(meeting.getUntilDate());
+            Date eventEnd = aggregate.getTimePortion(meetingEndDate);
             durationSeconds = (eventEnd.getTime() - eventStart.getTime()) / 1000;
             aggregate.updateMinMaxTime(eventStart, eventEnd);
         }
@@ -338,14 +354,21 @@ public class ScheduleBuildController extends UifControllerBase {
 
         form.buildSchedules();
 
-        EventAggregateData aggregate = new EventAggregateData(form.getTerm()
-                .getStartDate(), form.getTerm().getEndDate());
+        /**
+         * This is used to adjust minDate and maxDate which is a week from min date and adjust min date to be monday if it is not.
+         * Used in building a week worth of schedules instead of whole term.
+         * */
+        Date minDate = getCalendarUtil().getNextMonday(form.getTerm().getStartDate());
+        Date maxDate = getCalendarUtil().getDateAfterXdays(minDate, 6);
+        Date displayDate = form.getTerm().getEndDate();
+
+
+        EventAggregateData aggregate = new EventAggregateData(minDate, maxDate, displayDate);
         JsonObjectBuilder json = Json.createObjectBuilder();
         JsonArrayBuilder jpossible = Json.createArrayBuilder();
         List<PossibleScheduleOption> psos = form.getPossibleScheduleOptions();
         List<PossibleScheduleOption> sss = form.getSavedSchedules();
-        Map<String, PossibleScheduleOption> cartOptions =
-                new HashMap<String, PossibleScheduleOption>(psos.size() + sss.size());
+        Map<String, PossibleScheduleOption> cartOptions = new HashMap<String, PossibleScheduleOption>(psos.size() + sss.size());
 
         int discardCount = 0;
         for (int i = 0; i < psos.size(); i++) {
@@ -526,8 +549,15 @@ public class ScheduleBuildController extends UifControllerBase {
         acss.add(cssClass);
         jsso.add("eventClass", acss);
 
-        EventAggregateData aggregate = new EventAggregateData(form.getTerm()
-                .getStartDate(), form.getTerm().getEndDate());
+        /**
+         * This is used to adjust minDate and maxDate which is a week from min date and adjust min date to be monday if it is not.
+         * Used in building a week worth of schedules instead of whole term.
+         * */
+        Date minDate = getCalendarUtil().getNextMonday(form.getTerm().getStartDate());
+        Date maxDate = getCalendarUtil().getDateAfterXdays(minDate, 6);
+        Date displayDate = form.getTerm().getEndDate();
+
+        EventAggregateData aggregate = new EventAggregateData(minDate, maxDate, displayDate);
         for (ActivityOption ao : sso.getActivityOptions())
             if (!ao.isPrimary() || !ao.isEnrollmentGroup())
                 for (ClassMeetingTime meeting : ao.getClassMeetingTimes())
@@ -587,5 +617,16 @@ public class ScheduleBuildController extends UifControllerBase {
 
     public void setScheduleBuildStrategy(ScheduleBuildStrategy scheduleBuildStrategy) {
         this.scheduleBuildStrategy = scheduleBuildStrategy;
+    }
+
+    public static CalendarUtil getCalendarUtil() {
+        if (calendarUtil == null) {
+            calendarUtil = KsapFrameworkServiceLocator.getCalendarUtil();
+        }
+        return calendarUtil;
+    }
+
+    public static void setCalendarUtil(CalendarUtil calendarUtil) {
+        ScheduleBuildController.calendarUtil = calendarUtil;
     }
 }
