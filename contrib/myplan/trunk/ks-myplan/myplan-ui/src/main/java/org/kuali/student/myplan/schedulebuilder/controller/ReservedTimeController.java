@@ -93,11 +93,11 @@ public class ReservedTimeController extends KsapControllerBase {
         form.setViewId(FORM);
         form.setView(super.getViewService().getViewById(FORM));
 
-        if (StringUtils.isEmpty(form.getAtpId())) {
+        if (StringUtils.isEmpty(form.getTermId())) {
             throw new OperationFailedException("No atpId is found");
         }
 
-        Term term = getTermHelper().getTermByAtpId(form.getAtpId());
+        Term term = getTermHelper().getTermByAtpId(form.getTermId());
         Date startDate = getCalendarUtil().getNextMonday(term.getStartDate());
         Date endDate = getCalendarUtil().getDateAfterXdays(startDate, 6);
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
