@@ -16,7 +16,7 @@
 #sb_calendar_wrapper {
 	height : 62rem;
 }
-
+/*
 #sb_calendar {
 	position : absolute ;
 	left : 14.6875em;
@@ -24,7 +24,7 @@
 	font-size : 1.2em ;
 	line-height : 1.2em ;
 }
-
+*/
 .fc-slot0 .fc-widget-content,
 .fc-slot1 .fc-widget-content,
 .fc-slot2 .fc-widget-content,

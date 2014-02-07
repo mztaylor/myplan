@@ -23,7 +23,7 @@
     <bean id="Uif-TabbedCollectionLayout" parent="Uif-TabbedCollectionLayout-parentBean"/>
     <bean id="Uif-TabbedCollectionLayout-parentBean" abstract="true" parent="Uif-StackedCollectionLayoutBase-parentBean"
           class="org.kuali.rice.krad.uif.layout.extension.TabbedLayoutManager">
-        <property name="template" value="/ks-myplan/WEB-INF/ftl/layout/tabbedcollection.ftl"/>
+        <property name="template" value="/ksap/WEB-INF/ftl/layout/tabbedCollection.ftl"/>
         <property name="templateName" value="uif_tabbedcollection"/>
         <property name="lineGroupPrototype">
             <bean parent="Uif-VerticalBoxSection">
@@ -69,7 +69,7 @@
     <bean id="KSAP-Calendar" parent="KSAP-Calendar-parentBean"/>
     <bean id="KSAP-Calendar-parentBean" parent="Uif-ContentElementBase" scope="prototype"
         class="org.kuali.rice.krad.uif.element.extension.ScheduleBuildCalendarComponent" p:cssClasses="ksap-sb-calendar"
-        p:template="/WEB-INF/ftl/schedulebuilder/sb_calendar.ftl" p:templateName="sb_calendar">
+        p:template="/ksap/WEB-INF/ftl/components/widget/calendar.ftl" p:templateName="ksap_calendar">
         <property name="templateOptions">
             <map merge="true">
                 <entry key="year" value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).displayCurrentDateTime('y')}"/>

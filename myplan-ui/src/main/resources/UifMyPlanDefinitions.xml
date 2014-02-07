@@ -199,10 +199,10 @@
     </bean>
 
     <bean id="KSAP-GlobalApplicationHeader" parent="Uif-GlobalApplicationHeader" p:templateName="ksap_app_header"
-          p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationHeader.ftl" p:render="true"/>
+          p:template="/themes/ksap/templates/ksapApplicationHeader.ftl" p:render="true"/>
 
     <bean id="KSAP-GlobalApplicationFooter" parent="Uif-GlobalApplicationFooter" p:templateName="ksap_app_footer"
-          p:template="/ks-myplan/WEB-INF/ftl/templates/MyPlanApplicationFooter.ftl" p:render="true"/>
+          p:template="/themes/ksap/templates/ksapApplicationFooter.ftl" p:render="true"/>
 
     <bean id="MyPlanFooterDocument" parent="Uif-FooterBase">
         <property name="items">
@@ -506,7 +506,7 @@
     <bean id="KSAP-SimpleDataField" parent="KSAP-SimpleDataField-parentBean"/>
     <bean id="KSAP-SimpleDataField-parentBean" abstract="true" parent="Uif-DataField" scope="prototype">
         <property name="readOnly" value="true"/>
-        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/KSAPSimpleDataField.ftl"/>
+        <property name="template" value="/ksap/WEB-INF/ftl/components/simpleDataField.ftl"/>
         <property name="templateName" value="ksap_simpleDataField"/>
         <property name="fieldLabel">
             <bean parent="Uif-Label">
@@ -534,7 +534,7 @@
                 <property name="renderColon" value="false"/>
             </bean>
         </property>
-        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/KSAPSimpleDataField.ftl"/>
+        <property name="template" value="/ksap/WEB-INF/ftl/components/simpleDataField.ftl"/>
         <property name="templateName" value="ksap_simpleDataField"/>
         <property name="inquiry">
             <null/>
@@ -574,7 +574,7 @@
 
     <bean id="KSAP-StackedCollectionGroup" parent="KSAP-StackedCollectionGroup-parentBean"/>
     <bean id="KSAP-StackedCollectionGroup-parentBean" parent="Uif-StackedCollectionGroup-parentBean">
-        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/KSAPcollectionGroup.ftl"/>
+        <property name="template" value="/ksap/WEB-INF/ftl/components/collectionGroup.ftl"/>
         <property name="templateName" value="ksap_collectionGroup"/>
         <property name="layoutManager">
             <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
@@ -683,7 +683,7 @@
     </bean>
 
     <bean id="KSAP-VerticalFieldGroup" parent="Uif-VerticalFieldGroup">
-        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/field/fieldGroup.ftl"/>
+        <property name="template" value="/ksap/WEB-INF/ftl/components/field/fieldGroup.ftl"/>
         <property name="fieldLabel">
             <bean parent="Uif-Label">
                 <property name="render" value="false"/>
@@ -696,7 +696,7 @@
     </bean>
 
     <bean id="KSAP-HorizontalFieldGroup" parent="Uif-HorizontalFieldGroup">
-        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/field/fieldGroup.ftl"/>
+        <property name="template" value="/ksap/WEB-INF/ftl/components/field/fieldGroup.ftl"/>
         <property name="fieldLabel">
             <bean parent="Uif-Label">
                 <property name="render" value="false"/>
@@ -724,7 +724,7 @@
     </bean>
 
     <bean id="KSAP-HeaderBase" parent="Uif-HeaderBase">
-        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/element/header.ftl"/>
+        <property name="template" value="/ksap/WEB-INF/ftl/components/element/header.ftl"/>
         <property name="cssClasses">
             <list merge="false"/>
         </property>
@@ -764,7 +764,7 @@
     </bean>
 
     <bean id="KSAP-Suggest" parent="Uif-Suggest-parentBean">
-        <property name="template" value="/ks-myplan/WEB-INF/ftl/components/widget/suggest.ftl"/>
+        <property name="template" value="/ksap/WEB-INF/ftl/components/widget/suggest.ftl"/>
     </bean>
 
     <bean id="KSAP-ModuleHeader" parent="KSAP-HeaderBase">
