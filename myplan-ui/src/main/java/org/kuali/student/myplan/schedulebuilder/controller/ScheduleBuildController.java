@@ -9,13 +9,17 @@ import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ShoppingCartForm;
 import org.kuali.student.myplan.utils.CalendarUtil;
+import org.kuali.student.r2.lum.course.infc.Course;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -47,6 +51,8 @@ public class ScheduleBuildController extends UifControllerBase {
     private ScheduleBuildStrategy scheduleBuildStrategy;
 
     private static CalendarUtil calendarUtil;
+
+    private static CourseHelper courseHelper;
 
 
     @Override
@@ -186,7 +192,7 @@ public class ScheduleBuildController extends UifControllerBase {
 
     private static void addEvents(Term term, ScheduleBuildEvent meeting,
                                   String description, ActivityOption ao, String cssClass,
-                                  JsonArrayBuilder jevents, EventAggregateData aggregate) {
+                                  JsonArrayBuilder jevents, EventAggregateData aggregate, Map<String,List<ActivityOption>> scheduledCourseActivities) {
         /**
          * This is used to adjust minDate and maxDate which is a week from min date and adjust min date to be monday if it is not.
          * Used in building a week worth of schedules instead of whole term.
@@ -223,31 +229,31 @@ public class ScheduleBuildController extends UifControllerBase {
             if (meeting.isSunday())
                 jevents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.SUNDAY, durationSeconds, cssClass, ao,
-                        description, meeting));
+                        description, meeting, scheduledCourseActivities));
             if (meeting.isMonday())
                 jevents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.MONDAY, durationSeconds, cssClass, ao,
-                        description, meeting));
+                        description, meeting, scheduledCourseActivities));
             if (meeting.isTuesday())
                 jevents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.TUESDAY, durationSeconds, cssClass, ao,
-                        description, meeting));
+                        description, meeting, scheduledCourseActivities));
             if (meeting.isWednesday())
                 jevents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.WEDNESDAY, durationSeconds, cssClass, ao,
-                        description, meeting));
+                        description, meeting, scheduledCourseActivities));
             if (meeting.isThursday())
                 jevents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.THURSDAY, durationSeconds, cssClass, ao,
-                        description, meeting));
+                        description, meeting, scheduledCourseActivities));
             if (meeting.isFriday())
                 jevents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.FRIDAY, durationSeconds, cssClass, ao,
-                        description, meeting));
+                        description, meeting, scheduledCourseActivities));
             if (meeting.isSaturday())
                 jevents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.SATURDAY, durationSeconds, cssClass, ao,
-                        description, meeting));
+                        description, meeting, scheduledCourseActivities));
             startDate = aggregate.addOneWeek(startDate);
         }
     }
@@ -255,7 +261,7 @@ public class ScheduleBuildController extends UifControllerBase {
     private static JsonObjectBuilder createEvent(Date startDate,
                                                  Date eventStart, Calendar cal, int dow, long durationSeconds,
                                                  String cssClass, ActivityOption ao, String description,
-                                                 ScheduleBuildEvent sbEvent) {
+                                                 ScheduleBuildEvent sbEvent, Map<String,List<ActivityOption>> scheduledCourseActivities) {
 
         // Calculate the date for the event in seconds since the epoch
         cal.setTime(startDate);
@@ -291,21 +297,47 @@ public class ScheduleBuildController extends UifControllerBase {
         event.add("editable", false);
 
         if (ao != null) {
-            StringBuilder hover = new StringBuilder();
-            hover.append(ao.getActivityName());
-            hover.append(" (");
-            hover.append(ao.getActivityTypeDescription());
-            hover.append(") ");
-            hover.append(description);
-            hover.append(' ');
-            hover.append(ao.getAcademicSessionDescr());
-            for (ClassMeetingTime meetingTime : ao.getClassMeetingTimes()) {
-                hover.append(' ');
-                hover.append(meetingTime.getDaysAndTimes());
+            Course course = getCourseHelper().getCourseInfo(ao.getCourseId());
+            JsonObjectBuilder popoverEvent = Json.createObjectBuilder();
+            popoverEvent.add("courseCd", course.getCode());
+            popoverEvent.add("courseId", course.getId());
+            popoverEvent.add("courseTitle", course.getCourseTitle().trim());
+
+            List<ActivityOption> activityOptions = scheduledCourseActivities.get(ao.getCourseCd());
+
+            JsonArrayBuilder activityArray = Json.createArrayBuilder();
+            for (ActivityOption activityOption : activityOptions) {
+                JsonObjectBuilder activity = Json.createObjectBuilder();
+                activity.add("sectionCd", activityOption.getRegistrationCode());
+                JsonArrayBuilder meetingArray = Json.createArrayBuilder();
+                JsonObjectBuilder meeting = Json.createObjectBuilder();
+                for (ClassMeetingTime meetingTime : activityOption.getClassMeetingTimes()) {
+                    meeting.add("meetingTime", meetingTime.getDaysAndTimes());
+                    meeting.add("location", meetingTime.getLocation());
+                    String campus = meetingTime.getCampus();
+                    String building = "";
+                    String buildingUrl = "";
+                    if (meetingTime.getBuilding() != null) {
+                        if (!"NOC".equals(meetingTime.getBuilding()) && !meetingTime.getBuilding().startsWith("*") && campus.equalsIgnoreCase("seattle")) {
+                            building = meetingTime.getBuilding();
+                            buildingUrl = PlanConstants.BUILDING_URL + building;
+                        } else {
+                            building = meetingTime.getBuilding();
+                        }
+                    }
+                    meeting.add("building", building);
+                    meeting.add("buildingUrl", buildingUrl);
+                    meetingArray.add(meeting);
+                }
+
+                activity.add("meetings", meetingArray);
+                activityArray.add(activity);
             }
-            event.add("hoverText", hover.toString());
-        } else {
-            event.add("hoverText", description);
+
+
+            popoverEvent.add("activities", activityArray);
+            popoverEvent.add("termId", ao.getTermId());
+            event.add("popoverContent", popoverEvent);
         }
 
         DateFormat edf = new SimpleDateFormat("E MMM d");
@@ -378,6 +410,18 @@ public class ScheduleBuildController extends UifControllerBase {
                 continue;
             }
 
+            Map<String, List<ActivityOption>> scheduledCourseActivities = new LinkedHashMap<String, List<ActivityOption>>();
+            for (ActivityOption activityOption : pso.getActivityOptions()) {
+                String key = activityOption.getCourseCd();
+                if (scheduledCourseActivities.containsKey(key)) {
+                    scheduledCourseActivities.get(key).add(activityOption);
+                } else {
+                    List<ActivityOption> activityOptions = new ArrayList<ActivityOption>();
+                    activityOptions.add(activityOption);
+                    scheduledCourseActivities.put(key, activityOptions);
+                }
+            }
+
             String cssClass = EVENT_CSS_PREFIX + "--"
                     + ((i - discardCount) % 26);
             JsonObjectBuilder jpso = Json.createObjectBuilder();
@@ -396,7 +440,7 @@ public class ScheduleBuildController extends UifControllerBase {
             acss.add(cssClass);
             jpso.add("eventClass", acss);
             for (ActivityOption ao : pso.getActivityOptions())
-                if (!ao.isPrimary() || !ao.isEnrollmentGroup())
+                if (!ao.isPrimary() || !ao.isEnrollmentGroup()) {
                     for (ClassMeetingTime meeting : ao.getClassMeetingTimes())
                         addEvents(
                                 form.getTerm(),
@@ -406,8 +450,8 @@ public class ScheduleBuildController extends UifControllerBase {
                                         : " (" + meeting.getLocation()
                                         + ") - " + pso.getDescription().getPlain()
                                 ), ao, cssClass,
-                                jevents, aggregate);
-
+                                jevents, aggregate, scheduledCourseActivities);
+                }
             jpso.add("weekends", aggregate.weekends);
             jpso.add("minTime", aggregate.minTime);
             jpso.add("maxTime", aggregate.maxTime);
@@ -425,6 +469,18 @@ public class ScheduleBuildController extends UifControllerBase {
             if (sso.isDiscarded()) {
                 discardCount++;
                 continue;
+            }
+
+            Map<String, List<ActivityOption>> scheduledCourseActivities = new LinkedHashMap<String, List<ActivityOption>>();
+            for (ActivityOption activityOption : sso.getActivityOptions()) {
+                String key = activityOption.getCourseCd();
+                if (scheduledCourseActivities.containsKey(key)) {
+                    scheduledCourseActivities.get(key).add(activityOption);
+                } else {
+                    List<ActivityOption> activityOptions = new ArrayList<ActivityOption>();
+                    activityOptions.add(activityOption);
+                    scheduledCourseActivities.put(key, activityOptions);
+                }
             }
 
             String cssClass = EVENT_CSS_PREFIX + "--"
@@ -452,7 +508,7 @@ public class ScheduleBuildController extends UifControllerBase {
                                         : " (" + meeting.getLocation()
                                         + ") - " + sso.getDescription().getPlain()),
                                 ao, cssClass,
-                                jevents, aggregate);
+                                jevents, aggregate, scheduledCourseActivities);
 
             jsso.add("weekends", aggregate.weekends);
             jsso.add("minTime", aggregate.minTime);
@@ -489,7 +545,7 @@ public class ScheduleBuildController extends UifControllerBase {
             rto.add("eventClass", acss);
 
             addEvents(form.getTerm(), rt, rt.getDescription(), null, cssClass,
-                    jevents, aggregate);
+                    jevents, aggregate, null);
 
             rto.add("weekends", aggregate.weekends);
             rto.add("minTime", aggregate.minTime);
@@ -549,6 +605,19 @@ public class ScheduleBuildController extends UifControllerBase {
         acss.add(cssClass);
         jsso.add("eventClass", acss);
 
+        Map<String, List<ActivityOption>> scheduledCourseActivities = new LinkedHashMap<String, List<ActivityOption>>();
+        for (ActivityOption activityOption : sso.getActivityOptions()) {
+            String key = activityOption.getCourseCd();
+            if (scheduledCourseActivities.containsKey(key)) {
+                scheduledCourseActivities.get(key).add(activityOption);
+            } else {
+                List<ActivityOption> activityOptions = new ArrayList<ActivityOption>();
+                activityOptions.add(activityOption);
+                scheduledCourseActivities.put(key, activityOptions);
+            }
+        }
+
+
         /**
          * This is used to adjust minDate and maxDate which is a week from min date and adjust min date to be monday if it is not.
          * Used in building a week worth of schedules instead of whole term.
@@ -567,7 +636,7 @@ public class ScheduleBuildController extends UifControllerBase {
                             + ao.getCourseOfferingCode()
                             + (meeting.getLocation() == null ? "" : " ("
                             + meeting.getLocation() + ")"), ao,
-                            cssClass, jevents, aggregate);
+                            cssClass, jevents, aggregate, scheduledCourseActivities);
 
         jsso.add("weekends", aggregate.weekends);
         jsso.add("minTime", aggregate.minTime);
@@ -628,5 +697,16 @@ public class ScheduleBuildController extends UifControllerBase {
 
     public static void setCalendarUtil(CalendarUtil calendarUtil) {
         ScheduleBuildController.calendarUtil = calendarUtil;
+    }
+
+    public static CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = KsapFrameworkServiceLocator.getCourseHelper();
+        }
+        return courseHelper;
+    }
+
+    public static void setCourseHelper(CourseHelper courseHelper) {
+        ScheduleBuildController.courseHelper = courseHelper;
     }
 }

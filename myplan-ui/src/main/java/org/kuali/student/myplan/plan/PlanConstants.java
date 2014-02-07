@@ -156,11 +156,13 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String ADD_RECOMMEND_NOTIFICATION_INFO = "myplan.recommendation.add.email.notification.info.line";
 
     public static final String RECOMMENDATION_EMAIL_BODY = "myplan.recommendation.email.body";
-    
+
     public static final String PROPERTIES_FILE_PATH = "/org/kuali/student/myplan/KSMyPlan-ApplicationResources.properties";
 
     public static final String DEFAULT_KEY = "default";
     public static final String DEFAULT_SELECT = "Select a placeholder";
+
+    public static final String BUILDING_URL = "http://uw.edu/maps/?";
 
     /**
      * Names of javascript events that can be scheduled in response to the outcome of a plan item request.

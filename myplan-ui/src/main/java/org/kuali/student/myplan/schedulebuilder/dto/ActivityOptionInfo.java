@@ -12,11 +12,11 @@ import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ActivityOptionInfo", propOrder = { "parentUniqueId",
-		"courseIndex", "parentIndex", "courseId", "activityOfferingId",
+		"courseIndex", "parentIndex", "courseId", "courseCd","courseTitle", "activityOfferingId",
 		"activityTypeDescription", "courseOfferingCode", "registrationCode",
 		"academicSessionDescr", "activityName", "courseLockedIn", "enrollmentGroup",
 		"closed", "openSeats", "totalSeats", "requiresPermission", "primary",
-		"minCredits", "maxCredits", "notes", "secondaryOptions", "classMeetingTimes" })
+		"minCredits", "maxCredits", "notes", "secondaryOptions", "classMeetingTimes", "termId" })
 public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         ActivityOption {
 
@@ -33,6 +33,12 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 
 	@XmlAttribute
 	private String courseId;
+
+    @XmlAttribute
+	private String courseCd;
+
+    @XmlAttribute
+	private String courseTitle;
 
 	@XmlAttribute
 	private String activityOfferingId;
@@ -88,7 +94,11 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 	@XmlElement
 	private List<ClassMeetingTimeInfo> classMeetingTimes;
 
-	public ActivityOptionInfo() {
+    @XmlAttribute
+    private String termId;
+
+
+    public ActivityOptionInfo() {
 	}
 
 	public ActivityOptionInfo(ActivityOption copy) {
@@ -97,6 +107,9 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 		courseIndex = copy.getCourseIndex();
 		parentIndex = copy.getParentIndex();
 		courseId = copy.getCourseId();
+        courseCd = copy.getCourseCd();
+        courseTitle = copy.getCourseTitle();
+        termId = copy.getTermId();
 		activityOfferingId = copy.getActivityOfferingId();
 		activityTypeDescription = copy.getActivityTypeDescription();
 		activityName = copy.getActivityName();
@@ -154,7 +167,25 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 		this.courseId = courseId;
 	}
 
-	@Override
+    @Override
+    public String getCourseCd() {
+        return courseCd;
+    }
+
+    public void setCourseCd(String courseCd) {
+        this.courseCd = courseCd;
+    }
+
+    @Override
+    public String getCourseTitle() {
+        return courseTitle;
+    }
+
+    public void setCourseTitle(String courseTitle) {
+        this.courseTitle = courseTitle;
+    }
+
+    @Override
 	public String getActivityOfferingId() {
 		return activityOfferingId;
 	}
@@ -309,7 +340,16 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 		}
 	}
 
-	@Override
+    @Override
+    public String getTermId() {
+        return termId;
+    }
+
+    public void setTermId(String termId) {
+        this.termId = termId;
+    }
+
+    @Override
 	public boolean isEnrollmentGroup() {
 		return enrollmentGroup;
 	}
