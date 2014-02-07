@@ -56,6 +56,8 @@ public class CourseSearchConstants {
 
     public static final String LINK = "<a href=\"%s/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=%s#%s_tab-%s\">%s</a>";
 
+    public static final String COURSE_DETAILS_URL = "/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=%s&courseCd=%s";
+
     public static final String APP_URL = "appserver.url";
 
     public static final String COURSE_SEARCH_FOR_COURSE_ID = "myplan.course.getCourseTitleAndId";

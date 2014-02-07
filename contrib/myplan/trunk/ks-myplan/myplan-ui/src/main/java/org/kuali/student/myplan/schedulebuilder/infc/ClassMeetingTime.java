@@ -40,4 +40,18 @@ public interface ClassMeetingTime extends ScheduleBuildEvent, HasId, HasUniqueId
 	 */
 	String getLocation();
 
+    /**
+	 * Get the location of the class meeting.
+	 *
+	 * @return The location of the class meeting.
+	 */
+	String getBuilding();
+
+    /**
+	 * Get the location of the class meeting.
+	 *
+	 * @return The location of the class meeting.
+	 */
+	String getCampus();
+
 }

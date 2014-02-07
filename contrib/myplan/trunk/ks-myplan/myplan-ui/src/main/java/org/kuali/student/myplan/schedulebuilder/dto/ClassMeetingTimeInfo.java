@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ClassMeetingTimeInfo", propOrder = { "id", "uniqueId",
-		"instructorName", "location", "arranged" })
+		"instructorName", "location", "building", "campus", "arranged" })
 public class ClassMeetingTimeInfo extends ScheduleBuildEventInfo implements
         ClassMeetingTime {
 
@@ -27,6 +27,12 @@ public class ClassMeetingTimeInfo extends ScheduleBuildEventInfo implements
 	@XmlAttribute
 	private String location;
 
+    @XmlAttribute
+	private String building;
+
+    @XmlAttribute
+	private String campus;
+
 	@XmlAttribute
 	private boolean arranged;
 
@@ -42,6 +48,8 @@ public class ClassMeetingTimeInfo extends ScheduleBuildEventInfo implements
 		uniqueId = copy.getUniqueId();
 		instructorName = copy.getInstructorName();
 		location = copy.getLocation();
+		building = copy.getBuilding();
+		campus = copy.getCampus();
 		arranged = copy.isArranged();
 		tba = copy.isTba();
 	}
@@ -82,7 +90,25 @@ public class ClassMeetingTimeInfo extends ScheduleBuildEventInfo implements
 		this.location = location;
 	}
 
-	@Override
+    @Override
+    public String getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(String building) {
+        this.building = building;
+    }
+
+    @Override
+    public String getCampus() {
+        return campus;
+    }
+
+    public void setCampus(String campus) {
+        this.campus = campus;
+    }
+
+    @Override
 	public boolean isArranged() {
 		return arranged;
 	}
@@ -104,7 +130,9 @@ public class ClassMeetingTimeInfo extends ScheduleBuildEventInfo implements
 	public String toString() {
 		return "ClassMeetingTimeInfo [id=" + id + ", uniqueId=" + uniqueId
 				+ ", instructorName=" + instructorName + ", location="
-				+ location + ", getDescription()=" + getDescription()
+				+ location + ", building="
+				+ building + ", campus="
+				+ campus + ", getDescription()=" + getDescription()
 				+ ", isAllDay()=" + isAllDay() + ", getDaysAndTimes()="
 				+ getDaysAndTimes() + ", getStartDate()=" + getStartDate()
 				+ ", isSunday()=" + isSunday() + ", isMonday()=" + isMonday()

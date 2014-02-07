@@ -28,6 +28,7 @@ import org.kuali.student.r2.common.dto.TimeOfDayInfo;
 import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.infc.Attribute;
 import org.kuali.student.r2.common.util.constants.LuiServiceConstants;
+import org.kuali.student.r2.core.room.infc.Building;
 import org.kuali.student.r2.core.room.infc.Room;
 import org.kuali.student.r2.core.scheduling.constants.SchedulingServiceConstants;
 import org.kuali.student.r2.core.scheduling.dto.ScheduleDisplayInfo;
@@ -197,10 +198,18 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         meeting.setAllDay(true);
 
         String location = null;
+        String building = null;
+        String campus = null;
         Room roomInfo = scdi.getRoom();
+        Building buildingInfo = scdi.getBuilding();
         if (roomInfo != null) {
             //location = roomInfo.getDescr().getPlain();
             location = roomInfo.getRoomCode();
+        }
+
+        if (buildingInfo != null) {
+            building = buildingInfo.getBuildingCode();
+            campus = buildingInfo.getCampusKey();
         }
 
         StringBuilder daysAndTimes = new StringBuilder();
@@ -282,6 +291,8 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
             edcal.set(Calendar.MILLISECOND, 0);
         }
         meeting.setLocation(location);
+        meeting.setBuilding(building);
+        meeting.setCampus(campus);
         meeting.setArranged(location != null);
         meeting.setDaysAndTimes(daysAndTimes.toString());
         meeting.setInstructorName(instructor);
@@ -293,7 +304,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     protected ActivityOptionInfo getActivityOption(Term term, ActivityOfferingDisplayInfo aodi,
-                                                   int courseIndex, String courseId, String campusCode, StringBuilder msg,
+                                                   int courseIndex, String courseId, String courseCd, String courseTitle, String campusCode, StringBuilder msg,
                                                    DateFormat tdf, DateFormat udf, DateFormat ddf, Calendar sdcal, Calendar edcal,
                                                    Calendar tcal) {
 
@@ -301,14 +312,16 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         activityOption.setCourseIndex(courseIndex);
         activityOption.setUniqueId(UUID.randomUUID().toString());
         activityOption.setCourseId(courseId);
+        activityOption.setCourseCd(courseCd);
+        activityOption.setCourseTitle(courseTitle);
+        activityOption.setTermId(term.getId());
         activityOption.setActivityOfferingId(aodi.getId());
         activityOption.setActivityTypeDescription(aodi.getTypeName());
         activityOption.setCourseOfferingCode((campusCode == null ? ""
                 : campusCode + " ") + aodi.getCourseOfferingCode());
         activityOption.setActivityName(aodi.getName());
         activityOption.setRegistrationCode(aodi.getActivityOfferingCode());
-        activityOption.setClosed(!LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY
-                .equals(aodi.getStateKey()));
+        activityOption.setClosed(isClosed(aodi));
         activityOption.setTotalSeats(aodi.getMaximumEnrollment() != null ? aodi.getMaximumEnrollment() : 0);
         if (msg != null)
             msg.append("\nActivity ")
@@ -404,6 +417,11 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         return activityOption;
     }
 
+    protected boolean isClosed(ActivityOfferingDisplayInfo aodi) {
+        return !LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY
+                .equals(aodi.getStateKey());
+    }
+
     @Override
     public ActivityOption getActivityOption(String termId, String courseId, String regCode) {
         if (regCode == null)
@@ -427,7 +445,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 Calendar sdcal = Calendar.getInstance();
                 Calendar edcal = Calendar.getInstance();
                 Calendar tcal = Calendar.getInstance();
-                return getActivityOption(term, aodi, 0, courseId, campusCode, null, tdf, udf, ddf,
+                return getActivityOption(term, aodi, 0, courseId, course.getCode(), course.getCourseTitle(), campusCode, null, tdf, udf, ddf,
                         sdcal, edcal, tcal);
             }
 
@@ -474,7 +492,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 msg = new StringBuilder();
             for (ActivityOfferingDisplayInfo aodi : courseHelper.getActivityOfferingDisplaysByCourseAndTerm(courseId,
                     termId)) {
-                ActivityOptionInfo activityOption = getActivityOption(term, aodi, courseIndex, courseId, campusCode, msg, tdf, udf, ddf, sdcal, edcal, tcal);
+                ActivityOptionInfo activityOption = getActivityOption(term, aodi, courseIndex, courseId, c.getCode(), c.getCourseTitle(), campusCode, msg, tdf, udf, ddf, sdcal, edcal, tcal);
 
                 boolean enrollmentGroup = false;
                 String primaryOfferingId = null;

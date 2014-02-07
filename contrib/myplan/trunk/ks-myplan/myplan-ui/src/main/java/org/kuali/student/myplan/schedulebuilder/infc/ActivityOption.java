@@ -49,6 +49,20 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
 	 */
 	String getCourseId();
 
+    /**
+	 * Get the course CD.
+	 *
+	 * @return The course CD.
+	 */
+	String getCourseCd();
+
+    /**
+	 * Get the course TITLE.
+	 *
+	 * @return The course TITLE.
+	 */
+	String getCourseTitle();
+
 	/**
 	 * Get the activity offering ID.
 	 * 
@@ -163,6 +177,13 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
 	 * @return The class meeting times for the activity offering.
 	 */
 	List<ClassMeetingTime> getClassMeetingTimes();
+
+    /**
+     * Get termId for activity.
+     *
+     * @return The TermId.
+     */
+    String getTermId();
 
 	/**
 	 * Determine if at least one of the secondary options represents an
