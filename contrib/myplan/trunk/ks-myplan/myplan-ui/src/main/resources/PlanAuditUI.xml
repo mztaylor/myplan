@@ -224,12 +224,6 @@
         <property name="viewName" value="PlanAudit-FormView"/>
         <property name="id" value="PlanAudit-FormView"/>
         <property name="entryPageId" value="plan_audit"/>
-        <property name="additionalScriptFiles">
-            <list>
-                <!-- TODO: remove fancybox linkage after https://jira.kuali.org/browse/KULRICE-9396 is resolved -->
-                <value>ks-myplan/plugins/jquery.fancybox.pack.js?2.1.4</value>
-            </list>
-        </property>
         <property name="items">
             <list>
                 <bean parent="KSAP-Page" p:id="plan_audit">

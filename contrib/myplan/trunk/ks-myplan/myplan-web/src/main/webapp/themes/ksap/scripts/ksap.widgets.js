@@ -725,7 +725,10 @@ function fnUpdateQuarterViewCredits(termCredits) {
     }
 }
 
+var KsapSbCalendarOptions = {};
+
 function createCalendar(id, options) {
+    KsapSbCalendarOptions = options;
     jQuery("#" + id).fullCalendar(options);
 }
 

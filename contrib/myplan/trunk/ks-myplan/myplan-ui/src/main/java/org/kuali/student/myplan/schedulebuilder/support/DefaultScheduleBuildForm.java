@@ -51,6 +51,8 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
     private List<PossibleScheduleOption> possibleScheduleOptions;
     private List<PossibleScheduleOption> savedSchedules;
 
+    private List<String> includeFilters;
+
     private ScheduleBuildStrategy scheduleBuildStrategy;
 
     private TermHelper termHelper;
@@ -476,5 +478,13 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
 
     public void setAcademicCalendarService(AcademicCalendarService academicCalendarService) {
         this.academicCalendarService = academicCalendarService;
+    }
+
+    public List<String> getIncludeFilters() {
+        return includeFilters;
+    }
+
+    public void setIncludeFilters(List<String> includeFilters) {
+        this.includeFilters = includeFilters;
     }
 }

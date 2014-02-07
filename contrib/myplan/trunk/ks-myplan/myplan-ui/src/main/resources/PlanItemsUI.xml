@@ -27,6 +27,11 @@
         <property name="id" value="PlannedCourses-FormView"/>
         <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
         <property name="footer.render" value="false"/>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>plugins/carousel/carousel.js</value>
+            </list>
+        </property>
         <property name="items">
             <list>
                 <bean parent="KSAP-Page" p:id="academic_year_page">
