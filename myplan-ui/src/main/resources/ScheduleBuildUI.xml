@@ -50,6 +50,15 @@
         </property>
         <property name="items">
             <list>
+                <bean id="schedule_build_termId" parent="Uif-InputField" p:propertyName="term.id" p:fieldLabel.render="false">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean><bean id="schedule_build_learningPlanId" parent="Uif-InputField" p:propertyName="requestedLearningPlanId" p:fieldLabel.render="false">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
                 <ref bean="schedule_build_heading"/>
                 <ref bean="sb_possible_schedules"/>
                 <ref bean="schedule_build_weekview"/>
@@ -60,15 +69,24 @@
         </property>
     </bean>
 
+
+
     <bean id="schedule_build_heading" parent="KSAP-HorizontalBoxGroup">
         <property name="items">
             <list>
                 <ref bean="schedule_build_filters"/>
+                <bean parent="KSAP-ModuleContainer" p:headerText="SAVED SCHEDULES">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-SavedScheduleList"/>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
 
-    <bean id="schedule_build_filters" parent="KSAP-HorizontalBoxGroup" p:headerText="@{term.name} Calendar">
+    <bean id="schedule_build_filters" parent="KSAP-HorizontalBoxGroup" p:headerText="@{term.name} Calendar" p:style="width: 720px;">
         <property name="header">
             <bean parent="KSAP-HeaderOne"/>
         </property>

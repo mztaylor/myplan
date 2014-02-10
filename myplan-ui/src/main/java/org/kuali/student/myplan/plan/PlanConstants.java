@@ -91,6 +91,8 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String TERM_ID_PREFIX = "kuali.uw.atp.";
     public static final String FOCUS_ATP_ID_KEY = "focusAtpId";
+    public static final String TERM_ID_KEY = "termId";
+    public static final String LEARNING_PLAN_KEY = "learningPlanId";
 
     public static final String APP_URL = "appserver.url";
 

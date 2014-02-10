@@ -38,4 +38,12 @@ public interface PossibleScheduleOption extends HasId, ScheduleBuildOption {
 	 */
 	List<ActivityOption> getActivityOptions();
 
+    /**
+     * This is to return this PossibleScheduleOption.
+     * Only used in property editor purpose()
+     * TODO: Remove this once KULRICE-9735 is fixed.
+     * @return This possibleScheduleOption Object
+     */
+    PossibleScheduleOption getSchedule();
+
 }
