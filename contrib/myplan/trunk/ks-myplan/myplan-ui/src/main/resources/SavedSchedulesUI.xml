@@ -69,7 +69,7 @@
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-Message" p:messageText="@{#index+1}" p:style="font-size: 30.998px;padding-top: 10px;"/>
+                            <bean parent="KSAP-Message" p:messageText="@{#index+1}" p:style="font-size: 25.0px;padding-top: 10px;"/>
                             <bean parent="KSAP-SimpleDataField" p:id="sb_possible_schedule_@{#line.id}" p:style="width: 181px;">
                                 <property name="propertyName" value="schedule"/>
                                 <property name="escapeHtmlInPropertyValue" value="false"/>

@@ -63,7 +63,7 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
         for (String key : scheduledCourseActivities.keySet()) {
             count++;
             String value = StringUtils.join(scheduledCourseActivities.get(key), ", ");
-            sb = sb.append(isSavedSchedule() ? "" : innerSpan).append(key).append(" ").append(value).append(isSavedSchedule() ? count < scheduledCourseActivities.size() ? "/" : "" : "</span>");
+            sb = sb.append(isSavedSchedule() ? "" : innerSpan).append("<b>").append(key).append("</b>").append(" ").append(value).append(isSavedSchedule() ? count < scheduledCourseActivities.size() ? " / " : "" : "</span>");
         }
         sb = sb.append(isSavedSchedule() ? "</span>" : "").append("</div>");
 
