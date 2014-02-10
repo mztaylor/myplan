@@ -146,6 +146,11 @@ public class PossibleScheduleOptionInfo extends ScheduleBuildOptionInfo
 		}
 	}
 
+    @Override
+    public PossibleScheduleOption getSchedule() {
+        return this;
+    }
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

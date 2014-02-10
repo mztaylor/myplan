@@ -420,6 +420,12 @@
         "/>
     </bean>
 
+    <bean id="KSAP-SavedScheduleList" parent="KSAP-Module" p:id="KSAP-SavedScheduleList">
+        <property name="onDocumentReadyScript" value="
+            customRetrieveComponent('KSAP-SavedScheduleList','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+        "/>
+    </bean>
+
     <bean id="KSAP-DegreeAuditList" parent="KSAP-Module" p:headerText="Recent Degree Audits (DARS)"
           p:id="KSAP-DegreeAuditList">
         <property name="onDocumentReadyScript" value="

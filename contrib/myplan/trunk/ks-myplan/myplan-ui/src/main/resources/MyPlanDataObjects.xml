@@ -1421,4 +1421,313 @@
             <bean parent="Uif-TextControl" p:size="10"/>
         </property>
     </bean>
+
+    <!--**************ActivityOptionInfo Start*****************-->
+    <!--<bean id="ActivityOptionInfo" parent="ActivityOptionInfo-parentBean"/>
+    <bean id="ActivityOptionInfo-parentBean" abstract="true" parent="DataObjectEntry">
+        <property name="objectLabel" value="Activity Option"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo"/>
+        <property name="titleAttribute" value=""/>
+        <property name="attributes">
+            <list>
+                <ref bean="ActivityOptionInfo.parentUniqueId"/>
+                <ref bean="ActivityOptionInfo.courseIndex"/>
+                <ref bean="ActivityOptionInfo.parentIndex"/>
+                <ref bean="ActivityOptionInfo.courseId"/>
+                <ref bean="ActivityOptionInfo.courseCd"/>
+                <ref bean="ActivityOptionInfo.courseTitle"/>
+                <ref bean="ActivityOptionInfo.activityOfferingId"/>
+                <ref bean="ActivityOptionInfo.activityTypeDescription"/>
+                <ref bean="ActivityOptionInfo.courseOfferingCode"/>
+                <ref bean="ActivityOptionInfo.registrationCode"/>
+                <ref bean="ActivityOptionInfo.academicSessionDescr"/>
+                <ref bean="ActivityOptionInfo.activityName"/>
+                <ref bean="ActivityOptionInfo.courseLockedIn"/>
+                <ref bean="ActivityOptionInfo.enrollmentGroup"/>
+                <ref bean="ActivityOptionInfo.closed"/>
+                <ref bean="ActivityOptionInfo.openSeats"/>
+                <ref bean="ActivityOptionInfo.totalSeats"/>
+                <ref bean="ActivityOptionInfo.requiresPermission"/>
+                <ref bean="ActivityOptionInfo.primary"/>
+                <ref bean="ActivityOptionInfo.minCredits"/>
+                <ref bean="ActivityOptionInfo.maxCredits"/>
+                <ref bean="ActivityOptionInfo.termId"/>
+            </list>
+        </property>
+    </bean>-->
+
+    <!--<bean id="ActivityOptionInfo.parentUniqueId" parent="ActivityOptionInfo.parentUniqueId-parentBean"/>
+    <bean id="ActivityOptionInfo.parentUniqueId-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="parentUniqueId"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Unique Id"/>
+        <property name="shortLabel" value="Unique Id"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="4"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="20"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="20"/>
+        </property>
+    </bean>
+
+    <bean id="ActivityOptionInfo.parentIndex" parent="ActivityOptionInfo.parentIndex-parentBean"/>
+    <bean id="ActivityOptionInfo.parentIndex-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="parentIndex"/>
+        <property name="dataType" value="INTEGER"/>
+        <property name="label" value="Parent Index"/>
+        <property name="shortLabel" value="Parent Index"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="ActivityOptionInfo.courseIndex" parent="ActivityOptionInfo.courseIndex-parentBean"/>
+    <bean id="ActivityOptionInfo.courseIndex-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="courseIndex"/>
+        <property name="dataType" value="INTEGER"/>
+        <property name="label" value="Course Index"/>
+        <property name="shortLabel" value="Course Index"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>
+
+    <bean id="ActivityOptionInfo.courseId" parent="ActivityOptionInfo.courseId-parentBean"/>
+    <bean id="ActivityOptionInfo.courseId-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="courseId"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Course Id"/>
+        <property name="shortLabel" value="Course Id"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="4"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="20"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="20"/>
+        </property>
+    </bean>
+
+    <bean id="ActivityOptionInfo.courseCd" parent="ActivityOptionInfo.courseCd-parentBean"/>
+    <bean id="ActivityOptionInfo.courseCd-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="courseCd"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Course Cd"/>
+        <property name="shortLabel" value="Course Cd"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="4"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="20"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="20"/>
+        </property>
+    </bean>
+
+    <bean id="ActivityOptionInfo.courseTitle" parent="ActivityOptionInfo.courseTitle-parentBean"/>
+    <bean id="ActivityOptionInfo.courseTitle-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="courseTitle"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Course Title"/>
+        <property name="shortLabel" value="Course Title"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="4"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="20"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="20"/>
+        </property>
+    </bean>
+
+    <bean id="ActivityOptionInfo.activityOfferingId" parent="ActivityOptionInfo.activityOfferingId-parentBean"/>
+    <bean id="ActivityOptionInfo.activityOfferingId-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="activityOfferingId"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="ActivityOffering Id"/>
+        <property name="shortLabel" value="ActivityOffering Id"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="4"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="20"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="20"/>
+        </property>
+    </bean>
+
+    <bean id="ActivityOptionInfo.activityTypeDescription" parent="ActivityOptionInfo.activityTypeDescription-parentBean"/>
+        <bean id="ActivityOptionInfo.activityTypeDescription-parentBean" abstract="true" parent="BaseKuali.string">
+            <property name="name" value="activityTypeDescription"/>
+            <property name="dataType" value="STRING"/>
+            <property name="label" value="ActivityType Description"/>
+            <property name="shortLabel" value="ActivityType Description"/>
+            <property name="forceUppercase" value="false"/>
+            <property name="maxLength" value="4"/>
+            <property name="validCharactersConstraint">
+                <bean parent="AnyCharacterPatternConstraint"/>
+            </property>
+            <property name="control">
+                <bean parent="TextControlDefinition" p:size="20"/>
+            </property>
+            <property name="controlField">
+                <bean parent="Uif-TextControl" p:size="20"/>
+            </property>
+    </bean>
+
+    <bean id="ActivityOptionInfo.courseOfferingCode" parent="ActivityOptionInfo.courseOfferingCode-parentBean"/>
+    <bean id="ActivityOptionInfo.courseOfferingCode-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="courseOfferingCode"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="CourseOffering Code"/>
+        <property name="shortLabel" value="CourseOffering Code"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="4"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="20"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="20"/>
+        </property>
+    </bean>
+
+    <bean id="ActivityOptionInfo.registrationCode" parent="ActivityOptionInfo.registrationCode-parentBean"/>
+    <bean id="ActivityOptionInfo.registrationCode-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="registrationCode"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Registration Code"/>
+        <property name="shortLabel" value="Registration Code"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="4"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="20"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="20"/>
+        </property>
+    </bean>
+
+    <bean id="ActivityOptionInfo.academicSessionDescr" parent="ActivityOptionInfo.academicSessionDescr-parentBean"/>
+    <bean id="ActivityOptionInfo.academicSessionDescr-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="academicSessionDescr"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="AcademicSession Descr"/>
+        <property name="shortLabel" value="AcademicSession Descr"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="4"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="20"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="20"/>
+        </property>
+    </bean>
+
+    <bean id="ActivityOptionInfo.activityName" parent="ActivityOptionInfo.activityName-parentBean"/>
+    <bean id="ActivityOptionInfo.activityName-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="activityName"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Activity Name"/>
+        <property name="shortLabel" value="Activity Name"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="4"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="20"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="20"/>
+        </property>
+    </bean>-->
+
+
+
+
+    <!--***********************PossibleScheduleOptionInfo Start********************-->
+
+    <bean id="PossibleScheduleOptionInfo" parent="PossibleScheduleOptionInfo-parentBean"/>
+    <bean id="PossibleScheduleOptionInfo-parentBean" abstract="true" parent="DataObjectEntry">
+        <property name="objectLabel" value="Schedule Options"/>
+        <property name="dataObjectClass"
+                  value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
+        <property name="titleAttribute" value=""/>
+        <property name="attributes">
+            <list>
+                <ref bean="PossibleScheduleOptionInfo.id"/>
+            </list>
+        </property>
+        <property name="collections">
+            <list>
+                <ref bean="PossibleScheduleOptionInfo.activityOptions"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PossibleScheduleOptionInfo.id" parent="PossibleScheduleOptionInfo.id-parentBean"/>
+    <bean id="PossibleScheduleOptionInfo.id-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="id"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Possible Schedule Option id"/>
+        <property name="shortLabel" value="Id"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="30"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="30"/>
+        </property>
+    </bean>
+
+    <bean id="PossibleScheduleOptionInfo.activityOptions" parent="CollectionDefinition">
+        <property name="name" value="activityOptions"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo"/>
+    </bean>
 </beans>
