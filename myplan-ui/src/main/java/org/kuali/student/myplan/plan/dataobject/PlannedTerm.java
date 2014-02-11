@@ -39,6 +39,9 @@ public class PlannedTerm {
     /*This is atpId which used for navigating from the Plan page to Single Quarter view*/
     private String singleQuarterAtp;
 
+    /*Used for schedule builder req param*/
+    private String learningPlanId;
+
 
     /*
     *  The index of this item in a list of PlannedTerms. This is used by the UI to focus the "carousellite" javascript
@@ -93,7 +96,7 @@ public class PlannedTerm {
     }
 
     public List<PlannedCourseDataObject> getRecommendedList() {
-        if(recommendedList == null){
+        if (recommendedList == null) {
             recommendedList = new ArrayList<PlannedCourseDataObject>();
         }
         return recommendedList;
@@ -212,6 +215,14 @@ public class PlannedTerm {
 
     public void setSingleQuarterAtp(String singleQuarterAtp) {
         this.singleQuarterAtp = singleQuarterAtp;
+    }
+
+    public String getLearningPlanId() {
+        return learningPlanId;
+    }
+
+    public void setLearningPlanId(String learningPlanId) {
+        this.learningPlanId = learningPlanId;
     }
 }
 

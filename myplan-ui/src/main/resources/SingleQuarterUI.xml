@@ -40,7 +40,8 @@
                                     <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planNavigation">
                                         <property name="items">
                                             <list>
-                                                <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--term">
+                                                <bean parent="KSAP-HorizontalBoxGroup"
+                                                      p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--term">
                                                     <property name="items">
                                                         <list>
                                                             <bean id="sqv_previous_term_button" parent="Uif-Link"
@@ -53,17 +54,23 @@
                                                                           value="btn btn-secondary planNavigation__button planNavigation__button--previous"/>
                                                                 <property name="propertyReplacers">
                                                                     <list>
-                                                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="href"
+                                                                        <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                                              p:propertyName="href"
                                                                               p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId) NE null">
-                                                                            <property name="replacement" value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}"/>
+                                                                            <property name="replacement"
+                                                                                      value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}"/>
                                                                         </bean>
-                                                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="cssClasses"
+                                                                        <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                                              p:propertyName="cssClasses"
                                                                               p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId) EQ null">
-                                                                            <property name="replacement" value="btn btn-secondary planNavigation__button planNavigation__button--previous disabled"/>
+                                                                            <property name="replacement"
+                                                                                      value="btn btn-secondary planNavigation__button planNavigation__button--previous disabled"/>
                                                                         </bean>
-                                                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="onClickScript"
+                                                                        <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                                              p:propertyName="onClickScript"
                                                                               p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId) EQ null">
-                                                                            <property name="replacement" value="e.preventDefault();"/>
+                                                                            <property name="replacement"
+                                                                                      value="e.preventDefault();"/>
                                                                         </bean>
                                                                     </list>
                                                                 </property>
@@ -77,17 +84,23 @@
                                                                           value="btn btn-secondary planNavigation__button planNavigation__button--next"/>
                                                                 <property name="propertyReplacers">
                                                                     <list>
-                                                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="href"
+                                                                        <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                                              p:propertyName="href"
                                                                               p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId) NE null">
-                                                                            <property name="replacement" value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}"/>
+                                                                            <property name="replacement"
+                                                                                      value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}"/>
                                                                         </bean>
-                                                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="cssClasses"
+                                                                        <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                                              p:propertyName="cssClasses"
                                                                               p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId) EQ null">
-                                                                            <property name="replacement" value="btn btn-secondary planNavigation__button planNavigation__button--next disabled"/>
+                                                                            <property name="replacement"
+                                                                                      value="btn btn-secondary planNavigation__button planNavigation__button--next disabled"/>
                                                                         </bean>
-                                                                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="onClickScript"
+                                                                        <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                                              p:propertyName="onClickScript"
                                                                               p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId) EQ null">
-                                                                            <property name="replacement" value="e.preventDefault();"/>
+                                                                            <property name="replacement"
+                                                                                      value="e.preventDefault();"/>
                                                                         </bean>
                                                                     </list>
                                                                 </property>
@@ -95,8 +108,10 @@
                                                         </list>
                                                     </property>
                                                 </bean>
-                                                <bean parent="KSAP-HeaderTwo" p:headerText="@{dataObject.qtrYear}" p:cssClasses="planNavigation__header"/>
-                                                <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--view">
+                                                <bean parent="KSAP-HeaderTwo" p:headerText="@{dataObject.qtrYear}"
+                                                      p:cssClasses="planNavigation__header"/>
+                                                <bean parent="KSAP-HorizontalBoxGroup"
+                                                      p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--view">
                                                     <property name="items">
                                                         <list>
                                                             <bean id="sqv_term_button" parent="Uif-Link">
@@ -123,6 +138,7 @@
                                         </property>
                                     </bean>
                                     <ref bean="overallPlanLink"/>
+                                    <ref bean="scheduleBuilderLink"/>
                                     <bean parent="KSAP-Message" p:cssClasses="">
                                         <property name="messageText"
                                                   value="View your courses and add or delete scheduled sections for each course to your plan. Remember that MyPlan allows you to create an academic plan, but does not currently check your eligibility for planned courses or sections, and does not register you. Registration is available via the [0] page."/>
@@ -156,6 +172,14 @@
             </bean>
         </property>
         <property name="footer.render" value="false"/>
+    </bean>
+
+    <bean id="scheduleBuilderLink" parent="Uif-LinkField">
+        <property name="linkText" value="Schedule Builder"/>
+        <property name="title" value="Schedule Builder"/>
+        <property name="href"
+                  value="/student/myplan/sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{dataObject.atpId}&amp;requestedLearningPlanId=@{dataObject.learningPlanId}"/>
+        <property name="cssClasses" value="planNavigation__printable"/>
     </bean>
 
     <bean id="term_collection_data" parent="KSAP-VerticalBoxGroup">
@@ -341,7 +365,8 @@
                     <property name="items">
                         <list>
                             <bean parent="KSAP-SimpleDataField" p:propertyName="courseCode"/>
-                            <bean parent="Uif-Link" p:linkText="@{#line.courseTitle}" p:render="@{#line.courseId NE ''}">
+                            <bean parent="Uif-Link" p:linkText="@{#line.courseTitle}"
+                                  p:render="@{#line.courseId NE ''}">
                                 <property name="href"
                                           value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode NE null ? #line.courseCode.replace('&amp;','%26') : #line.courseCode}"/>
                                 <property name="cssClasses" value="ellipsisItem"/>
@@ -511,7 +536,8 @@
                                     />
                             <bean parent="current_section_status"
                                   p:linkText="@{#line.activityOfferingItem.details}">
-                                <property name="href" value="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.activityOfferingItem.qtryr}&amp;SLN=@{#line.activityOfferingItem.registrationCode}"/>
+                                <property name="href"
+                                          value="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.activityOfferingItem.qtryr}&amp;SLN=@{#line.activityOfferingItem.registrationCode}"/>
                                 <property name="cssClasses" value="lightBoxLink"/>
                             </bean>
                         </list>
@@ -654,7 +680,8 @@
     </bean>
 
     <bean id="activityOfferingTableCollection" parent="course_details_activity_data">
-        <property name="id" value="@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replaceAll(' ','') : #line.courseDetails.code}_sections_collection"/>
+        <property name="id"
+                  value="@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replaceAll(' ','') : #line.courseDetails.code}_sections_collection"/>
         <property name="headerText" value=""/>
         <property name="header">
             <bean parent="Uif-HeaderFour"/>
@@ -724,7 +751,8 @@
                 <bean parent="activityEnrlRestr"/>
                 <bean parent="activityEnrlData" p:render="@{#line.stateKey EQ 'active'}"/>
                 <bean parent="activityEnrlStatus" p:render="@{#line.stateKey NE 'active'}"/>
-                <bean parent="KSAP-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="1" p:cssClasses="courseActivities__action">
+                <bean parent="KSAP-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="1"
+                      p:cssClasses="courseActivities__action">
                     <property name="items">
                         <list>
                             <bean parent="activityActionDelete"/>
@@ -782,7 +810,8 @@
                             </bean>
                             <bean parent="activityInstructor" p:render="@{#line.stateKey EQ 'active'}"/>
                             <bean parent="activityOther" p:colSpan="5" p:render="@{#line.stateKey EQ 'active'}"/>
-                            <bean parent="activityAdditionalDetails" p:colSpan="7" p:render="@{#line.stateKey EQ 'active'}"/>
+                            <bean parent="activityAdditionalDetails" p:colSpan="7"
+                                  p:render="@{#line.stateKey EQ 'active'}"/>
                         </list>
                     </property>
                 </bean>
@@ -828,7 +857,9 @@
         </property>
     </bean>
 
-    <bean id="termSectionsToggle" p:id="@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replaceAll(' ','') : #line.courseDetails.code}_toggle" parent="Uif-ActionLink" p:cssClasses="inlineBlock"
+    <bean id="termSectionsToggle"
+          p:id="@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replaceAll(' ','') : #line.courseDetails.code}_toggle"
+          parent="Uif-ActionLink" p:cssClasses="inlineBlock"
           p:actionLabel="Show all scheduled sections">
         <property name="actionScript" value="
             jQuery('#@{#line.courseDetails.courseId}_@{#line.courseDetails.code NE null ? #line.courseDetails.code.replaceAll(' ','') : #line.courseDetails.code}_sections_collection').css('min-height','18px');
