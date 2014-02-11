@@ -2,6 +2,7 @@ package org.kuali.student.myplan.plan.service;
 
 import org.apache.log4j.Logger;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
+import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
@@ -9,6 +10,7 @@ import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
+import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +31,8 @@ public class SingleQuarterHelperBase {
     private static UserSessionHelper userSessionHelper;
 
     private static CourseDetailsInquiryHelperImpl courseDetailsHelper;
+
+    private static PlanHelper planHelper;
 
 
     public static PlannedTerm populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<PlannedCourseDataObject> recommendedCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String termAtp) {
@@ -173,7 +177,10 @@ public class SingleQuarterHelperBase {
         if (globalCurrentAtpId.equalsIgnoreCase(plannedTerm.getAtpId())) {
             plannedTerm.setCurrentTermForView(true);
         }
-
+        LearningPlan learningPlan = getPlanHelper().getLearningPlan(getUserSessionHelper().getStudentId());
+        if (learningPlan != null) {
+            plannedTerm.setLearningPlanId(learningPlan.getId());
+        }
 /*
         populateHelpIconFlags(perfectPlannedTerms);
 */
@@ -201,5 +208,16 @@ public class SingleQuarterHelperBase {
 
     public static void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         SingleQuarterHelperBase.userSessionHelper = userSessionHelper;
+    }
+
+    public static PlanHelper getPlanHelper() {
+        if (planHelper == null) {
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
+        }
+        return planHelper;
+    }
+
+    public static void setPlanHelper(PlanHelper planHelper) {
+        SingleQuarterHelperBase.planHelper = planHelper;
     }
 }

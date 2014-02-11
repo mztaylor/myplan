@@ -5,7 +5,6 @@ import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
-import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
@@ -92,12 +91,7 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
 
         ScheduleBuildStrategy strategy = getScheduleBuildStrategy();
         try {
-            /*TODO:Remove this once the learningPlanId is passed as a req param*/
-            LearningPlan learningPlan = strategy.getLearningPlan(requestedLearningPlanId);
-            if (requestedLearningPlanId == null && learningPlan != null) {
-                requestedLearningPlanId = learningPlan.getId();
-            }
-            courseOptions = strategy.getCourseOptions(learningPlan.getId(), termId);
+            courseOptions = strategy.getCourseOptions(strategy.getLearningPlan(requestedLearningPlanId).getId(), termId);
             reservedTimes = strategy.getReservedTimes(requestedLearningPlanId);
         } catch (PermissionDeniedException e) {
             throw new IllegalArgumentException(
