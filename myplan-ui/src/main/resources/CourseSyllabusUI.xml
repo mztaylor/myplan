@@ -34,21 +34,21 @@
             <bean parent="KSAP-Page" id="course_syllabus_page">
                 <property name="items">
                     <list>
-                        <bean id="syllabus_box" parent="KSAP-VerticalBoxGroup">
+                        <bean id="syllabus_box" parent="KSAP-HorizontalFieldGroup">
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-Message" p:messageText="@{dataObject.description}"
-                                          p:style="display:block;"/>
-                                    <bean p:id="closeSyllabus" parent="KSAP-PrimaryActionButton" p:actionLabel="Close"
-                                          p:style="margin: 0 0 0 350px;" >
-                                        <property name="actionScript"
-                                                  value="e.preventDefault();closeLightbox();return false;actionInvokeHandler(this);"/>
+                                    <bean parent="KSAP-SimpleDataField" p:id="description">
+                                        <property name="propertyName" value="description"/>
+                                        <property name="escapeHtmlInPropertyValue" value="false"/>
                                     </bean>
                                 </list>
                             </property>
                         </bean>
-
-
+                        <bean p:id="closeSyllabus" parent="KSAP-PrimaryActionButton" p:actionLabel="Close"
+                              p:style="margin: 0 0 0 350px;">
+                            <property name="actionScript"
+                                      value="e.preventDefault();closeLightbox();return false;actionInvokeHandler(this);"/>
+                        </bean>
                     </list>
                 </property>
             </bean>
