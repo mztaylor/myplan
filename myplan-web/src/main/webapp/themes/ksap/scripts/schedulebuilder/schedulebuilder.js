@@ -271,7 +271,7 @@ function fixUpDownIcons() {
 		});
 }
 
-function appendScheduleOption(schedule,container) {
+function appendScheduleOption(schedule, container) {
 	var template = jQuery("#sb_schedule_option_template").html();
 	template = template.replace(/__KSAP_UID__/gi, schedule.uniqueId);
 	template = template.replace(/__KSAP_FORMATTED__/gi, schedule.htmlDescription);
@@ -464,7 +464,7 @@ function toggleScheduleOptionSelect(uniqueId) {
 	if (selected) {
 		row.addClass("ksap-sb-selected");
 		row.removeClass("ksap-sb-deselected");
-		row.find(".ksap-sb-schedule-activitydetail").show();
+		//row.find(".ksap-sb-schedule-activitydetail").show();
 		if (schedule != null) {
 			for (var i in schedule.eventClass)
 				row.addClass(schedule.eventClass[i]);
@@ -473,7 +473,7 @@ function toggleScheduleOptionSelect(uniqueId) {
 	} else {
 		row.removeClass("ksap-sb-selected");
 		row.addClass("ksap-sb-deselected");
-		row.find(".ksap-sb-schedule-activitydetail").hide();
+		//row.find(".ksap-sb-schedule-activitydetail").hide();
 		if (schedule != null) {
 			for (var i in schedule.eventClass)
 				row.removeClass(schedule.eventClass[i]);

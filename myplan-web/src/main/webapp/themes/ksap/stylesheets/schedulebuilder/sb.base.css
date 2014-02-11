@@ -454,215 +454,111 @@
 }
 
 .ks-schedule-Color {
-  border: 1px solid;
-  border-radius: 2px;
-  padding: 0.05em;
+  border: none !important;
+  border-radius: 0 0 5px 5px;
+  color: #fff;
 }
 
 .ks-schedule-Color--0 {
-  background-color: #c7bd7f !important;
-  border-color: #6b5d00 !important;
-  box-shadow: inset 0 0 1px 1px #e3debf;
-  color: black !important;
-  text-shadow: 0 1px #e3debf;
+  background-color: #d55e00 !important;
 }
 
 .ks-schedule-Color--1 {
-  background-color: #cee57f !important;
-  border-color: #759900 !important;
-  box-shadow: inset 0 0 1px 1px #e6f2bf;
-  color: #141a00 !important;
-  text-shadow: 0 1px #e6f2bf;
+  background-color: #e69f00 !important;
 }
 
 .ks-schedule-Color--2 {
-  background-color: #cc9f7f !important;
-  border-color: #722f00 !important;
-  box-shadow: inset 0 0 1px 1px #e5cfbf;
-  color: black !important;
-  text-shadow: 0 1px #e5cfbf;
+  background-color: #cc79a7 !important;
 }
 
 .ks-schedule-Color--3 {
-  background-color: #cc7f7f !important;
-  border-color: #720000 !important;
-  box-shadow: inset 0 0 1px 1px #e5bfbf;
-  color: black !important;
-  text-shadow: 0 1px #e5bfbf;
+  background-color: #56b4e9 !important;
 }
 
 .ks-schedule-Color--4 {
-  background-color: #ffd182 !important;
-  border-color: #bf7b03 !important;
-  box-shadow: inset 0 0 1px 1px #ffe8c0;
-  color: #412a01 !important;
-  text-shadow: 0 1px #ffe8c0;
+  background-color: #009e73 !important;
 }
 
 .ks-schedule-Color--5 {
   background-color: #7fad98 !important;
-  border-color: #004524 !important;
-  box-shadow: inset 0 0 1px 1px #bfd6cb;
-  color: black !important;
-  text-shadow: 0 1px #bfd6cb;
 }
 
 .ks-schedule-Color--6 {
   background-color: #95e6a3 !important;
-  border-color: #209a36 !important;
-  box-shadow: inset 0 0 1px 1px #caf2d1;
-  color: #0a3011 !important;
-  text-shadow: 0 1px #caf2d1;
 }
 
 .ks-schedule-Color--7 {
   background-color: #ffe5cc !important;
-  border-color: #bf9972 !important;
-  box-shadow: inset 0 0 1px 1px #fff2e5;
-  color: #7a5937 !important;
-  text-shadow: 0 1px #fff2e5;
 }
 
 .ks-schedule-Color--8 {
   background-color: #efffb2 !important;
-  border-color: #a8bf4c !important;
-  box-shadow: inset 0 0 1px 1px #f7ffd8;
-  color: #5a6725 !important;
-  text-shadow: 0 1px #f7ffd8;
 }
 
 .ks-schedule-Color--9 {
   background-color: #ffff7f !important;
-  border-color: #bfbf00 !important;
-  box-shadow: inset 0 0 1px 1px #ffffbf;
-  color: #404000 !important;
-  text-shadow: 0 1px #ffffbf;
 }
 
 .ks-schedule-Color--10 {
   background-color: #f7d1ff !important;
-  border-color: #b47abf !important;
-  box-shadow: inset 0 0 1px 1px #fbe8ff;
-  color: #733c7d !important;
-  text-shadow: 0 1px #fbe8ff;
 }
 
 .ks-schedule-Color--11 {
   background-color: #7fbaed !important;
-  border-color: #0057a5 !important;
-  box-shadow: inset 0 0 1px 1px #bfdcf6;
-  color: #001425 !important;
-  text-shadow: 0 1px #bfdcf6;
 }
 
 .ks-schedule-Color--12 {
   background-color: #e07fc3 !important;
-  border-color: #910066 !important;
-  box-shadow: inset 0 0 1px 1px #efbfe1;
-  color: #11000c !important;
-  text-shadow: 0 1px #efbfe1;
 }
 
 .ks-schedule-Color--13 {
   background-color: #ffffbf !important;
-  border-color: #bfbf60 !important;
-  box-shadow: inset 0 0 1px 1px #ffffdf;
-  color: #72722e !important;
-  text-shadow: 0 1px #ffffdf;
 }
 
 .ks-schedule-Color--14 {
   background-color: #c9ffda !important;
-  border-color: #6fbf87 !important;
-  box-shadow: inset 0 0 1px 1px #e4ffec;
-  color: #36794a !important;
-  text-shadow: 0 1px #e4ffec;
 }
 
 .ks-schedule-Color--15 {
   background-color: #ffa782 !important;
-  border-color: #bf3c03 !important;
-  box-shadow: inset 0 0 1px 1px #ffd3c0;
-  color: #411501 !important;
-  text-shadow: 0 1px #ffd3c0;
 }
 
 .ks-schedule-Color--16 {
   background-color: #a0b27f !important;
-  border-color: #314c00 !important;
-  box-shadow: inset 0 0 1px 1px #cfd8bf;
-  color: black !important;
-  text-shadow: 0 1px #cfd8bf;
 }
 
 .ks-schedule-Color--17 {
   background-color: #ff7f87 !important;
-  border-color: #bf000c !important;
-  box-shadow: inset 0 0 1px 1px #ffbfc3;
-  color: #400004 !important;
-  text-shadow: 0 1px #ffbfc3;
 }
 
 .ks-schedule-Color--18 {
   background-color: #aef8f8 !important;
-  border-color: #46b4b5 !important;
-  box-shadow: inset 0 0 1px 1px #d6fbfb;
-  color: #225959 !important;
-  text-shadow: 0 1px #d6fbfb;
 }
 
 .ks-schedule-Color--19 {
   background-color: #7fccc7 !important;
-  border-color: #00726b !important;
-  box-shadow: inset 0 0 1px 1px #bfe5e3;
-  color: black !important;
-  text-shadow: 0 1px #bfe5e3;
 }
 
 .ks-schedule-Color--20 {
   background-color: #b984ff !important;
-  border-color: #5707bf !important;
-  box-shadow: inset 0 0 1px 1px #dcc1ff;
-  color: #1f0244 !important;
-  text-shadow: 0 1px #dcc1ff;
 }
 
 .ks-schedule-Color--21 {
   background-color: #bfbfbf !important;
-  border-color: #606060 !important;
-  box-shadow: inset 0 0 1px 1px #dfdfdf;
-  color: #202020 !important;
-  text-shadow: 0 1px #dfdfdf;
 }
 
 .ks-schedule-Color--22 {
   background-color: #a57fad !important;
-  border-color: #390045 !important;
-  box-shadow: inset 0 0 1px 1px #d2bfd6;
-  color: black !important;
-  text-shadow: 0 1px #d2bfd6;
 }
 
 .ks-schedule-Color--23 {
   background-color: #7f99bf !important;
-  border-color: #002660 !important;
-  box-shadow: inset 0 0 1px 1px #bfccdf;
-  color: black !important;
-  text-shadow: 0 1px #bfccdf;
 }
 
 .ks-schedule-Color--24 {
   background-color: #8c8c8c !important;
-  border-color: #121212 !important;
-  box-shadow: inset 0 0 1px 1px #c5c5c5;
-  color: black !important;
-  text-shadow: 0 1px #c5c5c5;
 }
 
 .ks-schedule-Color--25 {
   background-color: #ffd3dd !important;
-  border-color: #bf7e8c !important;
-  box-shadow: inset 0 0 1px 1px #ffe9ee;
-  color: #7f3f4d !important;
-  text-shadow: 0 1px #ffe9ee;
 }

@@ -106,21 +106,29 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-SimpleInputField" p:label="Include sections that..." p:propertyName="includeFilters">
-                    <property name="fieldLabel.render" value="true"/>
-                    <property name="control">
-                        <bean parent="Uif-VerticalCheckboxesControl">
-                            <property name="options">
-                                <list>
-                                    <bean parent="Uif-KeyLabelPair" p:key="closed" p:value="Have closed sections"/>
-                                    <bean parent="Uif-KeyLabelPair" p:key="restrictions" p:value="Have enrollment restrictions"/>
-                                    <bean parent="Uif-KeyLabelPair" p:key="registered" p:value="Overlap with my registered courses"/>
-                                </list>
-                            </property>
-                        </bean>
+                <bean parent="KSAP-VerticalBoxGroup" p:headerText="Include sections that..." p:width="48%">
+                    <property name="header">
+                        <bean parent="KSAP-HeaderThree"/>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-SimpleInputField" p:propertyName="includeFilters">
+                                <property name="control">
+                                    <bean parent="Uif-VerticalCheckboxesControl">
+                                        <property name="options">
+                                            <list>
+                                                <bean parent="Uif-KeyLabelPair" p:key="closed" p:value="Have closed sections"/>
+                                                <bean parent="Uif-KeyLabelPair" p:key="restrictions" p:value="Have enrollment restrictions"/>
+                                                <bean parent="Uif-KeyLabelPair" p:key="registered" p:value="Overlap with my registered courses"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                </property>
+                            </bean>
+                        </list>
                     </property>
                 </bean>
-                <bean parent="KSAP-VerticalBoxGroup" p:headerText="Exclude sections that meet on...">
+                <bean parent="KSAP-VerticalBoxGroup" p:headerText="Exclude sections that meet on..." p:width="48%">
                     <property name="header">
                         <bean parent="KSAP-HeaderThree"/>
                     </property>
@@ -230,71 +238,39 @@
 
     <bean id="sb_schedule_option_template" parent="sb_schedule_option_template-parent"/>
     <bean id="sb_schedule_option_template-parent" abstract="true" parent="KSAP-VerticalBoxGroup" p:hidden="true">
+        <property name="layoutManager.cssClasses" value="uif-boxLayoutHorizontalItem"/>
         <property name="items">
             <list>
-                <bean parent="KSAP-HorizontalBoxGroup" p:id="sb-schedule-option-row-__KSAP_UID__"
+                <bean parent="KSAP-VerticalBoxGroup" p:id="sb-schedule-option-row-__KSAP_UID__"
                       p:additionalCssClasses="ksap-sb-schedule-row,ksap-sb-deselected">
+                    <property name="onClickScript" value="toggleScheduleOption('__KSAP_UID__')"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-InputField" p:propertyName="shuffle" p:fieldLabel.render="false">
+                            <bean parent="KSAP-Message" p:messageText="__KSAP_FORMATTED__"
+                                  p:id="sb-schedule-activity-descr-__KSAP_UID__"
+                                  p:additionalCssClasses="ksap-sb-schedule-activity-descr"/>
+                            <bean parent="KSAP-HorizontalBoxGroup">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="sb_schedule_icon" p:actionScript="KsapScheduleBuild.save('__KSAP_UID__')">
+                                            <property name="cssClasses">
+                                                <list merge="true">
+                                                    <value>ksap-sb-schedule-saveicon</value>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="KSAP-SimpleInputField" p:propertyName="shuffle">
                                 <property name="control">
                                     <bean parent="Uif-HiddenControl"/>
                                 </property>
                             </bean>
-                            <bean parent="sb_option_control-parent" p:propertyName="selected"
+                            <bean parent="sb_option_control-parent" p:propertyName="selected" p:hidden="true"
                                   p:id="sb-schedule-option-select-__KSAP_UID__"
-                                  p:additionalCssClasses="ksap-sb-schedule-select"
-                                  p:control.onChangeScript="toggleScheduleOptionSelect('__KSAP_UID__')"/>
-                            <bean parent="KSAP-HorizontalBoxGroup" p:id="sb-schedule-activity-descr-__KSAP_UID__"
-                                  p:additionalCssClasses="ksap-sb-schedule-activity-descr"
-                                  p:onClickScript="toggleScheduleOption('__KSAP_UID__')">
-                                <property name="items">
-                                    <list>
-                                        <bean parent="KSAP-Message" p:messageText="__KSAP_FORMATTED__"/>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="Uif-Image"
-                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"
-                                  p:additionalCssClasses="ksap-sb-schedule-noupicon"/>
-                            <bean parent="sb_schedule_icon" p:actionScript="KsapScheduleBuild.moveUp('__KSAP_UID__')">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>ksap-sb-schedule-upicon</value>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="Uif-Image"
-                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"
-                                  p:additionalCssClasses="ksap-sb-schedule-nodownicon"/>
-                            <bean parent="sb_schedule_icon" p:actionScript="KsapScheduleBuild.moveDown('__KSAP_UID__')">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>ksap-sb-schedule-downicon</value>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="sb_schedule_icon" p:actionScript="KsapScheduleBuild.trash('__KSAP_UID__')">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>ksap-sb-schedule-trashicon</value>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="sb_schedule_icon" p:actionScript="KsapScheduleBuild.save('__KSAP_UID__')">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>ksap-sb-schedule-saveicon</value>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="sb_schedule_icon"
-                                  p:actionScript="KsapScheduleBuild.sendToCart('__KSAP_UID__', '@{term.id}', e)">
-                                <property name="cssClasses">
-                                    <list merge="true">
-                                        <value>ksap-sb-schedule-carticon</value>
-                                    </list>
-                                </property>
+                                  p:additionalCssClasses="ksap-sb-schedule-select">
+                                <property name="control.onChangeScript" value="toggleScheduleOptionSelect('__KSAP_UID__')"/>
                             </bean>
                         </list>
                     </property>
@@ -347,7 +323,7 @@
         </property>
     </bean>
 
-    <bean abstract="true" id="sb_option_control-parent" parent="Uif-InputField" p:fieldLabel.render="false"
+    <bean abstract="true" id="sb_option_control-parent" parent="KSAP-SimpleInputField"
           p:readOnly="false">
         <property name="control">
             <bean parent="Uif-CheckboxControl"/>
