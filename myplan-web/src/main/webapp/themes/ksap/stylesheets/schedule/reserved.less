@@ -4,8 +4,21 @@
 
     }
 }
-.scheduleReserved__event {
-    background-color: @gray;
-    opacity: 0.25;
-    .border-radius(0px);
+
+.scheduleCalendar {
+   & .scheduleReserved__event {
+       background-color: @gray;
+       opacity: 0.25;
+       border: none;
+
+       &.fc-event-start,
+       &.fc-event-end {
+           .border-radius(0px);
+       }
+
+       & .fc-event-inner,
+       & .fc-event-bg {
+           display: none;
+       }
+   }
 }

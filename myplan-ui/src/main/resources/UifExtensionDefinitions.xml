@@ -68,7 +68,7 @@
 
     <bean id="KSAP-Calendar" parent="KSAP-Calendar-parentBean"/>
     <bean id="KSAP-Calendar-parentBean" parent="Uif-ContentElementBase" scope="prototype"
-        class="org.kuali.rice.krad.uif.element.extension.ScheduleBuildCalendarComponent" p:cssClasses="ksap-sb-calendar"
+        class="org.kuali.rice.krad.uif.element.extension.ScheduleBuildCalendarComponent"
         p:template="/ksap/WEB-INF/ftl/components/widget/calendar.ftl" p:templateName="ksap_calendar">
         <property name="templateOptions">
             <map merge="true">
