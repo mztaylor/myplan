@@ -91,12 +91,10 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
 
         ScheduleBuildStrategy strategy = getScheduleBuildStrategy();
         try {
-            courseOptions = strategy.getCourseOptions(strategy.getLearningPlan(requestedLearningPlanId).getId(), termId);
+            /*courseOptions = strategy.getCourseOptions(strategy.getLearningPlan(requestedLearningPlanId).getId(), termId);*/
             reservedTimes = strategy.getReservedTimes(requestedLearningPlanId);
         } catch (PermissionDeniedException e) {
-            throw new IllegalArgumentException(
-                    "Course options not permitted for requested learning plan",
-                    e);
+            throw new IllegalArgumentException("Course options not permitted for requested learning plan",e);
         }
 
     }

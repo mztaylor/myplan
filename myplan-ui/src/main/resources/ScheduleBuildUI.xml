@@ -60,11 +60,12 @@
                     </property>
                 </bean>
                 <ref bean="schedule_build_heading"/>
-                <ref bean="sb_possible_schedules"/>
-                <ref bean="schedule_build_weekview"/>
+                <!--<ref bean="sb_possible_schedules"/>-->
+                <ref bean="KSAP-PossibleScheduleList"/>
+                <!--<ref bean="schedule_build_weekview"/>
                 <ref bean="sb_schedule_option_template"/>
                 <ref bean="sb_reserved_time_template"/>
-                <ref bean="sb_weekgroup_template"/>
+                <ref bean="sb_weekgroup_template"/>-->
             </list>
         </property>
     </bean>
@@ -726,7 +727,7 @@
                             <entry key="editable" value="false"/>
                             <entry key="selectable" value="false"/>
                             <entry key="selectHelper" value="false"/>
-                            <entry key="complete" value="function() { createScheduleBuilder( jQuery(this) ); }"/>
+                            <entry key="complete" value="function() {  }"/>
                         </map>
                     </property>
                 </bean>

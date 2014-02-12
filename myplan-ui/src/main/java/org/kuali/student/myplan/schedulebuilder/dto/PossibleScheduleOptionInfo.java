@@ -33,6 +33,9 @@ public class PossibleScheduleOptionInfo extends ScheduleBuildOptionInfo
 	@XmlElement
 	private List<ActivityOptionInfo> activityOptions;
 
+    @XmlAttribute
+    private String event;
+
 	public PossibleScheduleOptionInfo() {
 	}
 
@@ -151,7 +154,16 @@ public class PossibleScheduleOptionInfo extends ScheduleBuildOptionInfo
         return this;
     }
 
-	@Override
+    @Override
+    public String getEvent() {
+        return event;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
+    }
+
+    @Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
