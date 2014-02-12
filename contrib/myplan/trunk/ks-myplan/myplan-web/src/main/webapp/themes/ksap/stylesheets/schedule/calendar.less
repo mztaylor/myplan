@@ -1,0 +1,61 @@
+.scheduleCalendar {
+    & .fc-widget-header,
+    & .fc-widget-content {
+        border: none;
+    }
+
+    & table.fc-agenda-days {
+        border: @baseBorderStyle;
+        border-top: none;
+    }
+
+    & table.fc-agenda-days thead .fc-widget-header {
+        background-color: @grayLighter;
+        text-transform: uppercase;
+        .normal();
+        font-size: @fontSizeMini;
+        vertical-align: middle;
+        height: @fontSizeMax;
+
+        &.fc-first {
+            border-left: @baseBorderStyle;
+        }
+
+        &.fc-last {
+            border-right: @baseBorderStyle;
+        }
+    }
+
+    & table.fc-agenda-days tbody .fc-widget-content {
+        border-right: @baseBorderStyle;
+        border-right-color: #aeaeae;
+
+        &.fc-last {
+            border: none;
+        }
+    }
+
+    & table.fc-agenda-slots {
+        & .fc-agenda-axis {
+            border-right: @baseBorderStyle;
+            font-size: @fontSizeLarge;
+            color: @grayLight;
+        }
+
+        & .fc-widget-content {
+            border-top: @dottedBorderStyle;
+        }
+
+        & tr:first-child .fc-widget-content {
+            border: none;
+        }
+
+        & .fc-minor .fc-widget-content {
+            border: none;
+        }
+
+        & td div {
+            height: 30px;
+        }
+    }
+}

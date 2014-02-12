@@ -23,7 +23,7 @@
             <list>
                 <value>plugins/fullcalendar/fullcalendar.css</value>
                 <!--<value>themes/ksap/stylesheets/schedulebuilder/sb.calendar.css</value>-->
-                <value>themes/ksap/stylesheets/schedulebuilder/sb.base.css</value>
+                <!--<value>themes/ksap/stylesheets/schedulebuilder/sb.base.css</value>-->
                 <!--<value>themes/ksap/stylesheets/schedulebuilder/sb.cart.css</value>-->
             </list>
         </property>
@@ -206,18 +206,28 @@
           p:id="sb_possible_schedules">
         <property name="forceSessionPersistence" value="true"/>
         <property name="header">
-            <bean parent="KSAP-HeaderThree"/>
+            <bean parent="KSAP-HeaderThree" p:cssClasses="schedulePossible__header" p:headerTagCssClasses="schedulePossible__headerText"/>
         </property>
         <property name="headerText" value="Possible schedules found: ##"/>
+        <property name="header.rightGroup">
+            <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="schedulePossible__headerGroup--right">
+                <property name="items">
+                    <list>
+                        <bean parent="KSAP-Message" p:messageText="Registered course"/>
+                        <bean parent="KSAP-Message" p:messageText="Has enrollment restrictions"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="items">
             <list>
                 <ref bean="sb_possible_options"/>
                 <bean parent="KSAP-Message" p:id="sb_possible_noschedules" p:hidden="true"
                       p:additionalCssClasses="ksap-sb-noschedules"
                       p:messageText="No schedules found. Adjust your class selections or time reservations to find more options."/>
-                <bean parent="Uif-ActionLink" p:id="sb_possible_morelink" p:style="display : none"
+                <!--<bean parent="Uif-ActionLink" p:id="sb_possible_morelink" p:style="display : none"
                       p:additionalCssClasses="ksap-sb-morelink" p:actionLabel="More..."
-                      p:actionScript="moreSchedules();"/>
+                      p:actionScript="moreSchedules();"/>-->
             </list>
         </property>
     </bean>
@@ -675,7 +685,8 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="KSAP-Calendar" p:id="sb_calendar">
+                <bean parent="KSAP-HeaderDiv" p:headerText="@{term.name}" p:cssClasses="scheduleBuilder__termHeader"/>
+                <bean parent="KSAP-Calendar" p:id="sb_calendar" p:cssClasses="scheduleCalendar">
                     <property name="templateOptions">
                         <map merge="true">
                             <entry key="year"
@@ -690,7 +701,9 @@
                             <entry key="columnFormat" value="{week: 'dddd'}"/>
                             <entry key="hiddenDays" value="[0]"/>
                             <entry key="weekends" value="false"/>
+                            <entry key="allDaySlot" value="false"/>
                             <entry key="allDayText" value="to be arranged"/>
+                            <entry key="axisFormat" value="h(:mm)t"/>
                             <entry key="minTime" value="7"/>
                             <entry key="maxTime" value="22"/>
                             <entry key="timeFormat" value="{agenda: 'h(:mm)t{ - h(:mm)t}'}"/>

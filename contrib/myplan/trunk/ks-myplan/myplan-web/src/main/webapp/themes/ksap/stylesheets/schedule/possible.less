@@ -1,3 +1,17 @@
+.schedulePossible__header {
+    overflow: auto;
+
+    & .schedulePossible__headerText {
+        float: left;
+    }
+
+    & .schedulePossible__headerGroup--right {
+        float: right;
+        color: @grayLight;
+        font-size: @fontSizeMini;
+    }
+}
+
 .schedulePossible__option {
     .border-radius(@baseBorderRadius);
     color: @white;
@@ -15,35 +29,42 @@
     & .schedulePossible__save {
 
     }
-
 }
 
-.schedulePossible__event {
-    .border-radius(0 0 @baseBorderRadius @baseBorderRadius) !important;
-    border: none !important;
+.scheduleCalendar {
+    .schedulePossible__event {
+        .border-radius(0 0 @baseBorderRadius @baseBorderRadius) !important;
+        border: none !important;
 
-    & > .fc-event-bg {
-        opacity: 0 !important;
-        background: none !important;
+        & > .fc-event-bg {
+            opacity: 0 !important;
+            background: none !important;
+        }
+
+        & > .fc-event-inner > .fc-event-time {
+            display: none;
+        }
+
+        & > .fc-event-inner > .fc-event-title {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+        }
     }
 
-    & > .fc-event-inner > .fc-event-time {
-        display: none;
+    .schedulePossible__event--1 {
+        background-color: #d55e00 !important;
     }
-}
-
-.schedulePossible--1 {
-    background-color: #d55e00 !important;
-}
-.schedulePossible--2 {
-    background-color: #e69f00 !important;
-}
-.schedulePossible--3 {
-    background-color: #cc79a7 !important;
-}
-.schedulePossible--4 {
-    background-color: #56b4e9 !important;
-}
-.schedulePossible--5 {
-    background-color: #009e73 !important;
+    .schedulePossible__event--2 {
+        background-color: #e69f00 !important;
+    }
+    .schedulePossible__event--3 {
+        background-color: #cc79a7 !important;
+    }
+    .schedulePossible__event--4 {
+        background-color: #56b4e9 !important;
+    }
+    .schedulePossible__event--5 {
+        background-color: #009e73 !important;
+    }
 }
