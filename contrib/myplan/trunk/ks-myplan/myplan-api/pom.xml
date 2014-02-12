@@ -23,11 +23,27 @@
             <groupId>org.kuali.student.api</groupId>
             <artifactId>ks-enroll-api</artifactId>
             <version>${ks.api.version}</version>
+            <exclusions>
+              <exclusion>
+                <groupId>org.kuali.rice</groupId>
+                <artifactId>rice-krms-impl</artifactId>
+              </exclusion>
+                <exclusion>
+                  <groupId>org.kuali.rice</groupId>
+                  <artifactId>rice-krad-web-framework</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.kuali.student.api</groupId>
             <artifactId>ks-common-api</artifactId>
             <version>${ks.api.version}</version>
+            <exclusions>
+              <exclusion>
+                <groupId>org.kuali.rice</groupId>
+                <artifactId>rice-krms-impl</artifactId>
+              </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
              <groupId>org.kuali.student.api</groupId>
@@ -38,21 +54,12 @@
                     <artifactId>rice-api</artifactId>
                     <groupId>org.kuali.rice</groupId>
                 </exclusion>
+                <exclusion>
+                  <groupId>org.kuali.rice</groupId>
+                  <artifactId>rice-kim-api</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
-
-
-        <!--<dependency>-->
-            <!--<groupId>org.kuali.student.lum</groupId>-->
-            <!--<artifactId>ks-lum-impl</artifactId>-->
-            <!--<version>${kuali.student.version}</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.kuali.student.common</groupId>-->
-            <!--<artifactId>ks-common-util</artifactId>-->
-            <!--<version>${kuali.student.version}</version>-->
-        <!--</dependency>-->
-
 
 
         <!--  End Kuali Student Dependencies -->
@@ -63,17 +70,7 @@
             <artifactId>org.restlet</artifactId>
             <version>${restlet.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.restlet.jee</groupId>
-            <artifactId>org.restlet.ext.ssl</artifactId>
-            <version>${restlet.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.restlet.jee</groupId>
-            <artifactId>org.restlet.ext.net</artifactId>
-            <version>${restlet.version}</version>
-        </dependency>
-        <dependency>
+       <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.0</version>
@@ -86,29 +83,12 @@
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.kuali.rice</groupId>
-            <artifactId>rice-krad-web-framework</artifactId>
-            <version>${kuali.rice.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>rice-api</artifactId>
-                    <groupId>org.kuali.rice</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+
         <dependency>
             <groupId>org.kuali.rice</groupId>
             <artifactId>rice-core-api</artifactId>
             <version>${kuali.rice.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.kuali.rice</groupId>
-            <artifactId>rice-kns</artifactId>
-            <version>${kuali.rice.version}</version>
-        </dependency>
-
 
         <!-- Unit Testing Dependencies -->
         <dependency>
@@ -118,25 +98,10 @@
         </dependency>
 
         <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc6</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>antlr</groupId>
             <artifactId>antlr</artifactId>
             <scope>test</scope>
         </dependency>
-
-
-        <!-- TODO: Fix this -->
-        <dependency>
-            <groupId>jaxen</groupId>
-            <artifactId>jaxen</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-
 
     </dependencies>
     <build>
