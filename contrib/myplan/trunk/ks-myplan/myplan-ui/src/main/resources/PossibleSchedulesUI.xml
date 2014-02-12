@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <!--
+     Copyright 2007-2009 The Kuali Foundation
+
+     Licensed under the Educational Community License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+     http://www.opensource.org/licenses/ecl2.php
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+    -->
+
+    <!--  Possible Schedules components -->
+
+    <bean id="PossibleSchedules-LookupView" parent="MyPlanBaseLookupView">
+        <property name="viewName" value="PossibleSchedules-LookupView"/>
+        <property name="onLoadScript" value=""/>
+        <property name="headerText" value="Possible Schedules"/>
+        <property name="page.header.render" value="false"/>
+        <property name="header.render" value="false"/>
+        <property name="footer.render" value="false"/>
+        <property name="dataObjectClassName"
+                  value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
+        <property name="viewHelperServiceClass"
+                  value="org.kuali.student.myplan.schedulebuilder.service.PossibleSchedulesLookupableHelperImpl"/>
+        <property name="singlePageView" value="true"/>
+        <property name="criteriaFields">
+            <list/>
+        </property>
+        <property name="resultFields">
+            <list/>
+        </property>
+        <property name="resultsGroup">
+            <bean id="possible_schedules_details" parent="possible_courses_schedule_list"/>
+        </property>
+    </bean>
+
+    <bean id="possible_courses_schedule_list" parent="KSAP-StackedCollectionGroup">
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
+        <property name="propertyName" value="lookupResults"/>
+        <property name="instructionalMessage">
+            <bean parent="Uif-Message"
+                  p:messageText="You have no possible schedules">
+            </bean>
+        </property>
+        <property name="instructionalMessage.render" value="@{lookupResults EQ null OR lookupResults.size() EQ 0}"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-HorizontalFieldGroup">
+                    <property name="dataAttributes">
+                        <map>
+                            <entry key="event" value="@{#line.event}"/>
+                        </map>
+                    </property>
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-Message" p:messageText="@{#index+1}" p:style="font-size: 25.0px;padding-top: 10px;"/>
+                            <bean parent="KSAP-SimpleDataField" p:id="sb_possible_schedule_@{#line.id}" p:style="width: 181px;">
+                                <property name="propertyName" value="schedule"/>
+                                <property name="escapeHtmlInPropertyValue" value="false"/>
+                                <property name="propertyEditor">
+                                    <bean parent="possible_schedule_editor">
+                                          <property name="savedSchedule" value="false"/>
+                                    </bean>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+</beans>
