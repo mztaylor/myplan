@@ -191,7 +191,7 @@ public class ScheduleBuildController extends UifControllerBase {
 
     private static void addEvents(Term term, ScheduleBuildEvent meeting,
                                   String description, ActivityOption ao, String cssClass,
-                                  JsonArrayBuilder jevents, EventAggregateData aggregate, Map<String,List<ActivityOption>> scheduledCourseActivities) {
+                                  JsonArrayBuilder jevents, EventAggregateData aggregate, Map<String, List<ActivityOption>> scheduledCourseActivities) {
         /**
          * This is used to adjust minDate and maxDate which is a week from min date and adjust min date to be monday if it is not.
          * Used in building a week worth of schedules instead of whole term.
@@ -260,7 +260,7 @@ public class ScheduleBuildController extends UifControllerBase {
     private static JsonObjectBuilder createEvent(Date startDate,
                                                  Date eventStart, Calendar cal, int dow, long durationSeconds,
                                                  String cssClass, ActivityOption ao, String description,
-                                                 ScheduleBuildEvent sbEvent, Map<String,List<ActivityOption>> scheduledCourseActivities) {
+                                                 ScheduleBuildEvent sbEvent, Map<String, List<ActivityOption>> scheduledCourseActivities) {
 
         // Calculate the date for the event in seconds since the epoch
         cal.setTime(startDate);
@@ -378,10 +378,7 @@ public class ScheduleBuildController extends UifControllerBase {
     }
 
     @RequestMapping(params = "methodToCall=build")
-    public ModelAndView build(
-            @ModelAttribute("KualiForm") ScheduleBuildForm form,
-            BindingResult result, HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+    public ModelAndView build(@ModelAttribute("KualiForm") ScheduleBuildForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         form.buildSchedules();
 
@@ -572,77 +569,19 @@ public class ScheduleBuildController extends UifControllerBase {
     }
 
     @RequestMapping(params = "methodToCall=save")
-    public ModelAndView saveSchedule(
-            @ModelAttribute("KualiForm") ScheduleBuildForm form,
-            BindingResult result, HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+    public ModelAndView saveSchedule(@ModelAttribute("KualiForm") ScheduleBuildForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        PossibleScheduleOption sso = form.saveSchedule();
 
         JsonObjectBuilder json = Json.createObjectBuilder();
 
-        PossibleScheduleOption sso = form.saveSchedule();
-        if (sso == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                    "Failed to save schedule, check log for error");
-            return null;
+        if (sso != null) {
+            json.add("success", true);
+            json.add("id", sso.getId());
+            json.add("uniqueId", sso.getUniqueId());
+        } else {
+            json.add("success", false);
         }
-
-        List<PossibleScheduleOption> ssos = form.getSavedSchedules();
-        int i = ssos.indexOf(sso);
-        JsonObjectBuilder jsso = Json.createObjectBuilder();
-        JsonArrayBuilder jevents = Json.createArrayBuilder();
-        jsso.add("id", sso.getId());
-        jsso.add("path", "savedSchedules[" + i + "]");
-        jsso.add("uniqueId", sso.getUniqueId());
-        jsso.add("selected", false);
-        jsso.add("saved", true);
-        jsso.add("htmlDescription", sso.getDescription().getFormatted());
-
-        String cssClass = EVENT_CSS_PREFIX + "--"
-                + ((i + 13 + ssos.size()) % 26);
-        JsonArrayBuilder acss = Json.createArrayBuilder();
-        acss.add(EVENT_CSS_PREFIX);
-        acss.add(cssClass);
-        jsso.add("eventClass", acss);
-
-        Map<String, List<ActivityOption>> scheduledCourseActivities = new LinkedHashMap<String, List<ActivityOption>>();
-        for (ActivityOption activityOption : sso.getActivityOptions()) {
-            String key = activityOption.getCourseCd();
-            if (scheduledCourseActivities.containsKey(key)) {
-                scheduledCourseActivities.get(key).add(activityOption);
-            } else {
-                List<ActivityOption> activityOptions = new ArrayList<ActivityOption>();
-                activityOptions.add(activityOption);
-                scheduledCourseActivities.put(key, activityOptions);
-            }
-        }
-
-
-        /**
-         * This is used to adjust minDate and maxDate which is a week from min date and adjust min date to be monday if it is not.
-         * Used in building a week worth of schedules instead of whole term.
-         * */
-        Date minDate = getCalendarUtil().getNextMonday(form.getTerm().getStartDate());
-        Date maxDate = getCalendarUtil().getDateAfterXdays(minDate, 6);
-        Date displayDate = form.getTerm().getEndDate();
-
-        EventAggregateData aggregate = new EventAggregateData(minDate, maxDate, displayDate);
-        for (ActivityOption ao : sso.getActivityOptions())
-            if (!ao.isPrimary() || !ao.isEnrollmentGroup())
-                for (ClassMeetingTime meeting : ao.getClassMeetingTimes())
-                    addEvents(form.getTerm(), meeting, sso.getDescription()
-                            .getPlain()
-                            + " - "
-                            + ao.getCourseOfferingCode()
-                            + (meeting.getLocation() == null ? "" : " ("
-                            + meeting.getLocation() + ")"), ao,
-                            cssClass, jevents, aggregate, scheduledCourseActivities);
-
-        jsso.add("weekends", aggregate.weekends);
-        jsso.add("minTime", aggregate.minTime);
-        jsso.add("maxTime", aggregate.maxTime);
-        jsso.add("events", jevents);
-        json.add("saved", jsso);
-
         response.setContentType("application/json");
         response.setHeader("Cache-Control", "No-cache");
         response.setHeader("Cache-Control", "No-store");
@@ -655,14 +594,12 @@ public class ScheduleBuildController extends UifControllerBase {
     }
 
     @RequestMapping(params = "methodToCall=remove")
-    public ModelAndView removeSchedule(
-            @ModelAttribute("KualiForm") ScheduleBuildForm form,
-            BindingResult result, HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+    public ModelAndView removeSchedule(@ModelAttribute("KualiForm") ScheduleBuildForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         form.removeSchedule();
 
         JsonObjectBuilder json = Json.createObjectBuilder();
+
         json.add("success", true);
 
         response.setContentType("application/json");

@@ -6,6 +6,7 @@ import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.myplan.audit.dataobject.MessyItem;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
@@ -19,7 +20,11 @@ import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -217,6 +222,14 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
 
     @Override
     public PossibleScheduleOption saveSchedule() {
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        List<PossibleScheduleOption> possibleScheduleOptionList = (List<PossibleScheduleOption>) request.getSession().getAttribute("possibleScheduleOptions");
+
+        if (!CollectionUtils.isEmpty(possibleScheduleOptionList)) {
+            getPossibleScheduleOptions().addAll(possibleScheduleOptionList);
+        }
+
         if (possibleScheduleOptions == null || uniqueId == null
                 || possibleScheduleOptions.isEmpty()) {
             LOG.error("No possible schedule options to save from - uniqueId = "
@@ -237,7 +250,7 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
         try {
             PossibleScheduleOption rv = sb.createSchedule(
                     requestedLearningPlanId, saveMe);
-            savedSchedules.add(rv);
+            getSavedSchedules().add(rv);
             return rv;
         } catch (PermissionDeniedException e) {
             throw new IllegalStateException("Unexpected authorization failure",
@@ -377,6 +390,9 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
 
     @Override
     public List<PossibleScheduleOption> getPossibleScheduleOptions() {
+        if (possibleScheduleOptions == null) {
+            possibleScheduleOptions = new ArrayList<PossibleScheduleOption>();
+        }
         return possibleScheduleOptions;
     }
 
@@ -387,6 +403,9 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
 
     @Override
     public List<PossibleScheduleOption> getSavedSchedules() {
+        if (savedSchedules == null) {
+            savedSchedules = new ArrayList<PossibleScheduleOption>();
+        }
         return savedSchedules;
     }
 
