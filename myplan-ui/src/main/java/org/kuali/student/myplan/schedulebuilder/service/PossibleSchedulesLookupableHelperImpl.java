@@ -20,10 +20,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by hemanthg on 2/11/14.
@@ -73,6 +70,7 @@ public class PossibleSchedulesLookupableHelperImpl extends MyPlanLookupableImpl 
 
             ScheduleBuilder scheduleBuilder = new ScheduleBuilder(term, courseOptions, reservedTimes, savedSchedulesList);
             possibleScheduleOptions = scheduleBuilder.getNext(getDefaultScheduleCount(), Collections.<PossibleScheduleOption>emptySet());
+            request.getSession().setAttribute("possibleScheduleOptions", possibleScheduleOptions);
         } else {
             logger.error("Missing required parameters termId and LearningPlanId");
         }
