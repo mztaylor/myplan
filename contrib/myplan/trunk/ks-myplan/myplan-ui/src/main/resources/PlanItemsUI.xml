@@ -386,6 +386,7 @@
                     btnNext: '.planNavigation__button--next',
                     btnPrev: '.planNavigation__button--previous',
                     scroll: 4,
+                    visible: 4,
                     start: iStart,
                     afterEnd: function(a) {
                         buildPlanHeader(a, '.planNavigation__header h2');

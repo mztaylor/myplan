@@ -24,7 +24,6 @@
     <bean id="PossibleSchedules-LookupView" parent="MyPlanBaseLookupView">
         <property name="viewName" value="PossibleSchedules-LookupView"/>
         <property name="onLoadScript" value=""/>
-        <property name="headerText" value="Possible Schedules"/>
         <property name="page.header.render" value="false"/>
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
@@ -33,18 +32,54 @@
         <property name="viewHelperServiceClass"
                   value="org.kuali.student.myplan.schedulebuilder.service.PossibleSchedulesLookupableHelperImpl"/>
         <property name="singlePageView" value="true"/>
+        <property name="page">
+            <bean parent="KSAP-Page" p:id="planned_courses_detail_page">
+                <property name="items">
+                    <list>
+                        <ref bean="possible_schedules_details"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="criteriaFields">
             <list/>
         </property>
         <property name="resultFields">
             <list/>
         </property>
-        <property name="resultsGroup">
-            <bean id="possible_schedules_details" parent="possible_courses_schedule_list"/>
+    </bean>
+
+    <bean id="possible_schedules_nav" parent="Uif-ActionLink">
+        <property name="cssClasses" value="schedulePossible__carouselButton"/>
+        <property name="actionScript" value="e.preventDefault();"/>
+        <property name="onMouseOutScript" value="jQuery(this).blur();"/>
+    </bean>
+
+    <bean id="possible_schedules_details" parent="KSAP-HorizontalBoxGroup">
+        <property name="onDocumentReadyScript" value="
+            jQuery('.schedulePossible__carousel').jCarouselLite({
+                btnNext: '.schedulePossible__carouselButton--next',
+                btnPrev: '.schedulePossible__carouselButton--prev',
+                scroll: 5,
+                visible: 5,
+                initCallback: function(a) {
+                    jQuery.unblockUI();
+                }
+            });
+        "/>
+        <property name="items">
+            <list>
+                <bean parent="possible_schedules_nav" p:actionLabel="Prev" p:additionalCssClasses="schedulePossible__carouselButton--prev"/>
+                <ref bean="possible_courses_schedule_list"/>
+                <bean parent="possible_schedules_nav" p:actionLabel="Next" p:additionalCssClasses="schedulePossible__carouselButton--next"/>
+            </list>
         </property>
     </bean>
 
-    <bean id="possible_courses_schedule_list" parent="KSAP-StackedCollectionGroup">
+    <bean id="possible_courses_schedule_list" parent="Uif-ListCollectionSection">
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
         <property name="propertyName" value="lookupResults"/>
@@ -53,27 +88,33 @@
                   p:messageText="You have no possible schedules">
             </bean>
         </property>
+        <property name="cssClasses" value="schedulePossible__carousel"/>
         <property name="instructionalMessage.render" value="@{lookupResults EQ null OR lookupResults.size() EQ 0}"/>
+        <property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.uniqueId}"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__option schedulePossible--@{#index % 5}"/>
+        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages"><null/></property>
+        <property name="layoutManager.lineGroupPrototype.dataAttributes">
+            <map>
+                <entry key="events" value="@{#line.event}"/>
+            </map>
+        </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-HorizontalFieldGroup">
-                    <property name="dataAttributes">
-                        <map>
-                            <entry key="event" value="@{#line.event}"/>
-                        </map>
+                <bean parent="KSAP-SimpleDataField">
+                    <property name="propertyName" value="schedule"/>
+                    <property name="escapeHtmlInPropertyValue" value="false"/>
+                    <property name="propertyEditor">
+                        <bean parent="possible_schedule_editor">
+                            <property name="savedSchedule" value="false"/>
+                        </bean>
                     </property>
+                </bean>
+                <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-Message" p:messageText="@{#index+1}" p:style="font-size: 25.0px;padding-top: 10px;"/>
-                            <bean parent="KSAP-SimpleDataField" p:id="sb_possible_schedule_@{#line.id}" p:style="width: 181px;">
-                                <property name="propertyName" value="schedule"/>
-                                <property name="escapeHtmlInPropertyValue" value="false"/>
-                                <property name="propertyEditor">
-                                    <bean parent="possible_schedule_editor">
-                                          <property name="savedSchedule" value="false"/>
-                                    </bean>
-                                </property>
-                            </bean>
+                            <bean parent="Uif-ActionLink" p:actionLabel="Save" p:actionScript="saveScheduleOption('@{#line.uniqueId}')"/>
+                            <bean parent="KSAP-MessageField" p:messageText="@{#index + 1}" p:cssClasses="schedulePossible__index"/>
                         </list>
                     </property>
                 </bean>

@@ -410,9 +410,6 @@ function removeSavedScheduleOption(uniqueId) {
 }
 
 function saveScheduleOption(uniqueId) {
-	var model = KsapScheduleBuild.getSchedule(uniqueId);
-	if (model == null) return;
-	
 	jQuery("#kualiForm").ajaxSubmit({
 		data : {
 			methodToCall : "save",
@@ -420,13 +417,7 @@ function saveScheduleOption(uniqueId) {
 		},
 		dataType : 'json',
 		success : function(response, textStatus, jqXHR) {
-			if (KsapScheduleBuild.possibleSchedules.saved == null)
-				KsapScheduleBuild.possibleSchedules.saved = [];
-			KsapScheduleBuild.possibleSchedules.saved.push(response.saved);
-			
-			KsapScheduleBuild.appendSavedOption(response.saved);
-			
-			fixUpDownIcons();
+			console.log(response);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (textStatus == "parsererror")
@@ -434,10 +425,6 @@ function saveScheduleOption(uniqueId) {
 			showGrowl(errorThrown, jqXHR.status + " " + textStatus);
 		}
 	});
-
-	var star = jQuery("#"+uniqueId+" .ksap-sb-schedule-saveicon");
-	star.removeClass("ksap-sb-schedule-saveicon");
-	star.addClass("ksap-sb-schedule-savedicon");
 }
 
 function saveOrRemoveScheduleOption(uniqueId) {

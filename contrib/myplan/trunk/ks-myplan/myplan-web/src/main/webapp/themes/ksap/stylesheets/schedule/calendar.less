@@ -16,14 +16,6 @@
         font-size: @fontSizeMini;
         vertical-align: middle;
         height: @fontSizeMax;
-
-        &.fc-first {
-            border-left: @baseBorderStyle;
-        }
-
-        &.fc-last {
-            border-right: @baseBorderStyle;
-        }
     }
 
     & table.fc-agenda-days tbody .fc-widget-content {
@@ -37,6 +29,7 @@
 
     & table.fc-agenda-slots {
         & .fc-agenda-axis {
+            border: none;
             border-right: @baseBorderStyle;
             font-size: @fontSizeLarge;
             color: @grayLight;
