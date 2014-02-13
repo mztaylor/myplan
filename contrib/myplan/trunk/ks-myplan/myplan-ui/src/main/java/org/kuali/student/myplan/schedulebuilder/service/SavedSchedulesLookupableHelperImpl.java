@@ -2,11 +2,15 @@ package org.kuali.student.myplan.schedulebuilder.service;
 
 import org.apache.log4j.Logger;
 import org.kuali.rice.krad.web.form.LookupForm;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.ap.framework.context.TermHelper;
+import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.springframework.util.StringUtils;
@@ -27,6 +31,8 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
 
     private UserSessionHelper userSessionHelper;
 
+    private TermHelper termHelper;
+
     private final Logger logger = Logger.getLogger(SavedSchedulesLookupableHelperImpl.class);
 
     @Override
@@ -38,6 +44,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
         ScheduleBuildStrategy sb = getScheduleBuildStrategy();
         List<PossibleScheduleOption> savedSchedulesList = new ArrayList<PossibleScheduleOption>();
         if (StringUtils.hasText(termId) && StringUtils.hasText(requestedLearningPlanId)) {
+            Term term = getTermHelper().getTermByAtpId(termId);
             List<PossibleScheduleOption> savedSchedules;
             try {
                 savedSchedules = sb.getSchedules(requestedLearningPlanId);
@@ -45,8 +52,10 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 throw new IllegalStateException(
                         "Failed to refresh saved schedules", e);
             }
+            ScheduleBuilder scheduleBuilder = new ScheduleBuilder(term, null, null, null);
             for (PossibleScheduleOption possibleScheduleOption : savedSchedules) {
                 if (termId.equals(possibleScheduleOption.getTermId())) {
+                    scheduleBuilder.buildEvents(possibleScheduleOption);
                     savedSchedulesList.add(possibleScheduleOption);
                 }
             }
@@ -77,4 +86,16 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
     }
+
+    public TermHelper getTermHelper() {
+        if (termHelper == null) {
+            termHelper = KsapFrameworkServiceLocator.getTermHelper();
+        }
+        return termHelper;
+    }
+
+    public void setTermHelper(TermHelper termHelper) {
+        this.termHelper = termHelper;
+    }
+
 }
