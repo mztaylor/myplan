@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
-import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo;
@@ -13,6 +12,7 @@ import org.kuali.student.myplan.schedulebuilder.dto.SecondaryActivityOptionsInfo
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.myplan.utils.CalendarUtil;
 import org.kuali.student.r2.lum.course.infc.Course;
+import org.springframework.util.StringUtils;
 
 import javax.json.*;
 import java.io.ByteArrayOutputStream;
@@ -152,6 +152,7 @@ public class ScheduleBuilder implements Serializable {
     private final Term term;
     private final List<CourseOption> courseOptions;
     private final List<ReservedTime> reservedTimes;
+    private final List<PossibleScheduleOption> savedSchedules;
     private final Set<Long> primaryConflicts = new HashSet<Long>();
     private final boolean empty;
 
@@ -185,9 +186,10 @@ public class ScheduleBuilder implements Serializable {
     }
 
     public ScheduleBuilder(Term term, List<CourseOption> courseOptions,
-                           List<ReservedTime> reservedTimes) {
+                           List<ReservedTime> reservedTimes, List<PossibleScheduleOption> savedSchedules) {
         this.term = term;
-        this.reservedTimes = reservedTimes;
+        this.reservedTimes = reservedTimes != null ? reservedTimes : new ArrayList<ReservedTime>();
+        this.savedSchedules = savedSchedules != null ? savedSchedules : new ArrayList<PossibleScheduleOption>();
 
         boolean empty = false;
         List<CourseOption> co = new ArrayList<CourseOption>(
@@ -410,8 +412,7 @@ public class ScheduleBuilder implements Serializable {
     public List<PossibleScheduleOption> getNext(int count, Set<PossibleScheduleOption> current) {
         if (empty) {
             if (LOG.isDebugEnabled())
-                LOG.debug("Schedule builder is marked as empty, at least one course "
-                        + "option has not associated activity options");
+                LOG.debug("Schedule builder is marked as empty, at least one course option has not associated activity options");
             return Collections.emptyList();
         }
 
@@ -607,6 +608,10 @@ public class ScheduleBuilder implements Serializable {
                     String descr = "Schedule " + (++scheduleNumber);
                     pso.setTermId(term.getId());
                     pso.setDescription(descr);
+                    int saveIndex = savedSchedules.indexOf(pso);
+                    if (saveIndex != -1) {
+                        pso.setId(savedSchedules.get(saveIndex).getId());
+                    }
                     buildEvents(pso);
                     rv.add(pso);
                     if (msg != null) {
@@ -777,6 +782,11 @@ public class ScheduleBuilder implements Serializable {
         }
     }
 
+    /**
+     * Builds the json string with events  required for the calendar and sets that to the possibleScheudleOption event property
+     *
+     * @param pso
+     */
     public void buildEvents(PossibleScheduleOption pso) {
         Date minDate = getCalendarUtil().getNextMonday(term.getStartDate());
         Date maxDate = getCalendarUtil().getDateAfterXdays(minDate, 6);
@@ -802,7 +812,9 @@ public class ScheduleBuilder implements Serializable {
         JsonArrayBuilder jevents = Json.createArrayBuilder();
         jpso.add("uniqueId", pso.getUniqueId());
         jpso.add("selected", pso.isSelected());
-        jpso.add("saved", false);
+        if (StringUtils.hasText(pso.getId())) {
+            jpso.add("id", pso.getId());
+        }
         for (ActivityOption ao : pso.getActivityOptions()) {
             if (!ao.isPrimary() || !ao.isEnrollmentGroup()) {
                 for (ClassMeetingTime meeting : ao.getClassMeetingTimes()) {
@@ -822,6 +834,17 @@ public class ScheduleBuilder implements Serializable {
     }
 
 
+    /**
+     * Adds events for given params
+     *
+     * @param term
+     * @param meeting
+     * @param description
+     * @param ao
+     * @param jevents
+     * @param aggregate
+     * @param scheduledCourseActivities
+     */
     private void addEvents(Term term, ScheduleBuildEvent meeting, String description, ActivityOption ao, JsonArrayBuilder jevents, EventAggregateData aggregate, Map<String, List<ActivityOption>> scheduledCourseActivities) {
         /**
          * This is used to adjust minDate and maxDate which is a week from min date and adjust min date to be monday if it is not.
@@ -888,6 +911,20 @@ public class ScheduleBuilder implements Serializable {
         }
     }
 
+    /**
+     * Builds the actuals Json events required for calendar
+     *
+     * @param startDate
+     * @param eventStart
+     * @param cal
+     * @param dow
+     * @param durationSeconds
+     * @param ao
+     * @param description
+     * @param sbEvent
+     * @param scheduledCourseActivities
+     * @return
+     */
     private JsonObjectBuilder createEvent(Date startDate,
                                           Date eventStart, Calendar cal, int dow, long durationSeconds,
                                           ActivityOption ao, String description,
@@ -964,10 +1001,6 @@ public class ScheduleBuilder implements Serializable {
             event.add("popoverContent", popoverEvent);
         }
         return event;
-    }
-
-    public List<CourseOption> getCourseOptions() {
-        return courseOptions;
     }
 
     public CalendarUtil getCalendarUtil() {

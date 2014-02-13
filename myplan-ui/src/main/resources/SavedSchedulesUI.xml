@@ -67,6 +67,11 @@
         <property name="items">
             <list>
                 <bean parent="KSAP-HorizontalFieldGroup">
+                    <property name="dataAttributes">
+                        <map>
+                            <entry key="event" value="@{#line.event}"/>
+                        </map>
+                    </property>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-Message" p:messageText="@{#index+1}" p:style="font-size: 25.0px;padding-top: 10px;"/>

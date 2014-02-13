@@ -3,6 +3,7 @@ package org.kuali.student.myplan.schedulebuilder.support;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
@@ -14,7 +15,6 @@ import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
-import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.slf4j.Logger;
@@ -94,7 +94,7 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
             /*courseOptions = strategy.getCourseOptions(strategy.getLearningPlan(requestedLearningPlanId).getId(), termId);*/
             reservedTimes = strategy.getReservedTimes(requestedLearningPlanId);
         } catch (PermissionDeniedException e) {
-            throw new IllegalArgumentException("Course options not permitted for requested learning plan",e);
+            throw new IllegalArgumentException("Course options not permitted for requested learning plan", e);
         }
 
     }
@@ -210,10 +210,8 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
             }
 
         } else {
-            scheduleBuilder = new ScheduleBuilder(getTerm(), courseOptions, reservedTimes);
-            possibleScheduleOptions = getScheduleBuilder().getNext(
-                    possibleScheduleSize,
-                    Collections.<PossibleScheduleOption>emptySet());
+            scheduleBuilder = new ScheduleBuilder(getTerm(), courseOptions, reservedTimes, savedSchedules);
+            possibleScheduleOptions = getScheduleBuilder().getNext(possibleScheduleSize, Collections.<PossibleScheduleOption>emptySet());
         }
     }
 
