@@ -1,648 +1,994 @@
 package org.kuali.student.myplan.schedulebuilder.util;
 
 import org.apache.log4j.Logger;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
+import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.SecondaryActivityOptionsInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
+import org.kuali.student.myplan.utils.CalendarUtil;
+import org.kuali.student.r2.lum.course.infc.Course;
 
+import javax.json.*;
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ScheduleBuilder implements Serializable {
 
-	private static final long serialVersionUID = 4792345964542902431L;
+    private static final long serialVersionUID = 4792345964542902431L;
 
-	private static final Logger LOG = Logger.getLogger(ScheduleBuilder.class);
+    private static CalendarUtil calendarUtil;
+    private static CourseHelper courseHelper;
 
-	private static long[][][] BLOCK_CACHE = new long[288][288][];
+    private static final Logger LOG = Logger.getLogger(ScheduleBuilder.class);
 
-	private static long[] block(int fromSlot, int toSlot) {
-		long[] rv = BLOCK_CACHE[fromSlot][toSlot];
-		if (rv != null)
-			return rv;
-		rv = new long[5];
-		for (int i = fromSlot; i <= toSlot; i++)
-			rv[i / 64] |= 1L << i % 64;
-		return BLOCK_CACHE[fromSlot][toSlot] = rv;
-	}
+    private static long[][][] BLOCK_CACHE = new long[288][288][];
 
-	private static boolean intersects(long[] day, int fromSlot, int toSlot) {
-		boolean rv = false;
-		long[] block = block(fromSlot, toSlot);
-		for (int i = 0; !rv && i < 5; i++)
-			rv |= 0L != (day[i] & block[i]);
-		return rv;
-	}
+    private static long[] block(int fromSlot, int toSlot) {
+        long[] rv = BLOCK_CACHE[fromSlot][toSlot];
+        if (rv != null)
+            return rv;
+        rv = new long[5];
+        for (int i = fromSlot; i <= toSlot; i++)
+            rv[i / 64] |= 1L << i % 64;
+        return BLOCK_CACHE[fromSlot][toSlot] = rv;
+    }
 
-	private static void union(long[] day, int fromSlot, int toSlot) {
-		long[] block = block(fromSlot, toSlot);
-		for (int i = 0; i < 5; i++)
-			day[i] |= block[i];
-	}
+    private static boolean intersects(long[] day, int fromSlot, int toSlot) {
+        boolean rv = false;
+        long[] block = block(fromSlot, toSlot);
+        for (int i = 0; !rv && i < 5; i++)
+            rv |= 0L != (day[i] & block[i]);
+        return rv;
+    }
 
-	private static boolean isEpoch(Calendar c) {
-		return c.get(Calendar.YEAR) == 1970
-				&& c.get(Calendar.MONDAY) == Calendar.JANUARY
-				&& c.get(Calendar.DATE) == 1;
-	}
+    private static void union(long[] day, int fromSlot, int toSlot) {
+        long[] block = block(fromSlot, toSlot);
+        for (int i = 0; i < 5; i++)
+            day[i] |= block[i];
+    }
 
-	private static boolean checkForConflicts(ScheduleBuildEvent event,
-			Date[] sundays, long[][][] days, Calendar c) {
-		if (event.isAllDay())
-			return true;
+    private static boolean isEpoch(Calendar c) {
+        return c.get(Calendar.YEAR) == 1970
+                && c.get(Calendar.MONDAY) == Calendar.JANUARY
+                && c.get(Calendar.DATE) == 1;
+    }
 
-		for (int i = 0; i < sundays.length; i++) {
+    private static boolean checkForConflicts(ScheduleBuildEvent event,
+                                             Date[] sundays, long[][][] days, Calendar c) {
+        if (event.isAllDay())
+            return true;
 
-			c.setTime(event.getStartDate());
-			int fromSlot = c.get(Calendar.HOUR_OF_DAY) * 12
-					+ (c.get(Calendar.MINUTE) / 5);
-			if (!isEpoch(c)) {
-				c.add(Calendar.DATE, -7);
-				if (!c.getTime().before(sundays[i]))
-					continue;
-			}
+        for (int i = 0; i < sundays.length; i++) {
 
-			c.setTime(event.getUntilDate());
-			int toSlot = c.get(Calendar.HOUR_OF_DAY) * 12
-					+ (c.get(Calendar.MINUTE) / 5);
-			if (!isEpoch(c) && !c.getTime().after(sundays[i]))
-				continue;
+            c.setTime(event.getStartDate());
+            int fromSlot = c.get(Calendar.HOUR_OF_DAY) * 12
+                    + (c.get(Calendar.MINUTE) / 5);
+            if (!isEpoch(c)) {
+                c.add(Calendar.DATE, -7);
+                if (!c.getTime().before(sundays[i]))
+                    continue;
+            }
 
-			if (event.isSunday()) {
-				if (intersects(days[i][0], fromSlot, toSlot))
-					return false;
-				else
-					union(days[i][0], fromSlot, toSlot);
-			}
-			if (event.isMonday()) {
-				if (intersects(days[i][1], fromSlot, toSlot))
-					return false;
-				else
-					union(days[i][1], fromSlot, toSlot);
-			}
-			if (event.isTuesday()) {
-				if (intersects(days[i][2], fromSlot, toSlot))
-					return false;
-				else
-					union(days[i][2], fromSlot, toSlot);
-			}
-			if (event.isWednesday()) {
-				if (intersects(days[i][3], fromSlot, toSlot))
-					return false;
-				else
-					union(days[i][3], fromSlot, toSlot);
-			}
-			if (event.isThursday()) {
-				if (intersects(days[i][4], fromSlot, toSlot))
-					return false;
-				else
-					union(days[i][4], fromSlot, toSlot);
-			}
-			if (event.isFriday()) {
-				if (intersects(days[i][5], fromSlot, toSlot))
-					return false;
-				else
-					union(days[i][5], fromSlot, toSlot);
-			}
-			if (event.isSaturday()) {
-				if (intersects(days[i][6], fromSlot, toSlot))
-					return false;
-				else
-					union(days[i][6], fromSlot, toSlot);
-			}
-		}
-		return true;
-	}
+            c.setTime(event.getUntilDate());
+            int toSlot = c.get(Calendar.HOUR_OF_DAY) * 12
+                    + (c.get(Calendar.MINUTE) / 5);
+            if (!isEpoch(c) && !c.getTime().after(sundays[i]))
+                continue;
 
-	private static boolean checkForConflicts(ActivityOption ao, Date[] sundays,
-			long[][][] days, Calendar c) {
-		for (ClassMeetingTime meetingTime : ao.getClassMeetingTimes())
-			if (!checkForConflicts(meetingTime, sundays, days, c))
-				return false;
-		return true;
-	}
+            if (event.isSunday()) {
+                if (intersects(days[i][0], fromSlot, toSlot))
+                    return false;
+                else
+                    union(days[i][0], fromSlot, toSlot);
+            }
+            if (event.isMonday()) {
+                if (intersects(days[i][1], fromSlot, toSlot))
+                    return false;
+                else
+                    union(days[i][1], fromSlot, toSlot);
+            }
+            if (event.isTuesday()) {
+                if (intersects(days[i][2], fromSlot, toSlot))
+                    return false;
+                else
+                    union(days[i][2], fromSlot, toSlot);
+            }
+            if (event.isWednesday()) {
+                if (intersects(days[i][3], fromSlot, toSlot))
+                    return false;
+                else
+                    union(days[i][3], fromSlot, toSlot);
+            }
+            if (event.isThursday()) {
+                if (intersects(days[i][4], fromSlot, toSlot))
+                    return false;
+                else
+                    union(days[i][4], fromSlot, toSlot);
+            }
+            if (event.isFriday()) {
+                if (intersects(days[i][5], fromSlot, toSlot))
+                    return false;
+                else
+                    union(days[i][5], fromSlot, toSlot);
+            }
+            if (event.isSaturday()) {
+                if (intersects(days[i][6], fromSlot, toSlot))
+                    return false;
+                else
+                    union(days[i][6], fromSlot, toSlot);
+            }
+        }
+        return true;
+    }
 
-	private static Date[] getSundays(Term term, Calendar c) {
-		List<Date> sundayList = new ArrayList<Date>(16);
-		c.setTime(term.getStartDate());
-		c.add(Calendar.DATE, -(c.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY));
-		while (c.getTime().before(term.getEndDate())) {
-			sundayList.add(c.getTime());
-			c.add(Calendar.DATE, 7);
-		}
-		return sundayList.toArray(new Date[sundayList.size()]);
-	}
+    private static boolean checkForConflicts(ActivityOption ao, Date[] sundays,
+                                             long[][][] days, Calendar c) {
+        for (ClassMeetingTime meetingTime : ao.getClassMeetingTimes())
+            if (!checkForConflicts(meetingTime, sundays, days, c))
+                return false;
+        return true;
+    }
 
-	private final Term term;
-	private final List<CourseOption> courseOptions;
-	private final List<ReservedTime> reservedTimes;
-	private final Set<Long> primaryConflicts = new HashSet<Long>();
-	private final boolean empty;
+    private static Date[] getSundays(Term term, Calendar c) {
+        List<Date> sundayList = new ArrayList<Date>(16);
+        c.setTime(term.getStartDate());
+        c.add(Calendar.DATE, -(c.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY));
+        while (c.getTime().before(term.getEndDate())) {
+            sundayList.add(c.getTime());
+            c.add(Calendar.DATE, 7);
+        }
+        return sundayList.toArray(new Date[sundayList.size()]);
+    }
 
-	private int currentCourseIndex;
-	private final int[] currentPrimaryActivityIndex;
-	private final int[][] currentSecondaryOptionIndex;
-	private final int[][][] currentSecondaryActivityIndex;
-	private final int[][][] limitSecondaryOption;
+    private final Term term;
+    private final List<CourseOption> courseOptions;
+    private final List<ReservedTime> reservedTimes;
+    private final Set<Long> primaryConflicts = new HashSet<Long>();
+    private final boolean empty;
 
-	private int scheduleNumber;
-	private boolean hasMore;
-	private Set<PossibleScheduleOption> generated;
+    private int currentCourseIndex;
+    private final int[] currentPrimaryActivityIndex;
+    private final int[][] currentSecondaryOptionIndex;
+    private final int[][][] currentSecondaryActivityIndex;
+    private final int[][][] limitSecondaryOption;
 
-	@Override
-	public String toString() {
-		String rv = "ScheduleBuilder\n  currentCourse " + currentCourseIndex
-				+ "\n  currentPrimary "
-				+ Arrays.toString(currentPrimaryActivityIndex)
-				+ "\n  currentSecondary ";
-		for (int[] cs : currentSecondaryOptionIndex)
-			rv += "\n      " + Arrays.toString(cs);
-		rv += "\n  currentSecondaryOption\n    ";
-		for (int[][] cso : currentSecondaryActivityIndex)
-			for (int[] cs : cso)
-				rv += "," + Arrays.toString(cs);
-		rv += "\n  limitSecondaryOption\n    ";
-		for (int[][] cso : limitSecondaryOption)
-			for (int[] cs : cso)
-				rv += "," + Arrays.toString(cs);
-		return rv;
-	}
+    private int scheduleNumber;
+    private boolean hasMore;
+    private Set<PossibleScheduleOption> generated;
 
-	public ScheduleBuilder(Term term, List<CourseOption> courseOptions,
+    @Override
+    public String toString() {
+        String rv = "ScheduleBuilder\n  currentCourse " + currentCourseIndex
+                + "\n  currentPrimary "
+                + Arrays.toString(currentPrimaryActivityIndex)
+                + "\n  currentSecondary ";
+        for (int[] cs : currentSecondaryOptionIndex)
+            rv += "\n      " + Arrays.toString(cs);
+        rv += "\n  currentSecondaryOption\n    ";
+        for (int[][] cso : currentSecondaryActivityIndex)
+            for (int[] cs : cso)
+                rv += "," + Arrays.toString(cs);
+        rv += "\n  limitSecondaryOption\n    ";
+        for (int[][] cso : limitSecondaryOption)
+            for (int[] cs : cso)
+                rv += "," + Arrays.toString(cs);
+        return rv;
+    }
+
+    public ScheduleBuilder(Term term, List<CourseOption> courseOptions,
                            List<ReservedTime> reservedTimes) {
-		this.term = term;
-		this.reservedTimes = reservedTimes;
+        this.term = term;
+        this.reservedTimes = reservedTimes;
 
-		boolean empty = false;
-		List<CourseOption> co = new ArrayList<CourseOption>(
-				courseOptions == null ? 0 : courseOptions.size());
-		if (courseOptions != null)
-			course: for (CourseOption c : courseOptions)
-				if (c.isSelected()) {
-					List<ActivityOption> oaol = c.getActivityOptions();
-					List<ActivityOption> aol = new ArrayList<ActivityOption>();
-					for (ActivityOption ao : oaol)
-						if (ao.isSelected() || ao.isLockedIn()) {
-							List<SecondaryActivityOptions> osol = ao
-									.getSecondaryOptions();
-							List<SecondaryActivityOptions> sol = new ArrayList<SecondaryActivityOptions>(
-									osol.size());
-							for (SecondaryActivityOptions so : osol) {
-								List<ActivityOption> osaol = so
-										.getActivityOptions();
-								List<ActivityOption> saol = new ArrayList<ActivityOption>(
-										osaol.size());
-								for (ActivityOption sao : osaol)
-									if (sao.isSelected() || sao.isLockedIn())
-										saol.add(sao);
-								if (saol.isEmpty()) {
-									LOG.warn("Course option is selected, but has no selected activities for "
-											+ ao.getRegistrationCode()
-											+ " "
-											+ so.getActivityTypeDescription()
-											+ " "
-											+ c.getCourseId()
-											+ " "
-											+ c.getCourseCode());
-									empty = true;
-									break course;
-								}
-								SecondaryActivityOptionsInfo soi = new SecondaryActivityOptionsInfo(
-										so);
-								soi.setActivityOptions(saol);
-								sol.add(soi);
-							}
-							ActivityOptionInfo aoi = new ActivityOptionInfo(ao);
-							aoi.setSecondaryOptions(sol);
-							aol.add(aoi);
-						}
-					if (aol.isEmpty()) {
-						LOG.warn("Course option is selected, but has no selected activities "
-								+ c.getCourseId() + " " + c.getCourseCode());
-						empty = true;
-						break course;
-					}
-					CourseOptionInfo ci = new CourseOptionInfo(c);
-					ci.setActivityOptions(aol);
-					co.add(ci);
-				}
-		this.empty = empty;
-		this.courseOptions = Collections.unmodifiableList(co);
+        boolean empty = false;
+        List<CourseOption> co = new ArrayList<CourseOption>(
+                courseOptions == null ? 0 : courseOptions.size());
+        if (courseOptions != null)
+            course:for (CourseOption c : courseOptions)
+                if (c.isSelected()) {
+                    List<ActivityOption> oaol = c.getActivityOptions();
+                    List<ActivityOption> aol = new ArrayList<ActivityOption>();
+                    for (ActivityOption ao : oaol)
+                        if (ao.isSelected() || ao.isLockedIn()) {
+                            List<SecondaryActivityOptions> osol = ao
+                                    .getSecondaryOptions();
+                            List<SecondaryActivityOptions> sol = new ArrayList<SecondaryActivityOptions>(
+                                    osol.size());
+                            for (SecondaryActivityOptions so : osol) {
+                                List<ActivityOption> osaol = so
+                                        .getActivityOptions();
+                                List<ActivityOption> saol = new ArrayList<ActivityOption>(
+                                        osaol.size());
+                                for (ActivityOption sao : osaol)
+                                    if (sao.isSelected() || sao.isLockedIn())
+                                        saol.add(sao);
+                                if (saol.isEmpty()) {
+                                    LOG.warn("Course option is selected, but has no selected activities for "
+                                            + ao.getRegistrationCode()
+                                            + " "
+                                            + so.getActivityTypeDescription()
+                                            + " "
+                                            + c.getCourseId()
+                                            + " "
+                                            + c.getCourseCode());
+                                    empty = true;
+                                    break course;
+                                }
+                                SecondaryActivityOptionsInfo soi = new SecondaryActivityOptionsInfo(
+                                        so);
+                                soi.setActivityOptions(saol);
+                                sol.add(soi);
+                            }
+                            ActivityOptionInfo aoi = new ActivityOptionInfo(ao);
+                            aoi.setSecondaryOptions(sol);
+                            aol.add(aoi);
+                        }
+                    if (aol.isEmpty()) {
+                        LOG.warn("Course option is selected, but has no selected activities "
+                                + c.getCourseId() + " " + c.getCourseCode());
+                        empty = true;
+                        break course;
+                    }
+                    CourseOptionInfo ci = new CourseOptionInfo(c);
+                    ci.setActivityOptions(aol);
+                    co.add(ci);
+                }
+        this.empty = empty;
+        this.courseOptions = Collections.unmodifiableList(co);
 
-		currentPrimaryActivityIndex = new int[co.size()];
-		currentSecondaryOptionIndex = new int[co.size()][];
-		currentSecondaryActivityIndex = new int[co.size()][][];
-		limitSecondaryOption = new int[co.size()][][];
+        currentPrimaryActivityIndex = new int[co.size()];
+        currentSecondaryOptionIndex = new int[co.size()][];
+        currentSecondaryActivityIndex = new int[co.size()][][];
+        limitSecondaryOption = new int[co.size()][][];
 
-		for (int i = 0; i < co.size(); i++) {
-			List<ActivityOption> primaryActivityOptions = co.get(i)
-					.getActivityOptions();
-			currentSecondaryOptionIndex[i] = new int[primaryActivityOptions
-					.size()];
-			currentSecondaryActivityIndex[i] = new int[primaryActivityOptions
-					.size()][];
-			limitSecondaryOption[i] = new int[primaryActivityOptions.size()][];
-			for (int j = 0; j < primaryActivityOptions.size(); j++) {
-				List<SecondaryActivityOptions> secondaryActivityOptions = primaryActivityOptions
-						.get(j).getSecondaryOptions();
-				currentSecondaryActivityIndex[i][j] = new int[secondaryActivityOptions
-						.size()];
-				limitSecondaryOption[i][j] = new int[secondaryActivityOptions
-						.size()];
-				for (int k = 0; k < secondaryActivityOptions.size(); k++) {
-					SecondaryActivityOptions secondaryActivityOption = secondaryActivityOptions
-							.get(k);
-					if (secondaryActivityOption.isEnrollmentGroup()) {
-						// enrollment groups must include all secondary options
-						limitSecondaryOption[i][j][k] = 0;
-					} else {
-						// for non-enrollment secondary options, select one at a
-						// time
-						limitSecondaryOption[i][j][k] = secondaryActivityOptions
-								.get(k).getActivityOptions().size();
-					}
-				}
-			}
-		}
-	}
+        for (int i = 0; i < co.size(); i++) {
+            List<ActivityOption> primaryActivityOptions = co.get(i)
+                    .getActivityOptions();
+            currentSecondaryOptionIndex[i] = new int[primaryActivityOptions
+                    .size()];
+            currentSecondaryActivityIndex[i] = new int[primaryActivityOptions
+                    .size()][];
+            limitSecondaryOption[i] = new int[primaryActivityOptions.size()][];
+            for (int j = 0; j < primaryActivityOptions.size(); j++) {
+                List<SecondaryActivityOptions> secondaryActivityOptions = primaryActivityOptions
+                        .get(j).getSecondaryOptions();
+                currentSecondaryActivityIndex[i][j] = new int[secondaryActivityOptions
+                        .size()];
+                limitSecondaryOption[i][j] = new int[secondaryActivityOptions
+                        .size()];
+                for (int k = 0; k < secondaryActivityOptions.size(); k++) {
+                    SecondaryActivityOptions secondaryActivityOption = secondaryActivityOptions
+                            .get(k);
+                    if (secondaryActivityOption.isEnrollmentGroup()) {
+                        // enrollment groups must include all secondary options
+                        limitSecondaryOption[i][j][k] = 0;
+                    } else {
+                        // for non-enrollment secondary options, select one at a
+                        // time
+                        limitSecondaryOption[i][j][k] = secondaryActivityOptions
+                                .get(k).getActivityOptions().size();
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * Queue course indexes for the current run, considering locked-in courses
-	 * first followed by selected course.
-	 *
-	 * @param courseQueue
-	 */
-	private void prepareCourseQueue(Queue<Integer> courseQueue) {
-		courseQueue.clear();
-		int courseOptionsLength = courseOptions.size();
-		for (int i = 0; i < courseOptionsLength; i++) {
-			int courseIndex = currentCourseIndex + i;
-			if (courseIndex >= courseOptionsLength)
-				courseIndex -= courseOptionsLength;
-			CourseOption courseOption = courseOptions.get(courseIndex);
+    /**
+     * Queue course indexes for the current run, considering locked-in courses
+     * first followed by selected course.
+     *
+     * @param courseQueue
+     */
+    private void prepareCourseQueue(Queue<Integer> courseQueue) {
+        courseQueue.clear();
+        int courseOptionsLength = courseOptions.size();
+        for (int i = 0; i < courseOptionsLength; i++) {
+            int courseIndex = currentCourseIndex + i;
+            if (courseIndex >= courseOptionsLength)
+                courseIndex -= courseOptionsLength;
+            CourseOption courseOption = courseOptions.get(courseIndex);
 
-			if (courseOption.isLockedIn())
-				courseQueue.offer(courseIndex);
-		}
-		for (int i = 0; i < courseOptionsLength; i++) {
-			int courseIndex = currentCourseIndex + i;
-			if (courseIndex >= courseOptionsLength)
-				courseIndex -= courseOptionsLength;
-			CourseOption courseOption = courseOptions.get(courseIndex);
+            if (courseOption.isLockedIn())
+                courseQueue.offer(courseIndex);
+        }
+        for (int i = 0; i < courseOptionsLength; i++) {
+            int courseIndex = currentCourseIndex + i;
+            if (courseIndex >= courseOptionsLength)
+                courseIndex -= courseOptionsLength;
+            CourseOption courseOption = courseOptions.get(courseIndex);
 
-			if (!courseOption.isLockedIn() && courseOption.isSelected())
-				courseQueue.offer(courseIndex);
-		}
-	}
+            if (!courseOption.isLockedIn() && courseOption.isSelected())
+                courseQueue.offer(courseIndex);
+        }
+    }
 
-	/**
-	 * Step forward to the next course and activity option combination.
-	 *
-	 * @return True if this step has rolled the options over to the initial
-	 *         state, false if the initial state has not reached.
-	 */
-	private boolean step(Queue<Integer> courseQueue) {
-		if (currentPrimaryActivityIndex.length < 1)
-			return true;
+    /**
+     * Step forward to the next course and activity option combination.
+     *
+     * @return True if this step has rolled the options over to the initial
+     * state, false if the initial state has not reached.
+     */
+    private boolean step(Queue<Integer> courseQueue) {
+        if (currentPrimaryActivityIndex.length < 1)
+            return true;
 
-		boolean conflict;
+        boolean conflict;
 
-		do {
-			increment: {
-				// Operate on the next course option, stepping backward
-				int lastCourseIndex = courseOptions.size() - 1;
-				currentCourseIndex = currentCourseIndex == 0 ? lastCourseIndex
-						: currentCourseIndex - 1;
+        do {
+            increment:
+            {
+                // Operate on the next course option, stepping backward
+                int lastCourseIndex = courseOptions.size() - 1;
+                currentCourseIndex = currentCourseIndex == 0 ? lastCourseIndex
+                        : currentCourseIndex - 1;
 
-				int primaryActivityIndex = currentPrimaryActivityIndex[currentCourseIndex];
-				int[] secondaryActivityIndex = currentSecondaryActivityIndex[currentCourseIndex][primaryActivityIndex];
-				if (secondaryActivityIndex.length > 0) {
-					// increment current secondary option activity index,
-					// stepping
-					// forward.
-					int secondaryOptionIndex = currentSecondaryOptionIndex[currentCourseIndex][primaryActivityIndex];
-					int secondaryOptionActivityIndex = secondaryActivityIndex[secondaryOptionIndex] + 1;
-					if (secondaryOptionActivityIndex >= limitSecondaryOption[currentCourseIndex][primaryActivityIndex][secondaryOptionIndex])
-						secondaryOptionActivityIndex = 0;
-					secondaryActivityIndex[secondaryOptionIndex] = secondaryOptionActivityIndex;
+                int primaryActivityIndex = currentPrimaryActivityIndex[currentCourseIndex];
+                int[] secondaryActivityIndex = currentSecondaryActivityIndex[currentCourseIndex][primaryActivityIndex];
+                if (secondaryActivityIndex.length > 0) {
+                    // increment current secondary option activity index,
+                    // stepping
+                    // forward.
+                    int secondaryOptionIndex = currentSecondaryOptionIndex[currentCourseIndex][primaryActivityIndex];
+                    int secondaryOptionActivityIndex = secondaryActivityIndex[secondaryOptionIndex] + 1;
+                    if (secondaryOptionActivityIndex >= limitSecondaryOption[currentCourseIndex][primaryActivityIndex][secondaryOptionIndex])
+                        secondaryOptionActivityIndex = 0;
+                    secondaryActivityIndex[secondaryOptionIndex] = secondaryOptionActivityIndex;
 
-					// increment current secondary option index, stepping
-					// forward.
-					secondaryOptionIndex += 1;
-					if (secondaryOptionIndex >= secondaryActivityIndex.length)
-						secondaryOptionIndex = 0;
-					currentSecondaryOptionIndex[currentCourseIndex][primaryActivityIndex] = secondaryOptionIndex;
+                    // increment current secondary option index, stepping
+                    // forward.
+                    secondaryOptionIndex += 1;
+                    if (secondaryOptionIndex >= secondaryActivityIndex.length)
+                        secondaryOptionIndex = 0;
+                    currentSecondaryOptionIndex[currentCourseIndex][primaryActivityIndex] = secondaryOptionIndex;
 
-					// Not the last secondary option for the current primary,
-					// return
-					// without rollover
-					if (secondaryOptionActivityIndex > 0
-							|| secondaryOptionIndex > 0)
-						break increment;
-				}
+                    // Not the last secondary option for the current primary,
+                    // return
+                    // without rollover
+                    if (secondaryOptionActivityIndex > 0
+                            || secondaryOptionIndex > 0)
+                        break increment;
+                }
 
-				// increment current primary activity index, stepping forward.
-				primaryActivityIndex += 1;
-				if (primaryActivityIndex >= currentSecondaryActivityIndex[currentCourseIndex].length)
-					primaryActivityIndex = 0;
-				currentPrimaryActivityIndex[currentCourseIndex] = primaryActivityIndex;
+                // increment current primary activity index, stepping forward.
+                primaryActivityIndex += 1;
+                if (primaryActivityIndex >= currentSecondaryActivityIndex[currentCourseIndex].length)
+                    primaryActivityIndex = 0;
+                currentPrimaryActivityIndex[currentCourseIndex] = primaryActivityIndex;
 
-				// Determine whether or not rollover has taken place, and return
-				if (currentCourseIndex == 0) {
-					assert currentPrimaryActivityIndex.length == currentSecondaryActivityIndex.length;
-					for (int i = 0; i < currentSecondaryActivityIndex.length; i++) {
-						if (currentPrimaryActivityIndex[i] > 0)
-							break increment;
-						for (int j = 0; j < currentSecondaryActivityIndex[i].length; j++)
-							for (int k = 0; k < currentSecondaryActivityIndex[i][j].length; k++)
-								if (currentSecondaryActivityIndex[i][j][k] > 0)
-									break increment;
-					}
-					primaryConflicts.clear();
-					return true;
-				}
-			}
+                // Determine whether or not rollover has taken place, and return
+                if (currentCourseIndex == 0) {
+                    assert currentPrimaryActivityIndex.length == currentSecondaryActivityIndex.length;
+                    for (int i = 0; i < currentSecondaryActivityIndex.length; i++) {
+                        if (currentPrimaryActivityIndex[i] > 0)
+                            break increment;
+                        for (int j = 0; j < currentSecondaryActivityIndex[i].length; j++)
+                            for (int k = 0; k < currentSecondaryActivityIndex[i][j].length; k++)
+                                if (currentSecondaryActivityIndex[i][j][k] > 0)
+                                    break increment;
+                    }
+                    primaryConflicts.clear();
+                    return true;
+                }
+            }
 
-			conflict = false;
-			long hash = (long) currentCourseIndex;
-			prepareCourseQueue(courseQueue);
-			conflict: while (!conflict && !courseQueue.isEmpty()) {
+            conflict = false;
+            long hash = (long) currentCourseIndex;
+            prepareCourseQueue(courseQueue);
+            conflict:
+            while (!conflict && !courseQueue.isEmpty()) {
 
-				int courseIndex = courseQueue.poll();
-				int activityOptionIndex = currentPrimaryActivityIndex[courseIndex];
-				hash = hash * 127L + (long) activityOptionIndex;
-				if (conflict = primaryConflicts.contains(hash))
-					break conflict;
+                int courseIndex = courseQueue.poll();
+                int activityOptionIndex = currentPrimaryActivityIndex[courseIndex];
+                hash = hash * 127L + (long) activityOptionIndex;
+                if (conflict = primaryConflicts.contains(hash))
+                    break conflict;
 
-				int[] secondaryActivityIndex = currentSecondaryActivityIndex[courseIndex][activityOptionIndex];
-				long shash = hash;
-				for (int j = 0; j < secondaryActivityIndex.length; j++) {
-					int sidx = secondaryActivityIndex[j];
-					shash = shash * 31L + (long) sidx;
-					if (conflict = primaryConflicts.contains(shash))
-						break conflict;
-				}
-			}
+                int[] secondaryActivityIndex = currentSecondaryActivityIndex[courseIndex][activityOptionIndex];
+                long shash = hash;
+                for (int j = 0; j < secondaryActivityIndex.length; j++) {
+                    int sidx = secondaryActivityIndex[j];
+                    shash = shash * 31L + (long) sidx;
+                    if (conflict = primaryConflicts.contains(shash))
+                        break conflict;
+                }
+            }
 
-		} while (conflict);
+        } while (conflict);
 
-		return false;
-	}
+        return false;
+    }
 
-	public List<PossibleScheduleOption> getNext(int count,
-			Set<PossibleScheduleOption> current) {
-		if (empty) {
-			if (LOG.isDebugEnabled())
-				LOG.debug("Schedule builder is marked as empty, at least one course "
-						+ "option has not associated activity options");
-			return Collections.emptyList();
-		}
+    public List<PossibleScheduleOption> getNext(int count, Set<PossibleScheduleOption> current) {
+        if (empty) {
+            if (LOG.isDebugEnabled())
+                LOG.debug("Schedule builder is marked as empty, at least one course "
+                        + "option has not associated activity options");
+            return Collections.emptyList();
+        }
 
-		boolean rolled = false;
-		boolean done = false;
-		Calendar tempCalendar = Calendar.getInstance();
-		Date[] sundays = getSundays(term, tempCalendar);
-		long[][][] days = new long[sundays.length][7][5];
-		int iterationCount = 0;
-		int iterationsSinceLast = 0;
-		if (generated == null) {
-			assert !hasMore;
-			generated = new HashSet<PossibleScheduleOption>();
-		}
 
-		Queue<Integer> courseQueue = new LinkedList<Integer>();
-		List<PossibleScheduleOption> rv = new ArrayList<PossibleScheduleOption>(count);
-		List<ActivityOption> possibleActivityOptions = new LinkedList<ActivityOption>();
+        boolean rolled = false;
+        boolean done = false;
+        Calendar tempCalendar = Calendar.getInstance();
+        Date[] sundays = getSundays(term, tempCalendar);
+        long[][][] days = new long[sundays.length][7][5];
+        int iterationCount = 0;
+        int iterationsSinceLast = 0;
+        if (generated == null) {
+            assert !hasMore;
+            generated = new HashSet<PossibleScheduleOption>();
+        }
 
-		StringBuilder msg = null;
-		if (LOG.isDebugEnabled()) {
-			msg = new StringBuilder("Schedule build run\nCourses:");
-			for (CourseOption co : courseOptions) {
-				msg.append("\n  ").append(co.getCourseCode());
-				if (co.isSelected())
-					msg.append(" selected");
-				if (co.isLockedIn())
-					msg.append(" locked-in");
-				for (ActivityOption pao : co.getActivityOptions())
-					if (pao.isSelected() || pao.isLockedIn()) {
-						msg.append("\n    Primary ").append(
-								pao.getRegistrationCode());
-						if (pao.isSelected())
-							msg.append(" selected");
-						if (pao.isLockedIn())
-							msg.append(" locked-in");
-						for (SecondaryActivityOptions so : pao
-								.getSecondaryOptions()) {
-							for (ActivityOption sao : so.getActivityOptions()) {
-								if (sao.isSelected() || sao.isLockedIn()) {
-									msg.append("\n    ")
-											.append(so
-													.getActivityTypeDescription())
-											.append(" ")
-											.append(pao.getRegistrationCode());
-									if (sao.isSelected())
-										msg.append(" selected");
-									if (sao.isLockedIn())
-										msg.append(" locked-in");
-								}
-							}
-						}
-					}
-			}
-		}
+        Queue<Integer> courseQueue = new LinkedList<Integer>();
+        List<PossibleScheduleOption> rv = new ArrayList<PossibleScheduleOption>(count);
+        List<ActivityOption> possibleActivityOptions = new LinkedList<ActivityOption>();
 
-		do {
-			possibleActivityOptions.clear();
-			for (int i = 0; i < sundays.length; i++)
-				for (int j = 0; j < 7; j++)
-					for (int k = 0; k < 5; k++)
-						days[i][j][k] = 0L;
-			for (ReservedTime reservedTime : reservedTimes)
-				if (reservedTime.isSelected())
-					checkForConflicts(reservedTime, sundays, days, tempCalendar);
+        StringBuilder msg = null;
+        if (LOG.isDebugEnabled()) {
+            msg = new StringBuilder("Schedule build run\nCourses:");
+            for (CourseOption co : courseOptions) {
+                msg.append("\n  ").append(co.getCourseCode());
+                if (co.isSelected())
+                    msg.append(" selected");
+                if (co.isLockedIn())
+                    msg.append(" locked-in");
+                for (ActivityOption pao : co.getActivityOptions())
+                    if (pao.isSelected() || pao.isLockedIn()) {
+                        msg.append("\n    Primary ").append(
+                                pao.getRegistrationCode());
+                        if (pao.isSelected())
+                            msg.append(" selected");
+                        if (pao.isLockedIn())
+                            msg.append(" locked-in");
+                        for (SecondaryActivityOptions so : pao
+                                .getSecondaryOptions()) {
+                            for (ActivityOption sao : so.getActivityOptions()) {
+                                if (sao.isSelected() || sao.isLockedIn()) {
+                                    msg.append("\n    ")
+                                            .append(so
+                                                    .getActivityTypeDescription())
+                                            .append(" ")
+                                            .append(pao.getRegistrationCode());
+                                    if (sao.isSelected())
+                                        msg.append(" selected");
+                                    if (sao.isLockedIn())
+                                        msg.append(" locked-in");
+                                }
+                            }
+                        }
+                    }
+            }
+        }
 
-			boolean allCourses = true;
-			if (msg != null)
-				msg.append("\nIteration ").append(++iterationCount);
-			iterationsSinceLast++;
+        do {
+            possibleActivityOptions.clear();
+            for (int i = 0; i < sundays.length; i++)
+                for (int j = 0; j < 7; j++)
+                    for (int k = 0; k < 5; k++)
+                        days[i][j][k] = 0L;
+            for (ReservedTime reservedTime : reservedTimes)
+                if (reservedTime.isSelected())
+                    checkForConflicts(reservedTime, sundays, days, tempCalendar);
 
-			long hash = (long) currentCourseIndex;
-			prepareCourseQueue(courseQueue);
-			course: while (!courseQueue.isEmpty()) {
-				int courseIndex = courseQueue.poll();
-				CourseOption courseOption = courseOptions.get(courseIndex);
-				if (msg != null)
-					msg.append(" co ").append(courseOption.getCourseCode());
+            boolean allCourses = true;
+            if (msg != null)
+                msg.append("\nIteration ").append(++iterationCount);
+            iterationsSinceLast++;
 
-				int activityOptionIndex = currentPrimaryActivityIndex[courseIndex];
-				hash = hash * 127L + (long) activityOptionIndex;
+            long hash = (long) currentCourseIndex;
+            prepareCourseQueue(courseQueue);
+            course:
+            while (!courseQueue.isEmpty()) {
+                int courseIndex = courseQueue.poll();
+                CourseOption courseOption = courseOptions.get(courseIndex);
+                if (msg != null)
+                    msg.append(" co ").append(courseOption.getCourseCode());
 
-				ActivityOption primary = courseOption.getActivityOptions().get(
-						activityOptionIndex);
-				if (msg != null)
-					msg.append(" pri ").append(primary.getRegistrationCode());
+                int activityOptionIndex = currentPrimaryActivityIndex[courseIndex];
+                hash = hash * 127L + (long) activityOptionIndex;
 
-				if (!checkForConflicts(primary, sundays, days, tempCalendar)
-						&& !courseOption.isLockedIn()) {
-					if (msg != null)
-						msg.append(" conflict");
-					primaryConflicts.add(hash);
-					allCourses = false;
-					break course;
-				}
+                ActivityOption primary = courseOption.getActivityOptions().get(
+                        activityOptionIndex);
+                if (msg != null)
+                    msg.append(" pri ").append(primary.getRegistrationCode());
 
-				int[] secondaryActivityIndex = currentSecondaryActivityIndex[courseIndex][activityOptionIndex];
-				if (primary.isEnrollmentGroup()) {
-					if (msg != null)
-						msg.append(" block");
-					for (int j = 0; j < secondaryActivityIndex.length; j++) {
-						List<ActivityOption> secondaryActivityOptions = primary
-								.getSecondaryOptions().get(j)
-								.getActivityOptions();
-						if (msg != null)
-							msg.append(" sec ").append(
-									secondaryActivityOptions.size());
-						for (ActivityOption secondary : secondaryActivityOptions) {
-							if (msg != null)
-								msg.append(" ").append(
-										secondary.getRegistrationCode());
-							if (!checkForConflicts(secondary, sundays, days,
-									tempCalendar)) {
-								if (msg != null)
-									msg.append(" conflict");
-								allCourses = false;
-								break course;
-							}
-						}
-					}
-				} else {
-					long shash = hash;
-					for (int j = 0; j < secondaryActivityIndex.length; j++) {
-						int sidx = secondaryActivityIndex[j];
-						ActivityOption secondary = primary
-								.getSecondaryOptions().get(j)
-								.getActivityOptions().get(sidx);
-						shash = shash * 31L + (long) sidx;
-						if (msg != null)
-							msg.append(" sec ").append(
-									secondary.getRegistrationCode());
-						if ((!secondary.isSelected() && !secondary.isLockedIn())
-								|| !checkForConflicts(secondary, sundays, days,
-										tempCalendar)) {
-							primaryConflicts.add(shash);
-							if (msg != null)
-								msg.append(" conflict");
-							allCourses = false;
-							break course;
-						}
-					}
-				}
+                if (!checkForConflicts(primary, sundays, days, tempCalendar)
+                        && !courseOption.isLockedIn()) {
+                    if (msg != null)
+                        msg.append(" conflict");
+                    primaryConflicts.add(hash);
+                    allCourses = false;
+                    break course;
+                }
 
-				possibleActivityOptions.add(primary);
-				for (int j = 0; j < secondaryActivityIndex.length; j++) {
-					SecondaryActivityOptions secondaryActivityOptions = primary
-							.getSecondaryOptions().get(j);
-					if (secondaryActivityOptions.isEnrollmentGroup()) {
-						for (ActivityOption secondary : secondaryActivityOptions
-								.getActivityOptions())
-							possibleActivityOptions.add(secondary);
-					} else
-						possibleActivityOptions.add(secondaryActivityOptions
-								.getActivityOptions().get(
-										secondaryActivityIndex[j]));
-				}
-			}
+                int[] secondaryActivityIndex = currentSecondaryActivityIndex[courseIndex][activityOptionIndex];
+                if (primary.isEnrollmentGroup()) {
+                    if (msg != null)
+                        msg.append(" block");
+                    for (int j = 0; j < secondaryActivityIndex.length; j++) {
+                        List<ActivityOption> secondaryActivityOptions = primary
+                                .getSecondaryOptions().get(j)
+                                .getActivityOptions();
+                        if (msg != null)
+                            msg.append(" sec ").append(
+                                    secondaryActivityOptions.size());
+                        for (ActivityOption secondary : secondaryActivityOptions) {
+                            if (msg != null)
+                                msg.append(" ").append(
+                                        secondary.getRegistrationCode());
+                            if (!checkForConflicts(secondary, sundays, days,
+                                    tempCalendar)) {
+                                if (msg != null)
+                                    msg.append(" conflict");
+                                allCourses = false;
+                                break course;
+                            }
+                        }
+                    }
+                } else {
+                    long shash = hash;
+                    for (int j = 0; j < secondaryActivityIndex.length; j++) {
+                        int sidx = secondaryActivityIndex[j];
+                        ActivityOption secondary = primary
+                                .getSecondaryOptions().get(j)
+                                .getActivityOptions().get(sidx);
+                        shash = shash * 31L + (long) sidx;
+                        if (msg != null)
+                            msg.append(" sec ").append(
+                                    secondary.getRegistrationCode());
+                        if ((!secondary.isSelected() && !secondary.isLockedIn())
+                                || !checkForConflicts(secondary, sundays, days,
+                                tempCalendar)) {
+                            primaryConflicts.add(shash);
+                            if (msg != null)
+                                msg.append(" conflict");
+                            allCourses = false;
+                            break course;
+                        }
+                    }
+                }
 
-			if (allCourses) {
-				PossibleScheduleOptionInfo pso = new PossibleScheduleOptionInfo();
-				pso.setUniqueId(UUID.randomUUID().toString());
-				Collections.sort(possibleActivityOptions,
-						new Comparator<ActivityOption>() {
-							@Override
-							public int compare(ActivityOption o1,
-									ActivityOption o2) {
-								String cc1 = o1.getCourseOfferingCode();
-								String cc2 = o2.getCourseOfferingCode();
-								if (cc1 == null && cc2 != null)
-									return 1;
-								if (cc1 != null && cc2 == null)
-									return -1;
-								if (cc1 != null && cc2 != null) {
-									int ccc = cc1.compareTo(cc2);
-									if (ccc != 0)
-										return ccc;
-								}
-								return o1.compareTo(o2);
-							}
-						});
-				pso.setActivityOptions(possibleActivityOptions);
-				if (!generated.add(pso)) {
-					if (msg != null)
-						msg.append(" dup-rolled");
-				} else if (current.contains(pso)) {
-					scheduleNumber++;
-					if (msg != null)
-						msg.append(" dup-current");
-				} else {
-					iterationsSinceLast = 0;
-					String descr = "Schedule " + (++scheduleNumber);
-					pso.setTermId(term.getId());
-					pso.setDescription(descr);
-					rv.add(pso);
-					if (msg != null) {
-						msg.append("\nPossible option #").append(rv.size());
-						msg.append(" ").append(descr).append(" ");
-						for (ActivityOption ao : pso.getActivityOptions())
-							msg.append(" ").append(ao.getCourseOfferingCode())
-									.append(" ")
-									.append(ao.getRegistrationCode());
-					}
-				}
-			}
+                possibleActivityOptions.add(primary);
+                for (int j = 0; j < secondaryActivityIndex.length; j++) {
+                    SecondaryActivityOptions secondaryActivityOptions = primary
+                            .getSecondaryOptions().get(j);
+                    if (secondaryActivityOptions.isEnrollmentGroup()) {
+                        for (ActivityOption secondary : secondaryActivityOptions
+                                .getActivityOptions())
+                            possibleActivityOptions.add(secondary);
+                    } else
+                        possibleActivityOptions.add(secondaryActivityOptions
+                                .getActivityOptions().get(
+                                        secondaryActivityIndex[j]));
+                }
+            }
 
-			boolean justRolled = step(courseQueue);
-			if (justRolled) {
-				scheduleNumber = 0;
-				rolled = true;
-				hasMore = generated.size() > count;
-				if (msg != null)
-					msg.append("\nJust rolled. Count: ").append(count)
-							.append(" Current: ").append(current.size())
-							.append(" Generated: ").append(generated.size())
-							.append(" More? ").append(hasMore);
-				generated = new HashSet<PossibleScheduleOption>();
-			}
-			done = rv.size() >= count || (justRolled && !hasMore);
-			if (iterationsSinceLast > 50000) {
-				done = true;
-				if (msg != null)
-					msg.append(" !loop");
-			}
-			if (msg != null) {
-				if (justRolled)
-					msg.append(" just");
-				if (rolled)
-					msg.append(" rolled");
-				if (done)
-					msg.append(" done");
-			}
-		} while (!done);
-		if (msg != null) {
-			LOG.debug(msg);
-		}
-		hasMore = hasMore || (rv.size() >= count && !rolled);
-		return rv;
-	}
+            if (allCourses) {
+                PossibleScheduleOptionInfo pso = new PossibleScheduleOptionInfo();
+                pso.setUniqueId(UUID.randomUUID().toString());
+                Collections.sort(possibleActivityOptions,
+                        new Comparator<ActivityOption>() {
+                            @Override
+                            public int compare(ActivityOption o1,
+                                               ActivityOption o2) {
+                                String cc1 = o1.getCourseOfferingCode();
+                                String cc2 = o2.getCourseOfferingCode();
+                                if (cc1 == null && cc2 != null)
+                                    return 1;
+                                if (cc1 != null && cc2 == null)
+                                    return -1;
+                                if (cc1 != null && cc2 != null) {
+                                    int ccc = cc1.compareTo(cc2);
+                                    if (ccc != 0)
+                                        return ccc;
+                                }
+                                return o1.compareTo(o2);
+                            }
+                        });
+                pso.setActivityOptions(possibleActivityOptions);
+                if (!generated.add(pso)) {
+                    if (msg != null)
+                        msg.append(" dup-rolled");
+                } else if (current.contains(pso)) {
+                    scheduleNumber++;
+                    if (msg != null)
+                        msg.append(" dup-current");
+                } else {
+                    iterationsSinceLast = 0;
+                    String descr = "Schedule " + (++scheduleNumber);
+                    pso.setTermId(term.getId());
+                    pso.setDescription(descr);
+                    buildEvents(pso);
+                    rv.add(pso);
+                    if (msg != null) {
+                        msg.append("\nPossible option #").append(rv.size());
+                        msg.append(" ").append(descr).append(" ");
+                        for (ActivityOption ao : pso.getActivityOptions())
+                            msg.append(" ").append(ao.getCourseOfferingCode())
+                                    .append(" ")
+                                    .append(ao.getRegistrationCode());
+                    }
+                }
+            }
 
-	public boolean hasMore() {
-		return hasMore;
-	}
+            boolean justRolled = step(courseQueue);
+            if (justRolled) {
+                scheduleNumber = 0;
+                rolled = true;
+                hasMore = generated.size() > count;
+                if (msg != null)
+                    msg.append("\nJust rolled. Count: ").append(count)
+                            .append(" Current: ").append(current.size())
+                            .append(" Generated: ").append(generated.size())
+                            .append(" More? ").append(hasMore);
+                generated = new HashSet<PossibleScheduleOption>();
+            }
+            done = rv.size() >= count || (justRolled && !hasMore);
+            if (iterationsSinceLast > 50000) {
+                done = true;
+                if (msg != null)
+                    msg.append(" !loop");
+            }
+            if (msg != null) {
+                if (justRolled)
+                    msg.append(" just");
+                if (rolled)
+                    msg.append(" rolled");
+                if (done)
+                    msg.append(" done");
+            }
+        } while (!done);
+        if (msg != null) {
+            LOG.debug(msg);
+        }
+        hasMore = hasMore || (rv.size() >= count && !rolled);
+        return rv;
+    }
 
-	public List<CourseOption> getCourseOptions() {
-		return courseOptions;
-	}
+    public boolean hasMore() {
+        return hasMore;
+    }
 
+    private static class EventAggregateData {
+        private final Calendar cal = Calendar.getInstance();
+        private final Date minDate;
+        private final Date maxDate;
+        private final Date displayDate;
+        private final Set<Date> breakDates = new TreeSet<Date>();
+
+        private boolean weekends;
+        private int minTime = 8;
+        private int maxTime = 17;
+        private Date lastUntilDate;
+
+        private EventAggregateData(Date minDate, Date maxDate, Date displayDate) {
+            this.minDate = minDate;
+            this.maxDate = maxDate;
+            this.displayDate = displayDate;
+        }
+
+        private Date getDatePortion(Date date) {
+            if (date == null)
+                return null;
+
+            cal.setTime(date);
+            if (cal.get(Calendar.YEAR) == 1970
+                    && cal.get(Calendar.MONTH) == Calendar.JANUARY
+                    && cal.get(Calendar.DATE) == 1)
+                return null;
+
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            return cal.getTime();
+        }
+
+        private Date getTimePortion(Date date) {
+            if (date == null) {
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+            } else
+                cal.setTime(date);
+
+            cal.set(Calendar.YEAR, 1970);
+            cal.set(Calendar.MONTH, Calendar.JANUARY);
+            cal.set(Calendar.DATE, 1);
+            return cal.getTime();
+        }
+
+        private void addBreakDate(Date date) {
+            getDatePortion(date); // adjusts cal
+            cal.add(Calendar.DATE,
+                    -(cal.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY));
+            breakDates.add(minDate.after(cal.getTime()) ? minDate : cal
+                    .getTime());
+        }
+
+        private void updateLastUntilDate(Date untilDate) {
+            getDatePortion(untilDate); // adjusts cal
+            cal.add(Calendar.DATE,
+                    Calendar.SUNDAY + 7 - cal.get(Calendar.DAY_OF_WEEK));
+            if (maxDate.after(cal.getTime()))
+                breakDates.add(cal.getTime());
+            if (!maxDate.before(untilDate)
+                    && (lastUntilDate == null || (untilDate != null && lastUntilDate
+                    .before(untilDate))))
+                lastUntilDate = untilDate;
+        }
+
+        private void updateMinMaxTime(Date eventStart, Date eventEnd) {
+            cal.setTime(eventStart);
+            minTime = Math.min(minTime, cal.get(Calendar.HOUR_OF_DAY));
+            cal.setTime(eventEnd);
+            maxTime = Math.max(maxTime,
+                    cal.get(Calendar.HOUR_OF_DAY)
+                            + (cal.get(Calendar.MINUTE) > 0 ? 1 : 0));
+        }
+
+        public void updateWeekends(boolean weekend) {
+            weekends = weekend;
+        }
+
+        private Date addOneWeek(Date eventStart) {
+            cal.setTime(eventStart);
+            cal.add(Calendar.DATE, 7);
+            return cal.getTime();
+        }
+
+        private void addWeekBreaks(JsonArrayBuilder jweeks, Term term) {
+            int weekNumber = 1;
+            Iterator<Date> weekBreaks = breakDates.iterator();
+            Date start = weekBreaks.hasNext() ? weekBreaks.next() : term.getStartDate();
+            if (lastUntilDate == null)
+                lastUntilDate = term.getEndDate();
+            DateFormat df = new SimpleDateFormat("MMM d");
+            boolean done;
+            do {
+                Date end = (done = !weekBreaks.hasNext()) ? lastUntilDate
+                        : weekBreaks.next();
+                long sd = start.getTime();
+                long ed = end.getTime();
+                int weeks = (int) ((ed - sd) / 604800000);
+                JsonObjectBuilder jweek = Json.createObjectBuilder();
+                jweek.add("title", "Week" + (weeks > 1 ? "s " : " ")
+                        + weekNumber
+                        + (weeks > 1 ? "-" + (weekNumber + weeks - 1) : ""));
+                jweek.add("subtitle", df.format(start) + " - " + df.format(end));
+                cal.setTime(start);
+                jweek.add("gotoYear", cal.get(Calendar.YEAR));
+                jweek.add("gotoMonth", cal.get(Calendar.MONTH) + 1);
+                jweek.add("gotoDate", cal.get(Calendar.DATE));
+                jweeks.add(jweek);
+                weekNumber += weeks;
+                start = end;
+            } while (!done);
+        }
+    }
+
+    public void buildEvents(PossibleScheduleOption pso) {
+        Date minDate = getCalendarUtil().getNextMonday(term.getStartDate());
+        Date maxDate = getCalendarUtil().getDateAfterXdays(minDate, 6);
+        Date displayDate = term.getEndDate();
+        EventAggregateData aggregate = new EventAggregateData(minDate, maxDate, displayDate);
+        if (pso.isDiscarded()) {
+            return;
+        }
+
+        Map<String, List<ActivityOption>> scheduledCourseActivities = new LinkedHashMap<String, List<ActivityOption>>();
+        for (ActivityOption activityOption : pso.getActivityOptions()) {
+            String key = activityOption.getCourseCd();
+            if (scheduledCourseActivities.containsKey(key)) {
+                scheduledCourseActivities.get(key).add(activityOption);
+            } else {
+                List<ActivityOption> activityOptions = new ArrayList<ActivityOption>();
+                activityOptions.add(activityOption);
+                scheduledCourseActivities.put(key, activityOptions);
+            }
+        }
+
+        JsonObjectBuilder jpso = Json.createObjectBuilder();
+        JsonArrayBuilder jevents = Json.createArrayBuilder();
+        jpso.add("uniqueId", pso.getUniqueId());
+        jpso.add("selected", pso.isSelected());
+        jpso.add("saved", false);
+        for (ActivityOption ao : pso.getActivityOptions()) {
+            if (!ao.isPrimary() || !ao.isEnrollmentGroup()) {
+                for (ClassMeetingTime meeting : ao.getClassMeetingTimes()) {
+                    addEvents(term, meeting, ao.getCourseOfferingCode() + (meeting.getLocation() == null ? "" : " (" + meeting.getLocation() + ") - " + pso.getDescription().getPlain()), ao, jevents, aggregate, scheduledCourseActivities);
+                }
+            }
+        }
+        jpso.add("events", jevents);
+        PossibleScheduleOptionInfo possibleScheduleOptionInfo = (PossibleScheduleOptionInfo) pso;
+        JsonObject obj = jpso.build();
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        JsonWriter jwriter = Json.createWriter(outStream);
+        jwriter.writeObject(obj);
+        jwriter.close();
+        possibleScheduleOptionInfo.setEvent(outStream.toString());
+
+    }
+
+
+    private void addEvents(Term term, ScheduleBuildEvent meeting, String description, ActivityOption ao, JsonArrayBuilder jevents, EventAggregateData aggregate, Map<String, List<ActivityOption>> scheduledCourseActivities) {
+        /**
+         * This is used to adjust minDate and maxDate which is a week from min date and adjust min date to be monday if it is not.
+         * Used in building a week worth of schedules instead of whole term.
+         * */
+        Date termStartDate = getCalendarUtil().getNextMonday(term.getStartDate());
+        Date termEndDate = getCalendarUtil().getDateAfterXdays(termStartDate, 6);
+        Date meetingStartDate = getCalendarUtil().getNextMonday(meeting.getStartDate());
+        Date meetingEndDate = getCalendarUtil().getDateAfterXdays(termStartDate, 6);
+
+
+        Date startDate = aggregate.getDatePortion(meetingStartDate);
+        if (startDate == null || startDate.before(termStartDate))
+            startDate = aggregate.getDatePortion(termStartDate);
+        aggregate.addBreakDate(startDate);
+
+        Date untilDate = aggregate.getDatePortion(meetingEndDate);
+        if (untilDate == null || untilDate.after(termEndDate))
+            untilDate = aggregate.getDatePortion(termEndDate);
+        aggregate.updateLastUntilDate(untilDate);
+
+        aggregate.updateWeekends(meeting.isSunday() || meeting.isSaturday());
+
+        Date eventStart = aggregate.getTimePortion(meetingStartDate);
+        long durationSeconds;
+        if (meeting.isAllDay())
+            durationSeconds = 0L;
+        else {
+            Date eventEnd = aggregate.getTimePortion(meetingEndDate);
+            durationSeconds = (eventEnd.getTime() - eventStart.getTime()) / 1000;
+            aggregate.updateMinMaxTime(eventStart, eventEnd);
+        }
+
+        while (!startDate.after(untilDate)) {
+            if (meeting.isSunday())
+                jevents.add(createEvent(startDate, eventStart, aggregate.cal,
+                        Calendar.SUNDAY, durationSeconds, ao,
+                        description, meeting, scheduledCourseActivities));
+            if (meeting.isMonday())
+                jevents.add(createEvent(startDate, eventStart, aggregate.cal,
+                        Calendar.MONDAY, durationSeconds, ao,
+                        description, meeting, scheduledCourseActivities));
+            if (meeting.isTuesday())
+                jevents.add(createEvent(startDate, eventStart, aggregate.cal,
+                        Calendar.TUESDAY, durationSeconds, ao,
+                        description, meeting, scheduledCourseActivities));
+            if (meeting.isWednesday())
+                jevents.add(createEvent(startDate, eventStart, aggregate.cal,
+                        Calendar.WEDNESDAY, durationSeconds, ao,
+                        description, meeting, scheduledCourseActivities));
+            if (meeting.isThursday())
+                jevents.add(createEvent(startDate, eventStart, aggregate.cal,
+                        Calendar.THURSDAY, durationSeconds, ao,
+                        description, meeting, scheduledCourseActivities));
+            if (meeting.isFriday())
+                jevents.add(createEvent(startDate, eventStart, aggregate.cal,
+                        Calendar.FRIDAY, durationSeconds, ao,
+                        description, meeting, scheduledCourseActivities));
+            if (meeting.isSaturday())
+                jevents.add(createEvent(startDate, eventStart, aggregate.cal,
+                        Calendar.SATURDAY, durationSeconds, ao,
+                        description, meeting, scheduledCourseActivities));
+            startDate = aggregate.addOneWeek(startDate);
+        }
+    }
+
+    private JsonObjectBuilder createEvent(Date startDate,
+                                          Date eventStart, Calendar cal, int dow, long durationSeconds,
+                                          ActivityOption ao, String description,
+                                          ScheduleBuildEvent sbEvent, Map<String, List<ActivityOption>> scheduledCourseActivities) {
+
+        // Calculate the date for the event in seconds since the epoch
+        cal.setTime(startDate);
+        cal.add(Calendar.DATE, dow - cal.get(Calendar.DAY_OF_WEEK));
+        long eventStartSeconds = cal.getTime().getTime() / 1000L;
+
+        // Add the time for the event in seconds since midnight GMT
+        cal.setTime(eventStart);
+        eventStartSeconds += cal.getTime().getTime() / 1000L;
+
+        // Adjust for time zone by subtracting midnight prior to the event.
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        eventStartSeconds -= cal.getTime().getTime() / 1000L;
+
+        JsonObjectBuilder event = Json.createObjectBuilder();
+        String uid = ao == null ? ((HasUniqueId) sbEvent).getUniqueId() : ao
+                .getUniqueId();
+        event.add("id", uid + "_" + eventStartSeconds);
+        event.add("title", description);
+        event.add("start", eventStartSeconds);
+        if (durationSeconds == 0) {
+            event.add("allDay", true);
+        } else {
+            event.add("allDay", false);
+            event.add("end", eventStartSeconds + durationSeconds);
+        }
+        if (ao != null) {
+            Course course = getCourseHelper().getCourseInfo(ao.getCourseId());
+            JsonObjectBuilder popoverEvent = Json.createObjectBuilder();
+            popoverEvent.add("courseCd", course.getCode());
+            popoverEvent.add("courseId", course.getId());
+            popoverEvent.add("courseTitle", course.getCourseTitle().trim());
+
+            List<ActivityOption> activityOptions = scheduledCourseActivities.get(ao.getCourseCd());
+
+            JsonArrayBuilder activityArray = Json.createArrayBuilder();
+            for (ActivityOption activityOption : activityOptions) {
+                JsonObjectBuilder activity = Json.createObjectBuilder();
+                activity.add("sectionCd", activityOption.getRegistrationCode());
+                JsonArrayBuilder meetingArray = Json.createArrayBuilder();
+                JsonObjectBuilder meeting = Json.createObjectBuilder();
+                for (ClassMeetingTime meetingTime : activityOption.getClassMeetingTimes()) {
+                    meeting.add("meetingTime", meetingTime.getDaysAndTimes());
+                    meeting.add("location", meetingTime.getLocation());
+                    String campus = meetingTime.getCampus();
+                    String building = "";
+                    String buildingUrl = "";
+                    if (meetingTime.getBuilding() != null) {
+                        if (!"NOC".equals(meetingTime.getBuilding()) && !meetingTime.getBuilding().startsWith("*") && campus.equalsIgnoreCase("seattle")) {
+                            building = meetingTime.getBuilding();
+                            buildingUrl = PlanConstants.BUILDING_URL + building;
+                        } else {
+                            building = meetingTime.getBuilding();
+                        }
+                    }
+                    meeting.add("building", building);
+                    meeting.add("buildingUrl", buildingUrl);
+                    meetingArray.add(meeting);
+                }
+
+                activity.add("meetings", meetingArray);
+                activityArray.add(activity);
+            }
+
+
+            popoverEvent.add("activities", activityArray);
+            popoverEvent.add("termId", ao.getTermId());
+            event.add("popoverContent", popoverEvent);
+        }
+        return event;
+    }
+
+    public List<CourseOption> getCourseOptions() {
+        return courseOptions;
+    }
+
+    public CalendarUtil getCalendarUtil() {
+        if (calendarUtil == null) {
+            calendarUtil = KsapFrameworkServiceLocator.getCalendarUtil();
+        }
+        return calendarUtil;
+    }
+
+    public void setCalendarUtil(CalendarUtil calendarUtil) {
+        this.calendarUtil = calendarUtil;
+    }
+
+    public CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = KsapFrameworkServiceLocator.getCourseHelper();
+        }
+        return courseHelper;
+    }
+
+    public void setCourseHelper(CourseHelper courseHelper) {
+        this.courseHelper = courseHelper;
+    }
 }
