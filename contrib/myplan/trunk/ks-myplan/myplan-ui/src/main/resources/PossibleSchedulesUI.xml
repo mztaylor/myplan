@@ -94,9 +94,12 @@
         <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__option schedulePossible--@{#index % 5}"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.validationMessages"><null/></property>
+        <property name="layoutManager.lineGroupPrototype.onClickScript" value="
+            togglePossibleSchedule(KsapSbCalendar, @{#line.event}, jQuery(this), @{#index});
+        "/>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
-                <entry key="events" value="@{#line.event}"/>
+                <entry key="selected" value="false"/>
             </map>
         </property>
         <property name="items">

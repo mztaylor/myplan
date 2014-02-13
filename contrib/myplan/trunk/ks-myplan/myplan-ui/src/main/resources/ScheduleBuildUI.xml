@@ -735,7 +735,7 @@
                             <entry key="editable" value="false"/>
                             <entry key="selectable" value="false"/>
                             <entry key="selectHelper" value="false"/>
-                            <entry key="complete" value="function() {  }"/>
+                            <entry key="complete" value="function() { KsapSbCalendar = jQuery(this); }"/>
                         </map>
                     </property>
                 </bean>
