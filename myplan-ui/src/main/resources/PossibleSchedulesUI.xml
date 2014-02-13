@@ -113,7 +113,7 @@
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-ActionLink" p:actionLabel="Save" p:actionScript="saveScheduleOption('@{#line.uniqueId}')"/>
+                            <bean parent="Uif-ActionLink" p:actionLabel="Save" p:actionScript="saveScheduleOption('@{#line.uniqueId}')" p:render="@{#line.id EQ NULL}"/>
                             <bean parent="KSAP-MessageField" p:messageText="@{#index + 1}" p:cssClasses="schedulePossible__index"/>
                         </list>
                     </property>

@@ -80,6 +80,7 @@
                                 <property name="escapeHtmlInPropertyValue" value="false"/>
                                 <property name="propertyEditor" ref="possible_schedule_editor"/>
                             </bean>
+                            <bean parent="Uif-ActionLink" p:actionLabel="Delete" p:actionScript="removeSavedScheduleOption('@{#line.id}')"/>
                         </list>
                     </property>
                 </bean>

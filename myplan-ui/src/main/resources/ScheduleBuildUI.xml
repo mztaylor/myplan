@@ -87,7 +87,7 @@
         </property>
     </bean>
 
-    <bean id="schedule_build_filters" parent="KSAP-HorizontalBoxGroup" p:headerText="@{term.name} Calendar" p:style="width: 720px;">
+    <bean id="schedule_build_filters" parent="KSAP-HorizontalBoxGroup" p:headerText="@{term.name} Calendar" p:style="width: 670px;">
         <property name="header">
             <bean parent="KSAP-HeaderOne"/>
         </property>
