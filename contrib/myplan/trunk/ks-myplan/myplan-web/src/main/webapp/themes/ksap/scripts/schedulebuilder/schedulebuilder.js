@@ -355,57 +355,22 @@ function trashScheduleOption(uniqueId) {
 }
 
 function removeSavedScheduleOption(uniqueId) {
-	var model = KsapScheduleBuild.getSchedule(uniqueId);
-	if (model == null || model.id == null) return;
-
-	var star = jQuery("#"+uniqueId+" .ksap-sb-schedule-saveicon");
-	star.removeClass("ksap-sb-schedule-saveicon");
-	star.addClass("ksap-sb-schedule-savedicon");
-
-	var pomodel = null;
-	var possibleContainer = jQuery(".ksap-sb-possible-options-container");
-	possibleContainer.children().each(function(){
-		var prow = jQuery(this);
-		var pmodel = KsapScheduleBuild.getSchedule(prow.attr("id"));
-		
-		if (model.id == pmodel.id) {
-			var star = prow.find(".ksap-sb-schedule-savedicon");
-			star.removeClass("ksap-sb-schedule-savedicon");
-			star.addClass("ksap-sb-schedule-saveicon");
-			pomodel = pmodel;
-		}
-	});
-
-	jQuery("#kualiForm").ajaxSubmit({
-		data : {
-			methodToCall : "remove",
-			uniqueId : model.id
-		},
-		dataType : 'json',
-		success : function(response, textStatus, jqXHR) {
-			var savedContainer = jQuery(".ksap-sb-saved-schedules-container");
-			savedContainer.children().each(function(){
-				var srow = jQuery(this);
-				var smodel = KsapScheduleBuild.getSchedule(srow.attr("id"));
-				
-				if (model.id == smodel.id) {
-					KsapSbCalendar.fullCalendar('removeEventSource', smodel);
-					srow.remove();
-				}
-			});
-			
-			if (pomodel != null) {
-				pomodel.id = null;
-			}
-			
-			fixUpDownIcons();
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			if (textStatus == "parsererror")
-				textStatus = "JSON Parse Error";
-			showGrowl(errorThrown, jqXHR.status + " " + textStatus);
-		}
-	});
+    jQuery("#kualiForm").ajaxSubmit({
+        data : {
+            methodToCall : "remove",
+            uniqueId : uniqueId
+        },
+        dataType : 'json',
+        success : function(response, textStatus, jqXHR) {
+            console.log(response);
+            customRetrieveComponent('saved_schedules_summary','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+        },
+        error : function(jqXHR, textStatus, errorThrown) {
+            if (textStatus == "parsererror")
+                textStatus = "JSON Parse Error";
+            showGrowl(errorThrown, jqXHR.status + " " + textStatus);
+        }
+    });
 
 }
 
@@ -418,6 +383,7 @@ function saveScheduleOption(uniqueId) {
 		dataType : 'json',
 		success : function(response, textStatus, jqXHR) {
 			console.log(response);
+            customRetrieveComponent('saved_schedules_summary','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (textStatus == "parsererror")
