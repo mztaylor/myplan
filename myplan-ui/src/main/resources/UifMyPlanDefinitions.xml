@@ -426,12 +426,6 @@
         "/>
     </bean>
 
-    <bean id="KSAP-PossibleScheduleList" parent="KSAP-HorizontalBoxGroup" p:id="KSAP-PossibleScheduleList">
-        <property name="onDocumentReadyScript" value="
-            customRetrieveComponent('KSAP-PossibleScheduleList','possible_schedules_details','search','lookup',{viewId:'PossibleSchedules-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
-        "/>
-    </bean>
-
     <bean id="KSAP-DegreeAuditList" parent="KSAP-Module" p:headerText="Recent Degree Audits (DARS)"
           p:id="KSAP-DegreeAuditList">
         <property name="onDocumentReadyScript" value="
@@ -646,6 +640,22 @@
         </property>
         <property name="validationMessages">
             <null/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-StackedHorizontalCollectionGroup" parent="KSAP-StackedHorizontalCollectionGroup-parentBean"/>
+    <bean id="KSAP-StackedHorizontalCollectionGroup-parentBean" parent="KSAP-StackedCollectionGroup-parentBean">
+        <property name="layoutManager">
+            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
+                <property name="lineGroupPrototype">
+                    <bean parent="Uif-CollectionHorizontalBoxItem">
+                        <property name="footer.render" value="false"/>
+                        <property name="validationMessages">
+                            <null/>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
         </property>
     </bean>
 

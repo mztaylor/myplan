@@ -36,14 +36,11 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
         super.setValue(value);
     }
 
-
-    String outerDiv = "<div class=\"uif-HorizontalBoxLayout clearfix\">";
-    String innerSpan = "<span class=\"uif-message uif-boxLayoutVerticalItem clearfix ksap-sb-activity\">";
+    String innerSpan = "<div class=\"\">";
 
     @Override
     public String getAsText() {
         StringBuffer sb = new StringBuffer();
-        sb = sb.append(outerDiv);
         PossibleScheduleOption pso = (PossibleScheduleOption) super.getValue();
         Map<String, List<String>> scheduledCourseActivities = new LinkedHashMap<String, List<String>>();
         for (ActivityOption activityOption : pso.getActivityOptions()) {
@@ -63,9 +60,9 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
         for (String key : scheduledCourseActivities.keySet()) {
             count++;
             String value = StringUtils.join(scheduledCourseActivities.get(key), ", ");
-            sb = sb.append(isSavedSchedule() ? "" : innerSpan).append("<b>").append(key).append("</b>").append(" ").append(value).append(isSavedSchedule() ? count < scheduledCourseActivities.size() ? " / " : "" : "</span>");
+            sb = sb.append(isSavedSchedule() ? "" : innerSpan).append("<b>").append(key).append("</b>").append(" ").append(value).append(isSavedSchedule() ? count < scheduledCourseActivities.size() ? " / " : "" : "</div>");
         }
-        sb = sb.append(isSavedSchedule() ? "</span>" : "").append("</div>");
+        sb = sb.append(isSavedSchedule() ? "</div>" : "");
 
         return sb.toString();
     }

@@ -9,6 +9,49 @@
         float: right;
         color: @grayLight;
         font-size: @fontSizeMini;
+        position: relative;
+        top: 10px;
+    }
+}
+
+.schedulePossible__carouselButton {
+    display: block;
+    .border-radius(@baseBorderRadius);
+    border: solid 1px #06c;
+    color: #06c;
+    margin: 0;
+    width: 68px;
+    float: left;
+    text-align: center;
+
+    &:hover {
+        text-decoration: none;
+    }
+
+    &.disabled {
+        border-color: #ccc;
+        background-color: #f2f2f2;
+        color: #bcbcbc;
+        cursor: default;
+    }
+}
+
+.schedulePossible__carousel {
+    width: 800px;
+    margin: 0 @marginSmall;
+    overflow: hidden;
+    & ul {
+        width: 100000em;
+        margin: 0 !important;
+        padding: 0;
+        list-style: none;
+    }
+
+    & li {
+        margin: 0 @marginSmall;
+        padding: 0;
+        list-style: none;
+        float: left;
     }
 }
 
@@ -16,10 +59,12 @@
     .border-radius(@baseBorderRadius);
     color: @white;
     padding: @paddingMini;
+    width: 150 - (@paddingMini * 2);
 
     & .schedulePossible__index {
-        .bold();
-        font-size: @fontSizeLarge;
+        font-size: @fontSizeMax;
+        float: right;
+        margin: 0 4px 2px 0;
     }
 
     & .schedulePossible__courseCode {
@@ -51,20 +96,20 @@
             right: 0px;
         }
     }
+}
 
-    .schedulePossible__event--1 {
-        background-color: #d55e00 !important;
-    }
-    .schedulePossible__event--2 {
-        background-color: #e69f00 !important;
-    }
-    .schedulePossible__event--3 {
-        background-color: #cc79a7 !important;
-    }
-    .schedulePossible__event--4 {
-        background-color: #56b4e9 !important;
-    }
-    .schedulePossible__event--5 {
-        background-color: #009e73 !important;
-    }
+.schedulePossible--0 {
+    background-color: #d55e00 !important;
+}
+.schedulePossible--1 {
+    background-color: #e69f00 !important;
+}
+.schedulePossible--2 {
+    background-color: #cc79a7 !important;
+}
+.schedulePossible--3 {
+    background-color: #56b4e9 !important;
+}
+.schedulePossible--4 {
+    background-color: #009e73 !important;
 }

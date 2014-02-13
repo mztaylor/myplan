@@ -29,6 +29,7 @@
         </property>
         <property name="additionalScriptFiles">
             <list>
+                <value>plugins/carousel/carousel.js</value>
                 <value>plugins/fullcalendar/fullcalendar.js</value>
                 <value>themes/ksap/scripts/schedulebuilder/schedulebuilder.js</value>
                 <!--<value>themes/ksap/scripts/schedulebuilder/cart.js</value>-->
@@ -60,10 +61,9 @@
                     </property>
                 </bean>
                 <ref bean="schedule_build_heading"/>
-                <!--<ref bean="sb_possible_schedules"/>-->
-                <ref bean="KSAP-PossibleScheduleList"/>
-                <!--<ref bean="schedule_build_weekview"/>
-                <ref bean="sb_schedule_option_template"/>
+                <ref bean="sb_possible_schedules"/>
+                <ref bean="schedule_build_weekview"/>
+                <!--<ref bean="sb_schedule_option_template"/>
                 <ref bean="sb_reserved_time_template"/>
                 <ref bean="sb_weekgroup_template"/>-->
             </list>
@@ -76,7 +76,7 @@
         <property name="items">
             <list>
                 <ref bean="schedule_build_filters"/>
-                <bean parent="KSAP-ModuleContainer" p:headerText="SAVED SCHEDULES">
+                <bean parent="KSAP-ModuleContainer" p:headerText="Saved Schedules">
                     <property name="items">
                         <list>
                             <bean parent="KSAP-SavedScheduleList"/>
@@ -153,6 +153,12 @@
         </property>
     </bean>
 
+    <bean id="KSAP-PossibleScheduleList" parent="KSAP-VerticalBoxGroup" p:id="KSAP-PossibleScheduleList">
+        <property name="onDocumentReadyScript" value="
+            customRetrieveComponent('KSAP-PossibleScheduleList','possible_schedules_details','search','lookup',{viewId:'PossibleSchedules-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+        "/>
+    </bean>
+
     <bean id="schedule_build_controls" parent="schedule_build_controls-parent"/>
     <bean abstract="true" id="schedule_build_controls-parent" parent="KSAP-VerticalBoxGroup"
           p:id="schedule_build_controls">
@@ -203,7 +209,7 @@
     </bean>
 
     <bean id="sb_possible_schedules" parent="sb_possible_schedules-parent"/>
-    <bean abstract="true" id="sb_possible_schedules-parent" parent="KSAP-VerticalBoxGroup"
+    <bean abstract="true" id="sb_possible_schedules-parent" parent="KSAP-HorizontalBoxGroup"
           p:id="sb_possible_schedules">
         <property name="forceSessionPersistence" value="true"/>
         <property name="header">
@@ -216,16 +222,18 @@
                     <list>
                         <bean parent="KSAP-Message" p:messageText="Registered course"/>
                         <bean parent="KSAP-Message" p:messageText="Has enrollment restrictions"/>
+                        <bean parent="KSAP-Message" p:messageText="Closed section"/>
                     </list>
                 </property>
             </bean>
         </property>
         <property name="items">
             <list>
-                <ref bean="sb_possible_options"/>
+                <ref bean="KSAP-PossibleScheduleList"/>
+                <!--<ref bean="sb_possible_options"/>
                 <bean parent="KSAP-Message" p:id="sb_possible_noschedules" p:hidden="true"
                       p:additionalCssClasses="ksap-sb-noschedules"
-                      p:messageText="No schedules found. Adjust your class selections or time reservations to find more options."/>
+                      p:messageText="No schedules found. Adjust your class selections or time reservations to find more options."/>-->
                 <!--<bean parent="Uif-ActionLink" p:id="sb_possible_morelink" p:style="display : none"
                       p:additionalCssClasses="ksap-sb-morelink" p:actionLabel="More..."
                       p:actionScript="moreSchedules();"/>-->
