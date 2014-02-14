@@ -395,7 +395,8 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
             SecondaryActivityOptions copySecondary = new SecondaryActivityOptionsInfo(secondaryOption);
             // copy the selected sections from activityOptions
             SecondaryActivityOptionsInfo copySecondarySAOI = (SecondaryActivityOptionsInfo) copySecondary;
-            copySecondarySAOI.setActivityOptions(secondaryOption.getSelectedSecondaryActivityOptions());
+            SecondaryActivityOptionsInfo secondaryOptionSAOI = (SecondaryActivityOptionsInfo) secondaryOption;
+            copySecondarySAOI.setActivityOptions(secondaryOptionSAOI.getSelectedSecondaryActivityOptions());
             copySecondaryOptions.add(copySecondary);
         }
         return  copySecondaryOptions;
