@@ -6,6 +6,7 @@ import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
 import javax.xml.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -42,6 +43,30 @@ public class CourseOptionInfo extends ScheduleBuildOptionInfo implements CourseO
 		this.courseCode = courseOption.getCourseCode();
 		this.courseTitle = courseOption.getCourseTitle();
 		setActivityOptions(courseOption.getActivityOptions());
+	}
+
+    /* copy the ActivityOptions that are selected
+        and within each ActivityOption, the secondaryOptions that are selected
+     */
+    public CourseOptionInfo copySelected() {
+        if (!this.isSelected()) {
+            return null;
+        }
+        CourseOptionInfo copy = new CourseOptionInfo();
+        // from ScheduleBuildOptionInfo
+        copy.setUniqueId(this.getUniqueId());
+        copy.setSelected(this.isSelected());
+        copy.setLockedIn(this.isLockedIn());
+        copy.setShuffle(this.getShuffle());
+        copy.setDiscarded(this.isDiscarded());
+        // from CourseOptionInfo
+        copy.setCourseId(this.getCourseId());
+        copy.setCourseCode(this.getCourseCode());
+        copy.setCourseTitle(this.getCourseTitle());
+        copy.setCredits(this.getCredits());
+        copy.setActivityOptions(this.getSelectedActivityOptions());
+
+        return copy;
 	}
 
 	@Override
@@ -99,6 +124,26 @@ public class CourseOptionInfo extends ScheduleBuildOptionInfo implements CourseO
 			this.activityOptions = null;
 		}
 	}
+
+    public List<ActivityOption> getSelectedActivityOptions() {
+         if (activityOptions == null) {
+            return Collections.<ActivityOption> emptyList();
+        }
+        List<ActivityOption> primaryActivities = new LinkedList<ActivityOption>();
+
+        for (ActivityOption primary : getActivityOptions()) {
+            if (primary.isSelected()) {
+                ActivityOptionInfo copyPrimary = new ActivityOptionInfo(primary);
+                // preceeding copied unmodifiable list of secondaries. get rid of it.
+                // instead, just get the secondaries that have been selected
+                ActivityOptionInfo primaryAOI = (ActivityOptionInfo) primary;
+                copyPrimary.setSecondaryOptions(primaryAOI.getSelectedSecondaryOptions());
+				primaryActivities.add(copyPrimary);
+            }
+        }
+        return primaryActivities;
+    }
+
 
 	@Override
 	public int getActivityCount(boolean includeClosed) {

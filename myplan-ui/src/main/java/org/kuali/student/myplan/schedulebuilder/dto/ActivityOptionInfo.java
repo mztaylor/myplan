@@ -385,6 +385,23 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 		}
 	}
 
+
+    public List<SecondaryActivityOptions> getSelectedSecondaryOptions() {
+        if (secondaryOptions == null) {
+            return Collections.<SecondaryActivityOptions> emptyList();
+        }
+        List<SecondaryActivityOptions> copySecondaryOptions = new ArrayList<SecondaryActivityOptions>();
+        for (SecondaryActivityOptions secondaryOption : secondaryOptions) {
+            SecondaryActivityOptions copySecondary = new SecondaryActivityOptionsInfo(secondaryOption);
+            // copy the selected sections from activityOptions
+            SecondaryActivityOptionsInfo copySecondarySAOI = (SecondaryActivityOptionsInfo) copySecondary;
+            copySecondarySAOI.setActivityOptions(secondaryOption.getSelectedSecondaryActivityOptions());
+            copySecondaryOptions.add(copySecondary);
+        }
+        return  copySecondaryOptions;
+	}
+
+
 	@Override
 	public String toString() {
 		return "ActivityOptionInfo [activityOfferingId=" + activityOfferingId
