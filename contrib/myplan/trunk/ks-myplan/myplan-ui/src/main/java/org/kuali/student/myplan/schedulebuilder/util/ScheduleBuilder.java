@@ -817,9 +817,13 @@ public class ScheduleBuilder implements Serializable {
         if (StringUtils.hasText(pso.getId())) {
             jpso.add("id", pso.getId());
         }
+        boolean weekend = false;
         for (ActivityOption ao : pso.getActivityOptions()) {
             if (!ao.isPrimary() || !ao.isEnrollmentGroup()) {
                 for (ClassMeetingTime meeting : ao.getClassMeetingTimes()) {
+                    if (!weekend) {
+                        weekend = meeting.isSaturday() || meeting.isSunday();
+                    }
                     addEvents(term, meeting, ao, jevents, aggregate, scheduledCourseActivities, pso.getUniqueId());
                 }
             }
@@ -832,6 +836,7 @@ public class ScheduleBuilder implements Serializable {
         jwriter.writeObject(obj);
         jwriter.close();
         possibleScheduleOptionInfo.setEvent(outStream.toString());
+        possibleScheduleOptionInfo.setWeekend(weekend);
 
     }
 
@@ -853,11 +858,11 @@ public class ScheduleBuilder implements Serializable {
          * Used in building a week worth of schedules instead of whole term.
          * */
         Date termStartDate = getCalendarUtil().getNextMonday(term.getStartDate());
-        Date termEndDate = getCalendarUtil().getDateAfterXdays(termStartDate, 4);
+        Date termEndDate = getCalendarUtil().getDateAfterXdays(termStartDate, 5);
         Date meetingStartDate = getCalendarUtil().getNextMonday(meeting.getStartDate());
         Date until = getCalendarUtil().getNextMonday(meeting.getStartDate());
         until.setTime(meeting.getUntilDate().getTime());
-        Date meetingEndDate = getCalendarUtil().getDateAfterXdays(until, 4);
+        Date meetingEndDate = getCalendarUtil().getDateAfterXdays(until, 5);
 
         Date startDate = aggregate.getDatePortion(meetingStartDate);
         if (startDate == null || startDate.before(termStartDate))

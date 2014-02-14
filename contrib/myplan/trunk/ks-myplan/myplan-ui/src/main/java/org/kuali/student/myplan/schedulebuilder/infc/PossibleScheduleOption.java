@@ -55,4 +55,12 @@ public interface PossibleScheduleOption extends HasId, ScheduleBuildOption {
      */
     String getEvent();
 
+
+    /**
+     * If a possible schedule has any activityOffering which is offered in weekend
+     *
+     * @return true if weekend exists otherwise false
+     */
+    boolean isWeekend();
+
 }
