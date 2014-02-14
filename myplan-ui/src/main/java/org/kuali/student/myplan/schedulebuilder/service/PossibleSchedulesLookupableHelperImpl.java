@@ -8,12 +8,15 @@ import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.schedulebuilder.dto.ScheduleBuildFiltersInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
+import org.kuali.student.myplan.schedulebuilder.infc.ScheduleBuildFilters;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -43,10 +46,16 @@ public class PossibleSchedulesLookupableHelperImpl extends MyPlanLookupableImpl 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         List<PossibleScheduleOption> possibleScheduleOptions = new ArrayList<PossibleScheduleOption>();
         String termId = request.getParameter(PlanConstants.TERM_ID_KEY);
-        String requestedLearningPlanId = request.getParameter(PlanConstants.LEARNING_PLAN_KEY);
+        String requestedLearningPlanId = request.getParameter(ScheduleBuilderConstants.LEARNING_PLAN_KEY);
+
+        ScheduleBuildFiltersInfo scheduleBuildFilters = new ScheduleBuildFiltersInfo();
+        scheduleBuildFilters.setShowClosed(Boolean.valueOf(request.getParameter(ScheduleBuilderConstants.SHOW_CLOSED_KEY)));
+        scheduleBuildFilters.setShowRestricted(Boolean.valueOf(request.getParameter(ScheduleBuilderConstants.SHOW_RESTRICTED_KEY)));
+        scheduleBuildFilters.setShowOverlapped(Boolean.valueOf(request.getParameter(ScheduleBuilderConstants.SHOW_OVERLAPPED_KEY)));
+
         if (StringUtils.hasText(termId) && StringUtils.hasText(requestedLearningPlanId)) {
             Term term = getTermHelper().getTermByAtpId(termId);
-            List<CourseOption> courseOptions = getScheduleBuildStrategy().getCourseOptions(requestedLearningPlanId, termId);
+            List<CourseOption> courseOptions = getScheduleBuildStrategy().getCourseOptions(requestedLearningPlanId, termId, scheduleBuildFilters);
             List<ReservedTime> reservedTimes = null;
             try {
                 reservedTimes = getScheduleBuildStrategy().getReservedTimes(requestedLearningPlanId);
@@ -68,9 +77,9 @@ public class PossibleSchedulesLookupableHelperImpl extends MyPlanLookupableImpl 
                 }
             }
 
-            ScheduleBuilder scheduleBuilder = new ScheduleBuilder(term, courseOptions, reservedTimes, savedSchedulesList);
+            ScheduleBuilder scheduleBuilder = new ScheduleBuilder(term, courseOptions, reservedTimes, savedSchedulesList, scheduleBuildFilters);
             possibleScheduleOptions = scheduleBuilder.getNext(getDefaultScheduleCount(), Collections.<PossibleScheduleOption>emptySet());
-            request.getSession().setAttribute("possibleScheduleOptions", possibleScheduleOptions);
+            request.getSession().setAttribute(ScheduleBuilderConstants.SESSION_ATTRIBUTE_KEY, possibleScheduleOptions);
         } else {
             logger.error("Missing required parameters termId and LearningPlanId");
         }
@@ -120,4 +129,5 @@ public class PossibleSchedulesLookupableHelperImpl extends MyPlanLookupableImpl 
     public void setDefaultScheduleCount(int defaultScheduleCount) {
         this.defaultScheduleCount = defaultScheduleCount;
     }
+
 }

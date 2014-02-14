@@ -1,10 +1,7 @@
 package org.kuali.student.myplan.schedulebuilder.util;
 
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
-import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
-import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
-import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
-import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
+import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.lum.course.infc.Course;
 
@@ -42,7 +39,7 @@ public interface ScheduleBuildStrategy {
      * @param termId         The term to get options for.
      * @return The course options to use as inputs for generating schedules.
      */
-    List<CourseOption> getCourseOptions(String learningPlanId, String termId);
+    List<CourseOption> getCourseOptions(String learningPlanId, String termId, ScheduleBuildFilters buildFilters);
 
     /**
      * Get the learning plan for schedule build to use as inputs.

@@ -689,7 +689,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     @Override
-    public List<CourseOption> getCourseOptions(String learningPlanId, String termId) {
+    public List<CourseOption> getCourseOptions(String learningPlanId, String termId, ScheduleBuildFilters buildFilters) {
         String studentId = getUserSessionHelper().getStudentId();
 
         AcademicPlanService academicPlanService = getAcademicPlanService();

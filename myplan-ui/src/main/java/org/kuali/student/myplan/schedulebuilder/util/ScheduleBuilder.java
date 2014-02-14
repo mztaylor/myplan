@@ -153,6 +153,7 @@ public class ScheduleBuilder implements Serializable {
     private final List<CourseOption> courseOptions;
     private final List<ReservedTime> reservedTimes;
     private final List<PossibleScheduleOption> savedSchedules;
+    private final ScheduleBuildFilters buildFilters;
     private final Set<Long> primaryConflicts = new HashSet<Long>();
     private final boolean empty;
 
@@ -186,10 +187,11 @@ public class ScheduleBuilder implements Serializable {
     }
 
     public ScheduleBuilder(Term term, List<CourseOption> courseOptions,
-                           List<ReservedTime> reservedTimes, List<PossibleScheduleOption> savedSchedules) {
+                           List<ReservedTime> reservedTimes, List<PossibleScheduleOption> savedSchedules, ScheduleBuildFilters buildFilters) {
         this.term = term;
         this.reservedTimes = reservedTimes != null ? reservedTimes : new ArrayList<ReservedTime>();
         this.savedSchedules = savedSchedules != null ? savedSchedules : new ArrayList<PossibleScheduleOption>();
+        this.buildFilters = buildFilters;
 
         boolean empty = false;
         List<CourseOption> co = new ArrayList<CourseOption>(
