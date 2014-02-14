@@ -820,7 +820,7 @@ public class ScheduleBuilder implements Serializable {
         for (ActivityOption ao : pso.getActivityOptions()) {
             if (!ao.isPrimary() || !ao.isEnrollmentGroup()) {
                 for (ClassMeetingTime meeting : ao.getClassMeetingTimes()) {
-                    addEvents(term, meeting, ao.getCourseOfferingCode() + (meeting.getLocation() == null ? "" : " (" + meeting.getLocation() + ") - " + pso.getDescription().getPlain()), ao, jevents, aggregate, scheduledCourseActivities);
+                    addEvents(term, meeting, ao, jevents, aggregate, scheduledCourseActivities, pso.getUniqueId());
                 }
             }
         }
@@ -841,13 +841,13 @@ public class ScheduleBuilder implements Serializable {
      *
      * @param term
      * @param meeting
-     * @param description
      * @param ao
      * @param jevents
      * @param aggregate
      * @param scheduledCourseActivities
+     * @param parentUniqueId
      */
-    private void addEvents(Term term, ScheduleBuildEvent meeting, String description, ActivityOption ao, JsonArrayBuilder jevents, EventAggregateData aggregate, Map<String, List<ActivityOption>> scheduledCourseActivities) {
+    private void addEvents(Term term, ScheduleBuildEvent meeting, ActivityOption ao, JsonArrayBuilder jevents, EventAggregateData aggregate, Map<String, List<ActivityOption>> scheduledCourseActivities, String parentUniqueId) {
         /**
          * This is used to adjust minDate and maxDate which is a week from min date and adjust min date to be monday if it is not.
          * Used in building a week worth of schedules instead of whole term.
@@ -885,37 +885,37 @@ public class ScheduleBuilder implements Serializable {
             if (meeting.isSunday())
                 jevents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.SUNDAY, durationSeconds, ao,
-                        description, meeting, scheduledCourseActivities));
+                        scheduledCourseActivities, parentUniqueId));
             if (meeting.isMonday())
                 jevents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.MONDAY, durationSeconds, ao,
-                        description, meeting, scheduledCourseActivities));
+                        scheduledCourseActivities, parentUniqueId));
             if (meeting.isTuesday())
                 jevents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.TUESDAY, durationSeconds, ao,
-                        description, meeting, scheduledCourseActivities));
+                        scheduledCourseActivities, parentUniqueId));
             if (meeting.isWednesday())
                 jevents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.WEDNESDAY, durationSeconds, ao,
-                        description, meeting, scheduledCourseActivities));
+                        scheduledCourseActivities, parentUniqueId));
             if (meeting.isThursday())
                 jevents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.THURSDAY, durationSeconds, ao,
-                        description, meeting, scheduledCourseActivities));
+                        scheduledCourseActivities, parentUniqueId));
             if (meeting.isFriday())
                 jevents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.FRIDAY, durationSeconds, ao,
-                        description, meeting, scheduledCourseActivities));
+                        scheduledCourseActivities, parentUniqueId));
             if (meeting.isSaturday())
                 jevents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.SATURDAY, durationSeconds, ao,
-                        description, meeting, scheduledCourseActivities));
+                        scheduledCourseActivities, parentUniqueId));
             startDate = aggregate.addOneWeek(startDate);
         }
     }
 
     /**
-     * Builds the actuals Json events required for calendar
+     * Builds the actual Json events required for calendar
      *
      * @param startDate
      * @param eventStart
@@ -923,15 +923,13 @@ public class ScheduleBuilder implements Serializable {
      * @param dow
      * @param durationSeconds
      * @param ao
-     * @param description
-     * @param sbEvent
      * @param scheduledCourseActivities
+     * @param parentUniqueId
      * @return
      */
     private JsonObjectBuilder createEvent(Date startDate,
                                           Date eventStart, Calendar cal, int dow, long durationSeconds,
-                                          ActivityOption ao, String description,
-                                          ScheduleBuildEvent sbEvent, Map<String, List<ActivityOption>> scheduledCourseActivities) {
+                                          ActivityOption ao, Map<String, List<ActivityOption>> scheduledCourseActivities, String parentUniqueId) {
 
         // Calculate the date for the event in seconds since the epoch
         cal.setTime(startDate);
@@ -949,10 +947,10 @@ public class ScheduleBuilder implements Serializable {
         eventStartSeconds -= cal.getTime().getTime() / 1000L;
 
         JsonObjectBuilder event = Json.createObjectBuilder();
-        String uid = ao == null ? ((HasUniqueId) sbEvent).getUniqueId() : ao
-                .getUniqueId();
-        event.add("id", uid + "_" + eventStartSeconds);
-        event.add("title", description);
+        /*using parentUniqueId for UI purpose of hiding and showing the events based on scheduleId*/
+        event.add("id", parentUniqueId);
+        /*Title value is populated in JS because we dont know what is the index value of the possibleSchedule*/
+        event.add("title", "");
         event.add("start", eventStartSeconds);
         if (durationSeconds == 0) {
             event.add("allDay", true);
