@@ -33,7 +33,6 @@ public class AcademicPlanServiceConstants {
     /*RefObjTypes*/
     public static final String COURSE_TYPE = LuServiceConstants.CREDIT_COURSE_LU_TYPE_KEY;
     public static final String SECTION_TYPE = "kuali.lui.type.activity.offering";
-    // todo change for CM 2.0  to uw.course.genedrequirement
     public static final String PLACE_HOLDER_TYPE_GEN_ED = "uw.course.genedrequirement";  // from KSEM_ENUM_T.enum_key
     public static final String PLACE_HOLDER_TYPE = "uw.academicplan.placeholder";  // from KSEM_ENUM_T.enum_key
     public static final String PLACE_HOLDER_TYPE_COURSE_LEVEL = "uw.cluset.type.course.level";
