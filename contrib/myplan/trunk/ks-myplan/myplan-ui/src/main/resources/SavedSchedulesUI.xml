@@ -46,17 +46,14 @@
         </property>
     </bean>
 
-    <bean id="saved_courses_schedule_list" parent="KSAP-StackedCollectionGroup">
+    <bean id="saved_courses_schedule_list" parent="KSAP-StackedHorizontalCollectionGroup">
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
         <property name="propertyName" value="lookupResults"/>
-        <property name="cssClasses" value="module"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses" value="module__item"/>
-        <property name="filters">
-            <list>
-                <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 7"/>
-            </list>
-        </property>
+        <property name="cssClasses" value="module scheduleSaved"/>
+        <property name="layoutManager.lineGroupPrototype.id" value="saved-schedule-@{#line.uniqueId}"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="module__item scheduleSaved__item @{#line.weekend ? 'scheduleSaved__item--hasWeekend' : ''}"/>
+        <property name="layoutManager.lineGroupPrototype.onClickScript" value="alert(@{#line.event})"/>
         <property name="instructionalMessage">
             <bean parent="Uif-Message"
                   p:messageText="You have no saved schedules">
@@ -66,32 +63,24 @@
         <property name="instructionalMessage.render" value="@{lookupResults EQ null OR lookupResults.size() EQ 0}"/>
         <property name="items">
             <list>
-                <bean parent="KSAP-HorizontalFieldGroup">
-                    <property name="dataAttributes">
-                        <map>
-                            <entry key="event" value="@{#line.event}"/>
-                        </map>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean parent="KSAP-Message" p:messageText="@{#index+1}" p:style="font-size: 25.0px;padding-top: 10px;"/>
-                            <bean parent="KSAP-SimpleDataField" p:id="sb_possible_schedule_@{#line.id}" p:style="width: 181px;">
-                                <property name="propertyName" value="schedule"/>
-                                <property name="escapeHtmlInPropertyValue" value="false"/>
-                                <property name="propertyEditor" ref="possible_schedule_editor"/>
-                            </bean>
-                            <bean parent="Uif-ActionLink" p:actionLabel="Delete" p:actionScript="removeSavedScheduleOption('@{#line.id}')"/>
-                        </list>
+                <bean parent="KSAP-MessageField" p:messageText="@{#index + 1}"/>
+                <bean parent="KSAP-SimpleDataField">
+                    <property name="propertyName" value="schedule"/>
+                    <property name="escapeHtmlInPropertyValue" value="false"/>
+                    <property name="propertyEditor">
+                        <bean parent="possible_schedule_editor">
+                            <property name="savedSchedule" value="true"/>
+                        </bean>
                     </property>
                 </bean>
-
+                <bean parent="Uif-ActionLinkField" p:actionLabel="Delete" p:actionScript="toggleSaveSchedule('@{#line.id}', 'remove')"/>
             </list>
         </property>
     </bean>
 
     <bean id="possible_schedule_editor"
           class="org.kuali.student.myplan.course.util.PossibleSchedulesPropertyEditor">
-        <property name="savedSchedule" value="true"/>
+        <property name="savedSchedule" value="false"/>
     </bean>
 
 </beans>
