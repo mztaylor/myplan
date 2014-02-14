@@ -64,6 +64,9 @@
                 visible: 5,
                 initCallback: function(a) {
                     jQuery.unblockUI();
+                },
+                beforeStart: function(a) {
+                    KsapSbCalendar.fullCalendar('removeEvents');
                 }
             });
         "/>
@@ -91,15 +94,13 @@
         <property name="cssClasses" value="schedulePossible__carousel"/>
         <property name="instructionalMessage.render" value="@{lookupResults EQ null OR lookupResults.size() EQ 0}"/>
         <property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.uniqueId}"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__option schedulePossible--@{#index % 5} @{#line.weekend ? 'schedulePossible_weekend' : ''}"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__option schedulePossible--@{#index % 5} @{#line.weekend ? 'schedulePossible__option--hasWeekend' : ''}"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.validationMessages"><null/></property>
-        <property name="layoutManager.lineGroupPrototype.onClickScript" value="
-            togglePossibleSchedule(KsapSbCalendar, @{#line.event}, jQuery(this), @{#index});
-        "/>
+        <property name="layoutManager.lineGroupPrototype.onClickScript" value="togglePossibleSchedule(KsapSbCalendar, jQuery(this), @{#index}, '@{#line.uniqueId}')"/>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
-                <entry key="selected" value="false"/>
+                <entry key="events" value=" @{#line.event}"/>
             </map>
         </property>
         <property name="items">
@@ -107,17 +108,13 @@
                 <bean parent="KSAP-SimpleDataField">
                     <property name="propertyName" value="schedule"/>
                     <property name="escapeHtmlInPropertyValue" value="false"/>
-                    <property name="propertyEditor">
-                        <bean parent="possible_schedule_editor">
-                            <property name="savedSchedule" value="false"/>
-                        </bean>
-                    </property>
+                    <property name="propertyEditor" ref="possible_schedule_editor"/>
                 </bean>
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-ActionLink" p:actionLabel="Save" p:actionScript="saveScheduleOption('@{#line.uniqueId}')" p:render="@{#line.id EQ NULL}"/>
-                            <bean parent="KSAP-MessageField" p:messageText="@{#index + 1}" p:cssClasses="schedulePossible__index"/>
+                            <bean parent="Uif-ActionLink" p:actionLabel="Save" p:actionScript="toggleSaveSchedule('@{#line.uniqueId}', 'save')" p:render="@{#line.id EQ NULL}"/>
+                            <bean parent="KSAP-Message" p:messageText="@{#index + 1}" p:cssClasses="schedulePossible__index"/>
                         </list>
                     </property>
                 </bean>
