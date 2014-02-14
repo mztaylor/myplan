@@ -11,6 +11,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.springframework.util.StringUtils;
@@ -39,7 +40,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
     protected List<PossibleScheduleOption> getSearchResults(LookupForm lookupForm, Map<String, String> fieldValues, boolean unbounded) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String termId = request.getParameter(PlanConstants.TERM_ID_KEY);
-        String requestedLearningPlanId = request.getParameter(PlanConstants.LEARNING_PLAN_KEY);
+        String requestedLearningPlanId = request.getParameter(ScheduleBuilderConstants.LEARNING_PLAN_KEY);
 
         ScheduleBuildStrategy sb = getScheduleBuildStrategy();
         List<PossibleScheduleOption> savedSchedulesList = new ArrayList<PossibleScheduleOption>();
@@ -52,7 +53,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 throw new IllegalStateException(
                         "Failed to refresh saved schedules", e);
             }
-            ScheduleBuilder scheduleBuilder = new ScheduleBuilder(term, null, null, null);
+            ScheduleBuilder scheduleBuilder = new ScheduleBuilder(term, null, null, null, null);
             for (PossibleScheduleOption possibleScheduleOption : savedSchedules) {
                 if (termId.equals(possibleScheduleOption.getTermId())) {
                     scheduleBuilder.buildEvents(possibleScheduleOption);

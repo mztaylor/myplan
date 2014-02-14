@@ -6,16 +6,17 @@ import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
-import org.kuali.student.myplan.audit.dataobject.MessyItem;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
+import org.kuali.student.myplan.schedulebuilder.infc.ScheduleBuildFilters;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.slf4j.Logger;
@@ -55,6 +56,7 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
     private List<ReservedTime> reservedTimes;
     private List<PossibleScheduleOption> possibleScheduleOptions;
     private List<PossibleScheduleOption> savedSchedules;
+    private ScheduleBuildFilters buildFilters;
 
     private List<String> includeFilters;
 
@@ -215,7 +217,7 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
             }
 
         } else {
-            scheduleBuilder = new ScheduleBuilder(getTerm(), courseOptions, reservedTimes, savedSchedules);
+            scheduleBuilder = new ScheduleBuilder(getTerm(), courseOptions, reservedTimes, savedSchedules, buildFilters);
             possibleScheduleOptions = getScheduleBuilder().getNext(possibleScheduleSize, Collections.<PossibleScheduleOption>emptySet());
         }
     }
@@ -224,7 +226,7 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
     public PossibleScheduleOption saveSchedule() {
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        List<PossibleScheduleOption> possibleScheduleOptionList = (List<PossibleScheduleOption>) request.getSession().getAttribute("possibleScheduleOptions");
+        List<PossibleScheduleOption> possibleScheduleOptionList = (List<PossibleScheduleOption>) request.getSession().getAttribute(ScheduleBuilderConstants.SESSION_ATTRIBUTE_KEY);
 
         if (!CollectionUtils.isEmpty(possibleScheduleOptionList)) {
             getPossibleScheduleOptions().addAll(possibleScheduleOptionList);
