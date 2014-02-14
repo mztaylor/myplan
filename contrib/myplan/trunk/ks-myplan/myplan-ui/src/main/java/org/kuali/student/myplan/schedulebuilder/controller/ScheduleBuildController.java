@@ -197,9 +197,11 @@ public class ScheduleBuildController extends UifControllerBase {
          * Used in building a week worth of schedules instead of whole term.
          * */
         Date termStartDate = getCalendarUtil().getNextMonday(term.getStartDate());
-        Date termEndDate = getCalendarUtil().getDateAfterXdays(termStartDate, 6);
+        Date termEndDate = getCalendarUtil().getDateAfterXdays(termStartDate, 4);
         Date meetingStartDate = getCalendarUtil().getNextMonday(meeting.getStartDate());
-        Date meetingEndDate = getCalendarUtil().getDateAfterXdays(termStartDate, 6);
+        Date until = getCalendarUtil().getNextMonday(meeting.getStartDate());
+        until.setTime(meeting.getUntilDate().getTime());
+        Date meetingEndDate = getCalendarUtil().getDateAfterXdays(until, 4);
 
 
         Date startDate = aggregate.getDatePortion(meetingStartDate);
@@ -387,7 +389,7 @@ public class ScheduleBuildController extends UifControllerBase {
          * Used in building a week worth of schedules instead of whole term.
          * */
         Date minDate = getCalendarUtil().getNextMonday(form.getTerm().getStartDate());
-        Date maxDate = getCalendarUtil().getDateAfterXdays(minDate, 6);
+        Date maxDate = getCalendarUtil().getDateAfterXdays(minDate, 4);
         Date displayDate = form.getTerm().getEndDate();
 
 
