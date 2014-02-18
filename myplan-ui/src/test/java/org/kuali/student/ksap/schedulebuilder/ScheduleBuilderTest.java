@@ -34,7 +34,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * kmuthu Don't forget to add comment
  *
- * @Author kmuthu
+ * @author kmuthu
  * Date: 1/28/14
  */
 //@RunWith(SpringJUnit4ClassRunner.class)
@@ -395,7 +395,7 @@ public class ScheduleBuilderTest {
         ScheduleBuilder scheduleBuilder = new ScheduleBuilder(term, courseOptions, reservedTimes, null, null);
         int possibleScheduleSize = 1; // don't know what this means
         logger.info("ScheduleBuilderUnitTest2 results: " );
-        List<PossibleScheduleOption> possibleScheduleOptions = scheduleBuilder.getNext(
+        /*List<PossibleScheduleOption> possibleScheduleOptions = scheduleBuilder.getNext(
                     possibleScheduleSize,
                     Collections.<PossibleScheduleOption>emptySet());
         PossibleScheduleOption pso =  possibleScheduleOptions.get(0);
@@ -414,7 +414,7 @@ public class ScheduleBuilderTest {
                 logger.info("\t\t\t:ActivityOfferingId: " + activityOption.getActivityOfferingId());
             }
         }
-
+*/
 
     }
 }
