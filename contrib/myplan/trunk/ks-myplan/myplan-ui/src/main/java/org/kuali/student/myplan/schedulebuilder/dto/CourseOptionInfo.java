@@ -1,12 +1,13 @@
 package org.kuali.student.myplan.schedulebuilder.dto;
 
+import org.hibernate.mapping.Array;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
 
 import javax.xml.bind.annotation.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -129,7 +130,7 @@ public class CourseOptionInfo extends ScheduleBuildOptionInfo implements CourseO
          if (activityOptions == null) {
             return Collections.<ActivityOption> emptyList();
         }
-        List<ActivityOption> primaryActivities = new LinkedList<ActivityOption>();
+        List<ActivityOption> primaryActivities = new ArrayList<ActivityOption>();
 
         for (ActivityOption primary : getActivityOptions()) {
             if (primary.isSelected()) {

@@ -6,8 +6,8 @@ import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.ArrayList;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SecondaryActivityOptionsInfo", propOrder = { "index",
@@ -129,7 +129,7 @@ public class SecondaryActivityOptionsInfo implements SecondaryActivityOptions,
             return Collections.<ActivityOption> emptyList();
         }
 
-        List<ActivityOption> secondaryActivities = new LinkedList<ActivityOption>();
+        List<ActivityOption> secondaryActivities = new ArrayList<ActivityOption>();
         for (ActivityOption thisSecondary : this.getActivityOptions()) {
             if (thisSecondary.isSelected()) {
                 secondaryActivities.add(thisSecondary);
