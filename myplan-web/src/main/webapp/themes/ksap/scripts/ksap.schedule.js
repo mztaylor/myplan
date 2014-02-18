@@ -17,7 +17,8 @@ function togglePossibleSchedule(calendarObj, targetObj, index, uniqueId) {
     }
 }
 
-function toggleSaveSchedule(uniqueId, methodToCall) {
+function toggleSaveSchedule(uniqueId, methodToCall, event) {
+    event.stopPropagation();
     jQuery("#kualiForm").ajaxSubmit({
         data : {
             methodToCall: methodToCall,
@@ -35,9 +36,30 @@ function toggleSaveSchedule(uniqueId, methodToCall) {
     });
 }
 
-function hasWeekend(calendarObj) {
-    var possible = jQuery(".schedulePossible__carousel li .schedulePossible__option.schedulePossible__option--hasWeekend").length;
-    var saved = jQuery(".schedulePossible__carousel li .schedulePossible__option.schedulePossible__option--hasWeekend").length;
+function hasWeekends() {
+    var possible = jQuery(".schedulePossible__carousel .schedulePossible__option.schedulePossible__option--hasWeekend").length;
+    var saved = jQuery(".scheduleSaved .scheduleSaved__item.scheduleSaved__item--hasWeekend").length;
 
     return (possible + saved) > 0;
+}
+
+function hidePossibleScheduleEvents(viewArr, calendarObj) {
+    for (var i = 0; i < viewArr.length; i++) {
+        var sourceObject = jQuery(viewArr[i]).find(".schedulePossible__option").data("events");
+        var selected = calendarObj.fullCalendar('clientEvents', sourceObject.uniqueId).length > 0;
+        if (selected) {
+            calendarObj.fullCalendar('removeEventSource', sourceObject);
+        }
+    }
+}
+
+function refreshScheduleCalendar(calendarObj) {
+    var weekends = hasWeekends();
+    if (weekends != calendarObj.fullCalendar('option', 'weekends')) {
+        calendarObj.fullCalendar('destroy');
+        KsapSbCalendarOptions.weekends = weekends;
+        calendarObj.fullCalendar(KsapSbCalendarOptions);
+    } else {
+        calendarObj.fullCalendar('removeEvents');
+    }
 }

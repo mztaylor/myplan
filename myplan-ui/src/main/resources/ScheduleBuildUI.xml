@@ -31,7 +31,7 @@
             <list>
                 <value>plugins/carousel/carousel.js</value>
                 <value>plugins/fullcalendar/fullcalendar.js</value>
-                <value>themes/ksap/scripts/schedulebuilder/schedulebuilder.js</value>
+                <!--<value>themes/ksap/scripts/schedulebuilder/schedulebuilder.js</value>-->
                 <!--<value>themes/ksap/scripts/schedulebuilder/cart.js</value>-->
             </list>
         </property>
