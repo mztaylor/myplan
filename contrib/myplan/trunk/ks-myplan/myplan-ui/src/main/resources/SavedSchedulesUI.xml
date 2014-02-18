@@ -53,7 +53,7 @@
         <property name="cssClasses" value="module scheduleSaved"/>
         <property name="layoutManager.lineGroupPrototype.id" value="saved-schedule-@{#line.uniqueId}"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses" value="module__item scheduleSaved__item @{#line.weekend ? 'scheduleSaved__item--hasWeekend' : ''}"/>
-        <property name="layoutManager.lineGroupPrototype.onClickScript" value="alert(@{#line.event})"/>
+        <!--<property name="layoutManager.lineGroupPrototype.onClickScript" value="alert(@{#line.event});"/>-->
         <property name="instructionalMessage">
             <bean parent="Uif-Message"
                   p:messageText="You have no saved schedules">
@@ -73,7 +73,7 @@
                         </bean>
                     </property>
                 </bean>
-                <bean parent="Uif-ActionLinkField" p:actionLabel="Delete" p:actionScript="toggleSaveSchedule('@{#line.id}', 'remove')"/>
+                <bean parent="Uif-ActionLinkField" p:actionLabel="Delete" p:actionScript="toggleSaveSchedule('@{#line.id}', 'remove', e)"/>
             </list>
         </property>
     </bean>
