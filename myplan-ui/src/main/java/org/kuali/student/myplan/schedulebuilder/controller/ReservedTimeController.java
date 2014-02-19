@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 import org.kuali.rice.krad.datadictionary.validation.result.ConstraintValidationResult;
 import org.kuali.rice.krad.datadictionary.validation.result.DictionaryValidationResult;
 import org.kuali.rice.krad.service.KRADServiceLocatorWeb;
-import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.controller.extension.KsapControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
@@ -13,8 +12,9 @@ import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.schedulebuilder.form.ReservedTimeForm;
-import org.kuali.student.myplan.schedulebuilder.util.PlanEventUtils;
+import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
 import org.kuali.student.myplan.utils.CalendarUtil;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
@@ -25,8 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -99,7 +97,7 @@ public class ReservedTimeController extends KsapControllerBase {
 
         Term term = getTermHelper().getTermByAtpId(form.getTermId());
         Date startDate = getCalendarUtil().getNextMonday(term.getStartDate());
-        Date endDate = getCalendarUtil().getDateAfterXdays(startDate, 6);
+        Date endDate = getCalendarUtil().getDateAfterXdays(startDate, 5);
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         form.setStartDateStr(dateFormat.format(startDate));
         form.setUntilDateStr(dateFormat.format(endDate));
@@ -156,39 +154,22 @@ public class ReservedTimeController extends KsapControllerBase {
                     sb.toString());
             return null;
         }
-
+        ReservedTime reservedTimeInfo;
         try {
-            getScheduleBuildStrategy().createReservedTime(form.getRequestedLearningPlanId(), form);
+            reservedTimeInfo = getScheduleBuildStrategy().createReservedTime(form.getRequestedLearningPlanId(), form);
             form.setComplete(true);
         } catch (PermissionDeniedException e) {
             throw new ServletException("Unexpected authorization failure", e);
         }
+        Term term = getTermHelper().getTermByAtpId(form.getTermId());
+        ScheduleBuilder builder = new ScheduleBuilder(term, null, null, null, null);
+        builder.buildReservedTimeEvents(reservedTimeInfo);
+        response.setHeader("content-type", "application/json");
+        response.setHeader("Cache-Control", "No-cache");
+        response.setHeader("Cache-Control", "No-store");
+        response.setHeader("Cache-Control", "max-age=0");
+        response.getWriter().println(reservedTimeInfo.getEvent());
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("M/dd/yyyy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
-        JsonObjectBuilder addedReservedTime = Json.createObjectBuilder();
-        addedReservedTime.add("uid", form.getUniqueId());
-        addedReservedTime.add("description", form.getDescription());
-        addedReservedTime.add("allDay", form.isAllDay());
-        addedReservedTime.add("startDate",
-                dateFormat.format(form.getStartDate()));
-        addedReservedTime.add("startTime",
-                timeFormat.format(form.getStartDate()));
-        addedReservedTime
-                .add("endTime", timeFormat.format(form.getUntilDate()));
-        addedReservedTime.add("untilDate",
-                dateFormat.format(form.getUntilDate()));
-        addedReservedTime.add("sunday", form.isSunday());
-        addedReservedTime.add("monday", form.isMonday());
-        addedReservedTime.add("tuesday", form.isTuesday());
-        addedReservedTime.add("wednesday", form.isWednesday());
-        addedReservedTime.add("thursday", form.isThursday());
-        addedReservedTime.add("friday", form.isFriday());
-        addedReservedTime.add("saturday", form.isSaturday());
-        JsonObjectBuilder events = PlanEventUtils.getEventsBuilder();
-        events.add("addedReservedTime", addedReservedTime);
-
-        PlanEventUtils.sendJsonEvents(true, "Added reserved time", response);
         return null;
     }
 

@@ -56,7 +56,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
             ScheduleBuilder scheduleBuilder = new ScheduleBuilder(term, null, null, null, null);
             for (PossibleScheduleOption possibleScheduleOption : savedSchedules) {
                 if (termId.equals(possibleScheduleOption.getTermId())) {
-                    scheduleBuilder.buildEvents(possibleScheduleOption);
+                    scheduleBuilder.buildPossibleScheduleEvents(possibleScheduleOption);
                     savedSchedulesList.add(possibleScheduleOption);
                 }
             }

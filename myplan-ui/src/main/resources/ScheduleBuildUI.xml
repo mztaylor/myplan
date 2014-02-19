@@ -31,7 +31,7 @@
             <list>
                 <value>plugins/carousel/carousel.js</value>
                 <value>plugins/fullcalendar/fullcalendar.js</value>
-                <!--<value>themes/ksap/scripts/schedulebuilder/schedulebuilder.js</value>-->
+                <value>themes/ksap/scripts/schedulebuilder/schedulebuilder.js</value>
                 <!--<value>themes/ksap/scripts/schedulebuilder/cart.js</value>-->
             </list>
         </property>
@@ -71,6 +71,38 @@
     </bean>
 
 
+    <bean id="sb_reserved_time" parent="sb_reserved_time-parent"/>
+    <bean id="sb_reserved_time-parent" parent="Uif-ListCollectionSection" p:id="sb_reserved_time">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.schedulebuilder.infc.ReservedTime"/>
+        <property name="propertyName" value="reservedTimes"/>
+        <property name="cssClasses" value="scheduleReserved__item"/>
+        <property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.id}"/>
+        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages"><null/></property>
+        <property name="layoutManager.lineGroupPrototype.dataAttributes">
+            <map>
+                <entry key="selected" value="false"/>
+            </map>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-HorizontalFieldGroup">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-Message" p:messageText = "@{#line.daysAndTimes}"/>
+                            <bean parent="Uif-ActionLink" p:actionLabel="Edit" p:actionScript=""/>
+                            <bean parent="KSAP-Message" p:messageText = "|"/>
+                            <bean parent="Uif-ActionLink" p:actionLabel="Delete" p:actionScript="removeReservedScheduleOption('@{#line.id}')"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
 
     <bean id="schedule_build_heading" parent="KSAP-HorizontalBoxGroup">
         <property name="items">
@@ -135,12 +167,15 @@
                     </property>
                     <property name="layoutManager.additionalCssClasses" value="ksap-sb-reserved-times-container"/>
                     <property name="items">
-                        <list/>
+                        <list>
+                            <ref bean="sb_reserved_time"/>
+                        </list>
                     </property>
                     <property name="footer">
                         <bean parent="Uif-FooterBase">
                             <property name="items">
                                 <list>
+
                                     <bean parent="Uif-ActionLink" p:actionLabel="+ Add a day/time">
                                         <property name="actionScript" value="ksapSbOpenDialog('sb_create_reserved_time','sb/reserved',{methodToCall:'startDialog',termId:'@{term.id}'}, this, e)"/>
                                     </bean>

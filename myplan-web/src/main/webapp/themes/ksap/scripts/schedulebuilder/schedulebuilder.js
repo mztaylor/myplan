@@ -375,22 +375,21 @@ function removeSavedScheduleOption(uniqueId) {
 }
 
 function saveScheduleOption(uniqueId) {
-	jQuery("#kualiForm").ajaxSubmit({
-		data : {
-			methodToCall : "save",
-			uniqueId : uniqueId
-		},
-		dataType : 'json',
-		success : function(response, textStatus, jqXHR) {
-			console.log(response);
+    jQuery("#kualiForm").ajaxSubmit({
+        data : {
+            methodToCall : "save",
+            uniqueId : uniqueId
+        },
+        dataType : 'json',
+        success : function(response, textStatus, jqXHR) {
             customRetrieveComponent('saved_schedules_summary','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			if (textStatus == "parsererror")
-				textStatus = "JSON Parse Error";
-			showGrowl(errorThrown, jqXHR.status + " " + textStatus);
-		}
-	});
+        },
+        error : function(jqXHR, textStatus, errorThrown) {
+            if (textStatus == "parsererror")
+                textStatus = "JSON Parse Error";
+            showGrowl(errorThrown, jqXHR.status + " " + textStatus);
+        }
+    });
 }
 
 function saveOrRemoveScheduleOption(uniqueId) {
@@ -521,7 +520,11 @@ function ksapSbSubmitDialog(methodToCall, e) {
 			methodToCall : methodToCall
 		}),
 		dataType : 'json',
-		success : ksapSbDialogResponse,
+		success : function(newPossibleSchedules, textStatus, jqXHR){
+            jQuery('#sb_reserved_time ul').append('<li><div id="possible-schedule-'+newPossibleSchedules.id+'" class="uif-boxSection" data-selected="false"><div class="uif-horizontalFieldGroup uif-boxLayoutVerticalItem clearfix" data-parent="possible-schedule-'+newPossibleSchedules.id+'"><div class="uif-horizontalBoxGroup"><div class="uif-horizontalBoxLayout clearfix"><span class="uif-message uif-boxLayoutHorizontalItem">'+newPossibleSchedules.daysTimes+' </span><a onclick="return false;" class="uif-actionLink uif-boxLayoutHorizontalItem">Edit</a><span class="uif-message uif-boxLayoutHorizontalItem"> | </span><a onclick="return false;" class="uif-actionLink uif-boxLayoutHorizontalItem" data-ajaxsubmit="true" data-onclick="removeReservedScheduleOption(\''+newPossibleSchedules.id+'\');" >Delete</a></div></div></div></div></li>')
+            fnClosePopup();
+            customRetrieveComponent('possible_schedules_details','possible_schedules_details','search','lookup',{viewId:'PossibleSchedules-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+        },
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (textStatus == "parsererror")
 				textStatus = "Parse Error in response";
@@ -764,7 +767,7 @@ function showHideSecondaryOptions(uniqueId) {
 	}
 }
 
-function hasWeekends(schedule) {
+/*function hasWeekends(schedule) {
     var combinedEvents = schedule.possible.concat(schedule.saved).concat(schedule.reserved);
 
     for (var i = 0; i < combinedEvents.length; i++) {
@@ -773,6 +776,26 @@ function hasWeekends(schedule) {
         }
     }
     return false;
+}*/
+
+function removeReservedScheduleOption(uniqueId) {
+    jQuery("#kualiForm").ajaxSubmit({
+        data : {
+            methodToCall : "remove",
+            uniqueId : uniqueId
+        },
+        dataType : 'json',
+        success : function(response, textStatus, jqXHR) {
+            jQuery("#possible-schedule-"+uniqueId).remove();
+            customRetrieveComponent('possible_schedules_details','possible_schedules_details','search','lookup',{viewId:'PossibleSchedules-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+        },
+        error : function(jqXHR, textStatus, errorThrown) {
+            if (textStatus == "parsererror")
+                textStatus = "JSON Parse Error";
+            showGrowl(errorThrown, jqXHR.status + " " + textStatus);
+        }
+    });
+
 }
 
 function fnClosePopup() {

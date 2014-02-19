@@ -18,4 +18,12 @@ public interface ReservedTime extends ScheduleBuildEvent, HasId, HasUniqueId {
 	 */
 	boolean isSelected();
 
+
+    /**
+     * Get events for this reserved time
+     *
+     * @return This reservedTime events
+     */
+    String getEvent();
+
 }

@@ -112,8 +112,7 @@
     </bean>
 
     <bean id="sb_reserved_times_submit_button" parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Add">
-        <property name="methodToCall" value="createReservedTime"/>
-        <property name="actionScript" value="ksapSbSubmitDialog('@{#component.methodToCall}', e);"/>
+        <property name="actionScript" value="ksapSbSubmitDialog('createReservedTime', e);"/>
     </bean>
 
     <bean id="sb_reserved_time_buttons" parent="sb_reserved_time_buttons-parent"/>
