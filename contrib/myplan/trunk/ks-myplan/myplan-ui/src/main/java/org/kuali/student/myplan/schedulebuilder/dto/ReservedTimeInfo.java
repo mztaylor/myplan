@@ -24,6 +24,9 @@ public class ReservedTimeInfo extends ScheduleBuildEventInfo implements
 	@XmlAttribute
 	private boolean selected = true;
 
+    @XmlAttribute
+    private String event;
+
 	public ReservedTimeInfo() {
 	}
 
@@ -60,4 +63,11 @@ public class ReservedTimeInfo extends ScheduleBuildEventInfo implements
 		this.selected = selected;
 	}
 
+    public String getEvent() {
+        return event;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
+    }
 }

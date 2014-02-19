@@ -5,10 +5,7 @@ import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
-import org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo;
-import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
-import org.kuali.student.myplan.schedulebuilder.dto.SecondaryActivityOptionsInfo;
+import org.kuali.student.myplan.schedulebuilder.dto.*;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.myplan.utils.CalendarUtil;
 import org.kuali.student.r2.lum.course.infc.Course;
@@ -614,7 +611,7 @@ public class ScheduleBuilder implements Serializable {
                     if (saveIndex != -1) {
                         pso.setId(savedSchedules.get(saveIndex).getId());
                     }
-                    buildEvents(pso);
+                    buildPossibleScheduleEvents(pso);
                     rv.add(pso);
                     if (msg != null) {
                         msg.append("\nPossible option #").append(rv.size());
@@ -784,12 +781,45 @@ public class ScheduleBuilder implements Serializable {
         }
     }
 
+
     /**
-     * Builds the json string with events  required for the calendar and sets that to the possibleScheudleOption event property
+     * Builds the json string with events  required for the calendar and sets that to the reservedTime event property
+     *
+     * @param rt
+     */
+    public void buildReservedTimeEvents(ReservedTime rt) {
+        Date minDate = getCalendarUtil().getNextMonday(term.getStartDate());
+        Date maxDate = getCalendarUtil().getDateAfterXdays(minDate, 5);
+        Date displayDate = term.getEndDate();
+        SimpleDateFormat ddf = new SimpleDateFormat("MM/dd/yyyy");
+
+        EventAggregateData aggregate = new EventAggregateData(minDate, maxDate, displayDate);
+        JsonObjectBuilder rto = Json.createObjectBuilder();
+        JsonArrayBuilder jevents = Json.createArrayBuilder();
+        rto.add("id", rt.getId());
+        rto.add("uniqueId", rt.getUniqueId());
+        rto.add("daysTimes", rt.getDaysAndTimes());
+        rto.add("startDate", ddf.format(rt.getStartDate()));
+        rto.add("untilDate", ddf.format(rt.getUntilDate()));
+        JsonArrayBuilder acss = Json.createArrayBuilder();
+        addEvents(term, rt, null, jevents, aggregate, null, rt.getUniqueId());
+        rto.add("events", jevents);
+        ReservedTimeInfo reservedTimeInfo = (ReservedTimeInfo) rt;
+        JsonObject obj = rto.build();
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        JsonWriter jwriter = Json.createWriter(outStream);
+        jwriter.writeObject(obj);
+        jwriter.close();
+        reservedTimeInfo.setEvent(outStream.toString());
+
+    }
+
+    /**
+     * Builds the json string with events  required for the calendar and sets that to the possibleScheduleOption event property
      *
      * @param pso
      */
-    public void buildEvents(PossibleScheduleOption pso) {
+    public void buildPossibleScheduleEvents(PossibleScheduleOption pso) {
         Date minDate = getCalendarUtil().getNextMonday(term.getStartDate());
         Date maxDate = getCalendarUtil().getDateAfterXdays(minDate, 6);
         Date displayDate = term.getEndDate();
@@ -852,7 +882,7 @@ public class ScheduleBuilder implements Serializable {
      * @param scheduledCourseActivities
      * @param parentUniqueId
      */
-    private void addEvents(Term term, ScheduleBuildEvent meeting, ActivityOption ao, JsonArrayBuilder jevents, EventAggregateData aggregate, Map<String, List<ActivityOption>> scheduledCourseActivities, String parentUniqueId) {
+    public void addEvents(Term term, ScheduleBuildEvent meeting, ActivityOption ao, JsonArrayBuilder jevents, EventAggregateData aggregate, Map<String, List<ActivityOption>> scheduledCourseActivities, String parentUniqueId) {
         /**
          * This is used to adjust minDate and maxDate which is a week from min date and adjust min date to be monday if it is not.
          * Used in building a week worth of schedules instead of whole term.

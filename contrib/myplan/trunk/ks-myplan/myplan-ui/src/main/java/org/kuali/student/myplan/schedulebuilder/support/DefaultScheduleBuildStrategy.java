@@ -872,8 +872,8 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
     @Override
     // TODO: Convert from dynamic attributes to DAO service
-    public void createReservedTime(String requestedLearningPlanId,
-                                   ReservedTime reservedTime) throws PermissionDeniedException {
+    public ReservedTime createReservedTime(String requestedLearningPlanId,
+                                           ReservedTime reservedTime) throws PermissionDeniedException {
         ReservedTimeInfo createReservedTime = new ReservedTimeInfo(reservedTime);
         assert createReservedTime.getId() == null : "Already has an Id "
                 + createReservedTime.getId();
@@ -881,6 +881,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         ScheduleBuildAttribute reservedTimes = getScheduleBuildAttribute(requestedLearningPlanId);
         reservedTimes.reservedTime.add(createReservedTime);
         updateScheduleBuildAttribute(requestedLearningPlanId, reservedTimes);
+        return createReservedTime;
     }
 
     @Override
@@ -1000,6 +1001,15 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                     .next();
             if (reservedTimeInfo.getId().equals(scheduleId)) {
                 scheduleIterator.remove();
+                found = true;
+            }
+        }
+
+        Iterator<ReservedTimeInfo> reservedTimeIterator = scheduleBuildInfo.reservedTime.iterator();
+        while (!found && reservedTimeIterator.hasNext()) {
+            ReservedTimeInfo reservedTimeInfo = reservedTimeIterator.next();
+            if (reservedTimeInfo.getId().equals(scheduleId)) {
+                reservedTimeIterator.remove();
                 found = true;
             }
         }
