@@ -23,7 +23,7 @@ import java.util.*;
 public class DegreeAuditSeattlePrograms extends KeyValuesBase {
 
 
-    private final Logger logger = Logger.getLogger(DegreeAuditSeattlePrograms.class);
+    private final static Logger logger = Logger.getLogger(DegreeAuditSeattlePrograms.class);
 
     private boolean blankOption;
     
