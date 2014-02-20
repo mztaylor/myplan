@@ -973,7 +973,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         PossibleScheduleOptionInfo createSchedule = new PossibleScheduleOptionInfo(schedule);
         assert createSchedule.getId() == null : "Already has an Id " + createSchedule.getId();
         createSchedule.setId(UUID.randomUUID().toString());
-        createSchedule.setUniqueId(UUID.randomUUID().toString());
+        createSchedule.setUniqueId(StringUtils.isEmpty(schedule.getUniqueId()) ? UUID.randomUUID().toString() : schedule.getUniqueId());
         createSchedule.setSelected(true);
         createSchedule.setTermId(schedule.getTermId());
 

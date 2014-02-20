@@ -265,13 +265,14 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
     }
 
     @Override
-    public void removeSchedule() {
+    public String removeSchedule() {
         ScheduleBuildStrategy sb = getScheduleBuildStrategy();
         try {
             sb.deleteSchedule(requestedLearningPlanId, uniqueId);
         } catch (PermissionDeniedException e) {
             throw new IllegalStateException("Failed to remove reserved time", e);
         }
+        return uniqueId;
     }
 
     public ScheduleBuilder getScheduleBuilder() {

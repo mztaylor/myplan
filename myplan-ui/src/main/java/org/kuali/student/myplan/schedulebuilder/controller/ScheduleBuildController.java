@@ -598,11 +598,12 @@ public class ScheduleBuildController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=remove")
     public ModelAndView removeSchedule(@ModelAttribute("KualiForm") ScheduleBuildForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        form.removeSchedule();
+        String removedId = form.removeSchedule();
 
         JsonObjectBuilder json = Json.createObjectBuilder();
 
         json.add("success", true);
+        json.add("scheduleIdRemoved", removedId);
 
         response.setContentType("application/json");
         response.setHeader("Cache-Control", "No-cache");
