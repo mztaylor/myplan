@@ -112,6 +112,6 @@ public interface ScheduleBuildForm {
     /**
      *
      */
-    void removeSchedule();
+    String removeSchedule();
 
 }
