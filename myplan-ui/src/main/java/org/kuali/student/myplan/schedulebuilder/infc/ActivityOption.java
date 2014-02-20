@@ -194,6 +194,13 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
 	 */
 	boolean isEnrollmentGroup();
 
+    /**
+	 * Determine if at there are any enrollment restrictions for activity option.
+	 *
+	 * @return True if at enrollment restrictions is set tot true activity option.
+	 */
+	boolean isEnrollmentRestriction();
+
 	/**
 	 * Get the secondary options.
 	 * 

@@ -4,7 +4,6 @@ import org.dom4j.DocumentException;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
-import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.infc.Course;
@@ -22,7 +21,7 @@ public interface CourseHelper {
 
     public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysByCourseAndTerm(String courseId, String termId);
 
-    public void getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, AtpHelper.YearTerm yt,
+    public void getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, String termId,
                                     String curric, String num) throws DocumentException;
 
     public DeconstructedCourseCode getCourseDivisionAndNumber(String courseCode);
