@@ -24,7 +24,7 @@ import java.util.*;
 public class DegreeAuditBothellPrograms extends KeyValuesBase {
 
 
-    private final Logger logger = Logger.getLogger(DegreeAuditBothellPrograms.class);
+    private final static Logger logger = Logger.getLogger(DegreeAuditBothellPrograms.class);
 
     private boolean blankOption;
 
