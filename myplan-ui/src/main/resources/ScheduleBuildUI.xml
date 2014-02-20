@@ -51,11 +51,14 @@
         </property>
         <property name="items">
             <list>
-                <bean id="schedule_build_termId" parent="Uif-InputField" p:propertyName="term.id" p:fieldLabel.render="false">
+                <bean id="schedule_build_termId" parent="Uif-InputField" p:propertyName="term.id"
+                      p:fieldLabel.render="false">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
-                </bean><bean id="schedule_build_learningPlanId" parent="Uif-InputField" p:propertyName="requestedLearningPlanId" p:fieldLabel.render="false">
+                </bean>
+                <bean id="schedule_build_learningPlanId" parent="Uif-InputField"
+                      p:propertyName="requestedLearningPlanId" p:fieldLabel.render="false">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
@@ -82,7 +85,9 @@
         <property name="cssClasses" value="scheduleReserved__item"/>
         <property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.id}"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages"><null/></property>
+        <property name="layoutManager.lineGroupPrototype.validationMessages">
+            <null/>
+        </property>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
                 <entry key="selected" value="false"/>
@@ -93,10 +98,11 @@
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-Message" p:messageText = "@{#line.daysAndTimes}"/>
+                            <bean parent="KSAP-Message" p:messageText="@{#line.daysAndTimes}"/>
                             <bean parent="Uif-ActionLink" p:actionLabel="Edit" p:actionScript=""/>
-                            <bean parent="KSAP-Message" p:messageText = "|"/>
-                            <bean parent="Uif-ActionLink" p:actionLabel="Delete" p:actionScript="removeReservedScheduleOption('@{#line.id}')"/>
+                            <bean parent="KSAP-Message" p:messageText="|"/>
+                            <bean parent="Uif-ActionLink" p:actionLabel="Delete"
+                                  p:actionScript="removeReservedScheduleOption('@{#line.id}')"/>
                         </list>
                     </property>
                 </bean>
@@ -119,7 +125,8 @@
         </property>
     </bean>
 
-    <bean id="schedule_build_filters" parent="KSAP-HorizontalBoxGroup" p:headerText="@{term.name} Calendar" p:style="width: 670px;">
+    <bean id="schedule_build_filters" parent="KSAP-HorizontalBoxGroup" p:headerText="@{term.name} Calendar"
+          p:style="width: 670px;">
         <property name="header">
             <bean parent="KSAP-HeaderOne"/>
         </property>
@@ -150,13 +157,19 @@
                                     <bean parent="Uif-VerticalCheckboxesControl">
                                         <property name="options">
                                             <list>
-                                                <bean parent="Uif-KeyLabelPair" p:key="closed" p:value="Have closed sections"/>
-                                                <bean parent="Uif-KeyLabelPair" p:key="restrictions" p:value="Have enrollment restrictions"/>
-                                                <bean parent="Uif-KeyLabelPair" p:key="registered" p:value="Overlap with my registered courses"/>
+                                                <bean parent="Uif-KeyLabelPair" p:key="closed"
+                                                      p:value="Have closed sections"/>
+                                                <bean parent="Uif-KeyLabelPair" p:key="restrictions"
+                                                      p:value="Have enrollment restrictions"/>
+                                                <bean parent="Uif-KeyLabelPair" p:key="registered"
+                                                      p:value="Overlap with my registered courses"/>
                                             </list>
                                         </property>
                                     </bean>
                                 </property>
+                            </bean>
+                            <bean id="sb_filters_submit_button" parent="KSAP-PrimaryActionButton" p:actionLabel="Update">
+                                <property name="actionScript" value="customRetrieveComponent('possible_schedules_details','possible_schedules_details','search','lookup',{viewId:'PossibleSchedules-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val(),closed:jQuery('#schedule_build_filters input[value=&quot;closed&quot;]').prop('checked'), restricted:jQuery('#schedule_build_filters input[value=&quot;restrictions&quot;]').prop('checked'), overlapped:jQuery('#schedule_build_filters input[value=&quot;registered&quot;]').prop('checked')},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});"/>
                             </bean>
                         </list>
                     </property>
@@ -177,7 +190,8 @@
                                 <list>
 
                                     <bean parent="Uif-ActionLink" p:actionLabel="+ Add a day/time">
-                                        <property name="actionScript" value="ksapSbOpenDialog('sb_create_reserved_time','sb/reserved',{methodToCall:'startDialog',termId:'@{term.id}'}, this, e)"/>
+                                        <property name="actionScript"
+                                                  value="ksapSbOpenDialog('sb_create_reserved_time','sb/reserved',{methodToCall:'startDialog',termId:'@{term.id}'}, this, e)"/>
                                     </bean>
                                 </list>
                             </property>
@@ -248,7 +262,8 @@
           p:id="sb_possible_schedules">
         <property name="forceSessionPersistence" value="true"/>
         <property name="header">
-            <bean parent="KSAP-HeaderThree" p:cssClasses="schedulePossible__header" p:headerTagCssClasses="schedulePossible__headerText"/>
+            <bean parent="KSAP-HeaderThree" p:cssClasses="schedulePossible__header"
+                  p:headerTagCssClasses="schedulePossible__headerText"/>
         </property>
         <property name="headerText" value="Possible schedules found: ##"/>
         <property name="header.rightGroup">
@@ -306,7 +321,8 @@
                             <bean parent="KSAP-HorizontalBoxGroup">
                                 <property name="items">
                                     <list>
-                                        <bean parent="sb_schedule_icon" p:actionScript="KsapScheduleBuild.save('__KSAP_UID__')">
+                                        <bean parent="sb_schedule_icon"
+                                              p:actionScript="KsapScheduleBuild.save('__KSAP_UID__')">
                                             <property name="cssClasses">
                                                 <list merge="true">
                                                     <value>ksap-sb-schedule-saveicon</value>
@@ -324,7 +340,8 @@
                             <bean parent="sb_option_control-parent" p:propertyName="selected" p:hidden="true"
                                   p:id="sb-schedule-option-select-__KSAP_UID__"
                                   p:additionalCssClasses="ksap-sb-schedule-select">
-                                <property name="control.onChangeScript" value="toggleScheduleOptionSelect('__KSAP_UID__')"/>
+                                <property name="control.onChangeScript"
+                                          value="toggleScheduleOptionSelect('__KSAP_UID__')"/>
                             </bean>
                         </list>
                     </property>
