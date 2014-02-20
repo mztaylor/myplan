@@ -1,8 +1,10 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
 import org.apache.log4j.Logger;
+import org.dom4j.DocumentException;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
@@ -16,7 +18,6 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstant
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
-import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.schedulebuilder.dto.*;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
@@ -304,7 +305,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     protected ActivityOptionInfo getActivityOption(Term term, ActivityOfferingDisplayInfo aodi,
-                                                   int courseIndex, String courseId, String courseCd, String courseTitle, String campusCode, StringBuilder msg,
+                                                   int courseIndex, String courseId, String courseCd, String courseTitle, String campusCode, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData, StringBuilder msg,
                                                    DateFormat tdf, DateFormat udf, DateFormat ddf, Calendar sdcal, Calendar edcal,
                                                    Calendar tcal) {
 
@@ -317,12 +318,10 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         activityOption.setTermId(term.getId());
         activityOption.setActivityOfferingId(aodi.getId());
         activityOption.setActivityTypeDescription(aodi.getTypeName());
-        activityOption.setCourseOfferingCode((campusCode == null ? ""
-                : campusCode + " ") + aodi.getCourseOfferingCode());
+        activityOption.setCourseOfferingCode((campusCode == null ? "" : campusCode + " ") + aodi.getCourseOfferingCode());
         activityOption.setActivityName(aodi.getName());
         activityOption.setRegistrationCode(aodi.getActivityOfferingCode());
-        activityOption.setClosed(isClosed(aodi));
-        activityOption.setTotalSeats(aodi.getMaximumEnrollment() != null ? aodi.getMaximumEnrollment() : 0);
+        populateEnrollmentInfo(activityOption, aodi, enrollmentData);
         if (msg != null)
             msg.append("\nActivity ")
                     .append(activityOption.getUniqueId()).append(": ")
@@ -417,9 +416,9 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         return activityOption;
     }
 
-    protected boolean isClosed(ActivityOfferingDisplayInfo aodi) {
-        return !LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY
-                .equals(aodi.getStateKey());
+    protected void populateEnrollmentInfo(ActivityOptionInfo activityOption, ActivityOfferingDisplayInfo aodi, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData) {
+        activityOption.setClosed(!LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY.equals(aodi.getStateKey()));
+        activityOption.setTotalSeats(aodi.getMaximumEnrollment() != null ? aodi.getMaximumEnrollment() : 0);
     }
 
     @Override
@@ -435,6 +434,17 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         String campusCode = getCampusCode(course);
 
         Term term = getTermHelper().getTermByAtpId(termId);
+        String curric = course.getSubjectArea();
+        String num = course.getCourseNumberSuffix();
+
+        LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
+
+        try {
+            getCourseHelper().getAllSectionStatus(enrollmentData, termId, curric, num);
+        } catch (DocumentException e) {
+            LOG.error("Could not load enrollmentInformation for course : " + course.getCode() + " for term : " + termId, e);
+        }
+
         if (term == null)
             return null;
         for (ActivityOfferingDisplayInfo aodi : getCourseHelper().getActivityOfferingDisplaysByCourseAndTerm(courseId, termId))
@@ -445,7 +455,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 Calendar sdcal = Calendar.getInstance();
                 Calendar edcal = Calendar.getInstance();
                 Calendar tcal = Calendar.getInstance();
-                return getActivityOption(term, aodi, 0, courseId, course.getCode(), course.getCourseTitle(), campusCode, null, tdf, udf, ddf,
+                return getActivityOption(term, aodi, 0, courseId, course.getCode(), course.getCourseTitle(), campusCode, enrollmentData, null, tdf, udf, ddf,
                         sdcal, edcal, tcal);
             }
 
@@ -490,9 +500,21 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
             StringBuilder msg = null;
             if (LOG.isDebugEnabled())
                 msg = new StringBuilder();
+
+            String curric = c.getSubjectArea();
+            String num = c.getCourseNumberSuffix();
+
+            LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
+
+            try {
+                getCourseHelper().getAllSectionStatus(enrollmentData, termId, curric, num);
+            } catch (DocumentException e) {
+                LOG.error("Could not load enrollmentInformation for course : " + c.getCode() + " for term : " + termId, e);
+            }
+
             for (ActivityOfferingDisplayInfo aodi : courseHelper.getActivityOfferingDisplaysByCourseAndTerm(courseId,
                     termId)) {
-                ActivityOptionInfo activityOption = getActivityOption(term, aodi, courseIndex, courseId, c.getCode(), c.getCourseTitle(), campusCode, msg, tdf, udf, ddf, sdcal, edcal, tcal);
+                ActivityOptionInfo activityOption = getActivityOption(term, aodi, courseIndex, courseId, c.getCode(), c.getCourseTitle(), campusCode, enrollmentData, msg, tdf, udf, ddf, sdcal, edcal, tcal);
 
                 boolean enrollmentGroup = false;
                 String primaryOfferingId = null;

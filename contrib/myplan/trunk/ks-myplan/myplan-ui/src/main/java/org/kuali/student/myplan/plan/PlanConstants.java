@@ -165,6 +165,14 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String BUILDING_URL = "http://uw.edu/maps/?";
 
+    public static final String ENROLL_STATUS_KEY = "status";
+    public static final String ENROLL_STATUS_OPEN_KEY = "open";
+    public static final String ENROLL_MAX_KEY = "enrollMaximum";
+    public static final String ENROLL_COUNT_KEY = "enrollCount";
+    public static final String ENROLL_ESTIMATE_KEY = "enrollEstimate";
+    public static final String ENROLL_KEY_FORMAT = "enrl_%s_%s";
+
+
     /**
      * Names of javascript events that can be scheduled in response to the outcome of a plan item request.
      */
