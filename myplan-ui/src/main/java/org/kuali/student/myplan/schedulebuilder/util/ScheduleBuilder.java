@@ -850,11 +850,11 @@ public class ScheduleBuilder implements Serializable {
 
         /*Defaultng to 8:00Am*/
         Calendar defaultStart = Calendar.getInstance();
-        defaultStart.set(defaultStart.get(Calendar.YEAR), defaultStart.get(Calendar.MONTH), defaultStart.get(Calendar.DATE), 10, 0);
+        defaultStart.set(defaultStart.get(Calendar.YEAR), defaultStart.get(Calendar.MONTH), defaultStart.get(Calendar.DATE), 8, 0);
 
-        /*Defaulting to 4:00Pm*/
+        /*Defaulting to 8:00Pm*/
         Calendar defaultEnd = Calendar.getInstance();
-        defaultEnd.set(defaultEnd.get(Calendar.YEAR), defaultEnd.get(Calendar.MONTH), defaultEnd.get(Calendar.DATE), 16, 0);
+        defaultEnd.set(defaultEnd.get(Calendar.YEAR), defaultEnd.get(Calendar.MONTH), defaultEnd.get(Calendar.DATE), 20, 0);
 
 
         boolean weekend = false;
