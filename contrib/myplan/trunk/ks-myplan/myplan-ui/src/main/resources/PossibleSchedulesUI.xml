@@ -95,13 +95,15 @@
         <property name="cssClasses" value="schedulePossible__carousel"/>
         <property name="instructionalMessage.render" value="@{lookupResults EQ null OR lookupResults.size() EQ 0}"/>
         <property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.uniqueId}"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__option schedulePossible--@{#index % 5} @{#line.weekend ? 'schedulePossible__option--hasWeekend' : ''}"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__option schedulePossible--@{#index % 5} @{#line.weekend ? 'schedulePossible__option--hasWeekend' : ''} @{#line.tbd ? 'schedulePossible__option--hasTBD' : ''}"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.validationMessages"><null/></property>
         <property name="layoutManager.lineGroupPrototype.onClickScript" value="togglePossibleSchedule(KsapSbCalendar, jQuery(this), @{#index}, '@{#line.uniqueId}');"/>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
                 <entry key="events" value="@{#line.event}"/>
+                <entry key="minTime" value="@{#line.minTime}"/>
+                <entry key="maxTime" value="@{#line.maxTime}"/>
             </map>
         </property>
         <property name="items">

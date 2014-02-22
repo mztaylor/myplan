@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.schedulebuilder.util;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTimeComparator;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
@@ -8,7 +9,6 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.schedulebuilder.dto.*;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.myplan.utils.CalendarUtil;
-import org.kuali.student.r2.lum.course.infc.Course;
 import org.springframework.util.StringUtils;
 
 import javax.json.*;
@@ -847,17 +847,58 @@ public class ScheduleBuilder implements Serializable {
         if (StringUtils.hasText(pso.getId())) {
             jpso.add("id", pso.getId());
         }
+
+        /*Defaultng to 8:00Am*/
+        Calendar defaultStart = Calendar.getInstance();
+        defaultStart.set(defaultStart.get(Calendar.YEAR), defaultStart.get(Calendar.MONTH), defaultStart.get(Calendar.DATE), 10, 0);
+
+        /*Defaulting to 4:00Pm*/
+        Calendar defaultEnd = Calendar.getInstance();
+        defaultEnd.set(defaultEnd.get(Calendar.YEAR), defaultEnd.get(Calendar.MONTH), defaultEnd.get(Calendar.DATE), 16, 0);
+
+
         boolean weekend = false;
+        boolean tbd = false;
         for (ActivityOption ao : pso.getActivityOptions()) {
             if (!ao.isPrimary() || !ao.isEnrollmentGroup()) {
                 for (ClassMeetingTime meeting : ao.getClassMeetingTimes()) {
                     if (!weekend) {
                         weekend = meeting.isSaturday() || meeting.isSunday();
                     }
-                    addEvents(term, meeting, ao, jevents, aggregate, scheduledCourseActivities, pso.getUniqueId());
+                    if (!tbd) {
+                        tbd = meeting.isArranged();
+                    }
+                    if (meeting.isArranged()) {
+                        Calendar startCal = Calendar.getInstance();
+                        startCal.setTime(meeting.getStartDate());
+                        Calendar endCal = Calendar.getInstance();
+                        endCal.setTime(meeting.getUntilDate());
+
+                        DateTimeComparator comparator = DateTimeComparator.getTimeOnlyInstance();
+                        if (comparator.compare(startCal.getTime(), defaultStart.getTime()) == -1) {
+                            defaultStart.set(startCal.get(Calendar.YEAR), startCal.get(Calendar.MONTH), startCal.get(Calendar.DATE), startCal.get(Calendar.HOUR), startCal.get(Calendar.MINUTE));
+                        }
+                        if (comparator.compare(endCal.getTime(), defaultEnd.getTime()) == 1) {
+                            defaultEnd.set(endCal.get(Calendar.YEAR), startCal.get(Calendar.MONTH), endCal.get(Calendar.DATE), endCal.get(Calendar.HOUR), endCal.get(Calendar.MINUTE));
+                        }
+
+                        addEvents(term, meeting, ao, jevents, aggregate, scheduledCourseActivities, pso.getUniqueId());
+                    } else {
+                        /*Creating minimal event for TBD activities*/
+                        JsonObjectBuilder event = Json.createObjectBuilder();
+                        event.add("id", pso.getUniqueId());
+                        event.add("courseCd", ao.getCourseCd());
+                        event.add("courseId", ao.getCourseId());
+                        event.add("courseTitle", ao.getCourseTitle());
+                        event.add("sectionCd", ao.getRegistrationCode());
+                        event.add("tbd", true);
+                        jevents.add(event);
+                    }
                 }
             }
         }
+
+
         jpso.add("events", jevents);
         PossibleScheduleOptionInfo possibleScheduleOptionInfo = (PossibleScheduleOptionInfo) pso;
         JsonObject obj = jpso.build();
@@ -866,7 +907,10 @@ public class ScheduleBuilder implements Serializable {
         jwriter.writeObject(obj);
         jwriter.close();
         possibleScheduleOptionInfo.setEvent(outStream.toString());
+        possibleScheduleOptionInfo.setMinTime(defaultStart.getTime().getTime());
+        possibleScheduleOptionInfo.setMaxTime(defaultEnd.getTime().getTime());
         possibleScheduleOptionInfo.setWeekend(weekend);
+        possibleScheduleOptionInfo.setTbd(tbd);
 
     }
 
@@ -984,6 +1028,7 @@ public class ScheduleBuilder implements Serializable {
         JsonObjectBuilder event = Json.createObjectBuilder();
         /*using parentUniqueId for UI purpose of hiding and showing the events based on scheduleId*/
         event.add("id", parentUniqueId);
+        event.add("tbd", false);
         /*Title value is populated in JS because we dont know what is the index value of the possibleSchedule*/
         event.add("title", "");
         event.add("start", eventStartSeconds);
@@ -994,11 +1039,10 @@ public class ScheduleBuilder implements Serializable {
             event.add("end", eventStartSeconds + durationSeconds);
         }
         if (ao != null) {
-            Course course = getCourseHelper().getCourseInfo(ao.getCourseId());
             JsonObjectBuilder popoverEvent = Json.createObjectBuilder();
-            popoverEvent.add("courseCd", course.getCode());
-            popoverEvent.add("courseId", course.getId());
-            popoverEvent.add("courseTitle", course.getCourseTitle().trim());
+            popoverEvent.add("courseCd", ao.getCourseCd());
+            popoverEvent.add("courseId", ao.getCourseId());
+            popoverEvent.add("courseTitle", ao.getCourseTitle().trim());
 
             List<ActivityOption> activityOptions = scheduledCourseActivities.get(ao.getCourseCd());
 

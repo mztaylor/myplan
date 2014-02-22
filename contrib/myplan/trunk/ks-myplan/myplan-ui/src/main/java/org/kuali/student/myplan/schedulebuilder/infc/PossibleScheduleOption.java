@@ -63,4 +63,27 @@ public interface PossibleScheduleOption extends HasId, ScheduleBuildOption {
      */
     boolean isWeekend();
 
+
+    /**
+     * Gets the min time the calendar has to show on UI
+     *
+     * @return Min date to show
+     */
+    long getMinTime();
+
+    /**
+     * Gets the max time the calendar has to show on UI
+     *
+     * @return Max date to show
+     */
+    long getMaxTime();
+
+
+    /**
+     * If a possible schedule has any activityOffering in which the meeting time is TBD
+     *
+     * @return true if TBD exists otherwise false
+     */
+    boolean isTbd();
+
 }

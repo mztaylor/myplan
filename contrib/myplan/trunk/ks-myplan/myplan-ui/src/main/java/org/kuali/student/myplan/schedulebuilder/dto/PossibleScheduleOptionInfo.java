@@ -39,6 +39,15 @@ public class PossibleScheduleOptionInfo extends ScheduleBuildOptionInfo
     @XmlAttribute
     private boolean weekend;
 
+    @XmlAttribute
+    private long minTime;
+
+    @XmlAttribute
+    private long maxTime;
+
+    @XmlAttribute
+    private boolean tbd;
+
     public PossibleScheduleOptionInfo() {
     }
 
@@ -171,7 +180,31 @@ public class PossibleScheduleOptionInfo extends ScheduleBuildOptionInfo
         return weekend;
     }
 
-    ;
+    @Override
+    public long getMinTime() {
+        return minTime;
+    }
+
+    public void setMinTime(long minTime) {
+        this.minTime = minTime;
+    }
+
+    @Override
+    public long getMaxTime() {
+        return maxTime;
+    }
+
+    public void setMaxTime(long maxTime) {
+        this.maxTime = maxTime;
+    }
+
+    public boolean isTbd() {
+        return tbd;
+    }
+
+    public void setTbd(boolean tbd) {
+        this.tbd = tbd;
+    }
 
     public void setWeekend(boolean weekend) {
         this.weekend = weekend;
