@@ -52,7 +52,7 @@
         <property name="propertyName" value="lookupResults"/>
         <property name="onDocumentReadyScript" value="
             jQuery('#saved_schedules_summary').on('SAVED_SCHEDULE_SAVE SAVED_SCHEDULE_REMOVE', function(event, data){
-                customRetrieveComponent('saved_schedules_summary','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
+                customRetrieveComponent('saved_schedules_summary','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},'saved-schedule-' + data.uniqueId,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
             });
         "/>
         <property name="cssClasses" value="module scheduleSaved"/>
