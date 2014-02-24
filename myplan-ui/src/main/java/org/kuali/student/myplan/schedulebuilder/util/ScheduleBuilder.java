@@ -852,9 +852,9 @@ public class ScheduleBuilder implements Serializable {
         Calendar defaultStart = Calendar.getInstance();
         defaultStart.set(defaultStart.get(Calendar.YEAR), defaultStart.get(Calendar.MONTH), defaultStart.get(Calendar.DATE), 8, 0);
 
-        /*Defaulting to 8:00Pm*/
+        /*Defaulting to 5:00Pm*/
         Calendar defaultEnd = Calendar.getInstance();
-        defaultEnd.set(defaultEnd.get(Calendar.YEAR), defaultEnd.get(Calendar.MONTH), defaultEnd.get(Calendar.DATE), 20, 0);
+        defaultEnd.set(defaultEnd.get(Calendar.YEAR), defaultEnd.get(Calendar.MONTH), defaultEnd.get(Calendar.DATE), 17, 0);
 
 
         boolean weekend = false;
@@ -876,10 +876,10 @@ public class ScheduleBuilder implements Serializable {
 
                         DateTimeComparator comparator = DateTimeComparator.getTimeOnlyInstance();
                         if (comparator.compare(startCal.getTime(), defaultStart.getTime()) == -1) {
-                            defaultStart.set(startCal.get(Calendar.YEAR), startCal.get(Calendar.MONTH), startCal.get(Calendar.DATE), startCal.get(Calendar.HOUR), startCal.get(Calendar.MINUTE));
+                            defaultStart.set(startCal.get(Calendar.YEAR), startCal.get(Calendar.MONTH), startCal.get(Calendar.DATE), startCal.get(Calendar.HOUR_OF_DAY), startCal.get(Calendar.MINUTE));
                         }
                         if (comparator.compare(endCal.getTime(), defaultEnd.getTime()) == 1) {
-                            defaultEnd.set(endCal.get(Calendar.YEAR), startCal.get(Calendar.MONTH), endCal.get(Calendar.DATE), endCal.get(Calendar.HOUR), endCal.get(Calendar.MINUTE));
+                            defaultEnd.set(endCal.get(Calendar.YEAR), endCal.get(Calendar.MONTH), endCal.get(Calendar.DATE), endCal.get(Calendar.HOUR_OF_DAY), endCal.get(Calendar.MINUTE));
                         }
 
                         addEvents(term, meeting, ao, jevents, aggregate, scheduledCourseActivities, pso.getUniqueId());

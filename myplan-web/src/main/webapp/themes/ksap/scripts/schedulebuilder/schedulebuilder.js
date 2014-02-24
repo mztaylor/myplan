@@ -767,17 +767,6 @@ function showHideSecondaryOptions(uniqueId) {
 	}
 }
 
-/*function hasWeekends(schedule) {
-    var combinedEvents = schedule.possible.concat(schedule.saved).concat(schedule.reserved);
-
-    for (var i = 0; i < combinedEvents.length; i++) {
-        if (combinedEvents[i].weekends) {
-            return true;
-        }
-    }
-    return false;
-}*/
-
 function removeReservedScheduleOption(uniqueId) {
     jQuery("#kualiForm").ajaxSubmit({
         data : {
@@ -796,14 +785,5 @@ function removeReservedScheduleOption(uniqueId) {
         }
     });
 
-}
-
-function fnClosePopup() {
-    if (jQuery("body").HasPopOver()) {
-        jQuery("body").HidePopOver();
-        jQuery("body").RemovePopOver();
-    }
-    jQuery("div.jquerypopover").remove();
-    jQuery("body").off("click");
 }
 
