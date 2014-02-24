@@ -12,13 +12,16 @@ function togglePossibleSchedule(calendarObj, targetObj, index, uniqueId) {
 
     if (selected) {
         calendarObj.fullCalendar('removeEventSource', sourceObject);
+        targetObj.find(".schedulePossible__save").hide();
     } else {
         calendarObj.fullCalendar('addEventSource', sourceObject);
+        targetObj.find(".schedulePossible__save").show();
     }
 }
 
 function toggleSaveSchedule(uniqueId, methodToCall, event) {
     event.stopPropagation();
+    // var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     jQuery("#kualiForm").ajaxSubmit({
         data : {
             methodToCall: methodToCall,
@@ -26,7 +29,8 @@ function toggleSaveSchedule(uniqueId, methodToCall, event) {
         },
         dataType : 'json',
         success : function(response, textStatus, jqXHR) {
-            customRetrieveComponent('saved_schedules_summary','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+            jQuery.event.trigger("SAVED_SCHEDULE_" + methodToCall.toUpperCase(), response);
+            //customRetrieveComponent('saved_schedules_summary','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
         },
         error : function(jqXHR, textStatus, errorThrown) {
             if (textStatus == "parsererror")
@@ -43,6 +47,19 @@ function hasWeekends() {
     return (possible + saved) > 0;
 }
 
+function getTimeFrame(selection, defaultHour, maxFlag) {
+    var returnHour = defaultHour;
+
+    for (var i = 0; i < selection.length; i++) {
+        var date = new Date(jQuery(selection[i]).data((maxFlag ? "maxtime":"mintime")));
+        var tempHour = date.getHours();
+        if (date.getMinutes() > 0 && maxFlag) tempHour = tempHour + 1;
+        if (tempHour > returnHour) returnHour = tempHour;
+    }
+
+    return returnHour;
+}
+
 function hidePossibleScheduleEvents(viewArr, calendarObj) {
     for (var i = 0; i < viewArr.length; i++) {
         var sourceObject = jQuery(viewArr[i]).find(".schedulePossible__option").data("events");
@@ -55,11 +72,16 @@ function hidePossibleScheduleEvents(viewArr, calendarObj) {
 
 function refreshScheduleCalendar(calendarObj) {
     var weekends = hasWeekends();
+    calendarObj.fullCalendar('destroy');
+    KsapSbCalendarOptions.weekends = weekends;
+    KsapSbCalendarOptions.minTime = getTimeFrame(jQuery(".schedulePossible__option"), KsapSbCalendarOptions.minTime, false);
+    KsapSbCalendarOptions.maxTime = getTimeFrame(jQuery(".schedulePossible__option"), KsapSbCalendarOptions.maxTime, true);
+    calendarObj.fullCalendar(KsapSbCalendarOptions);
+    /*
     if (weekends != calendarObj.fullCalendar('option', 'weekends')) {
-        calendarObj.fullCalendar('destroy');
-        KsapSbCalendarOptions.weekends = weekends;
-        calendarObj.fullCalendar(KsapSbCalendarOptions);
+
     } else {
         calendarObj.fullCalendar('removeEvents');
     }
+    */
 }

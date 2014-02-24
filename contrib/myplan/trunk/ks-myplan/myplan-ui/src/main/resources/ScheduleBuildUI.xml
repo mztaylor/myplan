@@ -114,7 +114,7 @@
         <property name="items">
             <list>
                 <ref bean="schedule_build_filters"/>
-                <bean parent="KSAP-ModuleContainer" p:headerText="Saved Schedules">
+                <bean parent="KSAP-ModuleContainer" p:headerText="Saved Schedules" p:width="268px">
                     <property name="items">
                         <list>
                             <bean parent="KSAP-SavedScheduleList"/>
@@ -765,8 +765,8 @@
                             <entry key="allDaySlot" value="false"/>
                             <entry key="allDayText" value="to be arranged"/>
                             <entry key="axisFormat" value="h(:mm)t"/>
-                            <entry key="minTime" value="7"/>
-                            <entry key="maxTime" value="22"/>
+                            <entry key="minTime" value="8"/>
+                            <entry key="maxTime" value="17"/>
                             <entry key="timeFormat" value="{agenda: 'h(:mm)t{ - h(:mm)t}'}"/>
                             <entry key="slotEventOverlap" value="false"/>
                             <!--<entry key="eventAfterRender" value="

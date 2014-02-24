@@ -70,6 +70,12 @@
                     hidePossibleScheduleEvents(a, KsapSbCalendar);
                 }
             });
+
+            jQuery('.schedulePossible__carousel').on('SAVED_SCHEDULE_SAVE', function(event, data) {
+                jQuery('#save_' + data.uniqueId + '.schedulePossible__save').addClass('schedulePossible__save--saved').attr('data-saved-id', data.id);
+            }).on('SAVED_SCHEDULE_REMOVE', function(event, data) {
+                jQuery('.schedulePossible__save[data-saved-id=' + data.scheduleIdRemoved + ']').removeClass('schedulePossible__save--saved').removeData('saved-id');
+            });
         "/>
         <property name="items">
             <list>
@@ -117,9 +123,15 @@
                     <property name="items">
                         <list>
                             <bean parent="KSAP-HorizontalFieldGroup">
+                                <property name="id" value="save_@{#line.uniqueId}"/>
                                 <property name="onClickScript" value="toggleSaveSchedule('@{#line.uniqueId}', 'save', e);"/>
-                                <property name="render" value="@{#line.id EQ null}"/>
-                                <property name="cssClasses" value="schedulePossible__save"/>
+                                <property name="hidden" value="true"/>
+                                <property name="cssClasses" value="schedulePossible__save @{#line.id NE null ? 'schedulePossible__save--saved' : ''}"/>
+                                <property name="dataAttributes">
+                                    <map>
+                                        <entry key="saved-id" value="@{#line.id}"/>
+                                    </map>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-Message" p:messageText="Save"/>
