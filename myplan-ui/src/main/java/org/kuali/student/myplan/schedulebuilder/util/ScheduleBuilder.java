@@ -866,7 +866,7 @@ public class ScheduleBuilder implements Serializable {
                         weekend = meeting.isSaturday() || meeting.isSunday();
                     }
                     if (!tbd) {
-                        tbd = meeting.isArranged();
+                        tbd = !meeting.isArranged();
                     }
                     if (meeting.isArranged()) {
                         Calendar startCal = Calendar.getInstance();
