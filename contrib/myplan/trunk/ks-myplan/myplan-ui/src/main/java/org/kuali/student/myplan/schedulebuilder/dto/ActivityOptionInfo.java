@@ -16,7 +16,7 @@ import java.util.List;
         "activityTypeDescription", "courseOfferingCode", "registrationCode",
         "academicSessionDescr", "activityName", "courseLockedIn", "enrollmentGroup", "enrollmentRestriction",
         "closed", "openSeats", "totalSeats", "requiresPermission", "primary",
-        "minCredits", "maxCredits", "notes", "secondaryOptions", "classMeetingTimes", "termId"})
+        "minCredits", "maxCredits", "notes", "secondaryOptions", "alternateActivties", "classMeetingTimes", "termId"})
 public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         ActivityOption {
 
@@ -95,6 +95,9 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     public List<SecondaryActivityOptionsInfo> secondaryOptions;
 
     @XmlElement
+    public List<ActivityOptionInfo> alternateActivties;
+
+    @XmlElement
     private List<ClassMeetingTimeInfo> classMeetingTimes;
 
     @XmlAttribute
@@ -132,6 +135,7 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         List<String> copyNotes = copy.getNotes();
         notes = copyNotes == null ? null : new ArrayList<String>(copyNotes);
         setSecondaryOptions(copy.getSecondaryOptions());
+        setAlternateActivities(copy.getAlternateActivties());
         setClassMeetingTimes(copy.getClassMeetingTimes());
     }
 
@@ -399,6 +403,7 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     }
 
 
+
     public List<SecondaryActivityOptions> getSelectedSecondaryOptions() {
         if (secondaryOptions == null) {
             return Collections.<SecondaryActivityOptions>emptyList();
@@ -414,6 +419,37 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         }
         return copySecondaryOptions;
     }
+
+    public List<ActivityOption> getAlternateActivties() {
+        if (alternateActivties == null) {
+            return Collections.<ActivityOption>emptyList();
+        }
+
+        List<ActivityOption> copyAlternates = new ArrayList<ActivityOption>();
+        for (ActivityOption activity : alternateActivties) {
+            ActivityOption alternate = new ActivityOptionInfo(activity);
+            // copy the selected sections from activityOptions
+            copyAlternates.add(alternate);
+        }
+        return copyAlternates;
+    }
+
+
+    public void setAlternateActivities(
+            List<ActivityOption> activityOptions) {
+        if (activityOptions != null) {
+            List<ActivityOptionInfo> alternateOpts = new ArrayList<ActivityOptionInfo>(
+                    activityOptions.size());
+            for (ActivityOption activity : activityOptions) {
+                alternateOpts.add(new ActivityOptionInfo(
+                        activity));
+            }
+            this.alternateActivties = alternateOpts;
+        } else {
+            this.alternateActivties = null;
+        }
+    }
+
 
 
     @Override
