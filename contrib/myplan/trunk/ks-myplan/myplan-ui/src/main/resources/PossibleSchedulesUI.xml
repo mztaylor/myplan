@@ -34,9 +34,12 @@
         <property name="singlePageView" value="true"/>
         <property name="page">
             <bean parent="KSAP-Page" p:id="planned_courses_detail_page">
+                <property name="layoutManager">
+                    <bean parent="Uif-VerticalBoxLayout"/>
+                </property>
                 <property name="items">
                     <list>
-                        <ref bean="possible_schedules_details"/>
+                        <ref bean="sb_possible_schedules"/>
                     </list>
                 </property>
             </bean>
@@ -54,6 +57,48 @@
         <property name="actionScript" value="e.preventDefault();"/>
         <property name="onMouseOutScript" value="jQuery(this).blur();"/>
     </bean>
+
+    <bean id="sb_possible_schedules" parent="sb_possible_schedules-parent"/>
+    <bean abstract="true" id="sb_possible_schedules-parent" parent="KSAP-VerticalBoxGroup"
+          p:id="sb_possible_schedules">
+        <property name="forceSessionPersistence" value="true"/>
+        <property name="header">
+            <bean parent="KSAP-HeaderFive" p:cssClasses="schedulePossible__header"
+                  p:headerTagCssClasses="schedulePossible__headerText"/>
+        </property>
+        <property name="headerText" value="Possible schedules found: @{lookupResults.size()}"/>
+        <property name="header.rightGroup">
+            <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="schedulePossible__headerGroup--right">
+                <property name="items">
+                    <list>
+                        <bean parent="KSAP-Message" p:messageText="Registered course"/>
+                        <bean parent="KSAP-Message" p:messageText="Has enrollment restrictions"/>
+                        <bean parent="KSAP-Message" p:messageText="Closed section"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="possible_schedules_details"/>
+                <!--<ref bean="possible_schedule_tbd_list"/>-->
+            </list>
+        </property>
+        <property name="propertyReplacers">
+            <list>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                      p:condition="lookupResults EQ null OR lookupResults.size() EQ 0">
+                    <property name="replacement">
+                        <list>
+                            <ref bean="possible_schedules_empty"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="possible_schedules_empty" parent="KSAP-Message" p:messageText="You have no possible schedules"/>
 
     <bean id="possible_schedules_details" parent="KSAP-HorizontalBoxGroup">
         <property name="onDocumentReadyScript" value="
@@ -75,6 +120,8 @@
                 jQuery('#save_' + data.uniqueId + '.schedulePossible__save').addClass('schedulePossible__save--saved').attr('data-saved-id', data.id);
             }).on('SAVED_SCHEDULE_REMOVE', function(event, data) {
                 jQuery('.schedulePossible__save[data-saved-id=' + data.scheduleIdRemoved + ']').removeClass('schedulePossible__save--saved').removeData('saved-id');
+            }).on('REFRESH_POSSIBLE_SCHEDULES', function(event, data) {
+                customRetrieveComponent('sb_possible_schedules','sb_possible_schedules','search','lookup',{viewId:'PossibleSchedules-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
             });
         "/>
         <property name="items">
@@ -87,19 +134,11 @@
     </bean>
 
     <bean id="possible_courses_schedule_list" parent="Uif-ListCollectionSection">
-        <property name="validationMessages">
-            <null/>
-        </property>
+        <property name="validationMessages"><null/></property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
         <property name="propertyName" value="lookupResults"/>
-        <property name="instructionalMessage">
-            <bean parent="Uif-Message"
-                  p:messageText="You have no possible schedules">
-            </bean>
-        </property>
         <property name="cssClasses" value="schedulePossible__carousel"/>
-        <property name="instructionalMessage.render" value="@{lookupResults EQ null OR lookupResults.size() EQ 0}"/>
         <property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.uniqueId}"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__option schedulePossible--@{#index % 5} @{#line.weekend ? 'schedulePossible__option--hasWeekend' : ''} @{#line.tbd ? 'schedulePossible__option--hasTBD' : ''}"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
@@ -147,4 +186,29 @@
             </list>
         </property>
     </bean>
+
+    <bean id="possible_schedule_tbd_list" parent="Uif-ListCollectionSection">
+        <property name="validationMessages"><null/></property>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
+        <property name="propertyName" value="lookupResults"/>
+        <property name="cssClasses" value=""/>
+        <property name="layoutManager.lineGroupPrototype.render" value="@{#line.tbd}"/>
+        <!--<property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.uniqueId}"/>-->
+        <!--<property name="layoutManager.lineGroupPrototype.cssClasses" value="@{#line.tbd}"/>-->
+        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages"><null/></property>
+        <!--<property name="layoutManager.lineGroupPrototype.onClickScript" value="togglePossibleSchedule(KsapSbCalendar, jQuery(this), @{#index}, '@{#line.uniqueId}');"/>-->
+        <property name="items">
+            <list>
+                <bean parent="KSAP-MessageField" p:messageText="@{#line.tbd}"/>
+                <!--<bean parent="KSAP-SimpleDataField">
+                    <property name="propertyName" value="schedule"/>
+                    <property name="escapeHtmlInPropertyValue" value="false"/>
+                    <property name="propertyEditor" ref="possible_schedule_editor"/>
+                </bean>-->
+            </list>
+        </property>
+    </bean>
+
 </beans>

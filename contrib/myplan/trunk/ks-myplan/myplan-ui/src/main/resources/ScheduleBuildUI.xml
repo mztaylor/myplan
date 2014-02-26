@@ -63,64 +63,23 @@
                         <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
-                <ref bean="schedule_build_heading"/>
-                <ref bean="sb_possible_schedules"/>
-                <ref bean="schedule_build_weekview"/>
-                <!--<ref bean="sb_schedule_option_template"/>
-                <ref bean="sb_reserved_time_template"/>
-                <ref bean="sb_weekgroup_template"/>-->
-            </list>
-        </property>
-    </bean>
-
-
-    <bean id="sb_reserved_time" parent="sb_reserved_time-parent"/>
-    <bean id="sb_reserved_time-parent" parent="Uif-ListCollectionSection" p:id="sb_reserved_time">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.schedulebuilder.infc.ReservedTime"/>
-        <property name="propertyName" value="reservedTimes"/>
-        <property name="cssClasses" value="scheduleReserved__item"/>
-        <property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.id}"/>
-        <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages">
-            <null/>
-        </property>
-        <property name="layoutManager.lineGroupPrototype.dataAttributes">
-            <map>
-                <entry key="selected" value="false"/>
-            </map>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="KSAP-HorizontalFieldGroup">
+                <bean parent="KSAP-HorizontalBoxGroup">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-Message" p:messageText="@{#line.daysAndTimes}"/>
-                            <bean parent="Uif-ActionLink" p:actionLabel="Edit" p:actionScript=""/>
-                            <bean parent="KSAP-Message" p:messageText="|"/>
-                            <bean parent="Uif-ActionLink" p:actionLabel="Delete"
-                                  p:actionScript="removeReservedScheduleOption('@{#line.id}')"/>
+                            <ref bean="schedule_build_filters"/>
+                            <bean parent="KSAP-ModuleContainer" p:headerText="Saved Schedules" p:width="268px">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-SavedScheduleList"/>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="schedule_build_heading" parent="KSAP-HorizontalBoxGroup">
-        <property name="items">
-            <list>
-                <ref bean="schedule_build_filters"/>
-                <bean parent="KSAP-ModuleContainer" p:headerText="Saved Schedules" p:width="268px">
-                    <property name="items">
-                        <list>
-                            <bean parent="KSAP-SavedScheduleList"/>
-                        </list>
-                    </property>
-                </bean>
+                <bean parent="KSAP-HeaderDiv" p:headerText="@{term.name}" p:cssClasses="scheduleBuilder__termHeader"/>
+                <ref bean="schedule_build_possible"/>
+                <ref bean="possible_schedules_calendar"/>
             </list>
         </property>
     </bean>
@@ -169,7 +128,7 @@
                                 </property>
                             </bean>
                             <bean id="sb_filters_submit_button" parent="KSAP-PrimaryActionButton" p:actionLabel="Update">
-                                <property name="actionScript" value="customRetrieveComponent('possible_schedules_details','possible_schedules_details','search','lookup',{viewId:'PossibleSchedules-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val(),closed:jQuery('#schedule_build_filters input[value=&quot;closed&quot;]').prop('checked'), restricted:jQuery('#schedule_build_filters input[value=&quot;restrictions&quot;]').prop('checked'), overlapped:jQuery('#schedule_build_filters input[value=&quot;registered&quot;]').prop('checked')},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});"/>
+                                <property name="actionScript" value="jQuery.event.trigger('REFRESH_POSSIBLE_SCHEDULES', {});"/>
                             </bean>
                         </list>
                     </property>
@@ -181,7 +140,38 @@
                     <property name="layoutManager.additionalCssClasses" value="ksap-sb-reserved-times-container"/>
                     <property name="items">
                         <list>
-                            <ref bean="sb_reserved_time"/>
+                            <bean id="sb_reserved_time" parent="Uif-ListCollectionSection" p:id="sb_reserved_time">
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
+                                <property name="collectionObjectClass"
+                                          value="org.kuali.student.myplan.schedulebuilder.infc.ReservedTime"/>
+                                <property name="propertyName" value="reservedTimes"/>
+                                <property name="cssClasses" value="scheduleReserved__item"/>
+                                <property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.id}"/>
+                                <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
+                                <property name="layoutManager.lineGroupPrototype.validationMessages"><null/></property>
+                                <property name="layoutManager.lineGroupPrototype.dataAttributes">
+                                    <map>
+                                        <entry key="selected" value="false"/>
+                                    </map>
+                                </property>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-HorizontalFieldGroup">
+                                            <property name="items">
+                                                <list>
+                                                    <bean parent="KSAP-Message" p:messageText="@{#line.daysAndTimes}"/>
+                                                    <bean parent="Uif-ActionLink" p:actionLabel="Edit" p:actionScript=""/>
+                                                    <bean parent="KSAP-Message" p:messageText="|"/>
+                                                    <bean parent="Uif-ActionLink" p:actionLabel="Delete"
+                                                          p:actionScript="removeReservedScheduleOption('@{#line.id}')"/>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                     <property name="footer">
@@ -202,597 +192,59 @@
         </property>
     </bean>
 
-    <bean id="KSAP-PossibleScheduleList" parent="KSAP-VerticalBoxGroup" p:id="KSAP-PossibleScheduleList">
+    <bean id="schedule_build_possible" parent="KSAP-VerticalBoxGroup" p:id="schedule_build_possible">
         <property name="onDocumentReadyScript" value="
-            customRetrieveComponent('KSAP-PossibleScheduleList','possible_schedules_details','search','lookup',{viewId:'PossibleSchedules-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+            customRetrieveComponent('schedule_build_possible','sb_possible_schedules','search','lookup',{viewId:'PossibleSchedules-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
         "/>
     </bean>
 
-    <bean id="schedule_build_controls" parent="schedule_build_controls-parent"/>
-    <bean abstract="true" id="schedule_build_controls-parent" parent="KSAP-VerticalBoxGroup"
-          p:id="schedule_build_controls">
-        <property name="forceSessionPersistence" value="true"/>
-        <property name="items">
-            <list>
-                <bean parent="Uif-TabGroup">
-                    <property name="items">
-                        <list>
-                            <ref bean="sb_possible_tab"/>
-                            <ref bean="sb_saved_tab"/>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="sb_possible_tab" parent="sb_possible_tab-parent"/>
-    <bean abstract="true" id="sb_possible_tab-parent" parent="KSAP-VerticalBoxGroup" p:id="sb_possible_tab">
-        <property name="forceSessionPersistence" value="true"/>
-        <property name="header">
-            <bean parent="KSAP-HeaderTwo"/>
-        </property>
-        <property name="headerText" value="Possible"/>
-        <property name="header.render" value="false"/>
-        <property name="items">
-            <list>
-                <ref bean="sb_possible_schedules"/>
-                <!--<ref bean="sb_classes"/>-->
-            </list>
-        </property>
-    </bean>
-
-    <bean id="sb_saved_tab" parent="sb_saved_tab-parent"/>
-    <bean abstract="true" id="sb_saved_tab-parent" parent="KSAP-VerticalBoxGroup" p:id="sb_saved_tab">
-        <property name="forceSessionPersistence" value="true"/>
-        <property name="header">
-            <bean parent="KSAP-HeaderTwo"/>
-        </property>
-        <property name="headerText" value="Saved"/>
-        <property name="header.render" value="false"/>
-        <property name="items">
-            <list>
-                <ref bean="sb_saved_schedules"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="sb_possible_schedules" parent="sb_possible_schedules-parent"/>
-    <bean abstract="true" id="sb_possible_schedules-parent" parent="KSAP-HorizontalBoxGroup"
-          p:id="sb_possible_schedules">
-        <property name="forceSessionPersistence" value="true"/>
-        <property name="header">
-            <bean parent="KSAP-HeaderThree" p:cssClasses="schedulePossible__header"
-                  p:headerTagCssClasses="schedulePossible__headerText"/>
-        </property>
-        <property name="headerText" value="Possible schedules found: ##"/>
-        <property name="header.rightGroup">
-            <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="schedulePossible__headerGroup--right">
-                <property name="items">
-                    <list>
-                        <bean parent="KSAP-Message" p:messageText="Registered course"/>
-                        <bean parent="KSAP-Message" p:messageText="Has enrollment restrictions"/>
-                        <bean parent="KSAP-Message" p:messageText="Closed section"/>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="items">
-            <list>
-                <ref bean="KSAP-PossibleScheduleList"/>
-                <!--<ref bean="sb_possible_options"/>
-                <bean parent="KSAP-Message" p:id="sb_possible_noschedules" p:hidden="true"
-                      p:additionalCssClasses="ksap-sb-noschedules"
-                      p:messageText="No schedules found. Adjust your class selections or time reservations to find more options."/>-->
-                <!--<bean parent="Uif-ActionLink" p:id="sb_possible_morelink" p:style="display : none"
-                      p:additionalCssClasses="ksap-sb-morelink" p:actionLabel="More..."
-                      p:actionScript="moreSchedules();"/>-->
-            </list>
-        </property>
-    </bean>
-
-    <bean id="sb_possible_options" parent="sb_possible_options-parent"/>
-    <bean id="sb_possible_options-parent" abstract="true" parent="KSAP-VerticalBoxGroup" p:id="sb_possible_options">
-        <property name="layoutManager.additionalCssClasses" value="ksap-sb-possible-options-container"/>
-        <property name="items">
-            <list/>
-        </property>
-    </bean>
-
-    <bean id="sb_schedule_icon" parent="Uif-ActionImage" abstract="true">
-        <property name="actionImage">
-            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
-        </property>
-    </bean>
-
-    <bean id="sb_schedule_option_template" parent="sb_schedule_option_template-parent"/>
-    <bean id="sb_schedule_option_template-parent" abstract="true" parent="KSAP-VerticalBoxGroup" p:hidden="true">
-        <property name="layoutManager.cssClasses" value="uif-boxLayoutHorizontalItem"/>
-        <property name="items">
-            <list>
-                <bean parent="KSAP-VerticalBoxGroup" p:id="sb-schedule-option-row-__KSAP_UID__"
-                      p:additionalCssClasses="ksap-sb-schedule-row,ksap-sb-deselected">
-                    <property name="onClickScript" value="toggleScheduleOption('__KSAP_UID__')"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="KSAP-Message" p:messageText="__KSAP_FORMATTED__"
-                                  p:id="sb-schedule-activity-descr-__KSAP_UID__"
-                                  p:additionalCssClasses="ksap-sb-schedule-activity-descr"/>
-                            <bean parent="KSAP-HorizontalBoxGroup">
-                                <property name="items">
-                                    <list>
-                                        <bean parent="sb_schedule_icon"
-                                              p:actionScript="KsapScheduleBuild.save('__KSAP_UID__')">
-                                            <property name="cssClasses">
-                                                <list merge="true">
-                                                    <value>ksap-sb-schedule-saveicon</value>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="KSAP-SimpleInputField" p:propertyName="shuffle">
-                                <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
-                                </property>
-                            </bean>
-                            <bean parent="sb_option_control-parent" p:propertyName="selected" p:hidden="true"
-                                  p:id="sb-schedule-option-select-__KSAP_UID__"
-                                  p:additionalCssClasses="ksap-sb-schedule-select">
-                                <property name="control.onChangeScript"
-                                          value="toggleScheduleOptionSelect('__KSAP_UID__')"/>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="sb_saved_schedules" parent="sb_saved_schedules-parent"/>
-    <bean abstract="true" id="sb_saved_schedules-parent" parent="Uif-VerticalBoxSection" p:id="sb_saved_schedules">
-        <property name="forceSessionPersistence" value="true"/>
-        <property name="header">
-            <bean parent="KSAP-HeaderThree"/>
-        </property>
-        <property name="headerText" value="Saved Schedules"/>
-        <property name="layoutManager.additionalCssClasses" value="ksap-sb-saved-schedules-container"/>
-        <property name="items">
-            <list>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="sb_reserved_time_template" parent="sb_reserved_time_template-parent"/>
-    <bean id="sb_reserved_time_template-parent" abstract="true" parent="KSAP-VerticalBoxGroup" p:hidden="true">
-        <property name="items">
-            <list>
-                <bean parent="KSAP-HorizontalBoxGroup" p:id="sb-reserved-time-row-__KSAP_UID__"
-                      p:additionalCssClasses="ksap-sb-reserved-time-row,ksap-sb-deselected">
-                    <property name="dataAttributes">
-                        <map merge="true">
-                            <entry key="index" value="__KSAP_INDEX__"/>
-                            <entry key="uniqueid" value="__KSAP_UID__"/>
-                        </map>
-                    </property>
-                    <property name="items">
-                        <list>
-                            <bean parent="sb_option_control-parent" p:propertyName="selected" p:hidden="true"
-                                  p:id="sb-reserved-time-select-__KSAP_UID__"
-                                  p:additionalCssClasses="ksap-sb-reserved-time-select"
-                                  p:onChangeScript="toggleReservedTimeSelect('__KSAP_UID__')"/>
-                            <bean parent="KSAP-Message"
-                                  p:messageText="__KSAP_DAYSTIMES__"
-                                  p:additionalCssClasses="ksap-sb-reserved-time-subtext"/>
-                            <bean parent="Uif-ActionLink" p:actionLabel="Delete"
-                                  p:actionScript="KsapScheduleBuild.trashReservedTime('__KSAP_UID__')"/>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean abstract="true" id="sb_option_control-parent" parent="KSAP-SimpleInputField"
-          p:readOnly="false">
-        <property name="control">
-            <bean parent="Uif-CheckboxControl"/>
-        </property>
-    </bean>
-
-    <bean id="sb_course_options" parent="sb_course_options-parent"/>
-    <bean id="sb_course_options-parent" parent="Uif-ListCollectionSection" p:id="sb_course_options">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="collectionObjectClass" value="org.kuali.student.myplan.schedulebuilder.infc.CourseOption"/>
-        <property name="propertyName" value="courseOptions"/>
-        <property name="header.render" value="false"/>
-        <property name="layoutManager">
-            <bean parent="Uif-StackedCollectionLayout-List"/>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="KSAP-VerticalFieldGroup">
-                    <property name="items">
-                        <list>
-                            <bean parent="KSAP-HorizontalBoxGroup" p:id="sb-course-option-row-@{#line.uniqueId}"
-                                  p:additionalCssClasses="ksap-sb-course-row,ksap-sb-@{#line.selected?'selected':'deselected'}">
-                                <property name="items">
-                                    <list>
-                                        <bean parent="sb_option_control-parent" p:propertyName="selected"
-                                              p:id="sb-course-option-select-@{#line.uniqueId}"
-                                              p:control.render="@{#line.getActivityCount(includeClosed) gt 0 and !#line.lockedIn}"
-                                              p:additionalCssClasses="ksap-sb-course-select"
-                                              p:onChangeScript="toggleCourseOptionSelect('@{#line.uniqueId}')"/>
-                                        <bean parent="KSAP-VerticalFieldGroup"
-                                              p:onClickScript="toggleCourseOption('@{#line.uniqueId}')">
-                                            <property name="items">
-                                                <list>
-                                                    <bean parent="KSAP-Message" p:messageText="@{#line.courseCode}"
-                                                          p:title="@{#line.courseTitle}"
-                                                          p:additionalCssClasses="ksap-sb-course-title"/>
-                                                    <bean parent="KSAP-Message"
-                                                          p:id="sb-course-selected-message-@{#line.uniqueId}"
-                                                          p:additionalCssClasses="ksap-sb-course-subtext"
-                                                          p:render="@{#line.getActivityCount(includeClosed) le 0}"
-                                                          p:messageText="No@{includeClosed?'t':' open sections'} offered in @{term.name}"/>
-                                                    <bean parent="KSAP-Message"
-                                                          p:id="sb-course-selected-message-@{#line.uniqueId}"
-                                                          p:additionalCssClasses="ksap-sb-course-subtext"
-                                                          p:render="@{#line.getActivityCount(includeClosed) gt 0 and #line.lockedIn and #line.selected}"
-                                                          p:messageText="Registered for @{term.name}"/>
-                                                    <bean parent="KSAP-Message"
-                                                          p:id="sb-course-selected-message-@{#line.uniqueId}"
-                                                          p:additionalCssClasses="ksap-sb-course-subtext"
-                                                          p:render="@{#line.getActivityCount(includeClosed) gt 0 and !#line.lockedIn}"
-                                                          p:messageText="@{#line.getSelectedActivityCount(includeClosed)} / @{#line.getActivityCount(includeClosed)} selected"/>
-                                                </list>
-                                            </property>
-                                        </bean>
-                                        <bean parent="Uif-ActionField">
-                                            <property name="action">
-                                                <bean parent="Uif-ActionImage"
-                                                      p:id="ksap-sb-course-disclosure-icon-@{#line.uniqueId}"
-                                                      p:actionScript="showHideActivityOptions('@{#line.uniqueId}')">
-                                                    <property name="cssClasses">
-                                                        <list merge="true">
-                                                            <value>ksap-sb-course-disclosure-icon-closed</value>
-                                                        </list>
-                                                    </property>
-                                                    <property name="actionImage">
-                                                        <bean parent="Uif-Image"
-                                                              p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
-                                                    </property>
-                                                </bean>
-                                            </property>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>
-
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-
-        <property name="subCollections">
-            <list>
-                <bean parent="sb_activity_options" p:propertyName="activityOptions"
-                      p:additionalCssClasses="ksap-sb-disclosure-closed,ksap-sb-primary-options"
-                      p:id="sb_activity_options_@{#line.uniqueId}">
-                    <property name="items">
-                        <list>
-                            <bean parent="KSAP-VerticalFieldGroup">
-                                <property name="items">
-                                    <list>
-                                        <bean parent="sb_activity_option_row" p:id="sb-activity-row-@{#line.uniqueId}"/>
-                                        <bean parent="sb_secondary_options" p:propertyName="secondaryOptions"
-                                              p:render="@{#line.secondaryOptions ne null and !#line.secondaryOptions.empty}"
-                                              p:additionalCssClasses="ksap-sb-secondary-options-wrapper"
-                                              p:id="sb_secondary_options_@{#line.uniqueId}"/>
-                                    </list>
-                                </property>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-
-    </bean>
-
-    <bean id="sb_activity_options" parent="sb_activity_options-parent"/>
-    <bean id="sb_activity_options-parent" parent="KSAP-StackedCollectionGroup" p:id="sb_activity_options"
-          p:renderAddLine="false" p:renderSaveLineActions="false" p:renderLineActions="false" abstract="true">
-        <property name="propertyName" value="activityOptions"/>
-        <property name="collectionObjectClass" value="org.kuali.student.myplan.schedulebuilder.infc.ActivityOption"/>
-        <property name="layoutManager">
-            <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
-                <property name="lineGroupPrototype">
-                    <bean parent="Uif-CollectionVerticalBoxItem" p:footer.render="false"
-                          p:render="@{((includeClosed or !#line.closed) and !#line.courseLockedIn) or #line.lockedIn}"/>
-                </property>
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="sb_activity_option_row" abstract="true" parent="sb_activity_option_row-parent"/>
-    <bean id="sb_activity_option_row-parent" abstract="true" parent="KSAP-HorizontalBoxGroup"
-          p:additionalCssClasses="ksap-sb-@{#line.primary?'primary':'secondary'}-row,ksap-sb-@{#line.selected?'selected':'deselected'},ksap-sb-activity-@{#line.closed?'closed':'open'}">
-        <property name="dataAttributes">
+    <bean id="possible_schedules_calendar" parent="KSAP-Calendar" p:cssClasses="scheduleCalendar">
+        <property name="templateOptions">
             <map merge="true">
-                <entry key="primary" value="@{#line.primary}"/>
-                <entry key="enrollmentGroup" value="@{#line.enrollmentGroup}"/>
-                <entry key="uniqueid" value="@{#line.uniqueId}"/>
+                <entry key="year"
+                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'y')}"/>
+                <entry key="month"
+                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'M') - 1}"/>
+                <entry key="date"
+                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'd')}"/>
+                <entry key="defaultView" value="agendaWeek"/>
+                <entry key="header" value="false"/>
+                <entry key="contentHeight" value="9999"/>
+                <entry key="columnFormat" value="{week: 'dddd'}"/>
+                <entry key="hiddenDays" value="[0]"/>
+                <entry key="weekends" value="false"/>
+                <entry key="allDaySlot" value="false"/>
+                <entry key="allDayText" value="to be arranged"/>
+                <entry key="axisFormat" value="h(:mm)t"/>
+                <entry key="minTime" value="8"/>
+                <entry key="maxTime" value="17"/>
+                <entry key="timeFormat" value="{agenda: 'h(:mm)t{ - h(:mm)t}'}"/>
+                <entry key="slotEventOverlap" value="false"/>
+                <!--<entry key="eventAfterRender" value="
+                    function(event, element, view) {
+                        element.data({
+                            'course-id': event.courseId,
+                            'course-code': event.courseCd,
+                            'course-title': event.courseTitle,
+                            'section-code': event.sectionCd,
+                            'meeting-time': event.meetingTime,
+                            'building': event.building,
+                            'link-building': event.buildingLink,
+                            'term-id': event.termId
+                        });
+                    }
+                "/>-->
+                <entry key="lazyFetching" value="false"/>
+                <entry key="editable" value="false"/>
+                <entry key="selectable" value="false"/>
+                <entry key="selectHelper" value="false"/>
+                <entry key="complete" value="function() { KsapSbCalendar = jQuery(this); }"/>
             </map>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="sb_option_control-parent" p:propertyName="selected"
-                      p:id="sb-activity-select-@{#line.uniqueId}"
-                      p:control.disabled="@{#line.courseLockedIn}"
-                      p:render="@{!#line.enrollmentGroup or !#line.secondaryOptions.empty}"
-                      p:additionalCssClasses="ksap-sb-activity-select"
-                      p:onChangeScript="toggleActivitySelect(@{#line.primary}, '@{#line.uniqueId}', '@{#line.parentUniqueId}')"/>
-                <bean parent="KSAP-VerticalBoxGroup"
-                      p:onClickScript="toggleActivity(@{#line.primary}, '@{#line.uniqueId}', '@{#line.parentUniqueId}')"
-                      p:additionalCssClasses="ksap-sb-activity-details">
-                    <property name="items">
-                        <list>
-                            <bean parent="KSAP-HorizontalBoxGroup">
-                                <property name="items">
-                                    <list>
-                                        <bean parent="KSAP-Message" p:messageText="@{#line.registrationCode}"
-                                              p:title="@{#line.courseOfferingCode} @{#line.activityName}"
-                                              p:additionalCssClasses="ksap-sb-activity-title"/>
-                                        <bean parent="KSAP-Message" p:messageText="@{#line.activityTypeDescription}"
-                                              p:title="@{#line.courseOfferingCode} @{#line.activityName}"
-                                              p:additionalCssClasses="ksap-sb-activity-subtitle"/>
-                                        <bean parent="KSAP-Message"
-                                              p:messageText="@{#line.closed?'Closed ':'Open '}@{#line.openSeats}/@{#line.totalSeats}"
-                                              p:render="@{!#line.enrollmentGroup}"
-                                              p:title="@{#line.openSeats} seat@{#line.openSeats ne 1?'s':''} available out of @{#line.totalSeats}"
-                                              p:additionalCssClasses="ksap-sb-activity-seats"/>
-                                        <bean parent="KSAP-Message" p:messageText="@{#line.courseOfferingCode}"
-                                              p:render="@{#line.enrollmentGroup}"
-                                              p:title="@{#line.courseOfferingCode} @{#line.activityName}"
-                                              p:additionalCssClasses="ksap-sb-activity-seats"/>
-                                    </list>
-                                </property>
-                            </bean>
-                            <bean parent="KSAP-Message" p:messageText="@{#line.academicSessionDescr}"
-                                  p:additionalCssClasses="ksap-sb-activity-session"
-                                  p:render="@{!#line.enrollmentGroup || #line.secondaryOptions.empty}"/>
-                            <bean parent="KSAP-Message" p:messageText="Permission Required"
-                                  p:render="@{#line.requiresPermission}"
-                                  p:additionalCssClasses="ksap-sb-activity-permission"/>
-                            <!--<bean parent="KSAP-StackedCollectionGroup" p:id="sb_activity_classtimes_@{#line.uniqueId}"
-                                    p:renderAddLine="false" p:renderSaveLineActions="false" p:renderLineActions="false" p:render="@{!#line.enrollmentGroup || #line.secondaryOptions.empty}">
-                                <property name="propertyName" value="classMeetingTimes" />
-                                <property name="collectionObjectClass" value="org.kuali.student.myplan.schedulebuilder.infc.ClassMeetingTime" />
-                                <property name="layoutManager">
-                                    <bean parent="Uif-StackedCollectionLayout-WithBoxItems">
-                                        <property name="lineGroupPrototype">
-                                            <bean parent="Uif-CollectionVerticalBoxItem" p:additionalCssClasses="ksap-sb-activity-classtimes-row" />
-                                        </property>
-                                    </bean>
-                                </property>
-                                <property name="items">
-                                    <list>
-                                        <bean parent="KSAP-VerticalFieldGroup">
-                                            <property name="items">
-                                                <list>
-                                                    <bean parent="KSAP-Message" p:messageText="@{!#line.allDay?#line.daysAndTimes:'Meeting time to be arranged'}"
-                                                            p:additionalCssClasses="ksap-sb-activity,ksap-sb-classtimes-daystimes" />
-                                                    <bean parent="KSAP-Message" p:messageText="@{#line.instructorName}@{#line.instructorName ne null?' &amp;bull; ':''}@{#line.arranged?#line.location:'ARR'}"
-                                                            p:additionalCssClasses="ksap-sb-activity,ksap-sb-classtimes-location" />
-                                                </list>
-                                            </property>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>-->
-                            <bean parent="KSAP-SimpleDataField" p:id="sb_activity_classtimes_@{#line.uniqueId}">
-                                <property name="label" value="Meeting Time &amp; Location"/>
-                                <property name="propertyName" value="activity"/>
-                                <property name="escapeHtmlInPropertyValue" value="false"/>
-                                <property name="propertyEditor" ref="class_meeting_time_formatter"/>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
-            </list>
         </property>
     </bean>
 
     <bean id="class_meeting_time_formatter"
           class="org.kuali.student.myplan.course.util.ClassMeetingsPropertyEditor">
-    </bean>
-
-    <bean id="sb_secondary_options" parent="sb_secondary_options-parent"/>
-    <bean id="sb_secondary_options-parent" parent="Uif-ListCollectionSection" p:id="sb_secondary_options">
-        <property name="validationMessages">
-            <null/>
-        </property>
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions"/>
-        <property name="propertyName" value="secondaryOptions"/>
-        <property name="header.render" value="false"/>
-        <property name="layoutManager">
-            <bean parent="Uif-StackedCollectionLayout-List"/>
-        </property>
-        <property name="items">
-            <list>
-                <bean parent="KSAP-VerticalFieldGroup">
-                    <property name="items">
-                        <list>
-                            <bean parent="KSAP-HorizontalBoxGroup" p:id="sb-secondary-row-@{#line.uniqueId}"
-                                  p:additionalCssClasses="ksap-sb-secondary-option-row,ksap-sb-@{#line.getSelectedActivityCount(includeClosed) gt 0?'selected':'deselected'}">
-                                <property name="items">
-                                    <list>
-                                        <bean parent="KSAP-Message"
-                                              p:messageText="@{#line.getActivityCount(includeClosed)} included"
-                                              p:render="@{#line.enrollmentGroup}"
-                                              p:additionalCssClasses="ksap-sb-secondary-title"/>
-                                        <bean parent="KSAP-Message"
-                                              p:messageText="@{#line.getActivityCount(includeClosed)} @{#line.activityTypeDescription matches '.*y$' and #line.getActivityCount(includeClosed) ne 1?#line.activityTypeDescription.substring(0,#line.activityTypeDescription.length()-1):#line.activityTypeDescription}@{#line.activityTypeDescription matches '.*y$' and #line.getActivityCount(includeClosed) ne 1?'ie':''}@{#line.getActivityCount(includeClosed) eq 1?'':'s'}"
-                                              p:render="@{!#line.enrollmentGroup}"
-                                              p:additionalCssClasses="ksap-sb-secondary-title"/>
-                                        <bean parent="Uif-ActionImage"
-                                              p:id="ksap-sb-secondary-disclosure-icon-@{#line.uniqueId}"
-                                              p:actionScript="showHideSecondaryOptions('@{#line.uniqueId}')"
-                                              p:cssClasses="ksap-sb-secondary-disclosure-icon-closed">
-                                            <property name="actionImage">
-                                                <bean parent="Uif-Image"
-                                                      p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
-                                            </property>
-                                        </bean>
-                                    </list>
-                                </property>
-                            </bean>
-
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-
-        <property name="subCollections">
-            <list>
-                <bean parent="sb_activity_options" p:propertyName="activityOptions"
-                      p:additionalCssClasses="ksap-sb-disclosure-closed,ksap-sb-secondary-options"
-                      p:id="sb_activity_options_@{#line.uniqueId}">
-                    <property name="items">
-                        <list>
-                            <bean parent="KSAP-VerticalFieldGroup">
-                                <property name="items">
-                                    <list>
-                                        <bean parent="sb_activity_option_row" p:id="sb-activity-row-@{#line.uniqueId}"/>
-                                    </list>
-                                </property>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-
-    </bean>
-
-    <bean id="sb_classes" parent="sb_classes-parent"/>
-    <bean abstract="true" id="sb_classes-parent" parent="Uif-VerticalBoxSection" p:id="sb_classes">
-        <property name="header">
-            <bean parent="KSAP-HeaderThree"/>
-        </property>
-        <property name="headerText" value="Classes"/>
-        <property name="items">
-            <list>
-                <bean parent="KSAP-HorizontalBoxGroup" p:id="sb_classes_include_closed_sections">
-                    <property name="items">
-                        <list>
-                            <bean parent="sb_option_control-parent" p:propertyName="includeClosed"
-                                  p:onChangeScript="nonAjaxSubmitForm('start')"/>
-                            <bean parent="KSAP-Message" p:messageText="Include closed sections"/>
-                        </list>
-                    </property>
-                </bean>
-                <ref bean="sb_course_options"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="sb_weekgroup_template" parent="sb_weekgroup_template-parent"/>
-    <bean id="sb_weekgroup_template-parent" abstract="true" parent="KSAP-HorizontalBoxGroup" p:style="display : none">
-        <property name="items">
-            <list>
-                <bean parent="KSAP-VerticalBoxGroup"
-                      p:additionalCssClasses="ksap-sb-weekGroup,ksap-sb-selected">
-                    <property name="items">
-                        <list>
-                            <bean parent="KSAP-Message" p:additionalCssClasses="ksap-sb-weekGroup-title"
-                                  p:messageText="__KSAP_TITLE__"/>
-                            <bean parent="KSAP-Message" p:additionalCssClasses="ksap-sb-weekGroup-subtitle"
-                                  p:messageText="__KSAP_SUBTITLE__"/>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="schedule_build_weekview" parent="schedule_build_weekview-parent"/>
-    <bean abstract="true" id="schedule_build_weekview-parent" parent="KSAP-VerticalBoxGroup"
-          p:id="schedule_build_weekview">
-        <property name="items">
-            <list>
-                <bean parent="KSAP-HorizontalBoxGroup" p:id="sb_week_group_area">
-                    <property name="layoutManager.additionalCssClasses" value="ksap-sb-week-group-area-container"/>
-                    <property name="items">
-                        <list>
-                            <bean parent="KSAP-VerticalBoxGroup"
-                                  p:additionalCssClasses="ksap-sb-weekGroup,ksap-sb-selected">
-                                <property name="items">
-                                    <list>
-                                        <bean parent="KSAP-Message" p:additionalCssClasses="ksap-sb-weekGroup-title"
-                                              p:messageText="@{fullTermWeekTitle}"/>
-                                        <bean parent="KSAP-Message" p:additionalCssClasses="ksap-sb-weekGroup-subtitle"
-                                              p:messageText="@{fullTermWeekSubtitle}"/>
-                                    </list>
-                                </property>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
-                <bean parent="KSAP-HeaderDiv" p:headerText="@{term.name}" p:cssClasses="scheduleBuilder__termHeader"/>
-                <bean parent="KSAP-Calendar" p:id="sb_calendar" p:cssClasses="scheduleCalendar">
-                    <property name="templateOptions">
-                        <map merge="true">
-                            <entry key="year"
-                                   value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'y')}"/>
-                            <entry key="month"
-                                   value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'M') - 1}"/>
-                            <entry key="date"
-                                   value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'd')}"/>
-                            <entry key="defaultView" value="agendaWeek"/>
-                            <entry key="header" value="false"/>
-                            <entry key="contentHeight" value="9999"/>
-                            <entry key="columnFormat" value="{week: 'dddd'}"/>
-                            <entry key="hiddenDays" value="[0]"/>
-                            <entry key="weekends" value="false"/>
-                            <entry key="allDaySlot" value="false"/>
-                            <entry key="allDayText" value="to be arranged"/>
-                            <entry key="axisFormat" value="h(:mm)t"/>
-                            <entry key="minTime" value="8"/>
-                            <entry key="maxTime" value="17"/>
-                            <entry key="timeFormat" value="{agenda: 'h(:mm)t{ - h(:mm)t}'}"/>
-                            <entry key="slotEventOverlap" value="false"/>
-                            <!--<entry key="eventAfterRender" value="
-                                function(event, element, view) {
-                                    element.data({
-                                        'course-id': event.courseId,
-                                        'course-code': event.courseCd,
-                                        'course-title': event.courseTitle,
-                                        'section-code': event.sectionCd,
-                                        'meeting-time': event.meetingTime,
-                                        'building': event.building,
-                                        'link-building': event.buildingLink,
-                                        'term-id': event.termId
-                                    });
-                                }
-                            "/>-->
-                            <entry key="lazyFetching" value="false"/>
-                            <entry key="editable" value="false"/>
-                            <entry key="selectable" value="false"/>
-                            <entry key="selectHelper" value="false"/>
-                            <entry key="complete" value="function() { KsapSbCalendar = jQuery(this); }"/>
-                        </map>
-                    </property>
-                </bean>
-            </list>
-        </property>
     </bean>
 
 </beans>

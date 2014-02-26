@@ -354,54 +354,6 @@ function trashScheduleOption(uniqueId) {
 	container.append(discardInput);
 }
 
-function removeSavedScheduleOption(uniqueId) {
-    jQuery("#kualiForm").ajaxSubmit({
-        data : {
-            methodToCall : "remove",
-            uniqueId : uniqueId
-        },
-        dataType : 'json',
-        success : function(response, textStatus, jqXHR) {
-            console.log(response);
-            customRetrieveComponent('saved_schedules_summary','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
-        },
-        error : function(jqXHR, textStatus, errorThrown) {
-            if (textStatus == "parsererror")
-                textStatus = "JSON Parse Error";
-            showGrowl(errorThrown, jqXHR.status + " " + textStatus);
-        }
-    });
-
-}
-
-function saveScheduleOption(uniqueId) {
-    jQuery("#kualiForm").ajaxSubmit({
-        data : {
-            methodToCall : "save",
-            uniqueId : uniqueId
-        },
-        dataType : 'json',
-        success : function(response, textStatus, jqXHR) {
-            customRetrieveComponent('saved_schedules_summary','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
-        },
-        error : function(jqXHR, textStatus, errorThrown) {
-            if (textStatus == "parsererror")
-                textStatus = "JSON Parse Error";
-            showGrowl(errorThrown, jqXHR.status + " " + textStatus);
-        }
-    });
-}
-
-function saveOrRemoveScheduleOption(uniqueId) {
-	var model = KsapScheduleBuild.getSchedule(uniqueId);
-	if (model == null) return;
-	
-	if (jQuery("#"+uniqueId+" .ksap-sb-schedule-savedicon").length > 0)
-		removeSavedScheduleOption(uniqueId);
-	else
-		saveScheduleOption(uniqueId);
-}
-
 function toggleScheduleOption(uniqueId) {
 	var cb = jQuery("#sb-schedule-option-select-" + uniqueId + "_control");
 	cb.prop("checked", !cb.is(":checked"));
@@ -453,7 +405,7 @@ function ksapSbOpenDialog(pageId, action, data, target, e) {
 		themeName : "default"
 	};
 	jQuery("#popupForm").remove();
-	fnClosePopup();
+    fnCloseAllPopups();
 	openPopup(pageId + "_inner", retrieveData, action, {width: "16px", height: "16px"}, popupOptions, e);
 	var form = jQuery("#popupForm");
 	form.attr("accept-charset", "UTF-8");
@@ -490,13 +442,13 @@ function ksapSbValidateDialog() {
 }
 
 function ksapSbSubmitDialog(methodToCall, e) {
-	
+
     if (!ksapSbValidateDialog()) {
         clearHiddens();
 
         return;
     }
-	
+
 	var button = jQuery(e.currentTarget);
 
 	button.block({
@@ -522,14 +474,14 @@ function ksapSbSubmitDialog(methodToCall, e) {
 		dataType : 'json',
 		success : function(newPossibleSchedules, textStatus, jqXHR){
             jQuery('#sb_reserved_time ul').append('<li><div id="possible-schedule-'+newPossibleSchedules.id+'" class="uif-boxSection" data-selected="false"><div class="uif-horizontalFieldGroup uif-boxLayoutVerticalItem clearfix" data-parent="possible-schedule-'+newPossibleSchedules.id+'"><div class="uif-horizontalBoxGroup"><div class="uif-horizontalBoxLayout clearfix"><span class="uif-message uif-boxLayoutHorizontalItem">'+newPossibleSchedules.daysTimes+' </span><a onclick="return false;" class="uif-actionLink uif-boxLayoutHorizontalItem">Edit</a><span class="uif-message uif-boxLayoutHorizontalItem"> | </span><a onclick="return false;" class="uif-actionLink uif-boxLayoutHorizontalItem" data-ajaxsubmit="true" data-onclick="removeReservedScheduleOption(\''+newPossibleSchedules.id+'\');" >Delete</a></div></div></div></div></li>')
-            fnClosePopup();
-            customRetrieveComponent('possible_schedules_details','possible_schedules_details','search','lookup',{viewId:'PossibleSchedules-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+            fnCloseAllPopups();
+            jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES", newPossibleSchedules);
         },
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (textStatus == "parsererror")
 				textStatus = "Parse Error in response";
 			showGrowl(errorThrown, jqXHR.status + " " + textStatus);
-			fnClosePopup();
+            fnCloseAllPopups();
 		},
 		complete : function() {
 			button.unblock();
@@ -538,7 +490,7 @@ function ksapSbSubmitDialog(methodToCall, e) {
 }
 
 function ksapSbDialogResponse(response, textStatus, jqXHR) {
-	fnClosePopup();
+    fnCloseAllPopups();
 	KsapScheduleBuild.trigger();
 }
 
@@ -776,7 +728,7 @@ function removeReservedScheduleOption(uniqueId) {
         dataType : 'json',
         success : function(response, textStatus, jqXHR) {
             jQuery("#possible-schedule-"+uniqueId).remove();
-            customRetrieveComponent('possible_schedules_details','possible_schedules_details','search','lookup',{viewId:'PossibleSchedules-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+            jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES", response);
         },
         error : function(jqXHR, textStatus, errorThrown) {
             if (textStatus == "parsererror")

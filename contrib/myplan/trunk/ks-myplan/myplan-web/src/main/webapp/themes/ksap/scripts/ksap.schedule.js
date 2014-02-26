@@ -30,7 +30,6 @@ function toggleSaveSchedule(uniqueId, methodToCall, event) {
         dataType : 'json',
         success : function(response, textStatus, jqXHR) {
             jQuery.event.trigger("SAVED_SCHEDULE_" + methodToCall.toUpperCase(), response);
-            //customRetrieveComponent('saved_schedules_summary','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
         },
         error : function(jqXHR, textStatus, errorThrown) {
             if (textStatus == "parsererror")
