@@ -11,6 +11,7 @@ import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
+import org.springframework.util.CollectionUtils;
 
 import javax.jws.WebParam;
 import java.util.ArrayList;
@@ -175,8 +176,13 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     @Override
     public List<PlanItemInfo> getPlanItemsInPlanByAtp(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "atpKey") String atpKey, @WebParam(name = "planItemTypeKey") String planItemTypeKey, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();
-        return planItemInfos;
+        List<PlanItemInfo> planItemInfoList = new ArrayList<PlanItemInfo>();
+        for (PlanItemInfo planItemInfo : planItemInfos) {
+            if (!CollectionUtils.isEmpty(planItemInfo.getPlanPeriods()) && planItemInfo.getPlanPeriods().get(0).equals(atpKey)) {
+                planItemInfoList.add(planItemInfo);
+            }
+        }
+        return planItemInfoList;
     }
 
     @Override
@@ -209,7 +215,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
     @Override
     public LearningPlanInfo createLearningPlan(@WebParam(name = "learningPlan") LearningPlanInfo learningPlan, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DataValidationErrorException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
-        }
+    }
 
     public LearningPlanInfo copyLearningPlan(@WebParam(name = "learningPlanId") String fromLearningPlanId, @WebParam(name = "planTypeKey") String planTypeKey, @WebParam(name = "context") ContextInfo context) throws AlreadyExistsException, DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return null; //To change body of implemented methods use File | Settings | File Templates.
@@ -261,7 +267,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
     @Override
     public StatusInfo deletePlanItem(@WebParam(name = "planItemId") String planItemId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
-                }
+    }
 
     @Override
     public StatusInfo deletePlanItemSet(@WebParam(name = "planItemSetId") String planItemSetId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
@@ -272,7 +278,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
     @Override
     public List<ValidationResultInfo> validateLearningPlan(@WebParam(name = "validationType") String validationType, @WebParam(name = "learningPlanInfo") LearningPlanInfo learningPlanInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
-                }
+    }
 
     @Override
     public List<ValidationResultInfo> validatePlanItem(@WebParam(name = "validationType") String validationType,
