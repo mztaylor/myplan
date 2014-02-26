@@ -208,6 +208,15 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
 	 */
 	List<SecondaryActivityOptions> getSecondaryOptions();
 
+
+    /**
+     * Return alternate activity options that are of same type and meets on exact
+     * same times
+     *
+     * @return
+     */
+    List<ActivityOption> getAlternateActivties();
+
     /**
      * This is to return this ActivityOption.
      * Only used in property editor purpose()
