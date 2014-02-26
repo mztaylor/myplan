@@ -1,4 +1,4 @@
-function togglePossibleSchedule(calendarObj, targetObj, index, uniqueId) {
+function togglePossibleSchedule(calendarObj, targetObj, index, uniqueId, hasTBA) {
     var sourceObject = jQuery.extend(
         targetObj.data("events"),
         {"className": ["schedulePossible__event", "schedulePossible--" + (index % 5)]}
@@ -13,9 +13,25 @@ function togglePossibleSchedule(calendarObj, targetObj, index, uniqueId) {
     if (selected) {
         calendarObj.fullCalendar('removeEventSource', sourceObject);
         targetObj.find(".schedulePossible__save").hide();
+        if (hasTBA) {
+            jQuery("#possible-tba-" + uniqueId).hide();
+        }
     } else {
         calendarObj.fullCalendar('addEventSource', sourceObject);
         targetObj.find(".schedulePossible__save").show();
+        if (hasTBA) {
+            jQuery("#possible-tba-" + uniqueId).show();
+        }
+    }
+
+    var tbaCount = jQuery(".schedulePossible__tba .schedulePossible__tbaItem").filter(function() {
+        return jQuery(this).css('display') != 'none';
+    }).length;
+
+    if (tbaCount > 0) {
+        jQuery(".schedulePossible__tba").show();
+    } else {
+        jQuery(".schedulePossible__tba").hide();
     }
 }
 
