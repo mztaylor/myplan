@@ -3,12 +3,29 @@
 
     & .schedulePossible__headerText {
         float: left;
+        width: 50%;
     }
 
     & .schedulePossible__headerGroup--right {
         float: right;
         color: @grayLight;
         font-size: @fontSizeMini;
+    }
+}
+
+.schedulePossible {
+    margin: 0 0 @marginDefault 0 !important;
+}
+
+.schedulePossible__tba {
+    border: @baseBorderStyle;
+    margin: 0 !important;
+
+    .schedulePossible__tbaHeader {
+        text-transform: uppercase;
+        font-size: @fontSizeMini;
+        background: @baseBorderColor;
+        padding: @paddingMini @paddingDefault;
     }
 }
 
