@@ -69,7 +69,7 @@ function ksapCartSubmitDialog(e) {
 			if (textStatus == "parsererror")
 				textStatus = "JSON Parse Error";
 			showGrowl(errorThrown, jqXHR.status + " " + textStatus);
-			fnClosePopup();
+            fnCloseAllPopups();
 		},
 		complete : function() {
 			button.unblock();
@@ -124,8 +124,8 @@ function ksapCartUpdateEvent(response, textStatus, jqXHR) {
 
 		if (response.message != null)
 			showGrowl(response.message);
-		
-		fnClosePopup();
+
+        fnCloseAllPopups();
 
 	} else {
 		var feedback = jQuery("#popupForm").find(".ksap-feedback");
