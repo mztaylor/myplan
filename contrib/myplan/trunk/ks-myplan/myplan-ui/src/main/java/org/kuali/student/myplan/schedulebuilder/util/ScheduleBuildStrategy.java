@@ -146,4 +146,13 @@ public interface ScheduleBuildStrategy {
      */
     String getCampusCode(Course course);
 
+    /**
+     * coalesce the sections for lowest level of activity for a course (primary if there are no secondaries,
+     * secondaries if there are no tertiaries, etc)
+     *
+     * @param co   the courseOption to have sections coalesced
+     *
+     */
+    void coalesceLeafActivities (CourseOption co);
+
 }

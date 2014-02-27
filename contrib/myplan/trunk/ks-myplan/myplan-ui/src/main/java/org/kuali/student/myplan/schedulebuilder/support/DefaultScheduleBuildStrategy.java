@@ -1046,6 +1046,10 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     @Override
+    public void coalesceLeafActivities (CourseOption co) {
+    }
+
+    @Override
     public String getCampusCode(Course course) {
         String campusCode = null;
         for (Attribute ca : course.getAttributes())
