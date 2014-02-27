@@ -49,6 +49,35 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
 
     String innerSpan = "<div class=\"\">";
 
+    /**
+     * Consider the possible schedule has following
+     * Registered courses : COM 201 A
+     * Planned Courses: COM 202 A, COM 202 AB, COM 203 AJ(Assume this is a TBD), COM 204 A(Assume this also is a TBD)
+     *
+     * For following scenarios considering the above assumption:
+     * savedSchedule = false && tbdSchedule = false then the string displayed would be
+     * <div>
+     *     <span>COM 201 A</span>
+     *     <span>COM 202</span>
+     *     <span>COM 203</span>
+     *     <span>COM 204</span>
+     * </div>
+     *
+     * savedSchedule = true && tbdSchedule = false then the string displayed would be
+     * <div>
+     *     <span>COM 201 A / COM 202 / COM 203 / COM 204</span>
+     * </div>
+     *
+     *
+     * savedSchedule = false && tbdSchedule = true then the string displayed would be
+     * <div>
+     *     <span>COM 203 AJ</span>
+     *     <span>COM 204 A</span>
+     * </div>
+     *
+     *
+     * @return HTML string of possible course options
+     */
     @Override
     public String getAsText() {
         StringBuffer sb = new StringBuffer();
@@ -66,12 +95,12 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
                 }
             }
             if (scheduledCourseActivities.containsKey(key)) {
-                if (activityOption.isLockedIn() || (isTbdSchedule() && !isArranged) ) {
+                if (activityOption.isLockedIn() || (isTbdSchedule() && !isArranged)) {
                     scheduledCourseActivities.get(key).add(activityOption.getRegistrationCode());
                 }
             } else {
                 List<String> activityOptions = new ArrayList<String>();
-                if (activityOption.isLockedIn() || (isTbdSchedule() && !isArranged) ) {
+                if (activityOption.isLockedIn() || (isTbdSchedule() && !isArranged)) {
                     activityOptions.add(activityOption.getRegistrationCode());
                 }
                 if ((isTbdSchedule() && !isArranged) || !isTbdSchedule()) {
