@@ -55,6 +55,7 @@ function toggleSaveSchedule(uniqueId, methodToCall, event) {
     });
 }
 
+/*
 function hasWeekends() {
     var possible = jQuery(".schedulePossible__carousel .schedulePossible__option.schedulePossible__option--hasWeekend").length;
     var saved = jQuery(".scheduleSaved .scheduleSaved__item.scheduleSaved__item--hasWeekend").length;
@@ -74,6 +75,7 @@ function getTimeFrame(selection, defaultHour, maxFlag) {
 
     return returnHour;
 }
+*/
 
 function hidePossibleScheduleEvents(viewArr, calendarObj) {
     for (var i = 0; i < viewArr.length; i++) {
@@ -85,18 +87,19 @@ function hidePossibleScheduleEvents(viewArr, calendarObj) {
     }
 }
 
+/*
 function refreshScheduleCalendar(calendarObj) {
     var weekends = hasWeekends();
     calendarObj.fullCalendar('destroy');
     KsapSbCalendarOptions.weekends = weekends;
     KsapSbCalendarOptions.minTime = getTimeFrame(jQuery(".schedulePossible__option"), KsapSbCalendarOptions.minTime, false);
     KsapSbCalendarOptions.maxTime = getTimeFrame(jQuery(".schedulePossible__option"), KsapSbCalendarOptions.maxTime, true);
-    calendarObj.fullCalendar(KsapSbCalendarOptions);
-    /*
+    calendarObj.fullCalendar(KsapSbCalendarOptions);    /*
     if (weekends != calendarObj.fullCalendar('option', 'weekends')) {
 
     } else {
-        calendarObj.fullCalendar('removeEvents');
+       // calendarObj.fullCalendar('removeEvents');
     }
-    */
+
 }
+*/

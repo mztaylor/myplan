@@ -1,20 +1,25 @@
-.schedulePossible__header {
-    overflow: auto;
-
-    & .schedulePossible__headerText {
-        float: left;
-        width: 50%;
-    }
-
-    & .schedulePossible__headerGroup--right {
-        float: right;
-        color: @grayLight;
-        font-size: @fontSizeMini;
-    }
-}
-
 .schedulePossible {
-    margin: 0 0 @marginDefault 0 !important;
+    background: #f2f2f2;
+    margin: 0 !important;
+    padding: @paddingDefault;
+    border-left: @baseBorderStyle;
+    border-right: @baseBorderStyle;
+
+    .schedulePossible__header {
+        overflow: auto;
+        margin-bottom: @marginDefault;
+
+        & .schedulePossible__headerText {
+            float: left;
+            width: 50%;
+        }
+
+        & .schedulePossible__headerGroup--right {
+            float: right;
+            color: @grayLight;
+            font-size: @fontSizeMini;
+        }
+    }
 }
 
 .schedulePossible__tba {
@@ -27,6 +32,34 @@
         background: @baseBorderColor;
         padding: @paddingMini @paddingDefault;
     }
+
+    .uif-stackedCollectionLayout {
+        padding: 2px;
+        overflow: auto;
+    }
+
+    .schedulePossible__tbaItem {
+        float: left;
+        position: relative;
+        color: @white;
+        line-height: @fontSizeLarge;
+        width: 167px;
+        padding: @paddingDefault;
+        margin-left: 2px;
+        .border-radius(0 @baseBorderRadius @baseBorderRadius 0);
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        .schedulePossible__tbaItemIndex {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            margin: 0;
+            font-size: @fontSizeExtraLarge;
+        }
+    }
 }
 
 .schedulePossible__carouselButton {
@@ -35,9 +68,10 @@
     border: solid 1px #06c;
     color: #06c;
     margin: 0;
-    width: 68px;
+    width: 67px;
     float: left;
     text-align: center;
+    padding: @paddingDefault 0;
 
     &:hover {
         text-decoration: none;
@@ -74,7 +108,7 @@
     .border-radius(@baseBorderRadius);
     color: @white;
     padding: @paddingSmall;
-    width: 140px;
+    width: 136px;
     cursor: pointer;
 
     & .schedulePossible__index {
