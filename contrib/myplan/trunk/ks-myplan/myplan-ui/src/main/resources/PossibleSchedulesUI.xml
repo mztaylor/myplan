@@ -28,6 +28,9 @@
         <property name="items">
             <list>
                 <bean parent="KSAP-Page" p:id="planned_courses_detail_page">
+                    <property name="layoutManager">
+                        <bean parent="Uif-VerticalBoxLayout"/>
+                    </property>
                     <property name="items">
                         <list>
                             <ref bean="sb_possible_schedules"/>
@@ -49,34 +52,13 @@
     <bean id="sb_possible_schedules" parent="sb_possible_schedules-parent"/>
     <bean abstract="true" id="sb_possible_schedules-parent" parent="KSAP-VerticalBoxGroup"
           p:id="sb_possible_schedules">
-        <property name="dataAttributes">
-            <map>
-                <entry key="minTime" value="@{minTime}"/>
-                <entry key="maxTime" value="@{maxTime}"/>
-            </map>
-        </property>
-        <property name="cssClasses" value="@{weekend ? 'schedulePossible__option--hasWeekend' : ''}"/>
         <property name="forceSessionPersistence" value="true"/>
-        <property name="header">
-            <bean parent="KSAP-HeaderFive" p:cssClasses="schedulePossible__header"
-                  p:headerTagCssClasses="schedulePossible__headerText"/>
-        </property>
-        <property name="headerText" value="Possible schedules found: @{possibleScheduleOptions.size()}"/>
-        <property name="header.rightGroup">
-            <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="schedulePossible__headerGroup--right">
-                <property name="items">
-                    <list>
-                        <bean parent="KSAP-Message" p:messageText="Registered course"/>
-                        <bean parent="KSAP-Message" p:messageText="Has enrollment restrictions"/>
-                        <bean parent="KSAP-Message" p:messageText="Closed section"/>
-                    </list>
-                </property>
-            </bean>
-        </property>
+        <property name="cssClasses" value="removeMargin"/>
         <property name="items">
             <list>
                 <ref bean="possible_schedules_details"/>
                 <ref bean="possible_schedule_tbd_list"/>
+                <ref bean="possible_schedules_calendar"/>
             </list>
         </property>
         <property name="propertyReplacers">
@@ -96,7 +78,24 @@
     <bean id="possible_schedules_empty" parent="KSAP-Message" p:messageText="You have no possible schedules"/>
 
     <bean id="possible_schedules_details" parent="KSAP-HorizontalBoxGroup">
+        <property name="header">
+            <bean parent="KSAP-HeaderFive" p:cssClasses="schedulePossible__header"
+                  p:headerTagCssClasses="schedulePossible__headerText"/>
+        </property>
+        <property name="headerText" value="Possible schedules found: @{possibleScheduleOptions.size()}"/>
+        <property name="header.rightGroup">
+            <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="schedulePossible__headerGroup--right">
+                <property name="items">
+                    <list>
+                        <bean parent="KSAP-Message" p:messageText="Registered course"/>
+                        <bean parent="KSAP-Message" p:messageText="Has enrollment restrictions"/>
+                        <bean parent="KSAP-Message" p:messageText="Closed section"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="cssClasses" value="schedulePossible"/>
+        <!--refreshScheduleCalendar(KsapSbCalendar);-->
         <property name="onDocumentReadyScript" value="
             jQuery('.schedulePossible__carousel').jCarouselLite({
                 btnNext: '.schedulePossible__carouselButton--next',
@@ -104,7 +103,6 @@
                 scroll: 5,
                 visible: 5,
                 initCallback: function(a) {
-                    refreshScheduleCalendar(KsapSbCalendar);
                     jQuery.unblockUI();
                 },
                 beforeStart: function(a) {
@@ -117,15 +115,15 @@
             }).on('SAVED_SCHEDULE_REMOVE', function(event, data) {
                 jQuery('.schedulePossible__save[data-saved-id=' + data.scheduleIdRemoved + ']').removeClass('schedulePossible__save--saved').removeData('saved-id');
             }).on('REFRESH_POSSIBLE_SCHEDULES', function(event, data) {
-                        customRetrieveComponent('sb_possible_schedules','sb_possible_schedules','build','sb',{viewId:'PossibleSchedules-FormView',termId:'@{termId}', learningPlanId:'@{requestedLearningPlanId}', 'buildFilters.showClosed':jQuery('#schedule_build_filters input[value=&quot;closed&quot;]').prop('checked'), 'buildFilters.showRestricted':jQuery('#schedule_build_filters input[value=&quot;restrictions&quot;]').prop('checked'), 'buildFilters.showOverlapped':jQuery('#schedule_build_filters input[value=&quot;registered&quot;]').prop('checked')},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+                customRetrieveComponent('sb_possible_schedules','sb_possible_schedules','build','sb',{viewId:'PossibleSchedules-FormView',termId:'@{termId}', learningPlanId:'@{requestedLearningPlanId}', 'buildFilters.showClosed':jQuery('#schedule_build_filters input[value=&quot;closed&quot;]').prop('checked'), 'buildFilters.showRestricted':jQuery('#schedule_build_filters input[value=&quot;restrictions&quot;]').prop('checked'), 'buildFilters.showOverlapped':jQuery('#schedule_build_filters input[value=&quot;registered&quot;]').prop('checked')},null,{centerX:true, centerY:false, message:'&lt;p&gt;&lt;img src=&quot;../themes/ksap/images/loader/ajax_large.gif&quot; alt=&quot;Please wait while we are fetching schedule options...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching schedule options...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{color:'#c09853', backgroundColor:'#fcf8e3', border:'solid 1px #fbeed5', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
             });
         "/>
         <property name="items">
             <list>
-                <bean parent="possible_schedules_nav" p:actionLabel="Prev"
+                <bean parent="possible_schedules_nav" p:actionLabel="Prev 5"
                       p:additionalCssClasses="schedulePossible__carouselButton--prev"/>
                 <ref bean="possible_courses_schedule_list"/>
-                <bean parent="possible_schedules_nav" p:actionLabel="Next"
+                <bean parent="possible_schedules_nav" p:actionLabel="Next 5"
                       p:additionalCssClasses="schedulePossible__carouselButton--next"/>
             </list>
         </property>
@@ -151,8 +149,6 @@
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
                 <entry key="events" value="@{#line.event}"/>
-                <entry key="minTime" value="@{#line.minTime}"/>
-                <entry key="maxTime" value="@{#line.maxTime}"/>
             </map>
         </property>
         <property name="items">
@@ -198,7 +194,7 @@
         </property>
     </bean>
 
-    <bean id="possible_schedule_tbd_list" parent="KSAP-StackedCollectionGroup">
+    <bean id="possible_schedule_tbd_list" parent="KSAP-StackedHorizontalCollectionGroup">
         <property name="hidden" value="true"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
@@ -210,7 +206,7 @@
         </property>
         <property name="layoutManager.lineGroupPrototype.render" value="@{#line.tbd}"/>
         <property name="layoutManager.lineGroupPrototype.id" value="possible-tba-@{#line.uniqueId}"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__tbaItem"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__tbaItem schedulePossible--@{#index}"/>
         <property name="layoutManager.lineGroupPrototype.hidden" value="true"/>
         <property name="items">
             <list>
@@ -223,7 +219,53 @@
                         </bean>
                     </property>
                 </bean>
+                <bean parent="KSAP-MessageField" p:messageText="@{#index + 1}" p:cssClasses="schedulePossible__tbaItemIndex"/>
             </list>
+        </property>
+    </bean>
+
+    <bean id="possible_schedules_calendar" parent="KSAP-Calendar" p:cssClasses="scheduleCalendar">
+        <property name="templateOptions">
+            <map merge="true">
+                <entry key="year"
+                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'y')}"/>
+                <entry key="month"
+                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'M') - 1}"/>
+                <entry key="date"
+                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'd')}"/>
+                <entry key="defaultView" value="agendaWeek"/>
+                <entry key="header" value="false"/>
+                <entry key="contentHeight" value="9999"/>
+                <entry key="columnFormat" value="{week: 'dddd'}"/>
+                <entry key="hiddenDays" value="[0]"/>
+                <entry key="weekends" value="@{weekend}"/>
+                <entry key="allDaySlot" value="false"/>
+                <entry key="allDayText" value="to be arranged"/>
+                <entry key="axisFormat" value="h(:mm)t"/>
+                <entry key="minTime" value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(minTime, 'H')}"/>
+                <entry key="maxTime" value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(maxTime, 'H')}"/>
+                <entry key="timeFormat" value="{agenda: 'h(:mm)t{ - h(:mm)t}'}"/>
+                <entry key="slotEventOverlap" value="false"/>
+                <!--<entry key="eventAfterRender" value="
+                    function(event, element, view) {
+                        element.data({
+                            'course-id': event.courseId,
+                            'course-code': event.courseCd,
+                            'course-title': event.courseTitle,
+                            'section-code': event.sectionCd,
+                            'meeting-time': event.meetingTime,
+                            'building': event.building,
+                            'link-building': event.buildingLink,
+                            'term-id': event.termId
+                        });
+                    }
+                "/>-->
+                <entry key="lazyFetching" value="false"/>
+                <entry key="editable" value="false"/>
+                <entry key="selectable" value="false"/>
+                <entry key="selectHelper" value="false"/>
+                <entry key="complete" value="function() { KsapSbCalendar = jQuery(this); }"/>
+            </map>
         </property>
     </bean>
 

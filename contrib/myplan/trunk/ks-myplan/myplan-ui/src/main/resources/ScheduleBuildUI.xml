@@ -80,7 +80,6 @@
                 </bean>
                 <bean parent="KSAP-HeaderDiv" p:headerText="@{term.name}" p:cssClasses="scheduleBuilder__termHeader"/>
                 <ref bean="schedule_build_possible"/>
-                <ref bean="possible_schedules_calendar"/>
             </list>
         </property>
     </bean>
@@ -194,54 +193,10 @@
     </bean>
 
     <bean id="schedule_build_possible" parent="KSAP-VerticalBoxGroup" p:id="schedule_build_possible">
+        <property name="cssClasses" value="scheduleBuilder__placeholder"/>
         <property name="onDocumentReadyScript" value="
-            customRetrieveComponent('schedule_build_possible','sb_possible_schedules','build','sb',{viewId:'PossibleSchedules-FormView',termId:'@{termId}', learningPlanId:'@{requestedLearningPlanId}', 'buildFilters.showClosed':jQuery('#schedule_build_filters input[value=&quot;closed&quot;]').prop('checked'), 'buildFilters.showRestricted':jQuery('#schedule_build_filters input[value=&quot;restrictions&quot;]').prop('checked'), 'buildFilters.showOverlapped':jQuery('#schedule_build_filters input[value=&quot;registered&quot;]').prop('checked')},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+            customRetrieveComponent('schedule_build_possible','sb_possible_schedules','build','sb',{viewId:'PossibleSchedules-FormView',termId:'@{termId}', learningPlanId:'@{requestedLearningPlanId}', 'buildFilters.showClosed':jQuery('#schedule_build_filters input[value=&quot;closed&quot;]').prop('checked'), 'buildFilters.showRestricted':jQuery('#schedule_build_filters input[value=&quot;restrictions&quot;]').prop('checked'), 'buildFilters.showOverlapped':jQuery('#schedule_build_filters input[value=&quot;registered&quot;]').prop('checked')},null,{centerX:true, centerY:false, message:'&lt;p&gt;&lt;img src=&quot;../themes/ksap/images/loader/ajax_large.gif&quot; alt=&quot;Please wait while we are fetching schedule options...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching schedule options...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{color:'#c09853', backgroundColor:'#fcf8e3', border:'solid 1px #fbeed5', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
         "/>
-    </bean>
-
-    <bean id="possible_schedules_calendar" parent="KSAP-Calendar" p:cssClasses="scheduleCalendar">
-        <property name="templateOptions">
-            <map merge="true">
-                <entry key="year"
-                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'y')}"/>
-                <entry key="month"
-                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'M') - 1}"/>
-                <entry key="date"
-                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'd')}"/>
-                <entry key="defaultView" value="agendaWeek"/>
-                <entry key="header" value="false"/>
-                <entry key="contentHeight" value="9999"/>
-                <entry key="columnFormat" value="{week: 'dddd'}"/>
-                <entry key="hiddenDays" value="[0]"/>
-                <entry key="weekends" value="false"/>
-                <entry key="allDaySlot" value="false"/>
-                <entry key="allDayText" value="to be arranged"/>
-                <entry key="axisFormat" value="h(:mm)t"/>
-                <entry key="minTime" value="8"/>
-                <entry key="maxTime" value="17"/>
-                <entry key="timeFormat" value="{agenda: 'h(:mm)t{ - h(:mm)t}'}"/>
-                <entry key="slotEventOverlap" value="false"/>
-                <!--<entry key="eventAfterRender" value="
-                    function(event, element, view) {
-                        element.data({
-                            'course-id': event.courseId,
-                            'course-code': event.courseCd,
-                            'course-title': event.courseTitle,
-                            'section-code': event.sectionCd,
-                            'meeting-time': event.meetingTime,
-                            'building': event.building,
-                            'link-building': event.buildingLink,
-                            'term-id': event.termId
-                        });
-                    }
-                "/>-->
-                <entry key="lazyFetching" value="false"/>
-                <entry key="editable" value="false"/>
-                <entry key="selectable" value="false"/>
-                <entry key="selectHelper" value="false"/>
-                <entry key="complete" value="function() { KsapSbCalendar = jQuery(this); }"/>
-            </map>
-        </property>
     </bean>
 
     <bean id="class_meeting_time_formatter"
