@@ -1,18 +1,13 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
-import org.kuali.rice.krad.web.form.UifFormBase;
-import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
-import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
-import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
-import org.kuali.student.myplan.schedulebuilder.infc.ScheduleBuildFilters;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
@@ -31,123 +26,64 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class DefaultScheduleBuildForm extends UifFormBase implements
+public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
         ScheduleBuildForm {
 
     private static final long serialVersionUID = 3274052642980656068L;
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(DefaultScheduleBuildForm.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultScheduleBuildForm.class);
 
-    private int possibleScheduleSize = 10;
-    private boolean overload;
 
-    private String termId;
-    private String requestedLearningPlanId;
-    private boolean includeClosed;
     private boolean more;
-    private Integer removeReserved;
-
     private String uniqueId;
-
-    private Term term;
+    private int possibleScheduleSize;
+    private List<String> includeFilters;
     private ScheduleBuilder scheduleBuilder;
     private List<CourseOption> courseOptions;
-    private List<ReservedTime> reservedTimes;
-    private List<PossibleScheduleOption> possibleScheduleOptions;
     private List<PossibleScheduleOption> savedSchedules;
-    private ScheduleBuildFilters buildFilters;
-
-    private List<String> includeFilters;
-
-    private ScheduleBuildStrategy scheduleBuildStrategy;
-
-    private TermHelper termHelper;
+    private List<PossibleScheduleOption> possibleScheduleOptions;
 
     private transient AcademicCalendarService academicCalendarService;
 
-    @Override
-    public void reset() {
-        overload = false;
-        includeClosed = false;
-
-        TermHelper th = getTermHelper();
-        if (termId == null)
-            throw new IllegalArgumentException("Missing term ID");
-        if (th.isCompleted(termId))
-            throw new IllegalArgumentException("Term " + termId
-                    + " has already been completed.");
-        if (!th.isPlanning(termId))
-            throw new IllegalArgumentException("Term " + termId
-                    + " is no longer open for planning.");
-        if (termId == null)
-            throw new IllegalArgumentException("Missing term ID");
-
-
-        term = null;
-        StringBuilder pubs = new StringBuilder();
-        for (Term t : th.getOfficialTerms()) {
-            pubs.append(" ").append(t.getId());
-            if (t.getId().equals(termId))
-                term = t;
-        }
-
-        if (term == null)
-            throw new IllegalArgumentException("Term " + termId
-                    + " is not currently published." + pubs);
-
-        ScheduleBuildStrategy strategy = getScheduleBuildStrategy();
-        try {
-            /*courseOptions = strategy.getCourseOptions(strategy.getLearningPlan(requestedLearningPlanId).getId(), termId);*/
-            reservedTimes = strategy.getReservedTimes(requestedLearningPlanId);
-            ScheduleBuilder builder = new ScheduleBuilder(term, null, null, null, null);
-            for (ReservedTime reservedTime : reservedTimes) {
-                builder.buildReservedTimeEvents(reservedTime);
-            }
-        } catch (PermissionDeniedException e) {
-            throw new IllegalArgumentException("Course options not permitted for requested learning plan", e);
-        }
-
-    }
 
     private void updateReservedTimesOnBuild() {
         ScheduleBuildStrategy sb = getScheduleBuildStrategy();
-        if (removeReserved != null && reservedTimes != null
-                && removeReserved >= 0 && removeReserved < reservedTimes.size()) {
+        if (getRemoveReserved() != null && getReservedTimes() != null
+                && getRemoveReserved() >= 0 && getRemoveReserved() < getReservedTimes().size()) {
             try {
-                sb.deleteReservedTime(requestedLearningPlanId, reservedTimes
-                        .get(removeReserved).getId());
+                sb.deleteReservedTime(getRequestedLearningPlanId(), getReservedTimes()
+                        .get(getRemoveReserved()).getId());
             } catch (PermissionDeniedException e) {
                 throw new IllegalStateException(
                         "Failed to remove reserved time", e);
             }
         }
-        removeReserved = null;
+        setRemoveReserved(null);
 
         List<ReservedTime> newReservedTimes;
         try {
-            newReservedTimes = sb.getReservedTimes(requestedLearningPlanId);
+            newReservedTimes = sb.getReservedTimes(getRequestedLearningPlanId());
         } catch (PermissionDeniedException e) {
             throw new IllegalStateException("Failed to refresh reserved times",
                     e);
         }
 
-        if (newReservedTimes != null && reservedTimes != null)
+        if (newReservedTimes != null && getReservedTimes() != null)
             for (int i = 0; i < newReservedTimes.size(); i++) {
-                if (i < reservedTimes.size()) {
+                if (i < getReservedTimes().size()) {
                     ReservedTimeInfo nrt = (ReservedTimeInfo) newReservedTimes
                             .get(i);
-                    nrt.setSelected(reservedTimes.get(i).isSelected());
+                    nrt.setSelected(getReservedTimes().get(i).isSelected());
                 }
             }
-        reservedTimes = newReservedTimes;
+        setReservedTimes(newReservedTimes);
     }
 
     private void updateSavedSchedulesOnBuild() {
         ScheduleBuildStrategy sb = getScheduleBuildStrategy();
         List<PossibleScheduleOption> newSavedSchedules;
         try {
-            newSavedSchedules = sb.getSchedules(requestedLearningPlanId);
+            newSavedSchedules = sb.getSchedules(getRequestedLearningPlanId());
         } catch (PermissionDeniedException e) {
             throw new IllegalStateException(
                     "Failed to refresh saved schedules", e);
@@ -171,10 +107,28 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
         savedSchedules = newSavedSchedules;
     }
 
+    /*Defaulting to 8:00Am*/
+    protected long getDefaultMinTime() {
+        Calendar defaultStart = Calendar.getInstance();
+        defaultStart.set(defaultStart.get(Calendar.YEAR), defaultStart.get(Calendar.MONTH), defaultStart.get(Calendar.DATE), 8, 0);
+        return defaultStart.getTime().getTime();
+    }
+
+    /*Defaulting to 5:00Pm*/
+    protected long getDefaultMaxTime() {
+        Calendar defaultEnd = Calendar.getInstance();
+        defaultEnd.set(defaultEnd.get(Calendar.YEAR), defaultEnd.get(Calendar.MONTH), defaultEnd.get(Calendar.DATE), 17, 0);
+        return defaultEnd.getTime().getTime();
+    }
+
     @Override
     public void buildSchedules() {
         updateReservedTimesOnBuild();
         updateSavedSchedulesOnBuild();
+
+        courseOptions = getScheduleBuildStrategy().getCourseOptions(getRequestedLearningPlanId(), getTermId(), getBuildFilters());
+
+        validateAndGenerateTerm();
 
         if (more) {
 
@@ -199,8 +153,8 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
                     });
 
             Set<PossibleScheduleOption> current = new HashSet<PossibleScheduleOption>();
-            int nextn = possibleScheduleOptions.size();
-            for (PossibleScheduleOption pso : possibleScheduleOptions) {
+            int nextn = getPossibleScheduleOptions().size();
+            for (PossibleScheduleOption pso : getPossibleScheduleOptions()) {
                 if (pso.isSelected() || pso.isDiscarded())
                     current.add(pso);
                 if (pso.isSelected())
@@ -208,11 +162,9 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
             }
 
             if (nextn > 0) {
-                List<PossibleScheduleOption> newOptions = scheduleBuilder
-                        .getNext(nextn, current);
+                List<PossibleScheduleOption> newOptions = getScheduleBuilder().getNext(nextn, current);
                 int n = 0;
-                ListIterator<PossibleScheduleOption> psi = possibleScheduleOptions
-                        .listIterator();
+                ListIterator<PossibleScheduleOption> psi = getPossibleScheduleOptions().listIterator();
                 while (psi.hasNext() && n < newOptions.size()) {
                     PossibleScheduleOption psn = psi.next();
                     if (!psn.isSelected() && !psn.isDiscarded())
@@ -221,41 +173,54 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
             }
 
         } else {
-            scheduleBuilder = new ScheduleBuilder(getTerm(), courseOptions, reservedTimes, savedSchedules, buildFilters);
-            possibleScheduleOptions = getScheduleBuilder().getNext(possibleScheduleSize, Collections.<PossibleScheduleOption>emptySet());
+            scheduleBuilder = new ScheduleBuilder(getTerm(), getCourseOptions(), getReservedTimes(), getSavedSchedules(), getBuildFilters());
+            possibleScheduleOptions = getScheduleBuilder().getNext(getPossibleScheduleSize(), Collections.<PossibleScheduleOption>emptySet());
         }
+
+        /*Calculating min & max times of all possibleSchedules combined and If there is any weekend or TBD in any of the possible schedules*/
+        for (PossibleScheduleOption possibleScheduleOption : getPossibleScheduleOptions()) {
+            if (!isTbd() && possibleScheduleOption.isTbd()) {
+                setTbd(possibleScheduleOption.isTbd());
+            }
+            if (!isWeekend() && possibleScheduleOption.isWeekend()) {
+                setWeekend(possibleScheduleOption.isWeekend());
+            }
+
+            if (possibleScheduleOption.getMinTime() < getMinTime()) {
+                setMinTime(possibleScheduleOption.getMinTime());
+            }
+
+            if (possibleScheduleOption.getMaxTime() > getMaxTime()) {
+                setMaxTime(possibleScheduleOption.getMaxTime());
+            }
+
+        }
+
+
     }
 
     @Override
     public PossibleScheduleOption saveSchedule() {
 
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        List<PossibleScheduleOption> possibleScheduleOptionList = (List<PossibleScheduleOption>) request.getSession().getAttribute(ScheduleBuilderConstants.SESSION_ATTRIBUTE_KEY);
-
-        if (!CollectionUtils.isEmpty(possibleScheduleOptionList)) {
-            getPossibleScheduleOptions().addAll(possibleScheduleOptionList);
-        }
-
-        if (possibleScheduleOptions == null || uniqueId == null
-                || possibleScheduleOptions.isEmpty()) {
-            LOG.error("No possible schedule options to save from - uniqueId = "
-                    + uniqueId);
+        if (getPossibleScheduleOptions() == null || getUniqueId() == null
+                || getPossibleScheduleOptions().isEmpty()) {
+            LOG.error("No possible schedule options to save from - uniqueId = " + getUniqueId());
             return null;
         }
 
         PossibleScheduleOption saveMe = null;
-        for (PossibleScheduleOption pso : possibleScheduleOptions)
-            if (uniqueId.equals(pso.getUniqueId()))
+        for (PossibleScheduleOption pso : getPossibleScheduleOptions())
+            if (getUniqueId().equals(pso.getUniqueId()))
                 saveMe = pso;
         if (saveMe == null) {
-            LOG.error("Invalid possible schedule unique ID " + uniqueId);
+            LOG.error("Invalid possible schedule unique ID " + getUniqueId());
             return null;
         }
 
         ScheduleBuildStrategy sb = getScheduleBuildStrategy();
         try {
             PossibleScheduleOption rv = sb.createSchedule(
-                    requestedLearningPlanId, saveMe);
+                    getRequestedLearningPlanId(), saveMe);
             getSavedSchedules().add(rv);
             return rv;
         } catch (PermissionDeniedException e) {
@@ -268,11 +233,11 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
     public String removeSchedule() {
         ScheduleBuildStrategy sb = getScheduleBuildStrategy();
         try {
-            sb.deleteSchedule(requestedLearningPlanId, uniqueId);
+            sb.deleteSchedule(getRequestedLearningPlanId(), getUniqueId());
         } catch (PermissionDeniedException e) {
             throw new IllegalStateException("Failed to remove reserved time", e);
         }
-        return uniqueId;
+        return getUniqueId();
     }
 
     public ScheduleBuilder getScheduleBuilder() {
@@ -325,38 +290,16 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
     }
 
     public int getPossibleScheduleSize() {
+        if (possibleScheduleSize == 0) {
+            possibleScheduleSize = 25;
+        }
         return possibleScheduleSize;
     }
 
     public void setPossibleScheduleSize(int possibleScheduleSize) {
-        this.possibleScheduleSize = possibleScheduleSize == 0 ? 10
-                : possibleScheduleSize;
+        this.possibleScheduleSize = possibleScheduleSize;
     }
 
-    public boolean isOverload() {
-        return overload;
-    }
-
-    public void setOverload(boolean overload) {
-        this.overload = overload;
-    }
-
-    public String getTermId() {
-        return termId;
-    }
-
-    public void setTermId(String termId) {
-        this.termId = termId;
-    }
-
-    @Override
-    public String getRequestedLearningPlanId() {
-        return requestedLearningPlanId;
-    }
-
-    public void setRequestedLearningPlanId(String requestedLearningPlanId) {
-        this.requestedLearningPlanId = requestedLearningPlanId;
-    }
 
     public String getUniqueId() {
         return uniqueId;
@@ -366,18 +309,11 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
         this.uniqueId = uniqueId;
     }
 
-    public Term getTerm() {
-        return term;
-    }
-
-    public void setTerm(Term term) {
-        this.term = term;
-    }
 
     @Override
     public List<CourseOption> getCourseOptions() {
         if (courseOptions == null) {
-
+            courseOptions = new ArrayList<CourseOption>();
         }
         return courseOptions;
     }
@@ -386,14 +322,6 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
         this.courseOptions = courseOptions;
     }
 
-    @Override
-    public List<ReservedTime> getReservedTimes() {
-        return reservedTimes;
-    }
-
-    public void setReservedTimes(List<ReservedTime> reservedTimes) {
-        this.reservedTimes = reservedTimes;
-    }
 
     @Override
     public List<PossibleScheduleOption> getPossibleScheduleOptions() {
@@ -430,23 +358,6 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
         this.more = more;
     }
 
-    @Override
-    public Integer getRemoveReserved() {
-        return removeReserved;
-    }
-
-    public void setRemoveReserved(Integer removeReserved) {
-        this.removeReserved = removeReserved;
-    }
-
-    @Override
-    public boolean isIncludeClosed() {
-        return includeClosed;
-    }
-
-    public void setIncludeClosed(boolean includeClosed) {
-        this.includeClosed = includeClosed;
-    }
 
     public String getFullTermWeekTitle() {
         Term t = getTerm();
@@ -464,29 +375,7 @@ public class DefaultScheduleBuildForm extends UifFormBase implements
 
     @Override
     public String toString() {
-        return "ScheduleBuildForm [termId=" + termId + "]";
-    }
-
-    public ScheduleBuildStrategy getScheduleBuildStrategy() {
-        if (scheduleBuildStrategy == null) {
-            scheduleBuildStrategy = UwMyplanServiceLocator.getInstance().getScheduleBuildStrategy();
-        }
-        return scheduleBuildStrategy;
-    }
-
-    public void setScheduleBuildStrategy(ScheduleBuildStrategy scheduleBuildStrategy) {
-        this.scheduleBuildStrategy = scheduleBuildStrategy;
-    }
-
-    public TermHelper getTermHelper() {
-        if (termHelper == null) {
-            termHelper = KsapFrameworkServiceLocator.getTermHelper();
-        }
-        return termHelper;
-    }
-
-    public void setTermHelper(TermHelper termHelper) {
-        this.termHelper = termHelper;
+        return "ScheduleBuildForm [termId=" + getTermId() + "]";
     }
 
     private AcademicCalendarService getAcademicCalendarService() {

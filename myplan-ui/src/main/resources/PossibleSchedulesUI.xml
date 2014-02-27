@@ -21,35 +21,23 @@
 
     <!--  Possible Schedules components -->
 
-    <bean id="PossibleSchedules-LookupView" parent="MyPlanBaseLookupView">
-        <property name="viewName" value="PossibleSchedules-LookupView"/>
-        <property name="onLoadScript" value=""/>
-        <property name="page.header.render" value="false"/>
+    <bean id="PossibleSchedules-FormView" parent="MyPlanFormView">
+        <property name="id" value="PossibleSchedules-FormView"/>
+        <property name="entryPageId" value="planned_courses_detail_page"/>
+        <property name="formClass" value="org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-Page" p:id="planned_courses_detail_page">
+                    <property name="items">
+                        <list>
+                            <ref bean="sb_possible_schedules"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
-        <property name="dataObjectClassName"
-                  value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
-        <property name="viewHelperServiceClass"
-                  value="org.kuali.student.myplan.schedulebuilder.service.PossibleSchedulesLookupableHelperImpl"/>
-        <property name="singlePageView" value="true"/>
-        <property name="page">
-            <bean parent="KSAP-Page" p:id="planned_courses_detail_page">
-                <property name="layoutManager">
-                    <bean parent="Uif-VerticalBoxLayout"/>
-                </property>
-                <property name="items">
-                    <list>
-                        <ref bean="sb_possible_schedules"/>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="criteriaFields">
-            <list/>
-        </property>
-        <property name="resultFields">
-            <list/>
-        </property>
     </bean>
 
     <bean id="possible_schedules_nav" parent="Uif-ActionLink">
@@ -61,12 +49,19 @@
     <bean id="sb_possible_schedules" parent="sb_possible_schedules-parent"/>
     <bean abstract="true" id="sb_possible_schedules-parent" parent="KSAP-VerticalBoxGroup"
           p:id="sb_possible_schedules">
+        <property name="dataAttributes">
+            <map>
+                <entry key="minTime" value="@{minTime}"/>
+                <entry key="maxTime" value="@{maxTime}"/>
+            </map>
+        </property>
+        <property name="cssClasses" value="@{weekend ? 'schedulePossible__option--hasWeekend' : ''}"/>
         <property name="forceSessionPersistence" value="true"/>
         <property name="header">
             <bean parent="KSAP-HeaderFive" p:cssClasses="schedulePossible__header"
                   p:headerTagCssClasses="schedulePossible__headerText"/>
         </property>
-        <property name="headerText" value="Possible schedules found: @{lookupResults.size()}"/>
+        <property name="headerText" value="Possible schedules found: @{possibleScheduleOptions.size()}"/>
         <property name="header.rightGroup">
             <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="schedulePossible__headerGroup--right">
                 <property name="items">
@@ -87,7 +82,7 @@
         <property name="propertyReplacers">
             <list>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                      p:condition="lookupResults EQ null OR lookupResults.size() EQ 0">
+                      p:condition="possibleScheduleOptions EQ null OR possibleScheduleOptions.size() EQ 0">
                     <property name="replacement">
                         <list>
                             <ref bean="possible_schedules_empty"/>
@@ -122,7 +117,7 @@
             }).on('SAVED_SCHEDULE_REMOVE', function(event, data) {
                 jQuery('.schedulePossible__save[data-saved-id=' + data.scheduleIdRemoved + ']').removeClass('schedulePossible__save--saved').removeData('saved-id');
             }).on('REFRESH_POSSIBLE_SCHEDULES', function(event, data) {
-                customRetrieveComponent('sb_possible_schedules','sb_possible_schedules','search','lookup',{viewId:'PossibleSchedules-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+                        customRetrieveComponent('sb_possible_schedules','sb_possible_schedules','build','sb',{viewId:'PossibleSchedules-FormView',termId:'@{termId}', learningPlanId:'@{requestedLearningPlanId}', 'buildFilters.showClosed':jQuery('#schedule_build_filters input[value=&quot;closed&quot;]').prop('checked'), 'buildFilters.showRestricted':jQuery('#schedule_build_filters input[value=&quot;restrictions&quot;]').prop('checked'), 'buildFilters.showOverlapped':jQuery('#schedule_build_filters input[value=&quot;registered&quot;]').prop('checked')},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
             });
         "/>
         <property name="items">
@@ -138,7 +133,7 @@
         <property name="validationMessages"><null/></property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
-        <property name="propertyName" value="lookupResults"/>
+        <property name="propertyName" value="possibleScheduleOptions"/>
         <property name="cssClasses" value="schedulePossible__carousel"/>
         <property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.uniqueId}"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__option schedulePossible--@{#index % 5} @{#line.weekend ? 'schedulePossible__option--hasWeekend' : ''}"/>
@@ -192,7 +187,7 @@
         <property name="hidden" value="true"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
-        <property name="propertyName" value="lookupResults"/>
+        <property name="propertyName" value="possibleScheduleOptions"/>
         <property name="cssClasses" value="schedulePossible__tba"/>
         <property name="header">
             <bean parent="KSAP-HeaderDiv" p:headerText="Meeting Time(s) To Be Arranged" p:cssClasses="schedulePossible__tbaHeader"/>

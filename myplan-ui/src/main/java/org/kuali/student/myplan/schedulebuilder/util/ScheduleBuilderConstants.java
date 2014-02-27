@@ -9,7 +9,4 @@ public class ScheduleBuilderConstants {
     public static final String SHOW_CLOSED_KEY = "closed";
     public static final String SHOW_RESTRICTED_KEY = "restricted";
     public static final String SHOW_OVERLAPPED_KEY = "overlapped";
-
-    public static final String SESSION_ATTRIBUTE_KEY = "possibleScheduleOptions";
-
 }
