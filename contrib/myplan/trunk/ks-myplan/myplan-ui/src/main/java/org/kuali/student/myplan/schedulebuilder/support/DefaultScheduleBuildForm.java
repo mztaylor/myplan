@@ -177,6 +177,9 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
             possibleScheduleOptions = getScheduleBuilder().getNext(getPossibleScheduleSize(), Collections.<PossibleScheduleOption>emptySet());
         }
 
+        setMinTime(getDefaultMinTime());
+        setMaxTime(getDefaultMaxTime());
+
         /*Calculating min & max times of all possibleSchedules combined and If there is any weekend or TBD in any of the possible schedules*/
         for (PossibleScheduleOption possibleScheduleOption : getPossibleScheduleOptions()) {
             if (!isTbd() && possibleScheduleOption.isTbd()) {
