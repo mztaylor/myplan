@@ -19,6 +19,7 @@
     <bean abstract="true" id="ScheduleBuild-FormView-parent" parent="MyPlanFormView">
         <property name="id" value="ScheduleBuild-FormView"/>
         <property name="entryPageId" value="schedule_build"/>
+        <property name="formClass" value="org.kuali.student.myplan.schedulebuilder.util.ScheduleForm"/>
         <property name="additionalCssFiles">
             <list>
                 <value>plugins/fullcalendar/fullcalendar.css</value>
@@ -51,7 +52,7 @@
         </property>
         <property name="items">
             <list>
-                <bean id="schedule_build_termId" parent="Uif-InputField" p:propertyName="term.id"
+                <bean id="schedule_build_termId" parent="Uif-InputField" p:propertyName="termId"
                       p:fieldLabel.render="false">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
@@ -194,7 +195,7 @@
 
     <bean id="schedule_build_possible" parent="KSAP-VerticalBoxGroup" p:id="schedule_build_possible">
         <property name="onDocumentReadyScript" value="
-            customRetrieveComponent('schedule_build_possible','sb_possible_schedules','search','lookup',{viewId:'PossibleSchedules-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+            customRetrieveComponent('schedule_build_possible','sb_possible_schedules','build','sb',{viewId:'PossibleSchedules-FormView',termId:'@{termId}', learningPlanId:'@{requestedLearningPlanId}', 'buildFilters.showClosed':jQuery('#schedule_build_filters input[value=&quot;closed&quot;]').prop('checked'), 'buildFilters.showRestricted':jQuery('#schedule_build_filters input[value=&quot;restrictions&quot;]').prop('checked'), 'buildFilters.showOverlapped':jQuery('#schedule_build_filters input[value=&quot;registered&quot;]').prop('checked')},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
         "/>
     </bean>
 

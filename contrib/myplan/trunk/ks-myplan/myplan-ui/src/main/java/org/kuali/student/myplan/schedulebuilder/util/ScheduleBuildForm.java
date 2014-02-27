@@ -14,30 +14,7 @@ import java.util.List;
  * @author Mark Fyffe <mwfyffe@indiana.edu>
  * @version 0.7.1
  */
-public interface ScheduleBuildForm {
-
-    /**
-     * Get the term for which to build a schedule.
-     *
-     * @return The term for which to build a schedule.
-     */
-    Term getTerm();
-
-    /**
-     * Get the requested learning plan ID.
-     *
-     * @return The requested learning plan ID.
-     */
-    String getRequestedLearningPlanId();
-
-    /**
-     * Determine if closed activity offerings should be included in building
-     * schedules.
-     *
-     * @return True if closed activity offerings should be included, false if
-     *         not.
-     */
-    boolean isIncludeClosed();
+public interface ScheduleBuildForm extends ScheduleForm {
 
     /**
      * Get the course options the student is currently working with.
@@ -45,20 +22,6 @@ public interface ScheduleBuildForm {
      * @return The course options the student is currently working with.
      */
     List<CourseOption> getCourseOptions();
-
-    /**
-     * Get the reserved time options.
-     *
-     * @return The reserved time options.
-     */
-    List<ReservedTime> getReservedTimes();
-
-    /**
-     * Get the index of a reserved time to remove from the list.
-     *
-     * @return The index of a reserved time to remove from the list.
-     */
-    Integer getRemoveReserved();
 
     /**
      * Get the list of possible schedule options.
@@ -73,11 +36,6 @@ public interface ScheduleBuildForm {
      * @return The saved schedule options.
      */
     List<PossibleScheduleOption> getSavedSchedules();
-
-    /**
-     * Reset the form to its initial state.
-     */
-    void reset();
 
     /**
      * Determine if more schedule options based on the same criteria are

@@ -16,6 +16,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleForm;
 import org.kuali.student.myplan.schedulebuilder.util.ShoppingCartForm;
 import org.kuali.student.myplan.utils.CalendarUtil;
 import org.kuali.student.r2.lum.course.infc.Course;
@@ -65,8 +66,16 @@ public class ScheduleBuildController extends UifControllerBase {
                               HttpServletResponse response) {
         super.start(form, result, request, response);
 
-        ScheduleBuildForm sbform = (ScheduleBuildForm) form;
+        ScheduleForm sbform = (ScheduleForm) form;
         sbform.reset();
+        return getUIFModelAndView(form);
+    }
+
+
+    @RequestMapping(params = "methodToCall=build")
+    public ModelAndView build(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ScheduleBuildForm sbform = (ScheduleBuildForm) form;
+        sbform.buildSchedules();
         return getUIFModelAndView(form);
     }
 
@@ -379,196 +388,6 @@ public class ScheduleBuildController extends UifControllerBase {
         return event;
     }
 
-    @RequestMapping(params = "methodToCall=build")
-    public ModelAndView build(@ModelAttribute("KualiForm") ScheduleBuildForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        form.buildSchedules();
-
-        /**
-         * This is used to adjust minDate and maxDate which is a week from min date and adjust min date to be monday if it is not.
-         * Used in building a week worth of schedules instead of whole term.
-         * */
-        Date minDate = getCalendarUtil().getNextMonday(form.getTerm().getStartDate());
-        Date maxDate = getCalendarUtil().getDateAfterXdays(minDate, 5);
-        Date displayDate = form.getTerm().getEndDate();
-
-
-        EventAggregateData aggregate = new EventAggregateData(minDate, maxDate, displayDate);
-        JsonObjectBuilder json = Json.createObjectBuilder();
-        JsonArrayBuilder jpossible = Json.createArrayBuilder();
-        List<PossibleScheduleOption> psos = form.getPossibleScheduleOptions();
-        List<PossibleScheduleOption> sss = form.getSavedSchedules();
-        Map<String, PossibleScheduleOption> cartOptions = new HashMap<String, PossibleScheduleOption>(psos.size() + sss.size());
-
-        int discardCount = 0;
-        for (int i = 0; i < psos.size(); i++) {
-            PossibleScheduleOption pso = psos.get(i);
-            if (pso.isDiscarded()) {
-                discardCount++;
-                continue;
-            }
-
-            Map<String, List<ActivityOption>> scheduledCourseActivities = new LinkedHashMap<String, List<ActivityOption>>();
-            for (ActivityOption activityOption : pso.getActivityOptions()) {
-                String key = activityOption.getCourseCd();
-                if (scheduledCourseActivities.containsKey(key)) {
-                    scheduledCourseActivities.get(key).add(activityOption);
-                } else {
-                    List<ActivityOption> activityOptions = new ArrayList<ActivityOption>();
-                    activityOptions.add(activityOption);
-                    scheduledCourseActivities.put(key, activityOptions);
-                }
-            }
-
-            String cssClass = EVENT_CSS_PREFIX + "--"
-                    + ((i - discardCount) % 26);
-            JsonObjectBuilder jpso = Json.createObjectBuilder();
-            JsonArrayBuilder jevents = Json.createArrayBuilder();
-            jpso.add("path", "possibleScheduleOptions[" + i + "]");
-            jpso.add("uniqueId", pso.getUniqueId());
-            jpso.add("selected", pso.isSelected());
-            int saveIndex = sss.indexOf(pso);
-            jpso.add("saved", saveIndex != -1);
-            if (saveIndex != -1) {
-                jpso.add("id", sss.get(saveIndex).getId());
-            }
-            jpso.add("htmlDescription", pso.getDescription().getFormatted());
-            JsonArrayBuilder acss = Json.createArrayBuilder();
-            acss.add(EVENT_CSS_PREFIX);
-            acss.add(cssClass);
-            jpso.add("eventClass", acss);
-            for (ActivityOption ao : pso.getActivityOptions())
-                if (!ao.isPrimary() || !ao.isEnrollmentGroup()) {
-                    for (ClassMeetingTime meeting : ao.getClassMeetingTimes())
-                        addEvents(
-                                form.getTerm(),
-                                meeting,
-                                ao.getCourseOfferingCode()
-                                        + (meeting.getLocation() == null ? ""
-                                        : " (" + meeting.getLocation()
-                                        + ") - " + pso.getDescription().getPlain()
-                                ), ao, cssClass,
-                                jevents, aggregate, scheduledCourseActivities);
-                }
-            jpso.add("weekends", aggregate.weekends);
-            jpso.add("minTime", aggregate.minTime);
-            jpso.add("maxTime", aggregate.maxTime);
-            jpso.add("events", jevents);
-            jpossible.add(jpso);
-
-            cartOptions.put(pso.getUniqueId(), pso);
-        }
-        json.add("possible", jpossible);
-
-        discardCount = 0;
-        JsonArrayBuilder jsaved = Json.createArrayBuilder();
-        for (int i = 0; i < sss.size(); i++) {
-            PossibleScheduleOption sso = sss.get(i);
-            if (sso.isDiscarded()) {
-                discardCount++;
-                continue;
-            }
-
-            Map<String, List<ActivityOption>> scheduledCourseActivities = new LinkedHashMap<String, List<ActivityOption>>();
-            for (ActivityOption activityOption : sso.getActivityOptions()) {
-                String key = activityOption.getCourseCd();
-                if (scheduledCourseActivities.containsKey(key)) {
-                    scheduledCourseActivities.get(key).add(activityOption);
-                } else {
-                    List<ActivityOption> activityOptions = new ArrayList<ActivityOption>();
-                    activityOptions.add(activityOption);
-                    scheduledCourseActivities.put(key, activityOptions);
-                }
-            }
-
-            String cssClass = EVENT_CSS_PREFIX + "--"
-                    + ((i + psos.size() - discardCount) % 26);
-            JsonObjectBuilder jsso = Json.createObjectBuilder();
-            JsonArrayBuilder jevents = Json.createArrayBuilder();
-            jsso.add("path", "savedSchedules[" + i + "]");
-            jsso.add("id", sso.getId());
-            jsso.add("uniqueId", sso.getUniqueId());
-            jsso.add("selected", sso.isSelected());
-            jsso.add("saved", true);
-            jsso.add("htmlDescription", sso.getDescription().getFormatted());
-            JsonArrayBuilder acss = Json.createArrayBuilder();
-            acss.add(EVENT_CSS_PREFIX);
-            acss.add(cssClass);
-            jsso.add("eventClass", acss);
-            for (ActivityOption ao : sso.getActivityOptions())
-                if (!ao.isPrimary() || !ao.isEnrollmentGroup())
-                    for (ClassMeetingTime meeting : ao.getClassMeetingTimes())
-                        addEvents(
-                                form.getTerm(),
-                                meeting,
-                                ao.getCourseOfferingCode()
-                                        + (meeting.getLocation() == null ? ""
-                                        : " (" + meeting.getLocation()
-                                        + ") - " + sso.getDescription().getPlain()),
-                                ao, cssClass,
-                                jevents, aggregate, scheduledCourseActivities);
-
-            jsso.add("weekends", aggregate.weekends);
-            jsso.add("minTime", aggregate.minTime);
-            jsso.add("maxTime", aggregate.maxTime);
-            jsso.add("events", jevents);
-            jsaved.add(jsso);
-
-            cartOptions.put(sso.getUniqueId(), sso);
-        }
-        json.add("saved", jsaved);
-
-        UserSession sess = GlobalVariables.getUserSession();
-        sess.addObject(ShoppingCartForm.POSSIBLE_OPTIONS_KEY, cartOptions);
-
-        SimpleDateFormat ddf = new SimpleDateFormat("MM/dd/yyyy");
-        JsonArrayBuilder jreserved = Json.createArrayBuilder();
-        List<ReservedTime> rts = form.getReservedTimes();
-        for (int i = 0; i < rts.size(); i++) {
-            ReservedTime rt = rts.get(i);
-
-            String cssClass = EVENT_CSS_PREFIX + "--"
-                    + ((i - discardCount + 13) % 26);
-            JsonObjectBuilder rto = Json.createObjectBuilder();
-            JsonArrayBuilder jevents = Json.createArrayBuilder();
-            rto.add("uniqueId", rt.getUniqueId());
-            rto.add("selected", rt.isSelected());
-            rto.add("descr", StringEscapeUtils.escapeHtml(rt.getDescription()));
-            rto.add("daysTimes", rt.getDaysAndTimes());
-            rto.add("startDate", ddf.format(rt.getStartDate()));
-            rto.add("untilDate", ddf.format(rt.getUntilDate()));
-            JsonArrayBuilder acss = Json.createArrayBuilder();
-            acss.add(EVENT_CSS_PREFIX);
-            acss.add(cssClass);
-            rto.add("eventClass", acss);
-
-            addEvents(form.getTerm(), rt, rt.getDescription(), null, cssClass,
-                    jevents, aggregate, null);
-
-            rto.add("weekends", aggregate.weekends);
-            rto.add("minTime", aggregate.minTime);
-            rto.add("maxTime", aggregate.maxTime);
-            rto.add("events", jevents);
-            jreserved.add(rto);
-        }
-        json.add("reserved", jreserved);
-
-        JsonArrayBuilder jweeks = Json.createArrayBuilder();
-        aggregate.addWeekBreaks(jweeks, form.getTerm());
-        json.add("weeks", jweeks);
-
-        json.add("more", form.hasMore());
-
-        response.setContentType("application/json");
-        response.setHeader("Cache-Control", "No-cache");
-        response.setHeader("Cache-Control", "No-store");
-        response.setHeader("Cache-Control", "max-age=0");
-        JsonWriter jwriter = Json.createWriter(response.getWriter());
-        jwriter.writeObject(json.build());
-        jwriter.close();
-
-        return null;
-    }
 
     @RequestMapping(params = "methodToCall=save")
     public ModelAndView saveSchedule(@ModelAttribute("KualiForm") ScheduleBuildForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
