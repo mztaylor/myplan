@@ -167,6 +167,11 @@ public class PossibleScheduleOptionInfo extends ScheduleBuildOptionInfo
     }
 
     @Override
+    public PossibleScheduleOption getThisSchedule() {
+        return this;
+    }
+
+    @Override
     public String getEvent() {
         return event;
     }

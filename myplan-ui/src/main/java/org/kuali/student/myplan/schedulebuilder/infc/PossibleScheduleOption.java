@@ -41,12 +41,23 @@ public interface PossibleScheduleOption extends HasId, ScheduleBuildOption {
 
     /**
      * This is to return this PossibleScheduleOption.
-     * Only used in property editor purpose()
+     * Only used in property editor purpose for possible schedules.
      * TODO: Remove this once KULRICE-9735 is fixed.
      *
      * @return This possibleScheduleOption Object
      */
     PossibleScheduleOption getSchedule();
+
+    /**
+     * This is to return this PossibleScheduleOption.
+     * Only used in property editor purpose for TBD schedules
+     * Added this because we need two different property names
+     * to build a list of same activities.
+     * TODO: Remove this once KULRICE-9735 is fixed.
+     *
+     * @return This possibleScheduleOption Object
+     */
+    PossibleScheduleOption getThisSchedule();
 
     /**
      * Get events for this possible schedule
