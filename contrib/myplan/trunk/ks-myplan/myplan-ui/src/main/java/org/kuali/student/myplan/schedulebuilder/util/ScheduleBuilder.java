@@ -29,6 +29,9 @@ public class ScheduleBuilder implements Serializable {
 
     private static long[][][] BLOCK_CACHE = new long[288][288][];
 
+    protected ScheduleBuilder() {
+    }
+
     private static long[] block(int fromSlot, int toSlot) {
         long[] rv = BLOCK_CACHE[fromSlot][toSlot];
         if (rv != null)
@@ -146,19 +149,19 @@ public class ScheduleBuilder implements Serializable {
         return sundayList.toArray(new Date[sundayList.size()]);
     }
 
-    private final Term term;
-    private final List<CourseOption> courseOptions;
-    private final List<ReservedTime> reservedTimes;
-    private final List<PossibleScheduleOption> savedSchedules;
-    private final ScheduleBuildFilters buildFilters;
-    private final Set<Long> primaryConflicts = new HashSet<Long>();
-    private final boolean empty;
+    private Term term;
+    private List<CourseOption> courseOptions;
+    private List<ReservedTime> reservedTimes;
+    private List<PossibleScheduleOption> savedSchedules;
+    private ScheduleBuildFilters buildFilters;
+    private Set<Long> primaryConflicts = new HashSet<Long>();
+    private boolean empty;
 
     private int currentCourseIndex;
-    private final int[] currentPrimaryActivityIndex;
-    private final int[][] currentSecondaryOptionIndex;
-    private final int[][][] currentSecondaryActivityIndex;
-    private final int[][][] limitSecondaryOption;
+    private int[] currentPrimaryActivityIndex;
+    private int[][] currentSecondaryOptionIndex;
+    private int[][][] currentSecondaryActivityIndex;
+    private int[][][] limitSecondaryOption;
 
     private int scheduleNumber;
     private boolean hasMore;

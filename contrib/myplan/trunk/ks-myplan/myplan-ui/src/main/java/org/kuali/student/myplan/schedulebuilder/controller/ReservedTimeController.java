@@ -162,7 +162,7 @@ public class ReservedTimeController extends KsapControllerBase {
             throw new ServletException("Unexpected authorization failure", e);
         }
         Term term = getTermHelper().getTermByAtpId(form.getTermId());
-        ScheduleBuilder builder = new ScheduleBuilder(term, null, null, null, null);
+        ScheduleBuilder builder = scheduleBuildStrategy.getScheduleBuilder(term, null, null, null, null);
         builder.buildReservedTimeEvents(reservedTimeInfo);
         response.setHeader("content-type", "application/json");
         response.setHeader("Cache-Control", "No-cache");

@@ -1058,6 +1058,10 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         return campusCode;
     }
 
+    @Override
+    public ScheduleBuilder getScheduleBuilder(Term term, List<CourseOption> courseOptions, List<ReservedTime> reservedTimes, List<PossibleScheduleOption> savedSchedules, ScheduleBuildFilters buildFilters) {
+        return new ScheduleBuilder(term, courseOptions, reservedTimes, savedSchedules, buildFilters);
+    }
 
     @Override
     public ShoppingCartForm getInitialCartForm() {
