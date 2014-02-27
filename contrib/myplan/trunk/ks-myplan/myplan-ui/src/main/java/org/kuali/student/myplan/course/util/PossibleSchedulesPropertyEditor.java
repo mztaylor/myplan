@@ -3,6 +3,7 @@ package org.kuali.student.myplan.course.util;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
+import org.kuali.student.myplan.schedulebuilder.infc.ClassMeetingTime;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
 
 import java.beans.PropertyEditorSupport;
@@ -19,12 +20,22 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
 
     private boolean savedSchedule;
 
+    private boolean tbdSchedule;
+
     public boolean isSavedSchedule() {
         return savedSchedule;
     }
 
     public void setSavedSchedule(boolean savedSchedule) {
         this.savedSchedule = savedSchedule;
+    }
+
+    public boolean isTbdSchedule() {
+        return tbdSchedule;
+    }
+
+    public void setTbdSchedule(boolean tbdSchedule) {
+        this.tbdSchedule = tbdSchedule;
     }
 
     @Override
@@ -45,12 +56,27 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
         Map<String, List<String>> scheduledCourseActivities = new LinkedHashMap<String, List<String>>();
         for (ActivityOption activityOption : pso.getActivityOptions()) {
             String key = activityOption.getCourseCd();
+            boolean isArranged = true;
+            if (isTbdSchedule()) {
+                for (ClassMeetingTime classMeetingTime : activityOption.getClassMeetingTimes()) {
+                    if (isArranged && !classMeetingTime.isArranged()) {
+                        isArranged = classMeetingTime.isArranged();
+                        break;
+                    }
+                }
+            }
             if (scheduledCourseActivities.containsKey(key)) {
-                scheduledCourseActivities.get(key).add(activityOption.getRegistrationCode());
+                if (activityOption.isLockedIn() || (isTbdSchedule() && !isArranged) ) {
+                    scheduledCourseActivities.get(key).add(activityOption.getRegistrationCode());
+                }
             } else {
                 List<String> activityOptions = new ArrayList<String>();
-                activityOptions.add(activityOption.getRegistrationCode());
-                scheduledCourseActivities.put(key, activityOptions);
+                if (activityOption.isLockedIn() || (isTbdSchedule() && !isArranged) ) {
+                    activityOptions.add(activityOption.getRegistrationCode());
+                }
+                if ((isTbdSchedule() && !isArranged) || !isTbdSchedule()) {
+                    scheduledCourseActivities.put(key, activityOptions);
+                }
             }
         }
         if (isSavedSchedule()) {

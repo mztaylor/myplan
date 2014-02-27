@@ -122,24 +122,32 @@
         "/>
         <property name="items">
             <list>
-                <bean parent="possible_schedules_nav" p:actionLabel="Prev" p:additionalCssClasses="schedulePossible__carouselButton--prev"/>
+                <bean parent="possible_schedules_nav" p:actionLabel="Prev"
+                      p:additionalCssClasses="schedulePossible__carouselButton--prev"/>
                 <ref bean="possible_courses_schedule_list"/>
-                <bean parent="possible_schedules_nav" p:actionLabel="Next" p:additionalCssClasses="schedulePossible__carouselButton--next"/>
+                <bean parent="possible_schedules_nav" p:actionLabel="Next"
+                      p:additionalCssClasses="schedulePossible__carouselButton--next"/>
             </list>
         </property>
     </bean>
 
     <bean id="possible_courses_schedule_list" parent="Uif-ListCollectionSection">
-        <property name="validationMessages"><null/></property>
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
         <property name="propertyName" value="possibleScheduleOptions"/>
         <property name="cssClasses" value="schedulePossible__carousel"/>
         <property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.uniqueId}"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__option schedulePossible--@{#index % 5} @{#line.weekend ? 'schedulePossible__option--hasWeekend' : ''}"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses"
+                  value="schedulePossible__option schedulePossible--@{#index % 5} @{#line.weekend ? 'schedulePossible__option--hasWeekend' : ''}"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
-        <property name="layoutManager.lineGroupPrototype.validationMessages"><null/></property>
-        <property name="layoutManager.lineGroupPrototype.onClickScript" value="togglePossibleSchedule(KsapSbCalendar, jQuery(this), @{#index}, '@{#line.uniqueId}', @{#line.tbd});"/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages">
+            <null/>
+        </property>
+        <property name="layoutManager.lineGroupPrototype.onClickScript"
+                  value="togglePossibleSchedule(KsapSbCalendar, jQuery(this), @{#index}, '@{#line.uniqueId}', @{#line.tbd});"/>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
                 <entry key="events" value="@{#line.event}"/>
@@ -152,16 +160,22 @@
                 <bean parent="KSAP-SimpleDataField">
                     <property name="propertyName" value="schedule"/>
                     <property name="escapeHtmlInPropertyValue" value="false"/>
-                    <property name="propertyEditor" ref="possible_schedule_editor"/>
+                    <property name="propertyEditor">
+                        <bean parent="possible_schedule_editor">
+                            <property name="tbdSchedule" value="false"/>
+                        </bean>
+                    </property>
                 </bean>
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
                             <bean parent="KSAP-HorizontalFieldGroup">
                                 <property name="id" value="save_@{#line.uniqueId}"/>
-                                <property name="onClickScript" value="toggleSaveSchedule('@{#line.uniqueId}', 'save', e);"/>
+                                <property name="onClickScript"
+                                          value="toggleSaveSchedule('@{#line.uniqueId}', 'save', e);"/>
                                 <property name="hidden" value="true"/>
-                                <property name="cssClasses" value="schedulePossible__save @{#line.id NE null ? 'schedulePossible__save--saved' : ''}"/>
+                                <property name="cssClasses"
+                                          value="schedulePossible__save @{#line.id NE null ? 'schedulePossible__save--saved' : ''}"/>
                                 <property name="dataAttributes">
                                     <map>
                                         <entry key="saved-id" value="@{#line.id}"/>
@@ -174,7 +188,8 @@
                                 </property>
                             </bean>
 
-                            <bean parent="KSAP-Message" p:messageText="@{#index + 1}" p:cssClasses="schedulePossible__index"/>
+                            <bean parent="KSAP-Message" p:messageText="@{#index + 1}"
+                                  p:cssClasses="schedulePossible__index"/>
                         </list>
                     </property>
                 </bean>
@@ -190,7 +205,8 @@
         <property name="propertyName" value="possibleScheduleOptions"/>
         <property name="cssClasses" value="schedulePossible__tba"/>
         <property name="header">
-            <bean parent="KSAP-HeaderDiv" p:headerText="Meeting Time(s) To Be Arranged" p:cssClasses="schedulePossible__tbaHeader"/>
+            <bean parent="KSAP-HeaderDiv" p:headerText="Meeting Time(s) To Be Arranged"
+                  p:cssClasses="schedulePossible__tbaHeader"/>
         </property>
         <property name="layoutManager.lineGroupPrototype.render" value="@{#line.tbd}"/>
         <property name="layoutManager.lineGroupPrototype.id" value="possible-tba-@{#line.uniqueId}"/>
@@ -199,9 +215,13 @@
         <property name="items">
             <list>
                 <bean parent="KSAP-SimpleDataField">
-                    <property name="propertyName" value="schedule"/>
+                    <property name="propertyName" value="thisSchedule"/>
                     <property name="escapeHtmlInPropertyValue" value="false"/>
-                    <property name="propertyEditor" ref="possible_schedule_editor"/>
+                    <property name="propertyEditor">
+                        <bean parent="possible_schedule_editor">
+                            <property name="tbdSchedule" value="true"/>
+                        </bean>
+                    </property>
                 </bean>
             </list>
         </property>
