@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.schedulebuilder.util;
 
+import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
@@ -147,6 +148,15 @@ public interface ScheduleBuildStrategy {
     String getCampusCode(Course course);
 
     /**
+     * Get the appropriate ScheduleBuilder for this strategy
+     *
+     * @param course
+     * @return Campus code from the course attributes if present other wise null.
+     */
+    ScheduleBuilder getScheduleBuilder(Term term, List<CourseOption> courseOptions,
+                                       List<ReservedTime> reservedTimes, List<PossibleScheduleOption> savedSchedules, ScheduleBuildFilters buildFilters);
+
+    /**
      * coalesce the sections for lowest level of activity for a course (primary if there are no secondaries,
      * secondaries if there are no tertiaries, etc)
      *
@@ -154,5 +164,4 @@ public interface ScheduleBuildStrategy {
      *
      */
     void coalesceLeafActivities (CourseOption co);
-
 }

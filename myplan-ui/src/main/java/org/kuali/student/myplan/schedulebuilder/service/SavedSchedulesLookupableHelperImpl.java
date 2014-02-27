@@ -53,7 +53,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 throw new IllegalStateException(
                         "Failed to refresh saved schedules", e);
             }
-            ScheduleBuilder scheduleBuilder = new ScheduleBuilder(term, null, null, null, null);
+            ScheduleBuilder scheduleBuilder = scheduleBuildStrategy.getScheduleBuilder(term, null, null, null, null);
             for (PossibleScheduleOption possibleScheduleOption : savedSchedules) {
                 if (termId.equals(possibleScheduleOption.getTermId())) {
                     scheduleBuilder.buildPossibleScheduleEvents(possibleScheduleOption);
