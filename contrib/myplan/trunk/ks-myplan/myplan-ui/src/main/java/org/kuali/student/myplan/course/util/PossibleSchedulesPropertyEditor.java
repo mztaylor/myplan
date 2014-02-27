@@ -56,24 +56,20 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
      *
      * For following scenarios considering the above assumption:
      * savedSchedule = false && tbdSchedule = false then the string displayed would be
-     * <div>
-     *     <span>COM 201 A</span>
-     *     <span>COM 202</span>
-     *     <span>COM 203</span>
-     *     <span>COM 204</span>
-     * </div>
+     * <div>COM 201 A</div>
+     * <div>COM 202</div>
+     * <div>COM 203</div>
+     * <div>COM 204</div>
+     *
      *
      * savedSchedule = true && tbdSchedule = false then the string displayed would be
-     * <div>
-     *     <span>COM 201 A / COM 202 / COM 203 / COM 204</span>
-     * </div>
+     *
+     * <div>COM 201 A / COM 202 / COM 203 / COM 204</div>
      *
      *
      * savedSchedule = false && tbdSchedule = true then the string displayed would be
-     * <div>
-     *     <span>COM 203 AJ</span>
-     *     <span>COM 204 A</span>
-     * </div>
+     * <div>COM 203 AJ</div>
+     * <div>COM 204 A</div>
      *
      *
      * @return HTML string of possible course options
