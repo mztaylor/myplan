@@ -128,7 +128,7 @@
                                 </property>
                             </bean>
                             <bean id="sb_filters_submit_button" parent="KSAP-PrimaryActionButton" p:actionLabel="Update">
-                                <property name="actionScript" value="jQuery.event.trigger('REFRESH_POSSIBLE_SCHEDULES', {});"/>
+                                <property name="actionScript" value="jQuery.event.trigger('REFRESH_POSSIBLE_SCHEDULES');"/>
                             </bean>
                         </list>
                     </property>
@@ -195,7 +195,7 @@
     <bean id="schedule_build_possible" parent="KSAP-VerticalBoxGroup" p:id="schedule_build_possible">
         <property name="cssClasses" value="scheduleBuilder__placeholder"/>
         <property name="onDocumentReadyScript" value="
-            customRetrieveComponent('schedule_build_possible','sb_possible_schedules','build','sb',{viewId:'PossibleSchedules-FormView',termId:'@{termId}', learningPlanId:'@{requestedLearningPlanId}', 'buildFilters.showClosed':jQuery('#schedule_build_filters input[value=&quot;closed&quot;]').prop('checked'), 'buildFilters.showRestricted':jQuery('#schedule_build_filters input[value=&quot;restrictions&quot;]').prop('checked'), 'buildFilters.showOverlapped':jQuery('#schedule_build_filters input[value=&quot;registered&quot;]').prop('checked')},null,{centerX:true, centerY:false, message:'&lt;p&gt;&lt;img src=&quot;../themes/ksap/images/loader/ajax_large.gif&quot; alt=&quot;Please wait while we are fetching schedule options...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching schedule options...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{color:'#c09853', backgroundColor:'#fcf8e3', border:'solid 1px #fbeed5', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px'}});
+            customRetrieveComponent('schedule_build_possible','sb_possible_schedules','build','sb',{viewId:'PossibleSchedules-FormView',termId:'@{termId}', learningPlanId:'@{requestedLearningPlanId}', 'buildFilters.showClosed':jQuery('#schedule_build_filters input[value=&quot;closed&quot;]').prop('checked'), 'buildFilters.showRestricted':jQuery('#schedule_build_filters input[value=&quot;restrictions&quot;]').prop('checked'), 'buildFilters.showOverlapped':jQuery('#schedule_build_filters input[value=&quot;registered&quot;]').prop('checked')},null,{centerX:true, centerY:false, message:'&lt;div class=&quot;blockInnerMsg&quot;&gt;Please wait while we are fetching schedule options...&lt;/div&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff', opacity:0.9, cursor:'wait'}, css:{}, blockMsgClass:'blockSection'});
         "/>
     </bean>
 
