@@ -202,6 +202,13 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
     boolean isEnrollmentRestriction();
 
     /**
+     * Determine if at there are any duplicate enrollment allowed for activity option.
+     *
+     * @return True if at duplicate enrollment is allowed else false.
+     */
+    boolean isDuplicateEnrollmentAllowed();
+
+    /**
      * Get the secondary options.
      *
      * @return The secondary options.

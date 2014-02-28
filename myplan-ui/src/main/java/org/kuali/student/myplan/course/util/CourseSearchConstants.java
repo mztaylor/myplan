@@ -121,6 +121,7 @@ public class CourseSearchConstants {
     public static final String ADD_CODE_REQUIRED = "AddCodeRequired";
     public static final String INDEPENDENT_STUDY = "IndependentStudy";
     public static final String ENROLLMENT_RESTRICTIONS = "EnrollmentRestrictions";
+    public static final String DUPLICATE_ENROLLMENT_ALLOWED = "DuplicateEnrollmentAllowed";
     public static final String SYLLABUS_DESCRIPTION = "syllabusDescription";
 
     public static final String SEARCH_REQUEST_CREDITS_DETAILS = "myplan.course.info.credits.details";

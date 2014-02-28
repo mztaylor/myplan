@@ -65,6 +65,9 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     private boolean enrollmentGroup;
 
     @XmlAttribute
+    private boolean duplicateEnrollmentAllowed;
+
+    @XmlAttribute
     private boolean enrollmentRestriction;
 
     @XmlAttribute
@@ -129,6 +132,7 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         courseLockedIn = copy.isCourseLockedIn();
         enrollmentGroup = copy.isEnrollmentGroup();
         enrollmentRestriction = copy.isEnrollmentRestriction();
+        duplicateEnrollmentAllowed = copy.isDuplicateEnrollmentAllowed();
         closed = copy.isClosed();
         openSeats = copy.getOpenSeats();
         totalSeats = copy.getTotalSeats();
@@ -386,6 +390,15 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 
     public void setEnrollmentRestriction(boolean enrollmentRestriction) {
         this.enrollmentRestriction = enrollmentRestriction;
+    }
+
+    @Override
+    public boolean isDuplicateEnrollmentAllowed() {
+        return duplicateEnrollmentAllowed;
+    }
+
+    public void setDuplicateEnrollmentAllowed(boolean duplicateEnrollmentAllowed) {
+        this.duplicateEnrollmentAllowed = duplicateEnrollmentAllowed;
     }
 
     @Override
