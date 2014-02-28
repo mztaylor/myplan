@@ -16,7 +16,7 @@ import java.util.List;
         "activityTypeDescription", "courseOfferingCode", "registrationCode",
         "academicSessionDescr", "activityName", "courseLockedIn", "enrollmentGroup", "enrollmentRestriction",
         "closed", "openSeats", "totalSeats", "requiresPermission", "primary",
-        "minCredits", "maxCredits", "notes", "secondaryOptions", "alternateActivties", "classMeetingTimes", "termId"})
+        "minCredits", "maxCredits", "notes", "secondaryOptions", "alternateActivties", "classMeetingTimes", "termId", "planItemId"})
 public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         ActivityOption {
 
@@ -103,6 +103,9 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     @XmlAttribute
     private String termId;
 
+    @XmlAttribute
+    private String planItemId;
+
 
     public ActivityOptionInfo() {
     }
@@ -116,6 +119,7 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         courseCd = copy.getCourseCd();
         courseTitle = copy.getCourseTitle();
         termId = copy.getTermId();
+        planItemId = copy.getPlanItemId();
         activityOfferingId = copy.getActivityOfferingId();
         activityTypeDescription = copy.getActivityTypeDescription();
         activityName = copy.getActivityName();
@@ -358,6 +362,15 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     }
 
     @Override
+    public String getPlanItemId() {
+        return planItemId;
+    }
+
+    public void setPlanItemId(String planItemId) {
+        this.planItemId = planItemId;
+    }
+
+    @Override
     public boolean isEnrollmentGroup() {
         return enrollmentGroup;
     }
@@ -401,7 +414,6 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
             this.secondaryOptions = null;
         }
     }
-
 
 
     public List<SecondaryActivityOptions> getSelectedSecondaryOptions() {
@@ -449,7 +461,6 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
             this.alternateActivties = null;
         }
     }
-
 
 
     @Override

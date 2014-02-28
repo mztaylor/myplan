@@ -6,6 +6,7 @@ import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,6 +28,8 @@ public interface PlanHelper {
     public List<RecommendedItemDataObject> getRecommendedItems(String refObjId);
 
     public String getCrossListedCourse(List<AttributeInfo> attributeInfoList);
+
+    public Map<String,String> getPlanItemIdAndRefObjIdByRefObjType(String learningPlanId, String refObjType, String termId);
 
 
 }

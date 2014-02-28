@@ -19,6 +19,7 @@ import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.*;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.myplan.schedulebuilder.util.*;
@@ -57,7 +58,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     private transient AcademicPlanService academicPlanService;
 
     private transient CourseHelper courseHelper;
-
+    private transient PlanHelper planHelper;
     private UserSessionHelper userSessionHelper;
     private transient TermHelper termHelper;
     private transient AcademicRecordService academicRecordService;
@@ -305,7 +306,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     protected ActivityOptionInfo getActivityOption(Term term, ActivityOfferingDisplayInfo aodi,
-                                                   int courseIndex, String courseId, String courseCd, String courseTitle, String campusCode, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData, StringBuilder msg,
+                                                   int courseIndex, String courseId, String courseCd, String courseTitle, String campusCode, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData, Map<String, String> plannedActivities, StringBuilder msg,
                                                    DateFormat tdf, DateFormat udf, DateFormat ddf, Calendar sdcal, Calendar edcal,
                                                    Calendar tcal) {
 
@@ -315,6 +316,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         activityOption.setCourseId(courseId);
         activityOption.setCourseCd(courseCd);
         activityOption.setCourseTitle(courseTitle);
+        activityOption.setPlanItemId(plannedActivities != null ? plannedActivities.get(aodi.getId()) : null);
         activityOption.setTermId(term.getId());
         activityOption.setActivityOfferingId(aodi.getId());
         activityOption.setActivityTypeDescription(aodi.getTypeName());
@@ -447,6 +449,14 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
         if (term == null)
             return null;
+
+        Map<String, String> plannedActivities = new LinkedHashMap<String, String>();
+        try {
+            plannedActivities = getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(getLearningPlan(getUserSessionHelper().getStudentId()).getId(), PlanConstants.SECTION_TYPE, termId);
+        } catch (Exception e) {
+            LOG.error("Could not load planned Activities for course : " + course.getCode() + " for term : " + termId, e);
+        }
+
         for (ActivityOfferingDisplayInfo aodi : getCourseHelper().getActivityOfferingDisplaysByCourseAndTerm(courseId, termId))
             if (regCode.equals(aodi.getActivityOfferingCode())) {
                 DateFormat tdf = new SimpleDateFormat("h:mm a");
@@ -455,7 +465,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 Calendar sdcal = Calendar.getInstance();
                 Calendar edcal = Calendar.getInstance();
                 Calendar tcal = Calendar.getInstance();
-                return getActivityOption(term, aodi, 0, courseId, course.getCode(), course.getCourseTitle(), campusCode, enrollmentData, null, tdf, udf, ddf,
+                return getActivityOption(term, aodi, 0, courseId, course.getCode(), course.getCourseTitle(), campusCode, enrollmentData, plannedActivities, null, tdf, udf, ddf,
                         sdcal, edcal, tcal);
             }
 
@@ -482,6 +492,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
             if (c == null)
                 continue;
             CourseOptionInfo courseOption = new CourseOptionInfo();
+            courseOption.setSelected(true);
             courseOption.setUniqueId(UUID.randomUUID().toString());
             courseOption.setCourseId(c.getId());
 
@@ -511,10 +522,15 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
             } catch (DocumentException e) {
                 LOG.error("Could not load enrollmentInformation for course : " + c.getCode() + " for term : " + termId, e);
             }
+            Map<String, String> plannedActivities = new LinkedHashMap<String, String>();
+            try {
+                plannedActivities = getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(getPlanHelper().getLearningPlan(getUserSessionHelper().getStudentId()).getId(), PlanConstants.SECTION_TYPE, termId);
+            } catch (Exception e) {
+                LOG.error("Could not load planned Activities for course : " + c.getCode() + " for term : " + termId, e);
+            }
 
-            for (ActivityOfferingDisplayInfo aodi : courseHelper.getActivityOfferingDisplaysByCourseAndTerm(courseId,
-                    termId)) {
-                ActivityOptionInfo activityOption = getActivityOption(term, aodi, courseIndex, courseId, c.getCode(), c.getCourseTitle(), campusCode, enrollmentData, msg, tdf, udf, ddf, sdcal, edcal, tcal);
+            for (ActivityOfferingDisplayInfo aodi : courseHelper.getActivityOfferingDisplaysByCourseAndTerm(courseId, termId)) {
+                ActivityOptionInfo activityOption = getActivityOption(term, aodi, courseIndex, courseId, c.getCode(), c.getCourseTitle(), campusCode, enrollmentData, plannedActivities, msg, tdf, udf, ddf, sdcal, edcal, tcal);
 
                 boolean enrollmentGroup = false;
                 String primaryOfferingId = null;
@@ -613,7 +629,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     protected void buildCourseOptions(String termId, boolean courseLockIn, boolean lockIn,
-                                      Map<String, List<String>> courseIdsActivityCodes, List<CourseOption> rv) {
+                                      Map<String, List<String>> courseIdsActivityCodes, List<CourseOption> rv, List<ActivityOptionFilter> filterList) {
         if (!courseIdsActivityCodes.isEmpty()) {
             StringBuilder msg = null;
             if (LOG.isDebugEnabled()) {
@@ -807,9 +823,9 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         }
 
         List<CourseOption> rv = new ArrayList<CourseOption>(registeredCourseIdsAndActivityCodes.size() + cartCourseIdsAndActivityCodes.size() + plannedCourseIdsAndActivityCodes.size() + backupCourseIds.size());
-        buildCourseOptions(termId, true, true, registeredCourseIdsAndActivityCodes, rv);
-        buildCourseOptions(termId, false, true, cartCourseIdsAndActivityCodes, rv);
-        buildCourseOptions(termId, false, false, plannedCourseIdsAndActivityCodes, rv);
+        buildCourseOptions(termId, true, true, registeredCourseIdsAndActivityCodes, rv, new ArrayList<ActivityOptionFilter>());
+        buildCourseOptions(termId, false, true, cartCourseIdsAndActivityCodes, rv, new ArrayList<ActivityOptionFilter>());
+        buildCourseOptions(termId, false, false, plannedCourseIdsAndActivityCodes, rv, new ArrayList<ActivityOptionFilter>());
         if (!backupCourseIds.isEmpty()) {
             for (CourseOption co : getCourseOptions(backupCourseIds, termId)) {
                 rv.add(co);
@@ -1046,7 +1062,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     @Override
-    public void coalesceLeafActivities (CourseOption co) {
+    public void coalesceLeafActivities(CourseOption co) {
     }
 
     @Override
@@ -1145,5 +1161,16 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
     public void setCourseDetailsHelper(CourseDetailsInquiryHelperImpl courseDetailsHelper) {
         this.courseDetailsHelper = courseDetailsHelper;
+    }
+
+    public PlanHelper getPlanHelper() {
+        if (planHelper == null) {
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
+        }
+        return planHelper;
+    }
+
+    public void setPlanHelper(PlanHelper planHelper) {
+        this.planHelper = planHelper;
     }
 }

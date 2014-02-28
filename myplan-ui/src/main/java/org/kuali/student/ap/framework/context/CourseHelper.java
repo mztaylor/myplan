@@ -17,7 +17,7 @@ public interface CourseHelper {
 
     public void frontLoad(List<String> courseIds, String... termId);
 
-    public CourseInfo getCourseInfo(String courseId);
+    public CourseInfo  getCourseInfo(String courseId);
 
     public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysByCourseAndTerm(String courseId, String termId);
 
