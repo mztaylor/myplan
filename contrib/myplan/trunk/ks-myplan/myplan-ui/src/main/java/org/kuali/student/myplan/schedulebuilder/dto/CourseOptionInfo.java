@@ -30,7 +30,7 @@ public class CourseOptionInfo extends ScheduleBuildOptionInfo implements CourseO
 	private BigDecimal credits;
 
 	@XmlElement
-	private List<ActivityOptionInfo> activityOptions;
+	private List<ActivityOption> activityOptions;
 
 	@XmlAnyElement
 	private List<?> _futureElements;
@@ -108,13 +108,12 @@ public class CourseOptionInfo extends ScheduleBuildOptionInfo implements CourseO
 
 	@Override
 	public List<ActivityOption> getActivityOptions() {
-		return activityOptions == null ? Collections.<ActivityOption> emptyList() : Collections
-				.<ActivityOption> unmodifiableList(activityOptions);
+		return activityOptions == null ? Collections.<ActivityOption> emptyList() : activityOptions;
 	}
 
 	public void setActivityOptions(List<ActivityOption> primaryActivities) {
 		if (primaryActivities != null) {
-			List<ActivityOptionInfo> activityOptionInfos = new java.util.ArrayList<ActivityOptionInfo>(
+			List<ActivityOption> activityOptionInfos = new java.util.ArrayList<ActivityOption>(
 					primaryActivities.size());
 			for (ActivityOption activityOption : primaryActivities) {
 				ActivityOptionInfo activityOptionInfo = new ActivityOptionInfo(activityOption);

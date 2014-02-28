@@ -4,6 +4,7 @@ import org.kuali.student.common.util.UUIDHelper;
 import org.kuali.student.myplan.academicplan.dto.LearningPlanInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.dto.PlanItemSetInfo;
+import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -11,6 +12,9 @@ import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
+import org.kuali.student.r2.core.search.dto.*;
+import org.kuali.student.r2.core.search.infc.SearchResultCell;
 import org.springframework.util.CollectionUtils;
 
 import javax.jws.WebParam;
@@ -20,6 +24,7 @@ import java.util.List;
 public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     public List<PlanItemInfo> planItemInfos = new ArrayList<PlanItemInfo>();
+    public List<LearningPlanInfo> learningPlanInfos = new ArrayList<LearningPlanInfo>();
 
     public List<PlanItemInfo> getPlanItemInfos() {
         return planItemInfos;
@@ -29,10 +34,23 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
         this.planItemInfos = planItemInfos;
     }
 
+    public List<LearningPlanInfo> getLearningPlanInfos() {
+        return learningPlanInfos;
+    }
+
+    public void setLearningPlanInfos(List<LearningPlanInfo> learningPlanInfos) {
+        this.learningPlanInfos = learningPlanInfos;
+    }
+
     @Override
     public LearningPlanInfo getLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        for (LearningPlanInfo learningPlanInfo : getLearningPlanInfos()) {
+            if (learningPlanInfo.getId().equals(learningPlanId)) {
+                return learningPlanInfo;
             }
+        }
+        return null;
+    }
 
     @Override
     public PlanItemInfo getPlanItem(@WebParam(name = "planItemId") String planItemId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
@@ -99,7 +117,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
             plan.setId("2");
             list.add(plan);
-    }
+        }
         {
             PlanItemInfo plan = new PlanItemInfo();
             plan.setId("planItem1");
@@ -117,7 +135,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
             plan.setId("1");
             list.add(plan);
-    }
+        }
         {
             PlanItemInfo plan = new PlanItemInfo();
             plan.setId("planItem1");
@@ -209,6 +227,7 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
         plan.setId("learningPlan1");
         plan.setTypeKey("kuali.academicplan.type.plan");
         list.add(plan);
+        learningPlanInfos.add(plan);
         return list;
     }
 
@@ -261,7 +280,8 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
 
     @Override
     public StatusInfo deleteLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        setLearningPlanInfos(new ArrayList<LearningPlanInfo>());
+        return null;
     }
 
     @Override
@@ -303,5 +323,50 @@ public class AcademicPlanServiceMockImpl implements AcademicPlanService {
     @Override
     public List<ValidationResultInfo> validatePlanItemSet(@WebParam(name = "validationType") String validationType, @WebParam(name = "planItemSetInfo") PlanItemSetInfo planItemSetInfo, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public List<TypeInfo> getSearchTypes(ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+        return null;
+    }
+
+    @Override
+    public TypeInfo getSearchType(String searchTypeKey, ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        return null;
+    }
+
+    @Override
+    public SearchResultInfo search(SearchRequestInfo searchRequestInfo, ContextInfo contextInfo) throws MissingParameterException, InvalidParameterException, OperationFailedException, PermissionDeniedException {
+        SearchResultInfo searchResultInfo = new SearchResultInfo();
+        if (searchRequestInfo != null && "planItem.getIdAndRedObjId".equals(searchRequestInfo.getSearchKey())) {
+            List<SearchParamInfo> params = searchRequestInfo.getParams();
+            String refObjType = null;
+            String termId = null;
+            String learnignPlanId = null;
+            for (SearchParamInfo paramInfo : params) {
+                if ("refObjType".equals(paramInfo.getKey())) {
+                    refObjType = paramInfo.getValues().get(0);
+                } else if ("termId".equals(paramInfo.getKey())) {
+                    termId = paramInfo.getValues().get(0);
+                } else if ("learningPlanId".equals(paramInfo.getKey())) {
+                    termId = paramInfo.getValues().get(0);
+                }
+            }
+            if (refObjType != null && termId != null && learnignPlanId != null) {
+                List<SearchResultRowInfo> rows = new ArrayList<SearchResultRowInfo>();
+                for (PlanItemInfo planItem : getPlanItemInfos()) {
+                    if (planItem.getRefObjectType().equals(refObjType) && planItem.getPlanPeriods().get(0).equals(termId) && planItem.getLearningPlanId().equals(learnignPlanId)) {
+                        SearchResultRowInfo resultRowInfo = new SearchResultRowInfo();
+                        List<SearchResultCellInfo> cells = new ArrayList<SearchResultCellInfo>();
+                        cells.add(new SearchResultCellInfo("planItemId", planItem.getId()));
+                        cells.add(new SearchResultCellInfo("refObjId", planItem.getRefObjectId()));
+                        resultRowInfo.setCells(cells);
+                        rows.add(resultRowInfo);
+                    }
+                }
+                searchResultInfo.setRows(rows);
+            }
+        }
+        return searchResultInfo;
     }
 }

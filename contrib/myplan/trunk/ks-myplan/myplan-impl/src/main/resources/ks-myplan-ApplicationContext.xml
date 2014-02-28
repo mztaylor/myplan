@@ -30,6 +30,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
     <!-- Academic Plan Service -->
     <bean id="academicPlanServicePersistence" class="org.kuali.student.myplan.academicplan.service.AcademicPlanServiceImpl">
+        <property name="searchManager" ref="acadPlanSearchManager"/>
         <property name="learningPlanDao" ref="learningPlanDao"/>
         <property name="learningPlanTypeDao" ref="learningPlanTypeDao"/>
         <property name="planItemDao" ref="planItemDao"/>
@@ -42,6 +43,65 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <property name="nextDecorator" ref="academicPlanServicePersistence" />
         <property name="validator" ref="validator"/>
         <property name="dataDictionaryService" ref="dataDictionaryServiceForAcademicPlanService"/>
+    </bean>
+
+    <bean id="acadPlanSearchManager"
+          class="org.kuali.student.r2.common.class1.search.SearchManagerImpl">
+        <constructor-arg index="0"
+                         value="classpath:myplan-plansearch-config.xml"/>
+        <property name="dao" ref="acadSearchableDao"/>
+    </bean>
+    <bean id="acadSearchableDao"
+          class="org.kuali.student.r2.common.dao.impl.SearchableCrudDaoImpl">
+        <property name="em" ref="acadEntityManager"/>
+    </bean>
+    <bean id="acadEntityManager"
+          class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+        <property name="entityManagerFactory" ref="acadEntityManagerFactory"/>
+    </bean>
+    <bean id="acadEntityManagerFactory" parent="defaultEntityManagerFactory">
+        <property name="persistenceUnitName" value="LearningPlan"/>
+        <property name="persistenceXmlLocation" value="classpath:META-INF/lp-persistence.xml"/>
+        <property name="dataSource" ref="myplanDataSourceXAPool"/>
+    </bean>
+
+    <bean id="defaultEntityManagerFactory" abstract="true"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="jpaVendorAdapter">
+            <bean
+                    class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="databasePlatform" value="${ks.myplan.jpa.DatabasePlatform}"/>
+                <property name="showSql" value="${ks.myplan.jpa.showSql}"/>
+                <property name="generateDdl" value="${ks.myplan.jpa.generateDdl}"/>
+            </bean>
+        </property>
+        <property name="jpaPropertyMap">
+            <map>
+                <entry key="hibernate.transaction.manager_lookup_class"
+                       value="${ks.myplan.jpa.JpaProperties.hibernate.transaction.manager_lookup_class}"/>
+                <entry key="hibernate.hbm2ddl.auto"
+                       value="${ks.myplan.jpa.JpaProperties.hibernate.hbm2ddl.auto}"/>
+                <entry key="hibernate.connection.release_mode"
+                       value="${ks.myplan.jpa.JpaProperties.hibernate.connection.release_mode}"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="myplanDataSourceXAPool"
+          class="org.kuali.rice.core.framework.persistence.jdbc.datasource.XAPoolDataSource">
+        <property name="transactionManager" ref="transactionManagerXAPool"/>
+        <property name="driverClassName" value="${ks.myplan.datasource.driver.name}"/>
+        <property name="url" value="${ks.myplan.datasource.url}"/>
+        <property name="maxSize" value="${ks.myplan.datasource.maxSize}"/>
+        <property name="minSize" value="${ks.myplan.datasource.minSize}"/>
+        <property name="maxWait" value="${ks.myplan.datasource.maxWait}"/>
+        <property name="validationQuery" value="${ks.myplan.datasource.validationQuery}"/>
+        <property name="username" value="${ks.myplan.datasource.username}"/>
+        <property name="password" value="${ks.myplan.datasource.password}"/>
+    </bean>
+
+    <bean id="transactionManagerXAPool" class="org.springframework.transaction.jta.JotmFactoryBean">
+        <property name="defaultTimeout" value="${transaction.timeout}"/>
     </bean>
 
     <alias name="academicPlanServiceValidator" alias="academicPlanService" />

@@ -10,6 +10,9 @@ import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
+import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
+import org.kuali.student.r2.core.search.dto.SearchResultInfo;
 
 
 import javax.jws.WebParam;
@@ -201,5 +204,20 @@ public class AcademicPlanServiceDecorator implements AcademicPlanService {
     public List<ValidationResultInfo> validatePlanItemSet(@WebParam(name = "validationType") String validationType, @WebParam(name = "planItemSetInfo") PlanItemSetInfo planItemSetInfo, @WebParam(name = "context") ContextInfo context)
             throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
         return getNextDecorator().validatePlanItemSet(validationType, planItemSetInfo, context);
+    }
+
+    @Override
+    public List<TypeInfo> getSearchTypes(ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+        return getNextDecorator().getSearchTypes(contextInfo);
+    }
+
+    @Override
+    public TypeInfo getSearchType(String searchTypeKey, ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        return getNextDecorator().getSearchType(searchTypeKey, contextInfo);
+    }
+
+    @Override
+    public SearchResultInfo search(SearchRequestInfo searchRequestInfo, ContextInfo contextInfo) throws MissingParameterException, InvalidParameterException, OperationFailedException, PermissionDeniedException {
+        return getNextDecorator().search(searchRequestInfo, contextInfo);
     }
 }

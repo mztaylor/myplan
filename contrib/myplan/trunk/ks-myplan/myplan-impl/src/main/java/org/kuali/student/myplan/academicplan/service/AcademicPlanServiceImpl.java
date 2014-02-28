@@ -25,10 +25,12 @@ import org.kuali.student.r2.common.exceptions.*;
 import org.kuali.student.r2.common.infc.Attribute;
 import org.kuali.student.r2.common.infc.ValidationResult;
 import org.kuali.student.r2.core.atp.service.AtpService;
+import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
 import org.kuali.student.r2.core.search.dto.SearchResultInfo;
 import org.kuali.student.r2.core.search.infc.SearchResultCell;
 import org.kuali.student.r2.core.search.infc.SearchResultRow;
+import org.kuali.student.r2.core.search.service.SearchManager;
 import org.kuali.student.r2.lum.clu.service.CluService;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.service.CourseService;
@@ -56,6 +58,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
     private AtpService atpService;
     private CluService luService;
     private PersonService personService;
+    private SearchManager searchManager;
 
     /**
      * This method provides a way to manually provide a CourseService implementation during testing.
@@ -974,7 +977,30 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         return personService;
     }
 
+    public SearchManager getSearchManager() {
+        return searchManager;
+    }
+
+    public void setSearchManager(SearchManager searchManager) {
+        this.searchManager = searchManager;
+    }
+
     public void setPersonService(PersonService personService) {
         this.personService = personService;
+    }
+
+    @Override
+    public List<TypeInfo> getSearchTypes(ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException {
+        return null;
+    }
+
+    @Override
+    public TypeInfo getSearchType(String searchTypeKey, ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException {
+        return null;
+    }
+
+    @Override
+    public SearchResultInfo search(SearchRequestInfo searchRequestInfo, ContextInfo contextInfo) throws MissingParameterException, InvalidParameterException, OperationFailedException, PermissionDeniedException {
+        return searchManager.search(searchRequestInfo, contextInfo);
     }
 }

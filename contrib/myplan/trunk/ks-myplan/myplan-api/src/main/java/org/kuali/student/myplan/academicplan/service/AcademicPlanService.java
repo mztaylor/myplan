@@ -8,6 +8,7 @@ import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
 import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.core.search.service.SearchService;
 
 
 import javax.jws.WebParam;
@@ -36,7 +37,7 @@ import java.util.List;
  */
 @WebService(name = "AcademicPlanService", serviceName = "AcademicPlanService", portName = "AcademicPlanService", targetNamespace = AcademicPlanServiceConstants.NAMESPACE)
 @SOAPBinding(style = SOAPBinding.Style.DOCUMENT, use = SOAPBinding.Use.LITERAL, parameterStyle = SOAPBinding.ParameterStyle.WRAPPED)
-public interface AcademicPlanService {
+public interface AcademicPlanService extends SearchService {
 
     public LearningPlanInfo getLearningPlan(@WebParam(name = "learningPlanId") String learningPlanId, @WebParam(name = "context") ContextInfo context) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException;
 
