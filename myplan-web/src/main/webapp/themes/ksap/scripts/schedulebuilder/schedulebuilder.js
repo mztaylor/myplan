@@ -475,7 +475,7 @@ function ksapSbSubmitDialog(methodToCall, e) {
 		success : function(newPossibleSchedules, textStatus, jqXHR){
             jQuery('#sb_reserved_time ul').append('<li><div id="possible-schedule-'+newPossibleSchedules.id+'" class="uif-boxSection" data-selected="false"><div class="uif-horizontalFieldGroup uif-boxLayoutVerticalItem clearfix" data-parent="possible-schedule-'+newPossibleSchedules.id+'"><div class="uif-horizontalBoxGroup"><div class="uif-horizontalBoxLayout clearfix"><span class="uif-message uif-boxLayoutHorizontalItem">'+newPossibleSchedules.daysTimes+' </span><a onclick="return false;" class="uif-actionLink uif-boxLayoutHorizontalItem">Edit</a><span class="uif-message uif-boxLayoutHorizontalItem"> | </span><a onclick="return false;" class="uif-actionLink uif-boxLayoutHorizontalItem" data-ajaxsubmit="true" data-onclick="removeReservedScheduleOption(\''+newPossibleSchedules.id+'\');" >Delete</a></div></div></div></div></li>')
             fnCloseAllPopups();
-            jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES", newPossibleSchedules);
+            jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES");
         },
 		error : function(jqXHR, textStatus, errorThrown) {
 			if (textStatus == "parsererror")
