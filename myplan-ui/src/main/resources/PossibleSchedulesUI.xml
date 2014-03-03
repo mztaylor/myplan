@@ -264,7 +264,7 @@
                 <entry key="editable" value="false"/>
                 <entry key="selectable" value="false"/>
                 <entry key="selectHelper" value="false"/>
-                <entry key="complete" value="function() { KsapSbCalendar = jQuery(this); }"/>
+                <entry key="complete" value="function() { KsapSbCalendar = jQuery(this); appendReservedScheduleOptions(KsapSbCalendar, '.scheduleReserved__container', '.scheduleReserved__item') }"/>
             </map>
         </property>
     </bean>

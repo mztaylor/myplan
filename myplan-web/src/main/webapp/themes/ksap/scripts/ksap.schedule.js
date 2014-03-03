@@ -55,28 +55,6 @@ function toggleSaveSchedule(uniqueId, methodToCall, event) {
     });
 }
 
-/*
-function hasWeekends() {
-    var possible = jQuery(".schedulePossible__carousel .schedulePossible__option.schedulePossible__option--hasWeekend").length;
-    var saved = jQuery(".scheduleSaved .scheduleSaved__item.scheduleSaved__item--hasWeekend").length;
-
-    return (possible + saved) > 0;
-}
-
-function getTimeFrame(selection, defaultHour, maxFlag) {
-    var returnHour = defaultHour;
-
-    for (var i = 0; i < selection.length; i++) {
-        var date = new Date(jQuery(selection[i]).data((maxFlag ? "maxtime":"mintime")));
-        var tempHour = date.getHours();
-        if (date.getMinutes() > 0 && maxFlag) tempHour = tempHour + 1;
-        if (tempHour > returnHour) returnHour = tempHour;
-    }
-
-    return returnHour;
-}
-*/
-
 function hidePossibleScheduleEvents(viewArr, calendarObj) {
     for (var i = 0; i < viewArr.length; i++) {
         var sourceObject = jQuery(viewArr[i]).find(".schedulePossible__option").data("events");
@@ -87,19 +65,63 @@ function hidePossibleScheduleEvents(viewArr, calendarObj) {
     }
 }
 
-/*
-function refreshScheduleCalendar(calendarObj) {
-    var weekends = hasWeekends();
-    calendarObj.fullCalendar('destroy');
-    KsapSbCalendarOptions.weekends = weekends;
-    KsapSbCalendarOptions.minTime = getTimeFrame(jQuery(".schedulePossible__option"), KsapSbCalendarOptions.minTime, false);
-    KsapSbCalendarOptions.maxTime = getTimeFrame(jQuery(".schedulePossible__option"), KsapSbCalendarOptions.maxTime, true);
-    calendarObj.fullCalendar(KsapSbCalendarOptions);    /*
-    if (weekends != calendarObj.fullCalendar('option', 'weekends')) {
-
-    } else {
-       // calendarObj.fullCalendar('removeEvents');
-    }
-
+function addReservedScheduleOption(methodToCall, e) {
+    var form = jQuery("#popupForm");
+    form.ajaxSubmit({
+        data: ksapAdditionalFormData({
+            methodToCall : methodToCall
+        }),
+        dataType: 'json',
+        success: function(response, textStatus, jqXHR){
+            var container = jQuery("div.scheduleReserved__container");
+            var template = jQuery("#sb-reserved-item-template").wrap('<div/>').parent().html();
+            template = template.replace(/id="sb-reserved-item-template"/gi, "");
+            template = template.replace(/__KSAP_ID__/gi, response.id);
+            template = template.replace(/__KSAP_DAYSTIMES__/gi, response.daysTimes);
+            var item = jQuery(template);
+            container.append(item);
+            item.attr("data-events", JSON.stringify(response));
+            item.show();
+            fnCloseAllPopups();
+            jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES");
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            if (textStatus == "parsererror")
+                textStatus = "Parse Error in response";
+            showGrowl(errorThrown, jqXHR.status + " " + textStatus);
+            fnCloseAllPopups();
+        }
+    });
 }
-*/
+
+function removeReservedScheduleOption(uniqueId, e) {
+    var form = jQuery("#kualiForm");
+    form.ajaxSubmit({
+        data: ksapAdditionalFormData({
+            methodToCall : "remove",
+            uniqueId : uniqueId
+        }),
+        dataType: 'json',
+        success: function(response, textStatus, jqXHR) {
+            var target = (e.currentTarget) ? jQuery(e.currentTarget) : jQuery(e.srcElement);
+            target.parents(".scheduleReserved__item").remove();
+            jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES");
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            if (textStatus == "parsererror")
+                textStatus = "JSON Parse Error";
+            showGrowl(errorThrown, jqXHR.status + " " + textStatus);
+        }
+    });
+}
+
+function appendReservedScheduleOptions(calendarObj, parentSelector, itemSelector) {
+    var items = jQuery(parentSelector).find(itemSelector);
+    for (var i = 0; i < items.length; i++) {
+        var sourceObject = jQuery.extend(
+            jQuery(items[i]).data("events"),
+            {"className": ["scheduleReserved__event"]});
+        calendarObj.fullCalendar('addEventSource', sourceObject);
+    }
+}
+
