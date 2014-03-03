@@ -5,6 +5,7 @@ import org.kuali.student.myplan.comment.util.CommentHelper;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
+import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.ap.framework.context.TermHelper;
@@ -107,6 +108,14 @@ public class UwMyplanServiceLocator {
         this.shoppingCartStrategy = shoppingCartStrategy;
     }
 
+    public Comparator<ActivityOption> getActivityOptionComparator() {
+        return activityOptionComparator;
+    }
+
+    public void setActivityOptionComparator(Comparator<ActivityOption> activityOptionComparator) {
+        this.activityOptionComparator = activityOptionComparator;
+    }
+
     private PlanHelper planHelper;
 
     private UserSessionHelper userSessionHelper;
@@ -124,5 +133,7 @@ public class UwMyplanServiceLocator {
     private CourseDetailsInquiryHelperImpl courseDetailsHelper;
 
     private ShoppingCartStrategy shoppingCartStrategy;
+
+    private Comparator<ActivityOption> activityOptionComparator;
 
 }
