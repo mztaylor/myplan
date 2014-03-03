@@ -719,23 +719,5 @@ function showHideSecondaryOptions(uniqueId) {
 	}
 }
 
-function removeReservedScheduleOption(uniqueId) {
-    jQuery("#kualiForm").ajaxSubmit({
-        data : {
-            methodToCall : "remove",
-            uniqueId : uniqueId
-        },
-        dataType : 'json',
-        success : function(response, textStatus, jqXHR) {
-            jQuery("#possible-schedule-"+uniqueId).remove();
-            jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES", response);
-        },
-        error : function(jqXHR, textStatus, errorThrown) {
-            if (textStatus == "parsererror")
-                textStatus = "JSON Parse Error";
-            showGrowl(errorThrown, jqXHR.status + " " + textStatus);
-        }
-    });
 
-}
 
