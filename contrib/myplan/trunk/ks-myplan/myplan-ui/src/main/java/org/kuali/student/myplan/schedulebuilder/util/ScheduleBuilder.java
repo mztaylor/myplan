@@ -149,7 +149,7 @@ public class ScheduleBuilder implements Serializable {
         return sundayList.toArray(new Date[sundayList.size()]);
     }
 
-    private Term term;
+    protected Term term;
     private List<CourseOption> courseOptions;
     private List<ReservedTime> reservedTimes;
     private List<PossibleScheduleOption> savedSchedules;
