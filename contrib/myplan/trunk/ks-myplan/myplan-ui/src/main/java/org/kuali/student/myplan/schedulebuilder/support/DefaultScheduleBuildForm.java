@@ -113,6 +113,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
     /*Defaulting to 8:00Am*/
     protected long getDefaultMinTime() {
         Calendar defaultStart = Calendar.getInstance();
+        defaultStart.setTime(getTerm().getStartDate());
         defaultStart.set(defaultStart.get(Calendar.YEAR), defaultStart.get(Calendar.MONTH), defaultStart.get(Calendar.DATE), 8, 0);
         return defaultStart.getTime().getTime();
     }
@@ -120,6 +121,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
     /*Defaulting to 5:00Pm*/
     protected long getDefaultMaxTime() {
         Calendar defaultEnd = Calendar.getInstance();
+        defaultEnd.setTime(getTerm().getEndDate());
         defaultEnd.set(defaultEnd.get(Calendar.YEAR), defaultEnd.get(Calendar.MONTH), defaultEnd.get(Calendar.DATE), 17, 0);
         return defaultEnd.getTime().getTime();
     }
