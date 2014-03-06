@@ -879,10 +879,10 @@ public class ScheduleBuilder implements Serializable {
 
                         DateTimeComparator comparator = DateTimeComparator.getTimeOnlyInstance();
                         if (comparator.compare(startCal.getTime(), defaultStart.getTime()) == -1) {
-                            defaultStart.set(startCal.get(Calendar.YEAR), startCal.get(Calendar.MONTH), startCal.get(Calendar.DATE), startCal.get(Calendar.HOUR_OF_DAY), startCal.get(Calendar.MINUTE));
+                            defaultStart.set(startCal.get(Calendar.YEAR), startCal.get(Calendar.MONTH), startCal.get(Calendar.DATE), startCal.get(Calendar.HOUR_OF_DAY), 0);
                         }
                         if (comparator.compare(endCal.getTime(), defaultEnd.getTime()) == 1) {
-                            defaultEnd.set(endCal.get(Calendar.YEAR), endCal.get(Calendar.MONTH), endCal.get(Calendar.DATE), endCal.get(Calendar.HOUR_OF_DAY), endCal.get(Calendar.MINUTE));
+                            defaultEnd.set(endCal.get(Calendar.YEAR), endCal.get(Calendar.MONTH), endCal.get(Calendar.DATE), endCal.get(Calendar.MINUTE) == 0 ? endCal.get(Calendar.HOUR_OF_DAY) : (endCal.get(Calendar.HOUR_OF_DAY) == 23 ? 00 : endCal.get(Calendar.HOUR_OF_DAY)+1), 0);
                         }
 
                         addEvents(term, meeting, ao, jevents, aggregate, scheduledCourseActivities, pso.getUniqueId());
