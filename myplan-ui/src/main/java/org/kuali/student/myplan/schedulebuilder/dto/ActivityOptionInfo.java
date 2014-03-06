@@ -403,9 +403,11 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 
     @Override
     public List<SecondaryActivityOptions> getSecondaryOptions() {
-        return secondaryOptions == null ? Collections
-                .<SecondaryActivityOptions>emptyList() : Collections
-                .<SecondaryActivityOptions>unmodifiableList(secondaryOptions);
+        List<SecondaryActivityOptions> secondaryActivityOptionsList = new ArrayList<SecondaryActivityOptions>();
+        if (secondaryOptions != null) {
+            secondaryActivityOptionsList.addAll(secondaryOptions);
+        }
+        return secondaryActivityOptionsList;
     }
 
     @Override
@@ -453,7 +455,6 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         List<ActivityOption> copyAlternates = new ArrayList<ActivityOption>();
         for (ActivityOption activity : alternateActivties) {
             ActivityOption alternate = new ActivityOptionInfo(activity);
-            // copy the selected sections from activityOptions
             copyAlternates.add(alternate);
         }
         return copyAlternates;
