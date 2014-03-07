@@ -13,6 +13,7 @@ import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.schedulebuilder.form.ReservedTimeForm;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
 import org.kuali.student.myplan.utils.CalendarUtil;
@@ -50,6 +51,8 @@ public class ReservedTimeController extends KsapControllerBase {
     private TermHelper termHelper;
 
     private CalendarUtil calendarUtil;
+
+    private ScheduleBuildHelper scheduleBuildHelper;
 
 
     private static boolean authorize(ReservedTimeForm form,
@@ -162,8 +165,7 @@ public class ReservedTimeController extends KsapControllerBase {
             throw new ServletException("Unexpected authorization failure", e);
         }
         Term term = getTermHelper().getTermByAtpId(form.getTermId());
-        ScheduleBuilder builder = scheduleBuildStrategy.getScheduleBuilder(term, null, null, null, null);
-        builder.buildReservedTimeEvents(reservedTimeInfo);
+        getScheduleBuildHelper().buildReservedTimeEvents(reservedTimeInfo, term);
         response.setHeader("content-type", "application/json");
         response.setHeader("Cache-Control", "No-cache");
         response.setHeader("Cache-Control", "No-store");
@@ -204,5 +206,16 @@ public class ReservedTimeController extends KsapControllerBase {
 
     public void setCalendarUtil(CalendarUtil calendarUtil) {
         this.calendarUtil = calendarUtil;
+    }
+
+    public ScheduleBuildHelper getScheduleBuildHelper() {
+        if (scheduleBuildHelper == null) {
+            scheduleBuildHelper = UwMyplanServiceLocator.getInstance().getScheduleBuildHelper();
+        }
+        return scheduleBuildHelper;
+    }
+
+    public void setScheduleBuildHelper(ScheduleBuildHelper scheduleBuildHelper) {
+        this.scheduleBuildHelper = scheduleBuildHelper;
     }
 }

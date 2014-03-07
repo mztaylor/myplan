@@ -72,11 +72,10 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
             } catch (PermissionDeniedException e) {
                 e.printStackTrace();
             }
-            ScheduleBuilder scheduleBuilder = getScheduleBuildStrategy().getScheduleBuilder(term, null, null, null, null);
             int count = 1;
             for (PossibleScheduleOption possibleScheduleOption : savedSchedules) {
                 if (termId.equals(possibleScheduleOption.getTermId())) {
-                    scheduleBuilder.buildPossibleScheduleEvents(possibleScheduleOption);
+                    getScheduleBuildHelper().buildPossibleScheduleEvents(possibleScheduleOption, term);
                     HashMap<String, List<String>> invalidOptions = new LinkedHashMap<String, List<String>>();
                     List<ActivityOption> validatedActivities = validatedSavedActivities(possibleScheduleOption.getActivityOptions(), plannedItems, invalidOptions, reservedTimes == null ? new ArrayList<ReservedTime>() : reservedTimes);
                     for (String key : invalidOptions.keySet()) {
