@@ -289,7 +289,7 @@ function openScheduleEvent(calEvent, e) {
     fnCloseAllPopups();
     var popupBox = (e.currentTarget) ? jQuery(e.currentTarget) : jQuery(e.srcElement);
     var popupOptions = {
-        innerHtml: '<div style="width:300px">' + JSON.stringify(calEvent.popoverContent) + '</div>',
+        innerHtml: buildActivitiesContent(calEvent.popoverContent, "sb-popover-content-template"),
         position: "top",
         align: "center",
         tail: {align: "center"}

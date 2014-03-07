@@ -133,3 +133,36 @@ function appendReservedScheduleOptions(calendarObj, parentSelector, itemSelector
     }
 }
 
+function buildActivitiesContent(popoverContent, templateId) {
+    var popoverTemplate = jQuery("#" + templateId).wrap('<div/>').parent().html();
+    var regex = new RegExp('id="' + templateId + '"', "gi");
+    popoverTemplate = popoverTemplate.replace(regex, "");
+    popoverTemplate = popoverTemplate.replace(/__KSAP_COURSECD__/gi, popoverContent.courseCd);
+    popoverTemplate = popoverTemplate.replace(/__KSAP_COURSEID__/gi, popoverContent.courseId);
+    popoverTemplate = popoverTemplate.replace(/__KSAP_COURSETITLE__/gi, popoverContent.courseTitle);
+
+    var popoverHtml = jQuery(popoverTemplate);
+    var activitiesTemplate = popoverHtml.find("table tbody").html();
+    popoverHtml.find("table tbody").empty();
+
+    for (var i = 0; i < popoverContent.activities.length; i++) {
+        var tempActivitiesTemplate = activitiesTemplate;
+        tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_SECTIONCD__/gi, popoverContent.activities[i].sectionCd);
+        var tempMeetingDays = "", tempMeetingTimes = "";
+        for (var n = 0; n < popoverContent.activities[i].meetings.length; n++) {
+            if (n != 0) {
+                tempMeetingDays += "<br />";
+                tempMeetingTimes += "<br />";
+            }
+            tempMeetingDays += popoverContent.activities[i].meetings[n].meetingTime;
+            tempMeetingTimes += popoverContent.activities[i].meetings[n].meetingTime;
+        }
+        tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_MEETINGDAYS__/gi, tempMeetingDays);
+        tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_MEETINGTIMES__/gi, tempMeetingTimes);
+    }
+
+    popoverHtml.find("table tbody").html(tempActivitiesTemplate);
+
+    return popoverHtml.show().wrap('<div/>').parent().html();
+}
+

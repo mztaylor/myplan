@@ -81,6 +81,7 @@
                 <bean parent="KSAP-HeaderDiv" p:headerText="@{term.name}" p:cssClasses="scheduleBuilder__termHeader"/>
                 <ref bean="schedule_build_possible"/>
                 <ref bean="sb-reserved-item-template"/>
+                <ref bean="sb-popover-content-template"/>
             </list>
         </property>
     </bean>
@@ -212,6 +213,50 @@
                     </property>
                 </bean>
             </list>
+        </property>
+    </bean>
+
+    <bean id="sb-popover-content-template" p:id="sb-popover-content-template" parent="Uif-GridGroup" p:hidden="true" p:width="300px">
+        <property name="validationMessages"><null/></property>
+        <property name="cssClasses" value="schedulePopover"/>
+        <property name="header">
+            <bean parent="KSAP-HeaderDiv" p:hidden="true">
+                <property name="lowerGroup">
+                    <bean parent="KSAP-VerticalBoxGroup">
+                        <property name="layoutManager.cssClasses" value="schedulePopover__header"/>
+                        <property name="items">
+                            <list>
+                                <bean parent="Uif-Link" p:linkText="__KSAP_COURSECD__ __KSAP_COURSETITLE__" p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=__KSAP_COURSEID__&amp;courseCd=__KSAP_COURSECD__"/>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+        <property name="layoutManager.style" value="width:300px;"/>
+        <property name="layoutManager.libraryCssClasses"><list/></property>
+        <property name="layoutManager.cssClasses" value=""/>
+        <property name="layoutManager.numberOfColumns" value="5"/>
+        <property name="layoutManager.renderAlternatingHeaderColumns" value="false"/>
+        <property name="layoutManager.applyDefaultCellWidths" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_SECTIONCD__" p:width="32px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGDAYS__" p:width="64px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGTIMES__" p:width="128px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLMENT__" p:width="60px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ACTION__" p:width="16px"/>
+            </list>
+        </property>
+        <property name="footer">
+            <bean parent="KSAP-VerticalBoxGroup">
+                <property name="layoutManager.cssClasses" value="schedulePopover__footer"/>
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-Link" p:linkText="View course details" p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=__KSAP_COURSEID__&amp;courseCd=__KSAP_COURSECD__"/>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
 
