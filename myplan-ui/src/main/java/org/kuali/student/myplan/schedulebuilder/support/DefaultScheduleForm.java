@@ -8,6 +8,7 @@ import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.schedulebuilder.dto.ScheduleBuildFiltersInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.infc.ScheduleBuildFilters;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleForm;
@@ -35,6 +36,7 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
 
     private TermHelper termHelper;
     private ScheduleBuildStrategy scheduleBuildStrategy;
+    private ScheduleBuildHelper scheduleBuildHelper;
 
     @Override
     public void reset() {
@@ -46,9 +48,8 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
         ScheduleBuildStrategy strategy = getScheduleBuildStrategy();
         try {
             reservedTimes = strategy.getReservedTimes(requestedLearningPlanId);
-            ScheduleBuilder builder = new ScheduleBuilder(term, null, null, null, null);
             for (ReservedTime reservedTime : reservedTimes) {
-                builder.buildReservedTimeEvents(reservedTime);
+                getScheduleBuildHelper().buildReservedTimeEvents(reservedTime, term);
             }
         } catch (PermissionDeniedException e) {
             throw new IllegalArgumentException("Course options not permitted for requested learning plan", e);
@@ -221,5 +222,16 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
 
     public void setScheduleBuildStrategy(ScheduleBuildStrategy scheduleBuildStrategy) {
         this.scheduleBuildStrategy = scheduleBuildStrategy;
+    }
+
+    public ScheduleBuildHelper getScheduleBuildHelper() {
+        if (scheduleBuildHelper == null) {
+            scheduleBuildHelper = UwMyplanServiceLocator.getInstance().getScheduleBuildHelper();
+        }
+        return scheduleBuildHelper;
+    }
+
+    public void setScheduleBuildHelper(ScheduleBuildHelper scheduleBuildHelper) {
+        this.scheduleBuildHelper = scheduleBuildHelper;
     }
 }

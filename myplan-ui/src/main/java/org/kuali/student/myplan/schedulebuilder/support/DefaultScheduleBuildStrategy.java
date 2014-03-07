@@ -452,7 +452,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
         Map<String, String> plannedActivities = new LinkedHashMap<String, String>();
         try {
-            plannedActivities = getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(getLearningPlan(getUserSessionHelper().getStudentId()).getId(), PlanConstants.SECTION_TYPE, termId);
+            plannedActivities = getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(getPlanHelper().getLearningPlan(getUserSessionHelper().getStudentId()).getId(), PlanConstants.SECTION_TYPE, termId);
         } catch (Exception e) {
             LOG.error("Could not load planned Activities for course : " + course.getCode() + " for term : " + termId, e);
         }
