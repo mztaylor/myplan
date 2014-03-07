@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.schedulebuilder.service;
 
 import org.apache.log4j.Logger;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.form.LookupForm;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.TermHelper;
@@ -8,20 +9,27 @@ import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.util.PlanHelper;
+import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
+import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
+import org.kuali.student.myplan.schedulebuilder.dto.SecondaryActivityOptionsInfo;
+import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
+import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
+import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
+import org.kuali.student.myplan.schedulebuilder.support.DefaultScheduleBuildHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by hemanthg on 2/7/14.
@@ -33,6 +41,8 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
     private UserSessionHelper userSessionHelper;
 
     private TermHelper termHelper;
+
+    private PlanHelper planHelper;
 
     private final Logger logger = Logger.getLogger(SavedSchedulesLookupableHelperImpl.class);
 
@@ -53,11 +63,26 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 throw new IllegalStateException(
                         "Failed to refresh saved schedules", e);
             }
-            ScheduleBuilder scheduleBuilder = scheduleBuildStrategy.getScheduleBuilder(term, null, null, null, null);
+            Map<String, String> plannedItems = getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(requestedLearningPlanId, PlanConstants.SECTION_TYPE, termId);
+            List<ReservedTime> reservedTimes = null;
+            try {
+                reservedTimes = getScheduleBuildStrategy().getReservedTimes(requestedLearningPlanId);
+            } catch (PermissionDeniedException e) {
+                e.printStackTrace();
+            }
+            ScheduleBuilder scheduleBuilder = getScheduleBuildStrategy().getScheduleBuilder(term, null, null, null, null);
+            int count = 1;
             for (PossibleScheduleOption possibleScheduleOption : savedSchedules) {
                 if (termId.equals(possibleScheduleOption.getTermId())) {
                     scheduleBuilder.buildPossibleScheduleEvents(possibleScheduleOption);
+                    HashMap<String, List<String>> invalidOptions = new LinkedHashMap<String, List<String>>();
+                    List<ActivityOption> validatedActivities = validatedSavedActivities(possibleScheduleOption.getActivityOptions(), plannedItems, invalidOptions, reservedTimes == null ? new ArrayList<ReservedTime>() : reservedTimes);
+                    for (String key : invalidOptions.keySet()) {
+                        GlobalVariables.getMessageMap().putErrorForSectionId("saved_schedules_summary", String.format("In SavedSchedule %s %s %s activities are invalid", count, key, org.apache.commons.lang.StringUtils.join(invalidOptions.get(key), ", ")));
+                    }
+                    ((PossibleScheduleOptionInfo) possibleScheduleOption).setActivityOptions(validatedActivities);
                     savedSchedulesList.add(possibleScheduleOption);
+                    count++;
                 }
             }
         } else {
@@ -65,6 +90,83 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
         }
         return savedSchedulesList;
     }
+
+
+    /**
+     * Validates Saved activities against current versions.
+     *
+     * @param activityOptions
+     * @param plannedItems
+     * @param invalidOptions
+     * @return ActivityOption list which are validated items and also populates all invalidActivityOptions course code wise.
+     */
+    protected List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, String> plannedItems, HashMap<String, List<String>> invalidOptions, List<ReservedTime> reservedTimes) {
+        List<ActivityOption> activityOptionList = new ArrayList<ActivityOption>();
+        for (ActivityOption savedActivity : activityOptions) {
+            List<ActivityOption> validatedAlternates = new ArrayList<ActivityOption>();
+            if (!CollectionUtils.isEmpty(savedActivity.getSecondaryOptions())) {
+                boolean isValid = true;
+                for (SecondaryActivityOptions secondaryActivityOption : savedActivity.getSecondaryOptions()) {
+
+                    List<ActivityOption> validatedSecondaryActivities = validatedSavedActivities(secondaryActivityOption.getActivityOptions(), plannedItems, invalidOptions, reservedTimes);
+                    if (!CollectionUtils.isEmpty(secondaryActivityOption.getActivityOptions()) && CollectionUtils.isEmpty(validatedSecondaryActivities)) {
+                        isValid = false;
+                        break;
+                    } else {
+                        ((SecondaryActivityOptionsInfo) secondaryActivityOption).setActivityOptions(validatedSecondaryActivities);
+                    }
+                }
+                if (!isValid) {
+                    continue;
+                }
+            } else {
+                validatedAlternates = savedActivity.getAlternateActivties() == null ? new ArrayList<ActivityOption>() : validatedSavedActivities(savedActivity.getAlternateActivties(), plannedItems, invalidOptions, reservedTimes);
+            }
+
+            ActivityOption currentActivity = getScheduleBuildStrategy().getActivityOption(savedActivity.getTermId(), savedActivity.getCourseId(), savedActivity.getRegistrationCode());
+            boolean areEqual = areEqual(savedActivity, currentActivity, plannedItems, reservedTimes);
+            if (areEqual) {
+                ((ActivityOptionInfo) savedActivity).setAlternateActivities(validatedAlternates);
+                activityOptionList.add(savedActivity);
+            } else if (!areEqual && !CollectionUtils.isEmpty(validatedAlternates)) {
+                ActivityOptionInfo alAo = (ActivityOptionInfo) validatedAlternates.get(0);
+                validatedAlternates.remove(0);
+                alAo.setAlternateActivities(validatedAlternates.size() > 0 ? validatedAlternates : new ArrayList<ActivityOption>());
+                activityOptionList.add(alAo);
+            } else {
+                List<String> activityList = invalidOptions.get(savedActivity.getCourseCd());
+                if (CollectionUtils.isEmpty(activityList)) {
+                    activityList = new ArrayList<String>();
+                }
+                activityList.add(savedActivity.getRegistrationCode());
+                invalidOptions.put(savedActivity.getCourseCd(), activityList);
+
+            }
+        }
+
+        return activityOptionList;
+
+    }
+
+
+    /**
+     * Compares the saved ActivityOption with withdrawnFlag, current ActivityOption, plannedActivities and ReservedTimes
+     *
+     * @param saved
+     * @param current
+     * @param plannedItems
+     * @return ((currentIsWithdrawn OR ((currentMeeting and savedMeeting times vary) OR (reservedTime and savedMeeting time conflict))) AND savedActivity is not in PlannedActivities) then false otherwise true.
+     */
+    private boolean areEqual(ActivityOption saved, ActivityOption current, Map<String, String> plannedItems, List<ReservedTime> reservedTimes) {
+        long[][] savedClassMeetingTime = DefaultScheduleBuildHelper.xlateClassMeetingTimeList2WeekBits(saved.getClassMeetingTimes());
+        long[][] currentClassMeetingTime = DefaultScheduleBuildHelper.xlateClassMeetingTimeList2WeekBits(current.getClassMeetingTimes());
+        long[][] reservedTime = DefaultScheduleBuildHelper.xlateClassMeetingTimeList2WeekBits(reservedTimes);
+        if ((current.isWithdrawn() || (!Arrays.deepEquals(savedClassMeetingTime, currentClassMeetingTime) || DefaultScheduleBuildHelper.checkForConflictsWeeks(savedClassMeetingTime, reservedTime))) && !plannedItems.containsKey(saved.getActivityOfferingId())) {
+            return false;
+        }
+        return true;
+    }
+
 
     public ScheduleBuildStrategy getScheduleBuildStrategy() {
         if (scheduleBuildStrategy == null) {
@@ -99,4 +201,14 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
         this.termHelper = termHelper;
     }
 
+    public PlanHelper getPlanHelper() {
+        if (planHelper == null) {
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
+        }
+        return planHelper;
+    }
+
+    public void setPlanHelper(PlanHelper planHelper) {
+        this.planHelper = planHelper;
+    }
 }
