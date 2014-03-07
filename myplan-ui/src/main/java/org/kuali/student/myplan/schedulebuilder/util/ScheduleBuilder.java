@@ -25,6 +25,8 @@ public class ScheduleBuilder implements Serializable {
     private static CalendarUtil calendarUtil;
     private static CourseHelper courseHelper;
 
+    private static final Date[] sundays = { new Date() };
+
     private static final Logger LOG = Logger.getLogger(ScheduleBuilder.class);
 
     private static long[][][] BLOCK_CACHE = new long[288][288][];
@@ -74,8 +76,8 @@ public class ScheduleBuilder implements Serializable {
                     + (c.get(Calendar.MINUTE) / 5);
             if (!isEpoch(c)) {
                 c.add(Calendar.DATE, -7);
-                if (!c.getTime().before(sundays[i]))
-                    continue;
+                //if (!c.getTime().before(sundays[i]))
+                  //  continue;
             }
 
             c.setTime(event.getUntilDate());
@@ -659,6 +661,26 @@ public class ScheduleBuilder implements Serializable {
         }
         hasMore = hasMore || (rv.size() >= count && !rolled);
         return rv;
+    }
+
+    public static long[][] getClassMeetingTimeBitmap(List<ClassMeetingTime> meetingTimes) {
+        long[][][] days = new long[1][7][5];   // only checking one week for now, so first dimension is 1
+        /*for (int i = 0; i < 1; i++)
+            for (int j = 0; j < 7; j++)
+                for (int k = 0; k < 5; k++)
+                    days[i][j][k] = 0L;*/
+
+        Calendar tempCalendar = Calendar.getInstance();
+        //tempCalendar.setTime(term.getStartDate());
+        //Date[] weeks = new Date[1];
+        //tempCalendar.setTime(term.getStartDate());
+        //weeks[0] = tempCalendar.getTime();
+
+        for (ClassMeetingTime meetingTime : meetingTimes) {
+            checkForConflicts(meetingTime, sundays, days, tempCalendar);  // we only want the bitmap, ignore the return
+        }
+
+        return days[0];
     }
 
     public boolean hasMore() {
