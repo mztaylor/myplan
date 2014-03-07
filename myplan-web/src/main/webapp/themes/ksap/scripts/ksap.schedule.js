@@ -1,28 +1,36 @@
 function togglePossibleSchedule(calendarObj, targetObj, index, uniqueId, hasTBA) {
-    var sourceObject = jQuery.extend(
-        targetObj.data("events"),
-        {"className": ["schedulePossible__event", "schedulePossible--" + (index % 5)]}
-    );
+    var classes = (typeof calendarObj.data("class-selections") == "string") ? calendarObj.data("class-selections").split(",") : calendarObj.data("class-selections");
+    var tempClass;
+    var sourceObject = targetObj.data("events");
+    var selected = calendarObj.fullCalendar('clientEvents', uniqueId).length > 0;
 
     for (var i = 0; i < sourceObject.events.length; i++) {
         sourceObject.events[i].title = (index + 1).toString();
+        sourceObject.events[i].start = sourceObject.events[i].start + index;
     }
-
-    var selected = calendarObj.fullCalendar('clientEvents', uniqueId).length > 0;
 
     if (selected) {
         calendarObj.fullCalendar('removeEventSource', sourceObject);
-        targetObj.find(".schedulePossible__save").hide();
+        targetObj.removeClass(function(index, css) {
+            tempClass = (css.match(/schedulePossible\-\-([a-z]*)\b/g) || []).join(" ");
+            return tempClass;
+        }).find(".schedulePossible__save").hide();
         if (hasTBA) {
-            jQuery("#possible-tba-" + uniqueId).hide();
+            jQuery("#possible-tba-" + uniqueId).removeClass(tempClass).hide();
         }
+        classes.splice(0, 0, tempClass);
     } else {
+        if (classes.length === 0) return false;
+        sourceObject.className = ["schedulePossible__event", classes[0]];
         calendarObj.fullCalendar('addEventSource', sourceObject);
-        targetObj.find(".schedulePossible__save").show();
+        targetObj.addClass(classes[0]).find(".schedulePossible__save").show();
         if (hasTBA) {
-            jQuery("#possible-tba-" + uniqueId).show();
+            jQuery("#possible-tba-" + uniqueId).addClass(classes[0]).show();
         }
+        classes.splice(0, 1);
     }
+
+    calendarObj.data("class-selections", classes);
 
     var tbaCount = jQuery(".schedulePossible__tba .schedulePossible__tbaItem").filter(function() {
         return jQuery(this).css('display') != 'none';

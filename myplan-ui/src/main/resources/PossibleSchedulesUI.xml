@@ -52,6 +52,11 @@
     <bean id="sb_possible_schedules" parent="sb_possible_schedules-parent"/>
     <bean abstract="true" id="sb_possible_schedules-parent" parent="KSAP-VerticalBoxGroup"
           p:id="sb_possible_schedules">
+        <property name="onDocumentReadyScript" value="
+            jQuery('#sb_possible_schedules').on('REFRESH_POSSIBLE_SCHEDULES', function(event) {
+                customRetrieveComponent('sb_possible_schedules','sb_possible_schedules','build','sb',{viewId:'PossibleSchedules-FormView',termId:'@{termId}', learningPlanId:'@{requestedLearningPlanId}', 'buildFilters.showClosed':jQuery('#schedule_build_filters input[value=&quot;closed&quot;]').prop('checked'), 'buildFilters.showRestricted':jQuery('#schedule_build_filters input[value=&quot;restrictions&quot;]').prop('checked'), 'buildFilters.showOverlapped':jQuery('#schedule_build_filters input[value=&quot;registered&quot;]').prop('checked')},null,{centerX:true, centerY:false, message:'&lt;div class=&quot;blockInnerMsg&quot;&gt;Please wait while we are fetching schedule options...&lt;/div&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff', opacity:0.9, cursor:'wait'}, css:{}, blockMsgClass:'blockSection'});
+            })
+        "/>
         <property name="forceSessionPersistence" value="true"/>
         <property name="cssClasses" value="removeMargin"/>
         <property name="items">
@@ -95,7 +100,12 @@
             </bean>
         </property>
         <property name="cssClasses" value="schedulePossible"/>
-        <!--refreshScheduleCalendar(KsapSbCalendar);-->
+        <!--refreshScheduleCalendar(KsapSbCalendar);
+        ,
+                beforeStart: function(a) {
+                    hidePossibleScheduleEvents(a, KsapSbCalendar);
+                }
+        -->
         <property name="onDocumentReadyScript" value="
             jQuery('.schedulePossible__carousel').jCarouselLite({
                 btnNext: '.schedulePossible__carouselButton--next',
@@ -103,10 +113,7 @@
                 scroll: 5,
                 visible: 5,
                 initCallback: function(a) {
-                    jQuery.unblockUI();
-                },
-                beforeStart: function(a) {
-                    hidePossibleScheduleEvents(a, KsapSbCalendar);
+                    possibleScheduleFirst = jQuery(a[0]).find('.schedulePossible__option');
                 }
             });
 
@@ -114,8 +121,6 @@
                 jQuery('#save_' + data.uniqueId + '.schedulePossible__save').addClass('schedulePossible__save--saved').attr('data-saved-id', data.id);
             }).on('SAVED_SCHEDULE_REMOVE', function(event, data) {
                 jQuery('.schedulePossible__save[data-saved-id=' + data.scheduleIdRemoved + ']').removeClass('schedulePossible__save--saved').removeData('saved-id');
-            }).on('REFRESH_POSSIBLE_SCHEDULES', function(event) {
-                customRetrieveComponent('sb_possible_schedules','sb_possible_schedules','build','sb',{viewId:'PossibleSchedules-FormView',termId:'@{termId}', learningPlanId:'@{requestedLearningPlanId}', 'buildFilters.showClosed':jQuery('#schedule_build_filters input[value=&quot;closed&quot;]').prop('checked'), 'buildFilters.showRestricted':jQuery('#schedule_build_filters input[value=&quot;restrictions&quot;]').prop('checked'), 'buildFilters.showOverlapped':jQuery('#schedule_build_filters input[value=&quot;registered&quot;]').prop('checked')},null,{centerX:true, centerY:false, message:'&lt;div class=&quot;blockInnerMsg&quot;&gt;Please wait while we are fetching schedule options...&lt;/div&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff', opacity:0.9, cursor:'wait'}, css:{}, blockMsgClass:'blockSection'});
             });
         "/>
         <property name="items">
@@ -139,7 +144,8 @@
         <property name="cssClasses" value="schedulePossible__carousel"/>
         <property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.uniqueId}"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses"
-                  value="schedulePossible__option schedulePossible--@{#index % 5} @{#line.weekend ? 'schedulePossible__option--hasWeekend' : ''}"/>
+                  value="schedulePossible__option"/>
+        <!--schedulePossible- -@{#index % 5}-->
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.validationMessages">
             <null/>
@@ -206,7 +212,7 @@
         </property>
         <property name="layoutManager.lineGroupPrototype.render" value="@{#line.tbd}"/>
         <property name="layoutManager.lineGroupPrototype.id" value="possible-tba-@{#line.uniqueId}"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__tbaItem schedulePossible--@{#index}"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__tbaItem"/>
         <property name="layoutManager.lineGroupPrototype.hidden" value="true"/>
         <property name="items">
             <list>
@@ -225,6 +231,12 @@
     </bean>
 
     <bean id="possible_schedules_calendar" parent="KSAP-Calendar" p:cssClasses="scheduleCalendar">
+        <property name="dataAttributes">
+            <map>
+                <!-- List of classes for each selection, where the length sets the limit of how many items can be selected at once -->
+                <entry key="class-selections" value="schedulePossible--orange,schedulePossible--gold,schedulePossible--pink,schedulePossible--blue,schedulePossible--green"/>
+            </map>
+        </property>
         <property name="templateOptions">
             <map merge="true">
                 <entry key="year"
@@ -246,6 +258,21 @@
                 <entry key="maxTime" value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(maxTime, 'H')}"/>
                 <entry key="timeFormat" value="{agenda: 'h(:mm)t{ - h(:mm)t}'}"/>
                 <entry key="slotEventOverlap" value="false"/>
+                <!--<entry key="eventRender" value="
+                    function (event, element, view) {
+
+                    }
+                "/>-->
+                <entry key="eventClick" value="
+                    function(calEvent, jsEvent, view) {
+                        openScheduleEvent(calEvent, jsEvent);
+                    }
+                "/>
+                <!--
+                console.log(element.css('left'));
+                var nextEventLeft = element.offset().left + element.width() + 5;
+                element.parent().children().eq(element.index()+1).css('left',nextEventLeft);
+                -->
                 <!--<entry key="eventAfterRender" value="
                     function(event, element, view) {
                         element.data({
@@ -264,7 +291,13 @@
                 <entry key="editable" value="false"/>
                 <entry key="selectable" value="false"/>
                 <entry key="selectHelper" value="false"/>
-                <entry key="complete" value="function() { KsapSbCalendar = jQuery(this); appendReservedScheduleOptions(KsapSbCalendar, '.scheduleReserved__container', '.scheduleReserved__item') }"/>
+                <entry key="complete" value="
+                    function() {
+                        KsapSbCalendar = jQuery(this);
+                        possibleScheduleFirst.click();
+                        appendReservedScheduleOptions(KsapSbCalendar, '.scheduleReserved__container', '.scheduleReserved__item');
+                    }
+                "/>
             </map>
         </property>
     </bean>

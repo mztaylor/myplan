@@ -41,14 +41,7 @@ function createScheduleBuilder(obj) {
                 },
                 dataType : 'json',
                 success : function(newPossibleSchedules, textStatus, jqXHR) {
-                    if (hasWeekends(newPossibleSchedules) != KsapSbCalendar.fullCalendar('option', 'weekends')) {
-                        KsapSbCalendar.fullCalendar('destroy');
-                        delete KsapSbCalendarOptions.complete;
-                        KsapSbCalendarOptions.weekends = hasWeekends(newPossibleSchedules);
-                        KsapSbCalendar.fullCalendar(KsapSbCalendarOptions);
-                    } else {
-                        KsapSbCalendar.fullCalendar('removeEvents');
-                    }
+                    KsapSbCalendar.fullCalendar('removeEvents');
                     if (newPossibleSchedules.todo != null)
                         showGrowl(newPossibleSchedules.todo);
                     sb.possibleSchedules = newPossibleSchedules;
