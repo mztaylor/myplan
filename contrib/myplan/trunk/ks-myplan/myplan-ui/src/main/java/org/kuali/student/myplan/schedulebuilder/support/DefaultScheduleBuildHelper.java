@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
 import org.kuali.student.myplan.schedulebuilder.infc.ScheduleBuildEvent;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
 
 import java.util.Calendar;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * @version 0.1
  */
 
-public class DefaultScheduleBuildHelper {
+public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
 
     // There are 288 5-minute segments in a 24-hour day, which can be represented
     // in 5 long's (64 bits * 5 = 320 bits), so the 5-minute segments a class meets
@@ -22,9 +23,9 @@ public class DefaultScheduleBuildHelper {
     // appropriate bits set for every [5-minute segment when a class begins]
     // [5-minute segment when a class ends] element
     // for which such a long[5] 'bitset' is requested
-    private static long[][][] BLOCK_CACHE = new long[288][288][];
+    private long[][][] BLOCK_CACHE = new long[288][288][];
 
-    public static long[] block(int fromSlot, int toSlot) {
+    public long[] block(int fromSlot, int toSlot) {
         long[] rv = BLOCK_CACHE[fromSlot][toSlot];
         if (rv != null)
             return rv;
@@ -44,7 +45,7 @@ public class DefaultScheduleBuildHelper {
      *
      */
 
-    public static void unionWeeks(long[][] week, long[][] add) {
+    public void unionWeeks(long[][] week, long[][] add) {
         if (week.length != 7 || add.length != 7 ||
                 week[0].length != 5 || add[0].length != 5)
             return;
@@ -62,7 +63,7 @@ public class DefaultScheduleBuildHelper {
      * @return true if there IS a conflict (or the data is invalid),
      *          false if there is NO conflict
      */
-    public static boolean checkForConflictsWeeks(long[][] week1, long[][] week2) {
+    public boolean checkForConflictsWeeks(long[][] week1, long[][] week2) {
         if (week1.length != 7 || week2.length != 7 ||
                 week1[0].length != 5 || week2[0].length != 5)
             return true;
@@ -74,7 +75,7 @@ public class DefaultScheduleBuildHelper {
         return false;
     }
 
-    public static boolean dayIntersects(long[] day1, long[] day2) {
+    public boolean dayIntersects(long[] day1, long[] day2) {
         for (int i = 0; i < 5; i++) {
             if (0L != (day1[i] & day2[i])) {
                 return true;
@@ -93,7 +94,7 @@ public class DefaultScheduleBuildHelper {
      * @return array of longs, 7 days x 5 (to hold 288 5 min periods in 24 hrs)
      */
 
-    public static long[][] xlateClassMeetingTime2WeekOfBits(ScheduleBuildEvent event) {
+    public long[][] xlateClassMeetingTime2WeekOfBits(ScheduleBuildEvent event) {
         long[][] week = new long[7][5];
         long[] day;
 
@@ -141,7 +142,7 @@ public class DefaultScheduleBuildHelper {
      * @return array of longs, 7 days x 5 (to hold 288 5 min periods in 24 hrs)
      */
 
-    public static long[][] xlateClassMeetingTimeList2WeekBits(List<? extends ScheduleBuildEvent> meetingTimes) {
+    public long[][] xlateClassMeetingTimeList2WeekBits(List<? extends ScheduleBuildEvent> meetingTimes) {
         long[][] week = new long[7][5];  // 7 days x 5 longs per day
 
         for (ScheduleBuildEvent meetingTime : meetingTimes) {

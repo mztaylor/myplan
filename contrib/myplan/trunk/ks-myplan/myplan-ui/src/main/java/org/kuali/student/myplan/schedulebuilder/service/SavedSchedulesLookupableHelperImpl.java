@@ -17,7 +17,7 @@ import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
-import org.kuali.student.myplan.schedulebuilder.support.DefaultScheduleBuildHelper;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
@@ -39,6 +39,8 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
     private ScheduleBuildStrategy scheduleBuildStrategy;
 
     private UserSessionHelper userSessionHelper;
+
+    private ScheduleBuildHelper scheduleBuildHelper;
 
     private TermHelper termHelper;
 
@@ -158,10 +160,10 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
      * @return ((currentIsWithdrawn OR ((currentMeeting and savedMeeting times vary) OR (reservedTime and savedMeeting time conflict))) AND savedActivity is not in PlannedActivities) then false otherwise true.
      */
     private boolean areEqual(ActivityOption saved, ActivityOption current, Map<String, String> plannedItems, List<ReservedTime> reservedTimes) {
-        long[][] savedClassMeetingTime = DefaultScheduleBuildHelper.xlateClassMeetingTimeList2WeekBits(saved.getClassMeetingTimes());
-        long[][] currentClassMeetingTime = DefaultScheduleBuildHelper.xlateClassMeetingTimeList2WeekBits(current.getClassMeetingTimes());
-        long[][] reservedTime = DefaultScheduleBuildHelper.xlateClassMeetingTimeList2WeekBits(reservedTimes);
-        if ((current.isWithdrawn() || (!Arrays.deepEquals(savedClassMeetingTime, currentClassMeetingTime) || DefaultScheduleBuildHelper.checkForConflictsWeeks(savedClassMeetingTime, reservedTime))) && !plannedItems.containsKey(saved.getActivityOfferingId())) {
+        long[][] savedClassMeetingTime = getScheduleBuildHelper().xlateClassMeetingTimeList2WeekBits(saved.getClassMeetingTimes());
+        long[][] currentClassMeetingTime = getScheduleBuildHelper().xlateClassMeetingTimeList2WeekBits(current.getClassMeetingTimes());
+        long[][] reservedTime = getScheduleBuildHelper().xlateClassMeetingTimeList2WeekBits(reservedTimes);
+        if ((current.isWithdrawn() || (!Arrays.deepEquals(savedClassMeetingTime, currentClassMeetingTime) || getScheduleBuildHelper().checkForConflictsWeeks(savedClassMeetingTime, reservedTime))) && !plannedItems.containsKey(saved.getActivityOfferingId())) {
             return false;
         }
         return true;
@@ -210,5 +212,16 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
 
     public void setPlanHelper(PlanHelper planHelper) {
         this.planHelper = planHelper;
+    }
+
+    public ScheduleBuildHelper getScheduleBuildHelper() {
+        if (scheduleBuildHelper == null) {
+            scheduleBuildHelper = UwMyplanServiceLocator.getInstance().getScheduleBuildHelper();
+        }
+        return scheduleBuildHelper;
+    }
+
+    public void setScheduleBuildHelper(ScheduleBuildHelper scheduleBuildHelper) {
+        this.scheduleBuildHelper = scheduleBuildHelper;
     }
 }
