@@ -80,6 +80,9 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     private int openSeats;
 
     @XmlAttribute
+    private int filledSeats;
+
+    @XmlAttribute
     private int totalSeats;
 
     @XmlAttribute
@@ -139,6 +142,7 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         withdrawn = copy.isWithdrawn();
         closed = copy.isClosed();
         openSeats = copy.getOpenSeats();
+        filledSeats = copy.getFilledSeats();
         totalSeats = copy.getTotalSeats();
         requiresPermission = copy.isRequiresPermission();
         primary = copy.isPrimary();
@@ -284,6 +288,15 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 
     public void setOpenSeats(int openSeats) {
         this.openSeats = openSeats;
+    }
+
+    @Override
+    public int getFilledSeats() {
+        return filledSeats;
+    }
+
+    public void setFilledSeats(int filledSeats) {
+        this.filledSeats = filledSeats;
     }
 
     @Override

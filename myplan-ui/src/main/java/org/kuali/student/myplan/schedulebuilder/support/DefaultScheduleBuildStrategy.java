@@ -23,6 +23,7 @@ import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.*;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.myplan.schedulebuilder.util.*;
+import org.kuali.student.myplan.utils.CalendarUtil;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -61,6 +62,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     private transient PlanHelper planHelper;
     private UserSessionHelper userSessionHelper;
     private transient TermHelper termHelper;
+    private transient CalendarUtil calendarUtil;
     private transient AcademicRecordService academicRecordService;
     private transient ShoppingCartStrategy shoppingCartStrategy;
     private CourseDetailsInquiryHelperImpl courseDetailsHelper;
@@ -215,6 +217,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         }
 
         StringBuilder daysAndTimes = new StringBuilder();
+        List<String> days = new ArrayList<String>();
         Set<Integer> weekdays = new java.util.TreeSet<Integer>();
         if (timeSlot.getWeekdays() != null)
             weekdays.addAll(timeSlot.getWeekdays());
@@ -222,38 +225,31 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         for (int weekday : weekdays)
             switch (weekday) {
                 case Calendar.MONDAY:
-                    daysAndTimes
-                            .append(SchedulingServiceConstants.MONDAY_TIMESLOT_DISPLAY_DAY_CODE);
+                    days.add(getCalendarUtil().getShortName(Calendar.MONDAY));
                     meeting.setMonday(true);
                     break;
                 case Calendar.TUESDAY:
-                    daysAndTimes
-                            .append(SchedulingServiceConstants.TUESDAY_TIMESLOT_DISPLAY_DAY_CODE);
+                    days.add(getCalendarUtil().getShortName(Calendar.TUESDAY));
                     meeting.setTuesday(true);
                     break;
                 case Calendar.WEDNESDAY:
-                    daysAndTimes
-                            .append(SchedulingServiceConstants.WEDNESDAY_TIMESLOT_DISPLAY_DAY_CODE);
+                    days.add(getCalendarUtil().getShortName(Calendar.WEDNESDAY));
                     meeting.setWednesday(true);
                     break;
                 case Calendar.THURSDAY:
-                    daysAndTimes
-                            .append(SchedulingServiceConstants.THURSDAY_TIMESLOT_DISPLAY_DAY_CODE);
+                    days.add(getCalendarUtil().getShortName(Calendar.THURSDAY));
                     meeting.setThursday(true);
                     break;
                 case Calendar.FRIDAY:
-                    daysAndTimes
-                            .append(SchedulingServiceConstants.FRIDAY_TIMESLOT_DISPLAY_DAY_CODE);
+                    days.add(getCalendarUtil().getShortName(Calendar.FRIDAY));
                     meeting.setFriday(true);
                     break;
                 case Calendar.SATURDAY:
-                    daysAndTimes
-                            .append(SchedulingServiceConstants.SATURDAY_TIMESLOT_DISPLAY_DAY_CODE);
+                    days.add(getCalendarUtil().getShortName(Calendar.SATURDAY));
                     meeting.setSaturday(true);
                     break;
                 case Calendar.SUNDAY:
-                    daysAndTimes
-                            .append(SchedulingServiceConstants.SUNDAY_TIMESLOT_DISPLAY_DAY_CODE);
+                    days.add(getCalendarUtil().getShortName(Calendar.SUNDAY));
                     meeting.setSunday(true);
                     break;
                 default:
@@ -264,16 +260,16 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
         TimeOfDayInfo startInfo = timeSlot.getStartTime();
         TimeOfDayInfo endInfo = timeSlot.getEndTime();
-
+        String times = "";
         if (startInfo != null && endInfo != null) {
             meeting.setAllDay(false);
+            daysAndTimes.append(org.apache.commons.lang.StringUtils.join(days, ""));
             if (daysAndTimes.length() > 0)
                 daysAndTimes.append(" ");
             Date startTime = new Date(startInfo.getMilliSeconds());
             Date endTime = new Date(endInfo.getMilliSeconds());
-            daysAndTimes.append(tdf.format(startTime));
-            daysAndTimes.append(" - ");
-            daysAndTimes.append(tdf.format(endTime));
+            times = String.format("%s - %s", tdf.format(startTime), tdf.format(endTime));
+            daysAndTimes.append(times);
             tcal.setTime(startTime);
             sdcal.set(Calendar.HOUR_OF_DAY, tcal.get(Calendar.HOUR_OF_DAY));
             sdcal.set(Calendar.MINUTE, tcal.get(Calendar.MINUTE));
@@ -297,6 +293,8 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         meeting.setCampus(campus);
         meeting.setArranged(location != null);
         meeting.setDaysAndTimes(daysAndTimes.toString());
+        meeting.setDays(days);
+        meeting.setTimes(times);
         meeting.setInstructorName(instructor);
         meeting.setStartDate(sdcal.getTime());
         meeting.setUntilDate(edcal.getTime());
@@ -1172,5 +1170,16 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
     public void setPlanHelper(PlanHelper planHelper) {
         this.planHelper = planHelper;
+    }
+
+    public CalendarUtil getCalendarUtil() {
+        if (calendarUtil == null) {
+            calendarUtil = KsapFrameworkServiceLocator.getCalendarUtil();
+        }
+        return calendarUtil;
+    }
+
+    public void setCalendarUtil(CalendarUtil calendarUtil) {
+        this.calendarUtil = calendarUtil;
     }
 }

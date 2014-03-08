@@ -340,15 +340,15 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
             }
         }
 
-        JsonObjectBuilder jpso = Json.createObjectBuilder();
-        JsonArrayBuilder jevents = Json.createArrayBuilder();
-        jpso.add("uniqueId", pso.getUniqueId());
-        jpso.add("selected", pso.isSelected());
+        JsonObjectBuilder jPso = Json.createObjectBuilder();
+        JsonArrayBuilder jEvents = Json.createArrayBuilder();
+        jPso.add("uniqueId", pso.getUniqueId());
+        jPso.add("selected", pso.isSelected());
         if (StringUtils.hasText(pso.getId())) {
-            jpso.add("id", pso.getId());
+            jPso.add("id", pso.getId());
         }
 
-        /*Defaultng to 8:00Am*/
+        /*Defaulting to 8:00Am*/
         Calendar defaultStart = Calendar.getInstance();
         defaultStart.set(defaultStart.get(Calendar.YEAR), defaultStart.get(Calendar.MONTH), defaultStart.get(Calendar.DATE), 8, 0);
 
@@ -357,51 +357,13 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
         defaultEnd.set(defaultEnd.get(Calendar.YEAR), defaultEnd.get(Calendar.MONTH), defaultEnd.get(Calendar.DATE), 17, 0);
 
 
-        boolean weekend = false;
-        boolean tbd = false;
-        for (ActivityOption ao : pso.getActivityOptions()) {
-            if (!ao.isPrimary() || !ao.isEnrollmentGroup()) {
-                for (ClassMeetingTime meeting : ao.getClassMeetingTimes()) {
-                    if (!weekend) {
-                        weekend = meeting.isSaturday() || meeting.isSunday();
-                    }
-                    if (!tbd) {
-                        tbd = !meeting.isArranged();
-                    }
-                    if (meeting.isArranged()) {
-                        Calendar startCal = Calendar.getInstance();
-                        startCal.setTime(meeting.getStartDate());
-                        Calendar endCal = Calendar.getInstance();
-                        endCal.setTime(meeting.getUntilDate());
-
-                        DateTimeComparator comparator = DateTimeComparator.getTimeOnlyInstance();
-                        if (comparator.compare(startCal.getTime(), defaultStart.getTime()) == -1) {
-                            defaultStart.set(startCal.get(Calendar.YEAR), startCal.get(Calendar.MONTH), startCal.get(Calendar.DATE), startCal.get(Calendar.HOUR_OF_DAY), 0);
-                        }
-                        if (comparator.compare(endCal.getTime(), defaultEnd.getTime()) == 1) {
-                            defaultEnd.set(endCal.get(Calendar.YEAR), endCal.get(Calendar.MONTH), endCal.get(Calendar.DATE), endCal.get(Calendar.MINUTE) == 0 ? endCal.get(Calendar.HOUR_OF_DAY) : (endCal.get(Calendar.HOUR_OF_DAY) == 23 ? 00 : endCal.get(Calendar.HOUR_OF_DAY) + 1), 0);
-                        }
-
-                        addEvents(term, meeting, ao, jevents, aggregate, scheduledCourseActivities, pso.getUniqueId());
-                    } else {
-                        /*Creating minimal event for TBD activities*/
-                        JsonObjectBuilder event = Json.createObjectBuilder();
-                        event.add("id", pso.getUniqueId());
-                        event.add("courseCd", ao.getCourseCd());
-                        event.add("courseId", ao.getCourseId());
-                        event.add("courseTitle", ao.getCourseTitle());
-                        event.add("sectionCd", ao.getRegistrationCode());
-                        event.add("tbd", true);
-                        jevents.add(event);
-                    }
-                }
-            }
-        }
-
-
-        jpso.add("events", jevents);
         PossibleScheduleOptionInfo possibleScheduleOptionInfo = (PossibleScheduleOptionInfo) pso;
-        JsonObject obj = jpso.build();
+
+        processActivitiesForEvents(pso.getActivityOptions(), defaultStart, defaultEnd, term, jEvents, aggregate, scheduledCourseActivities, possibleScheduleOptionInfo);
+
+        jPso.add("events", jEvents);
+
+        JsonObject obj = jPso.build();
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         JsonWriter jwriter = Json.createWriter(outStream);
         jwriter.writeObject(obj);
@@ -409,24 +371,81 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
         possibleScheduleOptionInfo.setEvent(outStream.toString());
         possibleScheduleOptionInfo.setMinTime(defaultStart.getTime().getTime());
         possibleScheduleOptionInfo.setMaxTime(defaultEnd.getTime().getTime());
-        possibleScheduleOptionInfo.setWeekend(weekend);
-        possibleScheduleOptionInfo.setTbd(tbd);
 
     }
 
+    /**
+     * Process possible schedule activity options to generate JsonEvents required for the UI.
+     * And also takes care of whether there are any TBD's or WEEKEND's included in any of the activity class meetings.
+     *
+     * @param activityOptions
+     * @param defaultStart
+     * @param defaultEnd
+     * @param term
+     * @param jEvents
+     * @param aggregate
+     * @param scheduledCourseActivities
+     * @param pso
+     */
+    private void processActivitiesForEvents(List<ActivityOption> activityOptions, Calendar defaultStart, Calendar defaultEnd, Term term, JsonArrayBuilder jEvents, EventAggregateData aggregate, Map<String, List<ActivityOption>> scheduledCourseActivities, PossibleScheduleOptionInfo pso) {
+        for (ActivityOption ao : activityOptions) {
+
+            for (ClassMeetingTime meeting : ao.getClassMeetingTimes()) {
+                if (!pso.isWeekend()) {
+                    pso.setWeekend(meeting.isSaturday() || meeting.isSunday());
+                }
+                if (!pso.isTbd()) {
+                    pso.setTbd(!meeting.isArranged());
+                }
+                if (meeting.isArranged()) {
+                    Calendar startCal = Calendar.getInstance();
+                    startCal.setTime(meeting.getStartDate());
+                    Calendar endCal = Calendar.getInstance();
+                    endCal.setTime(meeting.getUntilDate());
+
+                    DateTimeComparator comparator = DateTimeComparator.getTimeOnlyInstance();
+                    if (comparator.compare(startCal.getTime(), defaultStart.getTime()) == -1) {
+                        defaultStart.set(startCal.get(Calendar.YEAR), startCal.get(Calendar.MONTH), startCal.get(Calendar.DATE), startCal.get(Calendar.HOUR_OF_DAY), 0);
+                    }
+                    if (comparator.compare(endCal.getTime(), defaultEnd.getTime()) == 1) {
+                        defaultEnd.set(endCal.get(Calendar.YEAR), endCal.get(Calendar.MONTH), endCal.get(Calendar.DATE), endCal.get(Calendar.MINUTE) == 0 ? endCal.get(Calendar.HOUR_OF_DAY) : (endCal.get(Calendar.HOUR_OF_DAY) == 23 ? 00 : endCal.get(Calendar.HOUR_OF_DAY) + 1), 0);
+                    }
+
+                    addEvents(term, meeting, ao, jEvents, aggregate, scheduledCourseActivities, pso.getUniqueId());
+
+
+                } else {
+                        /*Creating minimal event for TBD activities*/
+                    JsonObjectBuilder event = Json.createObjectBuilder();
+                    event.add("id", pso.getUniqueId());
+                    event.add("courseCd", ao.getCourseCd());
+                    event.add("courseId", ao.getCourseId());
+                    event.add("courseTitle", ao.getCourseTitle());
+                    event.add("sectionCd", ao.getRegistrationCode());
+                    event.add("tbd", true);
+                    jEvents.add(event);
+                }
+            }
+
+            for (SecondaryActivityOptions secondaryActivityOptions : ao.getSecondaryOptions()) {
+                processActivitiesForEvents(secondaryActivityOptions.getActivityOptions(), defaultStart, defaultEnd, term, jEvents, aggregate, scheduledCourseActivities, pso);
+            }
+
+        }
+    }
 
     /**
-     * Adds events for given params
+     * Builds json events for given params
      *
      * @param term
      * @param meeting
      * @param ao
-     * @param jevents
+     * @param jEvents
      * @param aggregate
      * @param scheduledCourseActivities
      * @param parentUniqueId
      */
-    protected void addEvents(Term term, ScheduleBuildEvent meeting, ActivityOption ao, JsonArrayBuilder jevents, EventAggregateData aggregate, Map<String, List<ActivityOption>> scheduledCourseActivities, String parentUniqueId) {
+    protected void addEvents(Term term, ScheduleBuildEvent meeting, ActivityOption ao, JsonArrayBuilder jEvents, EventAggregateData aggregate, Map<String, List<ActivityOption>> scheduledCourseActivities, String parentUniqueId) {
         /**
          * This is used to adjust minDate and maxDate which is a week from min date and adjust min date to be monday if it is not.
          * Used in building a week worth of schedules instead of whole term.
@@ -462,31 +481,31 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
 
         while (!startDate.after(untilDate)) {
             if (meeting.isSunday())
-                jevents.add(createEvent(startDate, eventStart, aggregate.cal,
+                jEvents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.SUNDAY, durationSeconds, ao,
                         scheduledCourseActivities, parentUniqueId));
             if (meeting.isMonday())
-                jevents.add(createEvent(startDate, eventStart, aggregate.cal,
+                jEvents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.MONDAY, durationSeconds, ao,
                         scheduledCourseActivities, parentUniqueId));
             if (meeting.isTuesday())
-                jevents.add(createEvent(startDate, eventStart, aggregate.cal,
+                jEvents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.TUESDAY, durationSeconds, ao,
                         scheduledCourseActivities, parentUniqueId));
             if (meeting.isWednesday())
-                jevents.add(createEvent(startDate, eventStart, aggregate.cal,
+                jEvents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.WEDNESDAY, durationSeconds, ao,
                         scheduledCourseActivities, parentUniqueId));
             if (meeting.isThursday())
-                jevents.add(createEvent(startDate, eventStart, aggregate.cal,
+                jEvents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.THURSDAY, durationSeconds, ao,
                         scheduledCourseActivities, parentUniqueId));
             if (meeting.isFriday())
-                jevents.add(createEvent(startDate, eventStart, aggregate.cal,
+                jEvents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.FRIDAY, durationSeconds, ao,
                         scheduledCourseActivities, parentUniqueId));
             if (meeting.isSaturday())
-                jevents.add(createEvent(startDate, eventStart, aggregate.cal,
+                jEvents.add(createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.SATURDAY, durationSeconds, ao,
                         scheduledCourseActivities, parentUniqueId));
             startDate = aggregate.addOneWeek(startDate);
@@ -530,7 +549,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
         /*using parentUniqueId for UI purpose of hiding and showing the events based on scheduleId*/
         event.add("id", parentUniqueId);
         event.add("tbd", false);
-        /*Title value is populated in JS because we dont know what is the index value of the possibleSchedule*/
+        /*Title value is populated in JS because we don't know what is the index value of the possibleSchedule*/
         event.add("title", "");
         event.add("start", eventStartSeconds);
         if (durationSeconds == 0) {
@@ -548,40 +567,54 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
             List<ActivityOption> activityOptions = scheduledCourseActivities.get(ao.getCourseCd());
 
             JsonArrayBuilder activityArray = Json.createArrayBuilder();
-            for (ActivityOption activityOption : activityOptions) {
-                JsonObjectBuilder activity = Json.createObjectBuilder();
-                activity.add("sectionCd", activityOption.getRegistrationCode());
-                JsonArrayBuilder meetingArray = Json.createArrayBuilder();
-                JsonObjectBuilder meeting = Json.createObjectBuilder();
-                for (ClassMeetingTime meetingTime : activityOption.getClassMeetingTimes()) {
-                    meeting.add("meetingTime", meetingTime.getDaysAndTimes());
-                    meeting.add("location", meetingTime.getLocation());
-                    String campus = meetingTime.getCampus();
-                    String building = "";
-                    String buildingUrl = "";
-                    if (meetingTime.getBuilding() != null) {
-                        if (!"NOC".equals(meetingTime.getBuilding()) && !meetingTime.getBuilding().startsWith("*") && campus.equalsIgnoreCase("seattle")) {
-                            building = meetingTime.getBuilding();
-                            buildingUrl = PlanConstants.BUILDING_URL + building;
-                        } else {
-                            building = meetingTime.getBuilding();
-                        }
-                    }
-                    meeting.add("building", building);
-                    meeting.add("buildingUrl", buildingUrl);
-                    meetingArray.add(meeting);
-                }
-
-                activity.add("meetings", meetingArray);
-                activityArray.add(activity);
-            }
-
+            buildCoursePopoverEvents(activityOptions, activityArray);
 
             popoverEvent.add("activities", activityArray);
             popoverEvent.add("termId", ao.getTermId());
             event.add("popoverContent", popoverEvent);
         }
         return event;
+    }
+
+    /**
+     * Recursive method which buildsPopoverEvents for Activities, Secondary Activities, AlternateActivities at the same time.
+     */
+    private void buildCoursePopoverEvents(List<ActivityOption> activityOptions, JsonArrayBuilder activityArray) {
+        for (ActivityOption activityOption : activityOptions) {
+            JsonObjectBuilder activity = Json.createObjectBuilder();
+            activity.add("sectionCd", activityOption.getRegistrationCode());
+            activity.add("enrollStatus", String.format("%s/%s", activityOption.getFilledSeats(), activityOption.getTotalSeats()));
+            JsonArrayBuilder meetingArray = Json.createArrayBuilder();
+            JsonObjectBuilder meeting = Json.createObjectBuilder();
+            for (ClassMeetingTime meetingTime : activityOption.getClassMeetingTimes()) {
+                meeting.add("meetingDay", org.apache.commons.lang.StringUtils.join(meetingTime.getDays(), ""));
+                meeting.add("meetingTime", meetingTime.getTimes());
+                meeting.add("location", meetingTime.getLocation());
+                String campus = meetingTime.getCampus();
+                String building = "";
+                String buildingUrl = "";
+                if (meetingTime.getBuilding() != null) {
+                    if (!"NOC".equals(meetingTime.getBuilding()) && !meetingTime.getBuilding().startsWith("*") && campus.equalsIgnoreCase("seattle")) {
+                        building = meetingTime.getBuilding();
+                        buildingUrl = PlanConstants.BUILDING_URL + building;
+                    } else {
+                        building = meetingTime.getBuilding();
+                    }
+                }
+                meeting.add("building", building);
+                meeting.add("buildingUrl", buildingUrl);
+                meetingArray.add(meeting);
+            }
+
+            activity.add("meetings", meetingArray);
+            activityArray.add(activity);
+
+            buildCoursePopoverEvents(activityOption.getAlternateActivties(), activityArray);
+
+            for (SecondaryActivityOptions secondaryActivityOptions : activityOption.getSecondaryOptions()) {
+                buildCoursePopoverEvents(secondaryActivityOptions.getActivityOptions(), activityArray);
+            }
+        }
     }
 
     public CalendarUtil getCalendarUtil() {

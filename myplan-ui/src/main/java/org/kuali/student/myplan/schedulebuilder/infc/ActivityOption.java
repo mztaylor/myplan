@@ -151,6 +151,13 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
     int getOpenSeats();
 
     /**
+     * Get the number of open seats available in the class.
+     *
+     * @return The number of open seats available.
+     */
+    int getFilledSeats();
+
+    /**
      * Get the total number of seats available for the class.
      *
      * @return The total number of seats available for the class.
