@@ -290,6 +290,16 @@ public class ReservedTimeForm extends UifFormBase implements ReservedTime {
     @Override
     public String getDaysAndTimes() {
         StringBuilder daysAndTimes = new StringBuilder();
+        List<String> shortNames = getDays();
+
+        if (shortNames.size() > 0) {
+            daysAndTimes.append(StringUtils.join(shortNames, ", ")).append(" from ");
+        }
+        daysAndTimes.append(getTimes());
+        return daysAndTimes.toString();
+    }
+
+    public List<String> getDays() {
         List<String> shortNames = new ArrayList<String>();
         if (monday)
             shortNames.add(getCalendarUtil().getShortName(Calendar.MONDAY));
@@ -306,14 +316,16 @@ public class ReservedTimeForm extends UifFormBase implements ReservedTime {
         if (sunday)
             shortNames.add(getCalendarUtil().getShortName(Calendar.SUNDAY));
 
-        SimpleDateFormat df = new SimpleDateFormat("h:mm a");
-        if (shortNames.size() > 0)
-            daysAndTimes.append(StringUtils.join(shortNames, ", ")).append(" from ");
-        daysAndTimes.append(df.format(startDate));
-        daysAndTimes.append(" to ");
-        daysAndTimes.append(df.format(untilDate));
+        return shortNames;
+    }
 
-        return daysAndTimes.toString();
+    public String getTimes() {
+        StringBuilder times = new StringBuilder();
+        SimpleDateFormat df = new SimpleDateFormat("h:mm a");
+        times.append(df.format(startDate));
+        times.append(" - ");
+        times.append(df.format(untilDate));
+        return times.toString();
     }
 
     @Override

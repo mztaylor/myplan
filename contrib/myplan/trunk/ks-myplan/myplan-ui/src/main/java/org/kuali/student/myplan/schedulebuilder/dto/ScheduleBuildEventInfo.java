@@ -7,179 +7,205 @@ import java.util.Date;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ScheduleBuildEventInfo", propOrder = { "description",
-		"allDay", "startDate", "untilDate", "sunday", "monday", "tuesday",
-		"wednesday", "thursday", "friday", "saturday", "_futureElements" })
+@XmlType(name = "ScheduleBuildEventInfo", propOrder = {"description",
+        "allDay", "startDate", "untilDate", "sunday", "monday", "tuesday",
+        "wednesday", "thursday", "friday", "saturday", "_futureElements"})
 public class ScheduleBuildEventInfo implements ScheduleBuildEvent {
 
-	private static final long serialVersionUID = 804871449240773901L;
+    private static final long serialVersionUID = 804871449240773901L;
 
-	@XmlAttribute
-	private String description;
+    @XmlAttribute
+    private String description;
 
-	@XmlAttribute
-	private boolean allDay;
+    @XmlAttribute
+    private boolean allDay;
 
-	@XmlAttribute
-	private String daysAndTimes;
+    @XmlAttribute
+    private String daysAndTimes;
 
-	@XmlAttribute
-	private Date startDate;
+    @XmlAttribute
+    private List<String> days;
 
-	@XmlAttribute
-	private Date endTime;  // doesn't seem to be used anywhere, prob a mistake since untilDate is used for endTime
+    @XmlAttribute
+    private String times;
 
-	@XmlAttribute
-	private Date untilDate;
+    @XmlAttribute
+    private Date startDate;
 
-	@XmlAttribute
-	private boolean sunday;
+    @XmlAttribute
+    private Date endTime;  // doesn't seem to be used anywhere, prob a mistake since untilDate is used for endTime
 
-	@XmlAttribute
-	private boolean monday;
+    @XmlAttribute
+    private Date untilDate;
 
-	@XmlAttribute
-	private boolean tuesday;
+    @XmlAttribute
+    private boolean sunday;
 
-	@XmlAttribute
-	private boolean wednesday;
+    @XmlAttribute
+    private boolean monday;
 
-	@XmlAttribute
-	private boolean thursday;
+    @XmlAttribute
+    private boolean tuesday;
 
-	@XmlAttribute
-	private boolean friday;
+    @XmlAttribute
+    private boolean wednesday;
 
-	@XmlAttribute
-	private boolean saturday;
+    @XmlAttribute
+    private boolean thursday;
 
-	@XmlAnyElement
-	private List<?> _futureElements;
+    @XmlAttribute
+    private boolean friday;
 
-	public ScheduleBuildEventInfo() {
-	}
+    @XmlAttribute
+    private boolean saturday;
 
-	public ScheduleBuildEventInfo(ScheduleBuildEvent copy) {
-		this.description = copy.getDescription();
-		this.daysAndTimes = copy.getDaysAndTimes();
-		this.allDay = copy.isAllDay();
-		this.startDate = copy.getStartDate();
-		this.untilDate = copy.getUntilDate();
-		this.sunday = copy.isSunday();
-		this.monday = copy.isMonday();
-		this.tuesday = copy.isTuesday();
-		this.wednesday = copy.isWednesday();
-		this.thursday = copy.isThursday();
-		this.friday = copy.isFriday();
-		this.saturday = copy.isSaturday();
-	}
+    @XmlAnyElement
+    private List<?> _futureElements;
 
-	@Override
-	public String getDescription() {
-		return description;
-	}
+    public ScheduleBuildEventInfo() {
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public ScheduleBuildEventInfo(ScheduleBuildEvent copy) {
+        this.description = copy.getDescription();
+        this.daysAndTimes = copy.getDaysAndTimes();
+        this.days = copy.getDays();
+        this.times = copy.getTimes();
+        this.allDay = copy.isAllDay();
+        this.startDate = copy.getStartDate();
+        this.untilDate = copy.getUntilDate();
+        this.sunday = copy.isSunday();
+        this.monday = copy.isMonday();
+        this.tuesday = copy.isTuesday();
+        this.wednesday = copy.isWednesday();
+        this.thursday = copy.isThursday();
+        this.friday = copy.isFriday();
+        this.saturday = copy.isSaturday();
+    }
 
-	@Override
-	public boolean isAllDay() {
-		return allDay;
-	}
+    @Override
+    public String getDescription() {
+        return description;
+    }
 
-	public void setAllDay(boolean allDay) {
-		this.allDay = allDay;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	@Override
-	public String getDaysAndTimes() {
-		return daysAndTimes;
-	}
+    @Override
+    public boolean isAllDay() {
+        return allDay;
+    }
 
-	public void setDaysAndTimes(String daysAndTimes) {
-		this.daysAndTimes = daysAndTimes;
-	}
+    public void setAllDay(boolean allDay) {
+        this.allDay = allDay;
+    }
 
-	@Override
-	public Date getStartDate() {
-		return startDate;
-	}
+    @Override
+    public String getDaysAndTimes() {
+        return daysAndTimes;
+    }
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
+    public void setDaysAndTimes(String daysAndTimes) {
+        this.daysAndTimes = daysAndTimes;
+    }
 
-	@Override
-	public Date getUntilDate() {
-		return untilDate;
-	}
+    @Override
+    public List<String> getDays() {
+        return days;
+    }
 
-	public void setUntilDate(Date untilDate) {
-		this.untilDate = untilDate;
-	}
+    public void setDays(List<String> days) {
+        this.days = days;
+    }
 
-	@Override
-	public boolean isSunday() {
-		return sunday;
-	}
+    @Override
+    public String getTimes() {
+        return times;
+    }
 
-	public void setSunday(boolean sunday) {
-		this.sunday = sunday;
-	}
+    public void setTimes(String times) {
+        this.times = times;
+    }
 
-	@Override
-	public boolean isMonday() {
-		return monday;
-	}
+    @Override
+    public Date getStartDate() {
+        return startDate;
+    }
 
-	public void setMonday(boolean monday) {
-		this.monday = monday;
-	}
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
 
-	@Override
-	public boolean isTuesday() {
-		return tuesday;
-	}
+    @Override
+    public Date getUntilDate() {
+        return untilDate;
+    }
 
-	public void setTuesday(boolean tuesday) {
-		this.tuesday = tuesday;
-	}
+    public void setUntilDate(Date untilDate) {
+        this.untilDate = untilDate;
+    }
 
-	@Override
-	public boolean isWednesday() {
-		return wednesday;
-	}
+    @Override
+    public boolean isSunday() {
+        return sunday;
+    }
 
-	public void setWednesday(boolean wednesday) {
-		this.wednesday = wednesday;
-	}
+    public void setSunday(boolean sunday) {
+        this.sunday = sunday;
+    }
 
-	@Override
-	public boolean isThursday() {
-		return thursday;
-	}
+    @Override
+    public boolean isMonday() {
+        return monday;
+    }
 
-	public void setThursday(boolean thursday) {
-		this.thursday = thursday;
-	}
+    public void setMonday(boolean monday) {
+        this.monday = monday;
+    }
 
-	@Override
-	public boolean isFriday() {
-		return friday;
-	}
+    @Override
+    public boolean isTuesday() {
+        return tuesday;
+    }
 
-	public void setFriday(boolean friday) {
-		this.friday = friday;
-	}
+    public void setTuesday(boolean tuesday) {
+        this.tuesday = tuesday;
+    }
 
-	@Override
-	public boolean isSaturday() {
-		return saturday;
-	}
+    @Override
+    public boolean isWednesday() {
+        return wednesday;
+    }
 
-	public void setSaturday(boolean saturday) {
-		this.saturday = saturday;
-	}
+    public void setWednesday(boolean wednesday) {
+        this.wednesday = wednesday;
+    }
+
+    @Override
+    public boolean isThursday() {
+        return thursday;
+    }
+
+    public void setThursday(boolean thursday) {
+        this.thursday = thursday;
+    }
+
+    @Override
+    public boolean isFriday() {
+        return friday;
+    }
+
+    public void setFriday(boolean friday) {
+        this.friday = friday;
+    }
+
+    @Override
+    public boolean isSaturday() {
+        return saturday;
+    }
+
+    public void setSaturday(boolean saturday) {
+        this.saturday = saturday;
+    }
 
 }
