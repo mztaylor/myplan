@@ -547,7 +547,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
 
         JsonObjectBuilder event = Json.createObjectBuilder();
         /*using parentUniqueId for UI purpose of hiding and showing the events based on scheduleId*/
-        event.add("id", parentUniqueId);
+        event.add("uniqueid", parentUniqueId);
         event.add("tbd", false);
         /*Title value is populated in JS because we don't know what is the index value of the possibleSchedule*/
         event.add("title", "");
