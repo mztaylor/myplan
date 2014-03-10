@@ -1,8 +1,12 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
+import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
@@ -15,19 +19,15 @@ import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.xml.namespace.QName;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
+import java.util.*;
 
 public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
         ScheduleBuildForm {
@@ -39,6 +39,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
 
     private boolean more;
     private String uniqueId;
+    private String plannedActivities;
     private int possibleScheduleSize;
     private List<String> includeFilters;
     private ScheduleBuilder scheduleBuilder;
@@ -47,6 +48,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
     private List<PossibleScheduleOption> possibleScheduleOptions;
 
     private transient AcademicCalendarService academicCalendarService;
+    private transient PlanHelper planHelper;
 
 
     private void updateReservedTimesOnBuild() {
@@ -182,6 +184,16 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
             possibleScheduleOptions = scheduleBuilder.getNext(getPossibleScheduleSize(), Collections.<PossibleScheduleOption>emptySet());
         }
 
+        Map<String, String> plannedItems = getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(getRequestedLearningPlanId(), PlanConstants.SECTION_TYPE, getTerm().getId());
+
+        /*Creating json string which has the planned activities associated to their planItemId.. Used in UI for ability to delete planned activities*/
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            plannedActivities = CollectionUtils.isEmpty(plannedItems) ? null : mapper.writeValueAsString(plannedItems);
+        } catch (IOException e) {
+            LOG.error("Could not build planned Activities json string", e);
+        }
+
         setMinTime(getDefaultMinTime());
         setMaxTime(getDefaultMaxTime());
 
@@ -246,6 +258,15 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
             throw new IllegalStateException("Failed to remove reserved time", e);
         }
         return getUniqueId();
+    }
+
+    @Override
+    public String getPlannedActivities() {
+        return plannedActivities;
+    }
+
+    public void setPlannedActivities(String plannedActivities) {
+        this.plannedActivities = plannedActivities;
     }
 
     public ScheduleBuilder getScheduleBuilder() {
@@ -405,5 +426,16 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
 
     public void setIncludeFilters(List<String> includeFilters) {
         this.includeFilters = includeFilters;
+    }
+
+    public PlanHelper getPlanHelper() {
+        if (planHelper == null) {
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
+        }
+        return planHelper;
+    }
+
+    public void setPlanHelper(PlanHelper planHelper) {
+        this.planHelper = planHelper;
     }
 }
