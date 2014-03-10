@@ -42,7 +42,7 @@ public interface ScheduleBuildForm extends ScheduleForm {
      * requested.
      *
      * @return True if more options based on the same criteria are requested,
-     *         false if the first set of options are requested.
+     * false if the first set of options are requested.
      */
     boolean isMore();
 
@@ -51,7 +51,7 @@ public interface ScheduleBuildForm extends ScheduleForm {
      * available.
      *
      * @return True if more options are available beyond the first set, false if
-     *         the first set has all of the available options.
+     * the first set has all of the available options.
      */
     boolean hasMore();
 
@@ -71,5 +71,12 @@ public interface ScheduleBuildForm extends ScheduleForm {
      *
      */
     String removeSchedule();
+
+    /**
+     * Json string which holds a map of activityOfferingId associated to a planItemId
+     *
+     * @return json object as string
+     */
+    String getPlannedActivities();
 
 }

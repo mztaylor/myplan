@@ -583,6 +583,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
         for (ActivityOption activityOption : activityOptions) {
             JsonObjectBuilder activity = Json.createObjectBuilder();
             activity.add("sectionCd", activityOption.getRegistrationCode());
+            activity.add("activityId", activityOption.getActivityOfferingId());
             activity.add("enrollStatus", String.format("%s/%s", activityOption.getFilledSeats(), activityOption.getTotalSeats()));
             JsonArrayBuilder meetingArray = Json.createArrayBuilder();
             JsonObjectBuilder meeting = Json.createObjectBuilder();

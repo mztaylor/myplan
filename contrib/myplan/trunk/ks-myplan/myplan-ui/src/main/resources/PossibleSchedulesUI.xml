@@ -235,6 +235,7 @@
             <map>
                 <!-- List of classes for each selection, where the length sets the limit of how many items can be selected at once -->
                 <entry key="class-selections" value="schedulePossible--orange,schedulePossible--gold,schedulePossible--pink,schedulePossible--blue,schedulePossible--green"/>
+                <entry key="planned-activities" value="@{plannedActivities}"/>
             </map>
         </property>
         <property name="templateOptions">
