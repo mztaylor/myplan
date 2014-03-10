@@ -7,6 +7,7 @@ import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.lum.course.infc.Course;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Defines service interaction and institutional override behavior for schedule
@@ -31,7 +32,7 @@ public interface ScheduleBuildStrategy {
      * @param termId    The term to get options for.
      * @return The course options to use as inputs for generating schedules.
      */
-    List<CourseOption> getCourseOptions(List<String> courseIds, String termId);
+    List<CourseOption> getCourseOptions(List<String> courseIds, Map<String, String> courseIdsTOCourseCds, String termId);
 
     /**
      * Load the course options to use as inputs for generating schedules.

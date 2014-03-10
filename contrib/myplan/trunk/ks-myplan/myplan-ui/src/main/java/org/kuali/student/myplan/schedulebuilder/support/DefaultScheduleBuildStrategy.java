@@ -471,7 +471,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     @Override
-    public List<CourseOption> getCourseOptions(List<String> courseIds, String termId) {
+    public List<CourseOption> getCourseOptions(List<String> courseIds, Map<String, String> courseIdsTOCourseCds, String termId) {
         Term term = getTermHelper().getTermByAtpId(termId);
         CourseHelper courseHelper = getCourseHelper();
         ShoppingCartStrategy cartStrategy = getShoppingCartStrategy();
@@ -486,7 +486,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         int courseIndex = -1;
         for (String courseId : courseIds) {
             courseIndex++;
-            Course c = courseHelper.getCourseInfo(courseId);
+            Course c = courseHelper.getCourseInfoByIdAndCd(courseId, courseIdsTOCourseCds.get(courseId));
             if (c == null)
                 continue;
             CourseOptionInfo courseOption = new CourseOptionInfo();
@@ -627,7 +627,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     protected void buildCourseOptions(String termId, boolean courseLockIn, boolean lockIn,
-                                      Map<String, List<String>> courseIdsActivityCodes, List<CourseOption> rv, List<ActivityOptionFilter> filterList) {
+                                      Map<String, List<String>> courseIdsActivityCodes, Map<String, String> courseIdsToCourseCds, List<CourseOption> rv, List<ActivityOptionFilter> filterList) {
         if (!courseIdsActivityCodes.isEmpty()) {
             StringBuilder msg = null;
             if (LOG.isDebugEnabled()) {
@@ -641,7 +641,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 msg.append(courseIdsActivityCodes);
             }
             Queue<ActivityOptionInfo> toCourseLockIn = courseLockIn ? new LinkedList<ActivityOptionInfo>() : null;
-            for (CourseOption co : getCourseOptions(new ArrayList<String>(courseIdsActivityCodes.keySet()), termId)) {
+            for (CourseOption co : getCourseOptions(new ArrayList<String>(courseIdsActivityCodes.keySet()), new LinkedHashMap<String, String>(), termId)) {
                 List<String> acodes = courseIdsActivityCodes.get(co.getCourseId());
                 if (msg != null) {
                     msg.append("\n  Course ").append(co.getCourseCode());
@@ -821,11 +821,11 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         }
 
         List<CourseOption> rv = new ArrayList<CourseOption>(registeredCourseIdsAndActivityCodes.size() + cartCourseIdsAndActivityCodes.size() + plannedCourseIdsAndActivityCodes.size() + backupCourseIds.size());
-        buildCourseOptions(termId, true, true, registeredCourseIdsAndActivityCodes, rv, new ArrayList<ActivityOptionFilter>());
-        buildCourseOptions(termId, false, true, cartCourseIdsAndActivityCodes, rv, new ArrayList<ActivityOptionFilter>());
-        buildCourseOptions(termId, false, false, plannedCourseIdsAndActivityCodes, rv, new ArrayList<ActivityOptionFilter>());
+        buildCourseOptions(termId, true, true, registeredCourseIdsAndActivityCodes, new LinkedHashMap<String, String>(), rv, new ArrayList<ActivityOptionFilter>());
+        buildCourseOptions(termId, false, true, cartCourseIdsAndActivityCodes, new LinkedHashMap<String, String>(), rv, new ArrayList<ActivityOptionFilter>());
+        buildCourseOptions(termId, false, false, plannedCourseIdsAndActivityCodes, new LinkedHashMap<String, String>(), rv, new ArrayList<ActivityOptionFilter>());
         if (!backupCourseIds.isEmpty()) {
-            for (CourseOption co : getCourseOptions(backupCourseIds, termId)) {
+            for (CourseOption co : getCourseOptions(backupCourseIds, new LinkedHashMap<String, String>(), termId)) {
                 rv.add(co);
             }
         }
