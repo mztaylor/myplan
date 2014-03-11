@@ -88,8 +88,42 @@ function addReservedScheduleOption(methodToCall, e) {
             template = template.replace(/__KSAP_DAYSTIMES__/gi, response.daysTimes);
             var item = jQuery(template);
             container.append(item);
+            item.attr("id", "reserved-item-" + response.id);
             item.attr("data-events", JSON.stringify(response));
             item.show();
+            fnCloseAllPopups();
+            jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES");
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            if (textStatus == "parsererror")
+                textStatus = "Parse Error in response";
+            showGrowl(errorThrown, jqXHR.status + " " + textStatus);
+            fnCloseAllPopups();
+        }
+    });
+}
+
+function editReservedScheduleOption(id, e) {
+    var form = jQuery("#popupForm");
+    form.ajaxSubmit({
+        data: ksapAdditionalFormData({
+            id : id,
+            methodToCall : "updateReservedTime"
+        }),
+        dataType: 'json',
+        success: function(response, textStatus, jqXHR){
+            var container = jQuery("div.scheduleReserved__container");
+            var template = jQuery("#sb-reserved-item-template").wrap('<div/>').parent().html();
+            template = template.replace(/id="sb-reserved-item-template"/gi, "");
+            template = template.replace(/__KSAP_ID__/gi, response.id);
+            template = template.replace(/__KSAP_TERM_ID__/gi, response.termId);
+            template = template.replace(/__KSAP_DAYSTIMES__/gi, response.daysTimes);
+            var item = jQuery(template);
+            container.append(item);
+            item.attr("id", "reserved-item-" + response.id);
+            item.attr("data-events", JSON.stringify(response));
+            jQuery('#reserved-item-'+response.id).replaceWith(item);
+            jQuery('#reserved-item-'+response.id).show();
             fnCloseAllPopups();
             jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES");
         },

@@ -115,11 +115,16 @@
         <property name="actionScript" value="addReservedScheduleOption('createReservedTime', e);"/>
     </bean>
 
+    <bean id="sb_reserved_times_update_button" parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Update">
+        <property name="actionScript" value="editReservedScheduleOption('@{id}', e);"/>
+    </bean>
+
     <bean id="sb_reserved_time_buttons" parent="sb_reserved_time_buttons-parent"/>
     <bean abstract="true" id="sb_reserved_time_buttons-parent" parent="Uif-FooterBase">
         <property name="items">
             <list>
-                <bean parent="sb_reserved_times_submit_button"/>
+                <bean parent="sb_reserved_times_submit_button" p:render="@{id EQ null}"/>
+                <bean parent="sb_reserved_times_submit_button" p:actionLabel="Update" p:render="@{id NE null}" p:actionScript="editReservedScheduleOption('@{id}', e);"/>
             </list>
         </property>
     </bean>

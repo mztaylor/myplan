@@ -77,7 +77,7 @@ public interface ScheduleBuildStrategy {
      *
      * @param reservedTime The reserved time to add.
      */
-    void updateReservedTime(String requestedLearningPlanId, ReservedTime reservedTime)
+    ReservedTime updateReservedTime(String requestedLearningPlanId, ReservedTime reservedTime)
             throws PermissionDeniedException;
 
     /**

@@ -298,6 +298,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
         JsonArrayBuilder jevents = Json.createArrayBuilder();
         rto.add("id", rt.getId());
         rto.add("uniqueId", rt.getUniqueId());
+        rto.add("termId", term.getId());
         rto.add("daysTimes", rt.getDaysAndTimes());
         rto.add("startDate", ddf.format(rt.getStartDate()));
         rto.add("untilDate", ddf.format(rt.getUntilDate()));
