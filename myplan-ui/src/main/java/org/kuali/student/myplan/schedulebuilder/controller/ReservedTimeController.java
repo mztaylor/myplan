@@ -108,12 +108,6 @@ public class ReservedTimeController extends KsapControllerBase {
             throw new OperationFailedException("No atpId is found");
         }
 
-
-        Term term = getTermHelper().getTermByAtpId(form.getTermId());
-        Date startDate = getCalendarUtil().getNextMonday(term.getStartDate());
-        Date endDate = getCalendarUtil().getDateAfterXdays(startDate, 5);
-        form.setStartDate(startDate);
-        form.setUntilDate(endDate);
         return getUIFModelAndView(form);
     }
 
