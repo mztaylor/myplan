@@ -82,7 +82,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                     if (!CollectionUtils.isEmpty(validatedActivities)) {
                         for (String key : invalidOptions.keySet()) {
                             String[] params = {String.valueOf(count), key, org.apache.commons.lang.StringUtils.join(invalidOptions.get(key), ", ")};
-                            GlobalVariables.getMessageMap().putWarningForSectionId("saved_schedules_summary", ScheduleBuilderConstants.INVALID_SAVED_SCHEDULE_ACTIVITY, params);
+                            GlobalVariables.getMessageMap().putInfoForSectionId("saved_schedules_summary", ScheduleBuilderConstants.INVALID_SAVED_SCHEDULE_ACTIVITY, params);
                         }
                         for (String key : infoOptions.keySet()) {
                             String[] params = {String.valueOf(count), key, org.apache.commons.lang.StringUtils.join(infoOptions.get(key), ", ")};
@@ -147,7 +147,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 validatedAlternates.remove(0);
                 alAo.setAlternateActivities(validatedAlternates.size() > 0 ? validatedAlternates : new ArrayList<ActivityOption>());
                 activityOptionList.add(alAo);
-                List<String> activityList = invalidOptions.get(alAo.getCourseCd());
+                List<String> activityList = infoOptions.get(alAo.getCourseCd());
                 if (CollectionUtils.isEmpty(activityList)) {
                     activityList = new ArrayList<String>();
                 }
