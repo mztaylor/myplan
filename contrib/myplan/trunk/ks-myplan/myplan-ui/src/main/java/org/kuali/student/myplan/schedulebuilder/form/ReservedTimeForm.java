@@ -3,6 +3,7 @@ package org.kuali.student.myplan.schedulebuilder.form;
 import org.apache.commons.lang.StringUtils;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.utils.CalendarUtil;
 import org.kuali.student.r2.core.scheduling.constants.SchedulingServiceConstants;
@@ -126,6 +127,28 @@ public class ReservedTimeForm extends UifFormBase implements ReservedTime {
     private String event;
 
     /**
+     * Copies reservedTime info to reservedTimeForm
+     *
+     * @param reservedTime
+     * @return
+     */
+    public void copyFromReservedTime(ReservedTime reservedTime, ReservedTimeForm form) {
+        form.setId(reservedTime.getId());
+        form.setDescription(reservedTime.getDescription());
+        form.setAllDay(reservedTime.isAllDay());
+        form.setSunday(reservedTime.isSunday());
+        form.setMonday(reservedTime.isMonday());
+        form.setTuesday(reservedTime.isTuesday());
+        form.setWednesday(reservedTime.isWednesday());
+        form.setThursday(reservedTime.isThursday());
+        form.setFriday(reservedTime.isFriday());
+        form.setSaturday(reservedTime.isSaturday());
+        form.setStartDate(reservedTime.getStartDate());
+        form.setUntilDate(reservedTime.getUntilDate());
+        form.setEvent(reservedTime.getEvent());
+    }
+
+    /**
      * Set to true after the requested reserved time create, update, or delete
      * has been committed.
      */
@@ -198,6 +221,14 @@ public class ReservedTimeForm extends UifFormBase implements ReservedTime {
     @Override
     public Date getUntilDate() {
         return untilDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setUntilDate(Date untilDate) {
+        this.untilDate = untilDate;
     }
 
     public String getUntilDateStr() {

@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/sb/reserved")
@@ -84,36 +85,42 @@ public class ReservedTimeController extends KsapControllerBase {
     }
 
     @RequestMapping(params = "methodToCall=startDialog")
-    public ModelAndView startDialog(
-            @ModelAttribute("KualiForm") ReservedTimeForm form,
-            BindingResult result, HttpServletRequest request,
-            HttpServletResponse response) throws IOException, ServletException, OperationFailedException {
+    public ModelAndView startDialog(@ModelAttribute("KualiForm") ReservedTimeForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, OperationFailedException {
         if (!authorize(form, request, response))
             return null;
         super.start((UifFormBase) form, result, request, response);
-        form.setViewId(FORM);
-        form.setView(super.getViewService().getViewById(FORM));
 
-        if (StringUtils.isEmpty(form.getTermId())) {
+        if (!StringUtils.isEmpty(form.getId())) {
+            try {
+                List<ReservedTime> reservedTimeList = getScheduleBuildStrategy().getReservedTimes(form.getRequestedLearningPlanId());
+                for (ReservedTime reservedTime : reservedTimeList) {
+                    if (reservedTime.getId().equals(form.getId())) {
+                        form.copyFromReservedTime(reservedTime, form);
+                        return getUIFModelAndView(form);
+                    }
+                }
+            } catch (PermissionDeniedException e) {
+                LOG.error("Could not get reserved times", e);
+            }
+        }
+
+        if (StringUtils.isEmpty(form.getTermId()) && StringUtils.isEmpty(form.getId())) {
             throw new OperationFailedException("No atpId is found");
         }
+
 
         Term term = getTermHelper().getTermByAtpId(form.getTermId());
         Date startDate = getCalendarUtil().getNextMonday(term.getStartDate());
         Date endDate = getCalendarUtil().getDateAfterXdays(startDate, 5);
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        form.setStartDateStr(dateFormat.format(startDate));
-        form.setUntilDateStr(dateFormat.format(endDate));
+        form.setStartDate(startDate);
+        form.setUntilDate(endDate);
         return getUIFModelAndView(form);
     }
 
     @RequestMapping(method = RequestMethod.POST, params = {
             "methodToCall=createReservedTime",
             "view.currentPageId=" + CREATE_PAGE})
-    public ModelAndView postCreate(
-            @ModelAttribute("KualiForm") ReservedTimeForm form,
-            BindingResult result, HttpServletRequest request,
-            HttpServletResponse response) throws IOException, ServletException {
+    public ModelAndView postCreate(@ModelAttribute("KualiForm") ReservedTimeForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         if (!authorize(form, request, response))
             return null;
 
@@ -160,6 +167,71 @@ public class ReservedTimeController extends KsapControllerBase {
         ReservedTime reservedTimeInfo;
         try {
             reservedTimeInfo = getScheduleBuildStrategy().createReservedTime(form.getRequestedLearningPlanId(), form);
+            form.setComplete(true);
+        } catch (PermissionDeniedException e) {
+            throw new ServletException("Unexpected authorization failure", e);
+        }
+        Term term = getTermHelper().getTermByAtpId(form.getTermId());
+        getScheduleBuildHelper().buildReservedTimeEvents(reservedTimeInfo, term);
+        response.setHeader("content-type", "application/json");
+        response.setHeader("Cache-Control", "No-cache");
+        response.setHeader("Cache-Control", "No-store");
+        response.setHeader("Cache-Control", "max-age=0");
+        response.getWriter().println(reservedTimeInfo.getEvent());
+
+        return null;
+    }
+
+    @RequestMapping(method = RequestMethod.POST, params = {
+            "methodToCall=updateReservedTime",
+            "view.currentPageId=" + CREATE_PAGE})
+    public ModelAndView postUpdate(@ModelAttribute("KualiForm") ReservedTimeForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        if (!authorize(form, request, response))
+            return null;
+
+        if (result.hasErrors()) {
+            LOG.warn("Errors validating reserve time form "
+                    + result.getAllErrors());
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Errors validating reserve time form "
+                            + result.getAllErrors());
+        }
+
+        DictionaryValidationResult validationResult = KRADServiceLocatorWeb
+                .getViewValidationService().validateView(form);
+        if (validationResult.getNumberOfErrors() > 0) {
+            StringBuilder sb = new StringBuilder(
+                    "Errors validating reserve time from");
+            Iterator<ConstraintValidationResult> errIter = validationResult
+                    .iterator();
+            while (errIter.hasNext()) {
+                ConstraintValidationResult err = errIter.next();
+                sb.append("\n    ");
+                sb.append(err.getAttributeName());
+                sb.append(" ");
+                sb.append(err.getAttributePath());
+                sb.append(" ");
+                sb.append(err.getConstraintName());
+                sb.append(" ");
+                sb.append(err.getConstraintLabelKey());
+                sb.append(" ");
+                sb.append(err.getEntryName());
+                sb.append(" ");
+                sb.append(err.getErrorKey());
+                sb.append(" ");
+                sb.append(Arrays.toString(err.getErrorParameters()));
+                sb.append(" ");
+                sb.append(err.getStatus());
+            }
+            LOG.warn(sb);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    sb.toString());
+            return null;
+        }
+        ReservedTime reservedTimeInfo;
+        try {
+            reservedTimeInfo = getScheduleBuildStrategy().updateReservedTime(form.getRequestedLearningPlanId(), form);
             form.setComplete(true);
         } catch (PermissionDeniedException e) {
             throw new ServletException("Unexpected authorization failure", e);
