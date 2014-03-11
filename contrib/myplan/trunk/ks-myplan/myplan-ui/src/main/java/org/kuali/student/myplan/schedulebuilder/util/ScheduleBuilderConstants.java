@@ -6,8 +6,8 @@ package org.kuali.student.myplan.schedulebuilder.util;
 public class ScheduleBuilderConstants {
 
     public static final String LEARNING_PLAN_KEY = "learningPlanId";
-    public static final String OPEN_FILTER_TYPE = "open";
-    public static final String RESTRICTED_FILTER_TYPE = "restricted";
-    public static final String PLANNED_FILTER_TYPE = "planned";
-    public static final String OVERLAPPED_FILTER_TYPE = "overlapped";
+
+    public static final String INVALID_SAVED_SCHEDULE = "myplan.text.error.scheduleBuilder.invalid.course";
+    public static final String INVALID_SAVED_SCHEDULE_ACTIVITY = "myplan.text.error.scheduleBuilder.invalid.activities";
+    public static final String SAVED_SCHEDULE_ACTIVITY_MOVED = "myplan.text.error.scheduleBuilder.moved.activity";
 }
