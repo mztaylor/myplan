@@ -2681,6 +2681,7 @@ public class PlanController extends UifControllerBase {
                 }
 
                 params.put("SectionCode", planForm.getSectionCode());
+                params.put("ActivityOfferingId", planItem.getRefObjectId());
                 params.put("RegistrationCode", planForm.getRegistrationCode());
                 params.put("InstituteCode", planForm.getInstituteCode());
                 params.put("shortTermName", AtpHelper.atpIdToShortTermName(planItem.getPlanPeriods().get(0)));
@@ -2795,6 +2796,7 @@ public class PlanController extends UifControllerBase {
 
             if (PlanConstants.SECTION_TYPE.equals(planItem.getRefObjectType())) {
                 params.put("SectionCode", planForm.getSectionCode());
+                params.put("ActivityOfferingId", planItem.getRefObjectId());
                 params.put("RegistrationCode", planForm.getRegistrationCode());
                 params.put("PrimarySectionCode", planForm.getPrimarySectionCode());
                 params.put("InstituteCode", planForm.getInstituteCode());
