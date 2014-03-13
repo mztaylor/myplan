@@ -17,7 +17,7 @@ public interface CourseHelper {
 
     public void frontLoad(List<String> courseIds, String... termId);
 
-    public CourseInfo  getCourseInfo(String courseId);
+    public CourseInfo getCourseInfo(String courseId);
 
     public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysByCourseAndTerm(String courseId, String termId);
 
@@ -83,4 +83,6 @@ public interface CourseHelper {
     public boolean isSimilarCourses(String courseCd1, String courseCd2);
 
     public CourseInfo getCourseInfoByIdAndCd(String courseId, String courseCd);
+
+    public String getSyllabusInfoForActivityId(String activityId);
 }
