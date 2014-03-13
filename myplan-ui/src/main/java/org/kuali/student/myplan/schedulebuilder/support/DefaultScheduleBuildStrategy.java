@@ -18,6 +18,7 @@ import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstant
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.*;
@@ -33,7 +34,6 @@ import org.kuali.student.r2.common.infc.Attribute;
 import org.kuali.student.r2.common.util.constants.LuiServiceConstants;
 import org.kuali.student.r2.core.room.infc.Building;
 import org.kuali.student.r2.core.room.infc.Room;
-import org.kuali.student.r2.core.scheduling.constants.SchedulingServiceConstants;
 import org.kuali.student.r2.core.scheduling.dto.ScheduleDisplayInfo;
 import org.kuali.student.r2.core.scheduling.infc.ScheduleComponentDisplay;
 import org.kuali.student.r2.core.scheduling.infc.TimeSlot;
@@ -320,14 +320,14 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         activityOption.setActivityTypeDescription(aodi.getTypeName());
         activityOption.setCourseOfferingCode((campusCode == null ? "" : campusCode + " ") + aodi.getCourseOfferingCode());
         activityOption.setActivityName(aodi.getName());
-        activityOption.setRegistrationCode(aodi.getActivityOfferingCode());
+        activityOption.setActivityCode(aodi.getActivityOfferingCode());
         populateEnrollmentInfo(activityOption, aodi, enrollmentData);
         if (msg != null)
             msg.append("\nActivity ")
                     .append(activityOption.getUniqueId()).append(": ")
                     .append(activityOption.getCourseOfferingCode())
                     .append(" ")
-                    .append(activityOption.getRegistrationCode());
+                    .append(activityOption.getActivityCode());
 
         boolean enrollmentGroup = false;
         String instructor = aodi.getInstructorName();
@@ -379,6 +379,10 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                             "Invalid session start date "
                                     + sessionEndDate);
                 }
+            }
+
+            if (CourseSearchConstants.SLN.equalsIgnoreCase(key)) {
+                activityOption.setRegistrationCode(value);
             }
 
             if ("CourseCode".equalsIgnoreCase(key)) {
@@ -552,7 +556,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                                 .append(": ")
                                 .append(activityOption.getCourseOfferingCode())
                                 .append(" ")
-                                .append(activityOption.getRegistrationCode());
+                                .append(activityOption.getActivityCode());
                     primaryActivities.add(activityOption);
                 } else {
                     Map<String, List<ActivityOptionInfo>> secondaryGroup = secondaryActivities
@@ -563,7 +567,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                                 .append(": ")
                                 .append(activityOption.getCourseOfferingCode())
                                 .append(" ")
-                                .append(activityOption.getRegistrationCode())
+                                .append(activityOption.getActivityCode())
                                 .append(" -> ").append(primaryOfferingId);
                     if (secondaryGroup == null)
                         secondaryActivities
@@ -659,7 +663,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                             toCourseLockIn.add(aoi);
 
                     boolean foundHere = false;
-                    if (acodes.isEmpty() || acodes.contains(ao.getRegistrationCode())) {
+                    if (acodes.isEmpty() || acodes.contains(ao.getActivityCode())) {
                         aoi.setSelected(true);
                         if (lockIn)
                             aoi.setLockedIn(true);
@@ -667,7 +671,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                     }
                     if (msg != null) {
                         msg.append("\n    Activity ")
-                                .append(ao.getRegistrationCode()).append(" ")
+                                .append(ao.getActivityCode()).append(" ")
                                 .append(ao.getActivityOfferingId());
                         if (found)
                             msg.append(" found");
@@ -685,7 +689,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                                     else
                                         toCourseLockIn.add(saoi);
 
-                                boolean select = foundHere && (acodes.isEmpty() || acodes.contains(sao.getRegistrationCode()));
+                                boolean select = foundHere && (acodes.isEmpty() || acodes.contains(sao.getActivityCode()));
                                 if (select) {
                                     saoi.setSelected(true);
                                     if (lockIn)
@@ -696,7 +700,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                                             .append(so
                                                     .getActivityTypeDescription())
                                             .append(" ")
-                                            .append(sao.getRegistrationCode())
+                                            .append(sao.getActivityCode())
                                             .append(" ")
                                             .append(sao.getActivityOfferingId());
                                     if (select)

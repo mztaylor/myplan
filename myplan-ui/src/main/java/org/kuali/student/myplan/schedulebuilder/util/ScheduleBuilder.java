@@ -216,7 +216,7 @@ public class ScheduleBuilder implements Serializable {
                                         saol.add(sao);
                                 if (saol.isEmpty()) {
                                     LOG.warn("Course option is selected, but has no selected activities for "
-                                            + ao.getRegistrationCode()
+                                            + ao.getActivityCode()
                                             + " "
                                             + so.getActivityTypeDescription()
                                             + " "
@@ -446,7 +446,7 @@ public class ScheduleBuilder implements Serializable {
                 for (ActivityOption pao : co.getActivityOptions())
                     if (pao.isSelected() || pao.isLockedIn()) {
                         msg.append("\n    Primary ").append(
-                                pao.getRegistrationCode());
+                                pao.getActivityCode());
                         if (pao.isSelected())
                             msg.append(" selected");
                         if (pao.isLockedIn())
@@ -459,7 +459,7 @@ public class ScheduleBuilder implements Serializable {
                                             .append(so
                                                     .getActivityTypeDescription())
                                             .append(" ")
-                                            .append(pao.getRegistrationCode());
+                                            .append(pao.getActivityCode());
                                     if (sao.isSelected())
                                         msg.append(" selected");
                                     if (sao.isLockedIn())
@@ -501,7 +501,7 @@ public class ScheduleBuilder implements Serializable {
                 ActivityOption primary = courseOption.getActivityOptions().get(
                         activityOptionIndex);
                 if (msg != null)
-                    msg.append(" pri ").append(primary.getRegistrationCode());
+                    msg.append(" pri ").append(primary.getActivityCode());
 
                 if (!checkForConflicts(primary, sundays, days, tempCalendar)
                         && !courseOption.isLockedIn()) {
@@ -526,7 +526,7 @@ public class ScheduleBuilder implements Serializable {
                         for (ActivityOption secondary : secondaryActivityOptions) {
                             if (msg != null)
                                 msg.append(" ").append(
-                                        secondary.getRegistrationCode());
+                                        secondary.getActivityCode());
                             if (!checkForConflicts(secondary, sundays, days,
                                     tempCalendar)) {
                                 if (msg != null)
@@ -546,7 +546,7 @@ public class ScheduleBuilder implements Serializable {
                         shash = shash * 31L + (long) sidx;
                         if (msg != null)
                             msg.append(" sec ").append(
-                                    secondary.getRegistrationCode());
+                                    secondary.getActivityCode());
                         if ((!secondary.isSelected() && !secondary.isLockedIn())
                                 || !checkForConflicts(secondary, sundays, days,
                                 tempCalendar)) {
@@ -621,7 +621,7 @@ public class ScheduleBuilder implements Serializable {
                         for (ActivityOption ao : pso.getActivityOptions())
                             msg.append(" ").append(ao.getCourseOfferingCode())
                                     .append(" ")
-                                    .append(ao.getRegistrationCode());
+                                    .append(ao.getActivityCode());
                     }
                 }
             }

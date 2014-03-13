@@ -117,7 +117,7 @@ public class PossibleScheduleOptionInfo extends ScheduleBuildOptionInfo
                 dt.setText(StringEscapeUtils.escapeHtml(ao
                         .getCourseOfferingCode()));
                 StringBuilder descr = new StringBuilder();
-                descr.append(ao.getRegistrationCode());
+                descr.append(ao.getActivityCode());
                 if (ao.isPrimary()) {
                     BigDecimal minCredits = ao.getMinCredits();
                     if (minCredits != null) {

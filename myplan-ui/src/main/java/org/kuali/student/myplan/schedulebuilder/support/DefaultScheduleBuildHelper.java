@@ -422,7 +422,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                     event.add("courseCd", ao.getCourseCd());
                     event.add("courseId", ao.getCourseId());
                     event.add("courseTitle", ao.getCourseTitle());
-                    event.add("sectionCd", ao.getRegistrationCode());
+                    event.add("sectionCd", ao.getActivityCode());
                     event.add("tbd", true);
                     jEvents.add(event);
                 }
@@ -583,9 +583,10 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
     private void buildCoursePopoverEvents(List<ActivityOption> activityOptions, JsonArrayBuilder activityArray) {
         for (ActivityOption activityOption : activityOptions) {
             JsonObjectBuilder activity = Json.createObjectBuilder();
-            activity.add("sectionCd", activityOption.getRegistrationCode());
+            activity.add("sectionCd", activityOption.getActivityCode());
             activity.add("primary", activityOption.isPrimary());
             activity.add("activityId", activityOption.getActivityOfferingId());
+            activity.add("registrationCode", activityOption.getRegistrationCode());
             activity.add("enrollStatus", String.format("%s/%s", activityOption.getFilledSeats(), activityOption.getTotalSeats()));
             JsonArrayBuilder meetingArray = Json.createArrayBuilder();
             JsonObjectBuilder meeting = Json.createObjectBuilder();

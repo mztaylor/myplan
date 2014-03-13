@@ -19,7 +19,6 @@ import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
-import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
@@ -137,7 +136,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 validatedAlternates = savedActivity.getAlternateActivties() == null ? new ArrayList<ActivityOption>() : validatedSavedActivities(savedActivity.getAlternateActivties(), plannedItems, invalidOptions, infoOptions, reservedTimes);
             }
 
-            ActivityOption currentActivity = getScheduleBuildStrategy().getActivityOption(savedActivity.getTermId(), savedActivity.getCourseId(), savedActivity.getRegistrationCode());
+            ActivityOption currentActivity = getScheduleBuildStrategy().getActivityOption(savedActivity.getTermId(), savedActivity.getCourseId(), savedActivity.getActivityCode());
             boolean areEqual = areEqual(savedActivity, currentActivity, plannedItems, reservedTimes);
             if (areEqual) {
                 ((ActivityOptionInfo) savedActivity).setAlternateActivities(validatedAlternates);
@@ -151,14 +150,14 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 if (CollectionUtils.isEmpty(activityList)) {
                     activityList = new ArrayList<String>();
                 }
-                activityList.add(alAo.getRegistrationCode());
+                activityList.add(alAo.getActivityCode());
                 infoOptions.put(alAo.getCourseCd(), activityList);
             } else {
                 List<String> activityList = invalidOptions.get(savedActivity.getCourseCd());
                 if (CollectionUtils.isEmpty(activityList)) {
                     activityList = new ArrayList<String>();
                 }
-                activityList.add(savedActivity.getRegistrationCode());
+                activityList.add(savedActivity.getActivityCode());
                 invalidOptions.put(savedActivity.getCourseCd(), activityList);
 
             }
