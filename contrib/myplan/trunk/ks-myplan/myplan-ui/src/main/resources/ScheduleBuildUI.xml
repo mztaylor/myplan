@@ -12,9 +12,6 @@
         express or implied. See the License for the specific language governing permissions
         and limitations under the License. -->
 
-    <bean id="ksapDialogTheme" abstract="true" parent="ksapDialogTheme-parentBean"/>
-    <bean id="ksapDialogTheme-parentBean" parent="MyPlanBaseFormView"/>
-
     <bean id="ScheduleBuild-FormView" parent="ScheduleBuild-FormView-parent"/>
     <bean abstract="true" id="ScheduleBuild-FormView-parent" parent="MyPlanFormView">
         <property name="id" value="ScheduleBuild-FormView"/>
@@ -23,17 +20,12 @@
         <property name="additionalCssFiles">
             <list>
                 <value>plugins/fullcalendar/fullcalendar.css</value>
-                <!--<value>themes/ksap/stylesheets/schedulebuilder/sb.calendar.css</value>-->
-                <!--<value>themes/ksap/stylesheets/schedulebuilder/sb.base.css</value>-->
-                <!--<value>themes/ksap/stylesheets/schedulebuilder/sb.cart.css</value>-->
             </list>
         </property>
         <property name="additionalScriptFiles">
             <list>
                 <value>plugins/carousel/carousel.js</value>
                 <value>plugins/fullcalendar/fullcalendar.js</value>
-                <!--<value>themes/ksap/scripts/schedulebuilder/schedulebuilder.js</value>-->
-                <!--<value>themes/ksap/scripts/schedulebuilder/cart.js</value>-->
             </list>
         </property>
         <property name="items">
@@ -52,14 +44,12 @@
         </property>
         <property name="items">
             <list>
-                <bean id="schedule_build_termId" parent="Uif-InputField" p:propertyName="termId"
-                      p:fieldLabel.render="false">
+                <bean id="schedule_build_termId" parent="KSAP-SimpleInputField" p:propertyName="termId">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
-                <bean id="schedule_build_learningPlanId" parent="Uif-InputField"
-                      p:propertyName="requestedLearningPlanId" p:fieldLabel.render="false">
+                <bean id="schedule_build_learningPlanId" parent="KSAP-SimpleInputField" p:propertyName="requestedLearningPlanId">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
@@ -163,7 +153,7 @@
                                             <property name="items">
                                                 <list>
                                                     <bean parent="Uif-ActionLink" p:actionLabel="Edit" p:actionScript="openPopup('sb_create_reserved_time_inner', {action:'sb/reserved', methodToCall:'startDialog', termId:'@{term.id}', viewId:'ScheduleBuild-ReservedTime-FormView', id:'@{#line.id}'}, 'sb/reserved', {width:'16px', height:'16px'}, {tail:{hidden: true}, close:true, position:'bottom', align:'left', themeName:'default'}, e)"/>
-                                                    <bean parent="Uif-ActionLink" p:actionLabel="Delete" p:actionScript="removeReservedScheduleOption('@{#line.id}', e)"/>
+                                                    <bean parent="Uif-ActionLink" p:actionLabel="Delete" p:actionScript="KsapSbCalendar.removeReservedSchedule('@{#line.id}', e)"/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -177,8 +167,6 @@
                             <property name="items">
                                 <list>
                                     <bean parent="Uif-ActionLink" p:actionLabel="+ Add a day/time">
-                                        <!--<property name="actionScript"
-                                                  value="ksapSbOpenDialog('sb_create_reserved_time','sb/reserved',, this, e)"/>-->
                                         <property name="actionScript"
                                                   value="openPopup('sb_create_reserved_time_inner', {action:'sb/reserved', methodToCall:'startDialog', termId:'@{term.id}', viewId:'ScheduleBuild-ReservedTime-FormView'}, 'sb/reserved', {width:'16px', height:'16px'}, {tail:{hidden: true}, close:true, position:'bottom', align:'left', themeName:'default'}, e)"/>
                                     </bean>
@@ -205,7 +193,7 @@
                                 <property name="items">
                                     <list>
                                         <bean parent="Uif-ActionLink" p:actionLabel="Edit" p:actionScript="openPopup('sb_create_reserved_time_inner', {action:'sb/reserved', methodToCall:'startDialog', viewId:'ScheduleBuild-ReservedTime-FormView', id:'__KSAP_ID__', termId:'__KSAP_TERM_ID__'}, 'sb/reserved', {width:'16px', height:'16px'}, {tail:{hidden: true}, close:true, position:'bottom', align:'left', themeName:'default'}, e)"/>
-                                        <bean parent="Uif-ActionLink" p:actionLabel="Delete" p:actionScript="removeReservedScheduleOption('__KSAP_ID__', e)"/>
+                                        <bean parent="Uif-ActionLink" p:actionLabel="Delete" p:actionScript="KsapSbCalendar.removeReservedSchedule('__KSAP_ID__', e)"/>
                                     </list>
                                 </property>
                             </bean>
@@ -242,10 +230,33 @@
         <property name="items">
             <list>
                 <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_SECTIONCD__" p:width="32px"/>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGDAYS__" p:width="64px"/>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGTIMES__" p:width="128px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGDAY__" p:width="64px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGTIME__" p:width="128px"/>
                 <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLMENT__" p:width="60px"/>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ACTION__" p:width="16px"/>
+                <bean parent="KSAP-VerticalFieldGroup" p:width="16px">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-ActionImage" >
+                                <property name="id" value="action-__KSAP_REGISTRATIONCODE__"/>
+                                <property name="actionImage">
+                                    <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+                                </property>
+                                <property name="dataAttributes">
+                                    <map>
+                                        <entry key="registration-code" value="__KSAP_REGISTRATIONCODE__"/>
+                                        <entry key="activity-id" value="__KSAP_ACTIVITYID__"/>
+                                        <entry key="course-id" value="__KSAP_COURSEID__"/>
+                                        <entry key="course-code" value="__KSAP_COURSECD__"/>
+                                        <entry key="section-code" value="__KSAP_SECTIONCD__"/>
+                                        <entry key="primary" value="__KSAP_PRIMARY__"/>
+                                    </map>
+                                </property>
+                                <property name="cssClasses" value="__KSAP_STATUSCLASS__"/>
+                                <property name="actionScript" value="KsapSbCalendar.togglePlanSection(jQuery(this).data(), e)"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
         <property name="footer">

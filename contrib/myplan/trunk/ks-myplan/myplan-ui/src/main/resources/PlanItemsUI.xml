@@ -141,7 +141,7 @@
           p:title="Mark as Backup Course">
         <property name="actionScript" value="
             var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'plannedToBackup', planItemId:jQuery(this).data('planitemid')};
-            submitHiddenForm('plan', additionalFormData, e);
+            submitHiddenForm('plan', additionalFormData, true, e);
         "/>
     </bean>
 
@@ -149,7 +149,7 @@
           p:title="Mark as Planned course">
         <property name="actionScript" value="
             var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'backupToPlanned', planItemId:jQuery(this).data('planitemid')};
-            submitHiddenForm('plan', additionalFormData, e);
+            submitHiddenForm('plan', additionalFormData, true, e);
         "/>
     </bean>
 

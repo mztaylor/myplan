@@ -100,12 +100,6 @@
             </bean>
         </property>
         <property name="cssClasses" value="schedulePossible"/>
-        <!--refreshScheduleCalendar(KsapSbCalendar);
-        ,
-                beforeStart: function(a) {
-                    hidePossibleScheduleEvents(a, KsapSbCalendar);
-                }
-        -->
         <property name="onDocumentReadyScript" value="
             jQuery('.schedulePossible__carousel').jCarouselLite({
                 btnNext: '.schedulePossible__carouselButton--next',
@@ -113,7 +107,7 @@
                 scroll: 5,
                 visible: 5,
                 initCallback: function(a) {
-                    possibleScheduleFirst = jQuery(a[0]).find('.schedulePossible__option');
+                    firstResult = jQuery(a[0]).find('.schedulePossible__option');
                 }
             });
 
@@ -121,6 +115,10 @@
                 jQuery('#save_' + data.uniqueId + '.schedulePossible__save').addClass('schedulePossible__save--saved').attr('data-saved-id', data.id);
             }).on('SAVED_SCHEDULE_REMOVE', function(event, data) {
                 jQuery('.schedulePossible__save[data-saved-id=' + data.scheduleIdRemoved + ']').removeClass('schedulePossible__save--saved').removeData('saved-id');
+            }).on('SECTION_ITEM_ADDED', function(event, data) {
+                KsapSbCalendar.addPlannedActivity(data);
+            }).on('SECTION_ITEM_DELETED', function(event, data) {
+                KsapSbCalendar.removePlannedActivity(data);
             });
         "/>
         <property name="items">
@@ -143,15 +141,13 @@
         <property name="propertyName" value="possibleScheduleOptions"/>
         <property name="cssClasses" value="schedulePossible__carousel"/>
         <property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.uniqueId}"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses"
-                  value="schedulePossible__option"/>
-        <!--schedulePossible- -@{#index % 5}-->
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__option"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.validationMessages">
             <null/>
         </property>
         <property name="layoutManager.lineGroupPrototype.onClickScript"
-                  value="togglePossibleSchedule(KsapSbCalendar, jQuery(this), @{#index}, '@{#line.uniqueId}', @{#line.tbd});"/>
+                  value="KsapSbCalendar.togglePossibleSchedule('@{#line.uniqueId}', @{#index + 1}, jQuery(this), @{#line.tbd});"/>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
                 <entry key="events" value="@{#line.event}"/>
@@ -174,7 +170,7 @@
                             <bean parent="KSAP-HorizontalFieldGroup">
                                 <property name="id" value="save_@{#line.uniqueId}"/>
                                 <property name="onClickScript"
-                                          value="toggleSaveSchedule('@{#line.uniqueId}', 'save', e);"/>
+                                          value="KsapSbCalendar.toggleSavedSchedule('@{#line.uniqueId}', 'save', e);"/>
                                 <property name="hidden" value="true"/>
                                 <property name="cssClasses"
                                           value="schedulePossible__save @{#line.id NE null ? 'schedulePossible__save--saved' : ''}"/>
@@ -259,44 +255,24 @@
                 <entry key="maxTime" value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(maxTime, 'H')}"/>
                 <entry key="timeFormat" value="{agenda: 'h(:mm)t{ - h(:mm)t}'}"/>
                 <entry key="slotEventOverlap" value="false"/>
-                <!--<entry key="eventRender" value="
-                    function (event, element, view) {
-
-                    }
-                "/>-->
                 <entry key="eventClick" value="
                     function(calEvent, jsEvent, view) {
-                        openScheduleEvent(calEvent, jsEvent);
+                        KsapSbCalendar.openPopover(calEvent, jsEvent);
                     }
                 "/>
-                <!--
-                console.log(element.css('left'));
-                var nextEventLeft = element.offset().left + element.width() + 5;
-                element.parent().children().eq(element.index()+1).css('left',nextEventLeft);
-                -->
-                <!--<entry key="eventAfterRender" value="
-                    function(event, element, view) {
-                        element.data({
-                            'course-id': event.courseId,
-                            'course-code': event.courseCd,
-                            'course-title': event.courseTitle,
-                            'section-code': event.sectionCd,
-                            'meeting-time': event.meetingTime,
-                            'building': event.building,
-                            'link-building': event.buildingLink,
-                            'term-id': event.termId
-                        });
+                <entry key="eventRender" value="
+                    function(event, element) {
+                        jQuery(element).attr('id', 'possible_schedule_event' + event._id);
                     }
-                "/>-->
+                "/>
                 <entry key="lazyFetching" value="false"/>
                 <entry key="editable" value="false"/>
                 <entry key="selectable" value="false"/>
                 <entry key="selectHelper" value="false"/>
                 <entry key="complete" value="
                     function() {
-                        KsapSbCalendar = jQuery(this);
-                        possibleScheduleFirst.click();
-                        appendReservedScheduleOptions(KsapSbCalendar, '.scheduleReserved__container', '.scheduleReserved__item');
+                        KsapSbCalendar = jQuery.extend(jQuery(this), KsapSbCalendarActions);
+                        KsapSbCalendar.initialize(firstResult);
                     }
                 "/>
             </map>

@@ -15,12 +15,12 @@ function ksapAdditionalFormData(additionalData) {
  * @param methodToCall -
  * @param e - An object containing data that will be passed to the event handler.
  */
-function submitHiddenForm(formAction, additionalFormData, e) {
+function submitHiddenForm(formAction, additionalFormData, closePopover, e) {
     stopEvent(e);
     var form = jQuery('<form />').attr("id", "popupForm").attr("action", formAction).attr("method", "post");
     jQuery("body").append(form);
     submitPopupForm(additionalFormData, e, true);
-    fnCloseAllPopups();
+    if (closePopover) fnCloseAllPopups();
     jQuery("form#popupForm").remove();
 }
 /**

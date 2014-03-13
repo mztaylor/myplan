@@ -283,37 +283,3 @@ function editNote(obj, e) {
     };
     openPopup('edit_note_page', retrieveData, 'plan', null, popupOptions, e);
 }
-
-function openScheduleEvent(calEvent, e) {
-    stopEvent(e);
-    fnCloseAllPopups();
-    var popupBox = (e.currentTarget) ? jQuery(e.currentTarget) : jQuery(e.srcElement);
-    var popupOptions = {
-        innerHtml: buildActivitiesContent(calEvent.popoverContent, "sb-popover-content-template"),
-        position: "top",
-        align: "center",
-        tail: {align: "center"}
-    };
-    switch (calEvent.start.getDay()) {
-        case 1:
-            popupOptions.align = popupOptions.tail.align = "left";
-            break;
-        case 5:
-            popupOptions.align = popupOptions.tail.align = (KsapSbCalendar.fullCalendar('option', 'weekends')) ?  "center" : "right";
-            break;
-        case 6:
-            popupOptions.align = popupOptions.tail.align = "right";
-            break;
-    }
-    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
-    if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents: false});
-    popupBox.ShowPopOver(popupSettings, false);
-    var popupBoxId = popupBox.GetPopOverID();
-    popupBox.FreezePopOver();
-    jQuery("#" + popupBoxId + " .jquerypopover-innerHtml").append('<img src="' + getConfigParam("ksapImageLocation") + 'icons/close.png" class="popover__close"/>');
-    clickOutsidePopOver(popupBoxId, popupBox);
-    jQuery("#" + popupBoxId + " img.popover__close").on('click', function () {
-        popupBox.HidePopOver();
-        fnCloseAllPopups();
-    });
-}
