@@ -13,7 +13,7 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ActivityOptionInfo", propOrder = {"parentUniqueId",
         "courseIndex", "parentIndex", "courseId", "courseCd", "courseTitle", "activityOfferingId",
-        "activityTypeDescription", "courseOfferingCode", "registrationCode",
+        "activityTypeDescription", "courseOfferingCode", "activityCode",
         "academicSessionDescr", "activityName", "courseLockedIn", "enrollmentGroup", "enrollmentRestriction",
         "closed", "openSeats", "totalSeats", "requiresPermission", "primary",
         "minCredits", "maxCredits", "notes", "secondaryOptions", "alternateActivties", "classMeetingTimes", "termId", "planItemId"})
@@ -48,6 +48,9 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 
     @XmlAttribute
     private String courseOfferingCode;
+
+    @XmlAttribute
+    private String activityCode;
 
     @XmlAttribute
     private String registrationCode;
@@ -133,6 +136,7 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         activityTypeDescription = copy.getActivityTypeDescription();
         activityName = copy.getActivityName();
         courseOfferingCode = copy.getCourseOfferingCode();
+        activityCode = copy.getActivityCode();
         registrationCode = copy.getRegistrationCode();
         academicSessionDescr = copy.getAcademicSessionDescr();
         courseLockedIn = copy.isCourseLockedIn();
@@ -252,6 +256,15 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 
     public void setCourseOfferingCode(String courseOfferingCode) {
         this.courseOfferingCode = courseOfferingCode;
+    }
+
+    @Override
+    public String getActivityCode() {
+        return activityCode;
+    }
+
+    public void setActivityCode(String activityCode) {
+        this.activityCode = activityCode;
     }
 
     @Override
@@ -549,14 +562,14 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
                 return -mcc;
         }
 
-        String orc = o.getRegistrationCode();
-        if (registrationCode == null && orc == null)
+        String orc = o.getActivityCode();
+        if (activityCode == null && orc == null)
             return 0;
-        if (registrationCode == null)
+        if (activityCode == null)
             return 1;
         if (orc == null)
             return -1;
-        return registrationCode.compareTo(orc);
+        return activityCode.compareTo(orc);
     }
 
     @Override

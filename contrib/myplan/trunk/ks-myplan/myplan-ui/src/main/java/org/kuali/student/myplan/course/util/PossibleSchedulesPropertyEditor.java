@@ -92,12 +92,12 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
             }
             if (scheduledCourseActivities.containsKey(key)) {
                 if (activityOption.isLockedIn() || (isTbdSchedule() && !isArranged)) {
-                    scheduledCourseActivities.get(key).add(activityOption.getRegistrationCode());
+                    scheduledCourseActivities.get(key).add(activityOption.getActivityCode());
                 }
             } else {
                 List<String> activityOptions = new ArrayList<String>();
                 if (activityOption.isLockedIn() || (isTbdSchedule() && !isArranged)) {
-                    activityOptions.add(activityOption.getRegistrationCode());
+                    activityOptions.add(activityOption.getActivityCode());
                 }
                 if ((isTbdSchedule() && !isArranged) || !isTbdSchedule()) {
                     scheduledCourseActivities.put(key, activityOptions);

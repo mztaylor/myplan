@@ -25,7 +25,6 @@ import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.infc.Attribute;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.xml.namespace.QName;
 import java.io.Serializable;
@@ -67,7 +66,7 @@ public class DefaultShoppingCartStrategy implements ShoppingCartStrategy,
             for (ActivityOption primaryActivityOption : courseOption
                     .getActivityOptions()) {
                 boolean selected = acodes.contains(primaryActivityOption
-                        .getRegistrationCode());
+                        .getActivityCode());
                 if (selected) {
                     ((ActivityOptionInfo) primaryActivityOption)
                             .setSelected(true);
@@ -80,7 +79,7 @@ public class DefaultShoppingCartStrategy implements ShoppingCartStrategy,
                                         .setLockedIn(primaryActivityOption
                                                 .isEnrollmentGroup());
                             else if (acodes.contains(secondaryActivityOption
-                                    .getRegistrationCode()))
+                                    .getActivityCode()))
                                 ((ActivityOptionInfo) secondaryActivityOption)
                                         .setSelected(true);
                 }
@@ -128,7 +127,7 @@ public class DefaultShoppingCartStrategy implements ShoppingCartStrategy,
                     secondaryLength);
             if (primary != null) {
                 cartRequest.setPrimaryRegistrationCode(primary
-                        .getRegistrationCode());
+                        .getActivityCode());
 
                 for (SecondaryActivityOptions secondaryOption : primary
                         .getSecondaryOptions()) {
@@ -139,7 +138,7 @@ public class DefaultShoppingCartStrategy implements ShoppingCartStrategy,
                                 && secondaryActivityOption.isSelected())
                             secondary = secondaryActivityOption;
                     if (secondary != null)
-                        secondaryRegCodes.add(secondary.getRegistrationCode());
+                        secondaryRegCodes.add(secondary.getActivityCode());
                 }
                 cartRequest.setSecondaryRegistrationCodes(secondaryRegCodes);
             }
@@ -235,12 +234,12 @@ public class DefaultShoppingCartStrategy implements ShoppingCartStrategy,
                     cartRequest = null;
                 } else
                     aoloop:for (ActivityOption ao : aoe.getValue()) {
-                        if (!acodes.contains(ao.getRegistrationCode())) {
+                        if (!acodes.contains(ao.getActivityCode())) {
                             rv.add(cartRequest);
                             cartRequest = null;
                             break aoloop;
                         } else
-                            acodes.remove(ao.getRegistrationCode());
+                            acodes.remove(ao.getActivityCode());
                     }
             }
 
@@ -250,11 +249,11 @@ public class DefaultShoppingCartStrategy implements ShoppingCartStrategy,
                 cartRequest.setCourse(getCourseHelper().getCourseInfo(courseId));
                 List<ActivityOption> aol = aoe.getValue();
                 cartRequest.setPrimaryRegistrationCode(aol.get(0)
-                        .getRegistrationCode());
+                        .getActivityCode());
                 if (aol.size() > 1) {
                     List<String> scodes = new ArrayList<String>(aol.size() - 1);
                     for (ActivityOption ao : aol.subList(1, aol.size()))
-                        scodes.add(ao.getRegistrationCode());
+                        scodes.add(ao.getActivityCode());
                     cartRequest.setSecondaryRegistrationCodes(scodes);
                 } else
                     cartRequest.setSecondaryRegistrationCodes(Collections

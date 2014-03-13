@@ -12,12 +12,10 @@ import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.infc.ClassMeetingTime;
 import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
-import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
 import org.kuali.student.r2.common.dto.AttributeInfo;
-import org.kuali.student.r2.common.infc.RichText;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -146,7 +144,7 @@ public class ScheduleBuilderTest {
                                     .append(": ")
                                     .append(activityOption.getCourseOfferingCode())
                                     .append(" ")
-                                    .append(activityOption.getRegistrationCode());
+                                    .append(activityOption.getActivityCode());
                         primaryActivities.add(activityOption);
                     } else {
                         Map<String, List<ActivityOptionInfo>> secondaryGroup = secondaryActivities
@@ -157,7 +155,7 @@ public class ScheduleBuilderTest {
                                     .append(": ")
                                     .append(activityOption.getCourseOfferingCode())
                                     .append(" ")
-                                    .append(activityOption.getRegistrationCode())
+                                    .append(activityOption.getActivityCode())
                                     .append(" -> ").append(primaryOfferingId);
                         if (secondaryGroup == null)
                             secondaryActivities
@@ -271,7 +269,7 @@ public class ScheduleBuilderTest {
                 + courseNumber + ":" + sectionLetter);
         activityOption.setActivityTypeDescription(activity);
         activityOption.setCourseOfferingCode(campus + " " + curric.trim() + " " + sectionLetter);
-        activityOption.setRegistrationCode(sectionLetter);
+        activityOption.setActivityCode(sectionLetter);
         activityOption.setAcademicSessionDescr(termName + " " + termYr + " " + termStartDate + " - " + termEndDate);
         activityOption.setActivityName(null);
         activityOption.setLockedIn(false);

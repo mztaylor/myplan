@@ -14,7 +14,6 @@ import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ShoppingCartForm;
 import org.kuali.student.myplan.schedulebuilder.util.ShoppingCartRequest;
 import org.kuali.student.r2.lum.course.infc.Course;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -55,7 +54,7 @@ public class DefaultShoppingCartForm extends AbstractPlanItemForm implements Sho
         CourseHelper courseHelper = getCourseHelper();
         Map<String, ActivityOption> byRegCode = new HashMap<String, ActivityOption>();
         for (ActivityOption ao : pso.getActivityOptions())
-            byRegCode.put(ao.getRegistrationCode(), ao);
+            byRegCode.put(ao.getActivityCode(), ao);
 
         Map<String, Course> courseMap = new HashMap<String, Course>();
         Map<String, List<ActivityOption>> removeMap = new LinkedHashMap<String, List<ActivityOption>>();

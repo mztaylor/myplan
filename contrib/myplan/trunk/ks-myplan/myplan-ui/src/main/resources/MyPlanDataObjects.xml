@@ -1439,7 +1439,7 @@
                 <ref bean="ActivityOptionInfo.activityOfferingId"/>
                 <ref bean="ActivityOptionInfo.activityTypeDescription"/>
                 <ref bean="ActivityOptionInfo.courseOfferingCode"/>
-                <ref bean="ActivityOptionInfo.registrationCode"/>
+                <ref bean="ActivityOptionInfo.activityCode"/>
                 <ref bean="ActivityOptionInfo.academicSessionDescr"/>
                 <ref bean="ActivityOptionInfo.activityName"/>
                 <ref bean="ActivityOptionInfo.courseLockedIn"/>
@@ -1627,9 +1627,9 @@
         </property>
     </bean>
 
-    <bean id="ActivityOptionInfo.registrationCode" parent="ActivityOptionInfo.registrationCode-parentBean"/>
-    <bean id="ActivityOptionInfo.registrationCode-parentBean" abstract="true" parent="BaseKuali.string">
-        <property name="name" value="registrationCode"/>
+    <bean id="ActivityOptionInfo.activityCode" parent="ActivityOptionInfo.activityCode-parentBean"/>
+    <bean id="ActivityOptionInfo.activityCode-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="activityCode"/>
         <property name="dataType" value="STRING"/>
         <property name="label" value="Registration Code"/>
         <property name="shortLabel" value="Registration Code"/>

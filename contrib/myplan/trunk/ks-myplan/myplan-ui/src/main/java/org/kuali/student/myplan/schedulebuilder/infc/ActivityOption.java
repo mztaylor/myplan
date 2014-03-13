@@ -78,6 +78,13 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
     String getActivityTypeDescription();
 
     /**
+     * Get activity code.
+     *
+     * @return The activity code.
+     */
+    String getActivityCode();
+
+    /**
      * Get registration code.
      *
      * @return The registration code.
