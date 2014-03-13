@@ -4,6 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.enrollment.courseoffering.dto.CourseOfferingInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
@@ -28,6 +30,8 @@ public class CourseSyllabusInquiryHelperImpl extends KualiInquirableImpl {
 
     private transient CourseOfferingService courseOfferingService;
 
+    private transient CourseHelper courseHelper;
+
     @Override
     public SyllabusItem retrieveDataObject(Map fieldValues) {
         String activityOfferingId = String.valueOf(fieldValues.get(PlanConstants.PARAM_ACTIVITY_ID));
@@ -37,13 +41,12 @@ public class CourseSyllabusInquiryHelperImpl extends KualiInquirableImpl {
             try {
                 activityDisplayInfo = getCourseOfferingService().getActivityOfferingDisplay(activityOfferingId, PlanConstants.CONTEXT_INFO);
                 if (activityDisplayInfo != null) {
-                    String syllabus = null;
+                    String syllabus = getCourseHelper().getSyllabusInfoForActivityId(activityOfferingId);
                     String courseOfferingId = null;
                     for (AttributeInfo attributeInfo : activityDisplayInfo.getAttributes()) {
-                        if (CourseSearchConstants.SYLLABUS_DESCRIPTION.equalsIgnoreCase(attributeInfo.getKey())) {
-                            syllabus = attributeInfo.getValue();
-                        } else if (CourseSearchConstants.PRIMARY_ACTIVITY_OFFERING_ID.equalsIgnoreCase(attributeInfo.getKey())) {
+                        if (CourseSearchConstants.PRIMARY_ACTIVITY_OFFERING_ID.equalsIgnoreCase(attributeInfo.getKey())) {
                             courseOfferingId = attributeInfo.getValue();
+                            break;
                         }
                     }
                     if (StringUtils.isNotBlank(syllabus)) {
@@ -84,5 +87,16 @@ public class CourseSyllabusInquiryHelperImpl extends KualiInquirableImpl {
 
     public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
         this.courseOfferingService = courseOfferingService;
+    }
+
+    public CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = KsapFrameworkServiceLocator.getCourseHelper();
+        }
+        return courseHelper;
+    }
+
+    public void setCourseHelper(CourseHelper courseHelper) {
+        this.courseHelper = courseHelper;
     }
 }

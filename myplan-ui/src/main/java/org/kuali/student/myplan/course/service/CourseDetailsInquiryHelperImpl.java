@@ -903,10 +903,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 continue;
             }
 
-            if (CourseSearchConstants.SYLLABUS_DESCRIPTION.equalsIgnoreCase(key) && StringUtils.hasText(value)) {
-                activity.setHasSyllabus(true);
-            }
-
             /*PrimarySectionCode is for the add button hover text in secondary sections
             * Which have primary section not planned eg: COM 320 AA:"Add Section AA and A to Plan"*/
             if (CourseSearchConstants.PRIMARY_ACTIVITY_OFFERING_CODE.equalsIgnoreCase(key)) {
@@ -936,6 +932,8 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             }
 
         }
+
+        activity.setHasSyllabus(StringUtils.hasText(getCourseHelper().getSyllabusInfoForActivityId(activity.getActivityId())));
         activity.setInstructor(displayInfo.getInstructorName());
         activity.setHonorsSection(displayInfo.getIsHonorsOffering());
 

@@ -4,6 +4,7 @@ import org.dom4j.DocumentException;
 import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
@@ -146,6 +147,11 @@ public class DefaultCourseHelper implements CourseHelper {
 
     @Override
     public CourseInfo getCourseInfoByIdAndCd(String courseId, String courseCd) {
+        return null;
+    }
+
+    @Override
+    public String getSyllabusInfoForActivityId(String activityId) {
         return null;
     }
 }
