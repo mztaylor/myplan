@@ -96,7 +96,7 @@
                       p:render="@{!dataObject.plannedCourseSummary.inSavedCourseList}">
                     <property name="actionScript" value="
                         var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:'@{dataObject.courseSummaryDetails.courseId}', code:'@{dataObject.courseSummaryDetails.code}'};
-                        submitHiddenForm('plan', additionalFormData, e);
+                        submitHiddenForm('plan', additionalFormData, false, e);
                     "/>
                 </bean>
                 <bean parent="KSAP-Message">
@@ -1025,7 +1025,7 @@
                 instituteCode: '@{#line.instituteCode}',
                 registrationCode: '@{#line.registrationCode}'
             };
-            submitHiddenForm('plan', additionalFormData, e);
+            submitHiddenForm('plan', additionalFormData, false, e);
         "/>
     </bean>
 

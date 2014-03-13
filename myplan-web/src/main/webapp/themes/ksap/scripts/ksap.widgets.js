@@ -630,7 +630,7 @@ function restoreDetailsBookmarkButton(data) {
     var button = jQuery("<button />").attr({
         "id": data.courseId + "_addSavedCourse",
         "class": "btn btn-secondary uif-boxLayoutHorizontalItem",
-        "data-onclick": "e.preventDefault();if(jQuery(this).hasClass('disabled')){ return false; } var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:'" + data.courseId + "', code:'" + data.courseCd + "'}; submitHiddenForm('plan', additionalFormData, e);",
+        "data-onclick": "e.preventDefault();if(jQuery(this).hasClass('disabled')){ return false; } var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:'" + data.courseId + "', code:'" + data.courseCd + "'}; submitHiddenForm('plan', additionalFormData, false, e);",
         "data-loadingmessage": "Loading...",
         "data-cleardirtyonaction": "false",
         "data-dirtyonaction": "false",
@@ -688,12 +688,12 @@ function toggleSectionAction(actionId, regId, action, data, primaryPlan) {
         case "added":
             component.removeClass("courseActivities__itemAdd").addClass("courseActivities__itemDelete").attr("data-planned", "true").data("planned", true);
             row.addClass("courseActivities--planned").next("tr.collapsible").addClass("courseActivities--planned").next("tr.collapsible").addClass("courseActivities--planned");
-            script = "jQuery('#' + '" + actionId + "').click(function(e) { var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'removeItem', planItemId:'" + planItemId + "', sectionCode:'" + component.data("coursesection") + "', atpId:'" + data.atpId + "', instituteCode:'" + data.InstituteCode + "', registrationCode:'" + regId + "', primary:" + component.data("primary") + "}; submitHiddenForm('plan', additionalFormData, e); }); ";
+            script = "jQuery('#' + '" + actionId + "').click(function(e) { var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'removeItem', planItemId:'" + planItemId + "', sectionCode:'" + component.data("coursesection") + "', atpId:'" + data.atpId + "', instituteCode:'" + data.InstituteCode + "', registrationCode:'" + regId + "', primary:" + component.data("primary") + "}; submitHiddenForm('plan', additionalFormData, false, e); }); ";
             break;
         case "deleted":
             component.removeClass("courseActivities__itemDelete").addClass("courseActivities__itemAdd").attr("data-planned", "false").data("planned", false);
             row.removeClass("courseActivities--planned").next("tr.collapsible").removeClass("courseActivities--planned").next("tr.collapsible").removeClass("courseActivities--planned");
-            script = "jQuery('#' + '" + actionId + "').click(function(e) { var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', code:'" + data.courseCd + "',courseId:'" + data.courseId + "', sectionCode:'" + component.data("coursesection") + "', atpId:'" + data.atpId + "', instituteCode:'" + data.InstituteCode + "', registrationCode:'" + regId + "', primary:" + component.data("primary") + "}; submitHiddenForm('plan', additionalFormData, e); }); ";
+            script = "jQuery('#' + '" + actionId + "').click(function(e) { var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', code:'" + data.courseCd + "',courseId:'" + data.courseId + "', sectionCode:'" + component.data("coursesection") + "', atpId:'" + data.atpId + "', instituteCode:'" + data.InstituteCode + "', registrationCode:'" + regId + "', primary:" + component.data("primary") + "}; submitHiddenForm('plan', additionalFormData, false, e); }); ";
             if (jQuery("#" + data.courseId + "_toggle").data("hidden")) {
                 row.hide().next("tr.collapsible").hide().next("tr.collapsible").hide();
             }

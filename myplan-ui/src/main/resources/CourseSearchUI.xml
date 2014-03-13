@@ -367,7 +367,7 @@
                 <bean parent="Uif-ActionLink" p:actionLabel="Bookmark" p:title="Bookmark">
                     <property name="actionScript" value="
                         var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:jQuery(this).data('courseid'), code:jQuery(this).data('coursecd')};
-                        submitHiddenForm('plan', additionalFormData, e);
+                        submitHiddenForm('plan', additionalFormData, true, e);
                     "/>
                 </bean>
             </list>

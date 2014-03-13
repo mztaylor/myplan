@@ -834,7 +834,7 @@
                 primary: @{#line.primary},
                 activityStateKey: '@{#line.stateKey}'
             };
-            submitHiddenForm('plan', additionalFormData, e);
+            submitHiddenForm('plan', additionalFormData, false, e);
         "/>
         <property name="cssClasses" value="courseActivities__itemDelete"/>
         <property name="dataAttributes">

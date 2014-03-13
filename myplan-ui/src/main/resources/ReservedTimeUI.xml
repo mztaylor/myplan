@@ -54,13 +54,11 @@
     <bean abstract="true" id="sb_reserved_time_weekday_fields-parent" parent="KSAP-HorizontalFieldGroup"
           p:id="sb_reserved_time_weekday_fields">
         <property name="onDocumentReadyScript" value="
-            jQuery('.toggleButton input:hidden').remove();
             jQuery('.toggleButton label').removeAttr('onclick').off();
             jQuery('.toggleButton input:checkbox').button();
         "/>
         <property name="items">
             <list>
-                <!--<bean parent="sb_weekday_checkbox" p:propertyName="sunday" p:control.checkboxLabel="Sun"/>-->
                 <bean parent="sb_weekday_checkbox" p:propertyName="monday" p:control.checkboxLabel="Mon"/>
                 <bean parent="sb_weekday_checkbox" p:propertyName="tuesday" p:control.checkboxLabel="Tue"/>
                 <bean parent="sb_weekday_checkbox" p:propertyName="wednesday" p:control.checkboxLabel="Wed"/>
@@ -112,11 +110,11 @@
     </bean>
 
     <bean id="sb_reserved_times_submit_button" parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Add">
-        <property name="actionScript" value="addReservedScheduleOption('createReservedTime', e);"/>
+        <property name="actionScript" value="KsapSbCalendar.addReservedSchedule();"/>
     </bean>
 
     <bean id="sb_reserved_times_update_button" parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Update">
-        <property name="actionScript" value="editReservedScheduleOption('@{id}', e);"/>
+        <property name="actionScript" value="KsapSbCalendar.editReservedSchedule('@{id}');"/>
     </bean>
 
     <bean id="sb_reserved_time_buttons" parent="sb_reserved_time_buttons-parent"/>
@@ -124,7 +122,7 @@
         <property name="items">
             <list>
                 <bean parent="sb_reserved_times_submit_button" p:render="@{id EQ null}"/>
-                <bean parent="sb_reserved_times_submit_button" p:actionLabel="Update" p:render="@{id NE null}" p:actionScript="editReservedScheduleOption('@{id}', e);"/>
+                <bean parent="sb_reserved_times_update_button" p:render="@{id NE null}"/>
             </list>
         </property>
     </bean>
