@@ -73,6 +73,7 @@
                     <property name="replacement">
                         <list>
                             <ref bean="possible_schedules_empty"/>
+                            <ref bean="possible_schedules_calendar"/>
                         </list>
                     </property>
                 </bean>
