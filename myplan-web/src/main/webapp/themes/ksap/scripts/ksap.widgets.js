@@ -729,6 +729,28 @@ function createCalendar(id, options) {
     jQuery("#" + id).fullCalendar(options);
 }
 
+function createSlider(id, options) {
+    jQuery("#" + id).slider(options);
+}
+
+function setSliderLabel(values, sliderObj) {
+    var placeholder = sliderObj.prev(".sliderLabel");
+
+    var today = new Date().setHours(0,0,0,0) / 1000;
+    var dateFormat = {
+        hour: "2-digit",
+        minute: "2-digit"
+    };
+
+    var start = new Date((today + values[0]) * 1000).toLocaleTimeString("en-US", dateFormat);
+    var end = new Date((today + values[1]) * 1000).toLocaleTimeString("en-US", dateFormat);
+
+    placeholder.text(start + " - " + end);
+
+    jQuery("input:hidden[name='startTimeStr']").val(start);
+    jQuery("input:hidden[name='endTimeStr']").val(end);
+}
+
 (function ($) {
     // TODO remove publish method after old audits have been purged as audit FTL inline scripted a publish call
     $.publish = function (event) {

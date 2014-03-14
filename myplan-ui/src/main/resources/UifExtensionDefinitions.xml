@@ -79,4 +79,15 @@
         </property>
     </bean>
 
+    <bean id="KSAP-SliderRange" parent="KSAP-SliderRange-parentBean"/>
+    <bean id="KSAP-SliderRange-parentBean" parent="Uif-ContentElementBase" scope="prototype"
+          class="org.kuali.rice.krad.uif.element.extension.SliderComponent"
+          p:template="/ksap/WEB-INF/ftl/components/widget/slider.ftl" p:templateName="ksap_slider">
+        <property name="templateOptions">
+            <map merge="true">
+                <entry key="range" value="true"/>
+            </map>
+        </property>
+    </bean>
+
 </beans>
