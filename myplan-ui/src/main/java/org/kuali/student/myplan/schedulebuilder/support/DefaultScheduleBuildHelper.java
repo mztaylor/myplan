@@ -228,6 +228,11 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
         long[][] week = new long[7][5];
         long[] day;
 
+        if (event.getStartDate() == null) {
+            // in case TBA does not have a Date, use the default zeroes
+            return week;
+        }
+
         Calendar c = Calendar.getInstance();
         c.setTime(event.getStartDate());
         int fromSlot = c.get(Calendar.HOUR_OF_DAY) * 12 + (c.get(Calendar.MINUTE) / 5);
