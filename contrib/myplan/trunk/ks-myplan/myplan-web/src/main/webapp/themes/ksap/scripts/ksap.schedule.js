@@ -177,6 +177,7 @@ var KsapSbCalendarActions = {
                 var template = jQuery("#sb-reserved-item-template").wrap("<div/>").parent().html();
                 template = template.replace(/id="sb-reserved-item-template"/gi, "");
                 template = template.replace(/__KSAP_ID__/gi, response.id);
+                template = template.replace(/__KSAP_TERM_ID__/gi, response.termId);
                 template = template.replace(/__KSAP_DAYSTIMES__/gi, response.daysTimes);
                 var item = jQuery(template).attr("id", "reserved-item-" + response.id).attr("data-events", JSON.stringify(response)).show();
                 container.append(item);
