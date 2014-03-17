@@ -192,7 +192,7 @@
                                 <property name="validationMessages"><null/></property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-ActionLink" p:actionLabel="Edit" p:actionScript="openPopup('sb_create_reserved_time_inner', {action:'sb/reserved', methodToCall:'startDialog', viewId:'ScheduleBuild-ReservedTime-FormView', id:'__KSAP_ID__', termId:'__KSAP_TERM_ID__'}, 'sb/reserved', {width:'16px', height:'16px'}, {tail:{hidden: true}, close:true, position:'bottom', align:'left', themeName:'default'}, e)"/>
+                                        <bean parent="Uif-ActionLink" p:actionLabel="Edit" p:actionScript="openPopup('sb_create_reserved_time_inner', {action:'sb/reserved', methodToCall:'startDialog', viewId:'ScheduleBuild-ReservedTime-FormView', id:'__KSAP_ID__', termId:'__KSAP_TERM_ID__'}, 'sb/reserved', {width:'16px', height:'16px'}, {tail:{hidden: true}, close:true, position:'bottom', align:'center', themeName:'default'}, e)"/>
                                         <bean parent="Uif-ActionLink" p:actionLabel="Delete" p:actionScript="KsapSbCalendar.removeReservedSchedule('__KSAP_ID__', e)"/>
                                     </list>
                                 </property>

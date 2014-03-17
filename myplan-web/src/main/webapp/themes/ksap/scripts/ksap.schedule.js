@@ -3,7 +3,7 @@ var KsapSbCalendarActions = {
         this.appendReservedSchedules(jQuery('.scheduleReserved__container').find('.scheduleReserved__item'));
         this.cssClasses = this.data("class-selections").split(",");
         this.plannedActivities = (this.data("planned-activities") ? this.data("planned-activities") : {});
-        element.click();
+        if (element) element.click();
     },
 
     isPlanned : function (activityId) {
