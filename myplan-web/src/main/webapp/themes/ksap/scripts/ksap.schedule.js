@@ -105,7 +105,6 @@ var KsapSbCalendarActions = {
     },
 
     addSchedule : function (source, cssClass) {
-        if (KsapSbCalendar.getNumAvailable() === 0) return false;
         source.className = ["schedulePossible__event", cssClass];
         this.fullCalendar('addEventSource', source);
         return source;
@@ -133,6 +132,7 @@ var KsapSbCalendarActions = {
 
         } else {
             // Possible Schedule is NOT active in calendar
+            if (this.getNumAvailable() === 0) return false;
             for (var i = 0; i < source.events.length; i++) {
                 source.events[i].title = scheduleNumber.toString();
                 source.events[i].start = source.events[i].start + scheduleNumber;
