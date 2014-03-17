@@ -78,7 +78,7 @@
                         </bean>
                     </property>
                 </bean>
-                <bean parent="Uif-ActionLinkField" p:actionLabel="Delete" p:actionScript="toggleSaveSchedule('@{#line.id}', 'remove', e)"/>
+                <bean parent="Uif-ActionLinkField" p:actionLabel="Delete" p:actionScript="KsapSbCalendar.toggleSavedSchedule('@{#line.id}', 'remove', e)"/>
             </list>
         </property>
     </bean>

@@ -258,7 +258,7 @@
                 <entry key="slotEventOverlap" value="false"/>
                 <entry key="eventClick" value="
                     function(calEvent, jsEvent, view) {
-                        KsapSbCalendar.openPopover(calEvent, jsEvent);
+                        if (typeof calEvent.popoverContent !== 'undefined') KsapSbCalendar.openPopover(calEvent, jsEvent);
                     }
                 "/>
                 <entry key="eventRender" value="
@@ -273,7 +273,8 @@
                 <entry key="complete" value="
                     function() {
                         KsapSbCalendar = jQuery.extend(jQuery(this), KsapSbCalendarActions);
-                        KsapSbCalendar.initialize(firstResult);
+                        var element = (typeof firstResult === 'undefined') ? null : firstResult;
+                        KsapSbCalendar.initialize(element);
                     }
                 "/>
             </map>
