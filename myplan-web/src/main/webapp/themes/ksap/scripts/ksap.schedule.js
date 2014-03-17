@@ -134,8 +134,14 @@ var KsapSbCalendarActions = {
             // Possible Schedule is NOT active in calendar
             if (this.getNumAvailable() === 0) return false;
             for (var i = 0; i < source.events.length; i++) {
-                source.events[i].title = scheduleNumber.toString();
-                //source.events[i].start = source.events[i].start + scheduleNumber;
+                if (!source.events[i].tbd) {
+                    source.events[i].title = scheduleNumber.toString();
+                    if (typeof source.events[i].start === "number") {
+                        source.events[i].start = new Date((source.events[i].start + scheduleNumber) * 1000).toString();
+                    } else {
+                        source.events[i].start = new Date(source.events[i].start.setSeconds(scheduleNumber)).toString();
+                    }
+                }
             }
             var cssClass = this.getCssClass();
             this.addSchedule(source, cssClass);
