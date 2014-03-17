@@ -119,7 +119,7 @@ var KsapSbCalendarActions = {
         var source = target.data("events");
 
         var isSelected = this.fullCalendar('clientEvents', function(event) {
-            return (event.uniqueid === id);
+            return (event.parentUniqueid === id);
         }).length > 0;
 
         if (isSelected) {
