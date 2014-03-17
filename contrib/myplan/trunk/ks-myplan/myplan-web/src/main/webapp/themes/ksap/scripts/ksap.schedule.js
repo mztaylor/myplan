@@ -128,20 +128,20 @@ var KsapSbCalendarActions = {
             this.removeSchedule(source);
             target.removeClass(cssClass).find(".schedulePossible__save").hide();
             this.addCssClass(cssClass);
-            if (hasTba) this.hideTba(id);
+            if (hasTba) this.hideTba(id, cssClass);
 
         } else {
             // Possible Schedule is NOT active in calendar
             if (this.getNumAvailable() === 0) return false;
             for (var i = 0; i < source.events.length; i++) {
                 source.events[i].title = scheduleNumber.toString();
-                source.events[i].start = source.events[i].start + scheduleNumber;
+                //source.events[i].start = source.events[i].start + scheduleNumber;
             }
             var cssClass = this.getCssClass();
             this.addSchedule(source, cssClass);
             target.addClass(cssClass).find(".schedulePossible__save").show();
             this.removeCssClass(cssClass);
-            if (hasTba) this.showTba(id);
+            if (hasTba) this.showTba(id, cssClass);
 
         }
     },
