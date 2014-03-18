@@ -345,6 +345,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 primaryOfferingId = value;
                 activityOption.setPrimary(aodi.getId().equals(
                         primaryOfferingId));
+                activityOption.setParentActivityId(primaryOfferingId);
             }
             if ("PermissionRequired".equalsIgnoreCase(key)) {
                 activityOption.setRequiresPermission("true"

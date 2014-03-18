@@ -128,6 +128,14 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
     boolean isPrimary();
 
     /**
+     * Determines if activity is not primary then this is parent ActivityId(primary activityId)
+     *
+     * @return parent activity Id for a secondary Activity
+     * secondary.
+     */
+    String getParentActivityId();
+
+    /**
      * Get the minimum number of credit hours for this activity.
      *
      * @return The minimum number of credit hours for this activity.
