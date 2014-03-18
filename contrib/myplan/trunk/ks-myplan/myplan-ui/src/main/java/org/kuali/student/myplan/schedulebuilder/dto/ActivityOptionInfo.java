@@ -95,6 +95,9 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     private boolean primary;
 
     @XmlAttribute
+    private String parentActivityId;
+
+    @XmlAttribute
     private BigDecimal minCredits;
 
     @XmlAttribute
@@ -150,6 +153,7 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         totalSeats = copy.getTotalSeats();
         requiresPermission = copy.isRequiresPermission();
         primary = copy.isPrimary();
+        parentActivityId = copy.getParentActivityId();
         minCredits = copy.getMinCredits();
         maxCredits = copy.getMaxCredits();
         List<String> copyNotes = copy.getNotes();
@@ -337,6 +341,15 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 
     public void setPrimary(boolean primary) {
         this.primary = primary;
+    }
+
+    @Override
+    public String getParentActivityId() {
+        return parentActivityId;
+    }
+
+    public void setParentActivityId(String parentActivityId) {
+        this.parentActivityId = parentActivityId;
     }
 
     @Override
