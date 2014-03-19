@@ -608,7 +608,7 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         if (activityOfferingId == null) {
             if (other.activityOfferingId != null)
                 return false;
-        } else if (!activityOfferingId.equals(other.activityOfferingId))
+        } else if (!(activityOfferingId.equals(other.getActivityOfferingId()) && secondaryOptions.equals(other.getSecondaryOptions())))
             return false;
         return true;
     }
