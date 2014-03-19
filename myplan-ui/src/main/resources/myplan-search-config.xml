@@ -572,6 +572,8 @@
                         FROM KSLU_CLU_ATP_TYPE_KEY
                         WHERE
                         clu_id = :courseID
+                        AND
+                        ATP_TYPE_KEY NOT  IN ('kuali.atp.type.OddYears', 'kuali.atp.type.EvenYears')
                     </value>
                 </entry>
 

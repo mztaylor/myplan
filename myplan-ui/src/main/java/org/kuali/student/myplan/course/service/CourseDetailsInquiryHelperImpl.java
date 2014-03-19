@@ -71,7 +71,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     private final Logger logger = Logger.getLogger(CourseDetailsInquiryHelperImpl.class);
 
-    private final static List<String> QUARTERS = Arrays.asList("Autumn", "Winter", "Spring", "Summer");
+    private final static List<String> QUARTERS = Arrays.asList("Autumn", "Winter", "Spring", "Summer", "Odd Years", "Even Years");
 
     public static final String NOT_OFFERED_IN_LAST_TEN_YEARS = "Not offered for more than 10 years.";
 
