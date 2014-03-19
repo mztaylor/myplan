@@ -2,6 +2,7 @@ package org.kuali.student.myplan.schedulebuilder.dto;
 
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
+import org.springframework.util.CollectionUtils;
 
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
@@ -119,7 +120,7 @@ public class SecondaryActivityOptionsInfo implements SecondaryActivityOptions,
     @Override
     public List<ActivityOption> getActivityOptions() {
         List<ActivityOption> activityOptionList = new ArrayList<ActivityOption>();
-        if(activityOptions!=null){
+        if (activityOptions != null) {
             activityOptionList.addAll(activityOptions);
         }
         return activityOptionList;
@@ -162,6 +163,23 @@ public class SecondaryActivityOptionsInfo implements SecondaryActivityOptions,
                 + activityTypeDescription + ", enrollmentGroup="
                 + enrollmentGroup + ", activityOptions=" + activityOptions
                 + "]";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SecondaryActivityOptionsInfo other = (SecondaryActivityOptionsInfo) obj;
+        if (activityOptions == null) {
+            if (other.activityOptions != null)
+                return false;
+        } else if (!activityOptions.equals(other.activityOptions))
+            return false;
+        return true;
     }
 
 }
