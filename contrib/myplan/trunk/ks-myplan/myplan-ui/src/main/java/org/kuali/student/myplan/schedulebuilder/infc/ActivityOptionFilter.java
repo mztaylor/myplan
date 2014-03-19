@@ -20,4 +20,6 @@ public interface ActivityOptionFilter {
       * @param ao the ActivityOption representing a course section to be filtered in or out
       */
     boolean test(ActivityOption ao);
+
+    String getFilterName();
 }
