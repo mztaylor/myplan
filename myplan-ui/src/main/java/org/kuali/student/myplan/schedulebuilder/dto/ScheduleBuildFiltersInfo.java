@@ -2,6 +2,9 @@ package org.kuali.student.myplan.schedulebuilder.dto;
 
 import org.kuali.student.myplan.schedulebuilder.infc.ScheduleBuildFilters;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by hemanthg on 2/13/14.
  */
@@ -9,6 +12,7 @@ public class ScheduleBuildFiltersInfo implements ScheduleBuildFilters {
     private boolean showClosed;
     private boolean showRestricted;
     private boolean showOverlapped;
+    private List<String> zeroResultsReasons;
 
 
     @Override
@@ -36,5 +40,17 @@ public class ScheduleBuildFiltersInfo implements ScheduleBuildFilters {
 
     public void setShowOverlapped(boolean showOverlapped) {
         this.showOverlapped = showOverlapped;
+    }
+
+    @Override
+    public List<String> getZeroResultsReasons() {
+        if (zeroResultsReasons == null) {
+            zeroResultsReasons = new ArrayList<String>();
+        }
+        return zeroResultsReasons;
+    }
+
+    public void setZeroResultsReasons(List<String> zeroResultsReasons) {
+        this.zeroResultsReasons = zeroResultsReasons;
     }
 }

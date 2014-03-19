@@ -1,5 +1,7 @@
 package org.kuali.student.myplan.schedulebuilder.infc;
 
+import java.util.List;
+
 /**
  * Created by hemanthg on 2/13/14.
  */
@@ -27,6 +29,14 @@ public interface ScheduleBuildFilters {
      * @return True if the option has been selected, false if not.
      */
     boolean isShowOverlapped();
+
+
+    /**
+     * Populated when no possible schedule results are returned because of above filters.
+     *
+     * @return List of error codes
+     */
+    List<String> getZeroResultsReasons();
 
 
 }

@@ -9,6 +9,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
+import org.kuali.student.myplan.schedulebuilder.dto.ScheduleBuildFiltersInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
@@ -132,6 +133,9 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
     public void buildSchedules() {
         updateReservedTimesOnBuild();
         updateSavedSchedulesOnBuild();
+
+        /*Clear all Zero results errors*/
+        ((ScheduleBuildFiltersInfo) getBuildFilters()).setZeroResultsReasons(new ArrayList<String>());
 
         courseOptions = getScheduleBuildStrategy().getCourseOptions(getRequestedLearningPlanId(), getTermId(), getBuildFilters());
 

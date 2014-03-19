@@ -72,7 +72,13 @@
                       p:condition="possibleScheduleOptions EQ null OR possibleScheduleOptions.size() EQ 0">
                     <property name="replacement">
                         <list>
-                            <ref bean="possible_schedules_empty"/>
+                            <bean parent="possible_schedules_empty"
+                                  p:render="@{buildFilters.getZeroResultsReasons().size() EQ 0}"/>
+
+                            <bean parent="KSAP-Message"
+                                  p:messageText="Try turning on &quot;@{buildFilters.getZeroResultsReasons()}&quot; filter(s) and click on Update to get results."
+                                  p:render="@{buildFilters.getZeroResultsReasons().size() GT 0}"/>
+
                             <ref bean="possible_schedules_calendar"/>
                         </list>
                     </property>
@@ -222,7 +228,8 @@
                         </bean>
                     </property>
                 </bean>
-                <bean parent="KSAP-MessageField" p:messageText="@{#index + 1}" p:cssClasses="schedulePossible__tbaItemIndex"/>
+                <bean parent="KSAP-MessageField" p:messageText="@{#index + 1}"
+                      p:cssClasses="schedulePossible__tbaItemIndex"/>
             </list>
         </property>
     </bean>
@@ -231,7 +238,8 @@
         <property name="dataAttributes">
             <map>
                 <!-- List of classes for each selection, where the length sets the limit of how many items can be selected at once -->
-                <entry key="class-selections" value="schedulePossible--orange,schedulePossible--gold,schedulePossible--pink,schedulePossible--blue,schedulePossible--green"/>
+                <entry key="class-selections"
+                       value="schedulePossible--orange,schedulePossible--gold,schedulePossible--pink,schedulePossible--blue,schedulePossible--green"/>
                 <entry key="planned-activities" value="@{plannedActivities}"/>
             </map>
         </property>
@@ -252,8 +260,10 @@
                 <entry key="allDaySlot" value="false"/>
                 <entry key="allDayText" value="to be arranged"/>
                 <entry key="axisFormat" value="h(:mm)t"/>
-                <entry key="minTime" value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(minTime, 'H')}"/>
-                <entry key="maxTime" value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(maxTime, 'H')}"/>
+                <entry key="minTime"
+                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(minTime, 'H')}"/>
+                <entry key="maxTime"
+                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(maxTime, 'H')}"/>
                 <entry key="timeFormat" value="{agenda: 'h(:mm)t{ - h(:mm)t}'}"/>
                 <entry key="slotEventOverlap" value="false"/>
                 <entry key="eventClick" value="

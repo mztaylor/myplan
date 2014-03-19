@@ -632,7 +632,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     protected void buildCourseOptions(String termId, boolean courseLockIn, boolean lockIn,
-                                      Map<String, List<String>> courseIdsActivityCodes, Map<String, String> courseIdsToCourseCds, List<CourseOption> rv, List<ActivityOptionFilter> filterList) {
+                                      Map<String, List<String>> courseIdsActivityCodes, Map<String, String> courseIdsToCourseCds, List<CourseOption> rv, List<ActivityOptionFilter> filterList, ScheduleBuildFilters buildFilters) {
         if (!courseIdsActivityCodes.isEmpty()) {
             StringBuilder msg = null;
             if (LOG.isDebugEnabled()) {
@@ -826,9 +826,9 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         }
 
         List<CourseOption> rv = new ArrayList<CourseOption>(registeredCourseIdsAndActivityCodes.size() + cartCourseIdsAndActivityCodes.size() + plannedCourseIdsAndActivityCodes.size() + backupCourseIds.size());
-        buildCourseOptions(termId, true, true, registeredCourseIdsAndActivityCodes, new LinkedHashMap<String, String>(), rv, new ArrayList<ActivityOptionFilter>());
-        buildCourseOptions(termId, false, true, cartCourseIdsAndActivityCodes, new LinkedHashMap<String, String>(), rv, new ArrayList<ActivityOptionFilter>());
-        buildCourseOptions(termId, false, false, plannedCourseIdsAndActivityCodes, new LinkedHashMap<String, String>(), rv, new ArrayList<ActivityOptionFilter>());
+        buildCourseOptions(termId, true, true, registeredCourseIdsAndActivityCodes, new LinkedHashMap<String, String>(), rv, new ArrayList<ActivityOptionFilter>(), buildFilters);
+        buildCourseOptions(termId, false, true, cartCourseIdsAndActivityCodes, new LinkedHashMap<String, String>(), rv, new ArrayList<ActivityOptionFilter>(), buildFilters);
+        buildCourseOptions(termId, false, false, plannedCourseIdsAndActivityCodes, new LinkedHashMap<String, String>(), rv, new ArrayList<ActivityOptionFilter>(), buildFilters);
         if (!backupCourseIds.isEmpty()) {
             for (CourseOption co : getCourseOptions(backupCourseIds, new LinkedHashMap<String, String>(), termId)) {
                 rv.add(co);
