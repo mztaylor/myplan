@@ -121,6 +121,11 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     @XmlAttribute
     private String planItemId;
 
+    @XmlAttribute
+    private boolean courseHasVariableContent;
+
+    @XmlAttribute
+    private List<String> sameVariableContentAs;
 
     public ActivityOptionInfo() {
     }
@@ -161,6 +166,8 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         setSecondaryOptions(copy.getSecondaryOptions());
         setAlternateActivities(copy.getAlternateActivties());
         setClassMeetingTimes(copy.getClassMeetingTimes());
+        courseHasVariableContent = copy.isCourseHasVariableContent();
+        setSameVariableContentAs(copy.getSameVariableContentAs());
     }
 
     @Override
@@ -528,6 +535,23 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         }
     }
 
+    @Override
+    public boolean isCourseHasVariableContent() {
+        return courseHasVariableContent;
+    }
+
+    public void setCourseHasVariableContent(boolean courseHasVariableContent) {
+        this.courseHasVariableContent = courseHasVariableContent;
+    }
+
+    @Override
+    public List<String> getSameVariableContentAs() {
+        return sameVariableContentAs;
+    }
+
+    public void setSameVariableContentAs(List<String> sameVariableContentAs) {
+        this.sameVariableContentAs = sameVariableContentAs;
+    }
 
     @Override
     public String toString() {

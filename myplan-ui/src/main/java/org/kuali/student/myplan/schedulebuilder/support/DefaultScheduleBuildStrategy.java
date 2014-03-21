@@ -400,7 +400,20 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 maxCredits = new BigDecimal(value);
             }
 
+            if ("CourseHasVariableContent".equalsIgnoreCase(key)) {
+                activityOption.setCourseHasVariableContent("true".equals(value));
+            }
+
+            if ("SameVariableContentAs".equalsIgnoreCase(key)) {
+                List<String> sectionIdsList = new LinkedList<String>();
+                String[] sectionIds = value.split(",");
+                for (String sectionId : sectionIds) {
+                     sectionIdsList.add(sectionId);
+                }
+                activityOption.setSameVariableContentAs(sectionIdsList);
+            }
         }
+
         sessionDescr += " " + ddf.format(sessionStartDate) + " - "
                 + ddf.format(sessionEndDate);
         activityOption.setAcademicSessionDescr(sessionDescr);
