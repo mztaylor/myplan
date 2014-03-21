@@ -737,18 +737,36 @@ function setSliderLabel(values, sliderObj) {
     var placeholder = sliderObj.prev(".sliderLabel");
 
     var today = new Date().setHours(0,0,0,0) / 1000;
-    var dateFormat = {
-        hour: "2-digit",
-        minute: "2-digit"
-    };
 
-    var start = new Date((today + values[0]) * 1000).toLocaleTimeString("en-US", dateFormat);
-    var end = new Date((today + values[1]) * 1000).toLocaleTimeString("en-US", dateFormat);
+    var start = formatTimeString(new Date((today + values[0]) * 1000));
+    var end = formatTimeString(new Date((today + values[1]) * 1000));
 
     placeholder.text(start + " - " + end);
 
     jQuery("input:hidden[name='startTimeStr']").val(start);
     jQuery("input:hidden[name='endTimeStr']").val(end);
+}
+
+function formatTimeString(date) {
+    // getHours returns the hours in local time zone from 0 to 23
+    var hours = date.getHours()
+    // getMinutes returns the minutes in local time zone from 0 to 59
+    var minutes = date.getMinutes()
+    var meridiem = " AM"
+
+    // convert to 12-hour time format
+    if (hours > 12) {
+        hours = hours - 12
+        meridiem = ' PM'
+    } else if (hours === 0) {
+        hours = 12
+    }
+
+    // minutes should always be two digits long
+    if (minutes < 10) {
+        minutes = "0" + minutes.toString()
+    }
+    return hours + ':' + minutes + meridiem
 }
 
 (function ($) {
