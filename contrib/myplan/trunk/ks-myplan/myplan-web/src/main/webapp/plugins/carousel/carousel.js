@@ -284,16 +284,17 @@
             ;
 
             if (o.initCallback) {
-                o.initCallback.call(this, vis());
+                o.initCallback.call(this, vis(), o);
                 if (!o.circular) {
                     $(o.btnPrev + "," + o.btnNext).removeClass("disabled");
-                    $((curr - o.scroll < 0 && o.btnPrev) || (curr + o.scroll > itemLength - v && o.btnNext) || []).addClass("disabled");
+                    $((curr - o.scroll < 0 && o.btnPrev) || []).addClass("disabled");
+                    $((curr + o.scroll > itemLength - v && o.btnNext) || []).addClass("disabled");
                 }
             }
 
             function go(to) {
                 if (!running) {
-                    if (o.beforeStart) o.beforeStart.call(this, vis());
+                    if (o.beforeStart) o.beforeStart.call(this, vis(), o);
 
                     if (o.circular) {            // If circular we are in first or last, then goto the other end
                         if (to <= o.start - v - 1) {           // If first, then goto last
@@ -315,15 +316,14 @@
                     ul.animate(
                         animCss == "left" ? { left:-(curr * liSize) } : { top:-(curr * liSize) }, o.speed, o.easing,
                         function () {
-                            if (o.afterEnd)
-                                o.afterEnd.call(this, vis());
+                            if (o.afterEnd) o.afterEnd.call(this, vis(), o);
                             running = false;
                         }
                     );
                     // Disable buttons when the carousel reaches the last/first, and enable when not
                     if (!o.circular) {
                         $(o.btnPrev + "," + o.btnNext).removeClass("disabled");
-                        $((curr - o.scroll < 0 && o.btnPrev) || (curr + o.scroll > itemLength - v && o.btnNext) || []).addClass("disabled");
+                        $((curr - o.scroll < 0 && o.btnPrev) || (curr + o.scroll >= itemLength && o.btnNext) || []).addClass("disabled");
                     }
                 }
                 //return false;

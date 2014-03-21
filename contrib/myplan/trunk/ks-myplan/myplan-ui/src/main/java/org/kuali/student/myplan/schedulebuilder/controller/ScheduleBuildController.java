@@ -103,9 +103,18 @@ public class ScheduleBuildController extends UifControllerBase {
 
         String removedId = form.removeSchedule();
 
+        String uniqueId = null;
+        for(PossibleScheduleOption saved: form.getSavedSchedules()){
+            if(saved.getId().equals(form.getUniqueId())){
+                uniqueId = saved.getUniqueId();
+                break;
+            }
+        }
+
         JsonObjectBuilder json = Json.createObjectBuilder();
 
         json.add("success", true);
+        json.add("uniqueIdRemoved", uniqueId);
         json.add("scheduleIdRemoved", removedId);
 
         response.setContentType("application/json");

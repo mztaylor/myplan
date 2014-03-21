@@ -53,4 +53,65 @@
             height: 35px;
         }
     }
+
+    .fc-event {
+        .border-radius(0 0 @baseBorderRadius @baseBorderRadius) !important;
+        border: none !important;
+        cursor: pointer;
+        margin-right: 2px !important;
+
+        & > .fc-event-bg {
+            opacity: 0 !important;
+            background: none !important;
+        }
+
+        & > .fc-event-inner > .fc-event-time {
+            display: none;
+        }
+
+        & > .fc-event-inner > .fc-event-title {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            font-size: @fontSizeMax;
+            margin: 0 @marginSmall @marginSmall 0;
+        }
+    }
+}
+
+.scheduleCalendar--orange,
+.fc-event.scheduleCalendar--orange {
+    background-color: #d55e00;
+}
+.scheduleCalendar--gold,
+.fc-event.scheduleCalendar--gold {
+    background-color: #e69f00;
+}
+.scheduleCalendar--pink,
+.fc-event.scheduleCalendar--pink {
+    background-color: #cc79a7;
+}
+.scheduleCalendar--blue,
+.fc-event.scheduleCalendar--blue {
+    background-color: #56b4e9;
+}
+.scheduleCalendar--green,
+.fc-event.scheduleCalendar--green {
+    background-color: #009e73;
+}
+
+.scheduleCalendar--orange,
+.scheduleCalendar--gold,
+.scheduleCalendar--pink,
+.scheduleCalendar--blue,
+.scheduleCalendar--green {
+    .schedulePossible__save {
+        display: inline-block;
+    }
+}
+
+.fc-event.scheduleCalendar--highlight {
+    background-color: #ccedff !important;
+    color: #333366 !important;
+    border: dotted 1px #6699cc !important;
 }

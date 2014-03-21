@@ -75,7 +75,7 @@
                             <bean parent="possible_schedules_empty"
                                   p:render="@{buildFilters.getZeroResultsReasons().size() EQ 0}"/>
 
-                            <bean parent="KSAP-Message"
+                            <bean parent="possible_schedules_empty"
                                   p:messageText="Try turning on &quot;@{buildFilters.getZeroResultsReasons()}&quot; filter(s) and click on Update to get results."
                                   p:render="@{buildFilters.getZeroResultsReasons().size() GT 0}"/>
 
@@ -87,7 +87,7 @@
         </property>
     </bean>
 
-    <bean id="possible_schedules_empty" parent="KSAP-Message" p:messageText="You have no possible schedules"/>
+    <bean id="possible_schedules_empty" parent="KSAP-Message" p:messageText="No possible schedules were found" p:cssClasses="schedulePossible__empty"/>
 
     <bean id="possible_schedules_details" parent="KSAP-HorizontalBoxGroup">
         <property name="header">
@@ -113,15 +113,27 @@
                 btnPrev: '.schedulePossible__carouselButton--prev',
                 scroll: 5,
                 visible: 5,
-                initCallback: function(a) {
-                    firstResult = jQuery(a[0]).find('.schedulePossible__option');
+                initCallback: function(a, o) {
+                    firstResult = jQuery(a).find('.schedulePossible__option').not('.schedulePossible__option--saved').first();
+                    var length = jQuery(a).length;
+                    var nextSize = jQuery(jQuery(a)[length - 1]).nextAll().splice(0, length).length;
+                    var prevSize = (jQuery(jQuery(a)[0]).prevAll().length > 0) ? o.scroll : 0;
+                    jQuery(o.btnPrev).text('Prev' + (prevSize > 0 ? ' ' + prevSize : ''));
+                    jQuery(o.btnNext).text('Next' + (nextSize > 0 ? ' ' + nextSize : ''));
+                },
+                afterEnd: function(a, o) {
+                    var length = jQuery(a).length;
+                    var nextSize = jQuery(jQuery(a)[length - 1]).nextAll().splice(0, length).length;
+                    var prevSize = (jQuery(jQuery(a)[0]).prevAll().length > 0) ? o.scroll : 0;
+                    jQuery(o.btnPrev).text('Prev' + (prevSize > 0 ? ' ' + prevSize : ''));
+                    jQuery(o.btnNext).text('Next' + (nextSize > 0 ? ' ' + nextSize : ''));
                 }
             });
 
             jQuery('.schedulePossible__carousel').on('SAVED_SCHEDULE_SAVE', function(event, data) {
-                jQuery('#save_' + data.uniqueId + '.schedulePossible__save').addClass('schedulePossible__save--saved').attr('data-saved-id', data.id);
+                KsapSbCalendar.updateAddedSavedSchedule(data);
             }).on('SAVED_SCHEDULE_REMOVE', function(event, data) {
-                jQuery('.schedulePossible__save[data-saved-id=' + data.scheduleIdRemoved + ']').removeClass('schedulePossible__save--saved').removeData('saved-id');
+                KsapSbCalendar.updateRemovedSavedSchedule(data);
             }).on('SECTION_ITEM_ADDED', function(event, data) {
                 KsapSbCalendar.addPlannedActivity(data);
             }).on('SECTION_ITEM_DELETED', function(event, data) {
@@ -130,10 +142,10 @@
         "/>
         <property name="items">
             <list>
-                <bean parent="possible_schedules_nav" p:actionLabel="Prev 5"
+                <bean parent="possible_schedules_nav" p:actionLabel="Prev"
                       p:additionalCssClasses="schedulePossible__carouselButton--prev"/>
                 <ref bean="possible_courses_schedule_list"/>
-                <bean parent="possible_schedules_nav" p:actionLabel="Next 5"
+                <bean parent="possible_schedules_nav" p:actionLabel="Next"
                       p:additionalCssClasses="schedulePossible__carouselButton--next"/>
             </list>
         </property>
@@ -148,16 +160,17 @@
         <property name="propertyName" value="possibleScheduleOptions"/>
         <property name="cssClasses" value="schedulePossible__carousel"/>
         <property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.uniqueId}"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__option"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__option @{#line.id NE null ? 'schedulePossible__option--saved' : ''}"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.validationMessages">
             <null/>
         </property>
         <property name="layoutManager.lineGroupPrototype.onClickScript"
-                  value="KsapSbCalendar.togglePossibleSchedule('@{#line.uniqueId}', @{#index + 1}, jQuery(this), @{#line.tbd});"/>
+                  value="KsapSbCalendar.toggleCalendarSchedule('@{#line.uniqueId}', @{#index + 1}, jQuery(this), @{#line.tbd}, false);"/>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
-                <entry key="events" value="@{#line.event}"/>
+                <entry key="source" value="@{#line.event}"/>
+                <entry key="saved" value="@{#line.id}"/>
             </map>
         </property>
         <property name="items">
@@ -175,24 +188,16 @@
                     <property name="items">
                         <list>
                             <bean parent="KSAP-HorizontalFieldGroup">
-                                <property name="id" value="save_@{#line.uniqueId}"/>
                                 <property name="onClickScript"
-                                          value="KsapSbCalendar.toggleSavedSchedule('@{#line.uniqueId}', 'save', e);"/>
-                                <property name="hidden" value="true"/>
+                                          value="KsapSbCalendar.toggleSaveSchedule('@{#line.uniqueId}', 'save', e);"/>
                                 <property name="cssClasses"
-                                          value="schedulePossible__save @{#line.id NE null ? 'schedulePossible__save--saved' : ''}"/>
-                                <property name="dataAttributes">
-                                    <map>
-                                        <entry key="saved-id" value="@{#line.id}"/>
-                                    </map>
-                                </property>
+                                          value="schedulePossible__save"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-Message" p:messageText="Save"/>
                                     </list>
                                 </property>
                             </bean>
-
                             <bean parent="KSAP-Message" p:messageText="@{#index + 1}"
                                   p:cssClasses="schedulePossible__index"/>
                         </list>
@@ -238,8 +243,7 @@
         <property name="dataAttributes">
             <map>
                 <!-- List of classes for each selection, where the length sets the limit of how many items can be selected at once -->
-                <entry key="class-selections"
-                       value="schedulePossible--orange,schedulePossible--gold,schedulePossible--pink,schedulePossible--blue,schedulePossible--green"/>
+                <entry key="class-selections" value="scheduleCalendar--orange,scheduleCalendar--gold,scheduleCalendar--pink,scheduleCalendar--blue,scheduleCalendar--green"/>
                 <entry key="planned-activities" value="@{plannedActivities}"/>
             </map>
         </property>
@@ -258,7 +262,7 @@
                 <entry key="hiddenDays" value="[0]"/>
                 <entry key="weekends" value="@{weekend}"/>
                 <entry key="allDaySlot" value="false"/>
-                <entry key="allDayText" value="to be arranged"/>
+                <entry key="allDayDefault" value="false"/>
                 <entry key="axisFormat" value="h(:mm)t"/>
                 <entry key="minTime"
                        value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(minTime, 'H')}"/>

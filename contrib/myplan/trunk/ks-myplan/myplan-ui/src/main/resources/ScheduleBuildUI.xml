@@ -26,6 +26,7 @@
             <list>
                 <value>plugins/carousel/carousel.js</value>
                 <value>plugins/fullcalendar/fullcalendar.js</value>
+                <value>themes/ksap/scripts/ksap.schedule.js</value>
             </list>
         </property>
         <property name="items">
@@ -138,7 +139,7 @@
                     <property name="layoutManager.lineGroupPrototype.id" value="reserved-item-@{#line.id}"/>
                     <property name="layoutManager.lineGroupPrototype.dataAttributes">
                         <map>
-                            <entry key="events" value="@{#line.event}"/>
+                            <entry key="source" value="@{#line.event}"/>
                         </map>
                     </property>
                     <property name="items">
