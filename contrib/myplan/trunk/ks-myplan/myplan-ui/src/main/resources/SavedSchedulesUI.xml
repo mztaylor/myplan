@@ -68,6 +68,7 @@
         "/>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
+                <entry key="saved" value="@{#line.id}"/>
                 <entry key="source" value="@{#line.event}"/>
             </map>
         </property>
