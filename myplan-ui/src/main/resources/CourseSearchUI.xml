@@ -20,6 +20,11 @@
         <property name="formClass" value="org.kuali.student.myplan.course.form.CourseSearchForm"/>
         <property name="headerText" value="Find Courses"/>
         <property name="footer.render" value="false"/>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>themes/ksap/scripts/ksap.search.js</value>
+            </list>
+        </property>
         <property name="items">
             <list>
                 <bean parent="KSAP-Page" p:id="course_search">

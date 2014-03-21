@@ -52,13 +52,25 @@
         <property name="propertyName" value="lookupResults"/>
         <property name="onDocumentReadyScript" value="
             jQuery('#saved_schedules_summary').on('SAVED_SCHEDULE_SAVE SAVED_SCHEDULE_REMOVE', function(event, data){
-                customRetrieveComponent('saved_schedules_summary','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},'saved-schedule-' + data.uniqueId,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
+                customRetrieveComponent('saved_schedules_summary','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
             });
         "/>
         <property name="cssClasses" value="module scheduleSaved"/>
         <property name="layoutManager.lineGroupPrototype.id" value="saved-schedule-@{#line.uniqueId}"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses" value="module__item scheduleSaved__item @{#line.weekend ? 'scheduleSaved__item--hasWeekend' : ''}"/>
-        <!--<property name="layoutManager.lineGroupPrototype.onClickScript" value="alert(@{#line.event});"/>-->
+        <property name="layoutManager.lineGroupPrototype.onClickScript"
+                  value="KsapSbCalendar.toggleCalendarSchedule('@{#line.uniqueId}', @{#index + 1}, jQuery(this), @{#line.tbd}, true);"/>
+        <property name="layoutManager.lineGroupPrototype.onDocumentReadyScript" value="
+            if (typeof KsapSbCalendar !== 'undefined') {
+                var scheduleEvents = KsapSbCalendar.getScheduleEvents('@{#line.uniqueId}');
+                if (scheduleEvents.length > 0) jQuery('#saved-schedule-@{#line.uniqueId}').addClass(scheduleEvents[0].className.join(' '));
+            }
+        "/>
+        <property name="layoutManager.lineGroupPrototype.dataAttributes">
+            <map>
+                <entry key="source" value="@{#line.event}"/>
+            </map>
+        </property>
         <property name="instructionalMessage">
             <bean parent="Uif-Message"
                   p:messageText="You have no saved schedules">
@@ -78,7 +90,15 @@
                         </bean>
                     </property>
                 </bean>
-                <bean parent="Uif-ActionLinkField" p:actionLabel="Delete" p:actionScript="KsapSbCalendar.toggleSavedSchedule('@{#line.id}', 'remove', e)"/>
+                <bean parent="KSAP-HorizontalFieldGroup">
+                    <property name="onClickScript"
+                              value="KsapSbCalendar.toggleSaveSchedule('@{#line.id}', 'remove', e)"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-Message" p:messageText="Delete"/>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>

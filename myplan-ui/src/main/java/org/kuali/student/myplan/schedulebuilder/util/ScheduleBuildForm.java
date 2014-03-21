@@ -79,4 +79,11 @@ public interface ScheduleBuildForm extends ScheduleForm {
      */
     String getPlannedActivities();
 
+
+    /**
+     * Unique Id for a schedule
+     * @return
+     */
+    String getUniqueId();
+
 }

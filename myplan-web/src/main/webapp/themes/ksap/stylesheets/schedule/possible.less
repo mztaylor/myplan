@@ -107,7 +107,7 @@
     padding: @paddingSmall;
     width: 136px;
     cursor: pointer;
-    background: #5a5a5a;
+    background-color: #5a5a5a;
 
     & .schedulePossible__index {
         font-size: @fontSizeMax;
@@ -120,75 +120,26 @@
     }
 
     & .schedulePossible__save {
-        display: inline-block;
+        display: none;
+    }
 
-        &.schedulePossible__save--saved {
+    &.schedulePossible__option--saved {
+        background-color: #cccccc !important;
+        cursor: default !important;
+
+        & .schedulePossible__save {
             display: none !important;
         }
     }
 }
 
-.scheduleCalendar {
-    .schedulePossible__event {
-        .border-radius(0 0 @baseBorderRadius @baseBorderRadius) !important;
-        border: none !important;
-        cursor: pointer;
-        margin-right: 2px !important;
-        //width: 30px !important;
-
-        & > .fc-event-bg {
-            opacity: 0 !important;
-            background: none !important;
-        }
-
-        & > .fc-event-inner > .fc-event-time {
-            display: none;
-        }
-
-        & > .fc-event-inner > .fc-event-title {
-            position: absolute;
-            bottom: 0px;
-            right: 0px;
-            font-size: @fontSizeMax;
-            margin: 0 @marginSmall @marginSmall 0;
-        }
-    }
-}
-
-.schedulePossible--1 {
-    background-color: #d55e00 !important;
-}
-.schedulePossible--2 {
-    background-color: #e69f00 !important;
-}
-.schedulePossible--3 {
-    background-color: #cc79a7 !important;
-}
-.schedulePossible--4 {
-    background-color: #56b4e9 !important;
-}
-.schedulePossible--5 {
-    background-color: #009e73 !important;
-}
-
-.schedulePossible--orange {
-    background-color: #d55e00 !important;
-}
-.schedulePossible--gold {
-    background-color: #e69f00 !important;
-}
-.schedulePossible--pink {
-    background-color: #cc79a7 !important;
-}
-.schedulePossible--blue {
-    background-color: #56b4e9 !important;
-}
-.schedulePossible--green {
-    background-color: #009e73 !important;
-}
-
-.schedulePossible--highlight {
-    background-color: #ccedff !important;
-    color: #333366 !important;
-    border: dotted 1px #6699cc !important;
+.schedulePossible__empty {
+    background: #f2f2f2;
+    display: block;
+    padding: (@paddingDefault * 4);
+    text-align: center;
+    border-left: @baseBorderStyle;
+    border-right: @baseBorderStyle;
+    font-size: @fontSizeLarge;
+    color: @grayLight;
 }

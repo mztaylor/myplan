@@ -10,9 +10,13 @@ var KsapSbCalendarActions = {
         return (typeof this.plannedActivities[activityId] != "undefined");
     },
 
-    addPlannedActivity : function(data) {
-        console.log(data);
+    getScheduleEvents : function (uniqueId) {
+        return this.fullCalendar('clientEvents', function(event) {
+            return (event.parentUniqueid === uniqueId);
+        });
+    },
 
+    addPlannedActivity : function(data) {
         if (!KsapSbCalendar.isPlanned(data.ActivityOfferingId)) {
             this.plannedActivities[data.ActivityOfferingId] = data.planItemId;
             jQuery("#action-" + data.RegistrationCode).removeClass("schedulePopover__itemAdd").addClass("schedulePopover__itemDelete").blur();
@@ -28,8 +32,6 @@ var KsapSbCalendarActions = {
     },
 
     removePlannedActivity : function(data) {
-        console.log(data);
-
         if (KsapSbCalendar.isPlanned(data.ActivityOfferingId)) {
             delete this.plannedActivities[data.ActivityOfferingId];
             jQuery("#action-" + data.RegistrationCode).removeClass("schedulePopover__itemDelete").addClass("schedulePopover__itemAdd").blur();
@@ -71,11 +73,11 @@ var KsapSbCalendarActions = {
     },
 
     addCssClass : function (cssClass) {
-        this.cssClasses.splice(0, 0, cssClass);
+        if (cssClass) this.cssClasses.splice(0, 0, cssClass);
     },
 
     removeCssClass : function (cssClass) {
-        this.cssClasses.splice(this.cssClasses.indexOf(cssClass), 1);
+        if (cssClass) this.cssClasses.splice(this.cssClasses.indexOf(cssClass), 1);
     },
 
     getNumAvailable : function () {
@@ -104,38 +106,40 @@ var KsapSbCalendarActions = {
         }
     },
 
-    addSchedule : function (source, cssClass) {
-        source.className = ["schedulePossible__event", cssClass];
-        this.fullCalendar('addEventSource', source);
+    addSchedule : function (source, cssClasses) {
+        source.className = cssClasses;
+        for (var i = 0; i < source.events.length; i++) {
+            var event = jQuery.extend(source.events[i], {className: cssClasses})
+            this.fullCalendar('renderEvent', event);
+        }
         return source;
     },
 
     removeSchedule : function (source) {
-        this.fullCalendar('removeEventSource', source);
+        this.fullCalendar('removeEvents', function(event) {
+            return (source.uniqueId === event.parentUniqueid);
+        });
         return source;
     },
 
-    togglePossibleSchedule : function (id, scheduleNumber, target, hasTba) {
-        var source = target.data("events");
-
-        var isSelected = this.fullCalendar('clientEvents', function(event) {
-            return (event.parentUniqueid === id);
-        }).length > 0;
+    toggleCalendarSchedule : function (id, scheduleNumber, target, hasTba, isSaved) {
+        if (target.hasClass("schedulePossible__option--saved")) return false;
+        var source = target.data("source");
+        var isSelected = this.getScheduleEvents(id).length > 0;
 
         if (isSelected) {
             // Possible Schedule is active in calendar
-            var cssClass = (target.attr("class").match(/schedulePossible\-\-([a-z]*)\b/g) || []).join(" ");
+            var cssClass = (target.attr("class").match(/scheduleCalendar\-\-([a-z]*)\b/g) || []).join(" ");
             this.removeSchedule(source);
-            target.removeClass(cssClass).find(".schedulePossible__save").hide();
+            target.removeClass(cssClass);
             this.addCssClass(cssClass);
             if (hasTba) this.hideTba(id, cssClass);
-
         } else {
             // Possible Schedule is NOT active in calendar
             if (this.getNumAvailable() === 0) return false;
             for (var i = 0; i < source.events.length; i++) {
                 if (!source.events[i].tbd) {
-                    source.events[i].title = scheduleNumber.toString();
+                    source.events[i].title = (!isSaved) ? scheduleNumber.toString() : "s" + scheduleNumber.toString();
                     if (typeof source.events[i].start === "number") {
                         source.events[i].start = new Date((source.events[i].start + scheduleNumber) * 1000).toString();
                     } else {
@@ -144,16 +148,15 @@ var KsapSbCalendarActions = {
                 }
             }
             var cssClass = this.getCssClass();
-            this.addSchedule(source, cssClass);
-            target.addClass(cssClass).find(".schedulePossible__save").show();
+            this.addSchedule(source, [cssClass]);
+            target.addClass(cssClass);
             this.removeCssClass(cssClass);
             if (hasTba) this.showTba(id, cssClass);
-
         }
     },
 
-    toggleSavedSchedule : function (id, methodToCall, event) {
-        event.stopPropagation();
+    toggleSaveSchedule : function (id, methodToCall, event) {
+        stopEvent(event);
         jQuery("#kualiForm").ajaxSubmit({
             data : {
                 methodToCall: methodToCall,
@@ -169,6 +172,30 @@ var KsapSbCalendarActions = {
                 showGrowl(errorThrown, jqXHR.status + " " + textStatus);
             }
         });
+    },
+
+    updateAddedSavedSchedule : function (data) {
+        var possibleSchedule = jQuery('#possible-schedule-' + data.uniqueId + '.schedulePossible__option');
+        var cssClass = (possibleSchedule.attr('class').match(/scheduleCalendar\-\-([a-z]*)\b/g) || []).join(' ');
+        possibleSchedule.addClass('schedulePossible__option--saved').removeClass(cssClass).attr('data-saved', data.id);
+        var scheduleEvents = this.getScheduleEvents(data.uniqueId);
+        for (var i = 0; i < scheduleEvents.length; i++) {
+            scheduleEvents[i].title = "s";
+            this.fullCalendar('updateEvent', scheduleEvents[i]);
+        }
+    },
+
+    updateRemovedSavedSchedule : function (data) {
+        var possibleSchedule = jQuery('.schedulePossible__option.schedulePossible__option--saved[data-saved=' + data.scheduleIdRemoved + ']');
+        if (possibleSchedule.length > 0) possibleSchedule.removeClass('schedulePossible__option--saved').removeData('saved');
+        var scheduleEvents = this.getScheduleEvents(data.uniqueIdRemoved);
+        if (scheduleEvents.length > 0) {
+            var cssClass = scheduleEvents[0].className.join(" ");
+            this.addCssClass(cssClass);
+            this.fullCalendar('removeEvents', function (event) {
+                return (event.parentUniqueid === data.uniqueIdRemoved);
+            });
+        }
     },
 
     addReservedSchedule : function () {
@@ -252,7 +279,7 @@ var KsapSbCalendarActions = {
     appendReservedSchedules : function (selection) {
         for (var i = 0; i < selection.length; i++) {
             var source = jQuery.extend(
-                jQuery(selection[i]).data("events"),
+                jQuery(selection[i]).data("source"),
                 {"className": ["scheduleReserved__event"]}
             );
             this.fullCalendar('addEventSource', source);
@@ -340,18 +367,18 @@ var KsapSbCalendarActions = {
         var courseEvents = this.fullCalendar('clientEvents', function(event) {
             if (typeof event.popoverContent === "undefined") return false;
             return (calEvent.popoverContent.courseId === event.popoverContent.courseId &&
-                calEvent.popoverContent.courseCd === event.popoverContent.courseCd &&
-                calEvent.uniqueid === event.uniqueid);
+                    calEvent.popoverContent.courseCd === event.popoverContent.courseCd &&
+                    calEvent.parentUniqueid === event.parentUniqueid);
         });
 
         for (var i = 0; i < courseEvents.length; i++) {
-            jQuery("#possible_schedule_event" + courseEvents[i]._id + ".fc-event").addClass("schedulePossible--highlight");
+            jQuery("#possible_schedule_event" + courseEvents[i]._id + ".fc-event").addClass("scheduleCalendar--highlight");
         }
     },
 
     clearActiveEvents : function () {
         for (var i = 0; i < this.fullCalendar('clientEvents').length; i++) {
-            jQuery("#possible_schedule_event" + this.fullCalendar('clientEvents')[i]._id + ".fc-event").removeClass("schedulePossible--highlight");
+            jQuery("#possible_schedule_event" + this.fullCalendar('clientEvents')[i]._id + ".fc-event").removeClass("scheduleCalendar--highlight");
         }
     },
 
