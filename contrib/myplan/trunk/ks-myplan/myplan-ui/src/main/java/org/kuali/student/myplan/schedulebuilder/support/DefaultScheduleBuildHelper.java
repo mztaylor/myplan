@@ -116,7 +116,8 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
             cal.setTime(eventEnd);
             maxTime = Math.max(maxTime,
                     cal.get(Calendar.HOUR_OF_DAY)
-                            + (cal.get(Calendar.MINUTE) > 0 ? 1 : 0));
+                            + (cal.get(Calendar.MINUTE) > 0 ? 1 : 0)
+            );
         }
 
         public void updateWeekends(boolean weekend) {
@@ -561,7 +562,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
      */
     private void buildCoursePopoverEvents(List<ActivityOption> activityOptions, JsonGenerator jEvents) {
         for (ActivityOption activityOption : activityOptions) {
-            jEvents.writeStartObject().write("sectionCd", activityOption.getActivityCode()).write("primary", activityOption.isPrimary()).write("activityId", activityOption.getActivityOfferingId()).write("registrationCode", activityOption.getRegistrationCode()).write("enrollStatus", String.format("%s/%s", activityOption.getFilledSeats(), activityOption.getTotalSeats())).writeStartArray("meetings");
+            jEvents.writeStartObject().write("sectionCd", activityOption.getActivityCode()).write("primary", activityOption.isPrimary()).write("activityId", activityOption.getActivityOfferingId()).write("registrationCode", activityOption.getRegistrationCode()).write("enrollStatus", String.format("%s/%s", activityOption.getFilledSeats(), activityOption.getTotalSeats())).write("enrollState", activityOption.isClosed() ? "Closed" : "Open").writeStartArray("meetings");
             for (ClassMeetingTime meetingTime : activityOption.getClassMeetingTimes()) {
                 jEvents.writeStartObject().write("meetingDay", org.apache.commons.lang.StringUtils.join(meetingTime.getDays(), "")).write("meetingTime", meetingTime.getTimes()).write("location", meetingTime.getLocation());
                 String campus = meetingTime.getCampus();
