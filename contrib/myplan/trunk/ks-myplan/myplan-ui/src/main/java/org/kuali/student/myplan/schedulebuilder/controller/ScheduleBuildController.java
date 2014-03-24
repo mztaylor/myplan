@@ -111,6 +111,13 @@ public class ScheduleBuildController extends UifControllerBase {
             }
         }
 
+        for(ReservedTime reservedTime:form.getReservedTimes()){
+            if(reservedTime.getId().equals(form.getUniqueId())){
+                uniqueId = reservedTime.getUniqueId();
+                break;
+            }
+        }
+
         JsonObjectBuilder json = Json.createObjectBuilder();
 
         json.add("success", true);
