@@ -107,7 +107,6 @@ var KsapSbCalendarActions = {
     },
 
     addSchedule : function (source, cssClasses) {
-        source.className = cssClasses;
         for (var i = 0; i < source.events.length; i++) {
             var event = jQuery.extend(source.events[i], {className: cssClasses})
             this.fullCalendar('renderEvent', event);
@@ -212,7 +211,7 @@ var KsapSbCalendarActions = {
                 template = template.replace(/__KSAP_ID__/gi, response.id);
                 template = template.replace(/__KSAP_TERM_ID__/gi, response.termId);
                 template = template.replace(/__KSAP_DAYSTIMES__/gi, response.daysTimes);
-                var item = jQuery(template).attr("id", "reserved-item-" + response.id).attr("data-events", JSON.stringify(response)).show();
+                var item = jQuery(template).attr("id", "reserved-item-" + response.id).attr("data-source", JSON.stringify(response)).show();
                 container.append(item);
                 fnCloseAllPopups();
                 jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES");
@@ -241,7 +240,7 @@ var KsapSbCalendarActions = {
                 template = template.replace(/__KSAP_ID__/gi, response.id);
                 template = template.replace(/__KSAP_TERM_ID__/gi, response.termId);
                 template = template.replace(/__KSAP_DAYSTIMES__/gi, response.daysTimes);
-                var item = jQuery(template).attr("id", "reserved-item-" + response.id).attr("data-events", JSON.stringify(response)).show();
+                var item = jQuery(template).attr("id", "reserved-item-" + response.id).attr("data-source", JSON.stringify(response)).show();
                 container.find("#reserved-item-" + response.id).replaceWith(item);
                 fnCloseAllPopups();
                 jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES");
@@ -278,11 +277,9 @@ var KsapSbCalendarActions = {
 
     appendReservedSchedules : function (selection) {
         for (var i = 0; i < selection.length; i++) {
-            var source = jQuery.extend(
-                jQuery(selection[i]).data("source"),
-                {"className": ["scheduleReserved__event"]}
-            );
+            var source = jQuery(selection[i]).data("source");
             this.fullCalendar('addEventSource', source);
+            this.addSchedule(source, ["scheduleReserved__event"]);
         }
     },
 
