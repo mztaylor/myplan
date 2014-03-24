@@ -5,6 +5,8 @@ import org.apache.log4j.Logger;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.infc.ClassMeetingTime;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
+import org.kuali.student.myplan.utils.TimeStringMillisConverter;
+import org.springframework.util.CollectionUtils;
 
 import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
@@ -53,24 +55,23 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
      * Consider the possible schedule has following
      * Registered courses : COM 201 A
      * Planned Courses: COM 202 A, COM 202 AB, COM 203 AJ(Assume this is a TBD), COM 204 A(Assume this also is a TBD)
-     *
+     * <p/>
      * For following scenarios considering the above assumption:
      * savedSchedule = false && tbdSchedule = false then the string displayed would be
      * <div>COM 201 A</div>
      * <div>COM 202</div>
      * <div>COM 203</div>
      * <div>COM 204</div>
-     *
-     *
+     * <p/>
+     * <p/>
      * savedSchedule = true && tbdSchedule = false then the string displayed would be
-     *
+     * <p/>
      * <div>COM 201 A / COM 202 / COM 203 / COM 204</div>
-     *
-     *
+     * <p/>
+     * <p/>
      * savedSchedule = false && tbdSchedule = true then the string displayed would be
      * <div>COM 203 AJ</div>
      * <div>COM 204 A</div>
-     *
      *
      * @return HTML string of possible course options
      */
@@ -98,6 +99,20 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
                 List<String> activityOptions = new ArrayList<String>();
                 if (activityOption.isLockedIn() || (isTbdSchedule() && !isArranged)) {
                     activityOptions.add(activityOption.getActivityCode());
+                }
+                if (isSavedSchedule() && !CollectionUtils.isEmpty(activityOption.getClassMeetingTimes())) {
+                    StringBuffer str = new StringBuffer();
+                    int count = 0;
+                    for (ClassMeetingTime classMeetingTime : activityOption.getClassMeetingTimes()) {
+                        if (classMeetingTime.isArranged()) {
+                            if (count > 0) {
+                                str = str.append(" & ");
+                            }
+                            str = str.append(TimeStringMillisConverter.millisToStandardTime(pso.getActivityOptions().get(0).getClassMeetingTimes().get(0).getStartDate().getTime(), "h:m a"));
+                            count++;
+                        }
+                    }
+                    activityOptions.add(str.toString());
                 }
                 if ((isTbdSchedule() && !isArranged) || !isTbdSchedule()) {
                     scheduledCourseActivities.put(key, activityOptions);
