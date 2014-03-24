@@ -14,6 +14,7 @@ public class ScheduleBuilderConstants {
     public static final String INVALID_SAVED_SCHEDULE_ACTIVITY = "myplan.text.error.scheduleBuilder.invalid.activities";
     public static final String SAVED_SCHEDULE_ACTIVITY_MOVED = "myplan.text.error.scheduleBuilder.moved.activity";
     public static final String CLOSED_FILTER = "CLOSED";
+    public static final String USER_SELECTED_FILTER = "USER_SELECTED";
     public static final String RESTRICTION_FILTER = "RESTRICTION";
     public static final String OVERLAPPED_FILTER = "OVERLAPPED";
 
