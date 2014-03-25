@@ -97,4 +97,18 @@ public interface PossibleScheduleOption extends HasId, ScheduleBuildOption {
      */
     boolean isTbd();
 
+    /**
+     * If a saved possible schedule has any error this string denoted specific error type.
+     *
+     * @return constant string which denotes the error type
+     */
+    String getPossibleErrorType();
+
+    /**
+     * If a possible error type exists then possible error messages are populated for display purpose
+     *
+     * @return Error message needs to be displayed
+     */
+    String getPossibleErrorMessage();
+
 }

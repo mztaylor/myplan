@@ -57,7 +57,8 @@
         "/>
         <property name="cssClasses" value="module scheduleSaved"/>
         <property name="layoutManager.lineGroupPrototype.id" value="saved-schedule-@{#line.uniqueId}"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses" value="module__item scheduleSaved__item @{#line.weekend ? 'scheduleSaved__item--hasWeekend' : ''}"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses"
+                  value="module__item scheduleSaved__item @{#line.weekend ? 'scheduleSaved__item--hasWeekend' : ''}"/>
         <property name="layoutManager.lineGroupPrototype.onClickScript"
                   value="KsapSbCalendar.toggleCalendarSchedule('@{#line.uniqueId}', @{#index + 1}, jQuery(this), @{#line.tbd}, true);"/>
         <property name="layoutManager.lineGroupPrototype.onDocumentReadyScript" value="
@@ -70,6 +71,7 @@
             <map>
                 <entry key="saved" value="@{#line.id}"/>
                 <entry key="source" value="@{#line.event}"/>
+                <entry key="errorMessage" value="@{#line.possibleErrorMessage}"/>
             </map>
         </property>
         <property name="instructionalMessage">
@@ -81,7 +83,8 @@
         <property name="instructionalMessage.render" value="@{lookupResults EQ null OR lookupResults.size() EQ 0}"/>
         <property name="items">
             <list>
-                <bean parent="KSAP-MessageField" p:messageText="@{#index + 1}"/>
+                <bean parent="KSAP-MessageField" p:messageText="P@{#index + 1}"
+                      p:cssClasses="@{#line.possibleErrorType NE null ? #line.possibleErrorType EQ 'passive_error' ? 'alert alert-info' : 'alert alert-error' : ''}"/>
                 <bean parent="KSAP-SimpleDataField">
                     <property name="propertyName" value="schedule"/>
                     <property name="escapeHtmlInPropertyValue" value="false"/>

@@ -48,6 +48,12 @@ public class PossibleScheduleOptionInfo extends ScheduleBuildOptionInfo
     @XmlAttribute
     private boolean tbd;
 
+    @XmlAttribute
+    private String possibleErrorType;
+
+    @XmlAttribute
+    private String possibleErrorMessage;
+
     public PossibleScheduleOptionInfo() {
     }
 
@@ -82,6 +88,27 @@ public class PossibleScheduleOptionInfo extends ScheduleBuildOptionInfo
     public RichTextInfo getDescription() {
         return description;
     }
+
+    @Override
+    public String getPossibleErrorType() {
+        return possibleErrorType;
+    }
+
+    public void setPossibleErrorType(String possibleErrorType) {
+        this.possibleErrorType = possibleErrorType;
+    }
+
+    @Override
+    public String getPossibleErrorMessage() {
+        return possibleErrorMessage;
+    }
+
+    public void setPossibleErrorMessage(String possibleErrorMessage) {
+        this.possibleErrorMessage = possibleErrorMessage;
+    }
+
+
+
 
     public void setDescription(String description) {
         RichTextInfo rt = new RichTextInfo();
