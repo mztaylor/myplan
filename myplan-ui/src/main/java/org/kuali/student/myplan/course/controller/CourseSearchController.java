@@ -164,7 +164,7 @@ public class CourseSearchController extends UifControllerBase {
             return null;
 
         }
-        response.sendRedirect(String.format(CourseSearchConstants.COURSE_DETAILS_URL, courseId, String.format("%s %s", subject.trim(), number)));
+        response.sendRedirect(String.format(CourseSearchConstants.COURSE_DETAILS_URL, courseId, urlEscape(String.format("%s %s", subject.trim(), number))));
         return null;
     }
 
@@ -838,6 +838,12 @@ public class CourseSearchController extends UifControllerBase {
             }
         }
         return genEdsOut.toString();
+    }
+
+    private String urlEscape(String text) {
+        text = text.replace(" ", "%20");
+        text = text.replace("&", "%26");
+        return text;
     }
 
     protected CluService getLuService() {
