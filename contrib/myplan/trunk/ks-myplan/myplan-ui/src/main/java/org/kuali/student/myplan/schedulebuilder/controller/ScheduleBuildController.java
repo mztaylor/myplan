@@ -1,41 +1,34 @@
 package org.kuali.student.myplan.schedulebuilder.controller;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.kuali.rice.krad.UserSession;
-import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.CourseHelper;
-import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
-import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.schedulebuilder.infc.*;
+import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
+import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleForm;
-import org.kuali.student.myplan.schedulebuilder.util.ShoppingCartForm;
-import org.kuali.student.myplan.utils.CalendarUtil;
-import org.kuali.student.r2.lum.course.infc.Course;
+import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.json.Json;
-import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonWriter;
+import javax.json.stream.JsonGenerator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.io.StringWriter;
+import java.util.Collection;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/sb")
@@ -76,43 +69,126 @@ public class ScheduleBuildController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=save")
     public ModelAndView saveSchedule(@ModelAttribute("KualiForm") ScheduleBuildForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        PossibleScheduleOption sso = form.saveSchedule();
+        List<PossibleScheduleOption> savedSchedules;
+        try {
+            savedSchedules = getScheduleBuildStrategy().getSchedules(form.getRequestedLearningPlanId());
+        } catch (PermissionDeniedException e) {
+            throw new IllegalStateException(
+                    "Failed to refresh saved schedules", e);
+        }
 
-        JsonObjectBuilder json = Json.createObjectBuilder();
+        StringWriter stringWriter = new StringWriter();
+        JsonGenerator jPso = Json.createGenerator(stringWriter);
+        PossibleScheduleOption sso = null;
+        boolean limitReached = false;
+        if (!CollectionUtils.isEmpty(savedSchedules) && savedSchedules.size() == 3) {
+            limitReached = true;
+        } else {
+            sso = form.saveSchedule();
+        }
+
+
+        jPso.writeStartObject();
 
         if (sso != null) {
-            json.add("success", true);
-            json.add("id", sso.getId());
-            json.add("uniqueId", sso.getUniqueId());
+            jPso.write("success", true);
+            jPso.writeStartArray("savedSchedules");
+            int index = 1;
+            for (PossibleScheduleOption savedSchedule : savedSchedules) {
+                jPso.writeStartObject();
+                jPso.write("id", savedSchedule.getId());
+                jPso.write("uniqueId", savedSchedule.getUniqueId());
+                jPso.write("index", "P" + index);
+                jPso.writeEnd();
+                index++;
+            }
+            jPso.writeStartObject();
+            jPso.write("id", sso.getId());
+            jPso.write("uniqueId", sso.getUniqueId());
+            jPso.write("recentlyAdded", true);
+            jPso.write("index", "P" + index);
+            jPso.writeEnd();
+
+            jPso.writeEnd().flush();
         } else {
-            json.add("success", false);
+            jPso.write("success", false);
+            if (limitReached) {
+                jPso.write("limitReached", true);
+            }
         }
-        response.setContentType("application/json");
+        jPso.writeEnd().flush();
+
+        response.setHeader("content-type", "application/json");
         response.setHeader("Cache-Control", "No-cache");
         response.setHeader("Cache-Control", "No-store");
         response.setHeader("Cache-Control", "max-age=0");
-        JsonWriter jwriter = Json.createWriter(response.getWriter());
-        jwriter.writeObject(json.build());
-        jwriter.close();
+        response.getWriter().println(stringWriter.toString());
 
         return null;
     }
 
-    @RequestMapping(params = "methodToCall=remove")
+    @RequestMapping(params = "methodToCall=removeSchedule")
     public ModelAndView removeSchedule(@ModelAttribute("KualiForm") ScheduleBuildForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String removedId = form.removeSchedule();
 
         String uniqueId = null;
-        for(PossibleScheduleOption saved: form.getSavedSchedules()){
-            if(saved.getId().equals(form.getUniqueId())){
+        for (PossibleScheduleOption saved : form.getSavedSchedules()) {
+            if (saved.getId().equals(form.getUniqueId())) {
                 uniqueId = saved.getUniqueId();
                 break;
             }
         }
+        StringWriter stringWriter = new StringWriter();
+        JsonGenerator jPso = Json.createGenerator(stringWriter);
 
-        for(ReservedTime reservedTime:form.getReservedTimes()){
-            if(reservedTime.getId().equals(form.getUniqueId())){
+        List<PossibleScheduleOption> savedSchedules = null;
+        try {
+            savedSchedules = getScheduleBuildStrategy().getSchedules(form.getRequestedLearningPlanId());
+        } catch (PermissionDeniedException e) {
+            throw new IllegalStateException(
+                    "Failed to refresh saved schedules", e);
+        }
+
+        jPso.writeStartObject();
+        jPso.write("success", true);
+        jPso.write("uniqueIdRemoved", uniqueId);
+        jPso.write("scheduleIdRemoved", removedId);
+
+        if (!CollectionUtils.isEmpty(savedSchedules)) {
+            jPso.writeStartArray("savedSchedules");
+            int index = 1;
+            for (PossibleScheduleOption savedSchedule : savedSchedules) {
+                jPso.writeStartObject();
+                jPso.write("id", savedSchedule.getId());
+                jPso.write("uniqueId", savedSchedule.getUniqueId());
+                jPso.write("index", "P" + index);
+                jPso.writeEnd();
+                index++;
+            }
+            jPso.writeEnd();
+        }
+
+        jPso.writeEnd().flush();
+
+        response.setContentType("application/json");
+        response.setHeader("Cache-Control", "No-cache");
+        response.setHeader("Cache-Control", "No-store");
+        response.setHeader("Cache-Control", "max-age=0");
+        response.getWriter().println(stringWriter.toString());
+
+        return null;
+    }
+
+    @RequestMapping(params = "methodToCall=removeReservedTime")
+    public ModelAndView removeReservedTime(@ModelAttribute("KualiForm") ScheduleBuildForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String removedId = form.removeSchedule();
+
+        String uniqueId = null;
+
+        for (ReservedTime reservedTime : form.getReservedTimes()) {
+            if (reservedTime.getId().equals(form.getUniqueId())) {
                 uniqueId = reservedTime.getUniqueId();
                 break;
             }
