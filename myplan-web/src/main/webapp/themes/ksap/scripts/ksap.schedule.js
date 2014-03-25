@@ -1,7 +1,8 @@
 var KsapSbCalendarActions = {
     initialize : function (element) {
         this.appendReservedSchedules(jQuery('.scheduleReserved__container').find('.scheduleReserved__item'));
-        this.cssClasses = this.data("class-selections").split(",");
+        this.cssClasses = this.data("selection-classes").split(",");
+        this.limit = parseFloat(this.data("selection-limit"));
         this.plannedActivities = (this.data("planned-activities") ? this.data("planned-activities") : {});
         if (element) element.click();
     },
@@ -81,7 +82,7 @@ var KsapSbCalendarActions = {
     },
 
     getNumAvailable : function () {
-        return this.cssClasses.length;
+        return this.limit;
     },
 
     showTba : function (id, cssClass) {
@@ -132,13 +133,14 @@ var KsapSbCalendarActions = {
             this.removeSchedule(source);
             target.removeClass(cssClass);
             this.addCssClass(cssClass);
+            this.limit++;
             if (hasTba) this.hideTba(id, cssClass);
         } else {
             // Possible Schedule is NOT active in calendar
             if (this.getNumAvailable() === 0) return false;
             for (var i = 0; i < source.events.length; i++) {
                 if (!source.events[i].tbd) {
-                    source.events[i].title = (!isSaved) ? scheduleNumber.toString() : "s" + scheduleNumber.toString();
+                    source.events[i].title = (!isSaved) ? scheduleNumber.toString() : "P" + scheduleNumber.toString();
                     if (typeof source.events[i].start === "number") {
                         source.events[i].start = new Date((source.events[i].start + scheduleNumber) * 1000).toString();
                     } else {
@@ -150,6 +152,7 @@ var KsapSbCalendarActions = {
             this.addSchedule(source, [cssClass]);
             target.addClass(cssClass);
             this.removeCssClass(cssClass);
+            this.limit--;
             if (hasTba) this.showTba(id, cssClass);
         }
     },
@@ -163,7 +166,9 @@ var KsapSbCalendarActions = {
             },
             dataType : 'json',
             success : function(response, textStatus, jqXHR) {
-                jQuery.event.trigger("SAVED_SCHEDULE_" + methodToCall.toUpperCase(), response);
+                if (response.success) jQuery.event.trigger("SAVED_SCHEDULE_" + ((methodToCall === "save") ? "SAVE" : "REMOVE"), response);
+
+                // Add condition for error message when save limit is reached.
             },
             error : function(jqXHR, textStatus, errorThrown) {
                 if (textStatus == "parsererror")
@@ -174,26 +179,51 @@ var KsapSbCalendarActions = {
     },
 
     updateAddedSavedSchedule : function (data) {
-        var possibleSchedule = jQuery('#possible-schedule-' + data.uniqueId + '.schedulePossible__option');
-        var cssClass = (possibleSchedule.attr('class').match(/scheduleCalendar\-\-([a-z]*)\b/g) || []).join(' ');
-        possibleSchedule.addClass('schedulePossible__option--saved').removeClass(cssClass).attr('data-saved', data.id);
-        var scheduleEvents = this.getScheduleEvents(data.uniqueId);
+        var recentlyAdded;
+        for (var i = 0; i < data.savedSchedules.length; i++) {
+            if (data.savedSchedules[i].recentlyAdded) recentlyAdded = data.savedSchedules[i];
+        }
+        var possibleSchedule = jQuery("#possible-schedule-" + recentlyAdded.uniqueId);
+        var possibleTba = jQuery("#possible-tba-" + recentlyAdded.uniqueId);
+        var cssClass = (possibleSchedule.attr("class").match(/scheduleCalendar\-\-([a-z]*)\b/g) || []).join(" ");
+        possibleSchedule.removeClass(cssClass).addClass("schedulePossible__option--saved").attr("data-saved", recentlyAdded.id);
+        this.addCssClass(cssClass);
+        if (possibleTba.length > 0) {
+            possibleTba.removeClass(cssClass).addClass("scheduleCalendar--saved").attr("data-saved", recentlyAdded.id).find(".schedulePossible__tbaItemIndex").text(recentlyAdded.index);
+        }
+        var scheduleEvents = this.getScheduleEvents(recentlyAdded.uniqueId);
         for (var i = 0; i < scheduleEvents.length; i++) {
-            scheduleEvents[i].title = "s";
-            this.fullCalendar('updateEvent', scheduleEvents[i]);
+            scheduleEvents[i].title = recentlyAdded.index;
+            scheduleEvents[i].className = ["scheduleCalendar--saved"];
+            this.fullCalendar("updateEvent", scheduleEvents[i]);
         }
     },
 
     updateRemovedSavedSchedule : function (data) {
-        var possibleSchedule = jQuery('.schedulePossible__option.schedulePossible__option--saved[data-saved=' + data.scheduleIdRemoved + ']');
+        var possibleSchedule = jQuery('.schedulePossible__option[data-saved=' + data.scheduleIdRemoved + ']');
+        var possibleTba = jQuery('.schedulePossible__tbaItem[data-saved=' + data.scheduleIdRemoved + ']');
         if (possibleSchedule.length > 0) possibleSchedule.removeClass('schedulePossible__option--saved').removeData('saved');
+        if (possibleTba.length > 0) {
+            possibleTba.removeClass('scheduleCalendar--saved').removeData('saved').hide().find(".schedulePossible__tbaItemIndex").text(possibleTba.data("index"));
+            this.toggleTbaSection();
+        }
         var scheduleEvents = this.getScheduleEvents(data.uniqueIdRemoved);
         if (scheduleEvents.length > 0) {
-            var cssClass = scheduleEvents[0].className.join(" ");
-            this.addCssClass(cssClass);
-            this.fullCalendar('removeEvents', function (event) {
+            this.limit++;
+            this.fullCalendar("removeEvents", function (event) {
                 return (event.parentUniqueid === data.uniqueIdRemoved);
             });
+        }
+        if (data.savedSchedules) {
+            for (var i = 0; i < data.savedSchedules.length; i++) {
+                var scheduleEvents = this.getScheduleEvents(data.savedSchedules[i].uniqueId);
+                var possibleTba = jQuery('.schedulePossible__tbaItem[data-saved=' + data.savedSchedules[i].id + ']');
+                for (var n = 0; n < scheduleEvents.length; n++) {
+                    scheduleEvents[n].title = data.savedSchedules[i].index;
+                    this.fullCalendar("updateEvent", scheduleEvents[n]);
+                }
+                if (possibleTba.length > 0) possibleTba.find(".schedulePossible__tbaItemIndex").text(data.savedSchedules[i].index);
+            }
         }
     },
 
@@ -258,7 +288,7 @@ var KsapSbCalendarActions = {
         var form = jQuery("#kualiForm");
         form.ajaxSubmit({
             data: ksapAdditionalFormData({
-                methodToCall: "remove",
+                methodToCall: "removeReservedTime",
                 uniqueId: id
             }),
             dataType: 'json',

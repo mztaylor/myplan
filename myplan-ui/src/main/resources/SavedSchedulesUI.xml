@@ -61,12 +61,12 @@
                   value="module__item scheduleSaved__item @{#line.weekend ? 'scheduleSaved__item--hasWeekend' : ''}"/>
         <property name="layoutManager.lineGroupPrototype.onClickScript"
                   value="KsapSbCalendar.toggleCalendarSchedule('@{#line.uniqueId}', @{#index + 1}, jQuery(this), @{#line.tbd}, true);"/>
-        <property name="layoutManager.lineGroupPrototype.onDocumentReadyScript" value="
+        <!--<property name="layoutManager.lineGroupPrototype.onDocumentReadyScript" value="
             if (typeof KsapSbCalendar !== 'undefined') {
                 var scheduleEvents = KsapSbCalendar.getScheduleEvents('@{#line.uniqueId}');
                 if (scheduleEvents.length > 0) jQuery('#saved-schedule-@{#line.uniqueId}').addClass(scheduleEvents[0].className.join(' '));
             }
-        "/>
+        "/>-->
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
                 <entry key="saved" value="@{#line.id}"/>
@@ -96,7 +96,7 @@
                 </bean>
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="onClickScript"
-                              value="KsapSbCalendar.toggleSaveSchedule('@{#line.id}', 'remove', e)"/>
+                              value="KsapSbCalendar.toggleSaveSchedule('@{#line.id}', 'removeSchedule', e)"/>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-Message" p:messageText="Delete"/>

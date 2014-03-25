@@ -142,6 +142,8 @@
 
     <bean id="sb_reserved_times_submit_button" parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Add">
         <property name="actionScript" value="KsapSbCalendar.addReservedSchedule();"/>
+        <property name="disabled"
+                  value="@{monday EQ false AND tuesday EQ false AND wednesday EQ false AND thursday EQ false AND friday EQ false AND saturday EQ false}"/>
     </bean>
 
     <bean id="sb_reserved_times_update_button" parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Update">

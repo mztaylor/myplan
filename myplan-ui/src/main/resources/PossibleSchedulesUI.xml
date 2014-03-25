@@ -175,6 +175,7 @@
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
                 <entry key="source" value="@{#line.event}"/>
+                <entry key="index" value="@{#index + 1}"/>
                 <entry key="saved" value="@{#line.id}"/>
             </map>
         </property>
@@ -227,6 +228,13 @@
         <property name="layoutManager.lineGroupPrototype.id" value="possible-tba-@{#line.uniqueId}"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__tbaItem"/>
         <property name="layoutManager.lineGroupPrototype.hidden" value="true"/>
+        <property name="layoutManager.lineGroupPrototype.dataAttributes">
+            <map>
+                <entry key="source" value="@{#line.event}"/>
+                <entry key="index" value="@{#index + 1}"/>
+                <entry key="saved" value="@{#line.id}"/>
+            </map>
+        </property>
         <property name="items">
             <list>
                 <bean parent="KSAP-SimpleDataField">
@@ -248,7 +256,8 @@
         <property name="dataAttributes">
             <map>
                 <!-- List of classes for each selection, where the length sets the limit of how many items can be selected at once -->
-                <entry key="class-selections" value="scheduleCalendar--orange,scheduleCalendar--gold,scheduleCalendar--pink,scheduleCalendar--blue,scheduleCalendar--green"/>
+                <entry key="selection-limit" value="5"/>
+                <entry key="selection-classes" value="scheduleCalendar--orange,scheduleCalendar--gold,scheduleCalendar--pink,scheduleCalendar--blue,scheduleCalendar--green"/>
                 <entry key="planned-activities" value="@{plannedActivities}"/>
             </map>
         </property>
