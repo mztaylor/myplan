@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.infc.ClassMeetingTime;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
+import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
 import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.springframework.util.CollectionUtils;
 
@@ -78,7 +79,30 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
         StringBuffer sb = new StringBuffer();
         PossibleScheduleOption pso = (PossibleScheduleOption) super.getValue();
         Map<String, List<String>> scheduledCourseActivities = new LinkedHashMap<String, List<String>>();
-        for (ActivityOption activityOption : pso.getActivityOptions()) {
+        processActivities(pso.getActivityOptions(), scheduledCourseActivities);
+        if (isSavedSchedule()) {
+            sb = sb.append(innerSpan);
+        }
+        int count = 0;
+        for (String key : scheduledCourseActivities.keySet()) {
+            count++;
+            String value = StringUtils.join(scheduledCourseActivities.get(key), ", ");
+            sb = sb.append(isSavedSchedule() ? "" : innerSpan).append("<b>").append(key).append("</b>").append(" ").append(value).append(isSavedSchedule() ? count < scheduledCourseActivities.size() ? " / " : "" : "</div>");
+        }
+        sb = sb.append(isSavedSchedule() ? "</div>" : "");
+
+        return sb.toString();
+    }
+
+    protected void processActivities(List<ActivityOption> activityOptionList, Map<String, List<String>> scheduledCourseActivities) {
+        for (ActivityOption activityOption : activityOptionList) {
+
+            for (SecondaryActivityOptions secondaryActivityOption : activityOption.getSecondaryOptions()) {
+                processActivities(secondaryActivityOption.getActivityOptions(), scheduledCourseActivities);
+            }
+
+            processActivities(activityOption.getAlternateActivties(), scheduledCourseActivities);
+
             String key = activityOption.getCourseCd();
             boolean isArranged = true;
             if (isTbdSchedule()) {
@@ -90,12 +114,12 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
                 }
             }
             if (scheduledCourseActivities.containsKey(key)) {
-                if (activityOption.isLockedIn() || (isTbdSchedule() && !isArranged)) {
+                if (activityOption.isLockedIn()) {
                     scheduledCourseActivities.get(key).add(activityOption.getActivityCode());
                 }
             } else {
                 List<String> activityOptions = new ArrayList<String>();
-                if (activityOption.isLockedIn() || (isTbdSchedule() && !isArranged)) {
+                if (activityOption.isLockedIn()) {
                     activityOptions.add(activityOption.getActivityCode());
                 }
                 if (isSavedSchedule() && !CollectionUtils.isEmpty(activityOption.getClassMeetingTimes())) {
@@ -114,18 +138,6 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
                 }
             }
         }
-        if (isSavedSchedule()) {
-            sb = sb.append(innerSpan);
-        }
-        int count = 0;
-        for (String key : scheduledCourseActivities.keySet()) {
-            count++;
-            String value = StringUtils.join(scheduledCourseActivities.get(key), ", ");
-            sb = sb.append(isSavedSchedule() ? "" : innerSpan).append("<b>").append(key).append("</b>").append(" ").append(value).append(isSavedSchedule() ? count < scheduledCourseActivities.size() ? " / " : "" : "</div>");
-        }
-        sb = sb.append(isSavedSchedule() ? "</div>" : "");
-
-        return sb.toString();
     }
 
 }
