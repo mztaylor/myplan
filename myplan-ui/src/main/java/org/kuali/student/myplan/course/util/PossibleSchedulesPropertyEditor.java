@@ -9,10 +9,8 @@ import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.springframework.util.CollectionUtils;
 
 import java.beans.PropertyEditorSupport;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Created by hemanthg on 2/8/14.
@@ -101,18 +99,15 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
                     activityOptions.add(activityOption.getActivityCode());
                 }
                 if (isSavedSchedule() && !CollectionUtils.isEmpty(activityOption.getClassMeetingTimes())) {
-                    StringBuffer str = new StringBuffer();
-                    int count = 0;
+                    Set<String> times = new HashSet<String>();
                     for (ClassMeetingTime classMeetingTime : activityOption.getClassMeetingTimes()) {
                         if (classMeetingTime.isArranged()) {
-                            if (count > 0) {
-                                str = str.append(" & ");
-                            }
-                            str = str.append(TimeStringMillisConverter.millisToStandardTime(pso.getActivityOptions().get(0).getClassMeetingTimes().get(0).getStartDate().getTime(), "h:m a"));
-                            count++;
+                            times.add(TimeStringMillisConverter.millisToStandardTime(classMeetingTime.getStartDate().getTime(), "h:m a"));
+                        } else {
+                            times.add("TBA");
                         }
                     }
-                    activityOptions.add(str.toString());
+                    activityOptions.add(StringUtils.join(times, " & "));
                 }
                 if ((isTbdSchedule() && !isArranged) || !isTbdSchedule()) {
                     scheduledCourseActivities.put(key, activityOptions);
