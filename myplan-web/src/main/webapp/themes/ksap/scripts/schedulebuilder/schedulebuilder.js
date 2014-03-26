@@ -41,7 +41,7 @@ function createScheduleBuilder(obj) {
                 },
                 dataType : 'json',
                 success : function(newPossibleSchedules, textStatus, jqXHR) {
-                    KsapSbCalendar.fullCalendar('removeEvents');
+                    KsapSbCalendar.widget.fullCalendar('removeEvents');
                     if (newPossibleSchedules.todo != null)
                         showGrowl(newPossibleSchedules.todo);
                     sb.possibleSchedules = newPossibleSchedules;
@@ -204,7 +204,7 @@ function createScheduleBuilder(obj) {
             template = template.replace(/id=\"(u\d+)/gi, "id=\"$1_"+i);
             var row = jQuery(template).children(".uif-boxGroup");
             if (i == 0) {
-                KsapSbCalendar.fullCalendar('gotoDate', week.gotoYear, week.gotoMonth-1, week.gotoDate);
+                KsapSbCalendar.widget.fullCalendar('gotoDate', week.gotoYear, week.gotoMonth-1, week.gotoDate);
             } else {
                 row.removeClass("ksap-sb-selected");
                 row.addClass("ksap-sb-deselected");
@@ -217,7 +217,7 @@ function createScheduleBuilder(obj) {
             row.data('date', week.gotoDate);
             row.on('click', function(){
                 var t = jQuery(this);
-                KsapSbCalendar.fullCalendar('gotoDate', t.data('year'), t.data('month')-1, t.data('date'));
+                KsapSbCalendar.widget.fullCalendar('gotoDate', t.data('year'), t.data('month')-1, t.data('date'));
                 jQuery(".ksap-sb-week-group-area-container .ksap-sb-weekGroup").each(function() {
                     var t = jQuery(this);
                     t.removeClass("ksap-sb-selected");
@@ -328,8 +328,8 @@ function trashScheduleOption(uniqueId) {
 	
 	var model = KsapScheduleBuild.getSchedule(uniqueId);
 	if (model == null) return;
-	
-	KsapSbCalendar.fullCalendar('removeEventSource', model);
+
+    KsapSbCalendar.widget.fullCalendar('removeEventSource', model);
 
 	// remove from view
 	var row = jQuery("#" + uniqueId);
@@ -365,7 +365,7 @@ function toggleScheduleOptionSelect(uniqueId) {
 		if (schedule != null) {
 			for (var i in schedule.eventClass)
 				row.addClass(schedule.eventClass[i]);
-			KsapSbCalendar.fullCalendar('addEventSource', schedule);
+			KsapSbCalendar.widget.fullCalendar('addEventSource', schedule);
 		}
 	} else {
 		row.removeClass("ksap-sb-selected");
@@ -374,7 +374,7 @@ function toggleScheduleOptionSelect(uniqueId) {
 		if (schedule != null) {
 			for (var i in schedule.eventClass)
 				row.removeClass(schedule.eventClass[i]);
-			KsapSbCalendar.fullCalendar('removeEventSource', schedule);
+			KsapSbCalendar.widget.fullCalendar('removeEventSource', schedule);
 		}
 	}
 }
@@ -525,7 +525,7 @@ function toggleReservedTimeSelect(uniqueId) {
 			}
 			if (!reserved.visible) {
 				reserved.visible = true;
-				KsapSbCalendar.fullCalendar('addEventSource', reserved);
+				KsapSbCalendar.widget.fullCalendar('addEventSource', reserved);
 			}
 		}
 	} else {
@@ -540,7 +540,7 @@ function toggleReservedTimeSelect(uniqueId) {
 			}
 			if (reserved.visible) {
 				reserved.visible = false;
-				KsapSbCalendar.fullCalendar('removeEventSource', reserved);
+				KsapSbCalendar.widget.fullCalendar('removeEventSource', reserved);
 			}
 		}
 	}

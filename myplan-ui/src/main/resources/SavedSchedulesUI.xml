@@ -76,7 +76,7 @@
         </property>
         <property name="instructionalMessage">
             <bean parent="Uif-Message"
-                  p:messageText="You have no saved schedules">
+                  p:messageText="You have no pinned schedules">
                 <property name="cssClasses" value="module__empty"/>
             </bean>
         </property>

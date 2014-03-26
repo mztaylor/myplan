@@ -62,8 +62,7 @@
         <property name="items">
             <list>
                 <ref bean="possible_schedules_details"/>
-                <ref bean="possible_schedule_tbd_list"/>
-                <ref bean="possible_schedule_saved_tbd_list"/>
+                <ref bean="schedule_tba_items"/>
                 <ref bean="possible_schedules_calendar"/>
             </list>
         </property>
@@ -79,7 +78,7 @@
                             <bean parent="possible_schedules_empty"
                                   p:messageText="Try turning on &quot;@{buildFilters.getZeroResultsReasons()}&quot; filter(s) and click on Update to get results."
                                   p:render="@{buildFilters.getZeroResultsReasons().size() GT 0}"/>
-
+                            <ref bean="schedule_tba_items"/>
                             <ref bean="possible_schedules_calendar"/>
                         </list>
                     </property>
@@ -215,19 +214,30 @@
         </property>
     </bean>
 
-    <bean id="possible_schedule_tbd_list" parent="KSAP-StackedHorizontalCollectionGroup">
+    <bean id="schedule_tba_items" parent="KSAP-HorizontalBoxGroup">
         <property name="hidden" value="true"/>
+        <property name="header">
+            <bean parent="KSAP-HeaderDiv" p:headerText="Meeting Time(s) To Be Arranged"
+                  p:cssClasses="scheduleBuilder__tbaHeader"/>
+        </property>
+        <property name="cssClasses" value="scheduleBuilder__tba"/>
+        <property name="layoutManager.cssClasses" value="scheduleBuilder__tbaContainer"/>
+        <property name="items">
+            <list>
+                <ref bean="possible_schedule_tba_list"/>
+                <ref bean="saved_schedule_tba_list"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="possible_schedule_tba_list" parent="KSAP-StackedHorizontalCollectionGroup">
+        <property name="render" value="@{possibleScheduleOptions.size() GT 0}"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
         <property name="propertyName" value="possibleScheduleOptions"/>
-        <property name="cssClasses" value="schedulePossible__tba"/>
-        <property name="header">
-            <bean parent="KSAP-HeaderDiv" p:headerText="Meeting Time(s) To Be Arranged"
-                  p:cssClasses="schedulePossible__tbaHeader"/>
-        </property>
         <property name="layoutManager.lineGroupPrototype.render" value="@{#line.tbd}"/>
-        <property name="layoutManager.lineGroupPrototype.id" value="possible-tba-@{#line.uniqueId}"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__tbaItem"/>
+        <property name="layoutManager.lineGroupPrototype.id" value="tba-@{#line.uniqueId}"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="scheduleBuilder__tbaItem"/>
         <property name="layoutManager.lineGroupPrototype.hidden" value="true"/>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
@@ -248,20 +258,26 @@
                     </property>
                 </bean>
                 <bean parent="KSAP-MessageField" p:messageText="@{#index + 1}"
-                      p:cssClasses="schedulePossible__tbaItemIndex"/>
+                      p:cssClasses="scheduleBuilder__tbaItemIndex"/>
             </list>
         </property>
     </bean>
 
-    <bean id="possible_schedule_saved_tbd_list" parent="KSAP-StackedHorizontalCollectionGroup">
-        <property name="hidden" value="true"/>
+    <bean id="saved_schedule_tba_list" parent="KSAP-StackedHorizontalCollectionGroup">
+        <property name="render" value="@{savedSchedules.size() GT 0}"/>
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
         <property name="propertyName" value="savedSchedules"/>
-        <property name="cssClasses" value="schedulePossible__tba"/>
-        <property name="layoutManager.lineGroupPrototype.id" value="saved-tba-@{#line.uniqueId}"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__tbaItem"/>
+        <property name="layoutManager.lineGroupPrototype.id" value="tba-@{#line.uniqueId}"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="scheduleBuilder__tbaItem"/>
         <property name="layoutManager.lineGroupPrototype.hidden" value="true"/>
+        <property name="layoutManager.lineGroupPrototype.dataAttributes">
+            <map>
+                <entry key="source" value="@{#line.event}"/>
+                <entry key="index" value="@{#index + 1}"/>
+                <entry key="saved" value="@{#line.id}"/>
+            </map>
+        </property>
         <property name="items">
             <list>
                 <bean parent="KSAP-SimpleDataField">
@@ -273,8 +289,8 @@
                         </bean>
                     </property>
                 </bean>
-                <bean parent="KSAP-MessageField" p:messageText="@{#index + 1}"
-                      p:cssClasses="schedulePossible__tbaItemIndex"/>
+                <bean parent="KSAP-MessageField" p:messageText="P@{#index + 1}"
+                      p:cssClasses="scheduleBuilder__tbaItemIndex"/>
             </list>
         </property>
     </bean>
@@ -327,7 +343,7 @@
                 <entry key="selectHelper" value="false"/>
                 <entry key="complete" value="
                     function() {
-                        KsapSbCalendar = jQuery.extend(jQuery(this), KsapSbCalendarActions);
+                        KsapSbCalendar.widget = jQuery(this);
                         var element = (typeof firstResult === 'undefined') ? null : firstResult;
                         KsapSbCalendar.initialize(element);
                     }

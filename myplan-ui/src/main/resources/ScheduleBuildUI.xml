@@ -207,7 +207,7 @@
         </property>
     </bean>
 
-    <bean id="sb-popover-content-template" p:id="sb-popover-content-template" parent="Uif-GridGroup" p:hidden="true" p:width="300px">
+    <bean id="sb-popover-content-template" p:id="sb-popover-content-template" parent="Uif-GridGroup" p:hidden="true" p:width="376px">
         <property name="validationMessages"><null/></property>
         <property name="cssClasses" value="schedulePopover"/>
         <property name="header">
@@ -224,18 +224,24 @@
                 </property>
             </bean>
         </property>
-        <property name="layoutManager.style" value="width:300px;"/>
+        <property name="layoutManager.style" value="width:376px;"/>
         <property name="layoutManager.libraryCssClasses"><list/></property>
         <property name="layoutManager.cssClasses" value=""/>
-        <property name="layoutManager.numberOfColumns" value="5"/>
+        <property name="layoutManager.numberOfColumns" value="11"/>
         <property name="layoutManager.renderAlternatingHeaderColumns" value="false"/>
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
         <property name="items">
             <list>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_SECTIONCD__" p:width="32px"/>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGDAY__" p:width="64px"/>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGTIME__" p:width="128px"/>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLMENT__" p:width="60px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_SECTIONCD__" p:width="24px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGDAY__" p:width="72px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGTIME__" p:width="112px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGLOCATION__" p:width="72px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_REGISTRATIONCODE__" p:width="48px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_SUMMERTERM__" p:width="16px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_INSTITUTECD__" p:width="24px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLRESTRICTION__" p:width="16px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLSTATUS__" p:width="48px"/>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLSTATE__" p:width="48px"/>
                 <bean parent="KSAP-VerticalFieldGroup" p:width="16px">
                     <property name="items">
                         <list>
@@ -261,16 +267,6 @@
                     </property>
                 </bean>
             </list>
-        </property>
-        <property name="footer">
-            <bean parent="KSAP-VerticalBoxGroup">
-                <property name="layoutManager.cssClasses" value="schedulePopover__footer"/>
-                <property name="items">
-                    <list>
-                        <bean parent="Uif-Link" p:linkText="View course details" p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=__KSAP_COURSEID__&amp;courseCd=__KSAP_COURSECD__"/>
-                    </list>
-                </property>
-            </bean>
         </property>
     </bean>
 

@@ -1,71 +1,10 @@
-var KsapSbCalendarActions = {
+var KsapSbCalendar = {
     initialize : function (element) {
         this.appendReservedSchedules(jQuery('.scheduleReserved__container').find('.scheduleReserved__item'));
-        this.cssClasses = this.data("selection-classes").split(",");
-        this.limit = parseFloat(this.data("selection-limit"));
-        this.plannedActivities = (this.data("planned-activities") ? this.data("planned-activities") : {});
+        this.cssClasses = this.widget.data("selection-classes").split(",");
+        this.limit = parseFloat(this.widget.data("selection-limit"));
+        this.plannedActivities = (this.widget.data("planned-activities") ? this.widget.data("planned-activities") : {});
         if (element) element.click();
-    },
-
-    isPlanned : function (activityId) {
-        return (typeof this.plannedActivities[activityId] != "undefined");
-    },
-
-    getScheduleEvents : function (uniqueId) {
-        return this.fullCalendar('clientEvents', function(event) {
-            return (event.parentUniqueid === uniqueId);
-        });
-    },
-
-    addPlannedActivity : function(data) {
-        if (!KsapSbCalendar.isPlanned(data.ActivityOfferingId)) {
-            this.plannedActivities[data.ActivityOfferingId] = data.planItemId;
-            jQuery("#action-" + data.RegistrationCode).removeClass("schedulePopover__itemAdd").addClass("schedulePopover__itemDelete").blur();
-        }
-
-        if (data.ItemsToUpdate) {
-            var item = jQuery("#action-" + data.ItemsToUpdate).data();
-            if (!KsapSbCalendar.isPlanned(item.activityId)) {
-                this.plannedActivities[item.activityId] = data.PrimaryPlanItemId;
-                jQuery("#action-" + data.ItemsToUpdate).removeClass("schedulePopover__itemAdd").addClass("schedulePopover__itemDelete");
-            }
-        }
-    },
-
-    removePlannedActivity : function(data) {
-        if (KsapSbCalendar.isPlanned(data.ActivityOfferingId)) {
-            delete this.plannedActivities[data.ActivityOfferingId];
-            jQuery("#action-" + data.RegistrationCode).removeClass("schedulePopover__itemDelete").addClass("schedulePopover__itemAdd").blur();
-        }
-
-        if (data.ItemsToUpdate) {
-            var items = data.ItemsToUpdate.split(',');
-            jQuery.each(items, function (index, value) {
-                var item = jQuery("#action-" + items[index]).data();
-                if (KsapSbCalendar.isPlanned(item.activityId)) {
-                    delete KsapSbCalendar.plannedActivities[item.activityId];
-                    jQuery("#action-" + items[index]).removeClass("schedulePopover__itemDelete").addClass("schedulePopover__itemAdd");
-                }
-            });
-        }
-    },
-
-    togglePlanSection : function(data, event) {
-        var planned = this.plannedActivities.hasOwnProperty(data.activityId);
-
-        var additionalFormData = {
-            viewId: "PlannedCourse-FormView",
-            methodToCall: (planned ? "removeItem" : "addUpdatePlanItem"),
-            courseId: data.courseId,
-            code: data.courseCode,
-            sectionCode: data.sectionCode,
-            registrationCode: data.registrationCode,
-            atpId: readUrlParam('termId'),
-            primary: data.primary
-        };
-
-        if (planned) additionalFormData.planItemId = this.plannedActivities[data.activityId];
-        submitHiddenForm('plan', additionalFormData, false, event);
     },
 
     getCssClass : function (index) {
@@ -86,40 +25,46 @@ var KsapSbCalendarActions = {
     },
 
     showTba : function (id, cssClass) {
-        jQuery("#possible-tba-" + id).addClass(cssClass).show();
+        jQuery("#tba-" + id).addClass(cssClass).show();
         this.toggleTbaSection();
     },
 
     hideTba : function (id, cssClass) {
-        jQuery("#possible-tba-" + id).removeClass(cssClass).hide();
+        jQuery("#tba-" + id).removeClass(cssClass).hide();
         this.toggleTbaSection();
     },
 
     toggleTbaSection : function () {
-        var numTba = jQuery(".schedulePossible__tba .schedulePossible__tbaItem").filter(function() {
+        var numTba = jQuery(".scheduleBuilder__tba .scheduleBuilder__tbaItem").filter(function() {
             return jQuery(this).css('display') != 'none';
         }).length;
 
         if (numTba > 0) {
-            jQuery(".schedulePossible__tba").show();
+            jQuery(".scheduleBuilder__tba").show();
         } else {
-            jQuery(".schedulePossible__tba").hide();
+            jQuery(".scheduleBuilder__tba").hide();
         }
     },
 
     addSchedule : function (source, cssClasses) {
         for (var i = 0; i < source.events.length; i++) {
             var event = jQuery.extend(source.events[i], {className: cssClasses})
-            this.fullCalendar('renderEvent', event);
+            this.widget.fullCalendar('renderEvent', event);
         }
         return source;
     },
 
     removeSchedule : function (source) {
-        this.fullCalendar('removeEvents', function(event) {
+        this.widget.fullCalendar('removeEvents', function(event) {
             return (source.uniqueId === event.parentUniqueid);
         });
         return source;
+    },
+
+    getScheduleEvents : function (uniqueId) {
+        return this.widget.fullCalendar('clientEvents', function(event) {
+            return (event.parentUniqueid === uniqueId);
+        });
     },
 
     toggleCalendarSchedule : function (id, scheduleNumber, target, hasTba, isSaved) {
@@ -131,8 +76,10 @@ var KsapSbCalendarActions = {
             // Possible Schedule is active in calendar
             var cssClass = (target.attr("class").match(/scheduleCalendar\-\-([a-z]*)\b/g) || []).join(" ");
             this.removeSchedule(source);
-            target.removeClass(cssClass);
-            this.addCssClass(cssClass);
+            if (!isSaved) {
+                target.removeClass(cssClass);
+                this.addCssClass(cssClass);
+            }
             this.limit++;
             if (hasTba) this.hideTba(id, cssClass);
         } else {
@@ -148,10 +95,12 @@ var KsapSbCalendarActions = {
                     }
                 }
             }
-            var cssClass = this.getCssClass();
+            var cssClass = isSaved ? "scheduleCalendar--saved" : this.getCssClass();
             this.addSchedule(source, [cssClass]);
-            target.addClass(cssClass);
-            this.removeCssClass(cssClass);
+            if (!isSaved) {
+                target.addClass(cssClass);
+                this.removeCssClass(cssClass);
+            }
             this.limit--;
             if (hasTba) this.showTba(id, cssClass);
         }
@@ -184,45 +133,45 @@ var KsapSbCalendarActions = {
             if (data.savedSchedules[i].recentlyAdded) recentlyAdded = data.savedSchedules[i];
         }
         var possibleSchedule = jQuery("#possible-schedule-" + recentlyAdded.uniqueId);
-        var possibleTba = jQuery("#possible-tba-" + recentlyAdded.uniqueId);
+        var possibleTba = jQuery("#tba-" + recentlyAdded.uniqueId);
         var cssClass = (possibleSchedule.attr("class").match(/scheduleCalendar\-\-([a-z]*)\b/g) || []).join(" ");
         possibleSchedule.removeClass(cssClass).addClass("schedulePossible__option--saved").attr("data-saved", recentlyAdded.id);
         this.addCssClass(cssClass);
         if (possibleTba.length > 0) {
-            possibleTba.removeClass(cssClass).addClass("scheduleCalendar--saved").attr("data-saved", recentlyAdded.id).find(".schedulePossible__tbaItemIndex").text(recentlyAdded.index);
+            possibleTba.removeClass(cssClass).addClass("scheduleCalendar--saved").attr("data-saved", recentlyAdded.id).find(".scheduleBuilder__tbaItemIndex").text(recentlyAdded.index);
         }
         var scheduleEvents = this.getScheduleEvents(recentlyAdded.uniqueId);
         for (var i = 0; i < scheduleEvents.length; i++) {
             scheduleEvents[i].title = recentlyAdded.index;
             scheduleEvents[i].className = ["scheduleCalendar--saved"];
-            this.fullCalendar("updateEvent", scheduleEvents[i]);
+            this.widget.fullCalendar("updateEvent", scheduleEvents[i]);
         }
     },
 
     updateRemovedSavedSchedule : function (data) {
         var possibleSchedule = jQuery('.schedulePossible__option[data-saved=' + data.scheduleIdRemoved + ']');
-        var possibleTba = jQuery('.schedulePossible__tbaItem[data-saved=' + data.scheduleIdRemoved + ']');
+        var tba = jQuery('.scheduleBuilder__tbaItem[data-saved=' + data.scheduleIdRemoved + ']');
         if (possibleSchedule.length > 0) possibleSchedule.removeClass('schedulePossible__option--saved').removeData('saved');
-        if (possibleTba.length > 0) {
-            possibleTba.removeClass('scheduleCalendar--saved').removeData('saved').hide().find(".schedulePossible__tbaItemIndex").text(possibleTba.data("index"));
+        if (tba.length > 0) {
+            tba.removeClass('scheduleCalendar--saved').removeData('saved').hide().find(".scheduleBuilder__tbaItemIndex").text(tba.data("index"));
             this.toggleTbaSection();
         }
         var scheduleEvents = this.getScheduleEvents(data.uniqueIdRemoved);
         if (scheduleEvents.length > 0) {
             this.limit++;
-            this.fullCalendar("removeEvents", function (event) {
+            this.widget.fullCalendar("removeEvents", function (event) {
                 return (event.parentUniqueid === data.uniqueIdRemoved);
             });
         }
         if (data.savedSchedules) {
             for (var i = 0; i < data.savedSchedules.length; i++) {
                 var scheduleEvents = this.getScheduleEvents(data.savedSchedules[i].uniqueId);
-                var possibleTba = jQuery('.schedulePossible__tbaItem[data-saved=' + data.savedSchedules[i].id + ']');
+                var possibleTba = jQuery('.scheduleBuilder__tbaItem[data-saved=' + data.savedSchedules[i].id + ']');
                 for (var n = 0; n < scheduleEvents.length; n++) {
                     scheduleEvents[n].title = data.savedSchedules[i].index;
-                    this.fullCalendar("updateEvent", scheduleEvents[n]);
+                    this.widget.fullCalendar("updateEvent", scheduleEvents[n]);
                 }
-                if (possibleTba.length > 0) possibleTba.find(".schedulePossible__tbaItemIndex").text(data.savedSchedules[i].index);
+                if (possibleTba.length > 0) possibleTba.find(".scheduleBuilder__tbaItemIndex").text(data.savedSchedules[i].index);
             }
         }
     },
@@ -308,7 +257,7 @@ var KsapSbCalendarActions = {
     appendReservedSchedules : function (selection) {
         for (var i = 0; i < selection.length; i++) {
             var source = jQuery(selection[i]).data("source");
-            this.fullCalendar('addEventSource', source);
+            this.widget.fullCalendar('addEventSource', source);
             this.addSchedule(source, ["scheduleReserved__event"]);
         }
     },
@@ -323,29 +272,39 @@ var KsapSbCalendarActions = {
         popoverTemplate = popoverTemplate.replace(/__KSAP_COURSETITLE__/gi, popoverContent.courseTitle);
 
         var popoverHtml = jQuery(popoverTemplate);
-        var activitiesTemplate = popoverHtml.find("table tbody").html();
+        var activitiesTemplate = popoverHtml.find("td:nth-child(4),td:nth-child(5)").addClass("activityDetail").parents("tbody").html();
         popoverHtml.find("table tbody").empty();
 
         for (var i = 0; i < popoverContent.activities.length; i++) {
             var tempActivitiesTemplate = activitiesTemplate;
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_SECTIONCD__/gi, popoverContent.activities[i].sectionCd);
-            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ENROLLMENT__/gi, popoverContent.activities[i].enrollStatus);
-            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ACTIVITYID__/gi, popoverContent.activities[i].activityId);
-            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_REGISTRATIONCODE__/gi, popoverContent.activities[i].registrationCode);
-            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_PRIMARY__/gi, popoverContent.activities[i].primary);
-            var tempMeetingDay = "", tempMeetingTime = "";
+            var tempMeetingDay = "", tempMeetingTime = "", tempMeetingLocation ="";
             for (var n = 0; n < popoverContent.activities[i].meetings.length; n++) {
                 if (n != 0) {
                     tempMeetingDay += "<br />";
                     tempMeetingTime += "<br />";
+                    tempMeetingLocation += "<br />";
                 }
                 tempMeetingDay += popoverContent.activities[i].meetings[n].meetingDay;
                 tempMeetingTime += popoverContent.activities[i].meetings[n].meetingTime;
+                if (popoverContent.activities[i].meetings[n].buildingUrl !== "") tempMeetingLocation += '<a href="' + popoverContent.activities[i].meetings[n].buildingUrl + '" target="_blank">'
+                tempMeetingLocation += popoverContent.activities[i].meetings[n].building + " " + popoverContent.activities[i].meetings[n].location;
+                if (popoverContent.activities[i].meetings[n].buildingUrl !== "") tempMeetingLocation += '</a>';
             }
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_MEETINGDAY__/gi, tempMeetingDay);
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_MEETINGTIME__/gi, tempMeetingTime);
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_MEETINGLOCATION__/gi, tempMeetingLocation);
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_REGISTRATIONCODE__/gi, popoverContent.activities[i].registrationCode);
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_SUMMERTERM__/gi, "");//popoverContent.activities[i].instituteCd);
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_INSTITUTECD__/gi, popoverContent.activities[i].instituteCd);
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ENROLLRESTRICTION__/gi, (popoverContent.activities[i].enrollRestriction ? "K" : ""));
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ENROLLSTATUS__/gi, popoverContent.activities[i].enrollStatus);
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ENROLLSTATE__/gi, popoverContent.activities[i].enrollState);
 
-            var planned = this.plannedActivities.hasOwnProperty(popoverContent.activities[i].activityId);
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ACTIVITYID__/gi, popoverContent.activities[i].activityId);
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_PRIMARY__/gi, popoverContent.activities[i].primary);
+
+            var planned = this.isPlanned(popoverContent.activities[i].activityId);
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_STATUSCLASS__/gi, (planned ? "schedulePopover__itemDelete" : "schedulePopover__itemAdd"));
 
             popoverHtml.find("table tbody").append(tempActivitiesTemplate);
@@ -369,7 +328,7 @@ var KsapSbCalendarActions = {
                 popupOptions.align = popupOptions.tail.align = "left";
                 break;
             case 5:
-                popupOptions.align = popupOptions.tail.align = (this.fullCalendar('option', 'weekends')) ?  "center" : "right";
+                popupOptions.align = popupOptions.tail.align = (this.widget.fullCalendar('option', 'weekends')) ?  "center" : "right";
                 break;
             case 6:
                 popupOptions.align = popupOptions.tail.align = "right";
@@ -390,8 +349,14 @@ var KsapSbCalendarActions = {
         });
     },
 
+    closePopover : function () {
+        this.clearActiveEvents();
+        fnCloseAllPopups();
+        jQuery("body").off("click");
+    },
+
     highlightActiveEvents : function (calEvent) {
-        var courseEvents = this.fullCalendar('clientEvents', function(event) {
+        var courseEvents = this.widget.fullCalendar('clientEvents', function(event) {
             if (typeof event.popoverContent === "undefined") return false;
             return (calEvent.popoverContent.courseId === event.popoverContent.courseId &&
                     calEvent.popoverContent.courseCd === event.popoverContent.courseCd &&
@@ -404,14 +369,63 @@ var KsapSbCalendarActions = {
     },
 
     clearActiveEvents : function () {
-        for (var i = 0; i < this.fullCalendar('clientEvents').length; i++) {
-            jQuery("#possible_schedule_event" + this.fullCalendar('clientEvents')[i]._id + ".fc-event").removeClass("scheduleCalendar--highlight");
+        for (var i = 0; i < this.widget.fullCalendar('clientEvents').length; i++) {
+            jQuery("#possible_schedule_event" + this.widget.fullCalendar('clientEvents')[i]._id + ".fc-event").removeClass("scheduleCalendar--highlight");
         }
     },
 
-    closePopover : function () {
-        this.clearActiveEvents();
-        fnCloseAllPopups();
-        jQuery("body").off("click");
+    isPlanned : function (activityId) {
+        return (typeof this.plannedActivities[activityId] != "undefined");
+    },
+
+    addPlannedActivity : function(data) {
+        if (!KsapSbCalendar.isPlanned(data.ActivityOfferingId)) {
+            this.plannedActivities[data.ActivityOfferingId] = data.planItemId;
+            jQuery("#action-" + data.RegistrationCode).removeClass("schedulePopover__itemAdd").addClass("schedulePopover__itemDelete").blur();
+        }
+
+        if (data.ItemsToUpdate) {
+            var item = jQuery("#action-" + data.ItemsToUpdate).data();
+            if (!KsapSbCalendar.isPlanned(item.activityId)) {
+                this.plannedActivities[item.activityId] = data.PrimaryPlanItemId;
+                jQuery("#action-" + data.ItemsToUpdate).removeClass("schedulePopover__itemAdd").addClass("schedulePopover__itemDelete");
+            }
+        }
+    },
+
+    removePlannedActivity : function(data) {
+        if (KsapSbCalendar.isPlanned(data.ActivityOfferingId)) {
+            delete this.plannedActivities[data.ActivityOfferingId];
+            jQuery("#action-" + data.RegistrationCode).removeClass("schedulePopover__itemDelete").addClass("schedulePopover__itemAdd").blur();
+        }
+
+        if (data.ItemsToUpdate) {
+            var items = data.ItemsToUpdate.split(',');
+            jQuery.each(items, function (index, value) {
+                var item = jQuery("#action-" + items[index]).data();
+                if (KsapSbCalendar.isPlanned(item.activityId)) {
+                    delete KsapSbCalendar.plannedActivities[item.activityId];
+                    jQuery("#action-" + items[index]).removeClass("schedulePopover__itemDelete").addClass("schedulePopover__itemAdd");
+                }
+            });
+        }
+    },
+
+    togglePlanSection : function(data, event) {
+        var planned = this.plannedActivities.hasOwnProperty(data.activityId);
+
+        var additionalFormData = {
+            viewId: "PlannedCourse-FormView",
+            methodToCall: (planned ? "removeItem" : "addUpdatePlanItem"),
+            courseId: data.courseId,
+            code: data.courseCode,
+            sectionCode: data.sectionCode,
+            registrationCode: data.registrationCode,
+            atpId: readUrlParam('termId'),
+            primary: data.primary
+        };
+
+        if (planned) additionalFormData.planItemId = this.plannedActivities[data.activityId];
+        submitHiddenForm('plan', additionalFormData, false, event);
     }
 };
