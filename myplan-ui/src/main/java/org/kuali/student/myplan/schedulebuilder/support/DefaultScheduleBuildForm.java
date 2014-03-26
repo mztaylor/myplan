@@ -111,6 +111,10 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
             }
         }
         savedSchedules = newSavedSchedules;
+        for (PossibleScheduleOption possibleScheduleOption : getSavedSchedules()) {
+            getScheduleBuildHelper().buildPossibleScheduleEvents(possibleScheduleOption, getTerm());
+        }
+
     }
 
     /*Defaulting to 8:00Am*/
@@ -161,7 +165,8 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
                             int s2 = o2.getShuffle();
                             return s1 < s2 ? -1 : s1 == s2 ? 0 : 1;
                         }
-                    });
+                    }
+            );
 
             Set<PossibleScheduleOption> current = new HashSet<PossibleScheduleOption>();
             int nextn = getPossibleScheduleOptions().size();
