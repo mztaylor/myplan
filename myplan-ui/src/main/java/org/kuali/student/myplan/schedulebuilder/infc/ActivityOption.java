@@ -295,4 +295,11 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
      */
     String getInstituteCode();
 
+    /**
+     * Holds Enrollment status like Closed, Open, --
+     *
+     * @return Enrollment status
+     */
+    String getEnrollStatus();
+
 }
