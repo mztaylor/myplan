@@ -8,6 +8,7 @@ import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.myplan.utils.CalendarUtil;
 import org.springframework.util.StringUtils;
 
@@ -562,7 +563,13 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
      */
     private void buildCoursePopoverEvents(List<ActivityOption> activityOptions, JsonGenerator jEvents) {
         for (ActivityOption activityOption : activityOptions) {
-            jEvents.writeStartObject().write("sectionCd", activityOption.getActivityCode()).write("primary", activityOption.isPrimary()).write("activityId", activityOption.getActivityOfferingId()).write("registrationCode", activityOption.getRegistrationCode()).write("enrollRestriction",activityOption.isEnrollmentRestriction()).write("enrollStatus", String.format("%s/%s", activityOption.getFilledSeats(), activityOption.getTotalSeats())).write("enrollState", activityOption.isClosed() ? "Closed" : "Open").writeStartArray("meetings");
+            String instituteCd = "";
+            if (ScheduleBuilderConstants.PCE_INSTITUTE_CODE.equals(activityOption.getInstituteCode())) {
+                instituteCd = ScheduleBuilderConstants.PCE_INSTITUTE_NAME;
+            } else if (ScheduleBuilderConstants.ROTC_INSTITUTE_CODE.equals(activityOption.getInstituteCode())) {
+                instituteCd = ScheduleBuilderConstants.ROTC_INSTITUTE_NAME;
+            }
+            jEvents.writeStartObject().write("sectionCd", activityOption.getActivityCode()).write("primary", activityOption.isPrimary()).write("activityId", activityOption.getActivityOfferingId()).write("registrationCode", activityOption.getRegistrationCode()).write("instituteCd", instituteCd).write("enrollRestriction", activityOption.isEnrollmentRestriction()).write("enrollStatus", String.format("%s/%s", activityOption.getFilledSeats(), activityOption.getTotalSeats())).write("enrollState", activityOption.isClosed() ? "Closed" : "Open").writeStartArray("meetings");
             for (ClassMeetingTime meetingTime : activityOption.getClassMeetingTimes()) {
                 jEvents.writeStartObject().write("meetingDay", org.apache.commons.lang.StringUtils.join(meetingTime.getDays(), "")).write("meetingTime", meetingTime.getTimes()).write("location", meetingTime.getLocation());
                 String campus = meetingTime.getCampus();
