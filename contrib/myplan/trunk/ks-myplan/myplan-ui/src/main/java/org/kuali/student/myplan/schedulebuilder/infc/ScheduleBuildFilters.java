@@ -30,6 +30,13 @@ public interface ScheduleBuildFilters {
      */
     boolean isShowOverlapped();
 
+    /**
+     * Determine if the option has been selected for inclusion in other institute possible schedules.
+     *
+     * @return True if the option has been selected, false if not.
+     */
+    boolean isShowOtherInstitutes();
+
 
     /**
      * Populated when no possible schedule results are returned because of above filters.

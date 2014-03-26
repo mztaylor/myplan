@@ -127,6 +127,9 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     @XmlAttribute
     private List<String> sameVariableContentAs;
 
+    @XmlAttribute
+    private String instituteCode;
+
     public ActivityOptionInfo() {
     }
 
@@ -161,6 +164,7 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         parentActivityId = copy.getParentActivityId();
         minCredits = copy.getMinCredits();
         maxCredits = copy.getMaxCredits();
+        instituteCode = copy.getInstituteCode();
         List<String> copyNotes = copy.getNotes();
         notes = copyNotes == null ? null : new ArrayList<String>(copyNotes);
         setSecondaryOptions(copy.getSecondaryOptions());
@@ -551,6 +555,15 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 
     public void setSameVariableContentAs(List<String> sameVariableContentAs) {
         this.sameVariableContentAs = sameVariableContentAs;
+    }
+
+    @Override
+    public String getInstituteCode() {
+        return instituteCode;
+    }
+
+    public void setInstituteCode(String instituteCode) {
+        this.instituteCode = instituteCode;
     }
 
     @Override

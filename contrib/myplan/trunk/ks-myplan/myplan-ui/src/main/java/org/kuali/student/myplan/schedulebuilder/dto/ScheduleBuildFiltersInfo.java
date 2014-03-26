@@ -12,6 +12,7 @@ public class ScheduleBuildFiltersInfo implements ScheduleBuildFilters {
     private boolean showClosed;
     private boolean showRestricted;
     private boolean showOverlapped;
+    private boolean showOtherInstitutes;
     private List<String> zeroResultsReasons;
 
 
@@ -40,6 +41,15 @@ public class ScheduleBuildFiltersInfo implements ScheduleBuildFilters {
 
     public void setShowOverlapped(boolean showOverlapped) {
         this.showOverlapped = showOverlapped;
+    }
+
+    @Override
+    public boolean isShowOtherInstitutes() {
+        return showOtherInstitutes;
+    }
+
+    public void setShowOtherInstitutes(boolean showOtherInstitutes) {
+        this.showOtherInstitutes = showOtherInstitutes;
     }
 
     @Override

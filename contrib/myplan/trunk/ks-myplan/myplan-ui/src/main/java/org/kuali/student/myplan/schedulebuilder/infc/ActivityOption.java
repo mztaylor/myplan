@@ -288,4 +288,11 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
      */
     List<String> getSameVariableContentAs();
 
+    /**
+     * Institute code for this specific activity
+     *
+     * @return institute code
+     */
+    String getInstituteCode();
+
 }
