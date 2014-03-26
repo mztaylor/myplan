@@ -63,6 +63,7 @@
             <list>
                 <ref bean="possible_schedules_details"/>
                 <ref bean="possible_schedule_tbd_list"/>
+                <ref bean="possible_schedule_saved_tbd_list"/>
                 <ref bean="possible_schedules_calendar"/>
             </list>
         </property>
@@ -235,6 +236,32 @@
                 <entry key="saved" value="@{#line.id}"/>
             </map>
         </property>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-SimpleDataField">
+                    <property name="propertyName" value="thisSchedule"/>
+                    <property name="escapeHtmlInPropertyValue" value="false"/>
+                    <property name="propertyEditor">
+                        <bean parent="possible_schedule_editor">
+                            <property name="tbdSchedule" value="true"/>
+                        </bean>
+                    </property>
+                </bean>
+                <bean parent="KSAP-MessageField" p:messageText="@{#index + 1}"
+                      p:cssClasses="schedulePossible__tbaItemIndex"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="possible_schedule_saved_tbd_list" parent="KSAP-StackedHorizontalCollectionGroup">
+        <property name="hidden" value="true"/>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
+        <property name="propertyName" value="savedSchedules"/>
+        <property name="cssClasses" value="schedulePossible__tba"/>
+        <property name="layoutManager.lineGroupPrototype.id" value="saved-tba-@{#line.uniqueId}"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__tbaItem"/>
+        <property name="layoutManager.lineGroupPrototype.hidden" value="true"/>
         <property name="items">
             <list>
                 <bean parent="KSAP-SimpleDataField">
