@@ -167,6 +167,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
 
     public static final String ENROLL_STATUS_KEY = "status";
     public static final String ENROLL_STATUS_OPEN_KEY = "open";
+    public static final String ENROLL_STATUS_CLOSED_KEY = "closed";
     public static final String ENROLL_MAX_KEY = "enrollMaximum";
     public static final String ENROLL_COUNT_KEY = "enrollCount";
     public static final String ENROLL_ESTIMATE_KEY = "enrollEstimate";

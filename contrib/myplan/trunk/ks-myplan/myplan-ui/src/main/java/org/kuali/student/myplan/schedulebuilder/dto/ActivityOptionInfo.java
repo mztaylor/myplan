@@ -130,6 +130,9 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     @XmlAttribute
     private String instituteCode;
 
+    @XmlAttribute
+    private String enrollStatus;
+
     public ActivityOptionInfo() {
     }
 
@@ -165,6 +168,7 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         minCredits = copy.getMinCredits();
         maxCredits = copy.getMaxCredits();
         instituteCode = copy.getInstituteCode();
+        enrollStatus = copy.getEnrollStatus();
         List<String> copyNotes = copy.getNotes();
         notes = copyNotes == null ? null : new ArrayList<String>(copyNotes);
         setSecondaryOptions(copy.getSecondaryOptions());
@@ -564,6 +568,15 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 
     public void setInstituteCode(String instituteCode) {
         this.instituteCode = instituteCode;
+    }
+
+    @Override
+    public String getEnrollStatus() {
+        return enrollStatus;
+    }
+
+    public void setEnrollStatus(String enrollStatus) {
+        this.enrollStatus = enrollStatus;
     }
 
     @Override
