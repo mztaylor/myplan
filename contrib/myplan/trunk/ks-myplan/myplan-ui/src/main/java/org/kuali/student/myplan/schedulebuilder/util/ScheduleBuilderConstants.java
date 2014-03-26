@@ -27,7 +27,7 @@ public class ScheduleBuilderConstants {
     public static final String PINNED_SCHEDULES_PASSIVE_ERROR = "passive_error";
     public static final String PINNED_SCHEDULES_MODAL_ERROR = "modal_error";
 
-    public static final String SEATTLE_INSTITUTE_CODE = "0";
+    public static final String REGULAR_INSTITUTE_CODE = "0";
     public static final String PCE_INSTITUTE_CODE = "95";
     public static final String ROTC_INSTITUTE_CODE = "88";
 
