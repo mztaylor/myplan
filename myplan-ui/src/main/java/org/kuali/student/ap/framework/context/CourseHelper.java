@@ -84,5 +84,7 @@ public interface CourseHelper {
 
     public CourseInfo getCourseInfoByIdAndCd(String courseId, String courseCd);
 
+    public CourseInfo getCourseInfoByIdTermAndCd(String courseId, String courseCd, String termId);
+
     public String getSyllabusInfoForActivityId(String activityId);
 }

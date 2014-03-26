@@ -151,6 +151,9 @@ public class DefaultCourseHelper implements CourseHelper {
     }
 
     @Override
+    public CourseInfo getCourseInfoByIdTermAndCd(String courseId, String courseCd, String termId){return null;}
+
+    @Override
     public String getSyllabusInfoForActivityId(String activityId) {
         return null;
     }
