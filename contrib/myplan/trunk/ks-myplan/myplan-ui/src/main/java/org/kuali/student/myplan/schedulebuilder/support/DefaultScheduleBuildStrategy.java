@@ -20,6 +20,7 @@ import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.*;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
@@ -369,7 +370,8 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 } catch (ParseException e) {
                     throw new IllegalArgumentException(
                             "Invalid session start date "
-                                    + sessionStartDate);
+                                    + sessionStartDate
+                    );
                 }
             }
             if ("SessionEndDate".equalsIgnoreCase(key)) {
@@ -378,7 +380,8 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 } catch (ParseException e) {
                     throw new IllegalArgumentException(
                             "Invalid session start date "
-                                    + sessionEndDate);
+                                    + sessionEndDate
+                    );
                 }
             }
 
@@ -408,7 +411,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 List<String> sectionIdsList = new LinkedList<String>();
                 String[] sectionIds = value.split(",");
                 for (String sectionId : sectionIds) {
-                     sectionIdsList.add(sectionId);
+                    sectionIdsList.add(sectionId);
                 }
                 activityOption.setSameVariableContentAs(sectionIdsList);
             }
@@ -504,7 +507,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         int courseIndex = -1;
         for (String courseId : courseIds) {
             courseIndex++;
-            Course c = courseHelper.getCourseInfoByIdAndCd(courseId, courseIdsTOCourseCds.get(courseId));
+            Course c = courseHelper.getCourseInfoByIdTermAndCd(courseId, courseIdsTOCourseCds.get(courseId), AtpHelper.getCurrentAtpId());
             if (c == null)
                 continue;
             CourseOptionInfo courseOption = new CourseOptionInfo();
@@ -872,7 +875,8 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                         .getTypeKey()))
                     throw new PermissionDeniedException(
                             "Not a viable learning plan for building a schedule "
-                                    + requestedLearningPlanId);
+                                    + requestedLearningPlanId
+                    );
                 return rv;
             } catch (DoesNotExistException e) {
                 throw new IllegalArgumentException("Learning plan "
@@ -905,12 +909,14 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 throw new IllegalArgumentException(
                         "Invalid student ID or learning plan type " + studentId
                                 + " " + PlanConstants.LEARNING_PLAN_TYPE_PLAN,
-                        e);
+                        e
+                );
             } catch (MissingParameterException e) {
                 throw new IllegalArgumentException(
                         "Invalid student ID or learning plan type " + studentId
                                 + " " + PlanConstants.LEARNING_PLAN_TYPE_PLAN,
-                        e);
+                        e
+                );
             } catch (OperationFailedException e) {
                 throw new IllegalStateException("LP lookup error", e);
             }

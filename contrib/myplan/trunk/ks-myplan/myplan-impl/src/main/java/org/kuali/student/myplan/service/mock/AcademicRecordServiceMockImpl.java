@@ -48,10 +48,10 @@ public class AcademicRecordServiceMockImpl implements AcademicRecordService {
             String str[] = personId.split(":");
             StudentCourseRecordInfo studentCourseRecordInfo = new StudentCourseRecordInfo();
             studentCourseRecordInfo.setTermName(termId);
-            studentCourseRecordInfo.setId(UUIDHelper.genStringUUID());
             studentCourseRecordInfo.setActivityCode(str[0]);
             studentCourseRecordInfo.setCourseCode(str[1]);
             studentCourseRecordInfo.setPersonId(str[2]);
+            studentCourseRecordInfo.setId(str[3]);
 
             List<StudentCourseRecordInfo> studentCourseRecordInfos = getStudentRecords().get(str[2]);
             if (CollectionUtils.isEmpty(studentCourseRecordInfos)) {
