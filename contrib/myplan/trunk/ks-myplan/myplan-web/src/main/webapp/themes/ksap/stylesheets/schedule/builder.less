@@ -17,3 +17,47 @@
     border-top: none;
     margin: 0 !important;
 }
+
+.scheduleBuilder__tba {
+    border: @baseBorderStyle;
+    margin: 0 !important;
+
+    .scheduleBuilder__tbaHeader {
+        text-transform: uppercase;
+        font-size: @fontSizeMini;
+        background: @baseBorderColor;
+        padding: @paddingMini @paddingDefault;
+    }
+
+    .scheduleBuilder__tbaContainer {
+        padding: 2px 2px 2px 0;
+        overflow: auto;
+
+        .uif-stackedCollectionGroup.uif-boxLayoutHorizontalItem,
+        .uif-stackedCollectionLayout {
+            margin: 0;
+            padding: 0;
+            display: inline;
+        }
+    }
+
+    .scheduleBuilder__tbaItem {
+        float: left;
+        position: relative;
+        color: @white;
+        line-height: @fontSizeLarge;
+        width: 167px;
+        padding: @paddingDefault;
+        margin-left: 2px;
+        /* background: #5a5a5a; */
+        .border-radius(0 @baseBorderRadius @baseBorderRadius 0);
+
+        .scheduleBuilder__tbaItemIndex {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            margin: 0;
+            font-size: @fontSizeExtraLarge;
+        }
+    }
+}
