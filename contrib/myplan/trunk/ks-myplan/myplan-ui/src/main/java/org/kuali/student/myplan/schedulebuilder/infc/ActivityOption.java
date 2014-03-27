@@ -271,7 +271,7 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
     ActivityOption getActivity();
 
     /**
-     * determin if sections for this activity (primary or secondary)
+     * determine if sections for this activity (primary or secondary)
      * can have variable content; used to decide if it can be coalesced
      * with other sections
      *
@@ -280,8 +280,8 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
     boolean isCourseHasVariableContent();
 
     /**
-     * get list of registrations codes for other sections with the same content
-     * will be empty if  isCourseHasVariableContent() is false or if no other
+     * get list of registrations codes for other sections with the same content.
+     * will be empty if isCourseHasVariableContent() is false or if no other
      * such sections exist.
      *
      * @return list of strings that are section registration codes
