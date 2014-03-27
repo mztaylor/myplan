@@ -89,9 +89,9 @@ var KsapSbCalendar = {
                 if (!source.events[i].tbd) {
                     source.events[i].title = (!isSaved) ? scheduleNumber.toString() : "P" + scheduleNumber.toString();
                     if (typeof source.events[i].start === "number") {
-                        source.events[i].start = new Date((source.events[i].start + scheduleNumber) * 1000).toString();
+                        source.events[i].start = new Date((source.events[i].start + ((!isSaved) ? scheduleNumber : 30 + scheduleNumber)) * 1000).toString();
                     } else {
-                        source.events[i].start = new Date(source.events[i].start.setSeconds(scheduleNumber)).toString();
+                        source.events[i].start = new Date(source.events[i].start.setSeconds((!isSaved) ? scheduleNumber : 30 + scheduleNumber)).toString();
                     }
                 }
             }
@@ -279,17 +279,21 @@ var KsapSbCalendar = {
             var tempActivitiesTemplate = activitiesTemplate;
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_SECTIONCD__/gi, popoverContent.activities[i].sectionCd);
             var tempMeetingDay = "", tempMeetingTime = "", tempMeetingLocation ="";
-            for (var n = 0; n < popoverContent.activities[i].meetings.length; n++) {
-                if (n != 0) {
-                    tempMeetingDay += "<br />";
-                    tempMeetingTime += "<br />";
-                    tempMeetingLocation += "<br />";
+            if (popoverContent.activities[i].meetings.length === 0) {
+                tempMeetingTime = "To be arranged";
+            } else {
+                for (var n = 0; n < popoverContent.activities[i].meetings.length; n++) {
+                    if (n != 0) {
+                        tempMeetingDay += "<br />";
+                        tempMeetingTime += "<br />";
+                        tempMeetingLocation += "<br />";
+                    }
+                    tempMeetingDay += popoverContent.activities[i].meetings[n].meetingDay;
+                    tempMeetingTime += popoverContent.activities[i].meetings[n].meetingTime;
+                    if (popoverContent.activities[i].meetings[n].buildingUrl !== "") tempMeetingLocation += '<a href="' + popoverContent.activities[i].meetings[n].buildingUrl + '" target="_blank">'
+                    tempMeetingLocation += popoverContent.activities[i].meetings[n].building + " " + popoverContent.activities[i].meetings[n].location;
+                    if (popoverContent.activities[i].meetings[n].buildingUrl !== "") tempMeetingLocation += '</a>';
                 }
-                tempMeetingDay += popoverContent.activities[i].meetings[n].meetingDay;
-                tempMeetingTime += popoverContent.activities[i].meetings[n].meetingTime;
-                if (popoverContent.activities[i].meetings[n].buildingUrl !== "") tempMeetingLocation += '<a href="' + popoverContent.activities[i].meetings[n].buildingUrl + '" target="_blank">'
-                tempMeetingLocation += popoverContent.activities[i].meetings[n].building + " " + popoverContent.activities[i].meetings[n].location;
-                if (popoverContent.activities[i].meetings[n].buildingUrl !== "") tempMeetingLocation += '</a>';
             }
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_MEETINGDAY__/gi, tempMeetingDay);
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_MEETINGTIME__/gi, tempMeetingTime);
@@ -317,29 +321,55 @@ var KsapSbCalendar = {
         stopEvent(event);
         this.closePopover();
         var popupElement = (event.currentTarget) ? jQuery(event.currentTarget) : jQuery(event.srcElement);
+        var popupHtml = "";
+        if (jQuery.isArray(calEvent)) {
+            for (var i = 0; i < calEvent.length; i++) {
+                popupHtml += this.getPopoverHtml(calEvent[i].popoverContent);
+            }
+        } else {
+            popupHtml = this.getPopoverHtml(calEvent.popoverContent);
+            this.highlightActiveEvents(calEvent);
+        }
         var popupOptions = {
-            innerHtml: this.getPopoverHtml(calEvent.popoverContent) + '<img src="' + getConfigParam("ksapImageLocation") + 'icons/close.png" class="popover__close"/>',
+            innerHtml: popupHtml + '<img src="' + getConfigParam("ksapImageLocation") + 'icons/close.png" class="popover__close"/>',
             position: "top",
             align: "center",
             tail: {align: "center"}
         };
-        switch (calEvent.start.getDay()) {
-            case 1:
-                popupOptions.align = popupOptions.tail.align = "left";
-                break;
-            case 5:
-                popupOptions.align = popupOptions.tail.align = (this.widget.fullCalendar('option', 'weekends')) ?  "center" : "right";
-                break;
-            case 6:
-                popupOptions.align = popupOptions.tail.align = "right";
-                break;
+        if (typeof calEvent.start !== "undefined") {
+            switch (calEvent.start.getDay()) {
+                case 1:
+                    popupOptions.align = popupOptions.tail.align = "left";
+                    break;
+                case 5:
+                    popupOptions.align = popupOptions.tail.align = (this.widget.fullCalendar('option', 'weekends')) ? "center" : "right";
+                    break;
+                case 6:
+                    popupOptions.align = popupOptions.tail.align = "right";
+                    break;
+            }
+        } else {
+            popupOptions.position = "bottom";
+            var tba = popupElement.parents(".scheduleBuilder__tba").find(".scheduleBuilder__tbaItem").filter(function() {
+                return jQuery(this).css('display') != 'none';
+            });
+            var index;
+            for (var i = 0; i < tba.length; i++) {
+                if (jQuery(tba[i])[0] == popupElement[0]) { index = i; break; }
+            }
+            switch (index) {
+                case 0:
+                    popupOptions.align = popupOptions.tail.align = "left";
+                    break;
+                case 4:
+                    popupOptions.align = popupOptions.tail.align = "right";
+                    break;
+            }
         }
         var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
         if (!popupElement.HasPopOver()) popupElement.CreatePopOver({manageMouseEvents: false});
         popupElement.ShowPopOver(popupSettings, false);
         popupElement.FreezePopOver();
-
-        this.highlightActiveEvents(calEvent);
 
         jQuery("body").on("click", function(event) {
             var target = (event.target) ? jQuery(event.target): jQuery(event.srcElement);
