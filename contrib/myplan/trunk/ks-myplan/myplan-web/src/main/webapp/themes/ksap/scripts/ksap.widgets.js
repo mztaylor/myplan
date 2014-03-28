@@ -755,8 +755,8 @@ function formatTimeString(date) {
     var meridiem = " AM"
 
     // convert to 12-hour time format
-    if (hours > 12) {
-        hours = hours - 12
+    if (hours >= 12) {
+        if (hours !== 12) hours = hours - 12;
         meridiem = ' PM'
     } else if (hours === 0) {
         hours = 12
