@@ -664,6 +664,16 @@ public class ScheduleBuilder implements Serializable {
         return hasMore;
     }
 
+    /**
+     * Get a PossibleScheduleOption (maybe we should rename that class?)
+     * representing the class(es) the user is currently registered for
+     * Currently implemented only in UwScheduleBuilder
+     *
+     * @return
+     */
+    public PossibleScheduleOption getRegistered() {
+        return null;
+    }
 
     public CourseHelper getCourseHelper() {
         if (courseHelper == null) {
