@@ -10,8 +10,10 @@ public class ScheduleBuilderConstants {
 
     public static final String LEARNING_PLAN_KEY = "learningPlanId";
 
-    public static final String INVALID_SAVED_SCHEDULE = "myplan.text.error.scheduleBuilder.invalid.course";
-    public static final String INVALID_SAVED_SCHEDULE_ACTIVITY = "myplan.text.error.scheduleBuilder.invalid.activities";
+    public static final String INVALID_PINNED_SCHEDULE = "myplan.text.error.scheduleBuilder.invalid.pinned.schedule";
+    public static final String VALID_PINNED_SCHEDULE_WITHDRAWN = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.withdrawn";
+    public static final String VALID_PINNED_SCHEDULE_TIME_CHANGED = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.time.change";
+    public static final String VALID_PINNED_SCHEDULE_RESERVED_CONFLICT = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.reserved.conflict";
     public static final String CLOSED_FILTER = "CLOSED";
     public static final String USER_SELECTED_FILTER = "USER_SELECTED";
     public static final String RESTRICTION_FILTER = "RESTRICTION";
@@ -26,6 +28,11 @@ public class ScheduleBuilderConstants {
 
     public static final String PINNED_SCHEDULES_PASSIVE_ERROR = "passive_error";
     public static final String PINNED_SCHEDULES_MODAL_ERROR = "modal_error";
+
+    public static final String PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN = "Withdrawn";
+    public static final String PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED = "Meeting_Time_Changed";
+    public static final String PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED = "Conflicts_Reserved_Time";
+    public static final String PINNED_SCHEDULES_ERROR_REASON_NO_SECONDARIES = "Secondaries_Unavailable";
 
     public static final String REGULAR_INSTITUTE_CODE = "0";
     public static final String PCE_INSTITUTE_CODE = "95";

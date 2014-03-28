@@ -71,7 +71,6 @@
             <map>
                 <entry key="saved" value="@{#line.id}"/>
                 <entry key="source" value="@{#line.event}"/>
-                <entry key="errorMessage" value="@{#line.possibleErrorMessage}"/>
             </map>
         </property>
         <property name="instructionalMessage">
@@ -84,7 +83,7 @@
         <property name="items">
             <list>
                 <bean parent="KSAP-MessageField" p:messageText="P@{#index + 1}"
-                      p:cssClasses="@{#line.possibleErrorType NE null ? #line.possibleErrorType EQ 'passive_error' ? 'alert alert-info' : 'alert alert-error' : ''}"/>
+                      p:cssClasses="@{#line.possibleErrors.getErrorType() NE null ? #line.possibleErrors.getErrorType() EQ 'passive_error' ? 'alert alert-info' : 'alert alert-error' : ''}"/>
                 <bean parent="KSAP-SimpleDataField">
                     <property name="propertyName" value="schedule"/>
                     <property name="escapeHtmlInPropertyValue" value="false"/>

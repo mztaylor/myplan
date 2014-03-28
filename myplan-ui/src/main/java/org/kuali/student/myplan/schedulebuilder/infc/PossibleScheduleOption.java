@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.schedulebuilder.infc;
 
+import org.kuali.student.myplan.schedulebuilder.util.PossibleScheduleErrorsInfo;
 import org.kuali.student.r2.common.infc.HasId;
 import org.kuali.student.r2.common.infc.RichText;
 
@@ -97,18 +98,12 @@ public interface PossibleScheduleOption extends HasId, ScheduleBuildOption {
      */
     boolean isTbd();
 
-    /**
-     * If a saved possible schedule has any error this string denoted specific error type.
-     *
-     * @return constant string which denotes the error type
-     */
-    String getPossibleErrorType();
 
     /**
-     * If a possible error type exists then possible error messages are populated for display purpose
+     * If possible schedule activity options have errors then they are captured in here.
      *
-     * @return Error message needs to be displayed
+     * @return PossibleScheduleErrors object
      */
-    String getPossibleErrorMessage();
+    PossibleScheduleErrors getPossibleErrors();
 
 }

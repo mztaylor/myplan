@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateTimeComparator;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.enrollment.acal.infc.Term;
@@ -10,11 +11,13 @@ import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.myplan.utils.CalendarUtil;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.json.*;
 import javax.json.stream.JsonGenerator;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,7 +32,21 @@ import java.util.*;
 
 public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
 
+    private final Logger logger = Logger.getLogger(DefaultScheduleBuildHelper.class);
+
     private CalendarUtil calendarUtil;
+
+    private Properties properties;
+
+    public DefaultScheduleBuildHelper() {
+        properties = new Properties();
+        InputStream file = getClass().getResourceAsStream(PlanConstants.PROPERTIES_FILE_PATH);
+        try {
+            properties.load(file);
+        } catch (Exception e) {
+            logger.error("Could not find the properties file" + e);
+        }
+    }
 
     // There are 288 5-minute segments in a 24-hour day, which can be represented
     // in 5 long's (64 bits * 5 = 320 bits), so the 5-minute segments a class meets
@@ -308,7 +325,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
         jPso.writeStartObject();
         jPso.write("id", rt.getId()).write("uniqueId", rt.getUniqueId()).write("termId", term.getId()).write("daysTimes", rt.getDaysAndTimes()).write("startDate", ddf.format(rt.getStartDate())).write("untilDate", ddf.format(rt.getUntilDate()));
         jPso.writeStartArray("events");
-        addEvents(term, rt, null, jPso, aggregate, null, rt.getUniqueId());
+        addEvents(term, rt, null, jPso, aggregate, null, rt.getUniqueId(), null);
         jPso.writeEnd().flush();
         jPso.writeEnd().flush();
         ReservedTimeInfo reservedTimeInfo = (ReservedTimeInfo) rt;
@@ -410,12 +427,12 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                         defaultEnd.set(endCal.get(Calendar.YEAR), endCal.get(Calendar.MONTH), endCal.get(Calendar.DATE), endCal.get(Calendar.MINUTE) == 0 ? endCal.get(Calendar.HOUR_OF_DAY) : (endCal.get(Calendar.HOUR_OF_DAY) == 23 ? 00 : endCal.get(Calendar.HOUR_OF_DAY) + 1), 0);
                     }
 
-                    addEvents(term, meeting, ao, jEvents, aggregate, scheduledCourseActivities, pso.getUniqueId());
+                    addEvents(term, meeting, ao, jEvents, aggregate, scheduledCourseActivities, pso.getUniqueId(), pso.getPossibleErrors());
 
 
                 } else {
                     /*Creating minimal events for TBD activities*/
-                    createEvent(null, null, null, 0, 0, ao, scheduledCourseActivities, pso.getUniqueId(), jEvents, true);
+                    createEvent(null, null, null, 0, 0, ao, scheduledCourseActivities, pso.getUniqueId(), jEvents, true, pso.getPossibleErrors());
                 }
             }
 
@@ -437,7 +454,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
      * @param scheduledCourseActivities
      * @param parentUniqueId
      */
-    protected void addEvents(Term term, ScheduleBuildEvent meeting, ActivityOption ao, JsonGenerator jEvents, EventAggregateData aggregate, Map<String, List<ActivityOption>> scheduledCourseActivities, String parentUniqueId) {
+    protected void addEvents(Term term, ScheduleBuildEvent meeting, ActivityOption ao, JsonGenerator jEvents, EventAggregateData aggregate, Map<String, List<ActivityOption>> scheduledCourseActivities, String parentUniqueId, PossibleScheduleErrors possibleScheduleErrors) {
         /**
          * This is used to adjust minDate and maxDate which is a week from min date and adjust min date to be monday if it is not.
          * Used in building a week worth of schedules instead of whole term.
@@ -475,31 +492,31 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
             if (meeting.isSunday())
                 createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.SUNDAY, durationSeconds, ao,
-                        scheduledCourseActivities, parentUniqueId, jEvents, false);
+                        scheduledCourseActivities, parentUniqueId, jEvents, false, possibleScheduleErrors);
             if (meeting.isMonday())
                 createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.MONDAY, durationSeconds, ao,
-                        scheduledCourseActivities, parentUniqueId, jEvents, false);
+                        scheduledCourseActivities, parentUniqueId, jEvents, false, possibleScheduleErrors);
             if (meeting.isTuesday())
                 createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.TUESDAY, durationSeconds, ao,
-                        scheduledCourseActivities, parentUniqueId, jEvents, false);
+                        scheduledCourseActivities, parentUniqueId, jEvents, false, possibleScheduleErrors);
             if (meeting.isWednesday())
                 createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.WEDNESDAY, durationSeconds, ao,
-                        scheduledCourseActivities, parentUniqueId, jEvents, false);
+                        scheduledCourseActivities, parentUniqueId, jEvents, false, possibleScheduleErrors);
             if (meeting.isThursday())
                 createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.THURSDAY, durationSeconds, ao,
-                        scheduledCourseActivities, parentUniqueId, jEvents, false);
+                        scheduledCourseActivities, parentUniqueId, jEvents, false, possibleScheduleErrors);
             if (meeting.isFriday())
                 createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.FRIDAY, durationSeconds, ao,
-                        scheduledCourseActivities, parentUniqueId, jEvents, false);
+                        scheduledCourseActivities, parentUniqueId, jEvents, false, possibleScheduleErrors);
             if (meeting.isSaturday())
                 createEvent(startDate, eventStart, aggregate.cal,
                         Calendar.SATURDAY, durationSeconds, ao,
-                        scheduledCourseActivities, parentUniqueId, jEvents, false);
+                        scheduledCourseActivities, parentUniqueId, jEvents, false, possibleScheduleErrors);
             startDate = aggregate.addOneWeek(startDate);
         }
     }
@@ -520,7 +537,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
      */
     protected void createEvent(Date startDate,
                                Date eventStart, Calendar cal, int dow, long durationSeconds,
-                               ActivityOption ao, Map<String, List<ActivityOption>> scheduledCourseActivities, String parentUniqueId, JsonGenerator jEvents, boolean isTBD) {
+                               ActivityOption ao, Map<String, List<ActivityOption>> scheduledCourseActivities, String parentUniqueId, JsonGenerator jEvents, boolean isTBD, PossibleScheduleErrors possibleScheduleErrors) {
         long eventStartSeconds = 0;
         if (!isTBD) {
             // Calculate the date for the event in seconds since the epoch
@@ -557,6 +574,58 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
             jEvents.writeStartObject("popoverContent").write("courseCd", ao.getCourseCd()).write("courseId", ao.getCourseId()).write("courseTitle", ao.getCourseTitle().trim()).write("termId", ao.getTermId());
 
             List<ActivityOption> activityOptions = scheduledCourseActivities.get(ao.getCourseCd());
+            List<ActivityOption> activityOptionsCopy = new ArrayList<ActivityOption>();
+            activityOptionsCopy.addAll(activityOptions);
+
+            if (possibleScheduleErrors != null && StringUtils.hasText(possibleScheduleErrors.getErrorType()) && !CollectionUtils.isEmpty(possibleScheduleErrors.getInvalidOptions()) && !CollectionUtils.isEmpty(possibleScheduleErrors.getInvalidOptions().get(ao.getCourseCd()))) {
+                Map<String, List<String>> invalidActivities = possibleScheduleErrors.getInvalidOptions().get(ao.getCourseCd());
+                List<String> withdrawnActivities = invalidActivities.get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN);
+                List<String> timeChangedActivities = invalidActivities.get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED);
+                List<String> conflictedActivities = invalidActivities.get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED);
+                List<String> unAvailableSecondariesActivities = invalidActivities.get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_SECONDARIES);
+
+
+                if (ScheduleBuilderConstants.PINNED_SCHEDULES_PASSIVE_ERROR.equals(possibleScheduleErrors.getErrorType())) {
+                    List<String> withdrawnErrorActivities = new ArrayList<String>();
+                    List<String> timeChangedErrorActivities = new ArrayList<String>();
+                    List<String> conflictedErrorActivities = new ArrayList<String>();
+                    List<String> unAvailableSecondariesErrorActivities = new ArrayList<String>();
+                    for (ActivityOption activityOption : activityOptionsCopy) {
+                        if (withdrawnActivities != null && withdrawnActivities.contains(activityOption.getActivityOfferingId())) {
+                            withdrawnErrorActivities.add(activityOption.getActivityCode());
+                            activityOptions.remove(activityOption);
+                        } else if (timeChangedActivities != null && timeChangedActivities.contains(activityOption.getActivityOfferingId())) {
+                            timeChangedErrorActivities.add(activityOption.getActivityCode());
+                            activityOptions.remove(activityOption);
+                        } else if (conflictedActivities != null && conflictedActivities.contains(activityOption.getActivityOfferingId())) {
+                            conflictedErrorActivities.add(activityOption.getActivityCode());
+                            activityOptions.remove(activityOption);
+                        } else if (unAvailableSecondariesActivities != null && unAvailableSecondariesActivities.contains(activityOption.getActivityOfferingId())) {
+                            unAvailableSecondariesErrorActivities.add(activityOption.getActivityCode());
+                            activityOptions.remove(activityOption);
+                        }
+                    }
+
+                    if (!CollectionUtils.isEmpty(withdrawnErrorActivities)) {
+                        String errorMessage = String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_TIME_CHANGED), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(withdrawnErrorActivities, ", "));
+                        jEvents.write("errorType", possibleScheduleErrors.getErrorType()).write("errorMessage", errorMessage);
+                    } else if (!CollectionUtils.isEmpty(timeChangedErrorActivities)) {
+                        String errorMessage = String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_TIME_CHANGED), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(withdrawnErrorActivities, ", "));
+                        jEvents.write("errorType", possibleScheduleErrors.getErrorType()).write("errorMessage", errorMessage);
+                    } else if (!CollectionUtils.isEmpty(conflictedErrorActivities)) {
+                        String errorMessage = String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_RESERVED_CONFLICT), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(withdrawnErrorActivities, ", "));
+                        jEvents.write("errorType", possibleScheduleErrors.getErrorType()).write("errorMessage", errorMessage);
+                    } else if (!CollectionUtils.isEmpty(unAvailableSecondariesActivities)) {
+                        String errorMessage = String.format(properties.getProperty(ScheduleBuilderConstants.INVALID_PINNED_SCHEDULE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(invalidActivities.keySet(), ", "));
+                        jEvents.write("errorType", possibleScheduleErrors.getErrorType()).write("errorMessage", errorMessage);
+                    }
+                } else if (ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR.equals(possibleScheduleErrors.getErrorType())) {
+                    activityOptions = new ArrayList<ActivityOption>();
+                    String errorMessage = String.format(properties.getProperty(ScheduleBuilderConstants.INVALID_PINNED_SCHEDULE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(invalidActivities.keySet(), ", "));
+                    jEvents.write("errorType", possibleScheduleErrors.getErrorType()).write("errorMessage", errorMessage);
+                }
+
+            }
 
             jEvents.writeStartArray("activities");
             buildCoursePopoverEvents(activityOptions, jEvents, isTBD);

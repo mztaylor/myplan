@@ -12,10 +12,8 @@ import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.SecondaryActivityOptionsInfo;
-import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
-import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
-import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
-import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
+import org.kuali.student.myplan.schedulebuilder.infc.*;
+import org.kuali.student.myplan.schedulebuilder.util.PossibleScheduleErrorsInfo;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
@@ -56,6 +54,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
         ScheduleBuildStrategy sb = getScheduleBuildStrategy();
         List<PossibleScheduleOption> savedSchedulesList = new ArrayList<PossibleScheduleOption>();
         if (StringUtils.hasText(termId) && StringUtils.hasText(requestedLearningPlanId)) {
+
             Term term = getTermHelper().getTermByAtpId(termId);
             List<PossibleScheduleOption> savedSchedules;
             try {
@@ -64,6 +63,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 throw new IllegalStateException(
                         "Failed to refresh saved schedules", e);
             }
+
             Map<String, String> plannedItems = getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(requestedLearningPlanId, PlanConstants.SECTION_TYPE, termId);
             List<ReservedTime> reservedTimes = null;
             try {
@@ -72,37 +72,23 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 e.printStackTrace();
             }
 
-            Properties pro = new Properties();
-            InputStream file = getClass().getResourceAsStream(PlanConstants.PROPERTIES_FILE_PATH);
-            try {
-                pro.load(file);
-            } catch (Exception e) {
-                logger.error("Could not find the properties file" + e);
-            }
-
-            int index = 1;
             for (PossibleScheduleOption possibleScheduleOption : savedSchedules) {
                 if (termId.equals(possibleScheduleOption.getTermId())) {
-                    getScheduleBuildHelper().buildPossibleScheduleEvents(possibleScheduleOption, term);
-                    HashMap<String, List<String>> invalidOptions = new LinkedHashMap<String, List<String>>();
+                    PossibleScheduleErrorsInfo possibleScheduleErrorsInfo = new PossibleScheduleErrorsInfo();
+                    Map<String, Map<String, List<String>>> invalidOptions = new LinkedHashMap<String, Map<String, List<String>>>();
                     List<ActivityOption> validatedActivities = validatedSavedActivities(possibleScheduleOption.getActivityOptions(), plannedItems, invalidOptions, reservedTimes == null ? new ArrayList<ReservedTime>() : reservedTimes);
                     if (!CollectionUtils.isEmpty(validatedActivities)) {
-                        List<String> coursesToActivities = new ArrayList<String>();
-                        for (String key : invalidOptions.keySet()) {
-                            coursesToActivities.add(String.format("%s %s", key, org.apache.commons.lang.StringUtils.join(invalidOptions.get(key), ", ")));
-                        }
-                        if (!CollectionUtils.isEmpty(coursesToActivities)) {
-                            ((PossibleScheduleOptionInfo) possibleScheduleOption).setPossibleErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_PASSIVE_ERROR);
-                            String infoMessage = String.format(pro.getProperty(ScheduleBuilderConstants.INVALID_SAVED_SCHEDULE_ACTIVITY), String.format("P%s", index), org.apache.commons.lang.StringUtils.join(coursesToActivities, "/"));
-                            ((PossibleScheduleOptionInfo) possibleScheduleOption).setPossibleErrorMessage(infoMessage);
+                        if (!CollectionUtils.isEmpty(invalidOptions)) {
+                            possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_PASSIVE_ERROR);
+                            possibleScheduleErrorsInfo.setInvalidOptions(invalidOptions);
                         }
                     } else {
-                        ((PossibleScheduleOptionInfo) possibleScheduleOption).setPossibleErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR);
-                        String errorMessage = String.format(pro.getProperty(ScheduleBuilderConstants.INVALID_SAVED_SCHEDULE), String.format("P%s", index), org.apache.commons.lang.StringUtils.join(invalidOptions.keySet(), ", "));
-                        ((PossibleScheduleOptionInfo) possibleScheduleOption).setPossibleErrorMessage(errorMessage);
+                        possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR);
+                        possibleScheduleErrorsInfo.setInvalidOptions(invalidOptions);
                     }
+                    ((PossibleScheduleOptionInfo) possibleScheduleOption).setPossibleErrors(possibleScheduleErrorsInfo);
+                    getScheduleBuildHelper().buildPossibleScheduleEvents(possibleScheduleOption, term);
                     savedSchedulesList.add(possibleScheduleOption);
-                    index++;
                 }
             }
         } else {
@@ -120,7 +106,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
      * @param invalidOptions
      * @return ActivityOption list which are validated items and also populates all invalidActivityOptions course code wise.
      */
-    protected List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, String> plannedItems, HashMap<String, List<String>> invalidOptions, List<ReservedTime> reservedTimes) {
+    protected List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, String> plannedItems, Map<String, Map<String, List<String>>> invalidOptions, List<ReservedTime> reservedTimes) {
         List<ActivityOption> activityOptionList = new ArrayList<ActivityOption>();
         for (ActivityOption savedActivity : activityOptions) {
             List<ActivityOption> validatedAlternates = new ArrayList<ActivityOption>();
@@ -136,7 +122,23 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                         ((SecondaryActivityOptionsInfo) secondaryActivityOption).setActivityOptions(validatedSecondaryActivities);
                     }
                 }
+                /*NO secondaries available for this primary are available*/
                 if (!isValid) {
+                    if (invalidOptions == null) {
+                        invalidOptions = new HashMap<String, Map<String, List<String>>>();
+                    }
+                    Map<String, List<String>> errorList = invalidOptions.get(savedActivity.getCourseCd());
+                    if (errorList == null) {
+                        errorList = new HashMap<String, List<String>>();
+                        errorList.put(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_SECONDARIES, new ArrayList<String>());
+                    }
+                    List<String> activityList = errorList.get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_SECONDARIES);
+                    if (CollectionUtils.isEmpty(activityList)) {
+                        activityList = new ArrayList<String>();
+                    }
+                    activityList.add(savedActivity.getActivityOfferingId());
+                    errorList.put(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_SECONDARIES, activityList);
+                    invalidOptions.put(savedActivity.getCourseCd(), errorList);
                     continue;
                 }
             } else {
@@ -144,22 +146,31 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
             }
 
             ActivityOption currentActivity = getScheduleBuildStrategy().getActivityOption(savedActivity.getTermId(), savedActivity.getCourseId(), savedActivity.getActivityCode());
-            boolean areEqual = areEqual(savedActivity, currentActivity, plannedItems, reservedTimes);
-            if (areEqual) {
+            String reasonForChange = areEqual(savedActivity, currentActivity, plannedItems, reservedTimes);
+            if (StringUtils.isEmpty(reasonForChange)) {
                 ((ActivityOptionInfo) savedActivity).setAlternateActivities(validatedAlternates);
                 activityOptionList.add(savedActivity);
-            } else if (!areEqual && !CollectionUtils.isEmpty(validatedAlternates)) {
+            } else if (StringUtils.hasText(reasonForChange) && !CollectionUtils.isEmpty(validatedAlternates)) {
                 ActivityOptionInfo alAo = (ActivityOptionInfo) validatedAlternates.get(0);
                 validatedAlternates.remove(0);
                 alAo.setAlternateActivities(validatedAlternates.size() > 0 ? validatedAlternates : new ArrayList<ActivityOption>());
                 activityOptionList.add(alAo);
             } else {
-                List<String> activityList = invalidOptions.get(savedActivity.getCourseCd());
+                if (invalidOptions == null) {
+                    invalidOptions = new HashMap<String, Map<String, List<String>>>();
+                }
+                Map<String, List<String>> errorList = invalidOptions.get(savedActivity.getCourseCd());
+                if (errorList == null) {
+                    errorList = new HashMap<String, List<String>>();
+                    errorList.put(reasonForChange, new ArrayList<String>());
+                }
+                List<String> activityList = errorList.get(reasonForChange);
                 if (CollectionUtils.isEmpty(activityList)) {
                     activityList = new ArrayList<String>();
                 }
-                activityList.add(savedActivity.getActivityCode());
-                invalidOptions.put(savedActivity.getCourseCd(), activityList);
+                activityList.add(savedActivity.getActivityOfferingId());
+                errorList.put(reasonForChange, activityList);
+                invalidOptions.put(savedActivity.getCourseCd(), errorList);
 
             }
         }
@@ -177,14 +188,20 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
      * @param plannedItems
      * @return (((savedStatusOpen but currentStatusClosed) OR currentIsWithdrawn OR ((currentMeeting and savedMeeting times vary) OR (reservedTime and savedMeeting time conflict))) AND savedActivity is not in PlannedActivities) then false otherwise true.
      */
-    private boolean areEqual(ActivityOption saved, ActivityOption current, Map<String, String> plannedItems, List<ReservedTime> reservedTimes) {
+    private String areEqual(ActivityOption saved, ActivityOption current, Map<String, String> plannedItems, List<ReservedTime> reservedTimes) {
         long[][] savedClassMeetingTime = getScheduleBuildHelper().xlateClassMeetingTimeList2WeekBits(saved.getClassMeetingTimes());
         long[][] currentClassMeetingTime = getScheduleBuildHelper().xlateClassMeetingTimeList2WeekBits(current.getClassMeetingTimes());
         long[][] reservedTime = getScheduleBuildHelper().xlateClassMeetingTimeList2WeekBits(reservedTimes);
-        if (((!saved.isClosed() && current.isClosed()) || current.isWithdrawn() || (!Arrays.deepEquals(savedClassMeetingTime, currentClassMeetingTime) || getScheduleBuildHelper().checkForConflictsWeeks(savedClassMeetingTime, reservedTime))) && !plannedItems.containsKey(saved.getActivityOfferingId())) {
-            return false;
+        if (!plannedItems.containsKey(saved.getActivityOfferingId())) {
+            if (current.isWithdrawn()) {
+                return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN;
+            } else if (!Arrays.deepEquals(savedClassMeetingTime, currentClassMeetingTime)) {
+                return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED;
+            } else if (getScheduleBuildHelper().checkForConflictsWeeks(savedClassMeetingTime, reservedTime)) {
+                return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED;
+            }
         }
-        return true;
+        return null;
     }
 
 
