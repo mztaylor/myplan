@@ -5,7 +5,9 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.infc.ClassMeetingTime;
+import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleErrors;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
+import org.kuali.student.myplan.schedulebuilder.util.PossibleScheduleErrorsInfo;
 import org.kuali.student.r2.common.dto.RichTextInfo;
 import org.kuali.student.r2.common.infc.RichText;
 
@@ -48,11 +50,8 @@ public class PossibleScheduleOptionInfo extends ScheduleBuildOptionInfo
     @XmlAttribute
     private boolean tbd;
 
-    @XmlAttribute
-    private String possibleErrorType;
-
-    @XmlAttribute
-    private String possibleErrorMessage;
+    @XmlTransient
+    private PossibleScheduleErrors possibleErrors;
 
     public PossibleScheduleOptionInfo() {
     }
@@ -88,26 +87,6 @@ public class PossibleScheduleOptionInfo extends ScheduleBuildOptionInfo
     public RichTextInfo getDescription() {
         return description;
     }
-
-    @Override
-    public String getPossibleErrorType() {
-        return possibleErrorType;
-    }
-
-    public void setPossibleErrorType(String possibleErrorType) {
-        this.possibleErrorType = possibleErrorType;
-    }
-
-    @Override
-    public String getPossibleErrorMessage() {
-        return possibleErrorMessage;
-    }
-
-    public void setPossibleErrorMessage(String possibleErrorMessage) {
-        this.possibleErrorMessage = possibleErrorMessage;
-    }
-
-
 
 
     public void setDescription(String description) {
@@ -208,11 +187,6 @@ public class PossibleScheduleOptionInfo extends ScheduleBuildOptionInfo
     }
 
     @Override
-    public boolean isWeekend() {
-        return weekend;
-    }
-
-    @Override
     public long getMinTime() {
         return minTime;
     }
@@ -230,6 +204,7 @@ public class PossibleScheduleOptionInfo extends ScheduleBuildOptionInfo
         this.maxTime = maxTime;
     }
 
+    @Override
     public boolean isTbd() {
         return tbd;
     }
@@ -238,8 +213,23 @@ public class PossibleScheduleOptionInfo extends ScheduleBuildOptionInfo
         this.tbd = tbd;
     }
 
+    @Override
+    public boolean isWeekend() {
+        return weekend;
+    }
+
+
     public void setWeekend(boolean weekend) {
         this.weekend = weekend;
+    }
+
+    @Override
+    public PossibleScheduleErrors getPossibleErrors() {
+        return possibleErrors;
+    }
+
+    public void setPossibleErrors(PossibleScheduleErrors possibleErrors) {
+        this.possibleErrors = possibleErrors;
     }
 
     @Override
