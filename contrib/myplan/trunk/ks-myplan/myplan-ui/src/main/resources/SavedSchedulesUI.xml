@@ -93,7 +93,7 @@
                         <list>
                             <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="cssClasses"
                                   p:condition="#line.possibleErrors.getErrorType() NE null">
-                                <property name="replacement" value="alert alert-@{#line.possibleErrors.getErrorType()}"/>
+                                <property name="replacement" value="scheduleSaved__index alert alert-@{#line.possibleErrors.getErrorType()}"/>
                             </bean>
                         </list>
                     </property>
@@ -129,7 +129,10 @@
                               value="KsapScheduleBuild.confirmRemovedSavedSchedule('@{#line.id}', false, e)"/>
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-Message" p:messageText="Delete"/>
+                            <bean parent="Uif-Image">
+                                <property name="source"
+                                          value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+                            </bean>
                         </list>
                     </property>
                 </bean>
