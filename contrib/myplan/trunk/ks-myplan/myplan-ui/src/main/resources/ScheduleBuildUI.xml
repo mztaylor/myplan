@@ -100,19 +100,19 @@
                                                 <list>
                                                     <bean parent="Uif-ConditionalBeanPropertyReplacer"
                                                           p:propertyName="href"
-                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(termId) NE null">
+                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousPublishedAtpId(termId) NE null">
                                                         <property name="replacement"
-                                                                  value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(termId)}&amp;requestedLearningPlanId=@{requestedLearningPlanId}"/>
+                                                                  value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousPublishedAtpId(termId)}&amp;requestedLearningPlanId=@{requestedLearningPlanId}"/>
                                                     </bean>
                                                     <bean parent="Uif-ConditionalBeanPropertyReplacer"
                                                           p:propertyName="cssClasses"
-                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(termId) EQ null">
+                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousPublishedAtpId(termId) EQ null">
                                                         <property name="replacement"
                                                                   value="btn btn-secondary planNavigation__button planNavigation__button--previous disabled"/>
                                                     </bean>
                                                     <bean parent="Uif-ConditionalBeanPropertyReplacer"
                                                           p:propertyName="onClickScript"
-                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(termId) EQ null">
+                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousPublishedAtpId(termId) EQ null">
                                                         <property name="replacement"
                                                                   value="e.preventDefault();"/>
                                                     </bean>
@@ -130,19 +130,19 @@
                                                 <list>
                                                     <bean parent="Uif-ConditionalBeanPropertyReplacer"
                                                           p:propertyName="href"
-                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(termId) NE null">
+                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextPublishedAtpId(termId) NE null">
                                                         <property name="replacement"
-                                                                  value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(termId)}&amp;requestedLearningPlanId=@{requestedLearningPlanId}"/>
+                                                                  value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextPublishedAtpId(termId)}&amp;requestedLearningPlanId=@{requestedLearningPlanId}"/>
                                                     </bean>
                                                     <bean parent="Uif-ConditionalBeanPropertyReplacer"
                                                           p:propertyName="cssClasses"
-                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(termId) EQ null">
+                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextPublishedAtpId(termId) EQ null">
                                                         <property name="replacement"
                                                                   value="btn btn-secondary planNavigation__button planNavigation__button--next disabled"/>
                                                     </bean>
                                                     <bean parent="Uif-ConditionalBeanPropertyReplacer"
                                                           p:propertyName="onClickScript"
-                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(termId) EQ null">
+                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextPublishedAtpId(termId) EQ null">
                                                         <property name="replacement"
                                                                   value="e.preventDefault();"/>
                                                     </bean>
