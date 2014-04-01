@@ -33,10 +33,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,7 +68,6 @@ public class AtpHelper {
 
 
     private static transient CourseHelper courseHelper;
-
 
 
     private static UserSessionHelper userSessionHelper;
@@ -750,6 +746,51 @@ public class AtpHelper {
         }
         return null;
     }
+
+    /**
+     * returns the previous published AtpId. If not present returns null.
+     *
+     * @param atpId
+     * @return
+     */
+    public static String getPreviousPublishedAtpId(String atpId) {
+        YearTerm yt = AtpHelper.atpToYearTerm(atpId);
+        List<String> terms = getPublishedTerms();
+        int year = yt.getYear();
+        int term = yt.getTerm() - 1;
+        if (term == 0) {
+            term = 4;
+            year = year - 1;
+        }
+        String prev = YearTerm.toATP(year, term);
+        if (terms != null && terms.contains(prev)) {
+            return prev;
+        }
+        return null;
+    }
+
+    /**
+     * returns the previous published AtpId. If not present returns null.
+     *
+     * @param atpId
+     * @return
+     */
+    public static String getNextPublishedAtpId(String atpId) {
+        YearTerm yt = AtpHelper.atpToYearTerm(atpId);
+        List<String> terms = getPublishedTerms();
+        int year = yt.getYear();
+        int term = yt.getTerm() + 1;
+        if (term == 5) {
+            term = 1;
+            year = year + 1;
+        }
+        String next = YearTerm.toATP(year, term);
+        if (terms != null && terms.contains(next)) {
+            return next;
+        }
+        return null;
+    }
+
 
     /**
      * returns the YearTerm of the firstTerm in student's AcademicPlan
