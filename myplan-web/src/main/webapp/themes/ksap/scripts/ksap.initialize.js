@@ -143,12 +143,14 @@ function sessionExpired() {
 
 function stopEvent(e) {
     if (!e) var e = window.event;
-    if (e.stopPropagation) {
-        e.preventDefault();
-        e.stopPropagation();
-    } else {
-        e.returnValue = false;
-        e.cancelBubble = true;
+    if (typeof e !== "undefined"){
+        if (e.stopPropagation) {
+            e.preventDefault();
+            e.stopPropagation();
+        } else {
+            e.returnValue = false;
+            e.cancelBubble = true;
+        }
     }
     return false;
 }

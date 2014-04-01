@@ -26,7 +26,7 @@
             <list>
                 <value>plugins/carousel/carousel.js</value>
                 <value>plugins/fullcalendar/fullcalendar.js</value>
-                <value>themes/ksap/scripts/ksap.schedule.js</value>
+                <value>themes/ksap/scripts/ksap.sbcalendar.js</value>
             </list>
         </property>
         <property name="items">
@@ -46,14 +46,22 @@
         <property name="items">
             <list>
                 <bean id="schedule_build_termId" parent="KSAP-SimpleInputField" p:propertyName="termId">
+                    <property name="hidden" value="true"/>
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
                 <bean id="schedule_build_learningPlanId" parent="KSAP-SimpleInputField"
                       p:propertyName="requestedLearningPlanId">
+                    <property name="hidden" value="true"/>
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
+                    </property>
+                    <property name="dataAttributes">
+                        <map>
+                            <entry key="planned-activities" value="@{plannedActivities}"/>
+                            <entry key="registered-schedule" value="@{registeredSchedule NE null ? registeredSchedule.getEvent() : ''}"/>
+                        </map>
                     </property>
                 </bean>
                 <bean parent="KSAP-HorizontalBoxGroup">
@@ -74,6 +82,11 @@
                 <ref bean="schedule_build_possible"/>
                 <ref bean="sb-reserved-item-template"/>
                 <ref bean="sb-popover-content-template"/>
+                <ref bean="sb-additional-details-template"/>
+                <ref bean="sb-additional-details-group"/>
+                <ref bean="sb_error_max_schedules"/>
+                <ref bean="sb_error_max_pinned"/>
+                <ref bean="sb_confirm_remove_pinned"/>
             </list>
         </property>
     </bean>
@@ -246,6 +259,12 @@
                     <property name="collectionObjectClass"
                               value="org.kuali.student.myplan.schedulebuilder.infc.ReservedTime"/>
                     <property name="propertyName" value="reservedTimes"/>
+                    <property name="dataAttributes">
+                        <map>
+                            <entry key="limit" value="4"/>
+                        </map>
+                    </property>
+                    <property name="cssClasses" value="scheduleReserved"/>
                     <property name="layoutManager.cssClasses" value="scheduleReserved__container"/>
                     <property name="layoutManager.lineGroupPrototype.cssClasses" value="scheduleReserved__item"/>
                     <property name="layoutManager.lineGroupPrototype.id" value="reserved-item-@{#line.id}"/>
@@ -253,6 +272,11 @@
                         <map>
                             <entry key="source" value="@{#line.event}"/>
                         </map>
+                    </property>
+                    <property name="filters">
+                        <list>
+                            <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 4"/>
+                        </list>
                     </property>
                     <property name="items">
                         <list>
@@ -271,7 +295,7 @@
                                                     <bean parent="Uif-ActionLink" p:actionLabel="Edit"
                                                           p:actionScript="openPopup('sb_create_reserved_time_inner', {action:'sb/reserved', methodToCall:'startDialog', termId:'@{term.id}', viewId:'ScheduleBuild-ReservedTime-FormView', id:'@{#line.id}'}, 'sb/reserved', {width:'16px', height:'16px'}, {tail:{hidden: true}, close:true, position:'bottom', align:'center', themeName:'default'}, e)"/>
                                                     <bean parent="Uif-ActionLink" p:actionLabel="Delete"
-                                                          p:actionScript="KsapSbCalendar.removeReservedSchedule('@{#line.id}', e)"/>
+                                                          p:actionScript="KsapScheduleBuild.removeReservedSchedule('@{#line.id}', e)"/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -282,6 +306,8 @@
                     </property>
                     <property name="footer">
                         <bean parent="Uif-FooterBase">
+                            <property name="hidden" value="@{reservedTimes.size() GT 3}"/>
+                            <property name="validationMessages"><null/></property>
                             <property name="items">
                                 <list>
                                     <bean parent="Uif-ActionLink" p:actionLabel="+ Add a day/time">
@@ -317,7 +343,7 @@
                                         <bean parent="Uif-ActionLink" p:actionLabel="Edit"
                                               p:actionScript="openPopup('sb_create_reserved_time_inner', {action:'sb/reserved', methodToCall:'startDialog', viewId:'ScheduleBuild-ReservedTime-FormView', id:'__KSAP_ID__', termId:'__KSAP_TERM_ID__'}, 'sb/reserved', {width:'16px', height:'16px'}, {tail:{hidden: true}, close:true, position:'bottom', align:'center', themeName:'default'}, e)"/>
                                         <bean parent="Uif-ActionLink" p:actionLabel="Delete"
-                                              p:actionScript="KsapSbCalendar.removeReservedSchedule('__KSAP_ID__', e)"/>
+                                              p:actionScript="KsapScheduleBuild.removeReservedSchedule('__KSAP_ID__', e)"/>
                                     </list>
                                 </property>
                             </bean>
@@ -330,9 +356,6 @@
 
     <bean id="sb-popover-content-template" p:id="sb-popover-content-template" parent="Uif-GridGroup" p:hidden="true"
           p:width="376px">
-        <property name="validationMessages">
-            <null/>
-        </property>
         <property name="cssClasses" value="schedulePopover"/>
         <property name="header">
             <bean parent="KSAP-HeaderDiv" p:hidden="true">
@@ -390,12 +413,110 @@
                                 </property>
                                 <property name="cssClasses" value="__KSAP_STATUSCLASS__"/>
                                 <property name="actionScript"
-                                          value="KsapSbCalendar.togglePlanSection(jQuery(this).data(), e)"/>
+                                          value="KsapScheduleBuild.togglePlanSection(jQuery(this).data(), e)"/>
                             </bean>
                         </list>
                     </property>
                 </bean>
             </list>
+        </property>
+    </bean>
+
+    <bean id="sb-additional-details-template" p:id="sb-additional-details-template"
+          parent="sb-popover-content-template">
+        <property name="width" value="480px"/>
+        <property name="layoutManager.style" value="width:480px;"/>
+        <property name="additionalCssClasses" value="scheduleSave__details"/>
+    </bean>
+
+    <bean id="sb-additional-details-group" p:id="sb-additional-details-group" parent="KSAP-VerticalBoxGroup"
+          p:hidden="true">
+        <property name="header">
+            <bean parent="KSAP-HeaderTwo" p:headerText="Pinned Schedule P__KSAP_PINNED_INDEX__"/>
+        </property>
+        <property name="items">
+            <list/>
+        </property>
+        <property name="footer">
+            <bean parent="KSAP-HorizontalBoxGroup">
+                <property name="cssClasses" value="uif-boxLayoutVerticalItem"/>
+                <property name="items">
+                    <list>
+                        <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Unpin this schedule">
+                            <property name="actionScript" value="KsapScheduleBuild.confirmRemovedSavedSchedule('__KSAP_PINNED_ID__', true)"/>
+                            <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+                        </bean>
+                        <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Close window">
+                            <property name="actionScript" value="jQuery.fancybox.close(true)"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="sb_dialogs" parent="KSAP-VerticalBoxGroup" p:hidden="true">
+        <property name="header">
+            <bean parent="KSAP-HeaderDiv" p:cssClasses="popover__header" p:headerTagCssClasses="popover__headerText"/>
+        </property>
+        <property name="footer">
+            <bean parent="KSAP-HorizontalBoxGroup">
+                <property name="cssClasses" value="uif-boxLayoutVerticalItem"/>
+                <property name="items">
+                    <list>
+                        <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="OK">
+                            <property name="actionScript" value="fnCloseAllPopups()"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="sb_error_max_schedules" parent="sb_dialogs">
+        <property name="headerText" value="You&#39;re viewing the maximum number of schedules"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="You can display up to five possible schedules at a time in the calendar grid below. To add this one, you&#39;ll first need to deselect one of the schedules that&#39;s currently displayed."/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="sb_error_max_pinned" parent="sb_dialogs">
+        <property name="headerText" value="You&#39;ve pinned the maximum number of schedules"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="You can pin up to three possible schedules for this quarter. To add another, you&#39;ll first need to remove one of the schedules you&#39;ve already pinned."/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="sb_confirm_remove_pinned" parent="sb_dialogs">
+        <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+        <property name="headerText" value="Remove this pinned schedule?"/>
+        <property name="cssClasses" value="removeMargin"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-NoSpanMessage" p:messageText="Are you sure that you want to remove this pinned schedule? (Your registered courses won&#39;t be affected.)"/>
+            </list>
+        </property>
+        <property name="footer">
+            <bean parent="KSAP-HorizontalBoxGroup">
+                <property name="cssClasses" value="uif-boxLayoutVerticalItem"/>
+                <property name="items">
+                    <list>
+                        <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Unpin">
+                            <property name="actionScript" value="KsapSbCalendar.toggleSaveSchedule('__KSAP_PINNED_ID__', 'removeSchedule', e)"/>
+                        </bean>
+                        <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Cancel">
+                            <property name="actionScript" value="
+                                jQuery('#u-__KSAP_PINNED_ID__-remove').remove();
+                                jQuery('#u-__KSAP_PINNED_ID__').show();
+                            "/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
 

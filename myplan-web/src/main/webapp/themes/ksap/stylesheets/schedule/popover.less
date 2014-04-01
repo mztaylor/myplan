@@ -1,7 +1,11 @@
 .schedulePopover {
     .schedulePopover__header {
-        margin: @marginDefault 0 0 0;
+        margin: @marginDefault 0 @marginSmall 0;
         border-bottom: @dottedBorderStyle;
+    }
+
+    .uif-validationMessages {
+        margin: @marginDefault 0;
     }
 
     table {
@@ -23,7 +27,8 @@
         .courseActivities__itemDelete;
     }
 
-    td.activityDetail {
+    td.meetingLocation,
+    td.registrationCode {
         display: none;
     }
 }
