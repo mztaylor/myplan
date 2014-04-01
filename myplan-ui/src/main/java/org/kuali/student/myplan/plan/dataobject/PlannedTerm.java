@@ -35,6 +35,7 @@ public class PlannedTerm {
     private boolean currentTermForView;
     private boolean completedTerm;
     private boolean openForPlanning;
+    private boolean publishedTerm;
 
     /*This is atpId which used for navigating from the Plan page to Single Quarter view*/
     private String singleQuarterAtp;
@@ -223,6 +224,14 @@ public class PlannedTerm {
 
     public void setLearningPlanId(String learningPlanId) {
         this.learningPlanId = learningPlanId;
+    }
+
+    public boolean isPublishedTerm() {
+        return publishedTerm;
+    }
+
+    public void setPublishedTerm(boolean publishedTerm) {
+        this.publishedTerm = publishedTerm;
     }
 }
 
