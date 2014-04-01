@@ -7,21 +7,37 @@ import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
-import org.kuali.student.myplan.schedulebuilder.infc.*;
+import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
+import org.kuali.student.myplan.schedulebuilder.infc.ClassMeetingTime;
+import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleErrors;
+import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
+import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
+import org.kuali.student.myplan.schedulebuilder.infc.ScheduleBuildEvent;
+import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.myplan.utils.CalendarUtil;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.json.*;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import javax.json.stream.JsonGenerator;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * default ksap implementation of schedule builder helper methods.
@@ -257,8 +273,18 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
         Calendar c = Calendar.getInstance();
         c.setTime(event.getStartDate());
         int fromSlot = c.get(Calendar.HOUR_OF_DAY) * 12 + (c.get(Calendar.MINUTE) / 5);
+
         c.setTime(event.getUntilDate());
-        int toSlot = c.get(Calendar.HOUR_OF_DAY) * 12 + (c.get(Calendar.MINUTE) / 5);
+        // Jira MYPLAN-2664; bump end-of-time-period minute back by 1 to avoid conflicts
+        // between time periods where one ends at the same time the next starts
+        int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+        int minutes = c.get(Calendar.MINUTE) - 1;
+        if (-1 == minutes) { // it was top of the hour; knock hour back as well
+            minutes = 59;
+            // was it midnight? back to 23:59
+            hourOfDay = (0 != hourOfDay ? hourOfDay - 1 : 23);
+        }
+        int toSlot = (hourOfDay * 12) + (minutes / 5);
 
         day = block(fromSlot, toSlot);
 
