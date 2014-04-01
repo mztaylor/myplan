@@ -47,6 +47,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
     private List<CourseOption> courseOptions;
     private List<PossibleScheduleOption> savedSchedules;
     private List<PossibleScheduleOption> possibleScheduleOptions;
+    private PossibleScheduleOption registeredSchedule;
 
     private transient AcademicCalendarService academicCalendarService;
     private transient PlanHelper planHelper;
@@ -191,6 +192,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
         } else {
             scheduleBuilder = getScheduleBuildStrategy().getScheduleBuilder(getTerm(), getCourseOptions(), getReservedTimes(), getSavedSchedules(), getBuildFilters());
             possibleScheduleOptions = scheduleBuilder.getNext(getPossibleScheduleSize(), Collections.<PossibleScheduleOption>emptySet());
+            registeredSchedule = scheduleBuilder.getRegistered();
         }
 
         Map<String, String> plannedItems = getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(getRequestedLearningPlanId(), PlanConstants.SECTION_TYPE, getTerm().getId());
@@ -224,7 +226,6 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
             }
 
         }
-
 
     }
 
@@ -385,6 +386,15 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
     public void setSavedSchedules(
             List<PossibleScheduleOption> savedScheduleOptions) {
         this.savedSchedules = savedScheduleOptions;
+    }
+
+    @Override
+    public PossibleScheduleOption getRegisteredSchedule() {
+        return registeredSchedule;
+    }
+
+    public void setRegisteredSchedule(PossibleScheduleOption registeredSchedule) {
+        this.registeredSchedule = registeredSchedule;
     }
 
     @Override
