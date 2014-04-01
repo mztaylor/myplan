@@ -14,6 +14,7 @@ import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -46,6 +47,10 @@ public class SingleQuarterHelperBase {
         PlannedTerm plannedTerm = new PlannedTerm();
         plannedTerm.setAtpId(termAtp);
         plannedTerm.setQtrYear(AtpHelper.atpIdToTermName(termAtp));
+        List<String> publishedTerms = AtpHelper.getPublishedTerms();
+        if (!CollectionUtils.isEmpty(publishedTerms)) {
+            plannedTerm.setPublishedTerm(publishedTerms.contains(termAtp));
+        }
         /*Sorting planned courses and placeHolders*/
         Collections.sort(plannedCoursesList, new Comparator<PlannedCourseDataObject>() {
             @Override

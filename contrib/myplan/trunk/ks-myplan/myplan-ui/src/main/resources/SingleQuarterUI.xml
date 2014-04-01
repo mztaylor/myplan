@@ -175,6 +175,7 @@
     </bean>
 
     <bean id="scheduleBuilderLink" parent="Uif-LinkField">
+        <property name="render" value="@{dataObject.publishedTerm}"/>
         <property name="linkText" value="Schedule Builder"/>
         <property name="title" value="Schedule Builder"/>
         <property name="href"
