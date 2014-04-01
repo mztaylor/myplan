@@ -67,6 +67,11 @@
                 if (scheduleEvents.length > 0) jQuery('#saved-schedule-@{#line.uniqueId}').addClass(scheduleEvents[0].className.join(' '));
             }
         "/>-->
+        <property name="filters">
+            <list>
+                <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 3"/>
+            </list>
+        </property>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
                 <entry key="saved" value="@{#line.id}"/>
@@ -83,19 +88,45 @@
         <property name="items">
             <list>
                 <bean parent="KSAP-MessageField" p:messageText="P@{#index + 1}"
-                      p:cssClasses="@{#line.possibleErrors.getErrorType() NE null ? #line.possibleErrors.getErrorType() EQ 'passive_error' ? 'alert alert-info' : 'alert alert-error' : ''}"/>
-                <bean parent="KSAP-SimpleDataField">
-                    <property name="propertyName" value="schedule"/>
-                    <property name="escapeHtmlInPropertyValue" value="false"/>
-                    <property name="propertyEditor">
-                        <bean parent="possible_schedule_editor">
-                            <property name="savedSchedule" value="true"/>
-                        </bean>
+                      p:cssClasses="scheduleSaved__index">
+                    <property name="propertyReplacers">
+                        <list>
+                            <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="cssClasses"
+                                  p:condition="#line.possibleErrors.getErrorType() NE null">
+                                <property name="replacement" value="alert alert-@{#line.possibleErrors.getErrorType()}"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="KSAP-VerticalFieldGroup">
+                    <property name="cssClasses" value="scheduleSaved__courses"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-SimpleDataField">
+                                <property name="propertyName" value="schedule"/>
+                                <property name="escapeHtmlInPropertyValue" value="false"/>
+                                <property name="propertyEditor">
+                                    <bean parent="possible_schedule_editor">
+                                        <property name="savedSchedule" value="true"/>
+                                    </bean>
+                                </property>
+                            </bean>
+                            <bean parent="KSAP-HorizontalFieldGroup">
+                                <property name="onClickScript"
+                                          value="KsapScheduleBuild.viewScheduleDetails(jQuery(this).parents('.scheduleSaved__item').data('source').events, @{#index + 1}, '@{#line.id}', e)"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-Message" p:messageText="View schedule details"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
                     </property>
                 </bean>
                 <bean parent="KSAP-HorizontalFieldGroup">
+                    <property name="cssClasses" value="scheduleSaved__remove"/>
                     <property name="onClickScript"
-                              value="KsapSbCalendar.toggleSaveSchedule('@{#line.id}', 'removeSchedule', e)"/>
+                              value="KsapScheduleBuild.confirmRemovedSavedSchedule('@{#line.id}', false, e)"/>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-Message" p:messageText="Delete"/>

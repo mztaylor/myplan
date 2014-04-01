@@ -181,7 +181,7 @@ function openDialog(sText, e, close) {
     if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents: false});
 
     popupOptionsDefault.tail.hidden = true;
-    popupOptionsDefault.innerHtml = '<div style="width:300px;">' + sText + '</div>';
+    popupOptionsDefault.innerHtml = '<div style="width:350px;">' + sText + '</div>';
 
     popupBox.ShowPopOver(popupOptionsDefault, false);
     var popupBoxId = popupBox.GetPopOverID();

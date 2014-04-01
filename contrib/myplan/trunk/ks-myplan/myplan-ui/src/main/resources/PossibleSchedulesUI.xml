@@ -135,9 +135,9 @@
             }).on('SAVED_SCHEDULE_REMOVE', function(event, data) {
                 KsapSbCalendar.updateRemovedSavedSchedule(data);
             }).on('SECTION_ITEM_ADDED', function(event, data) {
-                KsapSbCalendar.addPlannedActivity(data);
+                KsapScheduleBuild.addPlannedActivity(data);
             }).on('SECTION_ITEM_DELETED', function(event, data) {
-                KsapSbCalendar.removePlannedActivity(data);
+                KsapScheduleBuild.removePlannedActivity(data);
             });
         "/>
         <property name="items">
@@ -200,7 +200,7 @@
                                           value="schedulePossible__save"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="KSAP-Message" p:messageText="Save"/>
+                                        <bean parent="KSAP-Message" p:messageText="Pin this schedule"/>
                                     </list>
                                 </property>
                             </bean>
@@ -245,7 +245,7 @@
             for (var i = 0; i &lt; events.length; i++) {
                 if (events[i].tbd) { calEvent.push(events[i]); }
             }
-            KsapSbCalendar.openPopover(calEvent, e);
+            KsapScheduleBuild.openPopover(calEvent, e);
         "/>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
@@ -285,7 +285,7 @@
             for (var i = 0; i &lt; events.length; i++) {
                 if (events[i].tbd) { calEvent = events[i]; break; }
             }
-            KsapSbCalendar.openPopover(calEvent, e);
+            KsapScheduleBuild.openPopover(calEvent, e);
         "/>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
             <map>
@@ -317,7 +317,6 @@
                 <!-- List of classes for each selection, where the length sets the limit of how many items can be selected at once -->
                 <entry key="selection-limit" value="5"/>
                 <entry key="selection-classes" value="scheduleCalendar--orange,scheduleCalendar--gold,scheduleCalendar--pink,scheduleCalendar--blue,scheduleCalendar--green"/>
-                <entry key="planned-activities" value="@{plannedActivities}"/>
             </map>
         </property>
         <property name="templateOptions">
@@ -345,7 +344,7 @@
                 <entry key="slotEventOverlap" value="false"/>
                 <entry key="eventClick" value="
                     function(calEvent, jsEvent, view) {
-                        if (typeof calEvent.popoverContent !== 'undefined') KsapSbCalendar.openPopover(calEvent, jsEvent);
+                        if (typeof calEvent.popoverContent !== 'undefined') KsapScheduleBuild.openPopover(calEvent, jsEvent);
                     }
                 "/>
                 <entry key="eventRender" value="
