@@ -509,10 +509,7 @@
                             <property name="actionScript" value="KsapSbCalendar.toggleSaveSchedule('__KSAP_PINNED_ID__', 'removeSchedule', e)"/>
                         </bean>
                         <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Cancel">
-                            <property name="actionScript" value="
-                                jQuery('#u-__KSAP_PINNED_ID__-remove').remove();
-                                jQuery('#u-__KSAP_PINNED_ID__').show();
-                            "/>
+                            <property name="actionScript" value="KsapScheduleBuild.cancel('__KSAP_PINNED_ID__', __KSAP_IN_LIGHTBOX__)"/>
                         </bean>
                     </list>
                 </property>

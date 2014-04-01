@@ -9,14 +9,31 @@
     }
 }
 
-.scheduleSaved__index {
-    width: 16px;
-}
+.scheduleSaved {
+    .scheduleSaved__index {
+        width: 16px;
+        padding: 0 3px;
+    }
 
-.scheduleSaved__courses {
-    width: 206px;
-}
+    .scheduleSaved__index.alert {
+        padding: 2px 2px 24px 2px;
+        background-position: 2px 24px;
+    }
 
-.scheduleSaved__remove {
-    width: 16px;
+    .scheduleSaved__courses {
+        width: 210px;
+        margin: 0 0 0 5px;
+    }
+
+    .scheduleSaved__remove {
+        width: 16px;
+        margin: 0 0 0 5px;
+        line-height: 16px;
+
+        img {
+            width: 16px;
+            height: 16px;
+            background: url('../images/icon_sprite.png') no-repeat 1px -199px transparent;
+        }
+    }
 }

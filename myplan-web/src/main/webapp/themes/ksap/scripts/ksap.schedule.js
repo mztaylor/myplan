@@ -321,10 +321,22 @@ var KsapScheduleBuild = {
         var confirmHtml = jQuery("#sb_confirm_remove_pinned").clone().show().wrap("<div/>").parent().html();
         confirmHtml = confirmHtml.replace(/sb_confirm_remove_pinned/gi, "u-" + id + "-remove");
         confirmHtml = confirmHtml.replace(/__KSAP_PINNED_ID__/gi, id);
+        confirmHtml = confirmHtml.replace(/__KSAP_IN_LIGHTBOX__/gi, inLightBox);
         if (inLightBox) {
             jQuery("#u-" + id).hide().parent(".fancybox-inner").append(confirmHtml);
         } else {
             openDialog(confirmHtml, null, true);
         }
+    },
+
+    cancel: function (id, inLightBox) {
+        if (inLightBox) {
+            jQuery("#u-" + id + "-remove").remove();
+            jQuery("#u-" + id).show();
+        } else {
+            fnCloseAllPopups();
+        }
     }
+
+
 };
