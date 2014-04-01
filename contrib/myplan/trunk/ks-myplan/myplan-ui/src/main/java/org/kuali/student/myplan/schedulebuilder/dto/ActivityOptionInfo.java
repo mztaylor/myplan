@@ -74,6 +74,9 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     private boolean withdrawn;
 
     @XmlAttribute
+    private boolean suspended;
+
+    @XmlAttribute
     private boolean enrollmentRestriction;
 
     @XmlAttribute
@@ -158,6 +161,7 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         enrollmentRestriction = copy.isEnrollmentRestriction();
         duplicateEnrollmentAllowed = copy.isDuplicateEnrollmentAllowed();
         withdrawn = copy.isWithdrawn();
+        suspended = copy.isSuspended();
         closed = copy.isClosed();
         openSeats = copy.getOpenSeats();
         filledSeats = copy.getFilledSeats();
@@ -466,6 +470,15 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 
     public void setWithdrawn(boolean withdrawn) {
         this.withdrawn = withdrawn;
+    }
+
+    @Override
+    public boolean isSuspended() {
+        return suspended;
+    }
+
+    public void setSuspended(boolean suspended) {
+        this.suspended = suspended;
     }
 
     @Override
