@@ -49,6 +49,8 @@ public class ScheduleBuilderConstants {
 
     public static final String PINNED_SCHEDULES_PASSIVE_ERROR = "info";
     public static final String PINNED_SCHEDULES_MODAL_ERROR = "error";
+    public static final String PINNED_SCHEDULES_NO_ERROR = "no_error";
+
 
     public static final String PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN = "Withdrawn";
     public static final String PINNED_SCHEDULES_ERROR_REASON_CLOSED = "Closed";
@@ -57,6 +59,7 @@ public class ScheduleBuilderConstants {
     public static final String PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED = "Meeting_Time_Changed";
     public static final String PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED = "Conflicts_Reserved_Time";
     public static final String PINNED_SCHEDULES_ERROR_REASON_NO_SECONDARIES = "Secondaries_Unavailable";
+    public static final String PINNED_SCHEDULES_ERROR_REASON_NO_ERROR = "No_Error";
 
     public static final String REGULAR_INSTITUTE_CODE = "0";
     public static final String PCE_INSTITUTE_CODE = "95";
