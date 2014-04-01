@@ -77,7 +77,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                     PossibleScheduleErrorsInfo possibleScheduleErrorsInfo = new PossibleScheduleErrorsInfo();
                     Map<String, Map<String, List<String>>> invalidOptions = new LinkedHashMap<String, Map<String, List<String>>>();
                     List<ActivityOption> validatedActivities = validatedSavedActivities(possibleScheduleOption.getActivityOptions(), plannedItems, invalidOptions, reservedTimes == null ? new ArrayList<ReservedTime>() : reservedTimes);
-                    if (!CollectionUtils.isEmpty(validatedActivities)) {
+                    if (!CollectionUtils.isEmpty(validatedActivities) && validatedActivities.size() == possibleScheduleOption.getActivityOptions().size()) {
                         if (!CollectionUtils.isEmpty(invalidOptions)) {
                             possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_PASSIVE_ERROR);
                             possibleScheduleErrorsInfo.setInvalidOptions(invalidOptions);
@@ -108,18 +108,20 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
      */
     protected List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, String> plannedItems, Map<String, Map<String, List<String>>> invalidOptions, List<ReservedTime> reservedTimes) {
         List<ActivityOption> activityOptionList = new ArrayList<ActivityOption>();
-        for (ActivityOption savedActivity : activityOptions) {
+        for (ActivityOption activityOption : activityOptions) {
+            ActivityOptionInfo savedActivity = new ActivityOptionInfo(activityOption);
             List<ActivityOption> validatedAlternates = new ArrayList<ActivityOption>();
             if (!CollectionUtils.isEmpty(savedActivity.getSecondaryOptions())) {
                 boolean isValid = true;
                 for (SecondaryActivityOptions secondaryActivityOption : savedActivity.getSecondaryOptions()) {
-
-                    List<ActivityOption> validatedSecondaryActivities = validatedSavedActivities(secondaryActivityOption.getActivityOptions(), plannedItems, invalidOptions, reservedTimes);
-                    if (!CollectionUtils.isEmpty(secondaryActivityOption.getActivityOptions()) && CollectionUtils.isEmpty(validatedSecondaryActivities)) {
-                        isValid = false;
-                        break;
-                    } else {
-                        ((SecondaryActivityOptionsInfo) secondaryActivityOption).setActivityOptions(validatedSecondaryActivities);
+                    if (!CollectionUtils.isEmpty(secondaryActivityOption.getActivityOptions())) {
+                        List<ActivityOption> validatedSecondaryActivities = validatedSavedActivities(secondaryActivityOption.getActivityOptions(), plannedItems, invalidOptions, reservedTimes);
+                        if (CollectionUtils.isEmpty(validatedSecondaryActivities)) {
+                            isValid = false;
+                            break;
+                        } else {
+                            ((SecondaryActivityOptionsInfo) secondaryActivityOption).setActivityOptions(validatedSecondaryActivities);
+                        }
                     }
                 }
                 /*NO secondaries available for this primary are available*/
@@ -136,25 +138,43 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                     if (CollectionUtils.isEmpty(activityList)) {
                         activityList = new ArrayList<String>();
                     }
-                    activityList.add(savedActivity.getActivityOfferingId());
+                    activityList.add(savedActivity.getActivityCode());
                     errorList.put(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_SECONDARIES, activityList);
                     invalidOptions.put(savedActivity.getCourseCd(), errorList);
                     continue;
                 }
-            } else {
+            } else if (!CollectionUtils.isEmpty(savedActivity.getAlternateActivties())) {
                 validatedAlternates = savedActivity.getAlternateActivties() == null ? new ArrayList<ActivityOption>() : validatedSavedActivities(savedActivity.getAlternateActivties(), plannedItems, invalidOptions, reservedTimes);
             }
 
             ActivityOption currentActivity = getScheduleBuildStrategy().getActivityOption(savedActivity.getTermId(), savedActivity.getCourseId(), savedActivity.getActivityCode());
             String reasonForChange = areEqual(savedActivity, currentActivity, plannedItems, reservedTimes);
             if (StringUtils.isEmpty(reasonForChange)) {
-                ((ActivityOptionInfo) savedActivity).setAlternateActivities(validatedAlternates);
+                savedActivity.setAlternateActivities(validatedAlternates);
                 activityOptionList.add(savedActivity);
             } else if (StringUtils.hasText(reasonForChange) && !CollectionUtils.isEmpty(validatedAlternates)) {
                 ActivityOptionInfo alAo = (ActivityOptionInfo) validatedAlternates.get(0);
                 validatedAlternates.remove(0);
                 alAo.setAlternateActivities(validatedAlternates.size() > 0 ? validatedAlternates : new ArrayList<ActivityOption>());
                 activityOptionList.add(alAo);
+            } else if (StringUtils.hasText(reasonForChange) && (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CLOSED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_ENROLL_RESTR.equals(reasonForChange))) {
+                savedActivity.setAlternateActivities(validatedAlternates);
+                activityOptionList.add(savedActivity);
+                if (invalidOptions == null) {
+                    invalidOptions = new HashMap<String, Map<String, List<String>>>();
+                }
+                Map<String, List<String>> errorList = invalidOptions.get(savedActivity.getCourseCd());
+                if (errorList == null) {
+                    errorList = new HashMap<String, List<String>>();
+                    errorList.put(reasonForChange, new ArrayList<String>());
+                }
+                List<String> activityList = errorList.get(reasonForChange);
+                if (CollectionUtils.isEmpty(activityList)) {
+                    activityList = new ArrayList<String>();
+                }
+                activityList.add(savedActivity.getActivityCode());
+                errorList.put(reasonForChange, activityList);
+                invalidOptions.put(savedActivity.getCourseCd(), errorList);
             } else {
                 if (invalidOptions == null) {
                     invalidOptions = new HashMap<String, Map<String, List<String>>>();
@@ -168,7 +188,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 if (CollectionUtils.isEmpty(activityList)) {
                     activityList = new ArrayList<String>();
                 }
-                activityList.add(savedActivity.getActivityOfferingId());
+                activityList.add(savedActivity.getActivityCode());
                 errorList.put(reasonForChange, activityList);
                 invalidOptions.put(savedActivity.getCourseCd(), errorList);
 
@@ -179,6 +199,30 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
 
     }
 
+    /**
+     * recursive method used to check if a activity cd is present in any of the primary, secondary or alternate activity options
+     *
+     * @param activityOptions
+     * @param activityCds
+     * @return
+     */
+    private boolean activityOptionsContainsPlannedItems(List<ActivityOption> activityOptions, List<String> activityCds) {
+        for (ActivityOption activityOption : activityOptions) {
+            if (activityCds.contains(activityOption.getActivityCode())) {
+                return true;
+            }
+            if (activityOptionsContainsPlannedItems(activityOption.getAlternateActivties(), activityCds)) {
+                return true;
+            }
+
+            for (SecondaryActivityOptions so : activityOption.getSecondaryOptions()) {
+                if (activityOptionsContainsPlannedItems(so.getActivityOptions(), activityCds)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * Compares the saved ActivityOption with withdrawnFlag, current ActivityOption, plannedActivities and ReservedTimes
@@ -186,20 +230,24 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
      * @param saved
      * @param current
      * @param plannedItems
-     * @return (((savedStatusOpen but currentStatusClosed) OR currentIsWithdrawn OR ((currentMeeting and savedMeeting times vary) OR (reservedTime and savedMeeting time conflict))) AND savedActivity is not in PlannedActivities) then false otherwise true.
+     * @return (((currentStatusClosed) OR currentIsWithdrawn OR ((currentMeeting and savedMeeting times vary) OR (reservedTime and savedMeeting time conflict))) AND savedActivity is not in PlannedActivities) then false otherwise true.
      */
     private String areEqual(ActivityOption saved, ActivityOption current, Map<String, String> plannedItems, List<ReservedTime> reservedTimes) {
         long[][] savedClassMeetingTime = getScheduleBuildHelper().xlateClassMeetingTimeList2WeekBits(saved.getClassMeetingTimes());
         long[][] currentClassMeetingTime = getScheduleBuildHelper().xlateClassMeetingTimeList2WeekBits(current.getClassMeetingTimes());
         long[][] reservedTime = getScheduleBuildHelper().xlateClassMeetingTimeList2WeekBits(reservedTimes);
-        if (!plannedItems.containsKey(saved.getActivityOfferingId())) {
-            if (current.isWithdrawn()) {
-                return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN;
-            } else if (!Arrays.deepEquals(savedClassMeetingTime, currentClassMeetingTime)) {
-                return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED;
-            } else if (getScheduleBuildHelper().checkForConflictsWeeks(savedClassMeetingTime, reservedTime)) {
-                return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED;
-            }
+        if (!Arrays.deepEquals(savedClassMeetingTime, currentClassMeetingTime)) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED;
+        } else if (getScheduleBuildHelper().checkForConflictsWeeks(savedClassMeetingTime, reservedTime)) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED;
+        } else if (current.isWithdrawn()) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN;
+        } else if (current.isSuspended()) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_SUSPENDED;
+        } else if (current.isClosed()) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CLOSED;
+        } else if (current.isEnrollmentRestriction()) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_ENROLL_RESTR;
         }
         return null;
     }

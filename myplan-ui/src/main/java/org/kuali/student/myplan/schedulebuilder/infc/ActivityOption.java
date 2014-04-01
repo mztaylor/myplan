@@ -231,11 +231,18 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
     boolean isDuplicateEnrollmentAllowed();
 
     /**
-     * Determine if ativity option is withdrawn.
+     * Determine if activity option is withdrawn.
      *
      * @return True if at activity is withdrawn else false.
      */
     boolean isWithdrawn();
+
+    /**
+     * Determine if activity option is suspended.
+     *
+     * @return True if at activity is suspended else false.
+     */
+    boolean isSuspended();
 
     /**
      * Get the secondary options.

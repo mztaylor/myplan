@@ -10,10 +10,31 @@ public class ScheduleBuilderConstants {
 
     public static final String LEARNING_PLAN_KEY = "learningPlanId";
 
-    public static final String INVALID_PINNED_SCHEDULE = "myplan.text.error.scheduleBuilder.invalid.pinned.schedule";
-    public static final String VALID_PINNED_SCHEDULE_WITHDRAWN = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.withdrawn";
-    public static final String VALID_PINNED_SCHEDULE_TIME_CHANGED = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.time.change";
-    public static final String VALID_PINNED_SCHEDULE_RESERVED_CONFLICT = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.reserved.conflict";
+    public static final String INVALID_PINNED_SCHEDULE_SINGLE = "myplan.text.error.scheduleBuilder.invalid.pinned.schedule.single";
+    public static final String INVALID_PINNED_SCHEDULE_MULTIPLE = "myplan.text.error.scheduleBuilder.invalid.pinned.schedule.multiple";
+
+    public static final String VALID_PINNED_SCHEDULE_WITHDRAWN_SINGLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.withdrawn.single";
+    public static final String VALID_PINNED_SCHEDULE_WITHDRAWN_MULTIPLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.withdrawn.multiple";
+
+    public static final String VALID_PINNED_SCHEDULE_CLOSED_SINGLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.closed.single";
+    public static final String VALID_PINNED_SCHEDULE_CLOSED_MULTIPLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.closed.multiple";
+
+    public static final String VALID_PINNED_SCHEDULE_SUSPENDED_SINGLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.suspended.single";
+    public static final String VALID_PINNED_SCHEDULE_SUSPENDED_MULTIPLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.suspended.multiple";
+
+    public static final String VALID_PINNED_SCHEDULE_ENROLL_RESTR_SINGLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.enroll.restriction.single";
+    public static final String VALID_PINNED_SCHEDULE_ENROLL_RESTR_MULTIPLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.enroll.restriction.multiple";
+
+    public static final String VALID_PINNED_SCHEDULE_TIME_CHANGED_SINGLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.time.change.single";
+    public static final String VALID_PINNED_SCHEDULE_TIME_CHANGED_MULTIPLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.time.change.multiple";
+
+    public static final String VALID_PINNED_SCHEDULE_RESERVED_CONFLICT_SINGLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.reserved.conflict.single";
+    public static final String VALID_PINNED_SCHEDULE_RESERVED_CONFLICT_MULTIPLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.reserved.conflict.multiple";
+
+    public static final String VALID_PINNED_SCHEDULE_NO_SECONDARIES_SINGLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.no.secondaries.single";
+    public static final String VALID_PINNED_SCHEDULE_NO_SECONDARIES_MULTIPLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.no.secondaries.multiple";
+
+
     public static final String CLOSED_FILTER = "CLOSED";
     public static final String USER_SELECTED_FILTER = "USER_SELECTED";
     public static final String RESTRICTION_FILTER = "RESTRICTION";
@@ -30,6 +51,9 @@ public class ScheduleBuilderConstants {
     public static final String PINNED_SCHEDULES_MODAL_ERROR = "modal_error";
 
     public static final String PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN = "Withdrawn";
+    public static final String PINNED_SCHEDULES_ERROR_REASON_CLOSED = "Closed";
+    public static final String PINNED_SCHEDULES_ERROR_REASON_SUSPENDED = "Suspended";
+    public static final String PINNED_SCHEDULES_ERROR_REASON_ENROLL_RESTR = "EnrollmentRestriction";
     public static final String PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED = "Meeting_Time_Changed";
     public static final String PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED = "Conflicts_Reserved_Time";
     public static final String PINNED_SCHEDULES_ERROR_REASON_NO_SECONDARIES = "Secondaries_Unavailable";

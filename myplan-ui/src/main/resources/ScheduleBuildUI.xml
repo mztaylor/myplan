@@ -50,7 +50,8 @@
                         <bean parent="Uif-HiddenControl"/>
                     </property>
                 </bean>
-                <bean id="schedule_build_learningPlanId" parent="KSAP-SimpleInputField" p:propertyName="requestedLearningPlanId">
+                <bean id="schedule_build_learningPlanId" parent="KSAP-SimpleInputField"
+                      p:propertyName="requestedLearningPlanId">
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
@@ -58,7 +59,7 @@
                 <bean parent="KSAP-HorizontalBoxGroup">
                     <property name="items">
                         <list>
-                            <ref bean="schedule_build_filters"/>
+                            <ref bean="schedule_builder_panel"/>
                             <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules" p:width="268px">
                                 <property name="items">
                                     <list>
@@ -77,8 +78,114 @@
         </property>
     </bean>
 
-    <bean id="schedule_build_filters" parent="KSAP-HorizontalBoxGroup" p:headerText="@{term.name} Calendar"
-          p:style="width: 670px;">
+    <bean id="schedule_builder_panel" parent="KSAP-VerticalBoxGroup">
+        <property name="items">
+            <list>
+                <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planNavigation" p:style="width: 670px;">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-HorizontalBoxGroup"
+                                  p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--term">
+                                <property name="items">
+                                    <list>
+                                        <bean id="sb_previous_term_button" parent="Uif-Link"
+                                              p:title="Previous Quarter">
+                                            <property name="linkText"
+                                                      value="&lt;img src=&quot;../themes/ksap/images/pixel.gif&quot; class=&quot;planNavigation__image&quot; /&gt;"/>
+                                            <property name="href"
+                                                      value="#"/>
+                                            <property name="cssClasses"
+                                                      value="btn btn-secondary planNavigation__button planNavigation__button--previous"/>
+                                            <property name="propertyReplacers">
+                                                <list>
+                                                    <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                          p:propertyName="href"
+                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(termId) NE null">
+                                                        <property name="replacement"
+                                                                  value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(termId)}&amp;requestedLearningPlanId=@{requestedLearningPlanId}"/>
+                                                    </bean>
+                                                    <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                          p:propertyName="cssClasses"
+                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(termId) EQ null">
+                                                        <property name="replacement"
+                                                                  value="btn btn-secondary planNavigation__button planNavigation__button--previous disabled"/>
+                                                    </bean>
+                                                    <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                          p:propertyName="onClickScript"
+                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(termId) EQ null">
+                                                        <property name="replacement"
+                                                                  value="e.preventDefault();"/>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                        <bean id="sb_next_term_button" parent="Uif-Link"
+                                              p:title="Next Quarter">
+                                            <property name="linkText"
+                                                      value="&lt;img src=&quot;../themes/ksap/images/pixel.gif&quot; class=&quot;planNavigation__image&quot; /&gt;"/>
+                                            <property name="href" value="#"/>
+                                            <property name="cssClasses"
+                                                      value="btn btn-secondary planNavigation__button planNavigation__button--next"/>
+                                            <property name="propertyReplacers">
+                                                <list>
+                                                    <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                          p:propertyName="href"
+                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(termId) NE null">
+                                                        <property name="replacement"
+                                                                  value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(termId)}&amp;requestedLearningPlanId=@{requestedLearningPlanId}"/>
+                                                    </bean>
+                                                    <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                          p:propertyName="cssClasses"
+                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(termId) EQ null">
+                                                        <property name="replacement"
+                                                                  value="btn btn-secondary planNavigation__button planNavigation__button--next disabled"/>
+                                                    </bean>
+                                                    <bean parent="Uif-ConditionalBeanPropertyReplacer"
+                                                          p:propertyName="onClickScript"
+                                                          p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(termId) EQ null">
+                                                        <property name="replacement"
+                                                                  value="e.preventDefault();"/>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="KSAP-HeaderTwo" p:headerText="@{term.name}"
+                                  p:cssClasses="planNavigation__header"/>
+                            <bean parent="KSAP-HorizontalBoxGroup"
+                                  p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--view">
+                                <property name="items">
+                                    <list>
+                                        <bean id="sb_term_button" parent="Uif-Link">
+                                            <property name="linkText" value="Quarter"/>
+                                            <property name="title" value="Quarter"/>
+                                            <property name="href"
+                                                      value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{termId}"/>
+                                            <property name="cssClasses"
+                                                      value="btn btn-secondary planNavigation__button planNavigation__button--first"/>
+                                        </bean>
+                                        <bean id="sb_one_year_button" parent="Uif-Link">
+                                            <property name="linkText" value="1 Year"/>
+                                            <property name="title" value="1 Year"/>
+                                            <property name="href"
+                                                      value="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView&amp;focusAtpId=@{termId}"/>
+                                            <property name="cssClasses"
+                                                      value="btn btn-secondary planNavigation__button planNavigation__button--last"/>
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                <ref bean="schedule_build_filters"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="schedule_build_filters" parent="KSAP-HorizontalBoxGroup" p:style="width: 670px;">
         <property name="header">
             <bean parent="KSAP-HeaderOne"/>
         </property>
@@ -122,14 +229,17 @@
                                     </bean>
                                 </property>
                             </bean>
-                            <bean id="sb_filters_submit_button" parent="KSAP-PrimaryActionButton" p:actionLabel="Update">
-                                <property name="actionScript" value="jQuery.event.trigger('REFRESH_POSSIBLE_SCHEDULES');"/>
+                            <bean id="sb_filters_submit_button" parent="KSAP-PrimaryActionButton"
+                                  p:actionLabel="Update">
+                                <property name="actionScript"
+                                          value="jQuery.event.trigger('REFRESH_POSSIBLE_SCHEDULES');"/>
                             </bean>
                         </list>
                     </property>
                 </bean>
 
-                <bean parent="KSAP-StackedHorizontalCollectionGroup" p:headerText="Exclude sections that meet on..." p:width="360px">
+                <bean parent="KSAP-StackedHorizontalCollectionGroup" p:headerText="Exclude sections that meet on..."
+                      p:width="360px">
                     <property name="header">
                         <bean parent="KSAP-HeaderThree"/>
                     </property>
@@ -151,12 +261,17 @@
                                 <property name="cssClasses" value="scheduleReserved__itemActions"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-LinkGroup" p:linkSeparator="|" p:groupBeginDelimiter="" p:groupEndDelimiter="">
-                                            <property name="validationMessages"><null/></property>
+                                        <bean parent="Uif-LinkGroup" p:linkSeparator="|" p:groupBeginDelimiter=""
+                                              p:groupEndDelimiter="">
+                                            <property name="validationMessages">
+                                                <null/>
+                                            </property>
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="Uif-ActionLink" p:actionLabel="Edit" p:actionScript="openPopup('sb_create_reserved_time_inner', {action:'sb/reserved', methodToCall:'startDialog', termId:'@{term.id}', viewId:'ScheduleBuild-ReservedTime-FormView', id:'@{#line.id}'}, 'sb/reserved', {width:'16px', height:'16px'}, {tail:{hidden: true}, close:true, position:'bottom', align:'center', themeName:'default'}, e)"/>
-                                                    <bean parent="Uif-ActionLink" p:actionLabel="Delete" p:actionScript="KsapSbCalendar.removeReservedSchedule('@{#line.id}', e)"/>
+                                                    <bean parent="Uif-ActionLink" p:actionLabel="Edit"
+                                                          p:actionScript="openPopup('sb_create_reserved_time_inner', {action:'sb/reserved', methodToCall:'startDialog', termId:'@{term.id}', viewId:'ScheduleBuild-ReservedTime-FormView', id:'@{#line.id}'}, 'sb/reserved', {width:'16px', height:'16px'}, {tail:{hidden: true}, close:true, position:'bottom', align:'center', themeName:'default'}, e)"/>
+                                                    <bean parent="Uif-ActionLink" p:actionLabel="Delete"
+                                                          p:actionScript="KsapSbCalendar.removeReservedSchedule('@{#line.id}', e)"/>
                                                 </list>
                                             </property>
                                         </bean>
@@ -182,7 +297,8 @@
         </property>
     </bean>
 
-    <bean id="sb-reserved-item-template" p:id="sb-reserved-item-template" parent="KSAP-HorizontalBoxGroup" p:hidden="true">
+    <bean id="sb-reserved-item-template" p:id="sb-reserved-item-template" parent="KSAP-HorizontalBoxGroup"
+          p:hidden="true">
         <property name="cssClasses" value="scheduleReserved__item"/>
         <property name="items">
             <list>
@@ -191,12 +307,17 @@
                     <property name="cssClasses" value="scheduleReserved__itemActions"/>
                     <property name="items">
                         <list>
-                            <bean parent="Uif-LinkGroup" p:linkSeparator="|" p:groupBeginDelimiter="" p:groupEndDelimiter="">
-                                <property name="validationMessages"><null/></property>
+                            <bean parent="Uif-LinkGroup" p:linkSeparator="|" p:groupBeginDelimiter=""
+                                  p:groupEndDelimiter="">
+                                <property name="validationMessages">
+                                    <null/>
+                                </property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-ActionLink" p:actionLabel="Edit" p:actionScript="openPopup('sb_create_reserved_time_inner', {action:'sb/reserved', methodToCall:'startDialog', viewId:'ScheduleBuild-ReservedTime-FormView', id:'__KSAP_ID__', termId:'__KSAP_TERM_ID__'}, 'sb/reserved', {width:'16px', height:'16px'}, {tail:{hidden: true}, close:true, position:'bottom', align:'center', themeName:'default'}, e)"/>
-                                        <bean parent="Uif-ActionLink" p:actionLabel="Delete" p:actionScript="KsapSbCalendar.removeReservedSchedule('__KSAP_ID__', e)"/>
+                                        <bean parent="Uif-ActionLink" p:actionLabel="Edit"
+                                              p:actionScript="openPopup('sb_create_reserved_time_inner', {action:'sb/reserved', methodToCall:'startDialog', viewId:'ScheduleBuild-ReservedTime-FormView', id:'__KSAP_ID__', termId:'__KSAP_TERM_ID__'}, 'sb/reserved', {width:'16px', height:'16px'}, {tail:{hidden: true}, close:true, position:'bottom', align:'center', themeName:'default'}, e)"/>
+                                        <bean parent="Uif-ActionLink" p:actionLabel="Delete"
+                                              p:actionScript="KsapSbCalendar.removeReservedSchedule('__KSAP_ID__', e)"/>
                                     </list>
                                 </property>
                             </bean>
@@ -207,8 +328,11 @@
         </property>
     </bean>
 
-    <bean id="sb-popover-content-template" p:id="sb-popover-content-template" parent="Uif-GridGroup" p:hidden="true" p:width="376px">
-        <property name="validationMessages"><null/></property>
+    <bean id="sb-popover-content-template" p:id="sb-popover-content-template" parent="Uif-GridGroup" p:hidden="true"
+          p:width="376px">
+        <property name="validationMessages">
+            <null/>
+        </property>
         <property name="cssClasses" value="schedulePopover"/>
         <property name="header">
             <bean parent="KSAP-HeaderDiv" p:hidden="true">
@@ -217,7 +341,8 @@
                         <property name="layoutManager.cssClasses" value="schedulePopover__header"/>
                         <property name="items">
                             <list>
-                                <bean parent="Uif-Link" p:linkText="__KSAP_COURSECD__ __KSAP_COURSETITLE__" p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=__KSAP_COURSEID__&amp;courseCd=__KSAP_COURSECD__"/>
+                                <bean parent="Uif-Link" p:linkText="__KSAP_COURSECD__ __KSAP_COURSETITLE__"
+                                      p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=__KSAP_COURSEID__&amp;courseCd=__KSAP_COURSECD__"/>
                             </list>
                         </property>
                     </bean>
@@ -225,7 +350,9 @@
             </bean>
         </property>
         <property name="layoutManager.style" value="width:376px;"/>
-        <property name="layoutManager.libraryCssClasses"><list/></property>
+        <property name="layoutManager.libraryCssClasses">
+            <list/>
+        </property>
         <property name="layoutManager.cssClasses" value=""/>
         <property name="layoutManager.numberOfColumns" value="11"/>
         <property name="layoutManager.renderAlternatingHeaderColumns" value="false"/>
@@ -245,10 +372,11 @@
                 <bean parent="KSAP-VerticalFieldGroup" p:width="16px">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-ActionImage" >
+                            <bean parent="Uif-ActionImage">
                                 <property name="id" value="action-__KSAP_REGISTRATIONCODE__"/>
                                 <property name="actionImage">
-                                    <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+                                    <bean parent="Uif-Image"
+                                          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
                                 </property>
                                 <property name="dataAttributes">
                                     <map>
@@ -261,7 +389,8 @@
                                     </map>
                                 </property>
                                 <property name="cssClasses" value="__KSAP_STATUSCLASS__"/>
-                                <property name="actionScript" value="KsapSbCalendar.togglePlanSection(jQuery(this).data(), e)"/>
+                                <property name="actionScript"
+                                          value="KsapSbCalendar.togglePlanSection(jQuery(this).data(), e)"/>
                             </bean>
                         </list>
                     </property>
