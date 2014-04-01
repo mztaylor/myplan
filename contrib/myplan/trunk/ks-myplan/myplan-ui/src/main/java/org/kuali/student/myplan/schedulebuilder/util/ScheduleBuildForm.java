@@ -38,6 +38,13 @@ public interface ScheduleBuildForm extends ScheduleForm {
     List<PossibleScheduleOption> getSavedSchedules();
 
     /**
+     * Get the registered schedule options.
+     *
+     * @return The registered schedule options.
+     */
+    PossibleScheduleOption getRegisteredSchedule();
+
+    /**
      * Determine if more schedule options based on the same criteria are
      * requested.
      *
