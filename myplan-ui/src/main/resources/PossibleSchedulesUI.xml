@@ -99,9 +99,27 @@
             <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="schedulePossible__headerGroup--right">
                 <property name="items">
                     <list>
-                        <bean parent="KSAP-Message" p:messageText="Registered course"/>
-                        <bean parent="KSAP-Message" p:messageText="Has enrollment restrictions"/>
-                        <bean parent="KSAP-Message" p:messageText="Closed section"/>
+                        <bean parent="KSAP-Message" p:messageText="[0] Registered course">
+                            <property name="inlineComponents">
+                                <list>
+                                    <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/sb/icon_lock.png"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean parent="KSAP-Message" p:messageText="[0] Has enrollment restrictions">
+                            <property name="inlineComponents">
+                                <list>
+                                    <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/sb/icon_key.png"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean parent="KSAP-Message" p:messageText="[0] Closed section">
+                            <property name="inlineComponents">
+                                <list>
+                                    <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/sb/icon_no.png"/>
+                                </list>
+                            </property>
+                        </bean>
                     </list>
                 </property>
             </bean>
