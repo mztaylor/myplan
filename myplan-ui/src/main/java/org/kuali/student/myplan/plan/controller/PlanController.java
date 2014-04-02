@@ -1607,8 +1607,8 @@ public class PlanController extends UifControllerBase {
             if (!removed) {
                 subject = String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_MESSAGE_SUBJECT), code);
                 emailSubject = String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_SUBJECT), adviserName);
-                message = String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_BODY), adviserName, courseCd, term, note);
-                emailMessage = message + String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_INFO), dateAdded, planLink);
+                message = String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_BODY), adviserName, courseCd, term, "\n" + note);
+                emailMessage = String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_BODY), adviserName, courseCd, term, "<br>" + note) + String.format((String) pro.get(PlanConstants.ADD_RECOMMEND_NOTIFICATION_INFO), dateAdded, planLink);
             } else {
                 subject = String.format((String) pro.get(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_MESSAGE_SUBJECT), code);
                 emailSubject = String.format((String) pro.get(PlanConstants.REMOVED_RECOMMEND_NOTIFICATION_SUBJECT), adviserName);
@@ -2831,7 +2831,7 @@ public class PlanController extends UifControllerBase {
         String note = null;
         if (hasText(planItem.getDescr().getPlain())) {
             try {
-                note = mapper.writeValueAsString(HtmlUtils.htmlEscape(planItem.getDescr().getPlain().replace("\n", "<br/>").replace("'", "\\'"))).replaceAll("^\"|\"$", "");
+                note = mapper.writeValueAsString(HtmlUtils.htmlEscape(planItem.getDescr().getPlain().replace("'", "\\'"))).replaceAll("^\"|\"$", "");
             } catch (IOException e) {
                 logger.error("Could not add the note to add event");
             }
