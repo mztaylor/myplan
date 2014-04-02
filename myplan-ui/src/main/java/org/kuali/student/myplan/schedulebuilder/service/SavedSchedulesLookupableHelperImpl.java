@@ -76,7 +76,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 if (termId.equals(possibleScheduleOption.getTermId())) {
                     PossibleScheduleErrorsInfo possibleScheduleErrorsInfo = new PossibleScheduleErrorsInfo();
                     Map<String, Map<String, List<String>>> invalidOptions = new LinkedHashMap<String, Map<String, List<String>>>();
-                    List<ActivityOption> validatedActivities = validatedSavedActivities(possibleScheduleOption.getActivityOptions(), invalidOptions, reservedTimes == null ? new ArrayList<ReservedTime>() : reservedTimes);
+                    List<ActivityOption> validatedActivities = validatedSavedActivities(possibleScheduleOption.getActivityOptions(), invalidOptions, reservedTimes == null ? new ArrayList<ReservedTime>() : reservedTimes, new ArrayList<String>(plannedItems.keySet()));
                     if (!CollectionUtils.isEmpty(validatedActivities) && validatedActivities.size() == possibleScheduleOption.getActivityOptions().size()) {
 
                         if (!CollectionUtils.isEmpty(invalidOptions)) {
@@ -121,7 +121,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
      * @param invalidOptions
      * @return ActivityOption list which are validated items and also populates all invalidActivityOptions course code wise.
      */
-    protected List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, Map<String, List<String>>> invalidOptions, List<ReservedTime> reservedTimes) {
+    protected List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, Map<String, List<String>>> invalidOptions, List<ReservedTime> reservedTimes, List<String> plannedActivities) {
         List<ActivityOption> activityOptionList = new ArrayList<ActivityOption>();
         for (ActivityOption activityOption : activityOptions) {
             ActivityOptionInfo savedActivity = new ActivityOptionInfo(activityOption);
@@ -129,8 +129,9 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
             if (!CollectionUtils.isEmpty(savedActivity.getSecondaryOptions())) {
                 boolean isValid = true;
                 for (SecondaryActivityOptions secondaryActivityOption : savedActivity.getSecondaryOptions()) {
+                    boolean containsPlannedItems = activityOptionsContainsPlannedItems(secondaryActivityOption.getActivityOptions(), plannedActivities);
                     if (!CollectionUtils.isEmpty(secondaryActivityOption.getActivityOptions())) {
-                        List<ActivityOption> validatedSecondaryActivities = validatedSavedActivities(secondaryActivityOption.getActivityOptions(), invalidOptions, reservedTimes);
+                        List<ActivityOption> validatedSecondaryActivities = validatedSavedActivities(secondaryActivityOption.getActivityOptions(), invalidOptions, reservedTimes, plannedActivities);
                         if (CollectionUtils.isEmpty(validatedSecondaryActivities)) {
                             isValid = false;
                             break;
@@ -138,17 +139,21 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                             ((SecondaryActivityOptionsInfo) secondaryActivityOption).setActivityOptions(validatedSecondaryActivities);
                             /*because there is atleast one valid secondary activity options we can remove the existing invalid secondary activities form the invalid options only for closed and enrollment restriction error reasons*/
                             if (!CollectionUtils.isEmpty(invalidOptions) && invalidOptions.containsKey(activityOption.getCourseCd())) {
-                                if (invalidOptions.get(activityOption.getCourseCd()).containsKey(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CLOSED)) {
+                                List<String> keySet = new ArrayList<String>(invalidOptions.get(activityOption.getCourseCd()).keySet());
+                                for (String errorKey : keySet) {
+                                    if (!containsPlannedItems) {
+                                        invalidOptions.get(activityOption.getCourseCd()).put(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR, invalidOptions.get(activityOption.getCourseCd()).get(errorKey));
+                                        invalidOptions.get(activityOption.getCourseCd()).remove(errorKey);
+                                    }
+                                }
+                                /*if (invalidOptions.get(activityOption.getCourseCd()).containsKey(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CLOSED)) {
                                     invalidOptions.get(activityOption.getCourseCd()).put(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR, invalidOptions.get(activityOption.getCourseCd()).get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CLOSED));
                                     invalidOptions.get(activityOption.getCourseCd()).remove(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CLOSED);
                                 }
                                 if (invalidOptions.get(activityOption.getCourseCd()).containsKey(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_ENROLL_RESTR)) {
                                     invalidOptions.get(activityOption.getCourseCd()).put(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR, invalidOptions.get(activityOption.getCourseCd()).get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_ENROLL_RESTR));
                                     invalidOptions.get(activityOption.getCourseCd()).remove(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_ENROLL_RESTR);
-                                }
-                                if (!CollectionUtils.isEmpty(invalidOptions.get(activityOption.getCourseCd()))) {
-                                    invalidOptions.remove(activityOption.getCourseCd());
-                                }
+                                }   */
                             }
                         }
                     }
@@ -173,7 +178,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                     continue;
                 }
             } else if (!CollectionUtils.isEmpty(savedActivity.getAlternateActivties())) {
-                validatedAlternates = savedActivity.getAlternateActivties() == null ? new ArrayList<ActivityOption>() : validatedSavedActivities(savedActivity.getAlternateActivties(), invalidOptions, reservedTimes);
+                validatedAlternates = savedActivity.getAlternateActivties() == null ? new ArrayList<ActivityOption>() : validatedSavedActivities(savedActivity.getAlternateActivties(), invalidOptions, reservedTimes, plannedActivities);
             }
 
             ActivityOption currentActivity = getScheduleBuildStrategy().getActivityOption(savedActivity.getTermId(), savedActivity.getCourseId(), savedActivity.getActivityCode());
@@ -226,6 +231,31 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
 
         return activityOptionList;
 
+    }
+
+    /**
+     * recursive method used to check if a activity cd is present in any of the primary, secondary or alternate activity options
+     *
+     * @param activityOptions
+     * @param activityIds
+     * @return
+     */
+    private boolean activityOptionsContainsPlannedItems(List<ActivityOption> activityOptions, List<String> activityIds) {
+        for (ActivityOption activityOption : activityOptions) {
+            if (activityIds.contains(activityOption.getActivityOfferingId())) {
+                return true;
+            }
+            if (activityOptionsContainsPlannedItems(activityOption.getAlternateActivties(), activityIds)) {
+                return true;
+            }
+
+            for (SecondaryActivityOptions so : activityOption.getSecondaryOptions()) {
+                if (activityOptionsContainsPlannedItems(so.getActivityOptions(), activityIds)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

@@ -598,6 +598,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                 List<String> timeChangedErrorActivities = invalidActivities.get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED) == null ? new ArrayList<String>() : invalidActivities.get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED);
                 List<String> conflictedErrorActivities = invalidActivities.get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED) == null ? new ArrayList<String>() : invalidActivities.get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED);
                 List<String> unAvailableSecondariesErrorActivities = invalidActivities.get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_SECONDARIES) == null ? new ArrayList<String>() : invalidActivities.get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_SECONDARIES);
+                List<String> noErrorActivities = invalidActivities.get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR) == null ? new ArrayList<String>() : invalidActivities.get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR);
 
                 activitiesToExclude.addAll(withdrawnErrorActivities);
                 invalidatedActivities.addAll(withdrawnErrorActivities);
@@ -611,6 +612,8 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                 invalidatedActivities.addAll(conflictedErrorActivities);
                 activitiesToExclude.addAll(unAvailableSecondariesErrorActivities);
                 invalidatedActivities.addAll(unAvailableSecondariesErrorActivities);
+                activitiesToExclude.addAll(noErrorActivities);
+                invalidatedActivities.addAll(noErrorActivities);
                 Collections.sort(activitiesToExclude);
                 Collections.sort(invalidatedActivities);
                 if (activityOptionsContains(activityOptions, activitiesToExclude)) {
