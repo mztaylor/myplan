@@ -69,7 +69,7 @@
         "/>-->
         <property name="filters">
             <list>
-                <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 3"/>
+                <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 10"/>
             </list>
         </property>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
