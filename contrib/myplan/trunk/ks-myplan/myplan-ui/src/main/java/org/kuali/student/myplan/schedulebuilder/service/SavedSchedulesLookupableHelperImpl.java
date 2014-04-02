@@ -72,6 +72,9 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 e.printStackTrace();
             }
 
+            List<ClassMeetingTime> registeredClassmeetings = new ArrayList<ClassMeetingTime>();
+
+
             for (PossibleScheduleOption possibleScheduleOption : savedSchedules) {
                 if (termId.equals(possibleScheduleOption.getTermId())) {
                     PossibleScheduleErrorsInfo possibleScheduleErrorsInfo = new PossibleScheduleErrorsInfo();
