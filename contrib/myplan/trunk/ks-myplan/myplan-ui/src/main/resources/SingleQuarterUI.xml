@@ -138,7 +138,7 @@
                                         </property>
                                     </bean>
                                     <ref bean="overallPlanLink"/>
-                                    <ref bean="scheduleBuilderLink"/>
+
                                     <bean parent="KSAP-Message" p:cssClasses="">
                                         <property name="messageText"
                                                   value="View your courses and add or delete scheduled sections for each course to your plan. Remember that MyPlan allows you to create an academic plan, but does not currently check your eligibility for planned courses or sections, and does not register you. Registration is available via the [0] page."/>
@@ -172,15 +172,6 @@
             </bean>
         </property>
         <property name="footer.render" value="false"/>
-    </bean>
-
-    <bean id="scheduleBuilderLink" parent="Uif-LinkField">
-        <property name="render" value="@{dataObject.publishedTerm}"/>
-        <property name="linkText" value="Schedule Builder"/>
-        <property name="title" value="Schedule Builder"/>
-        <property name="href"
-                  value="/student/myplan/sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{dataObject.atpId}&amp;requestedLearningPlanId=@{dataObject.learningPlanId}"/>
-        <property name="cssClasses" value="planNavigation__printable"/>
     </bean>
 
     <bean id="term_collection_data" parent="KSAP-VerticalBoxGroup">
@@ -231,13 +222,27 @@
         <property name="cssClasses" value="planTerm"/>
         <property name="layoutManager.cssClasses" value="planTerm__container"/>
         <property name="header">
-            <bean parent="KSAP-HeaderDiv" p:headerText="@{dataObject.qtrYear}">
+            <bean parent="KSAP-HeaderDiv" p:headerText="@{dataObject.qtrYear}" p:headerTagCssClasses="planTerm__headerText">
                 <property name="cssClasses">
                     <list merge="false">
                         <value>planTerm__header</value>
                         <value>@{dataObject.completedTerm ? 'planTerm__header--past' : (dataObject.currentTermForView ?
                             'planTerm__header--current' : 'planTerm__header--future')}
                         </value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="header.rightGroup">
+            <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planTerm__header--right">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-Link" p:linkText="Schedule Builder" p:title="Schedule Builder">
+                            <property name="href"
+                                      value="/student/myplan/sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{dataObject.atpId}&amp;requestedLearningPlanId=@{dataObject.learningPlanId}"/>
+                            <property name="render" value="@{dataObject.publishedTerm AND dataObject.openForPlanning}"/>
+                            <property name="cssClasses" value="btn btn-small planTerm__scheduleBuilder"/>
+                        </bean>
                     </list>
                 </property>
             </bean>

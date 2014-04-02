@@ -151,7 +151,8 @@ var KsapScheduleBuild = {
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_REGISTRATIONCODE__/gi, popoverContent.activities[i].registrationCode);
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_SUMMERTERM__/gi, "");// Summer A or B label
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_INSTITUTECD__/gi, popoverContent.activities[i].instituteCd);
-            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ENROLLRESTRICTION__/gi, (popoverContent.activities[i].enrollRestriction ? "K" : ""));
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_INSTITUTECD_DISPLAY__/gi, (popoverContent.activities[i].instituteCd !== "" ? "scheduleBuilder__instituteCd--show" : ""));
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ENROLLRESTRICTION__/gi, (popoverContent.activities[i].enrollRestriction ? "scheduleBuilder__enrollRestriction" : ""));
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ENROLLSTATUS__/gi, popoverContent.activities[i].enrollStatus);
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ENROLLSTATE__/gi, popoverContent.activities[i].enrollState);
 

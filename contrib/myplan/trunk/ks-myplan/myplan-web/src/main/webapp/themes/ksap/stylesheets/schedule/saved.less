@@ -33,7 +33,17 @@
         img {
             width: 16px;
             height: 16px;
-            background: url('../images/icon_sprite.png') no-repeat 1px -199px transparent;
+            background: url('../images/icon_sprite.png') no-repeat -1px -199px transparent;
         }
+    }
+
+    .scheduleSaved__viewDetails {
+        color: @linkColor;
+        display: inline-block;
+
+        &:hover {
+            text-decoration: underline;
+        }
+
     }
 }

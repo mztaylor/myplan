@@ -112,11 +112,12 @@
                                 </property>
                             </bean>
                             <bean parent="KSAP-HorizontalFieldGroup">
+                                <property name="cssClasses" value="scheduleSaved__viewDetails"/>
                                 <property name="onClickScript"
                                           value="KsapScheduleBuild.viewScheduleDetails(jQuery(this).parents('.scheduleSaved__item').data('source').events, @{#index + 1}, '@{#line.id}', e)"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="KSAP-Message" p:messageText="View schedule details"/>
+                                        <bean parent="KSAP-NoSpanMessage" p:messageText="View schedule details"/>
                                     </list>
                                 </property>
                             </bean>
@@ -125,6 +126,7 @@
                 </bean>
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="cssClasses" value="scheduleSaved__remove"/>
+                    <property name="title" value="Unpin this schedule"/>
                     <property name="onClickScript"
                               value="KsapScheduleBuild.confirmRemovedSavedSchedule('@{#line.id}', false, e)"/>
                     <property name="items">
