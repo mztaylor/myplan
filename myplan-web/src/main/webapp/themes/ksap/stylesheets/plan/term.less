@@ -53,33 +53,62 @@
 }
 
 .planTerm__header {
-    font-size: @fontSizeExtraLarge;
-    text-transform: uppercase;
     padding: @paddingDefault;
     .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
     border-width: 1px;
     border-style: solid;
+    overflow: auto;
+
+    .planTerm__headerText {
+        float: left;
+        font-size: @fontSizeExtraLarge;
+        text-transform: uppercase;
+        line-height: 26px;
+    }
 
     &.planTerm__header--past {
         #gradient > .vertical(#dedede, #ccc);
         border-color: #ccc;
-        color: @gray;
-        text-shadow: 0px 1px 0px #fcffff;
+
+        .planTerm__headerText {
+            color: @gray;
+            text-shadow: 0px 1px 0px #fcffff;
+        }
+
     }
 
     &.planTerm__header--current {
         #gradient > .vertical(#5c428e, #3b295f);
         border-color: #432f69;
-        color: #f9f7f7;
-        text-shadow: 0px 1px 0px #000;
+
+        .planTerm__headerText {
+            color: #f9f7f7;
+            text-shadow: 0px 1px 0px #000;
+        }
+
+        .planTerm__scheduleBuilder {
+            .btn-secondary;
+        }
     }
 
     &.planTerm__header--future {
         #gradient > .vertical(#ede1c1, #efd89e);
         border-color: #dcca9d;
-        color: @gray;
-        text-shadow: 0px 1px 0px #fcffff;
+
+        .planTerm__headerText {
+            color: @gray;
+            text-shadow: 0px 1px 0px #fcffff;
+        }
+
+        .planTerm__scheduleBuilder {
+            .btn-primary;
+        }
     }
+
+    .planTerm__header--right {
+        float: right;
+    }
+
 }
 
 .planTerm__container {

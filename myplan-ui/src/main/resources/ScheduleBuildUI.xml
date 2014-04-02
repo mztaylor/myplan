@@ -78,7 +78,10 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="KSAP-HeaderDiv" p:headerText="@{term.name}" p:cssClasses="scheduleBuilder__termHeader"/>
+                <bean parent="KSAP-HeaderDiv" p:headerText="@{term.name}" p:headerTagCssClasses="planTerm__headerText">
+                    <!-- TODO: Set modifer to current if term is current -->
+                    <property name="cssClasses" value="planTerm__header planTerm__header--future"/>
+                </bean>
                 <ref bean="schedule_build_possible"/>
                 <ref bean="sb-reserved-item-template"/>
                 <ref bean="sb-popover-content-template"/>
@@ -388,8 +391,14 @@
                 <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGLOCATION__" p:width="72px"/>
                 <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_REGISTRATIONCODE__" p:width="48px"/>
                 <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_SUMMERTERM__" p:width="16px"/>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_INSTITUTECD__" p:width="24px"/>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLRESTRICTION__" p:width="16px"/>
+                <bean parent="KSAP-Message" p:messageText="__KSAP_INSTITUTECD__" p:width="24px">
+                    <property name="cssClasses" value="scheduleBuilder__instituteCd __KSAP_INSTITUTECD_DISPLAY__"/>
+                </bean>
+                <bean parent="Uif-Image" p:width="16px">
+                    <property name="cssClasses" value="__KSAP_ENROLLRESTRICTION__"/>
+                    <property name="source" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+                </bean>
+                <!--<bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLRESTRICTION__" p:width="16px"/>-->
                 <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLSTATUS__" p:width="48px"/>
                 <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLSTATE__" p:width="48px"/>
                 <bean parent="KSAP-VerticalFieldGroup" p:width="16px">
