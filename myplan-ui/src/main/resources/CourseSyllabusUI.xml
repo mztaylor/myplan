@@ -29,7 +29,6 @@
         <property name="header">
             <bean parent="Uif-HeaderThree" p:style="background-color:lightgray;"/>
         </property>
-        <property name="style" value="width: 800px;"/>
         <property name="page">
             <bean parent="KSAP-Page" id="course_syllabus_page">
                 <property name="items">
