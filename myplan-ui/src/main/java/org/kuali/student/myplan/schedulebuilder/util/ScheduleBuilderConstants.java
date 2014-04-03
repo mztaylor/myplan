@@ -31,6 +31,9 @@ public class ScheduleBuilderConstants {
     public static final String VALID_PINNED_SCHEDULE_RESERVED_CONFLICT_SINGLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.reserved.conflict.single";
     public static final String VALID_PINNED_SCHEDULE_RESERVED_CONFLICT_MULTIPLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.reserved.conflict.multiple";
 
+    public static final String VALID_PINNED_SCHEDULE_REGISTERED_CONFLICT_SINGLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.registered.conflict.single";
+    public static final String VALID_PINNED_SCHEDULE_REGISTERED_CONFLICT_MULTIPLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.registered.conflict.multiple";
+
     public static final String VALID_PINNED_SCHEDULE_NO_SECONDARIES_SINGLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.no.secondaries.single";
     public static final String VALID_PINNED_SCHEDULE_NO_SECONDARIES_MULTIPLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.no.secondaries.multiple";
 

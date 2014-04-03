@@ -191,7 +191,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 validatedAlternates.remove(0);
                 alAo.setAlternateActivities(validatedAlternates.size() > 0 ? validatedAlternates : new ArrayList<ActivityOption>());
                 activityOptionList.add(alAo);
-            } else if (StringUtils.hasText(reasonForChange) && (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CLOSED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_ENROLL_RESTR.equals(reasonForChange))) {
+            } else if (StringUtils.hasText(reasonForChange) && (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CLOSED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_ENROLL_RESTR.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_REGISTERED.equals(reasonForChange))) {
                 savedActivity.setAlternateActivities(validatedAlternates);
                 activityOptionList.add(savedActivity);
                 if (invalidOptions == null) {
@@ -277,12 +277,12 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
             return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN;
         } else if (current.isSuspended()) {
             return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_SUSPENDED;
+        } else if (conflictsWithRegistered(registered, saved)) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_REGISTERED;
         } else if (current.isClosed()) {
             return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CLOSED;
         } else if (current.isEnrollmentRestriction()) {
             return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_ENROLL_RESTR;
-        } else if (conflictsWithRegistered(registered, saved)) {
-            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_REGISTERED;
         }
         return null;
     }
