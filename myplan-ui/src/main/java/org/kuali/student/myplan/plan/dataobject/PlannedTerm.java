@@ -2,8 +2,7 @@ package org.kuali.student.myplan.plan.dataobject;
 
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,6 +41,8 @@ public class PlannedTerm {
 
     /*Used for schedule builder req param*/
     private String learningPlanId;
+    /*Used for schedule builder pinned schedules*/
+    private Map<String, String> plannedItems;
 
 
     /*
@@ -232,6 +233,17 @@ public class PlannedTerm {
 
     public void setPublishedTerm(boolean publishedTerm) {
         this.publishedTerm = publishedTerm;
+    }
+
+    public Map<String, String> getPlannedItems() {
+        if (plannedItems == null) {
+            plannedItems = new LinkedHashMap<String, String>();
+        }
+        return plannedItems;
+    }
+
+    public void setPlannedItems(Map<String, String> plannedItems) {
+        this.plannedItems = plannedItems;
     }
 }
 
