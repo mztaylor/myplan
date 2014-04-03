@@ -80,14 +80,6 @@ public interface ScheduleBuildForm extends ScheduleForm {
     String removeSchedule();
 
     /**
-     * Json string which holds a map of activityOfferingId associated to a planItemId
-     *
-     * @return json object as string
-     */
-    String getPlannedActivities();
-
-
-    /**
      * Unique Id for a schedule
      * @return
      */

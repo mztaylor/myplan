@@ -40,7 +40,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
 
     private boolean more;
     private String uniqueId;
-    private String plannedActivities;
+
     private int possibleScheduleSize;
     private ScheduleBuilder scheduleBuilder;
     private List<CourseOption> courseOptions;
@@ -49,7 +49,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
     private PossibleScheduleOption registeredSchedule;
 
     private transient AcademicCalendarService academicCalendarService;
-    private transient PlanHelper planHelper;
+
 
 
     private void updateReservedTimesOnBuild() {
@@ -194,16 +194,6 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
             registeredSchedule = scheduleBuilder.getRegistered();
         }
 
-        Map<String, String> plannedItems = getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(getRequestedLearningPlanId(), PlanConstants.SECTION_TYPE, getTerm().getId());
-
-        /*Creating json string which has the planned activities associated to their planItemId.. Used in UI for ability to delete planned activities*/
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            plannedActivities = CollectionUtils.isEmpty(plannedItems) ? null : mapper.writeValueAsString(plannedItems);
-        } catch (IOException e) {
-            LOG.error("Could not build planned Activities json string", e);
-        }
-
         setMinTime(getDefaultMinTime());
         setMaxTime(getDefaultMaxTime());
 
@@ -289,15 +279,6 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
             throw new IllegalStateException("Failed to remove reserved time", e);
         }
         return getUniqueId();
-    }
-
-    @Override
-    public String getPlannedActivities() {
-        return plannedActivities;
-    }
-
-    public void setPlannedActivities(String plannedActivities) {
-        this.plannedActivities = plannedActivities;
     }
 
     public ScheduleBuilder getScheduleBuilder() {
@@ -460,14 +441,4 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
         this.academicCalendarService = academicCalendarService;
     }
 
-    public PlanHelper getPlanHelper() {
-        if (planHelper == null) {
-            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
-        }
-        return planHelper;
-    }
-
-    public void setPlanHelper(PlanHelper planHelper) {
-        this.planHelper = planHelper;
-    }
 }

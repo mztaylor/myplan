@@ -112,5 +112,12 @@ public interface ScheduleForm {
      */
     boolean isCurrentTermForView();
 
+    /**
+     * Json string which holds a map of activityOfferingId associated to a planItemId
+     *
+     * @return json object as string
+     */
+    String getPlannedActivities();
+
 
 }

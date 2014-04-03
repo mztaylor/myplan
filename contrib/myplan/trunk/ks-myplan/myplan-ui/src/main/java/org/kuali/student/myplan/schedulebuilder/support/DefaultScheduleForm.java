@@ -1,10 +1,13 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
+import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.ScheduleBuildFiltersInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.infc.ScheduleBuildFilters;
@@ -13,19 +16,25 @@ import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleForm;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hemanthg on 2/26/14.
  */
 public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultScheduleForm.class);
     private Term term;
     private String requestedLearningPlanId;
     private List<ReservedTime> reservedTimes;
     private ScheduleBuildFilters buildFilters;
+    private String plannedActivities;
     private List<String> includeFilters;
     private boolean currentTermForView;
     private Integer removeReserved;
@@ -41,6 +50,7 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
     private TermHelper termHelper;
     private ScheduleBuildStrategy scheduleBuildStrategy;
     private ScheduleBuildHelper scheduleBuildHelper;
+    private PlanHelper planHelper;
 
     @Override
     public void reset() {
@@ -53,6 +63,16 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
         getIncludeFilters().add(ScheduleBuilderConstants.RESTRICTION_FILTER.toLowerCase());
 
         validateAndGenerateTerm();
+
+        Map<String, String> plannedItems = getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(getRequestedLearningPlanId(), PlanConstants.SECTION_TYPE, getTerm().getId());
+
+        /*Creating json string which has the planned activities associated to their planItemId.. Used in UI for ability to delete planned activities*/
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            plannedActivities = CollectionUtils.isEmpty(plannedItems) ? null : mapper.writeValueAsString(plannedItems);
+        } catch (IOException e) {
+            LOG.error("Could not build planned Activities json string", e);
+        }
 
         ScheduleBuildStrategy strategy = getScheduleBuildStrategy();
         try {
@@ -263,5 +283,25 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
 
     public void setCurrentTermForView(boolean currentTermForView) {
         this.currentTermForView = currentTermForView;
+    }
+
+    public PlanHelper getPlanHelper() {
+        if (planHelper == null) {
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
+        }
+        return planHelper;
+    }
+
+    public void setPlanHelper(PlanHelper planHelper) {
+        this.planHelper = planHelper;
+    }
+
+    @Override
+    public String getPlannedActivities() {
+        return plannedActivities;
+    }
+
+    public void setPlannedActivities(String plannedActivities) {
+        this.plannedActivities = plannedActivities;
     }
 }
