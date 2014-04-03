@@ -1,5 +1,5 @@
-.schedulePopover {
-    .schedulePopover__header {
+.scheduleDetails {
+    .scheduleDetails__header {
         margin: @marginMini 0 @marginSmall 0;
         border-bottom: @dottedBorderStyle;
     }
@@ -19,16 +19,29 @@
         }
     }
 
-    .schedulePopover__itemAdd {
+    .scheduleDetails__sectionCd {
+        display: inline-block;
+        padding: 0 2px;
+        width: 21px;
+    }
+
+    .scheduleDetails__sectionCd--planned {
+        background: url('../images/planned_activity_bkgrd.png');
+    }
+
+    .scheduleDetails__itemAdd {
         .courseActivities__itemAdd;
     }
 
-    .schedulePopover__itemDelete {
+    .scheduleDetails__itemDelete {
         .courseActivities__itemDelete;
     }
 
-    td.meetingLocation,
-    td.registrationCode {
-        display: none;
+    .scheduleDetails--full {
+        margin: 0 0 15px 0;
+    }
+
+    .scheduleDetails__registered {
+        font-size: @fontSizeMini;
     }
 }

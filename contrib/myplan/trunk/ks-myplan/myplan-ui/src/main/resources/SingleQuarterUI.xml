@@ -30,6 +30,11 @@
                   value="org.kuali.student.myplan.plan.service.SingleQuarterInquiryHelperImpl"/>
         <property name="singlePageView" value="true"/>
         <property name="page.header.render" value="false"/>
+        <property name="dataAttributes">
+            <map>
+                <entry key="planned-activities" value="@{dataObject.plannedActivities}"/>
+            </map>
+        </property>
         <property name="page">
             <bean parent="KSAP-Page" p:id="term_planned_courses_detail_page">
                 <property name="items">
@@ -163,16 +168,23 @@
                                             <bean parent="Uif-HiddenControl"/>
                                         </property>
                                     </bean>
-                                    <ref bean="sb-additional-details-template"/>
-                                    <ref bean="sb-additional-details-group"/>
-                                    <ref bean="sb_confirm_remove_pinned"/>
+                                    <bean parent="KSAP-VerticalBoxGroup" p:hidden="true">
+                                        <property name="items">
+                                            <list>
+                                                <bean parent="sb_course_full_details_template"/>
+                                                <bean parent="sb_registered_full_details_template"/>
+                                                <bean parent="sb_course_details_list_template"/>
+                                                <bean parent="sb_confirm_remove_pinned"/>
+                                            </list>
+                                        </property>
+                                    </bean>
                                 </list>
                             </property>
                         </bean>
                         <bean parent="KSAP-RightPane" p:width="230px">
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules">
+                                    <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules: @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToShortTermName(dataObject.atpId)}">
                                         <property name="additionalCssClasses" value="noClick scheduleSaved--termView"/>
                                         <property name="items">
                                             <list>

@@ -37,6 +37,11 @@
         </property>
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
+        <property name="dataAttributes">
+            <map>
+                <entry key="planned-activities" value="@{plannedActivities}"/>
+            </map>
+        </property>
     </bean>
 
     <bean id="schedule_build_page" parent="schedule_build_page-parent"/>
@@ -58,11 +63,6 @@
                     <property name="control">
                         <bean parent="Uif-HiddenControl"/>
                     </property>
-                    <property name="dataAttributes">
-                        <map>
-                            <entry key="planned-activities" value="@{plannedActivities}"/>
-                        </map>
-                    </property>
                 </bean>
                 <bean parent="KSAP-HorizontalBoxGroup">
                     <property name="items">
@@ -81,15 +81,8 @@
                 <bean parent="KSAP-HeaderDiv" p:headerText="@{term.name}" p:headerTagCssClasses="planTerm__headerText">
                     <property name="cssClasses" value="planTerm__header planTerm__header--@{currentTermForView ? 'current' : 'future'}"/>
                 </bean>
-                <ref bean="schedule_build_possible"/>
-                <ref bean="sb-reserved-item-template"/>
-                <ref bean="sb-popover-content-template"/>
-                <ref bean="sb-additional-details-template"/>
-                <ref bean="sb-registered-details-template"/>
-                <ref bean="sb-additional-details-group"/>
-                <ref bean="sb_error_max_schedules"/>
-                <ref bean="sb_error_max_pinned"/>
-                <ref bean="sb_confirm_remove_pinned"/>
+                <bean parent="schedule_build_possible"/>
+                <bean parent="sb_hidden_templates"/>
             </list>
         </property>
     </bean>
@@ -326,8 +319,23 @@
         </property>
     </bean>
 
-    <bean id="sb-reserved-item-template" p:id="sb-reserved-item-template" parent="KSAP-HorizontalBoxGroup"
-          p:hidden="true">
+    <bean id="sb_hidden_templates" parent="KSAP-VerticalBoxGroup" p:hidden="true">
+        <property name="items">
+            <list>
+                <bean parent="sb_reserved_item_template"/>
+                <bean parent="sb_course_details_template"/>
+                <bean parent="sb_course_full_details_template"/>
+                <bean parent="sb_registered_details_template"/>
+                <bean parent="sb_registered_full_details_template"/>
+                <bean parent="sb_course_details_list_template"/>
+                <bean parent="sb_error_max_schedules"/>
+                <bean parent="sb_error_max_pinned"/>
+                <bean parent="sb_confirm_remove_pinned"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="sb_reserved_item_template" p:id="sb_reserved_item_template" parent="KSAP-HorizontalBoxGroup">
         <property name="cssClasses" value="scheduleReserved__item"/>
         <property name="items">
             <list>
@@ -357,17 +365,16 @@
         </property>
     </bean>
 
-    <bean id="sb-popover-content-template" p:id="sb-popover-content-template" parent="Uif-GridGroup" p:hidden="true"
-          p:width="376px">
-        <property name="cssClasses" value="schedulePopover"/>
+    <bean id="sb_course_details_template" p:id="sb_course_details_template" parent="Uif-GridGroup">
+        <property name="cssClasses" value="scheduleDetails"/>
         <property name="header">
             <bean parent="KSAP-HeaderDiv" p:hidden="true">
                 <property name="lowerGroup">
                     <bean parent="KSAP-VerticalBoxGroup">
-                        <property name="layoutManager.cssClasses" value="schedulePopover__header"/>
+                        <property name="layoutManager.cssClasses" value="scheduleDetails__header"/>
                         <property name="items">
                             <list>
-                                <bean parent="Uif-Link" p:linkText="__KSAP_COURSECD__ __KSAP_COURSETITLE__"
+                                <bean parent="Uif-Link" p:linkText="__KSAP_COURSECD__ __KSAP_COURSETITLE__ (__KSAP_COURSECREDIT__)"
                                       p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=__KSAP_COURSEID__&amp;courseCd=__KSAP_COURSECD__"/>
                             </list>
                         </property>
@@ -375,77 +382,55 @@
                 </property>
             </bean>
         </property>
-        <property name="layoutManager.style" value="width:376px;"/>
-        <property name="layoutManager.libraryCssClasses">
-            <list/>
-        </property>
+        <property name="width" value="384px"/>
+        <property name="layoutManager.style" value="width:384px;"/>
+        <property name="layoutManager.libraryCssClasses"><list/></property>
         <property name="layoutManager.cssClasses" value=""/>
-        <property name="layoutManager.numberOfColumns" value="11"/>
+        <property name="layoutManager.numberOfColumns" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() ? 9 : 8}"/>
         <property name="layoutManager.renderAlternatingHeaderColumns" value="false"/>
         <property name="layoutManager.applyDefaultCellWidths" value="false"/>
         <property name="items">
             <list>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_SECTIONCD__" p:width="24px"/>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGDAY__" p:width="72px"/>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGTIME__" p:width="112px"/>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGLOCATION__" p:width="72px"/>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_REGISTRATIONCODE__" p:width="48px"/>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_SUMMERTERM__" p:width="16px"/>
-                <bean parent="KSAP-Message" p:messageText="__KSAP_INSTITUTECD__" p:width="24px">
-                    <property name="cssClasses" value="scheduleBuilder__instituteCd __KSAP_INSTITUTECD_DISPLAY__"/>
-                </bean>
-                <bean parent="Uif-Image" p:width="16px">
-                    <property name="cssClasses" value="__KSAP_ENROLLRESTRICTION__"/>
-                    <property name="source" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
-                </bean>
-                <!--<bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLRESTRICTION__" p:width="16px"/>-->
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLSTATUS__" p:width="48px"/>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLSTATE__" p:width="48px"/>
-                <bean parent="KSAP-VerticalFieldGroup" p:width="16px">
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-ActionImage">
-                                <property name="id" value="action-__KSAP_REGISTRATIONCODE__"/>
-                                <property name="actionImage">
-                                    <bean parent="Uif-Image"
-                                          p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
-                                </property>
-                                <property name="dataAttributes">
-                                    <map>
-                                        <entry key="registration-code" value="__KSAP_REGISTRATIONCODE__"/>
-                                        <entry key="activity-id" value="__KSAP_ACTIVITYID__"/>
-                                        <entry key="course-id" value="__KSAP_COURSEID__"/>
-                                        <entry key="course-code" value="__KSAP_COURSECD__"/>
-                                        <entry key="section-code" value="__KSAP_SECTIONCD__"/>
-                                        <entry key="primary" value="__KSAP_PRIMARY__"/>
-                                    </map>
-                                </property>
-                                <property name="cssClasses" value="__KSAP_STATUSCLASS__"/>
-                                <property name="actionScript"
-                                          value="KsapScheduleBuild.togglePlanSection(jQuery(this).data(), e)"/>
-                            </bean>
-                        </list>
-                    </property>
-                </bean>
+                <bean parent="sb_course_section_code"/>
+                <bean parent="sb_course_meeting_day"/>
+                <bean parent="sb_course_meeting_time"/>
+                <bean parent="sb_course_term_label"/>
+                <bean parent="sb_course_institute_code"/>
+                <bean parent="sb_course_enroll_restriction"/>
+                <bean parent="sb_course_enroll_status"/>
+                <bean parent="sb_course_enroll_state"/>
+                <bean parent="sb_course_activity_action"/>
             </list>
         </property>
     </bean>
 
-    <bean id="sb-additional-details-template" p:id="sb-additional-details-template"
-          parent="sb-popover-content-template">
-        <property name="width" value="480px"/>
-        <property name="layoutManager.style" value="width:480px;"/>
-        <property name="additionalCssClasses" value="scheduleSaved__details"/>
+    <bean id="sb_course_full_details_template" p:id="sb_course_full_details_template"
+          parent="sb_course_details_template">
+        <property name="additionalCssClasses" value="scheduleDetails--full"/>
+        <property name="width" value="488px"/>
+        <property name="layoutManager.style" value="width:488px;"/>
+        <property name="layoutManager.numberOfColumns" value="10"/>
+        <property name="items">
+            <list>
+                <bean parent="sb_course_section_code"/>
+                <bean parent="sb_course_meeting_day"/>
+                <bean parent="sb_course_meeting_time"/>
+                <bean parent="sb_course_meeting_location"/>
+                <bean parent="sb_course_registration_code"/>
+                <bean parent="sb_course_term_label"/>
+                <bean parent="sb_course_institute_code"/>
+                <bean parent="sb_course_enroll_restriction"/>
+                <bean parent="sb_course_enroll_status"/>
+                <bean parent="sb_course_enroll_state"/>
+            </list>
+        </property>
     </bean>
 
-    <bean id="sb-registered-details-template" p:id="sb-registered-details-template"
-          parent="sb-additional-details-template">
-        <property name="width" value="480px"/>
-        <property name="layoutManager.style" value="width:480px;"/>
-        <property name="additionalCssClasses" value="scheduleSaved__details"/>
+    <bean id="sb_registered_details_template" p:id="sb_registered_details_template"
+          parent="sb_course_details_template">
         <property name="header.upperGroup">
             <bean parent="KSAP-VerticalBoxGroup">
-                <property name="cssClasses" value="scheduleSaved__registered"/>
+                <property name="cssClasses" value="scheduleDetails__registered"/>
                 <property name="items">
                     <list>
                         <bean parent="KSAP-NoSpanMessage" p:messageText="[0] Registered">
@@ -459,10 +444,26 @@
                 </property>
             </bean>
         </property>
+        <property name="layoutManager.style" value="width:328px;"/>
+        <property name="layoutManager.numberOfColumns" value="6"/>
+        <property name="items">
+            <list>
+                <bean parent="sb_course_section_code"/>
+                <bean parent="sb_course_meeting_day"/>
+                <bean parent="sb_course_meeting_time"/>
+                <bean parent="sb_course_meeting_location"/>
+                <bean parent="sb_course_term_label"/>
+                <bean parent="sb_course_institute_code"/>
+            </list>
+        </property>
     </bean>
 
-    <bean id="sb-additional-details-group" p:id="sb-additional-details-group" parent="KSAP-VerticalBoxGroup"
-          p:hidden="true">
+    <bean id="sb_registered_full_details_template" p:id="sb_registered_full_details_template"
+          parent="sb_registered_details_template">
+        <property name="additionalCssClasses" value="scheduleDetails--full"/>
+    </bean>
+
+    <bean id="sb_course_details_list_template" p:id="sb_course_details_list_template" parent="KSAP-VerticalBoxGroup">
         <property name="header">
             <bean parent="KSAP-HeaderTwo" p:headerText="Pinned Schedule P__KSAP_PINNED_INDEX__"/>
         </property>
@@ -487,7 +488,7 @@
         </property>
     </bean>
 
-    <bean id="sb_dialogs" parent="KSAP-VerticalBoxGroup" p:hidden="true">
+    <bean id="sb_dialogs" parent="KSAP-VerticalBoxGroup">
         <property name="header">
             <bean parent="KSAP-HeaderDiv" p:cssClasses="popover__header" p:headerTagCssClasses="popover__headerText"/>
         </property>
@@ -547,6 +548,56 @@
                 </property>
             </bean>
         </property>
+    </bean>
+
+    <bean id="sb_course_section_code" parent="KSAP-Message" p:messageText="__KSAP_SECTIONCD__" p:width="32px">
+        <property name="cssClasses" value="scheduleDetails__sectionCd __KSAP_STATUSCLASS__"/>
+        <property name="id" value="section-code-__KSAP_REGISTRATIONCODE__"/>
+    </bean>
+
+    <bean id="sb_course_meeting_day" parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGDAY__" p:width="72px"/>
+
+    <bean id="sb_course_meeting_time" parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGTIME__" p:width="112px"/>
+
+    <bean id="sb_course_meeting_location" parent="KSAP-NoSpanMessage" p:messageText="__KSAP_MEETINGLOCATION__" p:width="72px"/>
+
+    <bean id="sb_course_registration_code" parent="KSAP-NoSpanMessage" p:messageText="__KSAP_REGISTRATIONCODE__" p:width="48px"/>
+
+    <bean id="sb_course_term_label" parent="KSAP-NoSpanMessage" p:messageText="__KSAP_TERMLABEL__" p:width="16px"/>
+
+    <bean id="sb_course_institute_code" parent="KSAP-Message" p:messageText="__KSAP_INSTITUTECD__" p:width="24px">
+        <property name="cssClasses" value="scheduleBuilder__instituteCd __KSAP_INSTITUTECD_DISPLAY__"/>
+    </bean>
+
+    <bean id="sb_course_enroll_restriction" parent="Uif-Image" p:width="16px">
+        <property name="cssClasses" value="__KSAP_ENROLLRESTRICTION__"/>
+        <property name="source" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+    </bean>
+
+    <bean id="sb_course_enroll_status" parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLSTATUS__" p:width="48px"/>
+
+    <bean id="sb_course_enroll_state" parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLSTATE__" p:width="48px"/>
+
+    <bean id="sb_course_activity_action" parent="Uif-ActionImage" p:width="16px">
+        <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+        <property name="id" value="action-__KSAP_REGISTRATIONCODE__"/>
+        <property name="actionImage">
+            <bean parent="Uif-Image"
+                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+        </property>
+        <property name="dataAttributes">
+            <map>
+                <entry key="registration-code" value="__KSAP_REGISTRATIONCODE__"/>
+                <entry key="activity-id" value="__KSAP_ACTIVITYID__"/>
+                <entry key="course-id" value="__KSAP_COURSEID__"/>
+                <entry key="course-code" value="__KSAP_COURSECD__"/>
+                <entry key="section-code" value="__KSAP_SECTIONCD__"/>
+                <entry key="primary" value="__KSAP_PRIMARY__"/>
+            </map>
+        </property>
+        <property name="cssClasses" value="__KSAP_ACTIONCLASS__"/>
+        <property name="actionScript"
+                  value="KsapScheduleBuild.togglePlanSection(jQuery(this).data(), e)"/>
     </bean>
 
     <bean id="schedule_build_possible" parent="KSAP-VerticalBoxGroup" p:id="schedule_build_possible">
