@@ -58,6 +58,7 @@ public class ScheduleBuilderConstants {
     public static final String PINNED_SCHEDULES_ERROR_REASON_ENROLL_RESTR = "EnrollmentRestriction";
     public static final String PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED = "Meeting_Time_Changed";
     public static final String PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED = "Conflicts_Reserved_Time";
+    public static final String PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_REGISTERED = "Conflicts_Registered_Time";
     public static final String PINNED_SCHEDULES_ERROR_REASON_NO_SECONDARIES = "Secondaries_Unavailable";
     public static final String PINNED_SCHEDULES_ERROR_REASON_NO_ERROR = "No_Error";
 

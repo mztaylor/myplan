@@ -38,6 +38,9 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     private String courseCd;
 
     @XmlAttribute
+    private String courseCredit;
+
+    @XmlAttribute
     private String courseTitle;
 
     @XmlAttribute
@@ -147,6 +150,7 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         courseId = copy.getCourseId();
         courseCd = copy.getCourseCd();
         courseTitle = copy.getCourseTitle();
+        courseCredit = copy.getCourseCredit();
         termId = copy.getTermId();
         planItemId = copy.getPlanItemId();
         activityOfferingId = copy.getActivityOfferingId();
@@ -225,6 +229,15 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 
     public void setCourseCd(String courseCd) {
         this.courseCd = courseCd;
+    }
+
+    @Override
+    public String getCourseCredit() {
+        return courseCredit;
+    }
+
+    public void setCourseCredit(String courseCredit) {
+        this.courseCredit = courseCredit;
     }
 
     @Override

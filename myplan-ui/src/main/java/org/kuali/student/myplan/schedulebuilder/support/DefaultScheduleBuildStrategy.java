@@ -19,6 +19,7 @@ import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
+import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
@@ -305,7 +306,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     protected ActivityOptionInfo getActivityOption(Term term, ActivityOfferingDisplayInfo aodi,
-                                                   int courseIndex, String courseId, String courseCd, String courseTitle, String campusCode, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData, Map<String, String> plannedActivities, StringBuilder msg,
+                                                   int courseIndex, String courseId, String courseCd, String courseTitle, String campusCode, String courseCredit, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData, Map<String, String> plannedActivities, StringBuilder msg,
                                                    DateFormat tdf, DateFormat udf, DateFormat ddf, Calendar sdcal, Calendar edcal,
                                                    Calendar tcal) {
 
@@ -314,6 +315,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         activityOption.setUniqueId(UUID.randomUUID().toString());
         activityOption.setCourseId(courseId);
         activityOption.setCourseCd(courseCd);
+        activityOption.setCourseCredit(courseCredit);
         activityOption.setCourseTitle(courseTitle);
         activityOption.setPlanItemId(plannedActivities != null ? plannedActivities.get(aodi.getId()) : null);
         activityOption.setTermId(term.getId());
@@ -484,7 +486,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 Calendar sdcal = Calendar.getInstance();
                 Calendar edcal = Calendar.getInstance();
                 Calendar tcal = Calendar.getInstance();
-                return getActivityOption(term, aodi, 0, courseId, course.getCode(), course.getCourseTitle(), campusCode, enrollmentData, plannedActivities, null, tdf, udf, ddf,
+                return getActivityOption(term, aodi, 0, courseId, course.getCode(), course.getCourseTitle(), campusCode, CreditsFormatter.formatCredits((CourseInfo) course), enrollmentData, plannedActivities, null, tdf, udf, ddf,
                         sdcal, edcal, tcal);
             }
 
@@ -549,7 +551,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
             }
 
             for (ActivityOfferingDisplayInfo aodi : courseHelper.getActivityOfferingDisplaysByCourseAndTerm(courseId, termId)) {
-                ActivityOptionInfo activityOption = getActivityOption(term, aodi, courseIndex, courseId, c.getCode(), c.getCourseTitle(), campusCode, enrollmentData, plannedActivities, msg, tdf, udf, ddf, sdcal, edcal, tcal);
+                ActivityOptionInfo activityOption = getActivityOption(term, aodi, courseIndex, courseId, c.getCode(), c.getCourseTitle(), campusCode, CreditsFormatter.formatCredits((CourseInfo) c), enrollmentData, plannedActivities, msg, tdf, udf, ddf, sdcal, edcal, tcal);
 
                 boolean enrollmentGroup = false;
                 String primaryOfferingId = null;
@@ -645,6 +647,11 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         }
         Collections.sort(rv);
         return rv;
+    }
+
+    @Override
+    public List<CourseOption> getRegisteredCourseOptions(String studentId, String termId, ScheduleBuildFilters buildFilters) {
+        return null;
     }
 
     protected void buildCourseOptions(String termId, boolean courseLockIn, boolean lockIn,

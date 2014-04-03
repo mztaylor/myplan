@@ -335,6 +335,7 @@
                 <!-- List of classes for each selection, where the length sets the limit of how many items can be selected at once -->
                 <entry key="selection-limit" value="5"/>
                 <entry key="selection-classes" value="scheduleCalendar--orange,scheduleCalendar--gold,scheduleCalendar--pink,scheduleCalendar--blue,scheduleCalendar--green"/>
+                <entry key="registered-schedule" value="@{registeredSchedule NE null ? registeredSchedule.getEvent() : ''}"/>
             </map>
         </property>
         <property name="templateOptions">

@@ -3,8 +3,9 @@ var KsapSbCalendar = {
         this.appendReservedSchedules(jQuery('.scheduleReserved__container').find('.scheduleReserved__item'));
         this.cssClasses = this.widget.data("selection-classes").split(",");
         this.limit = parseFloat(this.widget.data("selection-limit"));
-        if(typeof KsapScheduleBuild.registeredSchedule.events !== "undefined" && KsapScheduleBuild.registeredSchedule.events.length > 0) {
-            this.addSchedule(KsapScheduleBuild.registeredSchedule, "scheduleCalendar--registered");
+        this.registeredSchedule = (this.widget.data("registered-schedule") ?this.widget.data("registered-schedule") : {});
+        if(typeof this.registeredSchedule.events !== "undefined" && this.registeredSchedule.events.length > 0) {
+            this.addSchedule(this.registeredSchedule, "scheduleCalendar--registered");
         }
         if (element) element.click();
     },

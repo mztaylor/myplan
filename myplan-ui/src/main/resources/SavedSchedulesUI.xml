@@ -62,6 +62,8 @@
         <property name="layoutManager.lineGroupPrototype.id" value="saved-schedule-@{#line.uniqueId}"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses"
                   value="module__item scheduleSaved__item @{#line.weekend ? 'scheduleSaved__item--hasWeekend' : ''}"/>
+        <property name="layoutManager.lineGroupPrototype.style"
+                  value="@{#line.lockedIn ? 'display:none;' : ''}"/>
         <property name="layoutManager.lineGroupPrototype.onClickScript" value="
             var target = (e.target) ? jQuery(e.target) : jQuery(e.srcElement);
             if (target.parents('.noClick').length === 0) {
@@ -76,7 +78,7 @@
         "/>-->
         <property name="filters">
             <list>
-                <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 3"/>
+                <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 4"/>
             </list>
         </property>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
@@ -91,7 +93,7 @@
                 <property name="cssClasses" value="module__empty"/>
             </bean>
         </property>
-        <property name="instructionalMessage.render" value="@{lookupResults EQ null OR lookupResults.size() EQ 0}"/>
+        <property name="instructionalMessage.render" value="@{lookupResults EQ null OR lookupResults.size() EQ 1}"/>
         <property name="items">
             <list>
                 <bean parent="KSAP-MessageField" p:messageText="P@{#index + 1}"
@@ -99,8 +101,9 @@
                     <property name="propertyReplacers">
                         <list>
                             <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="cssClasses"
-                                  p:condition="#line.possibleErrors.getErrorType() NE null">
-                                <property name="replacement" value="scheduleSaved__index alert alert-@{#line.possibleErrors.getErrorType()}"/>
+                                  p:condition="#line.possibleErrors NE null AND #line.possibleErrors.getErrorType() NE null">
+                                <property name="replacement"
+                                          value="scheduleSaved__index alert alert-@{#line.possibleErrors NE null ? #line.possibleErrors.getErrorType() : 'no-error'}"/>
                             </bean>
                         </list>
                     </property>
@@ -133,7 +136,8 @@
                     </property>
                 </bean>
                 <bean parent="KSAP-HorizontalFieldGroup">
-                    <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+                    <property name="render"
+                              value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                     <property name="cssClasses" value="scheduleSaved__remove"/>
                     <property name="title" value="Unpin this schedule"/>
                     <property name="onClickScript"

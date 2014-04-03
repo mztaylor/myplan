@@ -225,6 +225,28 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
             }
 
         }
+        /*Calculating min & max times for registered schedules and If there is any weekend or TBD in any of the registered possible schedules*/
+        if (getRegisteredSchedule() != null) {
+
+            ((PossibleScheduleOptionInfo) getRegisteredSchedule()).setLockedIn(true);
+
+            PossibleScheduleOption possibleScheduleOption = getRegisteredSchedule();
+            if (!isTbd() && possibleScheduleOption.isTbd()) {
+                setTbd(possibleScheduleOption.isTbd());
+            }
+            if (!isWeekend() && possibleScheduleOption.isWeekend()) {
+                setWeekend(possibleScheduleOption.isWeekend());
+            }
+
+            if (possibleScheduleOption.getMinTime() < getMinTime()) {
+                setMinTime(possibleScheduleOption.getMinTime());
+            }
+
+            if (possibleScheduleOption.getMaxTime() > getMaxTime()) {
+                setMaxTime(possibleScheduleOption.getMaxTime());
+            }
+        }
+
 
     }
 
