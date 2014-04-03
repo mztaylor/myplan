@@ -8,8 +8,12 @@ import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.schedulebuilder.dto.ScheduleBuildFiltersInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.infc.ScheduleBuildFilters;
-import org.kuali.student.myplan.schedulebuilder.util.*;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleForm;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +27,7 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
     private List<ReservedTime> reservedTimes;
     private ScheduleBuildFilters buildFilters;
     private List<String> includeFilters;
+    private boolean currentTermForView;
     private Integer removeReserved;
     private boolean includeClosed;
     private boolean overload;
@@ -31,6 +36,7 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
     private long minTime;
     private long maxTime;
     private boolean tbd;
+
 
     private TermHelper termHelper;
     private ScheduleBuildStrategy scheduleBuildStrategy;
@@ -42,6 +48,8 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
         includeClosed = false;
         buildFilters = new ScheduleBuildFiltersInfo();
         includeFilters = new ArrayList<String>();
+
+        /*Filters those needs to be selected in default are added*/
         getIncludeFilters().add(ScheduleBuilderConstants.RESTRICTION_FILTER.toLowerCase());
 
         validateAndGenerateTerm();
@@ -77,7 +85,11 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
 
         setTerm(null);
         StringBuilder pubs = new StringBuilder();
-        for (Term t : th.getOfficialTerms()) {
+        List<Term> officialTerms = th.getOfficialTerms();
+        if (!CollectionUtils.isEmpty(officialTerms)) {
+            currentTermForView = getTermId().equals(officialTerms.get(0).getId());
+        }
+        for (Term t : officialTerms) {
             pubs.append(" ").append(t.getId());
             if (t.getId().equals(termId)) {
                 setTerm(t);
@@ -242,5 +254,14 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
 
     public void setIncludeFilters(List<String> includeFilters) {
         this.includeFilters = includeFilters;
+    }
+
+    @Override
+    public boolean isCurrentTermForView() {
+        return currentTermForView;
+    }
+
+    public void setCurrentTermForView(boolean currentTermForView) {
+        this.currentTermForView = currentTermForView;
     }
 }

@@ -105,5 +105,12 @@ public interface ScheduleForm {
      */
     String getTermId();
 
+    /**
+     * Used for differentiating the current term with all official terms open for planning
+     *
+     * @return true if current term for view else false
+     */
+    boolean isCurrentTermForView();
+
 
 }
