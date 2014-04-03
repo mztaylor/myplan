@@ -244,6 +244,7 @@
             <list>
                 <ref bean="possible_schedule_tba_list"/>
                 <ref bean="saved_schedule_tba_list"/>
+                <ref bean="registered_schedule_tba_list"/>
             </list>
         </property>
     </bean>
@@ -325,6 +326,38 @@
                 </bean>-->
                 <bean parent="KSAP-MessageField" p:messageText="P@{#index + 1}"
                       p:cssClasses="scheduleBuilder__tbaItemIndex"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="registered_schedule_tba_list" parent="KSAP-HorizontalBoxGroup">
+        <property name="render" value="@{registeredSchedule NE null ? registeredSchedule.isTbd() : false}"/>
+        <property name="id" value="tba-@{registeredSchedule NE null ? registeredSchedule.uniqueId : ''}"/>
+        <property name="cssClasses" value="scheduleBuilder__tbaItem"/>
+        <property name="onClickScript" value="
+            var calEvent;
+            var events = jQuery(this).data('source').events;
+            for (var i = 0; i &lt; events.length; i++) {
+                if (events[i].tbd) { calEvent = events[i]; break; }
+            }
+            KsapScheduleBuild.openPopover(calEvent, e);
+        "/>
+        <property name="dataAttributes">
+            <map>
+                <entry key="source" value="@{registeredSchedule NE null ? registeredSchedule.event : ''}"/>
+                <entry key="index" value="1"/>
+                <entry key="saved" value="@{registeredSchedule NE null ? registeredSchedule.id : ''}"/>
+            </map>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-Message" p:messageText="[0]" p:cssClasses="scheduleBuilder__tbaItemIndex">
+                    <property name="inlineComponents">
+                        <list>
+                            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/sb/icon_lock.png"/>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
