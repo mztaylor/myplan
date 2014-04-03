@@ -80,7 +80,7 @@
                 </bean>
                 <bean parent="KSAP-HeaderDiv" p:headerText="@{term.name}" p:headerTagCssClasses="planTerm__headerText">
                     <!-- TODO: Set modifer to current if term is current -->
-                    <property name="cssClasses" value="planTerm__header planTerm__header--future"/>
+                    <property name="cssClasses" value="@{currentTermForView ? 'planTerm__header planTerm__header--current' : 'planTerm__header planTerm__header--future'}"/>
                 </bean>
                 <ref bean="schedule_build_possible"/>
                 <ref bean="sb-reserved-item-template"/>
