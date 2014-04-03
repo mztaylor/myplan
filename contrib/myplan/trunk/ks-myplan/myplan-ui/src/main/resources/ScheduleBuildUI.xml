@@ -232,10 +232,10 @@
                                     <bean parent="Uif-VerticalCheckboxesControl">
                                         <property name="options">
                                             <list>
-                                                <bean parent="Uif-KeyLabelPair" p:key="closed"
-                                                      p:value="Have closed sections"/>
                                                 <bean parent="Uif-KeyLabelPair" p:key="restrictions"
                                                       p:value="Have enrollment restrictions"/>
+                                                <bean parent="Uif-KeyLabelPair" p:key="closed"
+                                                      p:value="Are currently closed"/>
                                                 <bean parent="Uif-KeyLabelPair" p:key="registered"
                                                       p:value="Overlap with my registered courses"/>
                                                 <bean parent="Uif-KeyLabelPair" p:key="otherInstitutes"
