@@ -100,7 +100,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
         } catch (OperationFailedException ofe) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS due to OperationFailedException.", ofe);
             GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.TERM_PAGE_ID,
-                     PlanConstants.ERROR_ACA_RECORD_SWS_PROBLEMS);
+                    PlanConstants.ERROR_ACA_RECORD_SWS_PROBLEMS);
         } catch (Exception e) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS.", e);
         }
@@ -128,6 +128,9 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
 
         PlannedTerm perfectPlannedTerm = SingleQuarterHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList, recommendedCoursesList, studentCourseRecordInfos, termAtpId);
+        if (perfectPlannedTerm != null) {
+            perfectPlannedTerm.setPlannedItems(getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(perfectPlannedTerm.getLearningPlanId(), PlanConstants.SECTION_TYPE, perfectPlannedTerm.getAtpId()));
+        }
         return perfectPlannedTerm;
     }
 
