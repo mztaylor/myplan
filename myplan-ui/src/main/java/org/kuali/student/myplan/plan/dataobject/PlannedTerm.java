@@ -42,7 +42,7 @@ public class PlannedTerm {
     /*Used for schedule builder req param*/
     private String learningPlanId;
     /*Used for schedule builder pinned schedules*/
-    private Map<String, String> plannedItems;
+    private String plannedActivities;
 
 
     /*
@@ -235,15 +235,12 @@ public class PlannedTerm {
         this.publishedTerm = publishedTerm;
     }
 
-    public Map<String, String> getPlannedItems() {
-        if (plannedItems == null) {
-            plannedItems = new LinkedHashMap<String, String>();
-        }
-        return plannedItems;
+    public String getPlannedActivities() {
+        return plannedActivities;
     }
 
-    public void setPlannedItems(Map<String, String> plannedItems) {
-        this.plannedItems = plannedItems;
+    public void setPlannedActivities(String plannedActivities) {
+        this.plannedActivities = plannedActivities;
     }
 }
 

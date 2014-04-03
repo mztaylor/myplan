@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.plan.service;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.rice.krad.util.GlobalVariables;
@@ -37,12 +38,14 @@ import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -128,9 +131,19 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
 
         PlannedTerm perfectPlannedTerm = SingleQuarterHelperBase.populatePlannedTerms(plannedCoursesList, backupCoursesList, recommendedCoursesList, studentCourseRecordInfos, termAtpId);
-        if (perfectPlannedTerm != null) {
-            perfectPlannedTerm.setPlannedItems(getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(perfectPlannedTerm.getLearningPlanId(), PlanConstants.SECTION_TYPE, perfectPlannedTerm.getAtpId()));
+
+        Map<String, String> plannedItems = getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(perfectPlannedTerm.getLearningPlanId(), PlanConstants.SECTION_TYPE, perfectPlannedTerm.getAtpId());
+
+        if (perfectPlannedTerm != null && !CollectionUtils.isEmpty(plannedItems)) {
+            /*Creating json string which has the planned activities associated to their planItemId.. Used in SB UI for ability to delete planned activities*/
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                perfectPlannedTerm.setPlannedActivities(mapper.writeValueAsString(plannedItems));
+            } catch (IOException e) {
+                logger.error("Could not build planned Activities json string", e);
+            }
         }
+
         return perfectPlannedTerm;
     }
 
