@@ -51,18 +51,27 @@
     border-top: @dottedBorderStyle;
     font-size: @fontSizeSmall;
     font-family: @sansFontFamily;
+
+    .uif-boxLayoutVerticalItem {
+        margin: 0;
+    }
+
+    &:first-child {
+        border-top: none;
+    }
+
+    &:hover {
+        background-color: @itemHover;
+    }
 }
 
-.module__item:first-child {
-    border-top: none;
-}
-
-.module__item .uif-boxLayoutVerticalItem {
-    margin: 0;
-}
-
-.module__item:hover {
-    background-color: @itemHover;
+.noClick {
+    .module__item {
+        cursor: default;
+        &:hover {
+            background: none;
+        }
+    }
 }
 
 .module__footer {

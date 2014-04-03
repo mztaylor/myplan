@@ -4,7 +4,7 @@ var KsapSbCalendar = {
         this.cssClasses = this.widget.data("selection-classes").split(",");
         this.limit = parseFloat(this.widget.data("selection-limit"));
         if(typeof KsapScheduleBuild.registeredSchedule.events !== "undefined" && KsapScheduleBuild.registeredSchedule.events.length > 0) {
-            this.addSchedule(KsapScheduleBuild.registeredSchedule, "scheduleBuilder__registered");
+            this.addSchedule(KsapScheduleBuild.registeredSchedule, "scheduleCalendar--registered");
         }
         if (element) element.click();
     },

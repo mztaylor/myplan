@@ -150,12 +150,36 @@
                                         </property>
                                     </bean>
                                     <ref bean="term_collection_data"/>
+                                    <bean p:id="schedule_build_termId" parent="KSAP-SimpleInputField" p:propertyName="atpId" p:readOnly="false">
+                                        <property name="hidden" value="true"/>
+                                        <property name="control">
+                                            <bean parent="Uif-HiddenControl"/>
+                                        </property>
+                                    </bean>
+                                    <bean p:id="schedule_build_learningPlanId" parent="KSAP-SimpleInputField"
+                                          p:propertyName="learningPlanId" p:readOnly="false">
+                                        <property name="hidden" value="true"/>
+                                        <property name="control">
+                                            <bean parent="Uif-HiddenControl"/>
+                                        </property>
+                                    </bean>
+                                    <ref bean="sb-additional-details-template"/>
+                                    <ref bean="sb-additional-details-group"/>
+                                    <ref bean="sb_confirm_remove_pinned"/>
                                 </list>
                             </property>
                         </bean>
                         <bean parent="KSAP-RightPane" p:width="230px">
                             <property name="items">
                                 <list>
+                                    <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules">
+                                        <property name="additionalCssClasses" value="noClick scheduleSaved--termView"/>
+                                        <property name="items">
+                                            <list>
+                                                <bean parent="KSAP-SavedScheduleList"/>
+                                            </list>
+                                        </property>
+                                    </bean>
                                     <bean parent="KSAP-ModuleContainer" p:headerText="Messages">
                                         <property name="items">
                                             <list>
