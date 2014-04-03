@@ -8,10 +8,7 @@ import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.schedulebuilder.dto.ScheduleBuildFiltersInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.infc.ScheduleBuildFilters;
-import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
-import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
-import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
-import org.kuali.student.myplan.schedulebuilder.util.ScheduleForm;
+import org.kuali.student.myplan.schedulebuilder.util.*;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 
 import java.util.ArrayList;
@@ -25,6 +22,7 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
     private String requestedLearningPlanId;
     private List<ReservedTime> reservedTimes;
     private ScheduleBuildFilters buildFilters;
+    private List<String> includeFilters;
     private Integer removeReserved;
     private boolean includeClosed;
     private boolean overload;
@@ -42,6 +40,9 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
     public void reset() {
         overload = false;
         includeClosed = false;
+        buildFilters = new ScheduleBuildFiltersInfo();
+        includeFilters = new ArrayList<String>();
+        getIncludeFilters().add(ScheduleBuilderConstants.RESTRICTION_FILTER.toLowerCase());
 
         validateAndGenerateTerm();
 
@@ -233,5 +234,13 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
 
     public void setScheduleBuildHelper(ScheduleBuildHelper scheduleBuildHelper) {
         this.scheduleBuildHelper = scheduleBuildHelper;
+    }
+
+    public List<String> getIncludeFilters() {
+        return includeFilters;
+    }
+
+    public void setIncludeFilters(List<String> includeFilters) {
+        this.includeFilters = includeFilters;
     }
 }

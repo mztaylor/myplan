@@ -37,12 +37,12 @@ public class ScheduleBuilderConstants {
 
     public static final String CLOSED_FILTER = "CLOSED";
     public static final String USER_SELECTED_FILTER = "USER_SELECTED";
-    public static final String RESTRICTION_FILTER = "RESTRICTION";
+    public static final String RESTRICTION_FILTER = "RESTRICTIONS";
     public static final String OVERLAPPED_FILTER = "OVERLAPPED";
     public static final String OTHER_INSTITUTE_FILTER = "OTHER_INSTITUTE";
 
 
-    public static final String ZERO_RESULTS_REASON_CLOSED = "Have closed sections";
+    public static final String ZERO_RESULTS_REASON_CLOSED = "Are currently closed";
     public static final String ZERO_RESULTS_REASON_RESTRICTION = "Have enrollment restrictions";
     public static final String ZERO_RESULTS_REASON_OVERLAPPED = "Overlap with my registered courses";
     public static final String ZERO_RESULTS_REASON_OTHER_INSTITUTES = "Are UW PCE courses";

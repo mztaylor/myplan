@@ -42,7 +42,6 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
     private String uniqueId;
     private String plannedActivities;
     private int possibleScheduleSize;
-    private List<String> includeFilters;
     private ScheduleBuilder scheduleBuilder;
     private List<CourseOption> courseOptions;
     private List<PossibleScheduleOption> savedSchedules;
@@ -437,14 +436,6 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
 
     public void setAcademicCalendarService(AcademicCalendarService academicCalendarService) {
         this.academicCalendarService = academicCalendarService;
-    }
-
-    public List<String> getIncludeFilters() {
-        return includeFilters;
-    }
-
-    public void setIncludeFilters(List<String> includeFilters) {
-        this.includeFilters = includeFilters;
     }
 
     public PlanHelper getPlanHelper() {
