@@ -54,28 +54,21 @@
             jQuery('.clampText').each(function(index) {
                 $clamp(this, {clamp: 3});
             });
-            jQuery('#saved_schedules_summary').on('SAVED_SCHEDULE_SAVE SAVED_SCHEDULE_REMOVE', function(event, data){
+            jQuery('#saved_schedules_summary').on('SAVED_SCHEDULE_SAVE SAVED_SCHEDULE_REMOVE SAVED_SCHEDULE_REFRESH', function(event, data){
                 customRetrieveComponent('saved_schedules_summary','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
             });
         "/>
         <property name="cssClasses" value="module scheduleSaved"/>
-        <property name="layoutManager.lineGroupPrototype.id" value="saved-schedule-@{#line.uniqueId}"/>
+        <property name="layoutManager.lineGroupPrototype.id" value="@{#line.lockedIn ? 'registered' : 'saved'}-schedule-@{#line.uniqueId}"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses"
-                  value="module__item scheduleSaved__item @{#line.weekend ? 'scheduleSaved__item--hasWeekend' : ''}"/>
-        <property name="layoutManager.lineGroupPrototype.style"
-                  value="@{#line.lockedIn ? 'display:none;' : ''}"/>
+                  value="module__item @{#line.lockedIn ? 'scheduleRegistered__item' : 'scheduleSaved__item'} @{#line.weekend ? 'scheduleSaved__item--hasWeekend' : ''}"/>
+        <property name="layoutManager.lineGroupPrototype.hidden" value="@{#line.lockedIn}"/>
         <property name="layoutManager.lineGroupPrototype.onClickScript" value="
             var target = (e.target) ? jQuery(e.target) : jQuery(e.srcElement);
             if (target.parents('.noClick').length === 0) {
                 KsapSbCalendar.toggleCalendarSchedule('@{#line.uniqueId}', @{#index + 1}, jQuery(this), @{#line.tbd}, true);
             }
         "/>
-        <!--<property name="layoutManager.lineGroupPrototype.onDocumentReadyScript" value="
-            if (typeof KsapSbCalendar !== 'undefined') {
-                var scheduleEvents = KsapSbCalendar.getScheduleEvents('@{#line.uniqueId}');
-                if (scheduleEvents.length > 0) jQuery('#saved-schedule-@{#line.uniqueId}').addClass(scheduleEvents[0].className.join(' '));
-            }
-        "/>-->
         <property name="filters">
             <list>
                 <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 4"/>
