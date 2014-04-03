@@ -14,6 +14,7 @@
 
     <bean id="ScheduleBuild-FormView" parent="ScheduleBuild-FormView-parent"/>
     <bean abstract="true" id="ScheduleBuild-FormView-parent" parent="MyPlanFormView">
+        <property name="headerText" value="Schedule Builder"/>
         <property name="id" value="ScheduleBuild-FormView"/>
         <property name="entryPageId" value="schedule_build"/>
         <property name="formClass" value="org.kuali.student.myplan.schedulebuilder.util.ScheduleForm"/>
@@ -79,13 +80,13 @@
                     </property>
                 </bean>
                 <bean parent="KSAP-HeaderDiv" p:headerText="@{term.name}" p:headerTagCssClasses="planTerm__headerText">
-                    <!-- TODO: Set modifer to current if term is current -->
-                    <property name="cssClasses" value="@{currentTermForView ? 'planTerm__header planTerm__header--current' : 'planTerm__header planTerm__header--future'}"/>
+                    <property name="cssClasses" value="planTerm__header planTerm__header--@{currentTermForView ? 'current' : 'future'}"/>
                 </bean>
                 <ref bean="schedule_build_possible"/>
                 <ref bean="sb-reserved-item-template"/>
                 <ref bean="sb-popover-content-template"/>
                 <ref bean="sb-additional-details-template"/>
+                <ref bean="sb-registered-details-template"/>
                 <ref bean="sb-additional-details-group"/>
                 <ref bean="sb_error_max_schedules"/>
                 <ref bean="sb_error_max_pinned"/>
@@ -435,7 +436,30 @@
           parent="sb-popover-content-template">
         <property name="width" value="480px"/>
         <property name="layoutManager.style" value="width:480px;"/>
-        <property name="additionalCssClasses" value="scheduleSave__details"/>
+        <property name="additionalCssClasses" value="scheduleSaved__details"/>
+    </bean>
+
+    <bean id="sb-registered-details-template" p:id="sb-registered-details-template"
+          parent="sb-additional-details-template">
+        <property name="width" value="480px"/>
+        <property name="layoutManager.style" value="width:480px;"/>
+        <property name="additionalCssClasses" value="scheduleSaved__details"/>
+        <property name="header.upperGroup">
+            <bean parent="KSAP-VerticalBoxGroup">
+                <property name="cssClasses" value="scheduleSaved__registered"/>
+                <property name="items">
+                    <list>
+                        <bean parent="KSAP-NoSpanMessage" p:messageText="[0] Registered">
+                            <property name="inlineComponents">
+                                <list>
+                                    <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/sb/icon_lock.png"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
     </bean>
 
     <bean id="sb-additional-details-group" p:id="sb-additional-details-group" parent="KSAP-VerticalBoxGroup"

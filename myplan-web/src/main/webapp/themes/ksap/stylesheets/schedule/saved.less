@@ -1,4 +1,10 @@
-.scheduleSave__details {
+.scheduleSaved__details {
+    margin: 0 0 15px 0;
+
+    .scheduleSaved__registered {
+        font-size: @fontSizeMini;
+    }
+
     td.meetingLocation,
     td.registrationCode {
         display: table-cell !important;
@@ -29,6 +35,7 @@
         width: 16px;
         margin: 0 0 0 5px;
         line-height: 16px;
+        cursor: pointer;
 
         img {
             width: 16px;
@@ -40,10 +47,18 @@
     .scheduleSaved__viewDetails {
         color: @linkColor;
         display: inline-block;
+        cursor: pointer;
 
         &:hover {
             text-decoration: underline;
         }
 
+    }
+
+}
+
+.scheduleSaved--termView {
+    .scheduleSaved__courses {
+        width: 170px;
     }
 }

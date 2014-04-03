@@ -27,26 +27,28 @@
         <property name="headerText"
                   value="Course Syllabus - @{dataObject.subject} @{dataObject.number} @{dataObject.title} (@{dataObject.credit})"/>
         <property name="header">
-            <bean parent="Uif-HeaderThree" p:style="background-color:lightgray;"/>
+            <bean parent="KSAP-HeaderThree" p:style="background: #DDD; margin-bottom: 10px;"/>
         </property>
         <property name="page">
             <bean parent="KSAP-Page" id="course_syllabus_page">
+                <property name="layoutManager">
+                    <bean parent="Uif-VerticalBoxLayout"/>
+                </property>
                 <property name="items">
                     <list>
-                        <bean id="syllabus_box" parent="KSAP-HorizontalFieldGroup">
+                        <bean id="syllabus_box" parent="KSAP-SimpleDataField" p:id="description">
+                            <property name="propertyName" value="description"/>
+                            <property name="escapeHtmlInPropertyValue" value="false"/>
+                        </bean>
+                        <bean parent="KSAP-VerticalBoxGroup">
+                            <property name="layoutManager.style" value="text-align: center;"/>
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-SimpleDataField" p:id="description">
-                                        <property name="propertyName" value="description"/>
-                                        <property name="escapeHtmlInPropertyValue" value="false"/>
+                                    <bean p:id="closeSyllabus" parent="KSAP-PrimaryActionButton" p:actionLabel="Close">
+                                        <property name="actionScript" value="jQuery.fancybox.close(true)"/>
                                     </bean>
                                 </list>
                             </property>
-                        </bean>
-                        <bean p:id="closeSyllabus" parent="KSAP-PrimaryActionButton" p:actionLabel="Close"
-                              p:style="margin: 0 0 0 350px;">
-                            <property name="actionScript"
-                                      value="e.preventDefault();closeLightbox();return false;actionInvokeHandler(this);"/>
                         </bean>
                     </list>
                 </property>

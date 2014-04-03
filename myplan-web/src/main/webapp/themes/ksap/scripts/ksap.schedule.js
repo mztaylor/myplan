@@ -298,8 +298,17 @@ var KsapScheduleBuild = {
         stopEvent(event);
         var cache = [];
         var lightboxHtml = "";
+        if(typeof this.registeredSchedule.events !== "undefined") {
+            for (var i = 0; i < this.registeredSchedule.events.length; i++) {
+                var course = "registered-" + this.registeredSchedule.events[i].popoverContent.courseId + "-" + this.registeredSchedule.events[i].popoverContent.courseCd.replace(/ /g,'');
+                if (cache.indexOf(course) === -1) {
+                    lightboxHtml += this.getPopoverHtml(this.registeredSchedule.events[i].popoverContent, "u-" + this.registeredSchedule.events[i].popoverContent.courseId, "sb-registered-details-template");
+                    cache.push(course);
+                }
+            }
+        }
         for (var i = 0; i < calEvents.length; i++) {
-            var course = calEvents[i].popoverContent.courseId + "-" + calEvents[i].popoverContent.courseCd.replace(/ /g,'');
+            var course = "planned-" + calEvents[i].popoverContent.courseId + "-" + calEvents[i].popoverContent.courseCd.replace(/ /g,'');
             if (cache.indexOf(course) === -1) {
                 lightboxHtml += this.getPopoverHtml(calEvents[i].popoverContent, "u-" + calEvents[i].popoverContent.courseId, "sb-additional-details-template");
                 cache.push(course);

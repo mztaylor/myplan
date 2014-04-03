@@ -51,6 +51,9 @@
                   value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
         <property name="propertyName" value="lookupResults"/>
         <property name="onDocumentReadyScript" value="
+            jQuery('.clampText').each(function(index) {
+                $clamp(this, {clamp: 3});
+            });
             jQuery('#saved_schedules_summary').on('SAVED_SCHEDULE_SAVE SAVED_SCHEDULE_REMOVE', function(event, data){
                 customRetrieveComponent('saved_schedules_summary','saved_schedules_summary','search','lookup',{viewId:'SavedSchedulesSummary-LookupView',termId:jQuery('#schedule_build_termId_control').val(),learningPlanId:jQuery('#schedule_build_learningPlanId_control').val()},null,{css:{right:'0px',top:'0px',width:'16px',border:'none'}});
             });
@@ -59,8 +62,12 @@
         <property name="layoutManager.lineGroupPrototype.id" value="saved-schedule-@{#line.uniqueId}"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses"
                   value="module__item scheduleSaved__item @{#line.weekend ? 'scheduleSaved__item--hasWeekend' : ''}"/>
-        <property name="layoutManager.lineGroupPrototype.onClickScript"
-                  value="KsapSbCalendar.toggleCalendarSchedule('@{#line.uniqueId}', @{#index + 1}, jQuery(this), @{#line.tbd}, true);"/>
+        <property name="layoutManager.lineGroupPrototype.onClickScript" value="
+            var target = (e.target) ? jQuery(e.target) : jQuery(e.srcElement);
+            if (target.parents('.noClick').length === 0) {
+                KsapSbCalendar.toggleCalendarSchedule('@{#line.uniqueId}', @{#index + 1}, jQuery(this), @{#line.tbd}, true);
+            }
+        "/>
         <!--<property name="layoutManager.lineGroupPrototype.onDocumentReadyScript" value="
             if (typeof KsapSbCalendar !== 'undefined') {
                 var scheduleEvents = KsapSbCalendar.getScheduleEvents('@{#line.uniqueId}');
@@ -103,6 +110,7 @@
                     <property name="items">
                         <list>
                             <bean parent="KSAP-SimpleDataField">
+                                <property name="additionalCssClasses" value="clampText"/>
                                 <property name="propertyName" value="schedule"/>
                                 <property name="escapeHtmlInPropertyValue" value="false"/>
                                 <property name="propertyEditor">
@@ -125,6 +133,7 @@
                     </property>
                 </bean>
                 <bean parent="KSAP-HorizontalFieldGroup">
+                    <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                     <property name="cssClasses" value="scheduleSaved__remove"/>
                     <property name="title" value="Unpin this schedule"/>
                     <property name="onClickScript"
