@@ -61,7 +61,6 @@
                     <property name="dataAttributes">
                         <map>
                             <entry key="planned-activities" value="@{plannedActivities}"/>
-                            <entry key="registered-schedule" value="@{registeredSchedule NE null ? registeredSchedule.getEvent() : ''}"/>
                         </map>
                     </property>
                 </bean>

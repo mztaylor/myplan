@@ -1,8 +1,6 @@
 var KsapScheduleBuild = {
     plannedActivities: (jQuery("#schedule_build_learningPlanId").data("planned-activities") ? jQuery("#schedule_build_learningPlanId").data("planned-activities") : {}),
 
-    registeredSchedule: (jQuery("#schedule_build_learningPlanId").data("registered-schedule") ? jQuery("#schedule_build_learningPlanId").data("registered-schedule") : {}),
-
     addReservedSchedule: function () {
         var form = jQuery("#popupForm");
         form.ajaxSubmit({

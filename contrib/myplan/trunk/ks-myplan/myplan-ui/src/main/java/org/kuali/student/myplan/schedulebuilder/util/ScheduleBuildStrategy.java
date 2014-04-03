@@ -34,6 +34,17 @@ public interface ScheduleBuildStrategy {
      */
     List<CourseOption> getCourseOptions(List<String> courseIds, Map<String, String> courseIdsTOCourseCds, String termId);
 
+
+    /**
+     * Load course options for student registered courses.
+     *
+     * @param studentId
+     * @param termId
+     * @param buildFilters
+     * @return The course options to use as inputs for generating registered schedules
+     */
+    List<CourseOption> getRegisteredCourseOptions(String studentId, String termId, ScheduleBuildFilters buildFilters);
+
     /**
      * Load the course options to use as inputs for generating schedules.
      *
@@ -151,7 +162,11 @@ public interface ScheduleBuildStrategy {
     /**
      * Get the appropriate ScheduleBuilder for this strategy
      *
-     * @param course
+     * @param term
+     * @param courseOptions
+     * @param reservedTimes
+     * @param savedSchedules
+     * @param buildFilters
      * @return Campus code from the course attributes if present other wise null.
      */
     ScheduleBuilder getScheduleBuilder(Term term, List<CourseOption> courseOptions,
@@ -161,8 +176,7 @@ public interface ScheduleBuildStrategy {
      * coalesce the sections for lowest level of activity for a course (primary if there are no secondaries,
      * secondaries if there are no tertiaries, etc)
      *
-     * @param co   the courseOption to have sections coalesced
-     *
+     * @param co the courseOption to have sections coalesced
      */
-    void coalesceLeafActivities (CourseOption co);
+    void coalesceLeafActivities(CourseOption co);
 }

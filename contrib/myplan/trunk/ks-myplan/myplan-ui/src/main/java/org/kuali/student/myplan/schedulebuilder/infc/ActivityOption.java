@@ -57,6 +57,13 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
     String getCourseCd();
 
     /**
+     * Get the course Credit.
+     *
+     * @return The course Credit.
+     */
+    String getCourseCredit();
+
+    /**
      * Get the course TITLE.
      *
      * @return The course TITLE.

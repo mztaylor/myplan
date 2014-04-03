@@ -583,7 +583,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
         }
         List<String> invalidatedActivities = new ArrayList<String>();
         if (ao != null) {
-            jEvents.writeStartObject("popoverContent").write("courseCd", ao.getCourseCd()).write("courseId", ao.getCourseId()).write("courseTitle", ao.getCourseTitle().trim()).write("termId", ao.getTermId());
+            jEvents.writeStartObject("popoverContent").write("courseCd", ao.getCourseCd()).write("courseId", ao.getCourseId()).write("courseTitle", ao.getCourseTitle().trim()).write("courseCredit", ao.getCourseCredit()).write("registered", ao.isLockedIn()).write("termId", ao.getTermId());
 
             List<String> activitiesToExclude = new ArrayList<String>();
             List<ActivityOption> activityOptions = scheduledCourseActivities.get(ao.getCourseCd());
@@ -742,7 +742,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                 } else if (ScheduleBuilderConstants.ROTC_INSTITUTE_CODE.equals(activityOption.getInstituteCode())) {
                     instituteCd = ScheduleBuilderConstants.ROTC_INSTITUTE_NAME;
                 }
-                jEvents.writeStartObject().write("sectionCd", activityOption.getActivityCode()).write("primary", activityOption.isPrimary()).write("activityId", activityOption.getActivityOfferingId()).write("registrationCode", activityOption.getRegistrationCode()).write("instituteCd", instituteCd).write("registered", activityOption.isLockedIn()).write("enrollRestriction", activityOption.isEnrollmentRestriction()).write("enrollStatus", String.format("%s/%s", activityOption.getFilledSeats(), activityOption.getTotalSeats())).write("enrollState", activityOption.getEnrollStatus()).writeStartArray("meetings");
+                jEvents.writeStartObject().write("sectionCd", activityOption.getActivityCode()).write("primary", activityOption.isPrimary()).write("activityId", activityOption.getActivityOfferingId()).write("registrationCode", activityOption.getRegistrationCode()).write("instituteCd", instituteCd).write("enrollRestriction", activityOption.isEnrollmentRestriction()).write("enrollStatus", String.format("%s/%s", activityOption.getFilledSeats(), activityOption.getTotalSeats())).write("enrollState", activityOption.getEnrollStatus()).writeStartArray("meetings");
                 if (!isTBD) {
                     for (ClassMeetingTime meetingTime : activityOption.getClassMeetingTimes()) {
                         jEvents.writeStartObject().write("meetingDay", org.apache.commons.lang.StringUtils.join(meetingTime.getDays(), "")).write("meetingTime", meetingTime.getTimes()).write("location", meetingTime.getLocation());
