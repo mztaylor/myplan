@@ -97,7 +97,7 @@ public class DefaultShoppingCartForm extends AbstractPlanItemForm implements Sho
                         if (removeList == null)
                             removeMap.put(courseId, removeList = new ArrayList<ActivityOption>());
                         ActivityOptionInfo ao = (ActivityOptionInfo)
-                                sb.getActivityOption(pso.getTermId(), req.getCourse().getId(), preg);
+                                sb.getActivityOption(pso.getTermId(), req.getCourse().getId(), req.getCourse().getCode(), preg);
                         // used to tie processing results in to the front end
                         ao.setUniqueId(req.getUniqueId());
                         removeList.add(ao);
@@ -110,7 +110,7 @@ public class DefaultShoppingCartForm extends AbstractPlanItemForm implements Sho
                                 removeMap.put(courseId,
                                         removeList = new ArrayList<ActivityOption>());
                             removeList.add(sb.getActivityOption(pso.getTermId(), req.getCourse()
-                                    .getId(), reg));
+                                    .getId(),req.getCourse().getCode(), reg));
                         }
                 }
             }

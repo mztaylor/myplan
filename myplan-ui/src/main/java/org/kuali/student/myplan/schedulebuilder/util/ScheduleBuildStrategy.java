@@ -145,11 +145,12 @@ public interface ScheduleBuildStrategy {
      *
      * @param termId   The term ID.
      * @param courseId The course ID.
+     * @param courseCd The course CD.
      * @param regCode  The registration code.
      * @return A populated activity option for a given term, course, and
      * registration code. Returns null if data is missing.
      */
-    ActivityOption getActivityOption(String termId, String courseId, String regCode);
+    ActivityOption getActivityOption(String termId, String courseId, String courseCd, String regCode);
 
     /**
      * Get a CampusCode from the Course attributes.

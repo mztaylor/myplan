@@ -181,7 +181,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 validatedAlternates = savedActivity.getAlternateActivties() == null ? new ArrayList<ActivityOption>() : validatedSavedActivities(savedActivity.getAlternateActivties(), invalidOptions, reservedTimes, plannedActivities, registered);
             }
 
-            ActivityOption currentActivity = getScheduleBuildStrategy().getActivityOption(savedActivity.getTermId(), savedActivity.getCourseId(), savedActivity.getActivityCode());
+            ActivityOption currentActivity = getScheduleBuildStrategy().getActivityOption(savedActivity.getTermId(), savedActivity.getCourseId(), savedActivity.getCourseCd(), savedActivity.getActivityCode());
             String reasonForChange = areEqual(savedActivity, currentActivity, reservedTimes, registered);
             if (StringUtils.isEmpty(reasonForChange)) {
                 savedActivity.setAlternateActivities(validatedAlternates);

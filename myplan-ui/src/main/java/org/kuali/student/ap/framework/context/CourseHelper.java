@@ -19,7 +19,7 @@ public interface CourseHelper {
 
     public CourseInfo getCourseInfo(String courseId);
 
-    public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysByCourseAndTerm(String courseId, String termId);
+    public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysByCourseAndTerm(String courseId, String courseCd, String termId);
 
     public void getAllSectionStatus(LinkedHashMap<String, LinkedHashMap<String, Object>> mapmap, String termId,
                                     String curric, String num) throws DocumentException;
