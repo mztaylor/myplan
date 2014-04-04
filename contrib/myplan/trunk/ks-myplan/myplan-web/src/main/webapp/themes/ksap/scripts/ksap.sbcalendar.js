@@ -7,6 +7,7 @@ var KsapSbCalendar = {
         if(typeof this.registeredSchedule.events !== "undefined" && this.registeredSchedule.events.length > 0) {
             this.addSchedule(this.registeredSchedule, "scheduleCalendar--registered");
         }
+        this.toggleTbaSection();
         if (element) element.click();
     },
 
