@@ -306,7 +306,7 @@ var KsapScheduleBuild = {
             }
         }
         var lightboxTemplate = jQuery("#sb_course_details_list_template").clone().wrap("<div/>").parent().html();
-        lightboxTemplate = lightboxTemplate.replace(/sb-additional-details-group/gi, "u-" + id);
+        lightboxTemplate = lightboxTemplate.replace(/sb_course_details_list_template/gi, "u-" + id);
         lightboxTemplate = lightboxTemplate.replace(/__KSAP_PINNED_INDEX__/gi, index);
         lightboxTemplate = lightboxTemplate.replace(/__KSAP_PINNED_ID__/gi, id);
         var lightboxContent = jQuery(lightboxTemplate);

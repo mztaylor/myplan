@@ -476,7 +476,7 @@
                 <property name="items">
                     <list>
                         <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Unpin this schedule">
-                            <property name="actionScript" value="KsapScheduleBuild.confirmRemovedSavedSchedule('__KSAP_PINNED_ID__', true)"/>
+                            <property name="actionScript" value="KsapScheduleBuild.confirmRemovedSavedSchedule('__KSAP_PINNED_ID__', true, e)"/>
                             <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                         </bean>
                         <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Close window">
