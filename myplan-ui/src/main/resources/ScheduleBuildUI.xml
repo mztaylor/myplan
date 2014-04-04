@@ -161,8 +161,8 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-HeaderTwo" p:headerText="@{term.name}"
-                                  p:cssClasses="planNavigation__header"/>
+                            <bean parent="KSAP-HeaderTwo" p:headerText="Schedule Builder: @{term.name}"
+                                  p:cssClasses="planNavigation__header" p:style="left: 70px; width: 470px;"/>
                             <bean parent="KSAP-HorizontalBoxGroup"
                                   p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--view">
                                 <property name="items">
