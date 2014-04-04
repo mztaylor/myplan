@@ -288,7 +288,7 @@
                 if (!o.circular) {
                     $(o.btnPrev + "," + o.btnNext).removeClass("disabled");
                     $((curr - o.scroll < 0 && o.btnPrev) || []).addClass("disabled");
-                    $((curr + o.scroll > itemLength - v && o.btnNext) || []).addClass("disabled");
+                    $((curr + o.scroll >= itemLength && o.btnNext) || []).addClass("disabled");
                 }
             }
 
