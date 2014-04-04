@@ -72,7 +72,7 @@ public interface ScheduleBuildStrategy {
      * @param requestedLearningPlanId See {@link #getLearningPlan(String)}.
      * @return The reserved times related to the current learning plan.
      */
-    List<ReservedTime> getReservedTimes(String requestedLearningPlanId)
+    List<ReservedTime> getReservedTimesForTermId(String requestedLearningPlanId, String termId)
             throws PermissionDeniedException;
 
     /**

@@ -239,6 +239,7 @@ public class ReservedTimeForm extends UifFormBase implements ReservedTime {
         this.untilDate = toDate(untilDateStr, this.untilDate);
     }
 
+    @Override
     public String getTermId() {
         return termId;
     }

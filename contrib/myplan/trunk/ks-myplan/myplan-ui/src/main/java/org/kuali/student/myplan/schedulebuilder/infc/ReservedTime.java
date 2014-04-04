@@ -26,4 +26,11 @@ public interface ReservedTime extends ScheduleBuildEvent, HasId, HasUniqueId {
      */
     String getEvent();
 
+    /**
+     * Get events for this reserved time
+     *
+     * @return This reservedTime events
+     */
+    String getTermId();
+
 }

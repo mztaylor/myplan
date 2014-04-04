@@ -41,6 +41,7 @@ import org.kuali.student.r2.core.scheduling.infc.ScheduleComponentDisplay;
 import org.kuali.student.r2.core.scheduling.infc.TimeSlot;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.infc.Course;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -932,9 +933,18 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
     @Override
     // TODO: Convert from dynamic attributes to DAO service
-    public List<ReservedTime> getReservedTimes(String requestedLearningPlanId)
+    public List<ReservedTime> getReservedTimesForTermId(String requestedLearningPlanId, String termId)
             throws PermissionDeniedException {
-        return new ArrayList<ReservedTime>(getScheduleBuildAttribute(requestedLearningPlanId).reservedTime);
+        List<ReservedTime> reservedTimeInfosForTermId = new ArrayList<ReservedTime>();
+        List<ReservedTimeInfo> reservedTimes = getScheduleBuildAttribute(requestedLearningPlanId).reservedTime;
+        if (!CollectionUtils.isEmpty(reservedTimes)) {
+            for (ReservedTimeInfo reservedTime : reservedTimes) {
+                if (reservedTime.getTermId().equals(termId)) {
+                    reservedTimeInfosForTermId.add(reservedTime);
+                }
+            }
+        }
+        return reservedTimeInfosForTermId;
     }
 
     @Override

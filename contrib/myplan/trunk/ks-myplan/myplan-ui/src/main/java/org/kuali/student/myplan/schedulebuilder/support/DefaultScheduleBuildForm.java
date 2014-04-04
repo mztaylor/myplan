@@ -1,12 +1,8 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
-import org.kuali.student.myplan.config.UwMyplanServiceLocator;
-import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ScheduleBuildFiltersInfo;
@@ -20,12 +16,8 @@ import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
-import javax.json.Json;
-import javax.json.JsonObject;
 import javax.xml.namespace.QName;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -68,7 +60,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
 
         List<ReservedTime> newReservedTimes;
         try {
-            newReservedTimes = sb.getReservedTimes(getRequestedLearningPlanId());
+            newReservedTimes = sb.getReservedTimesForTermId(getRequestedLearningPlanId(), getTermId());
         } catch (PermissionDeniedException e) {
             throw new IllegalStateException("Failed to refresh reserved times",
                     e);

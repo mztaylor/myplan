@@ -67,7 +67,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
             Map<String, String> plannedItems = getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(requestedLearningPlanId, PlanConstants.SECTION_TYPE, termId);
             List<ReservedTime> reservedTimes = null;
             try {
-                reservedTimes = getScheduleBuildStrategy().getReservedTimes(requestedLearningPlanId);
+                reservedTimes = getScheduleBuildStrategy().getReservedTimesForTermId(requestedLearningPlanId, termId);
             } catch (PermissionDeniedException e) {
                 e.printStackTrace();
             }
