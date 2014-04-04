@@ -43,10 +43,14 @@
         <property name="footer.render" value="false"/>
     </bean>
 
-    <bean id="possible_schedules_nav" parent="Uif-ActionLink">
+    <bean id="possible_schedules_nav" parent="Uif-ActionLink" p:actionImagePlacement="LEFT">
         <property name="cssClasses" value="schedulePossible__carouselButton"/>
         <property name="actionScript" value="e.preventDefault();"/>
         <property name="onMouseOutScript" value="jQuery(this).blur();"/>
+        <property name="actionImage">
+            <bean parent="Uif-Image"
+                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+        </property>
     </bean>
 
     <bean id="sb_possible_schedules" parent="sb_possible_schedules-parent"/>
@@ -136,15 +140,15 @@
                     var length = jQuery(a).length;
                     var nextSize = jQuery(jQuery(a)[length - 1]).nextAll().splice(0, length).length;
                     var prevSize = (jQuery(jQuery(a)[0]).prevAll().length > 0) ? o.scroll : 0;
-                    jQuery(o.btnPrev).text('Prev' + (prevSize > 0 ? ' ' + prevSize : ''));
-                    jQuery(o.btnNext).text('Next' + (nextSize > 0 ? ' ' + nextSize : ''));
+                    jQuery(o.btnPrev).find('span').text('Prev' + (prevSize > 0 ? ' ' + prevSize : ''));
+                    jQuery(o.btnNext).find('span').text('Next' + (nextSize > 0 ? ' ' + nextSize : ''));
                 },
                 afterEnd: function(a, o) {
                     var length = jQuery(a).length;
                     var nextSize = jQuery(jQuery(a)[length - 1]).nextAll().splice(0, length).length;
                     var prevSize = (jQuery(jQuery(a)[0]).prevAll().length > 0) ? o.scroll : 0;
-                    jQuery(o.btnPrev).text('Prev' + (prevSize > 0 ? ' ' + prevSize : ''));
-                    jQuery(o.btnNext).text('Next' + (nextSize > 0 ? ' ' + nextSize : ''));
+                    jQuery(o.btnPrev).find('span').text('Prev' + (prevSize > 0 ? ' ' + prevSize : ''));
+                    jQuery(o.btnNext).find('span').text('Next' + (nextSize > 0 ? ' ' + nextSize : ''));
                 }
             });
 
@@ -160,10 +164,10 @@
         "/>
         <property name="items">
             <list>
-                <bean parent="possible_schedules_nav" p:actionLabel="Prev"
+                <bean parent="possible_schedules_nav" p:actionLabel="&lt;span&gt;Prev&lt;/span&gt;"
                       p:additionalCssClasses="schedulePossible__carouselButton--prev"/>
                 <ref bean="possible_courses_schedule_list"/>
-                <bean parent="possible_schedules_nav" p:actionLabel="Next"
+                <bean parent="possible_schedules_nav" p:actionLabel="&lt;span&gt;Next&lt;/span&gt;"
                       p:additionalCssClasses="schedulePossible__carouselButton--next"/>
             </list>
         </property>
