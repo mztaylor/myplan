@@ -15,7 +15,6 @@ import org.kuali.student.myplan.schedulebuilder.form.ReservedTimeForm;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
-import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
 import org.kuali.student.myplan.utils.CalendarUtil;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
@@ -30,8 +29,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
@@ -68,12 +65,14 @@ public class ReservedTimeController extends KsapControllerBase {
                     "User "
                             + request.getRemoteUser()
                             + " is not permitted to build a schedule based on this learning plan.",
-                    e);
+                    e
+            );
             response.sendError(
                     HttpServletResponse.SC_FORBIDDEN,
                     "User "
                             + request.getRemoteUser()
-                            + " is not permitted to build a schedule based on this learning plan.");
+                            + " is not permitted to build a schedule based on this learning plan."
+            );
             return false;
         }
 
@@ -90,9 +89,13 @@ public class ReservedTimeController extends KsapControllerBase {
             return null;
         super.start((UifFormBase) form, result, request, response);
 
+        if (StringUtils.isEmpty(form.getTermId()) && StringUtils.isEmpty(form.getId())) {
+            throw new OperationFailedException("No atpId is found");
+        }
+
         if (!StringUtils.isEmpty(form.getId())) {
             try {
-                List<ReservedTime> reservedTimeList = getScheduleBuildStrategy().getReservedTimes(form.getRequestedLearningPlanId());
+                List<ReservedTime> reservedTimeList = getScheduleBuildStrategy().getReservedTimesForTermId(form.getRequestedLearningPlanId(), form.getTermId());
                 for (ReservedTime reservedTime : reservedTimeList) {
                     if (reservedTime.getId().equals(form.getId())) {
                         form.copyFromReservedTime(reservedTime, form);
@@ -102,10 +105,6 @@ public class ReservedTimeController extends KsapControllerBase {
             } catch (PermissionDeniedException e) {
                 LOG.error("Could not get reserved times", e);
             }
-        }
-
-        if (StringUtils.isEmpty(form.getTermId()) && StringUtils.isEmpty(form.getId())) {
-            throw new OperationFailedException("No atpId is found");
         }
 
 
@@ -130,7 +129,8 @@ public class ReservedTimeController extends KsapControllerBase {
             response.sendError(
                     HttpServletResponse.SC_BAD_REQUEST,
                     "Errors validating reserve time form "
-                            + result.getAllErrors());
+                            + result.getAllErrors()
+            );
         }
 
         DictionaryValidationResult validationResult = KRADServiceLocatorWeb
@@ -195,7 +195,8 @@ public class ReservedTimeController extends KsapControllerBase {
             response.sendError(
                     HttpServletResponse.SC_BAD_REQUEST,
                     "Errors validating reserve time form "
-                            + result.getAllErrors());
+                            + result.getAllErrors()
+            );
         }
 
         DictionaryValidationResult validationResult = KRADServiceLocatorWeb

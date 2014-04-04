@@ -76,7 +76,7 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
 
         ScheduleBuildStrategy strategy = getScheduleBuildStrategy();
         try {
-            reservedTimes = strategy.getReservedTimes(requestedLearningPlanId);
+            reservedTimes = strategy.getReservedTimesForTermId(requestedLearningPlanId, termId);
             for (ReservedTime reservedTime : reservedTimes) {
                 getScheduleBuildHelper().buildReservedTimeEvents(reservedTime, term);
             }
