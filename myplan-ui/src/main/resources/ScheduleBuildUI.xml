@@ -506,7 +506,7 @@
         </property>
     </bean>
 
-    <bean id="sb_error_max_schedules" parent="sb_dialogs">
+    <bean id="sb_error_max_schedules" p:id="sb_error_max_schedules" parent="sb_dialogs">
         <property name="headerText" value="You&#39;re viewing the maximum number of schedules"/>
         <property name="items">
             <list>
@@ -515,7 +515,7 @@
         </property>
     </bean>
 
-    <bean id="sb_error_max_pinned" parent="sb_dialogs">
+    <bean id="sb_error_max_pinned" p:id="sb_error_max_pinned" parent="sb_dialogs">
         <property name="headerText" value="You&#39;ve pinned the maximum number of schedules"/>
         <property name="items">
             <list>
@@ -524,7 +524,7 @@
         </property>
     </bean>
 
-    <bean id="sb_confirm_remove_pinned" parent="sb_dialogs">
+    <bean id="sb_confirm_remove_pinned" p:id="sb_confirm_remove_pinned" parent="sb_dialogs">
         <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
         <property name="headerText" value="Remove this pinned schedule?"/>
         <property name="cssClasses" value="removeMargin"/>
