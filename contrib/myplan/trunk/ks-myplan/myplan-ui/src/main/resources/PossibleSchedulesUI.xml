@@ -401,7 +401,10 @@
                 "/>
                 <entry key="eventRender" value="
                     function(event, element) {
-                        jQuery(element).attr('id', 'possible_schedule_event' + event._id);
+                        jQuery(element).attr({
+                            id: 'possible_schedule_event' + event._id,
+                            title: event.popoverContent.courseCd
+                        });
                     }
                 "/>
                 <entry key="lazyFetching" value="false"/>
