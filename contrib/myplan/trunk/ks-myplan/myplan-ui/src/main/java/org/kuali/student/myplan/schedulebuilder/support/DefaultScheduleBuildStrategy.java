@@ -445,7 +445,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     @Override
-    public ActivityOption getActivityOption(String termId, String courseId, String regCode) {
+    public ActivityOption getActivityOption(String termId, String courseId, String courseCd, String regCode) {
         if (regCode == null)
             return null;
 
@@ -478,7 +478,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
             LOG.error("Could not load planned Activities for course : " + course.getCode() + " for term : " + termId, e);
         }
 
-        for (ActivityOfferingDisplayInfo aodi : getCourseHelper().getActivityOfferingDisplaysByCourseAndTerm(courseId, termId))
+        for (ActivityOfferingDisplayInfo aodi : getCourseHelper().getActivityOfferingDisplaysByCourseAndTerm(courseId, courseCd, termId))
             if (regCode.equals(aodi.getActivityOfferingCode())) {
                 DateFormat tdf = new SimpleDateFormat("h:mm a");
                 DateFormat udf = new SimpleDateFormat("MM/dd/yyyy");
@@ -550,7 +550,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 LOG.error("Could not load planned Activities for course : " + c.getCode() + " for term : " + termId, e);
             }
 
-            for (ActivityOfferingDisplayInfo aodi : courseHelper.getActivityOfferingDisplaysByCourseAndTerm(courseId, termId)) {
+            for (ActivityOfferingDisplayInfo aodi : courseHelper.getActivityOfferingDisplaysByCourseAndTerm(courseId, c.getCode(), termId)) {
                 ActivityOptionInfo activityOption = getActivityOption(term, aodi, courseIndex, courseId, c.getCode(), c.getCourseTitle(), campusCode, CreditsFormatter.formatCredits((CourseInfo) c), enrollmentData, plannedActivities, msg, tdf, udf, ddf, sdcal, edcal, tcal);
 
                 boolean enrollmentGroup = false;

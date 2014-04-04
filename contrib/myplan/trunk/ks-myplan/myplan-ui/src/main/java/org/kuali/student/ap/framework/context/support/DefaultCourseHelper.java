@@ -31,7 +31,7 @@ public class DefaultCourseHelper implements CourseHelper {
     }
 
     @Override
-    public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysByCourseAndTerm(String courseId, String termId) {
+    public List<ActivityOfferingDisplayInfo> getActivityOfferingDisplaysByCourseAndTerm(String courseId, String courseCd, String termId) {
         return null;
     }
 
