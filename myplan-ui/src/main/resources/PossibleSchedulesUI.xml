@@ -333,7 +333,7 @@
     <bean id="registered_schedule_tba_list" parent="KSAP-HorizontalBoxGroup">
         <property name="render" value="@{registeredSchedule NE null ? registeredSchedule.isTbd() : false}"/>
         <property name="id" value="tba-@{registeredSchedule NE null ? registeredSchedule.uniqueId : ''}"/>
-        <property name="cssClasses" value="scheduleBuilder__tbaItem"/>
+        <property name="cssClasses" value="scheduleBuilder__tbaItem scheduleCalendar--registered"/>
         <property name="onClickScript" value="
             var calEvent;
             var events = jQuery(this).data('source').events;
