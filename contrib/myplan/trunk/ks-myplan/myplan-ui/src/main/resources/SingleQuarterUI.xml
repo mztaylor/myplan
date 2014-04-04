@@ -999,7 +999,7 @@
     </bean>
 
     <bean id="termPlanItemGroup" parent="KSAP-HorizontalFieldGroup">
-        <property name="cssClasses" value="termPlanItem"/>
+        <property name="additionalCssClasses" value="termPlanItem"/>
         <property name="items">
             <list>
                 <bean parent="termItemAlert"/>
