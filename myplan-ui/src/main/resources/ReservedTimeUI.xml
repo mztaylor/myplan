@@ -14,6 +14,7 @@
 
     <bean id="ScheduleBuild-ReservedTime-FormView" parent="ScheduleBuild-ReservedTime-FormView-parent"/>
     <bean abstract="true" id="ScheduleBuild-ReservedTime-FormView-parent" parent="MyPlanBaseFormView">
+        <property name="persistFormToSession" value="true"/>
         <property name="id" value="ScheduleBuild-ReservedTime-FormView"/>
         <property name="items">
             <list>
