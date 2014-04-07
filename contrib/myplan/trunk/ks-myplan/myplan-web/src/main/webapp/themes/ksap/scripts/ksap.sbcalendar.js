@@ -116,8 +116,14 @@ var KsapSbCalendar = {
 
     toggleSaveSchedule: function (id, methodToCall, event) {
         stopEvent(event);
-        jQuery("#kualiForm").ajaxSubmit({
+        // TODO FIX THIS SO IT WORKS ON SQV
+        var form = jQuery('<form />').attr("id", "scheduleForm").attr("action", "sb").attr("method", "post");
+        form.ajaxSubmit({
             data: {
+                viewId: "ScheduleBuild-FormView",
+                termId: jQuery('#schedule_build_termId_control').val(),
+                requestedLearningPlanId: jQuery('#schedule_build_learningPlanId_control').val(),
+                learningPlanId: jQuery('#schedule_build_learningPlanId_control').val(),
                 methodToCall: methodToCall,
                 uniqueId: id
             },

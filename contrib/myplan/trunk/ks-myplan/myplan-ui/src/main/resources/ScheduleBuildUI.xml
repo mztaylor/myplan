@@ -46,6 +46,17 @@
 
     <bean id="schedule_build_page" parent="schedule_build_page-parent"/>
     <bean abstract="true" id="schedule_build_page-parent" parent="KSAP-Page" p:id="schedule_build">
+        <property name="onDocumentReadyScript" value="
+            jQuery('body').on('SAVED_SCHEDULE_SAVE', function(event, data) {
+                KsapSbCalendar.updateAddedSavedSchedule(data);
+            }).on('SAVED_SCHEDULE_REMOVE', function(event, data) {
+                KsapSbCalendar.updateRemovedSavedSchedule(data);
+            }).on('SECTION_ITEM_ADDED', function(event, data) {
+                KsapScheduleBuild.addPlannedActivity(data);
+            }).on('SECTION_ITEM_DELETED', function(event, data) {
+                KsapScheduleBuild.removePlannedActivity(data);
+            });
+        "/>
         <property name="layoutManager">
             <bean parent="Uif-VerticalBoxLayout"/>
         </property>
@@ -68,7 +79,7 @@
                     <property name="items">
                         <list>
                             <ref bean="schedule_builder_panel"/>
-                            <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules" p:width="268px">
+                            <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules: @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToShortTermName(termId)}" p:width="268px">
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-SavedScheduleList"/>
@@ -77,9 +88,6 @@
                             </bean>
                         </list>
                     </property>
-                </bean>
-                <bean parent="KSAP-HeaderDiv" p:headerText="@{term.name}" p:headerTagCssClasses="planTerm__headerText">
-                    <property name="cssClasses" value="planTerm__header planTerm__header--@{currentTermForView ? 'current' : 'future'}"/>
                 </bean>
                 <bean parent="schedule_build_possible"/>
                 <bean parent="sb_hidden_templates"/>
@@ -302,6 +310,7 @@
                     </property>
                     <property name="footer">
                         <bean parent="Uif-FooterBase">
+                            <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                             <property name="hidden" value="@{reservedTimes.size() GT 3}"/>
                             <property name="validationMessages"><null/></property>
                             <property name="items">
