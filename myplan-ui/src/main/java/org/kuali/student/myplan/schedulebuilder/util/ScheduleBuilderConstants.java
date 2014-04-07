@@ -10,6 +10,8 @@ public class ScheduleBuilderConstants {
 
     public static final String LEARNING_PLAN_KEY = "learningPlanId";
 
+    public static final String SCHEDULE_BUILDER_PAGE_ID = "schedule_build";
+
     public static final String INVALID_PINNED_SCHEDULE_SINGLE = "myplan.text.error.scheduleBuilder.invalid.pinned.schedule.single";
     public static final String INVALID_PINNED_SCHEDULE_MULTIPLE = "myplan.text.error.scheduleBuilder.invalid.pinned.schedule.multiple";
 
@@ -75,4 +77,6 @@ public class ScheduleBuilderConstants {
 
 
     public static final int POSSIBLE_SCHEDULES_MAX_COUNT = ConfigContext.getCurrentContextConfig().getProperty("ks.possible.schedules.count") != null ? Integer.parseInt(ConfigContext.getCurrentContextConfig().getProperty("ks.possible.schedules.count")) : 1000;
+
+    public static final String WARNING_STUDENT_SERVICES_DOWN = "myplan.text.error.technicalProblems";
 }
