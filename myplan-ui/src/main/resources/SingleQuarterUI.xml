@@ -30,6 +30,11 @@
                   value="org.kuali.student.myplan.plan.service.SingleQuarterInquiryHelperImpl"/>
         <property name="singlePageView" value="true"/>
         <property name="page.header.render" value="false"/>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>themes/ksap/scripts/ksap.sbcalendar.js</value>
+            </list>
+        </property>
         <property name="dataAttributes">
             <map>
                 <entry key="planned-activities" value="@{dataObject.plannedActivities}"/>
@@ -37,6 +42,12 @@
         </property>
         <property name="page">
             <bean parent="KSAP-Page" p:id="term_planned_courses_detail_page">
+                <property name="onDocumentReadyScript" value="
+                    jQuery('body').on('SAVED_SCHEDULE_REMOVE', function(event, data) {
+                        jQuery.fancybox.close(true);
+                        fnCloseAllPopups();
+                    });
+                "/>
                 <property name="items">
                     <list>
                         <bean id="term_items" parent="KSAP-VerticalBoxGroup" p:width="710px">

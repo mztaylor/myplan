@@ -5,20 +5,15 @@
     border-left: @baseBorderStyle;
     border-right: @baseBorderStyle;
 
-    .schedulePossible__header {
-        overflow: auto;
-        margin-bottom: @marginDefault;
+    .schedulePossible__legend {
+        float: right;
+        color: @grayLight;
+        font-size: @fontSizeMini;
+    }
 
-        & .schedulePossible__headerText {
-            float: left;
-            width: 50%;
-        }
-
-        & .schedulePossible__headerGroup--right {
-            float: right;
-            color: @grayLight;
-            font-size: @fontSizeMini;
-        }
+    .schedulePossible__results {
+        margin: 0;
+        padding: @paddingDefault 0 0 0;
     }
 }
 
@@ -139,12 +134,10 @@
 }
 
 .schedulePossible__empty {
-    background: #f2f2f2;
     display: block;
+    float: none;
     padding: (@paddingDefault * 4);
     text-align: center;
-    border-left: @baseBorderStyle;
-    border-right: @baseBorderStyle;
     font-size: @fontSizeLarge;
     color: @grayLight;
 }
