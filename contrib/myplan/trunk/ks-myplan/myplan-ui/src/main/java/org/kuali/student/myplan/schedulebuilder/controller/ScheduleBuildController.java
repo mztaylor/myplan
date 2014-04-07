@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.schedulebuilder.controller;
 
 import org.apache.log4j.Logger;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
@@ -10,6 +11,7 @@ import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleForm;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.springframework.stereotype.Controller;
@@ -54,7 +56,12 @@ public class ScheduleBuildController extends UifControllerBase {
         super.start(form, result, request, response);
 
         ScheduleForm sbform = (ScheduleForm) form;
-        sbform.reset();
+        try {
+            sbform.reset();
+        } catch (RuntimeException e) {
+            GlobalVariables.getMessageMap().putWarningForSectionId(ScheduleBuilderConstants.SCHEDULE_BUILDER_PAGE_ID,
+                    ScheduleBuilderConstants.WARNING_STUDENT_SERVICES_DOWN);
+        }
         return getUIFModelAndView(form);
     }
 
