@@ -4,6 +4,7 @@ import org.kuali.student.myplan.plan.dataobject.FullPlanItemsDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
+import org.springframework.web.util.HtmlUtils;
 
 import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
@@ -37,10 +38,10 @@ public class PlanNotesPropertyEditor extends PropertyEditorSupport {
                     String code = plannedCourseDataObject.getPlaceHolderCode() != null ? plannedCourseDataObject.getPlaceHolderCode() : plannedCourseDataObject.getCourseDetails().getCode();
                     String credit = plannedCourseDataObject.getPlaceHolderCredit() != null ? plannedCourseDataObject.getPlaceHolderCredit() : plannedCourseDataObject.getCourseDetails().getCredit();
                     if (termNotes.get(plannedTerm.getQtrYear()) != null) {
-                        termNotes.get(plannedTerm.getQtrYear()).add(String.format("<%s><label>%s</label> (%s): %s</%s>", listType.getListItemElementName(), code, credit, plannedCourseDataObject.getNote(), listType.getListItemElementName()));
+                        termNotes.get(plannedTerm.getQtrYear()).add(String.format("<%s><label>%s</label> (%s): %s</%s>", listType.getListItemElementName(), code, credit, HtmlUtils.htmlEscape(plannedCourseDataObject.getNote()), listType.getListItemElementName()));
                     } else {
                         List<String> displayValues = new ArrayList<String>();
-                        displayValues.add(String.format("<%s><label>%s</label> (%s): %s</%s>", listType.getListItemElementName(), code, credit, plannedCourseDataObject.getNote(), listType.getListItemElementName()));
+                        displayValues.add(String.format("<%s><label>%s</label> (%s): %s</%s>", listType.getListItemElementName(), code, credit, HtmlUtils.htmlEscape(plannedCourseDataObject.getNote()), listType.getListItemElementName()));
                         termNotes.put(plannedTerm.getQtrYear(), displayValues);
                     }
 
