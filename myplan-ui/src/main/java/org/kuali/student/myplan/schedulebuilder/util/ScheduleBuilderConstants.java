@@ -49,6 +49,7 @@ public class ScheduleBuilderConstants {
     public static final String ZERO_RESULTS_REASON_RESTRICTION = "Have enrollment restrictions";
     public static final String ZERO_RESULTS_REASON_OVERLAPPED = "Overlap with my registered courses";
     public static final String ZERO_RESULTS_REASON_OTHER_INSTITUTES = "Are UW PCE courses";
+    public static final String ZERO_RESULTS_REASON_NO_DEFINED_SECTIONS = "Have no defined sections";
 
     public static final String PINNED_SCHEDULES_PASSIVE_ERROR = "info";
     public static final String PINNED_SCHEDULES_MODAL_ERROR = "error";
