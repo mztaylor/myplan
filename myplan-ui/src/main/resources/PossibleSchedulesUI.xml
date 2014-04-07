@@ -403,7 +403,7 @@
                     function(event, element) {
                         jQuery(element).attr({
                             id: 'possible_schedule_event' + event._id,
-                            title: event.popoverContent.courseCd
+                            title: (typeof event.popoverContent !== 'undefined') ? event.popoverContent.courseCd : 'Reserved'
                         });
                     }
                 "/>
