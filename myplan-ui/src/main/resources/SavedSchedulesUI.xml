@@ -69,6 +69,12 @@
                 KsapSbCalendar.toggleCalendarSchedule('@{#line.uniqueId}', @{#index + 1}, jQuery(this), @{#line.tbd}, true);
             }
         "/>
+        <property name="layoutManager.lineGroupPrototype.onDocumentReadyScript" value="
+            if (typeof KsapSbCalendar !== 'undefined') {
+                var scheduleEvents = KsapSbCalendar.getScheduleEvents('@{#line.uniqueId}');
+                if (scheduleEvents.length > 0) jQuery('#saved-schedule-@{#line.uniqueId}').addClass('scheduleSaved__item--active');
+            }
+        "/>
         <property name="filters">
             <list>
                 <bean parent="Uif-ConditionalCollectionFilter" p:expression="#index lt 4"/>

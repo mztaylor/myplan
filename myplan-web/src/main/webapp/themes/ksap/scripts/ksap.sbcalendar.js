@@ -83,6 +83,8 @@ var KsapSbCalendar = {
             if (!isSaved) {
                 target.removeClass(cssClass);
                 this.addCssClass(cssClass);
+            } else {
+                target.removeClass("scheduleSaved__item--active");
             }
             this.limit++;
             if (hasTba) this.hideTba(id, cssClass);
@@ -108,6 +110,8 @@ var KsapSbCalendar = {
             if (!isSaved) {
                 target.addClass(cssClass);
                 this.removeCssClass(cssClass);
+            } else {
+                target.addClass("scheduleSaved__item--active");
             }
             this.limit--;
             if (hasTba) this.showTba(id, cssClass);
