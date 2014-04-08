@@ -78,7 +78,7 @@ public class ScheduleBuildController extends UifControllerBase {
 
         List<PossibleScheduleOption> savedSchedules;
         try {
-            savedSchedules = getScheduleBuildStrategy().getSchedules(form.getRequestedLearningPlanId());
+            savedSchedules = getScheduleBuildStrategy().getSchedulesForTerm(form.getRequestedLearningPlanId(), form.getTermId());
         } catch (PermissionDeniedException e) {
             throw new IllegalStateException(
                     "Failed to refresh saved schedules", e);
@@ -151,7 +151,7 @@ public class ScheduleBuildController extends UifControllerBase {
 
         List<PossibleScheduleOption> savedSchedules = null;
         try {
-            savedSchedules = getScheduleBuildStrategy().getSchedules(form.getRequestedLearningPlanId());
+            savedSchedules = getScheduleBuildStrategy().getSchedulesForTerm(form.getRequestedLearningPlanId(), form.getTermId());
         } catch (PermissionDeniedException e) {
             throw new IllegalStateException(
                     "Failed to refresh saved schedules", e);

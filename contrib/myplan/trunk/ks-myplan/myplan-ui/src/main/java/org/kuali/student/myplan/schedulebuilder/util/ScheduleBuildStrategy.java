@@ -109,6 +109,16 @@ public interface ScheduleBuildStrategy {
             throws PermissionDeniedException;
 
     /**
+     * Get saved schedules related to the current learning plan and given term.
+     *
+     * @param requestedLearningPlanId See {@link #getLearningPlan(String)}.
+     * @param termId
+     * @return The saved schedules related to the current learning plan and term.
+     */
+    List<PossibleScheduleOption> getSchedulesForTerm(String requestedLearningPlanId, String termId)
+            throws PermissionDeniedException;
+
+    /**
      * Add a new reserved time on the current learning plan.
      *
      * @param requestedLearningPlanId The reserved time to add.
