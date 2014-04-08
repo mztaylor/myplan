@@ -1022,6 +1022,20 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
                 getScheduleBuildAttribute(requestedLearningPlanId).schedule);
     }
 
+    public List<PossibleScheduleOption> getSchedulesForTerm(String requestedLearningPlanId, String termId)
+            throws PermissionDeniedException {
+        List<PossibleScheduleOption> possibleScheduleOptions = new ArrayList<PossibleScheduleOption>();
+        List<PossibleScheduleOption> schedules = getSchedules(requestedLearningPlanId);
+        if (!CollectionUtils.isEmpty(schedules) && StringUtils.hasText(termId)) {
+            for (PossibleScheduleOption possibleScheduleOption : schedules) {
+                if (termId.equals(possibleScheduleOption.getTermId())) {
+                    possibleScheduleOptions.add(possibleScheduleOption);
+                }
+            }
+        }
+        return possibleScheduleOptions;
+    }
+
     @Override
     // TODO: Convert from dynamic attributes to DAO service
     public PossibleScheduleOption createSchedule(

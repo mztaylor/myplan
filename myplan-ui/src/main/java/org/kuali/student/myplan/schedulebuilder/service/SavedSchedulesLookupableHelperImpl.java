@@ -58,7 +58,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
             Term term = getTermHelper().getTermByAtpId(termId);
             List<PossibleScheduleOption> savedSchedules;
             try {
-                savedSchedules = sb.getSchedules(requestedLearningPlanId);
+                savedSchedules = sb.getSchedulesForTerm(requestedLearningPlanId, termId);
             } catch (PermissionDeniedException e) {
                 throw new IllegalStateException(
                         "Failed to refresh saved schedules", e);
@@ -80,40 +80,38 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
             }
 
             for (PossibleScheduleOption possibleScheduleOption : savedSchedules) {
-                if (termId.equals(possibleScheduleOption.getTermId())) {
-                    PossibleScheduleErrorsInfo possibleScheduleErrorsInfo = new PossibleScheduleErrorsInfo();
-                    Map<String, Map<String, List<String>>> invalidOptions = new LinkedHashMap<String, Map<String, List<String>>>();
-                    List<ActivityOption> validatedActivities = validatedSavedActivities(possibleScheduleOption.getActivityOptions(), invalidOptions, reservedTimes == null ? new ArrayList<ReservedTime>() : reservedTimes, new ArrayList<String>(plannedItems.keySet()), registeredPossibleSchedule);
-                    if (!CollectionUtils.isEmpty(validatedActivities) && validatedActivities.size() == possibleScheduleOption.getActivityOptions().size()) {
 
-                        if (!CollectionUtils.isEmpty(invalidOptions)) {
-                            boolean otherErrors = false;
-                            boolean noError = false;
-                            for (String key : invalidOptions.keySet()) {
-                                List<String> errorReasons = new ArrayList<String>(invalidOptions.get(key).keySet());
-                                for (String errorReason : errorReasons) {
-                                    if (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR.equals(errorReason) && !noError) {
-                                        noError = true;
-                                    } else if (!ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR.equals(errorReason) && !otherErrors) {
-                                        otherErrors = true;
-                                    }
+                PossibleScheduleErrorsInfo possibleScheduleErrorsInfo = new PossibleScheduleErrorsInfo();
+                Map<String, Map<String, List<String>>> invalidOptions = new LinkedHashMap<String, Map<String, List<String>>>();
+                List<ActivityOption> validatedActivities = validatedSavedActivities(possibleScheduleOption.getActivityOptions(), invalidOptions, reservedTimes == null ? new ArrayList<ReservedTime>() : reservedTimes, new ArrayList<String>(plannedItems.keySet()), registeredPossibleSchedule);
+                if (!CollectionUtils.isEmpty(validatedActivities) && validatedActivities.size() == possibleScheduleOption.getActivityOptions().size()) {
+                    if (!CollectionUtils.isEmpty(invalidOptions)) {
+                        boolean otherErrors = false;
+                        boolean noError = false;
+                        for (String key : invalidOptions.keySet()) {
+                            List<String> errorReasons = new ArrayList<String>(invalidOptions.get(key).keySet());
+                            for (String errorReason : errorReasons) {
+                                if (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR.equals(errorReason) && !noError) {
+                                    noError = true;
+                                } else if (!ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR.equals(errorReason) && !otherErrors) {
+                                    otherErrors = true;
                                 }
                             }
-                            if (noError && !otherErrors) {
-                                possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_NO_ERROR);
-                            } else if (otherErrors) {
-                                possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_PASSIVE_ERROR);
-                            }
-                            possibleScheduleErrorsInfo.setInvalidOptions(invalidOptions);
                         }
-                    } else {
-                        possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR);
+                        if (noError && !otherErrors) {
+                            possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_NO_ERROR);
+                        } else if (otherErrors) {
+                            possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_PASSIVE_ERROR);
+                        }
                         possibleScheduleErrorsInfo.setInvalidOptions(invalidOptions);
                     }
-                    ((PossibleScheduleOptionInfo) possibleScheduleOption).setPossibleErrors(possibleScheduleErrorsInfo);
-                    getScheduleBuildHelper().buildPossibleScheduleEvents(possibleScheduleOption, term);
-                    savedSchedulesList.add(possibleScheduleOption);
+                } else {
+                    possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR);
+                    possibleScheduleErrorsInfo.setInvalidOptions(invalidOptions);
                 }
+                ((PossibleScheduleOptionInfo) possibleScheduleOption).setPossibleErrors(possibleScheduleErrorsInfo);
+                getScheduleBuildHelper().buildPossibleScheduleEvents(possibleScheduleOption, term);
+                savedSchedulesList.add(possibleScheduleOption);
             }
             savedSchedulesList.add(registeredPossibleSchedule);
         } else {

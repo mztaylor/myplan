@@ -81,7 +81,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
         ScheduleBuildStrategy sb = getScheduleBuildStrategy();
         List<PossibleScheduleOption> newSavedSchedules;
         try {
-            newSavedSchedules = sb.getSchedules(getRequestedLearningPlanId());
+            newSavedSchedules = sb.getSchedulesForTerm(getRequestedLearningPlanId(), getTermId());
         } catch (PermissionDeniedException e) {
             throw new IllegalStateException(
                     "Failed to refresh saved schedules", e);
