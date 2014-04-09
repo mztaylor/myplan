@@ -43,7 +43,6 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
     private transient AcademicCalendarService academicCalendarService;
 
 
-
     private void updateReservedTimesOnBuild() {
         ScheduleBuildStrategy sb = getScheduleBuildStrategy();
         if (getRemoveReserved() != null && getReservedTimes() != null
@@ -132,6 +131,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
 
         /*Clear all Zero results errors*/
         ((ScheduleBuildFiltersInfo) getBuildFilters()).setZeroResultsReasons(new ArrayList<String>());
+        ((ScheduleBuildFiltersInfo) getBuildFilters()).setResultsNotPossibleReasons(new ArrayList<String>());
 
         courseOptions = getScheduleBuildStrategy().getCourseOptions(getRequestedLearningPlanId(), getTermId(), getBuildFilters());
 
