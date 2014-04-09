@@ -754,12 +754,12 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                 jEvents.writeStartObject().write("sectionCd", activityOption.getActivityCode()).write("primary", activityOption.isPrimary()).write("activityId", activityOption.getActivityOfferingId()).write("registrationCode", activityOption.getRegistrationCode()).write("instituteCd", instituteCd).write("enrollRestriction", activityOption.isEnrollmentRestriction()).write("enrollStatus", String.format("%s/%s", activityOption.getFilledSeats(), activityOption.getTotalSeats())).write("enrollState", activityOption.getEnrollStatus()).writeStartArray("meetings");
                 if (!isTBD) {
                     for (ClassMeetingTime meetingTime : activityOption.getClassMeetingTimes()) {
-                        jEvents.writeStartObject().write("meetingDay", org.apache.commons.lang.StringUtils.join(meetingTime.getDays(), "")).write("meetingTime", meetingTime.getTimes()).write("location", (null != meetingTime.getLocation() ? meetingTime.getLocation() : "TBA"));
+                        jEvents.writeStartObject().write("meetingDay", org.apache.commons.lang.StringUtils.join(meetingTime.getDays(), "")).write("meetingTime", meetingTime.getTimes() != null ? meetingTime.getTimes() : "").write("location", meetingTime.getLocation() != null ? meetingTime.getLocation() : "");
                         String campus = meetingTime.getCampus();
                         String building = "";
                         String buildingUrl = "";
                         if (meetingTime.getBuilding() != null) {
-                            if (!"NOC".equals(meetingTime.getBuilding()) && !meetingTime.getBuilding().startsWith("*") && campus.equalsIgnoreCase("seattle")) {
+                            if (!"NOC".equals(meetingTime.getBuilding()) && !meetingTime.getBuilding().startsWith("*") && "seattle".equalsIgnoreCase(campus)) {
                                 building = meetingTime.getBuilding();
                                 buildingUrl = PlanConstants.BUILDING_URL + building;
                             } else {
