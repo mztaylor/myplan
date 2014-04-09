@@ -195,8 +195,17 @@
                         <bean parent="KSAP-RightPane" p:width="230px">
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules: @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToShortTermName(dataObject.atpId)}">
+                                    <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules">
                                         <property name="additionalCssClasses" value="noClick scheduleSaved--termView"/>
+                                        <property name="header.rightGroup">
+                                            <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="moduleContainer__header--right">
+                                                <property name="items">
+                                                    <list>
+                                                        <bean parent="schedule_builder_pinned_sqv_help_icon"/>
+                                                    </list>
+                                                </property>
+                                            </bean>
+                                        </property>
                                         <property name="items">
                                             <list>
                                                 <bean parent="KSAP-SavedScheduleList"/>
