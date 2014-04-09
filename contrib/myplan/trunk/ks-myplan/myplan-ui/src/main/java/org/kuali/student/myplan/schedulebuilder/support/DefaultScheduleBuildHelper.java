@@ -754,7 +754,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                 jEvents.writeStartObject().write("sectionCd", activityOption.getActivityCode()).write("primary", activityOption.isPrimary()).write("activityId", activityOption.getActivityOfferingId()).write("registrationCode", activityOption.getRegistrationCode()).write("instituteCd", instituteCd).write("enrollRestriction", activityOption.isEnrollmentRestriction()).write("enrollStatus", String.format("%s/%s", activityOption.getFilledSeats(), activityOption.getTotalSeats())).write("enrollState", activityOption.getEnrollStatus()).writeStartArray("meetings");
                 if (!isTBD) {
                     for (ClassMeetingTime meetingTime : activityOption.getClassMeetingTimes()) {
-                        jEvents.writeStartObject().write("meetingDay", org.apache.commons.lang.StringUtils.join(meetingTime.getDays(), "")).write("meetingTime", meetingTime.getTimes()).write("location", meetingTime.getLocation());
+                        jEvents.writeStartObject().write("meetingDay", org.apache.commons.lang.StringUtils.join(meetingTime.getDays(), "")).write("meetingTime", meetingTime.getTimes()).write("location", (null != meetingTime.getLocation() ? meetingTime.getLocation() : "TBA"));
                         String campus = meetingTime.getCampus();
                         String building = "";
                         String buildingUrl = "";
