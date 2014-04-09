@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.schedulebuilder.controller;
 
 import org.apache.log4j.Logger;
+import org.kuali.rice.krad.uif.UifConstants;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
@@ -13,6 +14,7 @@ import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleForm;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
@@ -25,6 +27,7 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonWriter;
 import javax.json.stream.JsonGenerator;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -43,6 +46,8 @@ public class ScheduleBuildController extends UifControllerBase {
 
     private static CourseHelper courseHelper;
 
+    private UserSessionHelper userSessionHelper;
+
 
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
@@ -53,6 +58,11 @@ public class ScheduleBuildController extends UifControllerBase {
     public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form,
                               BindingResult result, HttpServletRequest request,
                               HttpServletResponse response) {
+        if (getUserSessionHelper().isAdviser()) {
+            LOG.info("UNAUTHORIZED Access: " + GlobalVariables.getUserSession().getPerson().getPrincipalId());
+            ModelAndView modelAndView = new ModelAndView(UifConstants.REDIRECT_PREFIX + "/myplan/unauthorized");
+            return modelAndView;
+        }
         super.start(form, result, request, response);
 
         ScheduleForm sbform = (ScheduleForm) form;
@@ -238,5 +248,16 @@ public class ScheduleBuildController extends UifControllerBase {
 
     public static void setCourseHelper(CourseHelper courseHelper) {
         ScheduleBuildController.courseHelper = courseHelper;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        if (userSessionHelper == null) {
+            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
     }
 }
