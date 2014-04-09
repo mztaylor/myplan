@@ -189,6 +189,23 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 validatedAlternates.remove(0);
                 alAo.setAlternateActivities(validatedAlternates.size() > 0 ? validatedAlternates : new ArrayList<ActivityOption>());
                 activityOptionList.add(alAo);
+                if(plannedActivities.contains(savedActivity.getActivityOfferingId()) && (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED.equals(reasonForChange)|| ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_SUSPENDED.equals(reasonForChange))){
+                    if (invalidOptions == null) {
+                        invalidOptions = new HashMap<String, Map<String, List<String>>>();
+                    }
+                    Map<String, List<String>> errorList = invalidOptions.get(savedActivity.getCourseCd());
+                    if (errorList == null) {
+                        errorList = new HashMap<String, List<String>>();
+                        errorList.put(reasonForChange, new ArrayList<String>());
+                    }
+                    List<String> activityList = errorList.get(reasonForChange);
+                    if (CollectionUtils.isEmpty(activityList)) {
+                        activityList = new ArrayList<String>();
+                    }
+                    activityList.add(savedActivity.getActivityCode());
+                    errorList.put(reasonForChange, activityList);
+                    invalidOptions.put(savedActivity.getCourseCd(), errorList);
+                }
             } else if (StringUtils.hasText(reasonForChange) && (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CLOSED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_ENROLL_RESTR.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_REGISTERED.equals(reasonForChange))) {
                 savedActivity.setAlternateActivities(validatedAlternates);
                 activityOptionList.add(savedActivity);

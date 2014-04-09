@@ -772,6 +772,8 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                 for (SecondaryActivityOptions secondaryActivityOptions : activityOption.getSecondaryOptions()) {
                     buildCoursePopoverEvents(secondaryActivityOptions.getActivityOptions(), jEvents, isTBD, invalidActivities);
                 }
+            } else if (!CollectionUtils.isEmpty(activityOption.getAlternateActivties())) {
+                buildCoursePopoverEvents(activityOption.getAlternateActivties(), jEvents, isTBD, invalidActivities);
             }
         }
     }
