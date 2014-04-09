@@ -448,7 +448,7 @@ function planItemTemplate(data) {
             "class": "planItem__note uif-boxLayoutHorizontalItem uif-tooltip"
         }).append(image.clone());
         itemGroup.append(note);
-        var decoded = data.note.replace(/&lt;br\/&gt;/g, '<br/>');; //jQuery("<div/>").html(data.note).text();
+        var decoded = data.note.replace(/&lt;br\/&gt;|\n/g, '<br/>');//jQuery("<div/>").html(data.note).text();
         var popoverTheme = "note";
         var editNote = "<p><a data-planitemtype=" + data.planItemType + " data-planitemid=" + data.planItemId + " data-atpid=" + data.atpId + " onclick=editNote(jQuery(this),event);>Edit Note</a></p>";
 
