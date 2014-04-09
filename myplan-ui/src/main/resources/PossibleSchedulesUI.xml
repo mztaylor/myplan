@@ -156,11 +156,17 @@
                     <property name="replacement">
                         <list>
                             <bean parent="possible_schedules_empty"
-                                  p:render="@{buildFilters.getZeroResultsReasons().size() EQ 0}"/>
+                                  p:render="@{buildFilters.getZeroResultsReasons().size() EQ 0 AND buildFilters.getResultsNotPossibleReasons().size() EQ 0}"/>
 
                             <bean parent="possible_schedules_empty"
                                   p:messageText="Try turning on &quot;@{buildFilters.getZeroResultsReasons()}&quot; filter(s) and click on Update to get results."
-                                  p:render="@{buildFilters.getZeroResultsReasons().size() GT 0}"/>
+                                  p:render="@{buildFilters.getZeroResultsReasons().size() GT 0 AND buildFilters.getResultsNotPossibleReasons().size() EQ 0}"/>
+
+                            <!-- TODO - get messageText to accept @{buildFilters.getResultsNotPossibleReasons()}; figure out why it barfs, complaining about
+                                        not being able to convert an ArrayList into a String, even though it does just that with getZeroResultsReasons above -->
+                            <bean parent="possible_schedules_empty"
+                                  p:messageText="One or more of your planned courses is not offered this quarter."
+                                  p:render="@{buildFilters.getResultsNotPossibleReasons().size() GT 0}"/>
                         </list>
                     </property>
                 </bean>

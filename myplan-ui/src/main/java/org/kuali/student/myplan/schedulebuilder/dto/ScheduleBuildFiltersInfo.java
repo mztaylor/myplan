@@ -14,6 +14,7 @@ public class ScheduleBuildFiltersInfo implements ScheduleBuildFilters {
     private boolean showOverlapped;
     private boolean showOtherInstitutes;
     private List<String> zeroResultsReasons;
+    private List<String> resultsNotPossibleReasons;
 
 
     @Override
@@ -62,5 +63,17 @@ public class ScheduleBuildFiltersInfo implements ScheduleBuildFilters {
 
     public void setZeroResultsReasons(List<String> zeroResultsReasons) {
         this.zeroResultsReasons = zeroResultsReasons;
+    }
+
+    @Override
+    public List<String> getResultsNotPossibleReasons() {
+        if (resultsNotPossibleReasons == null) {
+            resultsNotPossibleReasons = new ArrayList<String>();
+        }
+        return resultsNotPossibleReasons;
+    }
+
+    public void setResultsNotPossibleReasons(List<String> resultsNotPossibleReasons) {
+        this.resultsNotPossibleReasons = resultsNotPossibleReasons;
     }
 }

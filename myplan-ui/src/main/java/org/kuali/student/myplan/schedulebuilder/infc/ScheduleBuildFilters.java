@@ -45,5 +45,12 @@ public interface ScheduleBuildFilters {
      */
     List<String> getZeroResultsReasons();
 
+    /**
+     * Populated when no possible schedule results are returned because of the class data itself.
+     *
+     * @return List of error codes
+     */
+    List<String> getResultsNotPossibleReasons();
+
 
 }
