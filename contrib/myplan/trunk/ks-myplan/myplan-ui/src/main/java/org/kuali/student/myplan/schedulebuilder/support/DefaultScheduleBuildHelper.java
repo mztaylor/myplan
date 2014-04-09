@@ -694,11 +694,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                         }
                     } else if (ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR.equals(possibleScheduleErrors.getErrorType())) {
                         StringBuffer errorMessage = new StringBuffer();
-                        if (activitiesToExclude.size() > 1) {
-                            errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.INVALID_PINNED_SCHEDULE_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(activitiesToExclude.subList(0, activitiesToExclude.size() - 1), ", "), activitiesToExclude.get(activitiesToExclude.size() - 1))).append("</p>");
-                        } else {
-                            errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.INVALID_PINNED_SCHEDULE_SINGLE), ao.getCourseCd(), activitiesToExclude.get(0))).append("</p>");
-                        }
+                        errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.INVALID_PINNED_SCHEDULE))).append("</p>");
                         if (StringUtils.hasText(errorMessage)) {
                             jEvents.write("errorType", possibleScheduleErrors.getErrorType()).write("errorMessage", errorMessage.toString());
                         }
