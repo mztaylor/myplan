@@ -12,8 +12,7 @@ public class ScheduleBuilderConstants {
 
     public static final String SCHEDULE_BUILDER_PAGE_ID = "schedule_build";
 
-    public static final String INVALID_PINNED_SCHEDULE_SINGLE = "myplan.text.error.scheduleBuilder.invalid.pinned.schedule.single";
-    public static final String INVALID_PINNED_SCHEDULE_MULTIPLE = "myplan.text.error.scheduleBuilder.invalid.pinned.schedule.multiple";
+    public static final String INVALID_PINNED_SCHEDULE = "myplan.text.error.scheduleBuilder.invalid.pinned.schedule";
 
     public static final String VALID_PINNED_SCHEDULE_WITHDRAWN_SINGLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.withdrawn.single";
     public static final String VALID_PINNED_SCHEDULE_WITHDRAWN_MULTIPLE = "myplan.text.error.scheduleBuilder.valid.pinned.schedule.withdrawn.multiple";
