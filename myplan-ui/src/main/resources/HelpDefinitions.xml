@@ -157,7 +157,7 @@
     <bean id="single_quarter_registered_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
             <bean parent="KSAP-TooltipLeft"
-                  p:tooltipContent="The courses and sections you are enrolled in for the current or future academic quarter(s). To update this information, go to the &lt;a target=_blank href=&quot;https://sdb.admin.washington.edu/students/uwnetid/register.asp&quot;&gt;Registration&lt;/a&gt; page."/>
+                  p:tooltipContent="The courses and sections you are enrolled in for the current or future academic quarter(s). To update this information, go to the &lt;a target=_blank href=https://sdb.admin.washington.edu/students/uwnetid/register.asp&gt;Registration&lt;/a&gt; page."/>
         </property>
     </bean>
 
@@ -179,6 +179,41 @@
         <property name="toolTip">
             <bean parent="KSAP-TooltipLeft"
                   p:tooltipContent="Courses that you registered for in a quarter that is now complete."/>
+        </property>
+    </bean>
+
+    <bean id="schedule_builder_pce_help_icon" parent="KSAP-HelpImage">
+        <property name="toolTip">
+            <bean parent="KSAP-TooltipLeft"
+                  p:tooltipContent="For more information about Professional &amp; Continuing Education (PCE) courses, visit &lt;a target=_blank href=http://pce.uw.edu&gt;pce.uw.edu&lt;/a&gt;."/>
+        </property>
+    </bean>
+
+    <bean id="schedule_builder_filters_help_icon" parent="KSAP-HelpImage">
+        <property name="toolTip">
+            <bean parent="KSAP-TooltipLeft"
+                  p:tooltipContent="By default, Schedule Builder will only return open sections, those with enrollment restrictions, and those that do not conflict with your current registered courses."/>
+        </property>
+    </bean>
+
+    <bean id="schedule_builder_reserved_help_icon" parent="KSAP-HelpImage">
+        <property name="toolTip">
+            <bean parent="KSAP-TooltipLeft"
+                  p:tooltipContent="Schedule Builder will exclude the sections that meet on the days and times you've blocked from the calendar."/>
+        </property>
+    </bean>
+
+    <bean id="schedule_builder_pinned_help_icon" parent="KSAP-HelpImage">
+        <property name="toolTip">
+            <bean parent="KSAP-TooltipRight"
+                  p:tooltipContent="You can pin up to 3 schedule options for future planning."/>
+        </property>
+    </bean>
+
+    <bean id="schedule_builder_pinned_sqv_help_icon" parent="KSAP-HelpImage">
+        <property name="toolTip">
+            <bean parent="KSAP-TooltipRight"
+                  p:tooltipContent="Use Schedule Builder to pin up to 3 schedule options for future planning. Your pinned schedules will appear here."/>
         </property>
     </bean>
 

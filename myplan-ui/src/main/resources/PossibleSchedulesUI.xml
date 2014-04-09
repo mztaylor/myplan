@@ -57,7 +57,7 @@
     <bean abstract="true" id="sb_possible_schedules-parent" parent="KSAP-VerticalBoxGroup"
           p:id="sb_possible_schedules">
         <property name="header">
-            <bean parent="KSAP-HeaderDiv" p:headerText="Possible Schedules for @{term.name}: @{possibleScheduleOptions.size()}" p:headerTagCssClasses="planTerm__headerText capitalize">
+            <bean parent="KSAP-HeaderDiv" p:headerText="Possible Schedules: @{possibleScheduleOptions.size()}" p:headerTagCssClasses="planTerm__headerText capitalize">
                 <property name="cssClasses" value="planTerm__header planTerm__header--@{currentTermForView ? 'current' : 'future'}"/>
             </bean>
         </property>

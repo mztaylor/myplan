@@ -79,7 +79,16 @@
                     <property name="items">
                         <list>
                             <ref bean="schedule_builder_panel"/>
-                            <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules: @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToShortTermName(termId)}" p:width="268px">
+                            <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules" p:width="268px">
+                                <property name="header.rightGroup">
+                                    <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="moduleContainer__header--right">
+                                        <property name="items">
+                                            <list>
+                                                <bean parent="schedule_builder_pinned_help_icon"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-SavedScheduleList"/>
@@ -224,11 +233,23 @@
             <list>
                 <bean parent="KSAP-VerticalBoxGroup" p:headerText="Include sections that..." p:width="300px">
                     <property name="header">
-                        <bean parent="KSAP-HeaderThree"/>
+                        <bean parent="KSAP-HeaderThree" p:cssClasses="scheduleBuilder__filterHeader" p:headerTagCssClasses="scheduleBuilder__filterHeaderText"/>
+                    </property>
+                    <property name="header.rightGroup">
+                        <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="scheduleBuilder__filterHeader--right">
+                            <property name="items">
+                                <list>
+                                    <bean parent="schedule_builder_filters_help_icon"/>
+                                </list>
+                            </property>
+                        </bean>
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-SimpleInputField" p:propertyName="includeFilters">
+                            <bean parent="KSAP-SimpleInputField" p:propertyName="includeFilters" p:id="sb_filters">
+                                <property name="onDocumentReadyScript" value="
+                                    jQuery('#schedule_builder_pce_help_icon').detach().appendTo(jQuery('input[value=otherInstitutes]').parent('span'));
+                                "/>
                                 <property name="control">
                                     <bean parent="Uif-VerticalCheckboxesControl">
                                         <property name="options">
@@ -246,6 +267,8 @@
                                     </bean>
                                 </property>
                             </bean>
+                            <bean parent="schedule_builder_pce_help_icon" p:id="schedule_builder_pce_help_icon" p:additionalCssClasses="removeMargin"
+                                  p:style="vertical-align: middle; margin: 0 0 0 5px;"/>
                             <bean id="sb_filters_submit_button" parent="KSAP-PrimaryActionButton"
                                   p:actionLabel="Update">
                                 <property name="actionScript"
@@ -258,7 +281,16 @@
                 <bean parent="KSAP-StackedHorizontalCollectionGroup" p:headerText="Exclude sections that meet on..."
                       p:width="360px">
                     <property name="header">
-                        <bean parent="KSAP-HeaderThree"/>
+                        <bean parent="KSAP-HeaderThree" p:cssClasses="scheduleBuilder__filterHeader" p:headerTagCssClasses="scheduleBuilder__filterHeaderText"/>
+                    </property>
+                    <property name="header.rightGroup">
+                        <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="scheduleBuilder__filterHeader--right">
+                            <property name="items">
+                                <list>
+                                    <bean parent="schedule_builder_reserved_help_icon"/>
+                                </list>
+                            </property>
+                        </bean>
                     </property>
                     <property name="collectionObjectClass"
                               value="org.kuali.student.myplan.schedulebuilder.infc.ReservedTime"/>
