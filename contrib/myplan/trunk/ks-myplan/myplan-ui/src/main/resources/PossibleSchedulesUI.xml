@@ -165,7 +165,7 @@
                             <!-- TODO - get messageText to accept @{buildFilters.getResultsNotPossibleReasons()}; figure out why it barfs, complaining about
                                         not being able to convert an ArrayList into a String, even though it does just that with getZeroResultsReasons above -->
                             <bean parent="possible_schedules_empty"
-                                  p:messageText="One or more of your planned courses is not offered this quarter."
+                                  p:messageText="No results found. Check the section details or reserved time conflicts."
                                   p:render="@{buildFilters.getResultsNotPossibleReasons().size() GT 0 AND buildFilters.getZeroResultsReasons().size() EQ 0}"/>
                         </list>
                     </property>
