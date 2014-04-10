@@ -126,7 +126,7 @@ public class PossibleSchedulesPropertyEditor extends PropertyEditorSupport {
                     Set<String> times = new HashSet<String>();
                     for (ClassMeetingTime classMeetingTime : activityOption.getClassMeetingTimes()) {
                         if (classMeetingTime.isArranged()) {
-                            times.add(TimeStringMillisConverter.millisToStandardTime(classMeetingTime.getStartDate().getTime(), "h:m a"));
+                            times.add(TimeStringMillisConverter.millisToStandardTime(classMeetingTime.getStartDate().getTime(), "h:mm a"));
                         } else {
                             times.add("TBA");
                         }
