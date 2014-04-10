@@ -79,7 +79,7 @@
                     <property name="items">
                         <list>
                             <ref bean="schedule_builder_panel"/>
-                            <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules" p:width="268px">
+                            <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules" p:width="266px" p:style="float: right;">
                                 <property name="header.rightGroup">
                                     <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="moduleContainer__header--right">
                                         <property name="items">
@@ -104,10 +104,10 @@
         </property>
     </bean>
 
-    <bean id="schedule_builder_panel" parent="KSAP-VerticalBoxGroup">
+    <bean id="schedule_builder_panel" parent="KSAP-VerticalBoxGroup" p:width="670px">
         <property name="items">
             <list>
-                <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planNavigation" p:style="width: 670px;">
+                <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planNavigation">
                     <property name="items">
                         <list>
                             <bean parent="KSAP-HorizontalBoxGroup"
@@ -211,7 +211,7 @@
         </property>
     </bean>
 
-    <bean id="schedule_build_filters" parent="KSAP-HorizontalBoxGroup" p:style="width: 670px;">
+    <bean id="schedule_build_filters" parent="KSAP-HorizontalBoxGroup">
         <property name="header">
             <bean parent="KSAP-HeaderOne"/>
         </property>

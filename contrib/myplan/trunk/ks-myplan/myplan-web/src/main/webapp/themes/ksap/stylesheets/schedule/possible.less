@@ -14,6 +14,12 @@
     .schedulePossible__results {
         margin: 0;
         padding: @paddingDefault 0 0 0;
+
+        & > .uif-horizontalBoxLayout {
+            position: relative;
+            width: 780px;
+            padding: 0 74px;
+        }
     }
 }
 
@@ -24,9 +30,10 @@
     border: solid 1px #06c;
     margin: 0;
     width: 67px;
-    float: left;
     text-align: center;
     padding: @paddingDefault 0;
+    position: absolute;
+    top: 0px;
 
     &:hover {
         text-decoration: none;
@@ -57,6 +64,8 @@
     }
 
     &.schedulePossible__carouselButton--prev {
+        left: 0px;
+
         img.actionImage {
             background: url('../images/icon_sprite.png') no-repeat -4px -234px;
         }
@@ -67,6 +76,8 @@
     }
 
     &.schedulePossible__carouselButton--next {
+        right: 0px;
+
         img.actionImage {
             background: url('../images/icon_sprite.png') no-repeat -22px -234px;
         }
@@ -78,8 +89,8 @@
 }
 
 .schedulePossible__carousel {
-    width: 800px;
-    margin: 0 @marginSmall;
+    width: 780px;
+    margin: 0;
     overflow: hidden;
     & ul {
         width: 100000em;
