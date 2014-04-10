@@ -189,7 +189,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
                 validatedAlternates.remove(0);
                 alAo.setAlternateActivities(validatedAlternates.size() > 0 ? validatedAlternates : new ArrayList<ActivityOption>());
                 activityOptionList.add(alAo);
-                if(plannedActivities.contains(savedActivity.getActivityOfferingId()) && (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED.equals(reasonForChange)|| ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_SUSPENDED.equals(reasonForChange))){
+                if (plannedActivities.contains(savedActivity.getActivityOfferingId()) && (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_SUSPENDED.equals(reasonForChange))) {
                     if (invalidOptions == null) {
                         invalidOptions = new HashMap<String, Map<String, List<String>>>();
                     }
@@ -281,6 +281,9 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
      * @return (((currentStatusClosed) OR currentIsWithdrawn OR ((currentMeeting and savedMeeting times vary) OR (reservedTime and savedMeeting time conflict))) AND savedActivity is not in PlannedActivities) then false otherwise true.
      */
     private String areEqual(ActivityOption saved, ActivityOption current, List<ReservedTime> reservedTimes, PossibleScheduleOption registered) {
+        if (current == null) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN;
+        }
         long[][] savedClassMeetingTime = getScheduleBuildHelper().xlateClassMeetingTimeList2WeekBits(saved.getClassMeetingTimes());
         long[][] currentClassMeetingTime = getScheduleBuildHelper().xlateClassMeetingTimeList2WeekBits(current.getClassMeetingTimes());
         long[][] reservedTime = getScheduleBuildHelper().xlateClassMeetingTimeList2WeekBits(reservedTimes);
