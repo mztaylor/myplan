@@ -330,7 +330,15 @@
                         <list>
                             <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Add to Plan">
                                 <property name="actionScript" value="
-                                    var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:'@{#line.courseDetails.courseId}', pageId:'add_dialog_page'};
+                                    var retrieveData = {
+                                        action:'plan',
+                                        viewId:'PlannedCourse-FormView',
+                                        methodToCall:'startAddPlannedCourseForm',
+                                        courseId:'@{#line.courseDetails.courseId}',
+                                        courseCd:'@{#line.courseDetails.code}',
+                                        code:'@{#line.courseDetails.code}',
+                                        pageId:'add_dialog_page'
+                                    };
                                     var popupStyle = {width:'300px', height:'16px'};
                                     var popupOptions = {tail:{hidden:true}, position:'right', align:'bottom', close:true};
                                     openPopup('add_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
