@@ -229,8 +229,6 @@
           p:labelPlacement="LEFT" p:cssClasses="messagesForm__field">
         <property name="fieldLabel.render" value="true"/>
         <property name="fieldLabel.cssClasses" value="messagesForm__label"/>
-        <!--<property name="defaultValue" value="@{#form.feedBackMode ? T(org.springframework.web.util.HtmlUtils).htmlEscape(#form.subject) : ''}"/>
-        <property name="escapeHtmlInPropertyValue" value="true"/>-->
         <property name="control">
             <bean parent="Uif-TextControl" p:maxLength="70" p:disabled="@{#form.feedBackMode}" p:style="width:510px;">
                 <property name="onKeyPressScript" value="

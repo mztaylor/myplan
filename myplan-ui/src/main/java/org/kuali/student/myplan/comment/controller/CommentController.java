@@ -40,6 +40,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -204,6 +205,7 @@ public class CommentController extends UifControllerBase {
             String[] params = {};
             return doErrorPage(form, CommentConstants.SPECIAL_CHARACTERS_ERROR, params, CommentConstants.MESSAGE_RESPONSE_PAGE, CommentConstants.MESSAGE_MESSAGE_BOX);
         }
+        form.setSubject(HtmlUtils.htmlEscape(form.getSubject()));
         form.setFeedBackMode(true);
 
 
