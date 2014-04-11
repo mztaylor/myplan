@@ -23,9 +23,7 @@ var KsapScheduleBuild = {
                 jQuery.event.trigger("RSAVED_SCHEDULE_REFRESH");
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                if (textStatus == "parsererror")
-                    textStatus = "Parse Error in response";
-                showGrowl(errorThrown, jqXHR.status + " " + textStatus);
+                showError(jqXHR, textStatus, errorThrown);
                 fnCloseAllPopups();
             }
         });
@@ -53,9 +51,7 @@ var KsapScheduleBuild = {
                 jQuery.event.trigger("RSAVED_SCHEDULE_REFRESH");
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                if (textStatus == "parsererror")
-                    textStatus = "Parse Error in response";
-                showGrowl(errorThrown, jqXHR.status + " " + textStatus);
+                showError(jqXHR, textStatus, errorThrown);
                 fnCloseAllPopups();
             }
         });
@@ -77,9 +73,7 @@ var KsapScheduleBuild = {
                 jQuery.event.trigger("RSAVED_SCHEDULE_REFRESH");
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                if (textStatus == "parsererror")
-                    textStatus = "JSON Parse Error";
-                showGrowl(errorThrown, jqXHR.status + " " + textStatus);
+                showError(jqXHR, textStatus, errorThrown);
             }
         });
     },

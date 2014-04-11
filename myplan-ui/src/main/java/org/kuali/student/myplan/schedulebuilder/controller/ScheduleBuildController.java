@@ -146,19 +146,29 @@ public class ScheduleBuildController extends UifControllerBase {
 
     @RequestMapping(params = "methodToCall=removeSchedule")
     public ModelAndView removeSchedule(@ModelAttribute("KualiForm") ScheduleBuildForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        String removedId = form.removeSchedule();
-
         String uniqueId = null;
-        for (PossibleScheduleOption saved : form.getSavedSchedules()) {
+
+        /*Getting pinned schedules v=before removal to find the unique id*/
+        List<PossibleScheduleOption> savedScheduleList;
+        try {
+            savedScheduleList = getScheduleBuildStrategy().getSchedulesForTerm(form.getRequestedLearningPlanId(), form.getTermId());
+        } catch (PermissionDeniedException e) {
+            throw new IllegalStateException(
+                    "Failed to refresh saved schedules", e);
+        }
+        for (PossibleScheduleOption saved : savedScheduleList) {
             if (saved.getId().equals(form.getUniqueId())) {
                 uniqueId = saved.getUniqueId();
                 break;
             }
         }
+
+        String removedId = form.removeSchedule();
+
         StringWriter stringWriter = new StringWriter();
         JsonGenerator jPso = Json.createGenerator(stringWriter);
 
+        /*Getting the pinned schedules after removal*/
         List<PossibleScheduleOption> savedSchedules = null;
         try {
             savedSchedules = getScheduleBuildStrategy().getSchedulesForTerm(form.getRequestedLearningPlanId(), form.getTermId());
