@@ -20,7 +20,7 @@ var KsapScheduleBuild = {
                 fnCloseAllPopups();
                 KsapScheduleBuild.toggleAddReservedAction(container.parents(".scheduleReserved"));
                 jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES");
-                jQuery.event.trigger("RSAVED_SCHEDULE_REFRESH");
+                jQuery.event.trigger("SAVED_SCHEDULE_REFRESH");
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 showError(jqXHR, textStatus, errorThrown);
@@ -48,7 +48,7 @@ var KsapScheduleBuild = {
                 container.find("#reserved-item-" + response.id).replaceWith(item);
                 fnCloseAllPopups();
                 jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES");
-                jQuery.event.trigger("RSAVED_SCHEDULE_REFRESH");
+                jQuery.event.trigger("SAVED_SCHEDULE_REFRESH");
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 showError(jqXHR, textStatus, errorThrown);
@@ -70,7 +70,7 @@ var KsapScheduleBuild = {
                 target.parents(".scheduleReserved__item").remove();
                 KsapScheduleBuild.toggleAddReservedAction(jQuery(".scheduleReserved"));
                 jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES");
-                jQuery.event.trigger("RSAVED_SCHEDULE_REFRESH");
+                jQuery.event.trigger("SAVED_SCHEDULE_REFRESH");
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 showError(jqXHR, textStatus, errorThrown);
