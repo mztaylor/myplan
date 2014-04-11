@@ -116,6 +116,8 @@ public class SingleQuarterHelperBase {
 
         }
 
+        boolean atpSetToPlanning = AtpHelper.isAtpSetToPlanning(plannedTerm.getAtpId());
+        List<String> courseCodes = new ArrayList<String>();
         List<AcademicRecordDataObject> academicRecordDataObjectList = new ArrayList<AcademicRecordDataObject>();
         Map<String, List<ActivityOfferingItem>> activitiesMap = new HashMap<String, List<ActivityOfferingItem>>();
 
@@ -161,8 +163,10 @@ public class SingleQuarterHelperBase {
                         }
                     }
 
-
-                    academicRecordDataObjectList.add(academicRecordDataObject);
+                    if (atpSetToPlanning || (!atpSetToPlanning && !courseCodes.contains(academicRecordDataObject.getCourseCode()))) {
+                        academicRecordDataObjectList.add(academicRecordDataObject);
+                        courseCodes.add(academicRecordDataObject.getCourseCode());
+                    }
                 }
             }
         }
@@ -173,7 +177,7 @@ public class SingleQuarterHelperBase {
         /*Implementation to set the conditional flags based on each plannedTerm atpId*/
 
 
-        if (AtpHelper.isAtpSetToPlanning(plannedTerm.getAtpId())) {
+        if (atpSetToPlanning) {
             plannedTerm.setOpenForPlanning(true);
         }
         if (AtpHelper.isAtpCompletedTerm(plannedTerm.getAtpId())) {
