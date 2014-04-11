@@ -124,7 +124,7 @@
                                                         </list>
                                                     </property>
                                                 </bean>
-                                                <bean parent="KSAP-HeaderTwo" p:headerText="@{dataObject.qtrYear}"
+                                                <bean parent="KSAP-HeaderTwo" p:headerText="Plan Details: @{dataObject.qtrYear}"
                                                       p:cssClasses="planNavigation__header"/>
                                                 <bean parent="KSAP-HorizontalBoxGroup"
                                                       p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--view">
