@@ -43,6 +43,8 @@ public class PlannedTerm {
     private String learningPlanId;
     /*Used for schedule builder pinned schedules*/
     private String plannedActivities;
+    /*Used for rendering the pinned schedules widget*/
+    private boolean pinnedSchedulesExists;
 
 
     /*
@@ -242,5 +244,14 @@ public class PlannedTerm {
     public void setPlannedActivities(String plannedActivities) {
         this.plannedActivities = plannedActivities;
     }
+
+    public boolean isPinnedSchedulesExists() {
+        return pinnedSchedulesExists;
+    }
+
+    public void setPinnedSchedulesExists(boolean pinnedSchedulesExists) {
+        this.pinnedSchedulesExists = pinnedSchedulesExists;
+    }
+
 }
 

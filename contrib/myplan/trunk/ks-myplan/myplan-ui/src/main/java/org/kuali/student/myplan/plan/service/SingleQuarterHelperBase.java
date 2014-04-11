@@ -11,7 +11,10 @@ import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
+import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -34,6 +37,8 @@ public class SingleQuarterHelperBase {
     private static CourseDetailsInquiryHelperImpl courseDetailsHelper;
 
     private static PlanHelper planHelper;
+
+    private static ScheduleBuildStrategy scheduleBuildStrategy;
 
 
     public static PlannedTerm populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<PlannedCourseDataObject> recommendedCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String termAtp) {
@@ -190,6 +195,18 @@ public class SingleQuarterHelperBase {
         if (learningPlan != null) {
             plannedTerm.setLearningPlanId(learningPlan.getId());
         }
+
+        List<PossibleScheduleOption> savedSchedules;
+        try {
+            savedSchedules = getScheduleBuildStrategy().getSchedulesForTerm(learningPlan.getId(), termAtp);
+        } catch (PermissionDeniedException e) {
+            throw new IllegalStateException(
+                    "Failed to refresh saved schedules", e);
+        }
+
+        if (!CollectionUtils.isEmpty(savedSchedules)) {
+            plannedTerm.setPinnedSchedulesExists(true);
+        }
 /*
         populateHelpIconFlags(perfectPlannedTerms);
 */
@@ -228,5 +245,16 @@ public class SingleQuarterHelperBase {
 
     public static void setPlanHelper(PlanHelper planHelper) {
         SingleQuarterHelperBase.planHelper = planHelper;
+    }
+
+    public static ScheduleBuildStrategy getScheduleBuildStrategy() {
+        if (scheduleBuildStrategy == null) {
+            scheduleBuildStrategy = UwMyplanServiceLocator.getInstance().getScheduleBuildStrategy();
+        }
+        return scheduleBuildStrategy;
+    }
+
+    public static void setScheduleBuildStrategy(ScheduleBuildStrategy scheduleBuildStrategy) {
+        SingleQuarterHelperBase.scheduleBuildStrategy = scheduleBuildStrategy;
     }
 }
