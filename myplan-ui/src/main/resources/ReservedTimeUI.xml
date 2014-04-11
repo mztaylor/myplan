@@ -148,6 +148,8 @@
 
     <bean id="sb_reserved_times_update_button" parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Update">
         <property name="actionScript" value="KsapScheduleBuild.editReservedSchedule('@{id}');"/>
+        <property name="disabled"
+                  value="@{monday EQ false AND tuesday EQ false AND wednesday EQ false AND thursday EQ false AND friday EQ false AND saturday EQ false}"/>
     </bean>
 
     <bean id="sb_reserved_time_buttons" parent="sb_reserved_time_buttons-parent"/>
