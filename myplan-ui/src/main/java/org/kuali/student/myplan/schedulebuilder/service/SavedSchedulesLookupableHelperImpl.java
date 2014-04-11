@@ -74,7 +74,10 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
 
             /*Getting registered possible schedule*/
             List<CourseOption> registeredCourseOptions = getScheduleBuildStrategy().getRegisteredCourseOptions(getUserSessionHelper().getStudentId(), termId, new ScheduleBuildFiltersInfo());
-            PossibleScheduleOption registeredPossibleSchedule = getScheduleBuildStrategy().getScheduleBuilder(term, registeredCourseOptions, reservedTimes, savedSchedules, new ScheduleBuildFiltersInfo()).getRegistered();
+            PossibleScheduleOption registeredPossibleSchedule = null;
+            if (term != null) {
+                registeredPossibleSchedule = getScheduleBuildStrategy().getScheduleBuilder(term, registeredCourseOptions, reservedTimes, savedSchedules, new ScheduleBuildFiltersInfo()).getRegistered();
+            }
             if (registeredPossibleSchedule != null) {
                 ((PossibleScheduleOptionInfo) registeredPossibleSchedule).setLockedIn(true);
             }

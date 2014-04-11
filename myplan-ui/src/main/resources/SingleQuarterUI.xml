@@ -195,7 +195,7 @@
                         <bean parent="KSAP-RightPane" p:width="230px">
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules">
+                                    <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules" p:render="@{dataObject.openForPlanning AND dataObject.publishedTerm AND dataObject.pinnedSchedulesExists}">
                                         <property name="additionalCssClasses" value="noClick scheduleSaved--termView"/>
                                         <property name="header.rightGroup">
                                             <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="moduleContainer__header--right">
