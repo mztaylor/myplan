@@ -31,6 +31,7 @@
                     try{Typekit.load();}catch(e){}
                     setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
                     setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+                    setConfigParam('devMode', @{#ConfigProperties['rice.krad.dev.mode']});
         "/>
         <property name="header">
             <bean parent="Uif-ViewHeader">
@@ -51,6 +52,7 @@
                     try{Typekit.load();}catch(e){}
                     setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
                     setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+                    setConfigParam('devMode', @{#ConfigProperties['rice.krad.dev.mode']});
         "/>
     </bean>
 
@@ -80,6 +82,7 @@
                     try{Typekit.load();}catch(e){}
                     setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
                     setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+                    setConfigParam('devMode', @{#ConfigProperties['rice.krad.dev.mode']});
         "/>
         <property name="criteriaFields">
             <list/>
@@ -118,6 +121,7 @@
                     try{Typekit.load();}catch(e){}
                     setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
                     setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+                    setConfigParam('devMode', @{#ConfigProperties['rice.krad.dev.mode']});
         "/>
     </bean>
 
@@ -146,6 +150,7 @@
                     try{Typekit.load();}catch(e){}
                     setConfigParam('adviser', @{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()});
                     setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
+                    setConfigParam('devMode', @{#ConfigProperties['rice.krad.dev.mode']});
         "/>
     </bean>
 

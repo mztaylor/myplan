@@ -141,9 +141,7 @@ var KsapSbCalendar = {
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                if (textStatus == "parsererror")
-                    textStatus = "JSON Parse Error";
-                showGrowl(errorThrown, jqXHR.status + " " + textStatus);
+                showError(jqXHR, textStatus, errorThrown);
             }
         });
     },

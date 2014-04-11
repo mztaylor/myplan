@@ -14,7 +14,7 @@ function truncateField(id, floated) {
             jQuery(this).find(itemSelector + ":not(.ellipsisItem)").each(function () {
                 fixed = fixed + jQuery(this).outerWidth(true);
             });
-            var available = jQuery(this).width() - ( ( ellipsisItem.outerWidth(true) - ellipsisItem.width() ) + fixed + 3 );
+            var available = jQuery(this).width() - ( ( ellipsisItem.outerWidth(true) - ellipsisItem.width() ) + fixed + 4 );
             ellipsisItem.css("white-space", "nowrap");
             if (!floated) {
                 ellipsisItem.width(available);
@@ -100,7 +100,7 @@ function toggleSections(actionId, toggleId, showClass, showText, hideText) {
                 jQuery(this).show().next("tr.collapsible").show().next("tr.collapsible").show();
             }
         });
-        jQuery(".planTerm__activitiesInstitution").show();
+        jQuery("#" + toggleId + " .planTerm__activitiesInstitution").show();
         action.text(hideText).data("hidden", false);
     } else {
         group.each(function () {
@@ -111,7 +111,7 @@ function toggleSections(actionId, toggleId, showClass, showText, hideText) {
                 jQuery(this).hide().next("tr.collapsible").hide().next("tr.collapsible").hide();
             }
         });
-        jQuery(".planTerm__activitiesInstitution").hide();
+        jQuery("#" + toggleId + " .planTerm__activitiesInstitution").hide();
         action.text(showText).data("hidden", true);
     }
 }
@@ -767,6 +767,18 @@ function formatTimeString(date) {
         minutes = "0" + minutes.toString()
     }
     return hours + ':' + minutes + meridiem
+}
+
+function showError(jqXHR, textStatus, errorThrown) {
+    if (textStatus == "parsererror") textStatus = "JSON Parse Error";
+    if (getConfigParam("devMode")) {
+        jQuery.fancybox({
+            title: textStatus,
+            content: jQuery(jqXHR.responseText).find("pre").parent().html()
+        });
+    } else {
+        showGrowl(errorThrown, jqXHR.status + " " + textStatus);
+    }
 }
 
 (function ($) {
