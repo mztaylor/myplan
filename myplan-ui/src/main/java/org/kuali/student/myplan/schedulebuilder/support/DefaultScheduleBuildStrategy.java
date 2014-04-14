@@ -294,7 +294,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         meeting.setLocation(location);
         meeting.setBuilding(building);
         meeting.setCampus(campus);
-        meeting.setArranged(location != null);
+        meeting.setArranged(StringUtils.hasLength(daysAndTimes));
         meeting.setDaysAndTimes(daysAndTimes.toString());
         meeting.setDays(days);
         meeting.setTimes(times);
