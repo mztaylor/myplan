@@ -249,6 +249,11 @@
                             <bean parent="KSAP-SimpleInputField" p:propertyName="includeFilters" p:id="sb_filters">
                                 <property name="onDocumentReadyScript" value="
                                     jQuery('#schedule_builder_pce_help_icon').detach().appendTo(jQuery('input[value=otherInstitutes]').parent('span'));
+                                    jQuery('#sb_filters input[name=includeFilters][type=checkbox]').each(function(index){
+                                        if ( readUrlHash(jQuery(this).val()) ) {
+                                            jQuery(this).prop('checked', true);
+                                        }
+                                    });
                                 "/>
                                 <property name="control">
                                     <bean parent="Uif-VerticalCheckboxesControl">
@@ -271,8 +276,16 @@
                                   p:style="vertical-align: middle; margin: 0 0 0 5px;"/>
                             <bean id="sb_filters_submit_button" parent="KSAP-PrimaryActionButton"
                                   p:actionLabel="Update">
-                                <property name="actionScript"
-                                          value="jQuery.event.trigger('REFRESH_POSSIBLE_SCHEDULES');"/>
+                                <property name="actionScript" value="
+                                    jQuery('#sb_filters input[name=includeFilters][type=checkbox]').each(function(index){
+                                        if (jQuery(this).prop('checked')) {
+                                            setUrlHash(jQuery(this).val(), jQuery(this).prop('checked'));
+                                        } else {
+                                            setUrlHash(jQuery(this).val(), '');
+                                        }
+                                    });
+                                    jQuery.event.trigger('REFRESH_POSSIBLE_SCHEDULES');
+                                "/>
                             </bean>
                         </list>
                     </property>
