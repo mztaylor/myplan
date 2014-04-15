@@ -183,16 +183,16 @@
         <property name="propertyName" value="possibleScheduleOptions"/>
         <property name="cssClasses" value="schedulePossible__carousel"/>
         <property name="layoutManager.lineGroupPrototype.id" value="possible-schedule-@{#line.uniqueId}"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__option"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="schedulePossible__option @{#line.id NE null ? 'schedulePossible__option--saved':''}"/>
         <property name="layoutManager.lineGroupPrototype.header.render" value="false"/>
         <property name="layoutManager.lineGroupPrototype.validationMessages">
             <null/>
         </property>
-        <property name="layoutManager.lineGroupPrototype.onDocumentReadyScript" value="
+        <!--<property name="layoutManager.lineGroupPrototype.onDocumentReadyScript" value="
             if (@{#line.id NE null} &amp;&amp; jQuery('.scheduleSaved__item[data-saved=@{#line.id}]').length > 0) {
-                jQuery('#possible-schedule-@{#line.uniqueId}.schedulePossible__option').addClass('schedulePossible__option--saved');
+                jQuery('#possible-schedule-@{#line.uniqueId}.schedulePossible__option').addClass('schedulePossible__option- -saved');
             }
-        "/>
+        "/>-->
         <property name="layoutManager.lineGroupPrototype.onClickScript"
                   value="KsapSbCalendar.toggleCalendarSchedule('@{#line.uniqueId}', @{#index + 1}, jQuery(this), @{#line.tbd}, false);"/>
         <property name="layoutManager.lineGroupPrototype.dataAttributes">
