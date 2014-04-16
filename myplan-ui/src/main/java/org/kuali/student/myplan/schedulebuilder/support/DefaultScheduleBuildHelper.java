@@ -5,6 +5,7 @@ import org.joda.time.DateTimeComparator;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
@@ -777,6 +778,49 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
             }
         }
     }
+
+    /**
+     * recursive method used to extract the meeting time bits from a list of ActivityOption.
+     * will traverse through primaries, secondaries, etc and sum all the bits, return them 2-D array of long.
+     * does not process AlternateActivities list
+     *
+     * @param aoList list of ActivityOption
+     * @return 2 D array (7 days x 5 longs per day) with the CMT bits
+     */
+    public long[][] extractClassMeetingTimeWeekBitsFromAOList(List<ActivityOption> aoList) {
+        long[][] unionWeekBits = new long[7][5];
+
+        for (ActivityOption activityOption : aoList) {
+            long[][] cmtListWeekBits = xlateClassMeetingTimeList2WeekBits(activityOption.getClassMeetingTimes());
+            unionWeeks(unionWeekBits, cmtListWeekBits);
+            for (SecondaryActivityOptions secondaryActivityOptions : activityOption.getSecondaryOptions()) {
+                cmtListWeekBits = extractClassMeetingTimeWeekBitsFromAOList(secondaryActivityOptions.getActivityOptions());
+                unionWeeks(unionWeekBits, cmtListWeekBits);
+            }
+        }
+        return unionWeekBits;
+    }
+
+    /**
+     * extract the meeting time bits from a list of CourseOptions.
+     * will traverse through list and the ActivityOptions list in each CO and sum all the bits,
+     * return them as a 2-D array of long.
+     * does not process AlternateActivities list.
+     *
+     * @param coList list of CourseOption
+     * @return 2 D array (7 days x 5 longs per day) with the CMT bits
+     */
+    public long[][] extractClassMeetingTimeWeekBitsFromCourseOptionList(List<CourseOption> coList) {
+        long[][] unionCoBits = new long[7][5];
+
+        for (CourseOption co : coList) {
+            long[][] aoListWeekBits = extractClassMeetingTimeWeekBitsFromAOList(co.getActivityOptions());
+            unionWeeks(unionCoBits, aoListWeekBits);
+        }
+
+        return unionCoBits;
+    }
+
 
     public CalendarUtil getCalendarUtil() {
         if (calendarUtil == null) {
