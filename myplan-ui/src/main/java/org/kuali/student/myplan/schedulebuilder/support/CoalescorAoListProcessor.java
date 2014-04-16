@@ -116,7 +116,7 @@ public class CoalescorAoListProcessor extends AbstractAoListProcessor {
             for (int i = nextSectionCoalesceListNdx; i < coalesceList.size(); i++) {
                 int sectionAoListIndex = coalesceList.get(i);
                 ActivityOption nextSection = aoList.get(sectionAoListIndex);
-                // if section is already an alternate from earlier action, we can skip it. check delete list.
+                // if section is already an alternate from earlier traverse through the list, we can skip it. check delete list.
                 if (deletesAoIndexList.contains(sectionAoListIndex)) {
                     continue;
                 }
