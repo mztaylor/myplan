@@ -2,6 +2,7 @@ package org.kuali.student.myplan.schedulebuilder.util;
 
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
+import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.infc.ScheduleBuildEvent;
@@ -32,5 +33,7 @@ public interface ScheduleBuildHelper {
 
     public void buildPossibleScheduleEvents(PossibleScheduleOption pso, Term term);
 
+    public long[][] extractClassMeetingTimeWeekBitsFromAOList(List<ActivityOption> aoList);
 
+    public long[][] extractClassMeetingTimeWeekBitsFromCourseOptionList(List<CourseOption> coList);
 }
