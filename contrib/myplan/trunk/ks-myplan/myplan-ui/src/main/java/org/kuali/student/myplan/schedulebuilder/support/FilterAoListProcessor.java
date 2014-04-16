@@ -108,6 +108,8 @@ public class FilterAoListProcessor extends AbstractAoListProcessor {
                     }
                 }
                 // delete a primary if all the secondaries are filtered out
+                //      (could make this a separate processor to run after all filters
+                //          so other institutions can choose to not do it this way)
                 if (noSecondaries) {
                     // could be slightly misleading to say this primary was filtered out due to this filter,
                     // it could be due to this filters and other filters which eliminated other secondaries.
