@@ -128,7 +128,7 @@
                                                           p:propertyName="href"
                                                           p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousPublishedAtpId(termId) NE null">
                                                         <property name="replacement"
-                                                                  value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousPublishedAtpId(termId)}&amp;requestedLearningPlanId=@{requestedLearningPlanId}"/>
+                                                                  value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousPublishedAtpId(termId)}&amp;requestedLearningPlanId=@{requestedLearningPlanId}&amp;pageId=schedule_build"/>
                                                     </bean>
                                                     <bean parent="Uif-ConditionalBeanPropertyReplacer"
                                                           p:propertyName="cssClasses"
@@ -158,7 +158,7 @@
                                                           p:propertyName="href"
                                                           p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextPublishedAtpId(termId) NE null">
                                                         <property name="replacement"
-                                                                  value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextPublishedAtpId(termId)}&amp;requestedLearningPlanId=@{requestedLearningPlanId}"/>
+                                                                  value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextPublishedAtpId(termId)}&amp;requestedLearningPlanId=@{requestedLearningPlanId}&amp;pageId=schedule_build"/>
                                                     </bean>
                                                     <bean parent="Uif-ConditionalBeanPropertyReplacer"
                                                           p:propertyName="cssClasses"

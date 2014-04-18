@@ -4,12 +4,16 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTimeComparator;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.enrollment.acal.infc.Term;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
+import org.kuali.student.myplan.schedulebuilder.dto.SecondaryActivityOptionsInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.myplan.utils.CalendarUtil;
 import org.springframework.util.CollectionUtils;
@@ -39,6 +43,8 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
     private CalendarUtil calendarUtil;
 
     private Properties properties;
+
+    private ScheduleBuildStrategy scheduleBuildStrategy;
 
     public DefaultScheduleBuildHelper() {
         properties = new Properties();
@@ -345,6 +351,214 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
 
     }
 
+
+    /**
+     * Validates Saved activities against current versions.
+     *
+     * @param activityOptions
+     * @param invalidOptions
+     * @return ActivityOption list which are validated items and also populates all invalidActivityOptions course code wise.
+     */
+    public List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, Map<String, List<String>>> invalidOptions, List<ReservedTime> reservedTimes, List<String> plannedActivities, PossibleScheduleOption registered) {
+        List<ActivityOption> activityOptionList = new ArrayList<ActivityOption>();
+        for (ActivityOption activityOption : activityOptions) {
+            ActivityOptionInfo savedActivity = new ActivityOptionInfo(activityOption);
+            List<ActivityOption> validatedAlternates = new ArrayList<ActivityOption>();
+            if (!CollectionUtils.isEmpty(savedActivity.getSecondaryOptions())) {
+                boolean isValid = true;
+                for (SecondaryActivityOptions secondaryActivityOption : savedActivity.getSecondaryOptions()) {
+                    boolean containsPlannedItems = activityOptionsContainsPlannedItems(secondaryActivityOption.getActivityOptions(), plannedActivities);
+                    if (!CollectionUtils.isEmpty(secondaryActivityOption.getActivityOptions())) {
+                        List<ActivityOption> validatedSecondaryActivities = validatedSavedActivities(secondaryActivityOption.getActivityOptions(), invalidOptions, reservedTimes, plannedActivities, registered);
+                        if (CollectionUtils.isEmpty(validatedSecondaryActivities)) {
+                            isValid = false;
+                            break;
+                        } else {
+                            ((SecondaryActivityOptionsInfo) secondaryActivityOption).setActivityOptions(validatedSecondaryActivities);
+                            /*because there is atleast one valid secondary activity options we can remove the existing invalid secondary activities form the invalid options only for closed and enrollment restriction error reasons*/
+                            if (!CollectionUtils.isEmpty(invalidOptions) && invalidOptions.containsKey(activityOption.getCourseCd())) {
+                                List<String> keySet = new ArrayList<String>(invalidOptions.get(activityOption.getCourseCd()).keySet());
+                                for (String errorKey : keySet) {
+                                    if (!containsPlannedItems) {
+                                        invalidOptions.get(activityOption.getCourseCd()).put(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR, invalidOptions.get(activityOption.getCourseCd()).get(errorKey));
+                                        invalidOptions.get(activityOption.getCourseCd()).remove(errorKey);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                /*NO secondaries available for this primary are available*/
+                if (!isValid) {
+                    if (invalidOptions == null) {
+                        invalidOptions = new HashMap<String, Map<String, List<String>>>();
+                    }
+                    Map<String, List<String>> errorList = invalidOptions.get(savedActivity.getCourseCd());
+                    if (errorList == null) {
+                        errorList = new HashMap<String, List<String>>();
+                        errorList.put(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_SECONDARIES, new ArrayList<String>());
+                    }
+                    List<String> activityList = errorList.get(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_SECONDARIES);
+                    if (CollectionUtils.isEmpty(activityList)) {
+                        activityList = new ArrayList<String>();
+                    }
+                    activityList.add(savedActivity.getActivityCode());
+                    errorList.put(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_SECONDARIES, activityList);
+                    invalidOptions.put(savedActivity.getCourseCd(), errorList);
+                    continue;
+                }
+            } else if (!CollectionUtils.isEmpty(savedActivity.getAlternateActivties())) {
+                validatedAlternates = savedActivity.getAlternateActivties() == null ? new ArrayList<ActivityOption>() : validatedSavedActivities(savedActivity.getAlternateActivties(), invalidOptions, reservedTimes, plannedActivities, registered);
+            }
+
+            ActivityOption currentActivity = getScheduleBuildStrategy().getActivityOption(savedActivity.getTermId(), savedActivity.getCourseId(), savedActivity.getCourseCd(), savedActivity.getActivityCode());
+            String reasonForChange = areEqual(savedActivity, currentActivity, reservedTimes, registered);
+            if (StringUtils.isEmpty(reasonForChange)) {
+                savedActivity.setAlternateActivities(validatedAlternates);
+                activityOptionList.add(savedActivity);
+            } else if (StringUtils.hasText(reasonForChange) && !CollectionUtils.isEmpty(validatedAlternates)) {
+                ActivityOptionInfo alAo = (ActivityOptionInfo) validatedAlternates.get(0);
+                validatedAlternates.remove(0);
+                alAo.setAlternateActivities(validatedAlternates.size() > 0 ? validatedAlternates : new ArrayList<ActivityOption>());
+                activityOptionList.add(alAo);
+                if (plannedActivities.contains(savedActivity.getActivityOfferingId()) && (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_SUSPENDED.equals(reasonForChange))) {
+                    if (invalidOptions == null) {
+                        invalidOptions = new HashMap<String, Map<String, List<String>>>();
+                    }
+                    Map<String, List<String>> errorList = invalidOptions.get(savedActivity.getCourseCd());
+                    if (errorList == null) {
+                        errorList = new HashMap<String, List<String>>();
+                        errorList.put(reasonForChange, new ArrayList<String>());
+                    }
+                    List<String> activityList = errorList.get(reasonForChange);
+                    if (CollectionUtils.isEmpty(activityList)) {
+                        activityList = new ArrayList<String>();
+                    }
+                    activityList.add(savedActivity.getActivityCode());
+                    errorList.put(reasonForChange, activityList);
+                    invalidOptions.put(savedActivity.getCourseCd(), errorList);
+                }
+            } else if (StringUtils.hasText(reasonForChange) && (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CLOSED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_ENROLL_RESTR.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_REGISTERED.equals(reasonForChange))) {
+                savedActivity.setAlternateActivities(validatedAlternates);
+                activityOptionList.add(savedActivity);
+                if (invalidOptions == null) {
+                    invalidOptions = new HashMap<String, Map<String, List<String>>>();
+                }
+                Map<String, List<String>> errorList = invalidOptions.get(savedActivity.getCourseCd());
+                if (errorList == null) {
+                    errorList = new HashMap<String, List<String>>();
+                    errorList.put(reasonForChange, new ArrayList<String>());
+                }
+                List<String> activityList = errorList.get(reasonForChange);
+                if (CollectionUtils.isEmpty(activityList)) {
+                    activityList = new ArrayList<String>();
+                }
+                activityList.add(savedActivity.getActivityCode());
+                errorList.put(reasonForChange, activityList);
+                invalidOptions.put(savedActivity.getCourseCd(), errorList);
+            } else {
+                if (invalidOptions == null) {
+                    invalidOptions = new HashMap<String, Map<String, List<String>>>();
+                }
+                Map<String, List<String>> errorList = invalidOptions.get(savedActivity.getCourseCd());
+                if (errorList == null) {
+                    errorList = new HashMap<String, List<String>>();
+                    errorList.put(reasonForChange, new ArrayList<String>());
+                }
+                List<String> activityList = errorList.get(reasonForChange);
+                if (CollectionUtils.isEmpty(activityList)) {
+                    activityList = new ArrayList<String>();
+                }
+                activityList.add(savedActivity.getActivityCode());
+                errorList.put(reasonForChange, activityList);
+                invalidOptions.put(savedActivity.getCourseCd(), errorList);
+
+            }
+        }
+
+        return activityOptionList;
+
+    }
+
+    /**
+     * recursive method used to check if a activity cd is present in any of the primary, secondary or alternate activity options
+     *
+     * @param activityOptions
+     * @param activityIds
+     * @return
+     */
+    private boolean activityOptionsContainsPlannedItems(List<ActivityOption> activityOptions, List<String> activityIds) {
+        for (ActivityOption activityOption : activityOptions) {
+            if (activityIds.contains(activityOption.getActivityOfferingId())) {
+                return true;
+            }
+            if (activityOptionsContainsPlannedItems(activityOption.getAlternateActivties(), activityIds)) {
+                return true;
+            }
+
+            for (SecondaryActivityOptions so : activityOption.getSecondaryOptions()) {
+                if (activityOptionsContainsPlannedItems(so.getActivityOptions(), activityIds)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Compares the saved ActivityOption with withdrawnFlag, current ActivityOption, plannedActivities and ReservedTimes
+     *
+     * @param saved
+     * @param current
+     * @return (((currentStatusClosed) OR currentIsWithdrawn OR ((currentMeeting and savedMeeting times vary) OR (reservedTime and savedMeeting time conflict))) AND savedActivity is not in PlannedActivities) then false otherwise true.
+     */
+    private String areEqual(ActivityOption saved, ActivityOption current, List<ReservedTime> reservedTimes, PossibleScheduleOption registered) {
+        if (current == null) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN;
+        }
+        long[][] savedClassMeetingTime = xlateClassMeetingTimeList2WeekBits(saved.getClassMeetingTimes());
+        long[][] currentClassMeetingTime = xlateClassMeetingTimeList2WeekBits(current.getClassMeetingTimes());
+        long[][] reservedTime = xlateClassMeetingTimeList2WeekBits(reservedTimes);
+        if (!Arrays.deepEquals(savedClassMeetingTime, currentClassMeetingTime)) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED;
+        } else if (checkForConflictsWeeks(savedClassMeetingTime, reservedTime)) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED;
+        } else if (current.isWithdrawn()) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN;
+        } else if (current.isSuspended()) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_SUSPENDED;
+        } else if (conflictsWithRegistered(registered, saved)) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_REGISTERED;
+        } else if (current.isClosed()) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CLOSED;
+        } else if (current.isEnrollmentRestriction()) {
+            return ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_ENROLL_RESTR;
+        }
+        return null;
+    }
+
+
+    /**
+     * Checks to see if the activityOption conflicts with any of the registered activity class meeting times
+     *
+     * @param registered
+     * @param ao
+     * @return
+     */
+    private boolean conflictsWithRegistered(PossibleScheduleOption registered, ActivityOption ao) {
+        long[][] aoClassMeetingTime = xlateClassMeetingTimeList2WeekBits(ao.getClassMeetingTimes());
+        if (registered != null) {
+            for (ActivityOption registeredAO : registered.getActivityOptions()) {
+                long[][] registeredTime = xlateClassMeetingTimeList2WeekBits(registeredAO.getClassMeetingTimes());
+                if (checkForConflictsWeeks(aoClassMeetingTime, registeredTime)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
     /**
      * Builds the json string with events  required for the calendar and sets that to the possibleScheduleOption event property
      *
@@ -620,84 +834,86 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                 Collections.sort(activitiesToExclude);
                 Collections.sort(invalidatedActivities);
                 if (activityOptionsContains(activityOptions, activitiesToExclude)) {
-                    if (ScheduleBuilderConstants.PINNED_SCHEDULES_PASSIVE_ERROR.equals(possibleScheduleErrors.getErrorType())) {
+                    if (StringUtils.hasText(possibleScheduleErrors.getErrorType())) {
+                        if (invalidatedActivities.size() != activitiesToExclude.size()) {
 
-                        StringBuffer errorMessage = new StringBuffer();
-                        if (!CollectionUtils.isEmpty(withdrawnErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
+                            StringBuffer errorMessage = new StringBuffer();
+                            if (!CollectionUtils.isEmpty(withdrawnErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
 
-                            if (withdrawnErrorActivities.size() > 1) {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_WITHDRAWN_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(withdrawnErrorActivities.subList(0, withdrawnErrorActivities.size() - 1), ", "), withdrawnErrorActivities.get(withdrawnErrorActivities.size() - 1))).append("</p>");
-                            } else {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_WITHDRAWN_SINGLE), ao.getCourseCd(), withdrawnErrorActivities.get(0))).append("</p>");
+                                if (withdrawnErrorActivities.size() > 1) {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_WITHDRAWN_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(withdrawnErrorActivities.subList(0, withdrawnErrorActivities.size() - 1), ", "), withdrawnErrorActivities.get(withdrawnErrorActivities.size() - 1))).append("</p>");
+                                } else {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_WITHDRAWN_SINGLE), ao.getCourseCd(), withdrawnErrorActivities.get(0))).append("</p>");
+                                }
+
                             }
+                            if (!CollectionUtils.isEmpty(closedErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
 
-                        }
-                        if (!CollectionUtils.isEmpty(closedErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
+                                if (closedErrorActivities.size() > 1) {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_CLOSED_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(closedErrorActivities.subList(0, closedErrorActivities.size() - 1), ", "), closedErrorActivities.get(closedErrorActivities.size() - 1))).append("</p>");
+                                } else {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_CLOSED_SINGLE), ao.getCourseCd(), closedErrorActivities.get(0))).append("</p>");
+                                }
 
-                            if (closedErrorActivities.size() > 1) {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_CLOSED_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(closedErrorActivities.subList(0, closedErrorActivities.size() - 1), ", "), closedErrorActivities.get(closedErrorActivities.size() - 1))).append("</p>");
-                            } else {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_CLOSED_SINGLE), ao.getCourseCd(), closedErrorActivities.get(0))).append("</p>");
                             }
+                            if (!CollectionUtils.isEmpty(suspendedErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
 
-                        }
-                        if (!CollectionUtils.isEmpty(suspendedErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
+                                if (suspendedErrorActivities.size() > 1) {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_SUSPENDED_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(suspendedErrorActivities.subList(0, suspendedErrorActivities.size() - 1), ", "), suspendedErrorActivities.get(suspendedErrorActivities.size() - 1))).append("</p>");
+                                } else {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_SUSPENDED_SINGLE), ao.getCourseCd(), suspendedErrorActivities.get(0))).append("</p>");
+                                }
 
-                            if (suspendedErrorActivities.size() > 1) {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_SUSPENDED_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(suspendedErrorActivities.subList(0, suspendedErrorActivities.size() - 1), ", "), suspendedErrorActivities.get(suspendedErrorActivities.size() - 1))).append("</p>");
-                            } else {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_SUSPENDED_SINGLE), ao.getCourseCd(), suspendedErrorActivities.get(0))).append("</p>");
                             }
+                            if (!CollectionUtils.isEmpty(enrollErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
 
-                        }
-                        if (!CollectionUtils.isEmpty(enrollErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
+                                if (enrollErrorActivities.size() > 1) {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_ENROLL_RESTR_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(enrollErrorActivities.subList(0, enrollErrorActivities.size() - 1), ", "), enrollErrorActivities.get(enrollErrorActivities.size() - 1))).append("</p>");
+                                } else {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_ENROLL_RESTR_SINGLE), ao.getCourseCd(), enrollErrorActivities.get(0))).append("</p>");
+                                }
 
-                            if (enrollErrorActivities.size() > 1) {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_ENROLL_RESTR_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(enrollErrorActivities.subList(0, enrollErrorActivities.size() - 1), ", "), enrollErrorActivities.get(enrollErrorActivities.size() - 1))).append("</p>");
-                            } else {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_ENROLL_RESTR_SINGLE), ao.getCourseCd(), enrollErrorActivities.get(0))).append("</p>");
                             }
-
-                        }
-                        if (!CollectionUtils.isEmpty(timeChangedErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
-                            if (timeChangedErrorActivities.size() > 1) {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_TIME_CHANGED_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(timeChangedErrorActivities.subList(0, timeChangedErrorActivities.size() - 1), ", "), timeChangedErrorActivities.get(timeChangedErrorActivities.size() - 1))).append("</p>");
-                            } else {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_TIME_CHANGED_SINGLE), ao.getCourseCd(), timeChangedErrorActivities.get(0))).append("</p>");
+                            if (!CollectionUtils.isEmpty(timeChangedErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
+                                if (timeChangedErrorActivities.size() > 1) {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_TIME_CHANGED_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(timeChangedErrorActivities.subList(0, timeChangedErrorActivities.size() - 1), ", "), timeChangedErrorActivities.get(timeChangedErrorActivities.size() - 1))).append("</p>");
+                                } else {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_TIME_CHANGED_SINGLE), ao.getCourseCd(), timeChangedErrorActivities.get(0))).append("</p>");
+                                }
                             }
-                        }
-                        if (!CollectionUtils.isEmpty(conflictedErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
-                            if (conflictedErrorActivities.size() > 1) {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_RESERVED_CONFLICT_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(conflictedErrorActivities.subList(0, conflictedErrorActivities.size() - 1), ", "), conflictedErrorActivities.get(conflictedErrorActivities.size() - 1))).append("</p>");
-                            } else {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_RESERVED_CONFLICT_SINGLE), ao.getCourseCd(), conflictedErrorActivities.get(0))).append("</p>");
+                            if (!CollectionUtils.isEmpty(conflictedErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
+                                if (conflictedErrorActivities.size() > 1) {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_RESERVED_CONFLICT_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(conflictedErrorActivities.subList(0, conflictedErrorActivities.size() - 1), ", "), conflictedErrorActivities.get(conflictedErrorActivities.size() - 1))).append("</p>");
+                                } else {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_RESERVED_CONFLICT_SINGLE), ao.getCourseCd(), conflictedErrorActivities.get(0))).append("</p>");
+                                }
                             }
-                        }
-                        if (!CollectionUtils.isEmpty(registeredConflictedErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
-                            if (registeredConflictedErrorActivities.size() > 1) {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_REGISTERED_CONFLICT_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(registeredConflictedErrorActivities.subList(0, registeredConflictedErrorActivities.size() - 1), ", "), registeredConflictedErrorActivities.get(registeredConflictedErrorActivities.size() - 1))).append("</p>");
-                            } else {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_REGISTERED_CONFLICT_SINGLE), ao.getCourseCd(), registeredConflictedErrorActivities.get(0))).append("</p>");
+                            if (!CollectionUtils.isEmpty(registeredConflictedErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
+                                if (registeredConflictedErrorActivities.size() > 1) {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_REGISTERED_CONFLICT_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(registeredConflictedErrorActivities.subList(0, registeredConflictedErrorActivities.size() - 1), ", "), registeredConflictedErrorActivities.get(registeredConflictedErrorActivities.size() - 1))).append("</p>");
+                                } else {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_REGISTERED_CONFLICT_SINGLE), ao.getCourseCd(), registeredConflictedErrorActivities.get(0))).append("</p>");
+                                }
                             }
-                        }
-                        if (!CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
-                            unAvailableSecondariesErrorActivities.addAll(withdrawnErrorActivities);
-                            unAvailableSecondariesErrorActivities.addAll(timeChangedErrorActivities);
-                            unAvailableSecondariesErrorActivities.addAll(conflictedErrorActivities);
-                            if (unAvailableSecondariesErrorActivities.size() > 1) {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_NO_SECONDARIES_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(unAvailableSecondariesErrorActivities.subList(0, unAvailableSecondariesErrorActivities.size() - 1), ", "), unAvailableSecondariesErrorActivities.get(unAvailableSecondariesErrorActivities.size() - 1))).append("</p>");
-                            } else {
-                                errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_NO_SECONDARIES_SINGLE), ao.getCourseCd(), unAvailableSecondariesErrorActivities.get(0))).append("</p>");
+                            if (!CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
+                                unAvailableSecondariesErrorActivities.addAll(withdrawnErrorActivities);
+                                unAvailableSecondariesErrorActivities.addAll(timeChangedErrorActivities);
+                                unAvailableSecondariesErrorActivities.addAll(conflictedErrorActivities);
+                                if (unAvailableSecondariesErrorActivities.size() > 1) {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_NO_SECONDARIES_MULTIPLE), ao.getCourseCd(), org.apache.commons.lang.StringUtils.join(unAvailableSecondariesErrorActivities.subList(0, unAvailableSecondariesErrorActivities.size() - 1), ", "), unAvailableSecondariesErrorActivities.get(unAvailableSecondariesErrorActivities.size() - 1))).append("</p>");
+                                } else {
+                                    errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.VALID_PINNED_SCHEDULE_NO_SECONDARIES_SINGLE), ao.getCourseCd(), unAvailableSecondariesErrorActivities.get(0))).append("</p>");
+                                }
                             }
-                        }
-                        if (StringUtils.hasText(errorMessage)) {
-                            jEvents.write("errorType", possibleScheduleErrors.getErrorType()).write("errorMessage", errorMessage.toString());
-                        }
-                    } else if (ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR.equals(possibleScheduleErrors.getErrorType())) {
-                        StringBuffer errorMessage = new StringBuffer();
-                        errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.INVALID_PINNED_SCHEDULE))).append("</p>");
-                        if (StringUtils.hasText(errorMessage)) {
-                            jEvents.write("errorType", possibleScheduleErrors.getErrorType()).write("errorMessage", errorMessage.toString());
+                            if (StringUtils.hasText(errorMessage)) {
+                                jEvents.write("errorType", ScheduleBuilderConstants.PINNED_SCHEDULES_PASSIVE_ERROR).write("errorMessage", errorMessage.toString());
+                            }
+                        } else if (invalidatedActivities.size() == activitiesToExclude.size()) {
+                            StringBuffer errorMessage = new StringBuffer();
+                            errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.INVALID_PINNED_SCHEDULE))).append("</p>");
+                            if (StringUtils.hasText(errorMessage)) {
+                                jEvents.write("errorType", ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR).write("errorMessage", errorMessage.toString());
+                            }
                         }
                     }
                 }
@@ -833,6 +1049,16 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
         this.calendarUtil = calendarUtil;
     }
 
+    public ScheduleBuildStrategy getScheduleBuildStrategy() {
+        if (scheduleBuildStrategy == null) {
+            scheduleBuildStrategy = UwMyplanServiceLocator.getInstance().getScheduleBuildStrategy();
+        }
+        return scheduleBuildStrategy;
+    }
+
+    public void setScheduleBuildStrategy(ScheduleBuildStrategy scheduleBuildStrategy) {
+        this.scheduleBuildStrategy = scheduleBuildStrategy;
+    }
 
 }
 

@@ -15,6 +15,8 @@ public class PossibleScheduleErrorsInfo implements PossibleScheduleErrors {
 
     private Map<String, Map<String, List<String>>> invalidOptions;
 
+    private String errorMessage;
+
 
     @Override
     public String getErrorType() {
@@ -26,12 +28,20 @@ public class PossibleScheduleErrorsInfo implements PossibleScheduleErrors {
     }
 
     @Override
-
     public Map<String, Map<String, List<String>>> getInvalidOptions() {
         return invalidOptions;
     }
 
     public void setInvalidOptions(Map<String, Map<String, List<String>>> invalidOptions) {
         this.invalidOptions = invalidOptions;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

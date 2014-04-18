@@ -1589,23 +1589,24 @@
         </property>
     </bean>
 
-    <bean id="ActivityOptionInfo.activityTypeDescription" parent="ActivityOptionInfo.activityTypeDescription-parentBean"/>
-        <bean id="ActivityOptionInfo.activityTypeDescription-parentBean" abstract="true" parent="BaseKuali.string">
-            <property name="name" value="activityTypeDescription"/>
-            <property name="dataType" value="STRING"/>
-            <property name="label" value="ActivityType Description"/>
-            <property name="shortLabel" value="ActivityType Description"/>
-            <property name="forceUppercase" value="false"/>
-            <property name="maxLength" value="4"/>
-            <property name="validCharactersConstraint">
-                <bean parent="AnyCharacterPatternConstraint"/>
-            </property>
-            <property name="control">
-                <bean parent="TextControlDefinition" p:size="20"/>
-            </property>
-            <property name="controlField">
-                <bean parent="Uif-TextControl" p:size="20"/>
-            </property>
+    <bean id="ActivityOptionInfo.activityTypeDescription"
+          parent="ActivityOptionInfo.activityTypeDescription-parentBean"/>
+    <bean id="ActivityOptionInfo.activityTypeDescription-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="activityTypeDescription"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="ActivityType Description"/>
+        <property name="shortLabel" value="ActivityType Description"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="4"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="20"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="20"/>
+        </property>
     </bean>
 
     <bean id="ActivityOptionInfo.courseOfferingCode" parent="ActivityOptionInfo.courseOfferingCode-parentBean"/>
@@ -1730,4 +1731,132 @@
         <property name="name" value="activityOptions"/>
         <property name="dataObjectClass" value="org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo"/>
     </bean>
+
+
+    <!--***********************Registration Details data object***********************-->
+    <!--<bean id="RegistrationDetailsInfo" parent="RegistrationDetailsInfo-parentBean"/>
+    <bean id="RegistrationDetailsInfo-parentBean" abstract="true" parent="DataObjectEntry">
+        <property name="objectLabel" value="Registration Details"/>
+        <property name="dataObjectClass"
+                  value="org.kuali.student.myplan.schedulebuilder.dto.RegistrationDetailsInfo      <property name="titleAttribute" value=""/>
+        <property name="attributes">
+            <list>
+                <ref bean="RegistrationDetailsInfo.pinnedIndex"/>
+                <ref bean="RegistrationDetailsInfo.termId"/>
+                <ref bean="RegistrationDetailsInfo.registrationUrl"/>
+                <ref bean="RegistrationDetailsInfo.learningPlanId"/>
+                <ref bean="RegistrationDetailsInfo.pinnedId"/>
+            </list>
+        </property>
+        <property name="collections">
+            <list>
+                <ref bean="RegistrationDetailsInfo.registeredCourses"/>
+                <ref bean="RegistrationDetailsInfo.plannedCourses"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="RegistrationDetailsInfo.registeredCourses" parent="CollectionDefinition">
+        <property name="name" value="registeredCourses"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo"/>
+    </bean>
+
+    <bean id="RegistrationDetailsInfo.plannedCourses" parent="CollectionDefinition">
+        <property name="name" value="plannedCourses"/>
+        <property name="dataObjectClass" value="org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo"/>
+    </bean>
+
+    <bean id="RegistrationDetailsInfo.termId" parent="RegistrationDetailsInfo.termId-parentBean"/>
+    <bean id="RegistrationDetailsInfo.termId-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="id"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Term Id"/>
+        <property name="shortLabel" value="Term Id"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="30"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="30"/>
+        </property>
+    </bean>
+
+    <bean id="RegistrationDetailsInfo.learningPlanId" parent="RegistrationDetailsInfo.learningPlanId-parentBean"/>
+    <bean id="RegistrationDetailsInfo.learningPlanId-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="id"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Learning Plan Id"/>
+        <property name="shortLabel" value="Learning Plan Id"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="30"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="30"/>
+        </property>
+    </bean>
+
+    <bean id="RegistrationDetailsInfo.pinnedId" parent="RegistrationDetailsInfo.pinnedId-parentBean"/>
+    <bean id="RegistrationDetailsInfo.pinnedId-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="id"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Pinned Id"/>
+        <property name="shortLabel" value="Pinned Id"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="maxLength" value="10"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="30"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="30"/>
+        </property>
+    </bean>
+
+    <bean id="RegistrationDetailsInfo.registrationUrl"
+          parent="RegistrationDetailsInfo.registrationUrl-parentBean"/>
+    <bean id="RegistrationDetailsInfo.registrationUrl-parentBean" abstract="true" parent="BaseKuali.string">
+        <property name="name" value="id"/>
+        <property name="dataType" value="STRING"/>
+        <property name="label" value="Registration Url"/>
+        <property name="shortLabel" value="Registration Url"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="validCharactersConstraint">
+            <bean parent="AnyCharacterPatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="30"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="30"/>
+        </property>
+    </bean>
+
+    <bean id="RegistrationDetailsInfo.pinnedIndex" parent="RegistrationDetailsInfo.pinnedIndex-parentBean"/>
+    <bean id="RegistrationDetailsInfo.pinnedIndex-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="year"/>
+        <property name="dataType" value="INTEGER"/>
+        <property name="label" value="Pinned Index"/>
+        <property name="shortLabel" value="Pinned Index"/>
+        <property name="validCharactersConstraint">
+            <bean parent="NoWhitespacePatternConstraint"/>
+        </property>
+        <property name="control">
+            <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
+        <property name="controlField">
+            <bean parent="Uif-TextControl" p:size="10"/>
+        </property>
+    </bean>-->
+
 </beans>

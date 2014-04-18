@@ -3,6 +3,7 @@ package org.kuali.student.myplan.schedulebuilder.util;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
+import org.kuali.student.myplan.schedulebuilder.infc.RegistrationDetails;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 
 import java.util.List;
@@ -81,8 +82,22 @@ public interface ScheduleBuildForm extends ScheduleForm {
 
     /**
      * Unique Id for a schedule
+     *
      * @return
      */
     String getUniqueId();
+
+
+    /**
+     * Holds the registration details
+     *
+     * @return
+     */
+    RegistrationDetails getRegistrationDetails();
+
+    /**
+     * Builds the registration details
+     */
+    void buildRegistrationDetails();
 
 }
