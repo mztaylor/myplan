@@ -23,39 +23,48 @@ public abstract class AbstractAoListProcessor implements AoListProcessor {
     // so user can see something like "17 sections unavailable because they are closed". Optional.
     private String processorDescription;
 
+    @Override
     public void startCount() {
         count = 0;
     }
 
+    @Override
     public int incCount() {
         return ++count;
     }
 
+     @Override
      public int incCount(int addend) {
         count += addend;
         return count;
     }
 
+    @Override
     public int getCount() {
         return count;
     }
 
+    @Override
     public void setCount(int count) {
         this.count = count;
     }
 
+    @Override
     public String getProcessorDescription() {
         return processorDescription;
     }
 
+    @Override
     public void setProcessorDescription(String processorDescription) {
         this.processorDescription = processorDescription;
     }
 
+    @Override
     public int getProcessorCode() {
         return processorCode;
     }
 
+    @Override
     public void setProcessorCode(int processorCode) {
         this.processorCode = processorCode;
     }

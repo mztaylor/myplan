@@ -4,6 +4,7 @@ import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.SecondaryActivityOptionsInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -39,10 +40,9 @@ public class SortAlternativesAoListProcessor extends AbstractAoListProcessor {
 
     public SortAlternativesAoListProcessor(Comparator<ActivityOption> sortComparator) {
         this.sortComparator = sortComparator;
-        setProcessorDescription("Alternate Activity List Sorter");
-        setProcessorCode(44); // later, define a constant somewhere
+        setProcessorDescription(ScheduleBuilderConstants.SECTION_ALT_ACTIVITY_SORTER_PROCESSOR_DESC);
+        setProcessorCode(ScheduleBuilderConstants.SECTION_ALT_ACTIVITY_SORTER_PROCESSOR_ID);
     }
-
 
     @Override
     public List<ActivityOption> apply(List<ActivityOption> aoList) {
