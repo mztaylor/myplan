@@ -295,7 +295,7 @@
                     <list>
                         <bean parent="Uif-Link" p:linkText="Schedule Builder" p:title="Schedule Builder">
                             <property name="href"
-                                      value="/student/myplan/sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{dataObject.atpId}&amp;requestedLearningPlanId=@{dataObject.learningPlanId}"/>
+                                      value="/student/myplan/sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{dataObject.atpId}&amp;requestedLearningPlanId=@{dataObject.learningPlanId}&amp;pageId=schedule_build"/>
                             <property name="render" value="@{dataObject.publishedTerm AND dataObject.openForPlanning AND dataObject.learningPlanId NE null AND !T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                             <property name="cssClasses" value="btn btn-small planTerm__scheduleBuilder"/>
                         </bean>
