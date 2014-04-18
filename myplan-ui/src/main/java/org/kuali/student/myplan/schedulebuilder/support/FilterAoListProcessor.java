@@ -149,7 +149,6 @@ public class FilterAoListProcessor extends AbstractAoListProcessor {
 
     @Override
     public int getProcessorCode() {
-        //return filter.getFilterId;
-        return 9;
+        return filter.getFilterId();
     }
 }

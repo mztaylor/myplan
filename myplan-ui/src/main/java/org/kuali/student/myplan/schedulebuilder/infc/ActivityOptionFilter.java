@@ -22,4 +22,6 @@ public interface ActivityOptionFilter {
     boolean test(ActivityOption ao);
 
     String getFilterName();
+
+    int getFilterId();
 }

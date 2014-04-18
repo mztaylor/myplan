@@ -4,6 +4,7 @@ import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.SecondaryActivityOptionsInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -42,10 +43,9 @@ public class CoalescorAoListProcessor extends AbstractAoListProcessor {
 
     public CoalescorAoListProcessor(Comparator<ActivityOption> coalesceComparator) {
         this.coalesceComparator = coalesceComparator;
-        setProcessorDescription("Section Coalescor");
-        setProcessorCode(34); // later, define a constant somewhere
+        setProcessorDescription(ScheduleBuilderConstants.SECTION_COALESCOR_PROCESSOR_DESC);
+        setProcessorCode(ScheduleBuilderConstants.SECTION_COALESCOR_PROCESSOR_ID);
     }
-
 
     @Override
     public List<ActivityOption> apply(List<ActivityOption> aoList) {
