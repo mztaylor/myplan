@@ -382,6 +382,14 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
         setRegistrationDetails(registrationDetails);
     }
 
+    /**
+     * Validates the error messages for the activity options of saved schedule
+     *
+     * @param possibleScheduleErrors
+     * @param courseCd
+     * @param activityOptions
+     * @param invalidatedActivities
+     */
     private void validateForErrors(PossibleScheduleErrorsInfo possibleScheduleErrors, String courseCd, List<ActivityOption> activityOptions, List<String> invalidatedActivities) {
         List<String> activitiesToExclude = new ArrayList<String>();
         Properties properties = new Properties();
