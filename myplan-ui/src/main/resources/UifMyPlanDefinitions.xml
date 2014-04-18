@@ -665,6 +665,23 @@
         </property>
     </bean>
 
+    <bean id="KSAP-TableCollectionGroup" parent="Uif-TableCollectionGroup-parentBean">
+        <property name="validationMessages">
+            <null/>
+        </property>
+        <property name="layoutManager">
+            <bean parent="Uif-TableCollectionLayout">
+                <property name="suppressLineWrapping" value="false"/>
+                <property name="renderSequenceField" value="false"/>
+                <property name="applyDefaultCellWidths" value="false"/>
+                <property name="richTable.render" value="false"/>
+                <property name="libraryCssClasses">
+                    <list/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
     <bean id="KSAP-VerticalBoxGroup" parent="Uif-VerticalBoxGroup">
         <property name="validationMessages">
             <null/>

@@ -139,6 +139,9 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     @XmlAttribute
     private String enrollStatus;
 
+    @XmlAttribute
+    private String selectedForReg;
+
     public ActivityOptionInfo() {
     }
 
@@ -183,6 +186,7 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         setAlternateActivities(copy.getAlternateActivties());
         setClassMeetingTimes(copy.getClassMeetingTimes());
         courseHasVariableContent = copy.isCourseHasVariableContent();
+        selectedForReg = copy.getSelectedForReg();
         setSameVariableContentAs(copy.getSameVariableContentAs());
     }
 
@@ -603,6 +607,15 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
 
     public void setEnrollStatus(String enrollStatus) {
         this.enrollStatus = enrollStatus;
+    }
+
+    @Override
+    public String getSelectedForReg() {
+        return selectedForReg;
+    }
+
+    public void setSelectedForReg(String selectedForReg) {
+        this.selectedForReg = selectedForReg;
     }
 
     @Override

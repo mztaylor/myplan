@@ -7,9 +7,13 @@ import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.CourseHelper;
+import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
-import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
-import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
+import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.util.PlanHelper;
+import org.kuali.student.myplan.schedulebuilder.dto.*;
+import org.kuali.student.myplan.schedulebuilder.infc.*;
+import org.kuali.student.myplan.schedulebuilder.support.DefaultScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
@@ -32,8 +36,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Collection;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/sb")
@@ -47,6 +51,8 @@ public class ScheduleBuildController extends UifControllerBase {
     private static CourseHelper courseHelper;
 
     private UserSessionHelper userSessionHelper;
+
+    private PlanHelper planHelper;
 
 
     @Override
@@ -238,6 +244,41 @@ public class ScheduleBuildController extends UifControllerBase {
         return null;
     }
 
+    @RequestMapping(params = "methodToCall=registrationDetails")
+    public ModelAndView registrationDetails(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ScheduleBuildForm sbform = (ScheduleBuildForm) form;
+        sbform.buildRegistrationDetails();
+        return getUIFModelAndView(form);
+    }
+
+
+    /**
+     * Recursive method which prepares a list of activity options which are selected for registration
+     *
+     * @param activityOptions
+     * @param slnCount
+     * @return
+     */
+    private List<ActivityOption> getSelectedActivitiesForReg(List<ActivityOption> activityOptions, int slnCount) {
+        List<ActivityOption> newAOList = new ArrayList<ActivityOption>();
+        for (ActivityOption activityOption : activityOptions) {
+            if (!activityOption.getSelectedForReg().equals("true")) {
+                continue;
+            }
+            ActivityOptionInfo ao = (ActivityOptionInfo) activityOption;
+            List<ActivityOption> alternateActivities = getSelectedActivitiesForReg(ao.getAlternateActivties(), slnCount);
+            ao.setAlternateActivities(alternateActivities);
+            for (SecondaryActivityOptions secondaryActivityOptions : ao.getSecondaryOptions()) {
+                List<ActivityOption> activityOptionList = getSelectedActivitiesForReg(secondaryActivityOptions.getActivityOptions(), slnCount);
+                ((SecondaryActivityOptionsInfo) secondaryActivityOptions).setActivityOptions(activityOptionList);
+            }
+            slnCount++;
+            newAOList.add(ao);
+        }
+        return newAOList;
+
+    }
+
     public ScheduleBuildStrategy getScheduleBuildStrategy() {
         if (scheduleBuildStrategy == null) {
             scheduleBuildStrategy = UwMyplanServiceLocator.getInstance().getScheduleBuildStrategy();
@@ -269,5 +310,16 @@ public class ScheduleBuildController extends UifControllerBase {
 
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
+    }
+
+    public PlanHelper getPlanHelper() {
+        if (planHelper == null) {
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
+        }
+        return planHelper;
+    }
+
+    public void setPlanHelper(PlanHelper planHelper) {
+        this.planHelper = planHelper;
     }
 }

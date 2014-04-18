@@ -316,4 +316,11 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
      */
     String getEnrollStatus();
 
+    /**
+     * Selected for registration
+     *
+     * @return
+     */
+    String getSelectedForReg();
+
 }

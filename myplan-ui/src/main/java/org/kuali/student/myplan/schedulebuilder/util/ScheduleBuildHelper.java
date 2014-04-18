@@ -33,6 +33,8 @@ public interface ScheduleBuildHelper {
 
     public void buildPossibleScheduleEvents(PossibleScheduleOption pso, Term term);
 
+    public List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, Map<String, List<String>>> invalidOptions, List<ReservedTime> reservedTimes, List<String> plannedActivities, PossibleScheduleOption registered);
+
     public long[][] extractClassMeetingTimeWeekBitsFromAOList(List<ActivityOption> aoList);
 
     public long[][] extractClassMeetingTimeWeekBitsFromCourseOptionList(List<CourseOption> coList);

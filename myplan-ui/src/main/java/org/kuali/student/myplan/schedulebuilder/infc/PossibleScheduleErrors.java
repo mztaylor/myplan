@@ -25,4 +25,12 @@ public interface PossibleScheduleErrors {
     public Map<String, Map<String, List<String>>> getInvalidOptions();
 
 
+    /**
+     * Holds the error message for the possible schedule activities
+     *
+     * @return
+     */
+    public String getErrorMessage();
+
+
 }
