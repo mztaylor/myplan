@@ -339,6 +339,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
                         possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR);
                         possibleScheduleErrorsInfo.setInvalidOptions(invalidOptions);
                     }
+                    List<ActivityOption> validatedActivityOptionList = new ArrayList<ActivityOption>();
                     /*Validate activityOptions for ErrorMessages*/
                     if (StringUtils.hasText(possibleScheduleErrorsInfo.getErrorType())) {
                         List<String> invalidActivities = new ArrayList<String>();
@@ -346,9 +347,12 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
                         possibleScheduleErrorsInfo.setErrorType(possibleScheduleErrorsInfo.getErrorType());
                         possibleScheduleErrorsInfo.setErrorMessage(possibleScheduleErrorsInfo.getErrorMessage());
                         /*TODO:remove invalid activities from activityOptions list*/
+                        validatedActivityOptionList.addAll(getValidActivitiesForReg(activityOptions, invalidActivities));
+                    } else {
+                        validatedActivityOptionList.addAll(activityOptions);
                     }
                     courseOption.setPossibleErrors(possibleScheduleErrorsInfo);
-                    courseOption.setActivityOptions(activityOptions);
+                    courseOption.setActivityOptions(validatedActivityOptionList);
                     plannedCourseOptions.add(courseOption);
                 }
 
@@ -418,7 +422,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
             Collections.sort(activitiesToExclude);
             Collections.sort(invalidatedActivities);
             if (activityOptionsContains(activityOptions, activitiesToExclude)) {
-                if (ScheduleBuilderConstants.PINNED_SCHEDULES_PASSIVE_ERROR.equals(possibleScheduleErrors.getErrorType())) {
+                if (invalidatedActivities.size() != activitiesToExclude.size()) {
                     StringBuffer errorMessage = new StringBuffer();
                     if (!CollectionUtils.isEmpty(withdrawnErrorActivities) && CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
 
@@ -488,12 +492,14 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
                         }
                     }
                     if (StringUtils.hasText(errorMessage)) {
+                        possibleScheduleErrors.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_PASSIVE_ERROR);
                         possibleScheduleErrors.setErrorMessage(errorMessage.toString());
                     }
-                } else if (ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR.equals(possibleScheduleErrors.getErrorType())) {
+                } else if (invalidatedActivities.size() == activitiesToExclude.size()) {
                     StringBuffer errorMessage = new StringBuffer();
                     errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.INVALID_PINNED_SCHEDULE))).append("</p>");
                     if (StringUtils.hasText(errorMessage)) {
+                        possibleScheduleErrors.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR);
                         possibleScheduleErrors.setErrorMessage(errorMessage.toString());
                     }
                 }
@@ -548,6 +554,32 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
                 ((SecondaryActivityOptionsInfo) secondaryActivityOptions).setActivityOptions(activityOptionList);
             }
             slnCount = slnCount++;
+            newAOList.add(ao);
+        }
+        return newAOList;
+
+    }
+
+    /**
+     * Recursive method which prepares a list of activity options that are not in the invalidActivityCodes list.
+     *
+     * @param activityOptions
+     * @param invalidActivityCodes
+     * @return
+     */
+    private List<ActivityOption> getValidActivitiesForReg(List<ActivityOption> activityOptions, List<String> invalidActivityCodes) {
+        List<ActivityOption> newAOList = new ArrayList<ActivityOption>();
+        for (ActivityOption activityOption : activityOptions) {
+            if (invalidActivityCodes.contains(activityOption.getActivityCode())) {
+                continue;
+            }
+            ActivityOptionInfo ao = (ActivityOptionInfo) activityOption;
+            List<ActivityOption> alternateActivities = getValidActivitiesForReg(ao.getAlternateActivties(), invalidActivityCodes);
+            ao.setAlternateActivities(alternateActivities);
+            for (SecondaryActivityOptions secondaryActivityOptions : ao.getSecondaryOptions()) {
+                List<ActivityOption> activityOptionList = getValidActivitiesForReg(secondaryActivityOptions.getActivityOptions(), invalidActivityCodes);
+                ((SecondaryActivityOptionsInfo) secondaryActivityOptions).setActivityOptions(activityOptionList);
+            }
             newAOList.add(ao);
         }
         return newAOList;
