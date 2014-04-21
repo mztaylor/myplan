@@ -57,6 +57,9 @@ public class ScheduleBuilderConstants {
     public static final String SECTION_ALT_ACTIVITY_SORTER_PROCESSOR_DESC = "Section alternate actibity sorter processor";
     public static final int    SECTION_ALT_ACTIVITY_SORTER_PROCESSOR_ID = 704;
 
+    public static final String AO_MUTATOR_SET_LOCKED_IN = "Set activity option LockedIn";
+    public static final int    AO_MUTATOR_SET_LOCKED_IN_ID = 801;  // entirely arbitrary
+
     public static final String ZERO_RESULTS_REASON_CLOSED = "Are currently closed";
     public static final String ZERO_RESULTS_REASON_RESTRICTION = "Have enrollment restrictions";
     public static final String ZERO_RESULTS_REASON_OVERLAPPED = "Overlap with my registered courses";
