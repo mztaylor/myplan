@@ -17,7 +17,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.xml.namespace.QName;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -41,6 +40,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
     private List<PossibleScheduleOption> possibleScheduleOptions;
     private PossibleScheduleOption registeredSchedule;
     private RegistrationDetailsInfo registrationDetails;
+    private int selectedSlnCount;
 
     private transient AcademicCalendarService academicCalendarService;
 
@@ -248,7 +248,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
             return;
         }
 
-        int slnCount = 0;
+        setSelectedSlnCount(0);
         RegistrationDetailsInfo registrationDetails = null;
         if (getPageId().equals(ScheduleBuilderConstants.REGISTRAION_PAGE_1)) {
             registrationDetails = new RegistrationDetailsInfo();
@@ -366,7 +366,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
                 registrationDetails = (RegistrationDetailsInfo) getRegistrationDetails();
                 List<CourseOption> courseOptionList = new ArrayList<CourseOption>();
                 for (CourseOption courseOption : registrationDetails.getPlannedCourses()) {
-                    List<ActivityOption> selectedActivities = getSelectedActivitiesForReg(courseOption.getActivityOptions(), slnCount);
+                    List<ActivityOption> selectedActivities = getSelectedActivitiesForReg(courseOption.getActivityOptions());
                     ((CourseOptionInfo) courseOption).setActivityOptions(selectedActivities);
                     courseOptionList.add(courseOption);
                 }
@@ -376,7 +376,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
         }
 
 
-        if (slnCount > 0 && slnCount <= 8) {
+        if (selectedSlnCount > 0 && selectedSlnCount <= 8) {
             registrationDetails.setRegistrationUrl("placeholderUrl");
         }
         setRegistrationDetails(registrationDetails);
@@ -387,23 +387,22 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
      * Recursive method which prepares a list of activity options which are selected for registration
      *
      * @param activityOptions
-     * @param slnCount
      * @return
      */
-    private List<ActivityOption> getSelectedActivitiesForReg(List<ActivityOption> activityOptions, int slnCount) {
+    private List<ActivityOption> getSelectedActivitiesForReg(List<ActivityOption> activityOptions) {
         List<ActivityOption> newAOList = new ArrayList<ActivityOption>();
         for (ActivityOption activityOption : activityOptions) {
             if (!activityOption.getSelectedForReg().equals("true")) {
                 continue;
             }
             ActivityOptionInfo ao = (ActivityOptionInfo) activityOption;
-            List<ActivityOption> alternateActivities = getSelectedActivitiesForReg(ao.getAlternateActivties(), slnCount);
+            List<ActivityOption> alternateActivities = getSelectedActivitiesForReg(ao.getAlternateActivties());
             ao.setAlternateActivities(alternateActivities);
             for (SecondaryActivityOptions secondaryActivityOptions : ao.getSecondaryOptions()) {
-                List<ActivityOption> activityOptionList = getSelectedActivitiesForReg(secondaryActivityOptions.getActivityOptions(), slnCount);
+                List<ActivityOption> activityOptionList = getSelectedActivitiesForReg(secondaryActivityOptions.getActivityOptions());
                 ((SecondaryActivityOptionsInfo) secondaryActivityOptions).setActivityOptions(activityOptionList);
             }
-            slnCount = slnCount++;
+            selectedSlnCount++;
             newAOList.add(ao);
         }
         return newAOList;
@@ -653,5 +652,13 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
 
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
+    }
+
+    public int getSelectedSlnCount() {
+        return selectedSlnCount;
+    }
+
+    public void setSelectedSlnCount(int selectedSlnCount) {
+        this.selectedSlnCount = selectedSlnCount;
     }
 }
