@@ -38,4 +38,6 @@ public interface ScheduleBuildHelper {
     public long[][] extractClassMeetingTimeWeekBitsFromAOList(List<ActivityOption> aoList);
 
     public long[][] extractClassMeetingTimeWeekBitsFromCourseOptionList(List<CourseOption> coList);
+
+    public void validateForErrors(PossibleScheduleErrorsInfo possibleScheduleErrors, String courseCd, List<ActivityOption> activityOptions, List<String> invalidatedActivities);
 }
