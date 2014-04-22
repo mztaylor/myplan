@@ -58,7 +58,7 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
 
         setSelectedRegistrationCodeCount(0);
         RegistrationDetailsInfo registrationDetails = null;
-        if (getPageId().equals(ScheduleBuilderConstants.REGISTRAION_PAGE_1)) {
+        if (getPageId().equals(ScheduleBuilderConstants.REGISTRAION_PAGE_1) || getPageId().equals(ScheduleBuilderConstants.REGISTRAION_PAGE_2)) {
             registrationDetails = new RegistrationDetailsInfo();
 
             /*ReservedTimes*/
@@ -179,7 +179,7 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
 
             }
 
-        } else if (getPageId().equals(ScheduleBuilderConstants.REGISTRAION_PAGE_2)) {
+        } else if (getPageId().equals(ScheduleBuilderConstants.REGISTRAION_PAGE_3)) {
             if (getRegistrationDetails() != null) {
                 registrationDetails = (RegistrationDetailsInfo) getRegistrationDetails();
                 List<CourseOption> courseOptionList = new ArrayList<CourseOption>();
@@ -204,7 +204,7 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
                     courseOptionList.add(courseOption);
                 }
                 registrationDetails.setPlannedCourses(courseOptionList);
-                setPageId(ScheduleBuilderConstants.REGISTRAION_PAGE_3);
+                //setPageId(ScheduleBuilderConstants.REGISTRAION_PAGE_3);
             }
         }
 
