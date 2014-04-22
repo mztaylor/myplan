@@ -1,0 +1,61 @@
+package org.kuali.student.myplan.registration.util;
+
+import org.kuali.student.enrollment.acal.infc.Term;
+import org.kuali.student.myplan.schedulebuilder.infc.RegistrationDetails;
+
+/**
+ * Created by hemanthg on 4/22/2014.
+ */
+public interface RegistrationForm {
+
+
+    /**
+     * RegistrationDetails holds the details required for registrationUI.
+     *
+     * @return RegistrationDetails
+     */
+    RegistrationDetails getRegistrationDetails();
+
+    /**
+     * TermId for which the registration details needs to be shown.
+     *
+     * @return termId
+     */
+    String getTermId();
+
+
+    /**
+     * Term for which the registration details needs to be shown.
+     *
+     * @return
+     */
+    Term getTerm();
+
+    /**
+     * UniqueId for which the registration details are required.
+     *
+     * @return
+     */
+    String getUniqueId();
+
+
+    /**
+     * Count of Registration codes which are selected.
+     *
+     * @return count of registration codes selected
+     */
+    int getSelectedRegistrationCodeCount();
+
+
+    /**
+     * Learning PlanId of the student.
+     *
+     * @return
+     */
+    String getRequestedLearningPlanId();
+
+    /**
+     * Builds the registration details.
+     */
+    void buildRegistrationDetails();
+}

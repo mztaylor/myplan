@@ -244,14 +244,6 @@ public class ScheduleBuildController extends UifControllerBase {
         return null;
     }
 
-    @RequestMapping(params = "methodToCall=registrationDetails")
-    public ModelAndView registrationDetails(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ScheduleBuildForm sbform = (ScheduleBuildForm) form;
-        sbform.buildRegistrationDetails();
-        return getUIFModelAndView(form);
-    }
-
-
     /**
      * Recursive method which prepares a list of activity options which are selected for registration
      *

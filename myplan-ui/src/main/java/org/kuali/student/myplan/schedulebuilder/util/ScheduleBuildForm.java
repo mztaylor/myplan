@@ -87,17 +87,4 @@ public interface ScheduleBuildForm extends ScheduleForm {
      */
     String getUniqueId();
 
-
-    /**
-     * Holds the registration details
-     *
-     * @return
-     */
-    RegistrationDetails getRegistrationDetails();
-
-    /**
-     * Builds the registration details
-     */
-    void buildRegistrationDetails();
-
 }
