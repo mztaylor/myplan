@@ -39,7 +39,7 @@
                             <bean parent="schedulePlannedItems"/>
                         </list>
                     </property>
-                    <property name="footer">
+                    <!--<property name="footer">
                         <bean id="scheduleViewFooter" parent="KSAP-HorizontalBoxGroup">
                             <property name="render"
                                       value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
@@ -53,7 +53,7 @@
                                 </list>
                             </property>
                         </bean>
-                    </property>
+                    </property>-->
                 </bean>
                 <bean id="scheduleSelect" parent="KSAP-Page">
                     <property name="layoutManager">
@@ -92,7 +92,7 @@
                             <bean parent="schedulePlannedItems"/>
                         </list>
                     </property>
-                    <property name="footer">
+                    <!--<property name="footer">
                         <bean id="scheduleSelectFooter" parent="KSAP-HorizontalBoxGroup">
                             <property name="items">
                                 <list>
@@ -101,7 +101,7 @@
                                 </list>
                             </property>
                         </bean>
-                    </property>
+                    </property>-->
                 </bean>
                 <bean id="scheduleConfirm" parent="KSAP-Page">
                     <property name="layoutManager">
@@ -139,7 +139,7 @@
                             <bean parent="schedulePlannedItems"/>
                         </list>
                     </property>
-                    <property name="footer">
+                    <!--<property name="footer">
                         <bean id="scheduleConfirmFooter" parent="KSAP-HorizontalBoxGroup">
                             <property name="items">
                                 <list>
@@ -148,7 +148,7 @@
                                 </list>
                             </property>
                         </bean>
-                    </property>
+                    </property>-->
                 </bean>
             </list>
         </property>
