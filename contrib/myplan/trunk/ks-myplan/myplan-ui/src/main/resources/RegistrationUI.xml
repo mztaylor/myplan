@@ -247,6 +247,34 @@
         </property>
         <property name="subCollections">
             <list>
+                <bean parent="scheduleRegistrationItemAlternateActivities"/>
+                <bean parent="plannedSecondaryActivityCollection"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="scheduleRegistrationItemAlternateActivities" parent="KSAP-TableCollectionGroup">
+        <property name="propertyName" value="alternateActivties"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="readOnly" value="true"/>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo"/>
+        <property name="layoutManager.numberOfColumns" value="9"/>
+        <property name="items">
+            <list>
+                <bean parent="scheduleRegistrationActivityCode"/>
+                <bean parent="scheduleRegistrationActivityMeetingDays"/>
+                <bean parent="scheduleRegistrationActivityMeetingTime"/>
+                <bean parent="scheduleRegistrationActivityMeetingLocation"/>
+                <bean parent="scheduleRegistrationActivityRegCode"/>
+                <bean parent="scheduleRegistrationActivityInstituteCode"/>
+                <bean parent="scheduleRegistrationActivityEnrollRestriction"/>
+                <bean parent="scheduleRegistrationActivityEnrollment"/>
+                <bean parent="scheduleRegistrationActivityEnrollStatus"/>
+            </list>
+        </property>
+        <property name="subCollections">
+            <list>
                 <bean parent="plannedSecondaryActivityCollection"/>
             </list>
         </property>
@@ -263,12 +291,15 @@
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-SimpleInputField" p:propertyName="selectedForReg" p:hidden="true">
+                            <bean parent="Uif-InputField" p:propertyName="selectedForReg" >
                                 <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
+                                    <bean parent="Uif-VerticalRadioControl"/>
+                                </property>
+                                <property name="optionsFinder">
+                                    <bean class="org.kuali.student.myplan.schedulebuilder.util.RegistrationKeyValueFinder"/>
                                 </property>
                             </bean>
-                            <bean parent="scheduleRegistrationActivityCode"/>
+                            <!--<bean parent="scheduleRegistrationActivityCode"/>
                             <bean parent="scheduleRegistrationActivityMeetingDays"/>
                             <bean parent="scheduleRegistrationActivityMeetingTime"/>
                             <bean parent="scheduleRegistrationActivityMeetingLocation"/>
@@ -276,7 +307,7 @@
                             <bean parent="scheduleRegistrationActivityInstituteCode"/>
                             <bean parent="scheduleRegistrationActivityEnrollRestriction"/>
                             <bean parent="scheduleRegistrationActivityEnrollment"/>
-                            <bean parent="scheduleRegistrationActivityEnrollStatus"/>
+                            <bean parent="scheduleRegistrationActivityEnrollStatus"/>-->
                         </list>
                     </property>
                 </bean>
@@ -313,12 +344,15 @@
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-SimpleInputField" p:propertyName="selectedForReg" p:hidden="true">
+                            <bean parent="Uif-InputField" p:propertyName="selectedForReg" >
                                 <property name="control">
-                                    <bean parent="Uif-HiddenControl"/>
+                                    <bean parent="Uif-VerticalRadioControl"/>
+                                </property>
+                                <property name="optionsFinder">
+                                    <bean class="org.kuali.student.myplan.schedulebuilder.util.RegistrationKeyValueFinder"/>
                                 </property>
                             </bean>
-                            <bean parent="scheduleRegistrationActivityCode"/>
+                            <!--<bean parent="scheduleRegistrationActivityCode"/>
                             <bean parent="scheduleRegistrationActivityMeetingDays"/>
                             <bean parent="scheduleRegistrationActivityMeetingTime"/>
                             <bean parent="scheduleRegistrationActivityMeetingLocation"/>
@@ -326,7 +360,7 @@
                             <bean parent="scheduleRegistrationActivityInstituteCode"/>
                             <bean parent="scheduleRegistrationActivityEnrollRestriction"/>
                             <bean parent="scheduleRegistrationActivityEnrollment"/>
-                            <bean parent="scheduleRegistrationActivityEnrollStatus"/>
+                            <bean parent="scheduleRegistrationActivityEnrollStatus"/>-->
                         </list>
                     </property>
                 </bean>
