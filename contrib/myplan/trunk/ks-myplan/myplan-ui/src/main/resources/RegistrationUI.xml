@@ -22,7 +22,7 @@
     <bean id="Registration-FormView" parent="Registration-FormView-parent"/>
     <bean abstract="true" id="Registration-FormView-parent" parent="MyPlanBaseFormView">
         <property name="id" value="Registration-FormView"/>
-        <property name="formClass" value="org.kuali.student.myplan.schedulebuilder.support.DefaultScheduleBuildForm"/>
+        <property name="formClass" value="org.kuali.student.myplan.registration.form.DefaultRegistrationForm"/>
         <property name="items">
             <list>
                 <bean id="scheduleView" parent="KSAP-Page">
