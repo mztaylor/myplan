@@ -296,21 +296,15 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
                     for (SecondaryActivityOptions secondaryActivityOptions : activityOption.getSecondaryOptions()) {
                         List<ActivityOption> secondaryActivities = new ArrayList<ActivityOption>();
                         for (ActivityOption secondaryActivity : secondaryActivityOptions.getActivityOptions()) {
-                            List<ActivityOption> alternates = secondaryActivity.getAlternateActivties();
-                            ((ActivityOptionInfo) secondaryActivity).setAlternateActivities(new ArrayList<ActivityOption>());
-                            ((ActivityOptionInfo) secondaryActivity).setSelectedForReg("true");
+                            ((ActivityOptionInfo) secondaryActivity).setSelectedForReg(secondaryActivity.getRegistrationCode());
                             secondaryActivities.add(secondaryActivity);
-                            secondaryActivities.addAll(alternates);
                             break;
                         }
                         ((SecondaryActivityOptionsInfo) secondaryActivityOptions).setActivityOptions(secondaryActivities);
                     }
                     List<ActivityOption> activityOptions = courseOption.getActivityOptions();
-                    List<ActivityOption> alternates = activityOption.getAlternateActivties();
-                    ((ActivityOptionInfo) activityOption).setAlternateActivities(new ArrayList<ActivityOption>());
-                    ((ActivityOptionInfo) activityOption).setSelectedForReg("true");
+                    ((ActivityOptionInfo) activityOption).setSelectedForReg(activityOption.getRegistrationCode());
                     activityOptions.add(activityOption);
-                    activityOptions.addAll(alternates);
                     Map<String, Map<String, List<String>>> invalidOptions = new LinkedHashMap<String, Map<String, List<String>>>();
                     PossibleScheduleErrorsInfo possibleScheduleErrorsInfo = new PossibleScheduleErrorsInfo();
                     List<ActivityOption> validatedActivities = getScheduleBuildHelper().validatedSavedActivities(activityOptions, invalidOptions, getReservedTimes(), new ArrayList<String>(plannedItems.keySet()), registeredPossibleSchedule);
@@ -365,8 +359,23 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
             if (getRegistrationDetails() != null) {
                 registrationDetails = (RegistrationDetailsInfo) getRegistrationDetails();
                 List<CourseOption> courseOptionList = new ArrayList<CourseOption>();
+                List<String> selectedRegistrationCodes = new ArrayList<String>();
                 for (CourseOption courseOption : registrationDetails.getPlannedCourses()) {
-                    List<ActivityOption> selectedActivities = getSelectedActivitiesForReg(courseOption.getActivityOptions());
+                    for (ActivityOption activityOption : courseOption.getActivityOptions()) {
+                        if (StringUtils.hasText(activityOption.getSelectedForReg())) {
+                            selectedRegistrationCodes.add(activityOption.getSelectedForReg());
+                        }
+                        for (SecondaryActivityOptions secondaryActivityOption : activityOption.getSecondaryOptions()) {
+                            for (ActivityOption secondaryActivity : secondaryActivityOption.getActivityOptions()) {
+                                if (StringUtils.hasText(activityOption.getSelectedForReg())) {
+                                    selectedRegistrationCodes.add(activityOption.getSelectedForReg());
+                                }
+                            }
+                        }
+                    }
+
+
+                    List<ActivityOption> selectedActivities = getSelectedActivitiesForReg(courseOption.getActivityOptions(), selectedRegistrationCodes);
                     ((CourseOptionInfo) courseOption).setActivityOptions(selectedActivities);
                     courseOptionList.add(courseOption);
                 }
@@ -389,18 +398,18 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
      * @param activityOptions
      * @return
      */
-    private List<ActivityOption> getSelectedActivitiesForReg(List<ActivityOption> activityOptions) {
+    private List<ActivityOption> getSelectedActivitiesForReg(List<ActivityOption> activityOptions, List<String> selectedRegistrationCodes) {
         List<ActivityOption> newAOList = new ArrayList<ActivityOption>();
         for (ActivityOption activityOption : activityOptions) {
-            if (!activityOption.getSelectedForReg().equals("true")) {
-                continue;
-            }
             ActivityOptionInfo ao = (ActivityOptionInfo) activityOption;
-            List<ActivityOption> alternateActivities = getSelectedActivitiesForReg(ao.getAlternateActivties());
-            ao.setAlternateActivities(alternateActivities);
             for (SecondaryActivityOptions secondaryActivityOptions : ao.getSecondaryOptions()) {
-                List<ActivityOption> activityOptionList = getSelectedActivitiesForReg(secondaryActivityOptions.getActivityOptions());
+                List<ActivityOption> activityOptionList = getSelectedActivitiesForReg(secondaryActivityOptions.getActivityOptions(), selectedRegistrationCodes);
                 ((SecondaryActivityOptionsInfo) secondaryActivityOptions).setActivityOptions(activityOptionList);
+            }
+            List<ActivityOption> alternateActivities = getSelectedActivitiesForReg(ao.getAlternateActivties(), selectedRegistrationCodes);
+            ao.setAlternateActivities(alternateActivities);
+            if (!selectedRegistrationCodes.contains(activityOption.getRegistrationCode())) {
+                continue;
             }
             selectedSlnCount++;
             newAOList.add(ao);
