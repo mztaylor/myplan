@@ -25,9 +25,29 @@ public class RegistrationKeyValueFinder extends UifKeyValuesFinderBase {
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
 
         ActivityOption activityOption = ObjectPropertyUtils.getPropertyValue(model, field.getBindingInfo().getBindByNamePrefix());
-        keyValues.add(new ConcreteKeyValue(activityOption.getRegistrationCode(), "<div id='testinline'>" + activityOption.getActivityCode() + "</div>"));
+        keyValues.add(new ConcreteKeyValue(activityOption.getRegistrationCode(),
+                "<div class=\"registrationActivity__code\">" + activityOption.getActivityCode() + "</div>" +
+                "<div class=\"registrationActivity__meetingDays\">" + "MTuWThFS" + "</div>" +
+                "<div class=\"registrationActivity__meetingTime\">" + "12:00 PM - 12:55 PM" + "</div>" +
+                "<div class=\"registrationActivity__meetingLocation\">" + "HSRR A250" + "</div>" +
+                "<div class=\"registrationActivity__regCode\">" + "88888" + "</div>" +
+                "<div class=\"registrationActivity__instituteCode\">" + "ROTC" + "</div>" +
+                "<div class=\"registrationActivity__enrollRest registrationActivity__enrollRest--" + String.valueOf(activityOption.isEnrollmentRestriction()) + "\">" + "<img src=\"../themes/ksap/images/pixel.gif\"/>" + "</div>" +
+                "<div class=\"registrationActivity__enrollState\">" + "888/888" + "</div>" +
+                "<div class=\"registrationActivity__enrollStatus registrationActivity__enrollStatus--closed\">" + "Closed" + "</div>"
+        ));
         for (ActivityOption alternate : activityOption.getAlternateActivties()) {
-            keyValues.add(new ConcreteKeyValue(alternate.getRegistrationCode(), "<div id='testinline'>" + alternate.getActivityCode() + "</div>"));
+            keyValues.add(new ConcreteKeyValue(alternate.getRegistrationCode(),
+                "<div class=\"registrationActivity__code\">" + alternate.getActivityCode() + "</div>"+
+                "<div class=\"registrationActivity__meetingDays\">" + "MTuWThFS" + "</div>" +
+                "<div class=\"registrationActivity__meetingTime\">" + "12:00 PM - 12:55 PM" + "</div>" +
+                "<div class=\"registrationActivity__meetingLocation\">" + "HSRR A250" + "</div>" +
+                "<div class=\"registrationActivity__regCode\">" + "88888" + "</div>" +
+                "<div class=\"registrationActivity__instituteCode\">" + "ROTC" + "</div>" +
+                "<div class=\"registrationActivity__enrollRest registrationActivity__enrollRest--" + String.valueOf(alternate.isEnrollmentRestriction()) + "\">" + "<img src=\"../themes/ksap/images/pixel.gif\"/>" + "</div>" +
+                "<div class=\"registrationActivity__enrollState\">" + "888/888" + "</div>" +
+                "<div class=\"registrationActivity__enrollStatus registrationActivity__enrollStatus--closed\">" + "Closed" + "</div>"
+            ));
         }
         setAddBlankOption(false);
         return keyValues;
