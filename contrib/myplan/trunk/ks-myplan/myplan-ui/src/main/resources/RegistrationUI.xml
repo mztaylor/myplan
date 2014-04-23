@@ -30,7 +30,8 @@
                         <bean parent="Uif-VerticalBoxLayout"/>
                     </property>
                     <property name="header">
-                        <bean parent="KSAP-HeaderTwo" p:headerText="Pinned Schedule @{registrationDetails.getPinnedIndex() + 1}"/>
+                        <bean parent="KSAP-HeaderTwo"
+                              p:headerText="Pinned Schedule @{registrationDetails.getPinnedIndex() + 1}"/>
                     </property>
                     <property name="header.render" value="true"/>
                     <property name="items">
@@ -59,14 +60,16 @@
                     <property name="layoutManager">
                         <bean parent="Uif-VerticalBoxLayout"/>
                     </property>
-                    <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+                    <property name="render"
+                              value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                     <property name="header">
                         <bean parent="KSAP-HeaderTwo" p:headerText="Choose Sections">
                             <property name="upperGroup">
                                 <bean parent="KSAP-VerticalBoxGroup">
                                     <property name="items">
                                         <list>
-                                            <bean parent="KSAP-Message" p:messageText="Register for Courses: [strong]Step 1 of 2[/strong]"/>
+                                            <bean parent="KSAP-Message"
+                                                  p:messageText="Register for Courses: [strong]Step 1 of 2[/strong]"/>
                                         </list>
                                     </property>
                                 </bean>
@@ -75,7 +78,8 @@
                                 <bean parent="KSAP-VerticalBoxGroup">
                                     <property name="items">
                                         <list>
-                                            <bean parent="KSAP-Message" p:messageText="Use the buttons below to choose the sections you&#39;d like to submit to the registration system, then click &quot;[strong]Next[/strong].&quot;"/>
+                                            <bean parent="KSAP-Message"
+                                                  p:messageText="Use the buttons below to choose the sections you&#39;d like to submit to the registration system, then click &quot;[strong]Next[/strong].&quot;"/>
                                         </list>
                                     </property>
                                 </bean>
@@ -107,14 +111,16 @@
                     <property name="layoutManager">
                         <bean parent="Uif-VerticalBoxLayout"/>
                     </property>
-                    <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+                    <property name="render"
+                              value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                     <property name="header">
                         <bean parent="KSAP-HeaderTwo" p:headerText="Confirm and Submit">
                             <property name="upperGroup">
                                 <bean parent="KSAP-VerticalBoxGroup">
                                     <property name="items">
                                         <list>
-                                            <bean parent="KSAP-Message" p:messageText="Register for Courses: [strong]Step 2 of 2[/strong]"/>
+                                            <bean parent="KSAP-Message"
+                                                  p:messageText="Register for Courses: [strong]Step 2 of 2[/strong]"/>
                                         </list>
                                     </property>
                                 </bean>
@@ -123,7 +129,8 @@
                                 <bean parent="KSAP-VerticalBoxGroup">
                                     <property name="items">
                                         <list>
-                                            <bean parent="KSAP-Message" p:messageText="Confirm that the sections below are the ones you&#39;d like to submit to registration and click &quot;[strong]Submit[/strong].&quot; To make changes, click &quot;[strong]Back[/strong].&quot; to return to the previous screen."/>
+                                            <bean parent="KSAP-Message"
+                                                  p:messageText="Confirm that the sections below are the ones you&#39;d like to submit to registration and click &quot;[strong]Submit[/strong].&quot; To make changes, click &quot;[strong]Back[/strong].&quot; to return to the previous screen."/>
                                         </list>
                                     </property>
                                 </bean>
@@ -156,7 +163,8 @@
         <property name="footer.render" value="false"/>
     </bean>
 
-    <bean id="scheduleRegisterDelayMessage" parent="KSAP-Message" p:messageText="Note: Open/closed status is delayed by 1-2 minutes."/>
+    <bean id="scheduleRegisterDelayMessage" parent="KSAP-Message"
+          p:messageText="Note: Open/closed status is delayed by 1-2 minutes."/>
 
     <bean id="scheduleCurrentRegisteredItemHeader" parent="KSAP-VerticalBoxGroup">
         <property name="items">
@@ -164,7 +172,8 @@
                 <bean parent="KSAP-NoSpanMessage" p:messageText="[0] Registered">
                     <property name="inlineComponents">
                         <list>
-                            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/sb/icon_lock.png"/>
+                            <bean parent="Uif-Image"
+                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/sb/icon_lock.png"/>
                         </list>
                     </property>
                 </bean>
@@ -172,10 +181,13 @@
         </property>
     </bean>
 
-    <bean id="scheduleRegistrationItem" parent="KSAP-MessageField" p:messageText="@{#line.courseCode} @{#line.courseTitle} (@{#line.credits})"/>
+    <bean id="scheduleRegistrationItem" parent="KSAP-MessageField"
+          p:messageText="@{#line.courseCode} @{#line.courseTitle} (@{#line.credits})"/>
 
-    <bean id="scheduleRegistrationItemLink" parent="Uif-LinkField" p:linkText="@{#line.courseCode} @{#line.courseTitle} (@{#line.credits})">
-        <property name="href" value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode}"/>
+    <bean id="scheduleRegistrationItemLink" parent="Uif-LinkField"
+          p:linkText="@{#line.courseCode} @{#line.courseTitle} (@{#line.credits})">
+        <property name="href"
+                  value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode}"/>
     </bean>
 
     <bean id="schedulePlannedItems" parent="KSAP-StackedCollectionGroup">
@@ -184,8 +196,10 @@
         <property name="items">
             <list>
                 <bean parent="scheduleRegistrationItemLink"/>
-                <bean parent="KSAP-MessageField" p:messageText="@{#line.possibleErrors.getErrorMessage()}" p:render="@{#line.possibleErrors NE null AND #line.possibleErrors.getErrorType() NE null}">
-                    <property name="cssClasses" value="alert alert-@{#line.possibleErrors NE null ? #line.possibleErrors.getErrorType() : 'no-error'}"/>
+                <bean parent="KSAP-MessageField" p:messageText="@{#line.possibleErrors.getErrorMessage()}"
+                      p:render="@{#line.possibleErrors NE null AND #line.possibleErrors.getErrorType() NE null}">
+                    <property name="cssClasses"
+                              value="alert alert-@{#line.possibleErrors NE null ? #line.possibleErrors.getErrorType() : 'no-error'}"/>
                 </bean>
             </list>
         </property>
@@ -196,14 +210,16 @@
         </property>
         <property name="propertyReplacers">
             <list>
-                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items" p:condition="pageId NE 'scheduleView'">
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                      p:condition="pageId NE 'scheduleView'">
                     <property name="replacement">
                         <list>
                             <bean parent="scheduleRegistrationItem"/>
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="subCollections" p:condition="pageId NE 'scheduleView'">
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="subCollections"
+                      p:condition="pageId NE 'scheduleView'">
                     <property name="replacement">
                         <list>
                             <bean parent="scheduleRegistrationItemActivitySelect"/>
@@ -226,7 +242,7 @@
     </bean>
 
     <bean id="scheduleRegistrationItemActivities" parent="KSAP-TableCollectionGroup">
-        <property name="propertyName" value="activityOptions"/>
+        <property name="propertyName" value="combinedActivities"/>
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="readOnly" value="true"/>
         <property name="collectionObjectClass"
@@ -237,6 +253,7 @@
                 <bean parent="scheduleRegistrationActivityCode"/>
                 <bean parent="scheduleRegistrationActivityMeetingDays"/>
                 <bean parent="scheduleRegistrationActivityMeetingTime"/>
+                <bean parent="scheduleRegistrationActivityTbd"/>
                 <bean parent="scheduleRegistrationActivityMeetingLocation"/>
                 <bean parent="scheduleRegistrationActivityRegCode"/>
                 <bean parent="scheduleRegistrationActivityInstituteCode"/>
@@ -245,15 +262,9 @@
                 <bean parent="scheduleRegistrationActivityEnrollStatus"/>
             </list>
         </property>
-        <property name="subCollections">
-            <list>
-                <bean parent="scheduleRegistrationItemAlternateActivities"/>
-                <bean parent="plannedSecondaryActivityCollection"/>
-            </list>
-        </property>
     </bean>
 
-    <bean id="scheduleRegistrationItemAlternateActivities" parent="KSAP-TableCollectionGroup">
+    <!--<bean id="scheduleRegistrationItemAlternateActivities" parent="KSAP-TableCollectionGroup">
         <property name="propertyName" value="alternateActivties"/>
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="readOnly" value="true"/>
@@ -279,6 +290,9 @@
             </list>
         </property>
     </bean>
+-->
+
+    <!--For second and third pages-->
 
     <bean id="scheduleRegistrationItemActivitySelect" parent="KSAP-StackedCollectionGroup">
         <property name="collectionObjectClass"
@@ -291,7 +305,7 @@
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-InputField" p:propertyName="selectedForReg" >
+                            <bean parent="Uif-InputField" p:propertyName="selectedForReg">
                                 <property name="control">
                                     <bean parent="Uif-VerticalRadioControl"/>
                                 </property>
@@ -299,15 +313,6 @@
                                     <bean class="org.kuali.student.myplan.schedulebuilder.util.RegistrationKeyValueFinder"/>
                                 </property>
                             </bean>
-                            <!--<bean parent="scheduleRegistrationActivityCode"/>
-                            <bean parent="scheduleRegistrationActivityMeetingDays"/>
-                            <bean parent="scheduleRegistrationActivityMeetingTime"/>
-                            <bean parent="scheduleRegistrationActivityMeetingLocation"/>
-                            <bean parent="scheduleRegistrationActivityRegCode"/>
-                            <bean parent="scheduleRegistrationActivityInstituteCode"/>
-                            <bean parent="scheduleRegistrationActivityEnrollRestriction"/>
-                            <bean parent="scheduleRegistrationActivityEnrollment"/>
-                            <bean parent="scheduleRegistrationActivityEnrollStatus"/>-->
                         </list>
                     </property>
                 </bean>
@@ -344,7 +349,7 @@
                 <bean parent="KSAP-HorizontalFieldGroup">
                     <property name="items">
                         <list>
-                            <bean parent="Uif-InputField" p:propertyName="selectedForReg" >
+                            <bean parent="Uif-InputField" p:propertyName="selectedForReg">
                                 <property name="control">
                                     <bean parent="Uif-VerticalRadioControl"/>
                                 </property>
@@ -352,15 +357,6 @@
                                     <bean class="org.kuali.student.myplan.schedulebuilder.util.RegistrationKeyValueFinder"/>
                                 </property>
                             </bean>
-                            <!--<bean parent="scheduleRegistrationActivityCode"/>
-                            <bean parent="scheduleRegistrationActivityMeetingDays"/>
-                            <bean parent="scheduleRegistrationActivityMeetingTime"/>
-                            <bean parent="scheduleRegistrationActivityMeetingLocation"/>
-                            <bean parent="scheduleRegistrationActivityRegCode"/>
-                            <bean parent="scheduleRegistrationActivityInstituteCode"/>
-                            <bean parent="scheduleRegistrationActivityEnrollRestriction"/>
-                            <bean parent="scheduleRegistrationActivityEnrollment"/>
-                            <bean parent="scheduleRegistrationActivityEnrollStatus"/>-->
                         </list>
                     </property>
                 </bean>
@@ -368,25 +364,32 @@
         </property>
     </bean>
 
-    <bean id="scheduleRegistrationActivityCode" parent="KSAP-MessageField" p:messageText="@{#line.activityCode}" p:width="32px"/>
+    <bean id="scheduleRegistrationActivityCode" parent="KSAP-MessageField" p:messageText="@{#line.activityCode}"
+          p:width="32px"/>
 
-    <bean id="scheduleRegistrationActivityMeetingDays" parent="KSAP-MessageField" p:messageText="DAYS" p:width="72px"/>
+    <bean id="scheduleRegistrationActivityMeetingDays" parent="KSAP-MessageField" p:messageText="@{#line.meetingDays}" p:width="72px" p:render="@{!#line.tbd}"/>
 
-    <bean id="scheduleRegistrationActivityMeetingTime" parent="KSAP-MessageField" p:messageText="TIME" p:width="112px"/>
+    <bean id="scheduleRegistrationActivityMeetingTime" parent="KSAP-MessageField" p:messageText="@{#line.meetingTimes}" p:width="112px" p:render="@{!#line.tbd}"/>
 
-    <bean id="scheduleRegistrationActivityMeetingLocation" parent="KSAP-MessageField" p:messageText="LOCATION" p:width="72px"/>
+    <bean id="scheduleRegistrationActivityTbd" parent="KSAP-MessageField" p:messageText="To be arranged"  p:width="184px" p:render="@{#line.tbd}"/>
 
-    <bean id="scheduleRegistrationActivityRegCode" parent="KSAP-MessageField" p:messageText="@{#line.registrationCode}" p:width="48px"/>
+    <bean id="scheduleRegistrationActivityMeetingLocation" parent="KSAP-MessageField" p:messageText="@{#line.meetingLocation}"  p:width="72px"/>
 
-    <bean id="scheduleRegistrationActivityInstituteCode" parent="KSAP-MessageField" p:messageText="@{#line.instituteCode}" p:width="24px"/>
+    <bean id="scheduleRegistrationActivityRegCode" parent="KSAP-MessageField" p:messageText="@{#line.registrationCode}"
+          p:width="48px"/>
+
+    <bean id="scheduleRegistrationActivityInstituteCode" parent="KSAP-MessageField"
+          p:messageText="@{#line.instituteCode}" p:width="24px"/>
 
     <bean id="scheduleRegistrationActivityEnrollRestriction" parent="Uif-ImageField" p:width="16px">
         <property name="cssClasses" value="@{#line.enrollmentRestriction}"/>
         <property name="source" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
     </bean>
 
-    <bean id="scheduleRegistrationActivityEnrollment" parent="KSAP-MessageField" p:messageText="@{#line.filledSeats}/@{#line.totalSeats}" p:width="48px"/>
+    <bean id="scheduleRegistrationActivityEnrollment" parent="KSAP-MessageField"
+          p:messageText="@{#line.filledSeats}/@{#line.totalSeats}" p:width="48px"/>
 
-    <bean id="scheduleRegistrationActivityEnrollStatus" parent="KSAP-MessageField" p:messageText="@{#line.enrollStatus}" p:width="48px"/>
+    <bean id="scheduleRegistrationActivityEnrollStatus" parent="KSAP-MessageField" p:messageText="@{#line.enrollStatus}"
+          p:width="48px"/>
 
 </beans>

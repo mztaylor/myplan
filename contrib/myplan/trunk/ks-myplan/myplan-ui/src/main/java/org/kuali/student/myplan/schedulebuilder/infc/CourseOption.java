@@ -80,4 +80,12 @@ public interface CourseOption extends ScheduleBuildOption, Comparable<CourseOpti
      */
     PossibleScheduleErrors getPossibleErrors();
 
+    /**
+     * Used to combine all activities, alternates, secondaryActivities present in this course options. Used in UI.
+     *
+     * @return
+     */
+    List<ActivityOption> getCombinedActivities();
+
+
 }
