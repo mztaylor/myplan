@@ -323,4 +323,13 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
      */
     String getSelectedForReg();
 
+
+    boolean isTbd();
+
+    String getMeetingDays();
+
+    String getMeetingTimes();
+
+    String getMeetingLocation();
+
 }

@@ -3,6 +3,8 @@ package org.kuali.student.myplan.schedulebuilder.dto;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
 import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleErrors;
+import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
+import org.springframework.util.CollectionUtils;
 
 import javax.xml.bind.annotation.*;
 import java.math.BigDecimal;
@@ -191,6 +193,22 @@ public class CourseOptionInfo extends ScheduleBuildOptionInfo implements CourseO
 
     public void setPossibleErrors(PossibleScheduleErrors possibleErrors) {
         this.possibleErrors = possibleErrors;
+    }
+
+    @Override
+    public List<ActivityOption> getCombinedActivities() {
+        List<ActivityOption> activityOptionList = new ArrayList<ActivityOption>();
+        for (ActivityOption activityOption : getActivityOptions()) {
+            activityOptionList.add(activityOption);
+            activityOptionList.addAll(activityOption.getAlternateActivties());
+            for (SecondaryActivityOptions secondaryActivityOptions : activityOption.getSecondaryOptions()) {
+                for (ActivityOption ao : secondaryActivityOptions.getActivityOptions()) {
+                    activityOptionList.add(ao);
+                    activityOptionList.addAll(ao.getAlternateActivties());
+                }
+            }
+        }
+        return activityOptionList;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.schedulebuilder.dto;
 
+import org.apache.commons.lang.StringUtils;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.infc.ClassMeetingTime;
 import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
@@ -617,6 +618,44 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     public void setSelectedForReg(String selectedForReg) {
         this.selectedForReg = selectedForReg;
     }
+
+    @Override
+    public boolean isTbd() {
+        for (ClassMeetingTime classMeetingTime : getClassMeetingTimes()) {
+            if (!classMeetingTime.isArranged()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String getMeetingDays() {
+        List<String> meetingDays = new ArrayList<String>();
+        for (ClassMeetingTime classMeetingTime : getClassMeetingTimes()) {
+            meetingDays.add(StringUtils.join(classMeetingTime.getDays(), ""));
+        }
+        return StringUtils.join(meetingDays, "<br/>");
+    }
+
+    @Override
+    public String getMeetingTimes() {
+        List<String> meetingTimes = new ArrayList<String>();
+        for (ClassMeetingTime classMeetingTime : getClassMeetingTimes()) {
+            meetingTimes.add(classMeetingTime.getTimes());
+        }
+        return StringUtils.join(meetingTimes, "<br/>");
+    }
+
+    @Override
+    public String getMeetingLocation() {
+        List<String> meetingLocations = new ArrayList<String>();
+        for (ClassMeetingTime classMeetingTime : getClassMeetingTimes()) {
+            meetingLocations.add(String.format("%s %s", classMeetingTime.getBuilding() != null ? classMeetingTime.getBuilding() : "", classMeetingTime.getLocation() != null ? classMeetingTime.getLocation() : ""));
+        }
+        return StringUtils.join(meetingLocations, "<br/>");
+    }
+
 
     @Override
     public String toString() {
