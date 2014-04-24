@@ -12,6 +12,7 @@ import org.kuali.student.myplan.schedulebuilder.infc.ClassMeetingTime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hemanthg on 4/21/2014.
@@ -24,20 +25,19 @@ public class RegistrationKeyValueFinder extends UifKeyValuesFinderBase {
     @Override
     public List<KeyValue> getKeyValues(ViewModel model, InputField field) {
 
-
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
-
+        Map<String, String> plannedActivtiies = ObjectPropertyUtils.getPropertyValue(model, "plannedItems");
         ActivityOption activityOption = ObjectPropertyUtils.getPropertyValue(model, field.getBindingInfo().getBindByNamePrefix());
-        keyValues.add(new ConcreteKeyValue(activityOption.getRegistrationCode(), buildTemplate(activityOption)));
+        keyValues.add(new ConcreteKeyValue(activityOption.getRegistrationCode(), buildTemplate(activityOption, new ArrayList<String>(plannedActivtiies.keySet()))));
         for (ActivityOption alternate : activityOption.getAlternateActivties()) {
-            keyValues.add(new ConcreteKeyValue(alternate.getRegistrationCode(), buildTemplate(alternate)));
+            keyValues.add(new ConcreteKeyValue(alternate.getRegistrationCode(), buildTemplate(alternate, new ArrayList<String>(plannedActivtiies.keySet()))));
         }
         setAddBlankOption(false);
         return keyValues;
     }
 
 
-    private String buildTemplate(ActivityOption activityOption) {
+    private String buildTemplate(ActivityOption activityOption, List<String> plannedActivityIds) {
         List<String> meetingDays = new ArrayList<String>();
         List<String> meetingTimes = new ArrayList<String>();
         List<String> meetingLocations = new ArrayList<String>();
@@ -57,7 +57,12 @@ public class RegistrationKeyValueFinder extends UifKeyValuesFinderBase {
             instituteCd = ScheduleBuilderConstants.ROTC_INSTITUTE_NAME;
         }
 
-        String template = "<div class=\"registrationActivity__code\">" + activityOption.getActivityCode() + "</div>";
+        List<String> cssClasses = new ArrayList<String>();
+        cssClasses.add("registrationActivity__code");
+        if (plannedActivityIds.contains(activityOption.getActivityOfferingId())) {
+            cssClasses.add("registrationActivity__sectionCd--planned");
+        }
+        String template = "<div class=\"" + StringUtils.join(cssClasses, " ") + "\">" + activityOption.getActivityCode() + "</div>";
 
         if (tbd) {
             template = template + "<div class=\"registrationActivity__tbd\"> To be arranged </div>";
