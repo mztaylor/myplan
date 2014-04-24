@@ -380,11 +380,11 @@
         <property name="templateOptions">
             <map merge="true">
                 <entry key="year"
-                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'y')}"/>
+                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToNextMondayStandardTime(term.startDate.time, 'y')}"/>
                 <entry key="month"
-                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'M') - 1}"/>
+                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToNextMondayStandardTime(term.startDate.time, 'M') - 1}"/>
                 <entry key="date"
-                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToStandardTime(term.startDate.time, 'd')}"/>
+                       value="@{T(org.kuali.student.myplan.utils.TimeStringMillisConverter).millisToNextMondayStandardTime(term.startDate.time, 'd')}"/>
                 <entry key="defaultView" value="agendaWeek"/>
                 <entry key="header" value="false"/>
                 <entry key="contentHeight" value="9999"/>
