@@ -43,14 +43,21 @@ public class FilterAoListProcessor extends AbstractAoListProcessor {
 
     private ActivityOptionFilter filter;
     private boolean invertLogic;
+    private boolean skipAlternates;
+
 
     public FilterAoListProcessor(ActivityOptionFilter filter) {
         this(filter, false);
     }
 
     public FilterAoListProcessor(ActivityOptionFilter filter, boolean invertLogic) {
+        this(filter, false, false);
+    }
+
+     public FilterAoListProcessor(ActivityOptionFilter filter, boolean invertLogic, boolean skipAlternates) {
         this.filter = filter;
         this.invertLogic = invertLogic;
+        this.skipAlternates = skipAlternates;
     }
 
     @Override
@@ -80,7 +87,7 @@ public class FilterAoListProcessor extends AbstractAoListProcessor {
             } else {
                 // it's a keeper
                 // recurse to filter alt activities
-                if (!CollectionUtils.isEmpty(ao.getAlternateActivties())) {
+                if (!CollectionUtils.isEmpty(ao.getAlternateActivties()) && !skipAlternates) {
                     int saveCount = getCount();
                     startCount();
                     ((ActivityOptionInfo)ao).setAlternateActivities(apply(ao.getAlternateActivties()));
@@ -113,6 +120,7 @@ public class FilterAoListProcessor extends AbstractAoListProcessor {
                 if (noSecondaries) {
                     // could be slightly misleading to say this primary was filtered out due to this filter,
                     // it could be due to this filters and other filters which eliminated other secondaries.
+                    // oh well, count it.
                     incCount();
                 } else {
                     newAOList.add(ao);
