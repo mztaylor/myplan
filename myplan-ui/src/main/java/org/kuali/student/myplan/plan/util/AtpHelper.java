@@ -264,6 +264,16 @@ public class AtpHelper {
     }
 
     /**
+     * Gives the quarter year param required for SLN link url
+     * "WIN+1999"
+     * @param atpId
+     * @return
+     */
+    public static String atpIdToQtrYrParam(String atpId) {
+        return atpToYearTerm(atpId).toQTRYRParam();
+    }
+
+    /**
      * Returns true if an ATP is considered present or greater in the context of WHAT? Otherwise, false.
      *
      * @param atpId
