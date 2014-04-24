@@ -1048,7 +1048,7 @@
 
     <bean id="current_section_status" parent="Uif-Link">
         <property name="href"
-                  value="https://sdb.admin.washington.edu/timeschd/uwnetid/sln.asp?QTRYR=@{#line.qtryr}&amp;SLN=@{#line.registrationCode}"/>
+                  value="@{#ConfigProperties['ks.myplan.externalizable.sln.url']}@{#line.qtryr}&amp;SLN=@{#line.registrationCode}"/>
         <property name="cssClasses" value="courseActivities--lightBoxLink lightBoxLink"/>
     </bean>
 

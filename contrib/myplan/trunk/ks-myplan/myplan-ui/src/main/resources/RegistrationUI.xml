@@ -374,8 +374,8 @@
 
     <bean id="scheduleRegistrationActivityMeetingLocation" parent="KSAP-MessageField" p:messageText="@{#line.meetingLocation}"  p:width="72px" p:cssClasses="registrationActivity__meetingLocation"/>
 
-    <bean id="scheduleRegistrationActivityRegCode" parent="KSAP-MessageField" p:messageText="@{#line.registrationCode}" p:cssClasses="registrationActivity__regCode"
-          p:width="48px"/>
+    <bean id="scheduleRegistrationActivityRegCode" parent="Uif-LinkField" p:linkText="@{#line.registrationCode}" p:href="@{#ConfigProperties['ks.myplan.externalizable.sln.url']}@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToQtrYrParam(#form.termId)}&amp;SLN=@{#line.registrationCode}" p:cssClasses="registrationActivity__regCode"
+          p:width="48px" p:target="_blank"/>
 
     <bean id="scheduleRegistrationActivityInstituteCode" parent="KSAP-MessageField" p:cssClasses="registrationActivity__instituteCode registrationActivity__instituteCode--@{#line.instituteCode NE '' ? 'show':'hide'}"
           p:messageText="@{#line.instituteCode}" p:width="24px"/>
