@@ -3,6 +3,8 @@ package org.kuali.student.myplan.registration.util;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.schedulebuilder.infc.RegistrationDetails;
 
+import java.util.Map;
+
 /**
  * Created by hemanthg on 4/22/2014.
  */
@@ -45,6 +47,14 @@ public interface RegistrationForm {
      * @return count of registration codes selected
      */
     int getSelectedRegistrationCodeCount();
+
+
+    /**
+     * Map of activityOfferingId associated to a planItemId
+     *
+     * @return
+     */
+    Map<String, String> getPlannedItems();
 
 
     /**

@@ -20,10 +20,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by hemanthg on 4/22/2014.
@@ -35,6 +32,7 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
     private String uniqueId;
     private String requestedLearningPlanId;
     private int selectedRegistrationCodeCount;
+    private Map<String, String> plannedItems;
     private RegistrationDetailsInfo registrationDetails;
 
 
@@ -85,7 +83,7 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
 
 
             /*Planned Activity map*/
-            Map<String, String> plannedItems = getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(getRequestedLearningPlanId(), PlanConstants.SECTION_TYPE, getTermId());
+            setPlannedItems(getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(getRequestedLearningPlanId(), PlanConstants.SECTION_TYPE, getTermId()));
 
 
             /*RegisteredPossibleSchedule*/
@@ -131,7 +129,7 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
                     activityOptions.add(activityOption);
                     Map<String, Map<String, List<String>>> invalidOptions = new LinkedHashMap<String, Map<String, List<String>>>();
                     PossibleScheduleErrorsInfo possibleScheduleErrorsInfo = new PossibleScheduleErrorsInfo();
-                    List<ActivityOption> validatedActivities = getScheduleBuildHelper().validatedSavedActivities(activityOptions, invalidOptions, reservedTimes, new ArrayList<String>(plannedItems.keySet()), registeredPossibleSchedule);
+                    List<ActivityOption> validatedActivities = getScheduleBuildHelper().validatedSavedActivities(activityOptions, invalidOptions, reservedTimes, new ArrayList<String>(getPlannedItems().keySet()), registeredPossibleSchedule);
                     if (!CollectionUtils.isEmpty(validatedActivities) && validatedActivities.size() == activityOptions.size()) {
                         if (!CollectionUtils.isEmpty(invalidOptions)) {
                             boolean otherErrors = false;
@@ -322,6 +320,17 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
         this.registrationDetails = registrationDetails;
     }
 
+    @Override
+    public Map<String, String> getPlannedItems() {
+        if (plannedItems == null) {
+            plannedItems = new HashMap<String, String>();
+        }
+        return plannedItems;
+    }
+
+    public void setPlannedItems(Map<String, String> plannedItems) {
+        this.plannedItems = plannedItems;
+    }
 
     public TermHelper getTermHelper() {
         if (termHelper == null) {
