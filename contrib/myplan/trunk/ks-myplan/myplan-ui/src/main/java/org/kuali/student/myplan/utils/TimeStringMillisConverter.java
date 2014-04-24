@@ -1,5 +1,7 @@
 package org.kuali.student.myplan.utils;
 
+import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.springframework.util.StringUtils;
 
 import java.util.regex.Matcher;
@@ -18,6 +20,8 @@ public class TimeStringMillisConverter {
     public static final String defaultDate = "1970-01-01";
 
     public final static Pattern militaryTimeRegex = Pattern.compile("([0-9][0-9]):([0-9][0-9])");
+
+    public static CalendarUtil calendarUtil;
 
     public static long militaryTimeToMillis(String time) {
         Matcher m = militaryTimeRegex.matcher(time);
@@ -78,6 +82,56 @@ public class TimeStringMillisConverter {
     }
 
 
+    public static String millisToNextMondayStandardTime(long millis, String format) {
+        // Limit to 24 hours (one day) max
+        boolean am = true;
+        Date date = new Date(millis);
+        date = getCalendarUtil().getNextMonday(date);
+        int hours = date.getHours();
+        int minutes = date.getMinutes();
+        if (hours > 11) {
+            am = false;
+            hours -= 12;
+        }
+        if (hours == 0) {
+            hours = 12;
+        }
+        if (StringUtils.hasText(format)) {
+            DateFormat dateFormat = new SimpleDateFormat(format);
+            Date dateSt = new Date(millis);
+            dateSt = getCalendarUtil().getNextMonday(dateSt);
+            return dateFormat.format(dateSt);
+        } else {
+            return String.format("%d:%02d %s", hours, minutes, am ? "AM" : "PM");
+        }
+    }
+
+
+    public static String millisToDateAfterXdaysStandardTime(long millis, String format, int days) {
+        // Limit to 24 hours (one day) max
+        boolean am = true;
+        Date date = new Date(millis);
+        date = getCalendarUtil().getDateAfterXdays(date, days);
+        int hours = date.getHours();
+        int minutes = date.getMinutes();
+        if (hours > 11) {
+            am = false;
+            hours -= 12;
+        }
+        if (hours == 0) {
+            hours = 12;
+        }
+        if (StringUtils.hasText(format)) {
+            DateFormat dateFormat = new SimpleDateFormat(format);
+            Date dateSt = new Date(millis);
+            dateSt = getCalendarUtil().getDateAfterXdays(dateSt, days);
+            return dateFormat.format(dateSt);
+        } else {
+            return String.format("%d:%02d %s", hours, minutes, am ? "AM" : "PM");
+        }
+    }
+
+
     public static void main(String[] args)
             throws Exception {
 
@@ -116,5 +170,16 @@ public class TimeStringMillisConverter {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static CalendarUtil getCalendarUtil() {
+        if (calendarUtil == null) {
+            calendarUtil = KsapFrameworkServiceLocator.getCalendarUtil();
+        }
+        return calendarUtil;
+    }
+
+    public static void setCalendarUtil(CalendarUtil calendarUtil) {
+        TimeStringMillisConverter.calendarUtil = calendarUtil;
     }
 }
