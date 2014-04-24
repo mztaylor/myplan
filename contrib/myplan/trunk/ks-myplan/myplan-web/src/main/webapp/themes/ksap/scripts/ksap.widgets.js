@@ -781,6 +781,11 @@ function showError(jqXHR, textStatus, errorThrown) {
     }
 }
 
+// Escapes special characters and returns a valid jQuery selector
+function jqSelector(str) {
+    return str.replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
+}
+
 (function ($) {
     // TODO remove publish method after old audits have been purged as audit FTL inline scripted a publish call
     $.publish = function (event) {

@@ -278,8 +278,9 @@ var KsapScheduleBuild = {
         submitHiddenForm('plan', additionalFormData, false, event);
     },
 
-    viewScheduleDetails: function (calEvents, index, id, event) {
+    viewScheduleDetails: function (termId, learningPlanId, id, event) { //(calEvents, index, id, event) {
         stopEvent(event);
+        /*
         var cache = [];
         var lightboxHtml = "";
         var registered = jQuery("div.scheduleRegistered__item[id^='registered-schedule']").data("source");
@@ -305,9 +306,19 @@ var KsapScheduleBuild = {
         lightboxTemplate = lightboxTemplate.replace(/__KSAP_PINNED_ID__/gi, id);
         var lightboxContent = jQuery(lightboxTemplate);
         lightboxContent.find(".uif-verticalBoxLayout").html(lightboxHtml);
-
-        jQuery.fancybox({
-            content: lightboxContent.wrap("<div/>").parent().html()
+        */
+        var url = 'registration?methodToCall=registrationDetails&viewId=Registration-FormView&termId=' + termId + '&pageId=scheduleView&requestedLearningPlanId=' + learningPlanId + '&uniqueId=' + id;
+        top.jQuery.fancybox({
+            //content: lightboxContent.wrap("<div/>").parent().html()
+            helpers:{
+                overlay:{
+                    closeClick: false
+                }
+            },
+            width: 600,
+            type: "iframe",
+            autoHeight: true,
+            href: url
         });
     },
 

@@ -123,8 +123,10 @@
                             </bean>
                             <bean parent="KSAP-HorizontalFieldGroup">
                                 <property name="cssClasses" value="scheduleSaved__viewDetails"/>
+                                <!--<property name="onClickScript"
+                                          value="KsapScheduleBuild.viewScheduleDetails(jQuery(this).parents('.scheduleSaved__item').data('source').events, @{#index + 1}, '@{#line.id}', e)"/>-->
                                 <property name="onClickScript"
-                                          value="KsapScheduleBuild.viewScheduleDetails(jQuery(this).parents('.scheduleSaved__item').data('source').events, @{#index + 1}, '@{#line.id}', e)"/>
+                                          value="KsapScheduleBuild.viewScheduleDetails(jQuery('#schedule_build_termId_control').val(), jQuery('#schedule_build_learningPlanId_control').val(), '@{#line.id}', e)"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-NoSpanMessage" p:messageText="View schedule details"/>
