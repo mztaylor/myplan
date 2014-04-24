@@ -10,6 +10,7 @@ import java.util.List;
  *
  */
 public interface AoListProcessor {
+
     List<ActivityOption> apply(List<ActivityOption> aoList);
 
     // count is provided to track the number of AO that are affected by the processor;
