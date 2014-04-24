@@ -26,11 +26,11 @@ public class RegistrationKeyValueFinder extends UifKeyValuesFinderBase {
     public List<KeyValue> getKeyValues(ViewModel model, InputField field) {
 
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
-        Map<String, String> plannedActivtiies = ObjectPropertyUtils.getPropertyValue(model, "plannedItems");
+        Map<String, String> plannedActivities = ObjectPropertyUtils.getPropertyValue(model, "plannedItems");
         ActivityOption activityOption = ObjectPropertyUtils.getPropertyValue(model, field.getBindingInfo().getBindByNamePrefix());
-        keyValues.add(new ConcreteKeyValue(activityOption.getRegistrationCode(), buildTemplate(activityOption, new ArrayList<String>(plannedActivtiies.keySet()))));
+        keyValues.add(new ConcreteKeyValue(activityOption.getRegistrationCode(), buildTemplate(activityOption, new ArrayList<String>(plannedActivities.keySet()))));
         for (ActivityOption alternate : activityOption.getAlternateActivties()) {
-            keyValues.add(new ConcreteKeyValue(alternate.getRegistrationCode(), buildTemplate(alternate, new ArrayList<String>(plannedActivtiies.keySet()))));
+            keyValues.add(new ConcreteKeyValue(alternate.getRegistrationCode(), buildTemplate(alternate, new ArrayList<String>(plannedActivities.keySet()))));
         }
         setAddBlankOption(false);
         return keyValues;
@@ -48,7 +48,7 @@ public class RegistrationKeyValueFinder extends UifKeyValuesFinderBase {
             }
             meetingDays.add(StringUtils.join(classMeetingTime.getDays(), ""));
             meetingTimes.add(classMeetingTime.getTimes());
-            meetingLocations.add(classMeetingTime.getLocation());
+            meetingLocations.add(String.format("%s %s", classMeetingTime.getBuilding()!=null ? classMeetingTime.getBuilding() : "", classMeetingTime.getLocation()!=null ? classMeetingTime.getLocation() : ""));
         }
         String instituteCd = "";
         if (ScheduleBuilderConstants.PCE_INSTITUTE_CODE.equals(activityOption.getInstituteCode())) {
@@ -65,18 +65,21 @@ public class RegistrationKeyValueFinder extends UifKeyValuesFinderBase {
         String template = "<div class=\"" + StringUtils.join(cssClasses, " ") + "\">" + activityOption.getActivityCode() + "</div>";
 
         if (tbd) {
-            template = template + "<div class=\"registrationActivity__tbd\"> To be arranged </div>";
+            template = template +
+                    "<div class=\"registrationActivity__tbd\">To be arranged</div>";
         } else {
-            template = template + "<div class=\"registrationActivity__meetingDays\">" + StringUtils.join(meetingDays, "<br/>") + "</div>" +
-                    "<div class=\"registrationActivity__meetingTime\">" + StringUtils.join(meetingTimes, "<br/>") + "</div>" +
-                    "<div class=\"registrationActivity__meetingLocation\">" + StringUtils.join(meetingLocations, "<br/>") + "</div>";
+            template = template +
+                    "<div class=\"registrationActivity__meetingDays\">" + StringUtils.join(meetingDays, "<br/>") + "</div>" +
+                    "<div class=\"registrationActivity__meetingTime\">" + StringUtils.join(meetingTimes, "<br/>") + "</div>";
         }
 
-        template = template + "<div class=\"registrationActivity__regCode\">" + activityOption.getRegistrationCode() + "</div>" +
-                "<div class=\"registrationActivity__instituteCode\">" + instituteCd + "</div>" +
+        template = template +
+                "<div class=\"registrationActivity__meetingLocation\">" + StringUtils.join(meetingLocations, "<br/>") + "</div>" +
+                "<div class=\"registrationActivity__regCode\">" + activityOption.getRegistrationCode() + "</div>" +
+                "<div class=\"registrationActivity__instituteCode registrationActivity__instituteCode--" + (!instituteCd.isEmpty() ? "show" : "hide") + "\">" + instituteCd + "</div>" +
                 "<div class=\"registrationActivity__enrollRest registrationActivity__enrollRest--" + String.valueOf(activityOption.isEnrollmentRestriction()) + "\">" + "<img src=\"../themes/ksap/images/pixel.gif\"/>" + "</div>" +
-                "<div class=\"registrationActivity__enrollState\">" + String.format("%s/%s", activityOption.getFilledSeats(), activityOption.getTotalSeats()) + "</div>" +
-                "<div class=\"registrationActivity__enrollStatus registrationActivity__enrollStatus--closed\">" + activityOption.getEnrollStatus() + "</div>";
+                "<div class=\"registrationActivity__enrollState\">" + String.format("<strong>%s</strong> / %s", activityOption.getFilledSeats(), activityOption.getTotalSeats()) + "</div>" +
+                "<div class=\"registrationActivity__enrollStatus registrationActivity__enrollStatus--" + activityOption.getEnrollStatus().toLowerCase() + "\">" + activityOption.getEnrollStatus() + "</div>";
         return template;
     }
 

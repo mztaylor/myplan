@@ -1,0 +1,89 @@
+.registrationActivity__data {
+    input.uif-verticalRadioControl {
+        vertical-align: top;
+        position: relative;
+        top: 3px;
+    }
+
+    label {
+        display: inline-block;
+
+        div {
+            display: inline-block;
+            margin: 0 0 0 @marginDefault;
+            vertical-align: top;
+            color: @textColorMin;
+        }
+    }
+
+    table {
+        thead {
+            display: none;
+        }
+        tbody {
+            td {
+                padding: 0 0 0 @paddingDefault;
+                vertical-align: top;
+                color: @textColorMin;
+
+                &:first-child {
+                    padding: 0;
+                }
+            }
+        }
+    }
+}
+
+.registrationActivity__code {
+    width: 24px;
+    color: @textColor !important;
+}
+.registrationActivity__meetingDays {
+    width: 72px;
+}
+.registrationActivity__meetingTime {
+    width: 124px;
+}
+.registrationActivity__meetingLocation {
+    width: 72px;
+}
+.registrationActivity__regCode {
+    width: 48px;
+}
+.registrationActivity__instituteCode {
+    width: 24px;
+    font-size: @fontSizeMin;
+    color: @white;
+    background: @gray;
+    padding: 1px @paddingMini;
+    line-height: @fontSizeLarge;
+    position: relative;
+    top: -2px;
+    text-align: center;
+    visibility: hidden;
+
+    &.registrationActivity__instituteCode--show {
+        visibility: visible;
+    }
+}
+.registrationActivity__enrollRest {
+    width: 16px;
+
+    &.registrationActivity__enrollRest--true {
+
+    }
+}
+.registrationActivity__enrollState {
+      width: 56px;
+
+    strong {
+        color: @black;
+    }
+}
+.registrationActivity__enrollStatus {
+    width: 48px;
+
+    &.registrationActivity__enrollStatus--open{
+        color: @green;
+    }
+}
