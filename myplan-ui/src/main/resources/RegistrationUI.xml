@@ -24,12 +24,14 @@
         <property name="id" value="Registration-FormView"/>
         <property name="formClass" value="org.kuali.student.myplan.registration.form.DefaultRegistrationForm"/>
         <property name="width" value="600px"/>
+        <property name="style" value="padding: 5px;"
         <property name="items">
             <list>
                 <bean id="scheduleView" parent="KSAP-Page">
                     <property name="layoutManager">
                         <bean parent="Uif-VerticalBoxLayout"/>
                     </property>
+                    <property name="onDocumentReadyScript" value="parent.jQuery.fancybox.update()"/>
                     <property name="header">
                         <bean parent="KSAP-HeaderTwo"
                               p:headerText="Pinned Schedule @{registrationDetails.getPinnedIndex() + 1}"/>
@@ -43,6 +45,7 @@
                     </property>
                     <property name="footer">
                         <bean id="scheduleViewFooter" parent="KSAP-HorizontalBoxGroup">
+                            <property name="cssClasses" value="registrationForm__footer"/>
                             <property name="render"
                                       value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                             <property name="items">
@@ -63,6 +66,7 @@
                     </property>
                     <property name="render"
                               value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+                    <property name="onDocumentReadyScript" value="parent.jQuery.fancybox.update()"/>
                     <property name="header">
                         <bean parent="KSAP-HeaderTwo" p:headerText="Choose Sections">
                             <property name="upperGroup">
@@ -95,10 +99,12 @@
                         <list>
                             <bean parent="scheduleRegisteredItems"/>
                             <bean parent="schedulePlannedItems"/>
+                            <bean parent="scheduleRegisterDelayMessage"/>
                         </list>
                     </property>
                     <property name="footer">
                         <bean id="scheduleSelectFooter" parent="KSAP-HorizontalBoxGroup">
+                            <property name="cssClasses" value="registrationForm__footer"/>
                             <property name="items">
                                 <list>
                                     <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back" p:navigateToPageId="scheduleView"/>
@@ -114,6 +120,7 @@
                     </property>
                     <property name="render"
                               value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+                    <property name="onDocumentReadyScript" value="parent.jQuery.fancybox.update()"/>
                     <property name="header">
                         <bean parent="KSAP-HeaderTwo" p:headerText="Confirm and Submit">
                             <property name="upperGroup">
@@ -138,6 +145,7 @@
                             </property>
                         </bean>
                     </property>
+                    <property name="header.render" value="true"/>
                     <property name="instructionalMessage">
                         <bean parent="scheduleRegisterDelayMessage"/>
                     </property>
@@ -145,10 +153,12 @@
                         <list>
                             <bean parent="scheduleRegisteredItems"/>
                             <bean parent="schedulePlannedItems"/>
+                            <bean parent="scheduleRegisterDelayMessage"/>
                         </list>
                     </property>
                     <property name="footer">
                         <bean id="scheduleConfirmFooter" parent="KSAP-HorizontalBoxGroup">
+                            <property name="cssClasses" value="registrationForm__footer"/>
                             <property name="items">
                                 <list>
                                     <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back" p:navigateToPageId="scheduleSelect"/>
@@ -164,8 +174,8 @@
         <property name="footer.render" value="false"/>
     </bean>
 
-    <bean id="scheduleRegisterDelayMessage" parent="KSAP-Message"
-          p:messageText="Note: Open/closed status is delayed by 1-2 minutes."/>
+    <bean id="scheduleRegisterDelayMessage" parent="KSAP-Message" p:cssClasses="registrationForm__note"
+          p:messageText="[strong]Note[/strong]: Open/closed status is delayed by 1-2 minutes."/>
 
     <bean id="scheduleCurrentRegisteredItemHeader" parent="KSAP-VerticalBoxGroup">
         <property name="items">
@@ -220,7 +230,7 @@
                     </property>
                 </bean>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="subCollections"
-                      p:condition="pageId NE 'scheduleView'">
+                      p:condition="pageId EQ 'scheduleSelect'">
                     <property name="replacement">
                         <list>
                             <bean parent="scheduleRegistrationItemActivitySelect"/>
@@ -265,34 +275,6 @@
         </property>
     </bean>
 
-    <!--<bean id="scheduleRegistrationItemAlternateActivities" parent="KSAP-TableCollectionGroup">
-        <property name="propertyName" value="alternateActivties"/>
-        <property name="bindingInfo.bindToForm" value="true"/>
-        <property name="readOnly" value="true"/>
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo"/>
-        <property name="layoutManager.numberOfColumns" value="9"/>
-        <property name="items">
-            <list>
-                <bean parent="scheduleRegistrationActivityCode"/>
-                <bean parent="scheduleRegistrationActivityMeetingDays"/>
-                <bean parent="scheduleRegistrationActivityMeetingTime"/>
-                <bean parent="scheduleRegistrationActivityMeetingLocation"/>
-                <bean parent="scheduleRegistrationActivityRegCode"/>
-                <bean parent="scheduleRegistrationActivityInstituteCode"/>
-                <bean parent="scheduleRegistrationActivityEnrollRestriction"/>
-                <bean parent="scheduleRegistrationActivityEnrollment"/>
-                <bean parent="scheduleRegistrationActivityEnrollStatus"/>
-            </list>
-        </property>
-        <property name="subCollections">
-            <list>
-                <bean parent="plannedSecondaryActivityCollection"/>
-            </list>
-        </property>
-    </bean>
--->
-
     <!--For second and third pages-->
 
     <bean id="scheduleRegistrationItemActivitySelect" parent="KSAP-StackedCollectionGroup">
@@ -303,18 +285,13 @@
         <property name="readOnly" value="false"/>
         <property name="items">
             <list>
-                <bean parent="KSAP-HorizontalFieldGroup">
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-InputField" p:propertyName="selectedForReg">
-                                <property name="control">
-                                    <bean parent="Uif-VerticalRadioControl"/>
-                                </property>
-                                <property name="optionsFinder">
-                                    <bean class="org.kuali.student.myplan.schedulebuilder.util.RegistrationKeyValueFinder"/>
-                                </property>
-                            </bean>
-                        </list>
+                <bean parent="Uif-InputField" p:propertyName="selectedForReg">
+                    <property name="cssClasses" value="registrationActivity__data"/>
+                    <property name="control">
+                        <bean parent="Uif-VerticalRadioControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.schedulebuilder.util.RegistrationKeyValueFinder"/>
                     </property>
                 </bean>
             </list>
@@ -347,18 +324,13 @@
         <property name="readOnly" value="false"/>
         <property name="items">
             <list>
-                <bean parent="KSAP-HorizontalFieldGroup">
-                    <property name="items">
-                        <list>
-                            <bean parent="Uif-InputField" p:propertyName="selectedForReg">
-                                <property name="control">
-                                    <bean parent="Uif-VerticalRadioControl"/>
-                                </property>
-                                <property name="optionsFinder">
-                                    <bean class="org.kuali.student.myplan.schedulebuilder.util.RegistrationKeyValueFinder"/>
-                                </property>
-                            </bean>
-                        </list>
+                <bean parent="Uif-InputField" p:propertyName="selectedForReg">
+                    <property name="cssClasses" value="registrationActivity__data"/>
+                    <property name="control">
+                        <bean parent="Uif-VerticalRadioControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.student.myplan.schedulebuilder.util.RegistrationKeyValueFinder"/>
                     </property>
                 </bean>
             </list>
