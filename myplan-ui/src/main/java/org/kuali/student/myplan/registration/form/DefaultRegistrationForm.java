@@ -114,7 +114,7 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
                     courseOption.setCourseId(activityOption.getCourseId());
                     courseOption.setCourseCode(activityOption.getCourseCd());
                     courseOption.setCourseTitle(activityOption.getCourseTitle());
-                    courseOption.setCredits(new BigDecimal(activityOption.getCourseCredit()));
+                    courseOption.setCredits(activityOption.getCourseCredit());
                     for (SecondaryActivityOptions secondaryActivityOptions : activityOption.getSecondaryOptions()) {
                         List<ActivityOption> secondaryActivities = new ArrayList<ActivityOption>();
                         for (ActivityOption secondaryActivity : secondaryActivityOptions.getActivityOptions()) {
