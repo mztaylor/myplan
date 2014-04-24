@@ -368,6 +368,7 @@
         </property>
     </bean>
 
+    <!--The template options for year month and date are using the millisToNextMondayStandardTime method is because when ever a term starts in between in a week we want to show the schedule builder for a week so the closest next monday is what we choose and from that we make the one week view-->
     <bean id="possible_schedules_calendar" parent="KSAP-Calendar" p:cssClasses="scheduleCalendar">
         <property name="dataAttributes">
             <map>
