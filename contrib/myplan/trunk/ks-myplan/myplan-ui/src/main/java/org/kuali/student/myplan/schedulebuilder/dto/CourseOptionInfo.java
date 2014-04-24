@@ -29,7 +29,7 @@ public class CourseOptionInfo extends ScheduleBuildOptionInfo implements CourseO
     private String courseTitle;
 
     @XmlAttribute
-    private BigDecimal credits;
+    private String credits;
 
     @XmlElement
     private List<ActivityOption> activityOptions;
@@ -104,11 +104,11 @@ public class CourseOptionInfo extends ScheduleBuildOptionInfo implements CourseO
     }
 
     @Override
-    public BigDecimal getCredits() {
+    public String getCredits() {
         return credits;
     }
 
-    public void setCredits(BigDecimal credits) {
+    public void setCredits(String credits) {
         this.credits = credits;
     }
 

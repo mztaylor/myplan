@@ -251,7 +251,7 @@ public class ScheduleBuilderTest {
         courseOption.setCourseId(UUID.randomUUID().toString());
         courseOption.setCourseCode(campus + curric + courseNumber);
         courseOption.setCourseTitle(courseTitle);
-        courseOption.setCredits(BigDecimal.valueOf(Long.valueOf(credits)));  // always null in debugger?
+        courseOption.setCredits(credits);  // always null in debugger?
         courseOption.setDiscarded(false);
         courseOption.setLockedIn(false);
         courseOption.setSelected(false);

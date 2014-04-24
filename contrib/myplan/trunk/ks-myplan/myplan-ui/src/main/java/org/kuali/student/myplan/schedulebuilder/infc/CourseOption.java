@@ -38,7 +38,7 @@ public interface CourseOption extends ScheduleBuildOption, Comparable<CourseOpti
      *
      * @return The credits for this course, if variable.
      */
-    BigDecimal getCredits();
+    String getCredits();
 
     /**
      * Get the activity options for this course.
