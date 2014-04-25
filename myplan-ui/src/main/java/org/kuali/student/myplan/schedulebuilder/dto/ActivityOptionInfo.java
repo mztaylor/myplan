@@ -1,9 +1,11 @@
 package org.kuali.student.myplan.schedulebuilder.dto;
 
 import org.apache.commons.lang.StringUtils;
+import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.infc.ClassMeetingTime;
 import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
+import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 
 import javax.xml.bind.annotation.*;
 import java.math.BigDecimal;
@@ -651,9 +653,29 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     public String getMeetingLocation() {
         List<String> meetingLocations = new ArrayList<String>();
         for (ClassMeetingTime classMeetingTime : getClassMeetingTimes()) {
-            meetingLocations.add(String.format("%s %s", classMeetingTime.getBuilding() != null ? classMeetingTime.getBuilding() : "", classMeetingTime.getLocation() != null ? classMeetingTime.getLocation() : ""));
+            String buildingUrl = "";
+            String building = "";
+            if (classMeetingTime.getBuilding() != null) {
+                if (!"NOC".equals(classMeetingTime.getBuilding()) && !classMeetingTime.getBuilding().startsWith("*") && "seattle".equalsIgnoreCase(classMeetingTime.getCampus())) {
+                    building = classMeetingTime.getBuilding();
+                    buildingUrl = String.format("<a href=\"%s\" target=\"_blank\">%s</a>", PlanConstants.BUILDING_URL + building, building);
+                } else {
+                    building = classMeetingTime.getBuilding();
+                }
+            }
+            meetingLocations.add(String.format("%s %s", org.springframework.util.StringUtils.hasText(building) ? org.springframework.util.StringUtils.hasText(buildingUrl) ? buildingUrl : building : "", classMeetingTime.getLocation() != null ? classMeetingTime.getLocation() : ""));
         }
         return StringUtils.join(meetingLocations, "<br/>");
+    }
+
+    @Override
+    public String getInstituteName() {
+        if (ScheduleBuilderConstants.PCE_INSTITUTE_CODE.equals(getInstituteCode())) {
+            return ScheduleBuilderConstants.PCE_INSTITUTE_NAME;
+        } else if (ScheduleBuilderConstants.ROTC_INSTITUTE_CODE.equals(getInstituteCode())) {
+            return ScheduleBuilderConstants.ROTC_INSTITUTE_NAME;
+        }
+        return "";
     }
 
 

@@ -24,7 +24,7 @@
         <property name="id" value="Registration-FormView"/>
         <property name="formClass" value="org.kuali.student.myplan.registration.form.DefaultRegistrationForm"/>
         <property name="width" value="600px"/>
-        <property name="style" value="padding: 5px;"
+        <property name="style" value="padding: 5px;"/>
         <property name="items">
             <list>
                 <bean id="scheduleView" parent="KSAP-Page">
@@ -349,8 +349,8 @@
     <bean id="scheduleRegistrationActivityRegCode" parent="Uif-LinkField" p:linkText="@{#line.registrationCode}" p:href="@{#ConfigProperties['ks.myplan.externalizable.sln.url']}@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToQtrYrParam(#form.termId)}&amp;SLN=@{#line.registrationCode}" p:cssClasses="registrationActivity__regCode"
           p:width="48px" p:target="_blank"/>
 
-    <bean id="scheduleRegistrationActivityInstituteCode" parent="KSAP-MessageField" p:cssClasses="registrationActivity__instituteCode registrationActivity__instituteCode--@{#line.instituteCode NE '' ? 'show':'hide'}"
-          p:messageText="@{#line.instituteCode}" p:width="24px"/>
+    <bean id="scheduleRegistrationActivityInstituteCode" parent="KSAP-MessageField" p:cssClasses="registrationActivity__instituteCode registrationActivity__instituteCode--@{#line.instituteName NE '' ? 'show':'hide'}"
+          p:messageText="@{#line.instituteName}" p:width="24px"/>
 
     <bean id="scheduleRegistrationActivityEnrollRestriction" parent="Uif-ImageField" p:width="16px">
         <property name="cssClasses" value="registrationActivity__enrollRest registrationActivity__enrollRest--@{#line.enrollmentRestriction}"/>

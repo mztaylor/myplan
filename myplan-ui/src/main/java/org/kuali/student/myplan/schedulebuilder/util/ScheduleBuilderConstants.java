@@ -89,11 +89,6 @@ public class ScheduleBuilderConstants {
     public static final String PCE_INSTITUTE_NAME = "PCE";
     public static final String ROTC_INSTITUTE_NAME = "ROTC";
 
-    public static final String REGISTRAION_PAGE_1 = "scheduleView";
-    public static final String REGISTRAION_PAGE_2 = "scheduleSelect";
-    public static final String REGISTRAION_PAGE_3 = "scheduleConfirm";
-
-
 
     public static final int POSSIBLE_SCHEDULES_MAX_COUNT = ConfigContext.getCurrentContextConfig().getProperty("ks.possible.schedules.count") != null ? Integer.parseInt(ConfigContext.getCurrentContextConfig().getProperty("ks.possible.schedules.count")) : 1000;
 
