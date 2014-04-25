@@ -1,5 +1,7 @@
 package org.kuali.student.myplan.registration.form;
 
+import org.apache.log4j.Logger;
+import org.bouncycastle.util.encoders.Hex;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.TermHelper;
@@ -21,12 +23,16 @@ import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
  * Created by hemanthg on 4/22/2014.
  */
 public class DefaultRegistrationForm extends UifFormBase implements RegistrationForm {
+
+    private final Logger logger = Logger.getLogger(DefaultRegistrationForm.class);
 
     private Term term;
     private String termId;
@@ -95,8 +101,35 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
             index++;
         }
         AtpHelper.YearTerm yearTerm = AtpHelper.atpToYearTerm(getTermId());
-        String regUrl = String.format(RegistrationConstants.REGISTRATION_URL_FORMAT, yearTerm.getTerm(), yearTerm.getYear(), "placeHolderToken", org.apache.commons.lang.StringUtils.join(regUrlParams, "&"));
+        String token = generateToken(getUserSessionHelper().getExternalIdentifier(getUserSessionHelper().getStudentId()));
+        String regUrl = null;
+        if (StringUtils.hasText(token)) {
+            regUrl = String.format(RegistrationConstants.REGISTRATION_URL_FORMAT, yearTerm.getTerm(), yearTerm.getYear(), token, org.apache.commons.lang.StringUtils.join(regUrlParams, "&"));
+        }
         return regUrl;
+    }
+
+
+    /**
+     * Builds a token from student system key using SHA-256 hash
+     *
+     * @param sysKey
+     * @return
+     */
+    protected String generateToken(String sysKey) {
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("Could not make MessageDigest", e);
+            return null;
+        }
+        if (md != null) {
+            md.update(sysKey.getBytes());
+            byte[] shaDig = md.digest();
+            return (new String(Hex.encode(shaDig)));
+        }
+        return null;
     }
 
     /**
