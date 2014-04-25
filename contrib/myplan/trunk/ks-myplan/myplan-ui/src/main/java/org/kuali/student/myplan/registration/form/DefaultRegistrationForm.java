@@ -2,6 +2,7 @@ package org.kuali.student.myplan.registration.form;
 
 import org.apache.log4j.Logger;
 import org.bouncycastle.util.encoders.Hex;
+import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.TermHelper;
@@ -76,12 +77,16 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
                 registrationDetails.setPlannedCourses(courseOptionList);
                 setPageId(RegistrationConstants.REGISTRATION_PAGE_3);
             }
+
+            if (registrationDetails != null && !CollectionUtils.isEmpty(getSelectedRegistrationCodes()) && getSelectedRegistrationCodes().size() > 0 && getSelectedRegistrationCodes().size() <= 8) {
+                registrationDetails.setRegistrationUrl(buildRegistrationUrl());
+            } else {
+                GlobalVariables.getMessageMap().putWarningForSectionId(RegistrationConstants.REGISTRATION_PAGE_3, RegistrationConstants.ERROR_MAX_REGISTRATION_CODES);
+            }
         }
 
 
-        if (registrationDetails != null && !CollectionUtils.isEmpty(getSelectedRegistrationCodes()) && getSelectedRegistrationCodes().size() > 0 && getSelectedRegistrationCodes().size() <= 8) {
-            registrationDetails.setRegistrationUrl(buildRegistrationUrl());
-        }
+
         setRegistrationDetails(registrationDetails);
     }
 
