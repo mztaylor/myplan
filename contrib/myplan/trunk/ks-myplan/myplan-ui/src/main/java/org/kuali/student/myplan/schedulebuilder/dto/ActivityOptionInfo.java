@@ -658,7 +658,7 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
             if (classMeetingTime.getBuilding() != null) {
                 if (!"NOC".equals(classMeetingTime.getBuilding()) && !classMeetingTime.getBuilding().startsWith("*") && "seattle".equalsIgnoreCase(classMeetingTime.getCampus())) {
                     building = classMeetingTime.getBuilding();
-                    buildingUrl = String.format("<a href=\"%s\" target=\"_blank\">%s</a>", PlanConstants.BUILDING_URL + building, building);
+                    buildingUrl = String.format("<a href=\"%s\" target=\"_blank\">%s</a>", PlanConstants.BUILDING_URL + building.toLowerCase(), building);
                 } else {
                     building = classMeetingTime.getBuilding();
                 }
