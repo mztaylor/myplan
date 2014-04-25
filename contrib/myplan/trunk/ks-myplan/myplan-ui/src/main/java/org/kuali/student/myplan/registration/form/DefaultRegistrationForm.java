@@ -6,7 +6,9 @@ import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
+import org.kuali.student.myplan.registration.util.RegistrationConstants;
 import org.kuali.student.myplan.registration.util.RegistrationForm;
 import org.kuali.student.myplan.schedulebuilder.dto.*;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
@@ -19,7 +21,6 @@ import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -31,7 +32,7 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
     private String termId;
     private String uniqueId;
     private String requestedLearningPlanId;
-    private int selectedRegistrationCodeCount;
+    private List<String> selectedRegistrationCodes;
     private Map<String, String> plannedItems;
     private RegistrationDetailsInfo registrationDetails;
 
@@ -54,163 +55,177 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
             return;
         }
 
-        setSelectedRegistrationCodeCount(0);
+        setSelectedRegistrationCodes(new ArrayList<String>());
         RegistrationDetailsInfo registrationDetails = null;
-        if (getPageId().equals(ScheduleBuilderConstants.REGISTRAION_PAGE_1)) {
-            registrationDetails = new RegistrationDetailsInfo();
-
-            /*ReservedTimes*/
-            List<ReservedTime> reservedTimes;
-            try {
-                reservedTimes = getScheduleBuildStrategy().getReservedTimesForTermId(getRequestedLearningPlanId(), getTermId());
-            } catch (PermissionDeniedException e) {
-                throw new IllegalStateException("Failed to refresh reserved times", e);
-            }
-
-
-            /*SavedSchedules*/
-            List<PossibleScheduleOption> pinnedSchedules;
-            try {
-                pinnedSchedules = getScheduleBuildStrategy().getSchedulesForTerm(getRequestedLearningPlanId(), getTermId());
-            } catch (PermissionDeniedException e) {
-                throw new IllegalStateException(
-                        "Failed to refresh saved schedules", e);
-            }
-
-            /*populating the registered courses*/
-            List<CourseOption> registeredCourseOptions = getScheduleBuildStrategy().getRegisteredCourseOptions(getUserSessionHelper().getStudentId(), getTermId(), new ScheduleBuildFiltersInfo());
-            registrationDetails.setRegisteredCourses(registeredCourseOptions);
-
-
-            /*Planned Activity map*/
-            setPlannedItems(getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(getRequestedLearningPlanId(), PlanConstants.SECTION_TYPE, getTermId()));
-
-
-            /*RegisteredPossibleSchedule*/
-            PossibleScheduleOption registeredPossibleSchedule = null;
-            if (getTerm() != null) {
-                registeredPossibleSchedule = getScheduleBuildStrategy().getScheduleBuilder(getTerm(), registeredCourseOptions, reservedTimes, pinnedSchedules, new ScheduleBuildFiltersInfo()).getRegistered();
-            }
-            if (registeredPossibleSchedule != null) {
-                ((PossibleScheduleOptionInfo) registeredPossibleSchedule).setLockedIn(true);
-            }
-
-
-            /*Selecting Requested Pinned schedule*/
-            PossibleScheduleOption selectedPinnedSchedule = null;
-            for (PossibleScheduleOption possibleScheduleOption : pinnedSchedules) {
-                if (possibleScheduleOption.getId().equals(getUniqueId())) {
-                    selectedPinnedSchedule = possibleScheduleOption;
-                    break;
-                }
-            }
-
-            /*Validating Pinned schedule*/
-            if (selectedPinnedSchedule != null) {
-                List<CourseOption> plannedCourseOptions = new ArrayList<CourseOption>();
-
-                for (ActivityOption activityOption : selectedPinnedSchedule.getActivityOptions()) {
-                    CourseOptionInfo courseOption = new CourseOptionInfo();
-                    courseOption.setCourseId(activityOption.getCourseId());
-                    courseOption.setCourseCode(activityOption.getCourseCd());
-                    courseOption.setCourseTitle(activityOption.getCourseTitle());
-                    courseOption.setCredits(activityOption.getCourseCredit());
-                    for (SecondaryActivityOptions secondaryActivityOptions : activityOption.getSecondaryOptions()) {
-                        List<ActivityOption> secondaryActivities = new ArrayList<ActivityOption>();
-                        for (ActivityOption secondaryActivity : secondaryActivityOptions.getActivityOptions()) {
-                            ((ActivityOptionInfo) secondaryActivity).setSelectedForReg(secondaryActivity.getRegistrationCode());
-                            secondaryActivities.add(secondaryActivity);
-                            break;
-                        }
-                        ((SecondaryActivityOptionsInfo) secondaryActivityOptions).setActivityOptions(secondaryActivities);
-                    }
-                    List<ActivityOption> activityOptions = courseOption.getActivityOptions();
-                    ((ActivityOptionInfo) activityOption).setSelectedForReg(activityOption.getRegistrationCode());
-                    activityOptions.add(activityOption);
-                    Map<String, Map<String, List<String>>> invalidOptions = new LinkedHashMap<String, Map<String, List<String>>>();
-                    PossibleScheduleErrorsInfo possibleScheduleErrorsInfo = new PossibleScheduleErrorsInfo();
-                    List<ActivityOption> validatedActivities = getScheduleBuildHelper().validatedSavedActivities(activityOptions, invalidOptions, reservedTimes, new ArrayList<String>(getPlannedItems().keySet()), registeredPossibleSchedule);
-                    if (!CollectionUtils.isEmpty(validatedActivities) && validatedActivities.size() == activityOptions.size()) {
-                        if (!CollectionUtils.isEmpty(invalidOptions)) {
-                            boolean otherErrors = false;
-                            boolean noError = false;
-                            for (String key : invalidOptions.keySet()) {
-                                List<String> errorReasons = new ArrayList<String>(invalidOptions.get(key).keySet());
-                                for (String errorReason : errorReasons) {
-                                    if (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR.equals(errorReason) && !noError) {
-                                        noError = true;
-                                    } else if (!ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR.equals(errorReason) && !otherErrors) {
-                                        otherErrors = true;
-                                    }
-                                }
-                            }
-                            if (noError && !otherErrors) {
-                                possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_NO_ERROR);
-                            } else if (otherErrors) {
-                                possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_PASSIVE_ERROR);
-                            }
-                            possibleScheduleErrorsInfo.setInvalidOptions(invalidOptions);
-                        }
-                    } else {
-                        possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR);
-                        possibleScheduleErrorsInfo.setInvalidOptions(invalidOptions);
-                    }
-                    List<ActivityOption> validatedActivityOptionList = new ArrayList<ActivityOption>();
-                    /*Validate activityOptions for ErrorMessages*/
-                    if (StringUtils.hasText(possibleScheduleErrorsInfo.getErrorType())) {
-                        List<String> invalidActivities = new ArrayList<String>();
-                        getScheduleBuildHelper().validateForErrors(possibleScheduleErrorsInfo, courseOption.getCourseCode(), activityOptions, invalidActivities);
-                        possibleScheduleErrorsInfo.setErrorType(possibleScheduleErrorsInfo.getErrorType());
-                        possibleScheduleErrorsInfo.setErrorMessage(possibleScheduleErrorsInfo.getErrorMessage());
-                        /*TODO:remove invalid activities from activityOptions list*/
-                        validatedActivityOptionList.addAll(getValidActivitiesForReg(activityOptions, invalidActivities));
-                    } else {
-                        validatedActivityOptionList.addAll(activityOptions);
-                    }
-                    courseOption.setPossibleErrors(possibleScheduleErrorsInfo);
-                    courseOption.setActivityOptions(validatedActivityOptionList);
-                    plannedCourseOptions.add(courseOption);
-                }
-
-
-                registrationDetails.setPlannedCourses(plannedCourseOptions);
-
-            }
-
-        } else if (getPageId().equals(ScheduleBuilderConstants.REGISTRAION_PAGE_2)) {
+        if (getPageId().equals(RegistrationConstants.REGISTRATION_PAGE_1)) {
+            registrationDetails = getRegistrationDetailsInfo();
+        } else if (getPageId().equals(RegistrationConstants.REGISTRATION_PAGE_2)) {
             if (getRegistrationDetails() != null) {
-                registrationDetails = (RegistrationDetailsInfo) getRegistrationDetails();
+                registrationDetails = getRegistrationDetails();
                 List<CourseOption> courseOptionList = new ArrayList<CourseOption>();
-                List<String> selectedRegistrationCodes = new ArrayList<String>();
                 for (CourseOption courseOption : registrationDetails.getPlannedCourses()) {
-                    for (ActivityOption activityOption : courseOption.getActivityOptions()) {
-                        if (StringUtils.hasText(activityOption.getSelectedForReg())) {
-                            selectedRegistrationCodes.add(activityOption.getSelectedForReg());
-                        }
-                        for (SecondaryActivityOptions secondaryActivityOption : activityOption.getSecondaryOptions()) {
-                            for (ActivityOption secondaryActivity : secondaryActivityOption.getActivityOptions()) {
-                                if (StringUtils.hasText(activityOption.getSelectedForReg())) {
-                                    selectedRegistrationCodes.add(activityOption.getSelectedForReg());
-                                }
-                            }
-                        }
-                    }
-
-
-                    List<ActivityOption> selectedActivities = getSelectedActivitiesForReg(courseOption.getActivityOptions(), selectedRegistrationCodes);
-                    ((CourseOptionInfo) courseOption).setActivityOptions(selectedActivities);
+                    populateSelectedActivitiesForReg(courseOption.getActivityOptions());
                     courseOptionList.add(courseOption);
                 }
                 registrationDetails.setPlannedCourses(courseOptionList);
-                setPageId(ScheduleBuilderConstants.REGISTRAION_PAGE_3);
+                setPageId(RegistrationConstants.REGISTRATION_PAGE_3);
             }
         }
 
 
-        if (getSelectedRegistrationCodeCount() > 0 && getSelectedRegistrationCodeCount() <= 8) {
-            registrationDetails.setRegistrationUrl("placeholderUrl");
+        if (registrationDetails != null && !CollectionUtils.isEmpty(getSelectedRegistrationCodes()) && getSelectedRegistrationCodes().size() > 0 && getSelectedRegistrationCodes().size() <= 8) {
+            registrationDetails.setRegistrationUrl(buildRegistrationUrl());
         }
         setRegistrationDetails(registrationDetails);
+    }
+
+    /**
+     * Builds the registration Url for given registration codes
+     *
+     * @return
+     */
+    protected String buildRegistrationUrl() {
+        int index = 1;
+        List<String> regUrlParams = new ArrayList<String>();
+        for (String registrationCode : getSelectedRegistrationCodes()) {
+            if (index > 8) {
+                return null;
+            }
+            regUrlParams.add(String.format(RegistrationConstants.REGISTRATION_CODE_URL_PARAMS_FROMAT, index, registrationCode, index, index, index));
+            index++;
+        }
+        AtpHelper.YearTerm yearTerm = AtpHelper.atpToYearTerm(getTermId());
+        String regUrl = String.format(RegistrationConstants.REGISTRATION_URL_FORMAT, yearTerm.getTerm(), yearTerm.getYear(), "placeHolderToken", org.apache.commons.lang.StringUtils.join(regUrlParams, "&"));
+        return regUrl;
+    }
+
+    /**
+     * Logic for the initial page load with all the registration details
+     *
+     * @return RegistrationDetailsInfo
+     */
+    protected RegistrationDetailsInfo getRegistrationDetailsInfo() {
+        RegistrationDetailsInfo registrationDetails;
+        registrationDetails = new RegistrationDetailsInfo();
+
+            /*ReservedTimes*/
+        List<ReservedTime> reservedTimes;
+        try {
+            reservedTimes = getScheduleBuildStrategy().getReservedTimesForTermId(getRequestedLearningPlanId(), getTermId());
+        } catch (PermissionDeniedException e) {
+            throw new IllegalStateException("Failed to refresh reserved times", e);
+        }
+
+
+            /*SavedSchedules*/
+        List<PossibleScheduleOption> pinnedSchedules;
+        try {
+            pinnedSchedules = getScheduleBuildStrategy().getSchedulesForTerm(getRequestedLearningPlanId(), getTermId());
+        } catch (PermissionDeniedException e) {
+            throw new IllegalStateException(
+                    "Failed to refresh saved schedules", e);
+        }
+
+            /*populating the registered courses*/
+        List<CourseOption> registeredCourseOptions = getScheduleBuildStrategy().getRegisteredCourseOptions(getUserSessionHelper().getStudentId(), getTermId(), new ScheduleBuildFiltersInfo());
+        registrationDetails.setRegisteredCourses(registeredCourseOptions);
+
+
+            /*Planned Activity map*/
+        setPlannedItems(getPlanHelper().getPlanItemIdAndRefObjIdByRefObjType(getRequestedLearningPlanId(), PlanConstants.SECTION_TYPE, getTermId()));
+
+
+            /*RegisteredPossibleSchedule*/
+        PossibleScheduleOption registeredPossibleSchedule = null;
+        if (getTerm() != null) {
+            registeredPossibleSchedule = getScheduleBuildStrategy().getScheduleBuilder(getTerm(), registeredCourseOptions, reservedTimes, pinnedSchedules, new ScheduleBuildFiltersInfo()).getRegistered();
+        }
+        if (registeredPossibleSchedule != null) {
+            ((PossibleScheduleOptionInfo) registeredPossibleSchedule).setLockedIn(true);
+        }
+
+
+            /*Selecting Requested Pinned schedule*/
+        PossibleScheduleOption selectedPinnedSchedule = null;
+        for (PossibleScheduleOption possibleScheduleOption : pinnedSchedules) {
+            if (possibleScheduleOption.getId().equals(getUniqueId())) {
+                selectedPinnedSchedule = possibleScheduleOption;
+                break;
+            }
+        }
+
+            /*Validating Pinned schedule*/
+        if (selectedPinnedSchedule != null) {
+            List<CourseOption> plannedCourseOptions = new ArrayList<CourseOption>();
+
+            for (ActivityOption activityOption : selectedPinnedSchedule.getActivityOptions()) {
+                CourseOptionInfo courseOption = new CourseOptionInfo();
+                courseOption.setCourseId(activityOption.getCourseId());
+                courseOption.setCourseCode(activityOption.getCourseCd());
+                courseOption.setCourseTitle(activityOption.getCourseTitle());
+                courseOption.setCredits(activityOption.getCourseCredit());
+                for (SecondaryActivityOptions secondaryActivityOptions : activityOption.getSecondaryOptions()) {
+                    List<ActivityOption> secondaryActivities = new ArrayList<ActivityOption>();
+                    for (ActivityOption secondaryActivity : secondaryActivityOptions.getActivityOptions()) {
+                        ((ActivityOptionInfo) secondaryActivity).setSelectedForReg(secondaryActivity.getRegistrationCode());
+                        secondaryActivities.add(secondaryActivity);
+                        break;
+                    }
+                    ((SecondaryActivityOptionsInfo) secondaryActivityOptions).setActivityOptions(secondaryActivities);
+                }
+                List<ActivityOption> activityOptions = courseOption.getActivityOptions();
+                ((ActivityOptionInfo) activityOption).setSelectedForReg(activityOption.getRegistrationCode());
+                activityOptions.add(activityOption);
+                Map<String, Map<String, List<String>>> invalidOptions = new LinkedHashMap<String, Map<String, List<String>>>();
+                PossibleScheduleErrorsInfo possibleScheduleErrorsInfo = new PossibleScheduleErrorsInfo();
+                List<ActivityOption> validatedActivities = getScheduleBuildHelper().validatedSavedActivities(activityOptions, invalidOptions, reservedTimes, new ArrayList<String>(getPlannedItems().keySet()), registeredPossibleSchedule);
+                if (!CollectionUtils.isEmpty(validatedActivities) && validatedActivities.size() == activityOptions.size()) {
+                    if (!CollectionUtils.isEmpty(invalidOptions)) {
+                        boolean otherErrors = false;
+                        boolean noError = false;
+                        for (String key : invalidOptions.keySet()) {
+                            List<String> errorReasons = new ArrayList<String>(invalidOptions.get(key).keySet());
+                            for (String errorReason : errorReasons) {
+                                if (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR.equals(errorReason) && !noError) {
+                                    noError = true;
+                                } else if (!ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR.equals(errorReason) && !otherErrors) {
+                                    otherErrors = true;
+                                }
+                            }
+                        }
+                        if (noError && !otherErrors) {
+                            possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_NO_ERROR);
+                        } else if (otherErrors) {
+                            possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_PASSIVE_ERROR);
+                        }
+                        possibleScheduleErrorsInfo.setInvalidOptions(invalidOptions);
+                    }
+                } else {
+                    possibleScheduleErrorsInfo.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR);
+                    possibleScheduleErrorsInfo.setInvalidOptions(invalidOptions);
+                }
+                List<ActivityOption> validatedActivityOptionList = new ArrayList<ActivityOption>();
+                /*Validate activityOptions for ErrorMessages*/
+                if (StringUtils.hasText(possibleScheduleErrorsInfo.getErrorType())) {
+                    List<String> invalidActivities = new ArrayList<String>();
+                    getScheduleBuildHelper().validateForErrors(possibleScheduleErrorsInfo, courseOption.getCourseCode(), activityOptions, invalidActivities);
+                    possibleScheduleErrorsInfo.setErrorType(possibleScheduleErrorsInfo.getErrorType());
+                    possibleScheduleErrorsInfo.setErrorMessage(possibleScheduleErrorsInfo.getErrorMessage());
+                    /*TODO:remove invalid activities from activityOptions list*/
+                    validatedActivityOptionList.addAll(getValidActivitiesForReg(activityOptions, invalidActivities));
+                } else {
+                    validatedActivityOptionList.addAll(activityOptions);
+                }
+                courseOption.setPossibleErrors(possibleScheduleErrorsInfo);
+                courseOption.setActivityOptions(validatedActivityOptionList);
+                plannedCourseOptions.add(courseOption);
+            }
+
+
+            registrationDetails.setPlannedCourses(plannedCourseOptions);
+
+        }
+        return registrationDetails;
     }
 
 
@@ -247,24 +262,17 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
      * @param activityOptions
      * @return
      */
-    private List<ActivityOption> getSelectedActivitiesForReg(List<ActivityOption> activityOptions, List<String> selectedRegistrationCodes) {
-        List<ActivityOption> newAOList = new ArrayList<ActivityOption>();
+    private void populateSelectedActivitiesForReg(List<ActivityOption> activityOptions) {
         for (ActivityOption activityOption : activityOptions) {
             ActivityOptionInfo ao = (ActivityOptionInfo) activityOption;
             for (SecondaryActivityOptions secondaryActivityOptions : ao.getSecondaryOptions()) {
-                List<ActivityOption> activityOptionList = getSelectedActivitiesForReg(secondaryActivityOptions.getActivityOptions(), selectedRegistrationCodes);
-                ((SecondaryActivityOptionsInfo) secondaryActivityOptions).setActivityOptions(activityOptionList);
+                populateSelectedActivitiesForReg(secondaryActivityOptions.getActivityOptions());
             }
-            List<ActivityOption> alternateActivities = getSelectedActivitiesForReg(ao.getAlternateActivties(), selectedRegistrationCodes);
-            ao.setAlternateActivities(alternateActivities);
-            if (!selectedRegistrationCodes.contains(activityOption.getRegistrationCode())) {
-                continue;
+            populateSelectedActivitiesForReg(ao.getAlternateActivties());
+            if (StringUtils.hasText(activityOption.getRegistrationCode())) {
+                getSelectedRegistrationCodes().add(activityOption.getRegistrationCode());
             }
-            selectedRegistrationCodeCount++;
-            newAOList.add(ao);
         }
-        return newAOList;
-
     }
 
     @Override
@@ -294,12 +302,16 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
         this.term = term;
     }
 
-    public int getSelectedRegistrationCodeCount() {
-        return selectedRegistrationCodeCount;
+    @Override
+    public List<String> getSelectedRegistrationCodes() {
+        if (selectedRegistrationCodes == null) {
+            selectedRegistrationCodes = new ArrayList<String>();
+        }
+        return selectedRegistrationCodes;
     }
 
-    public void setSelectedRegistrationCodeCount(int selectedRegistrationCodeCount) {
-        this.selectedRegistrationCodeCount = selectedRegistrationCodeCount;
+    public void setSelectedRegistrationCodes(List<String> selectedRegistrationCodes) {
+        this.selectedRegistrationCodes = selectedRegistrationCodes;
     }
 
     @Override

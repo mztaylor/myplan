@@ -3,6 +3,7 @@ package org.kuali.student.myplan.registration.util;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.schedulebuilder.infc.RegistrationDetails;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,11 +43,11 @@ public interface RegistrationForm {
 
 
     /**
-     * Count of Registration codes which are selected.
+     * Registration codes which are selected for registration.
      *
-     * @return count of registration codes selected
+     * @return Registration codes selected
      */
-    int getSelectedRegistrationCodeCount();
+    List<String> getSelectedRegistrationCodes();
 
 
     /**

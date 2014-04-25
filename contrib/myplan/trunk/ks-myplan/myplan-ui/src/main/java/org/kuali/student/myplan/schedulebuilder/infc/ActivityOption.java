@@ -324,12 +324,40 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
     String getSelectedForReg();
 
 
+    /**
+     * Lets to know if the activity option is to be arranged.
+     *
+     * @return
+     */
     boolean isTbd();
 
+    /**
+     * To get the meetings days as a single string for display purpose.
+     *
+     * @return "meetingDays <br/> meetingDays"
+     */
     String getMeetingDays();
 
+    /**
+     * To get the meetings times as a single string for display purpose.
+     *
+     * @return "meetingTime <br/> meetingTime"
+     */
     String getMeetingTimes();
 
+
+    /**
+     * To get the meetings locations as a single string for display purpose.
+     *
+     * @return "meetingLocation <br/> meetingLocation"
+     */
     String getMeetingLocation();
+
+    /**
+     * To get the institute name from institute code for display purpose.
+     *
+     * @return "instituteName"
+     */
+    String getInstituteName();
 
 }
