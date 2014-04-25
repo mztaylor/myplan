@@ -159,7 +159,18 @@ button, a {
 
 .defaultTopMargin {
     margin-top: @marginDefault !important;
+    &:first-child {
+        margin: 0 !important;
+    }
 }
+
+.largeTopMargin {
+    margin-top: @marginLarge !important;
+    &:first-child {
+        margin: 0 !important;
+    }
+}
+
 .defaultBottomMargin {
     margin-bottom: @marginDefault !important;
 }

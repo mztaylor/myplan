@@ -316,6 +316,7 @@ var KsapScheduleBuild = {
                 }
             },
             width: 600,
+            fitToView: false,
             type: "iframe",
             autoHeight: true,
             href: url

@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.kuali.student.enrollment.courseoffering.infc.ActivityOffering;
 import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
 import org.kuali.student.myplan.course.dataobject.MeetingDetails;
+import org.kuali.student.myplan.plan.PlanConstants;
 
 public class MeetingDetailsPropertyEditor extends PropertyEditorSupport {
     private final static Logger logger = Logger.getLogger(MeetingDetailsPropertyEditor.class);
@@ -72,7 +73,7 @@ public class MeetingDetailsPropertyEditor extends PropertyEditorSupport {
                 }
 
                 if (!building.equals("NOC") && !building.startsWith("*") && campus.equalsIgnoreCase("seattle")) {
-                    temp.append("<span class='meetingbuilding'><a href='http://uw.edu/maps/?" + building + "' target='_blank'>" + building + "</a></span>");
+                    temp.append("<span class='meetingbuilding'><a href='" + PlanConstants.BUILDING_URL + building.toLowerCase() + "' target='_blank'>" + building + "</a></span>");
                 } else {
                     temp.append("<span class='meetingbuilding'>" + building + "</span>");
                 }

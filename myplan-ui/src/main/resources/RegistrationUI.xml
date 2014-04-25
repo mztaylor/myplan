@@ -162,7 +162,17 @@
                             <property name="items">
                                 <list>
                                     <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back" p:navigateToPageId="scheduleSelect"/>
-                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Submit"/>
+                                    <bean parent="Uif-Link">
+                                        <property name="render" value="@{registrationDetails.registrationUrl NE null}"/>
+                                        <property name="linkText" value="Submit"/>
+                                        <property name="title" value="Submit to Registration"/>
+                                        <property name="href"
+                                                  value="@{registrationDetails.registrationUrl}"/>
+                                        <property name="cssClasses"
+                                                  value="btn btn-primary btn-small"/>
+                                        <property name="target" value="_blank"/>
+                                    </bean>
+                                    <!--<bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Submit"/>-->
                                 </list>
                             </property>
                         </bean>
@@ -192,10 +202,10 @@
         </property>
     </bean>
 
-    <bean id="scheduleRegistrationItem" parent="KSAP-MessageField"
+    <bean id="scheduleRegistrationItem" parent="KSAP-MessageField" p:cssClasses="registrationForm__courseTitle"
           p:messageText="@{#line.courseCode} @{#line.courseTitle} (@{#line.credits})"/>
 
-    <bean id="scheduleRegistrationItemLink" parent="Uif-LinkField"
+    <bean id="scheduleRegistrationItemLink" parent="Uif-LinkField" p:cssClasses="registrationForm__courseTitle"
           p:linkText="@{#line.courseCode} @{#line.courseTitle} (@{#line.credits})">
         <property name="href"
                   value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode}"/>
@@ -204,6 +214,8 @@
     <bean id="schedulePlannedItems" parent="KSAP-StackedCollectionGroup">
         <property name="collectionObjectClass" value="org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo"/>
         <property name="propertyName" value="registrationDetails.plannedCourses"/>
+        <property name="render" value="@{registrationDetails.plannedCourses.size() GT 0}"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="registrationForm__course"/>
         <property name="items">
             <list>
                 <bean parent="scheduleRegistrationItemLink"/>
@@ -243,12 +255,25 @@
 
     <bean id="scheduleRegisteredItems" parent="schedulePlannedItems">
         <property name="propertyName" value="registrationDetails.registeredCourses"/>
+        <property name="render" value="@{registrationDetails.registeredCourses.size() GT 0}"/>
         <property name="layoutManager.lineGroupPrototype.header">
             <bean parent="KSAP-HeaderDiv" p:hidden="true">
                 <property name="upperGroup">
                     <bean parent="scheduleCurrentRegisteredItemHeader"/>
                 </property>
             </bean>
+        </property>
+        <property name="propertyReplacers">
+            <list>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                      p:condition="pageId NE 'scheduleView'">
+                    <property name="replacement">
+                        <list>
+                            <bean parent="scheduleRegistrationItem"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
         </property>
     </bean>
 

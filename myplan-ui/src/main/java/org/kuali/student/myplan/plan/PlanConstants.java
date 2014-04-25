@@ -163,7 +163,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String DEFAULT_KEY = "default";
     public static final String DEFAULT_SELECT = "Select a placeholder";
 
-    public static final String BUILDING_URL = "http://uw.edu/maps/?";
+    public static final String BUILDING_URL = "http://www.washington.edu/maps/#!/";
 
     public static final String ENROLL_STATUS_KEY = "status";
     public static final String ENROLL_STATUS_OPEN_KEY = "open";

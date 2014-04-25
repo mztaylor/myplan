@@ -992,7 +992,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                         if (meetingTime.getBuilding() != null) {
                             if (!"NOC".equals(meetingTime.getBuilding()) && !meetingTime.getBuilding().startsWith("*") && "seattle".equalsIgnoreCase(campus)) {
                                 building = meetingTime.getBuilding();
-                                buildingUrl = PlanConstants.BUILDING_URL + building;
+                                buildingUrl = PlanConstants.BUILDING_URL + building.toLowerCase();
                             } else {
                                 building = meetingTime.getBuilding();
                             }
