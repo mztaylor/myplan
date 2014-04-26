@@ -1,23 +1,49 @@
-.registrationActivity__data {
-    input.uif-verticalRadioControl {
-        vertical-align: top;
-        position: relative;
-        top: 3px;
-        margin: 0 0 0 @marginMini;
+.registrationForm__group {
+    padding: @paddingSmall;
+    border: solid 1px transparent;
+    .border-radius(@baseBorderRadius);
+
+    &.registrationForm__group--disabled {
+        border-color: #fafafa;
+        background-color: #f0f0f0;
+        color: #a0a0a0 !important;
+        text-decoration: none !important;
     }
 
-    label {
-        display: inline-block;
+    &.registrationForm__group--disabled.registrationForm__group--indent .registrationActivity__data table {
+        margin: 0 0 0 24px;
+    }
+}
 
-        div {
-            display: inline-block;
-            margin: 0 0 0 @marginDefault;
-            vertical-align: top;
-            color: @textColorMin;
+.registrationActivity__data {
+    fieldset {
+        position: relative;
+
+        input.uif-verticalRadioControl {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+        }
+
+        label {
+            display: block;
+            margin: 0 0 0 24px !important;
+
+            div {
+                display: inline-block;
+                margin: 0 0 0 @marginDefault;
+                vertical-align: top;
+                color: @textColorMin;
+
+                &:first-child{
+                    margin: 0;
+                }
+            }
         }
     }
 
     table {
+
         thead {
             display: none;
         }
@@ -38,6 +64,7 @@
 .registrationActivity__code {
     width: 24px;
     color: @textColor !important;
+    .bold();
 }
 .registrationActivity__meetingDays {
     width: 72px;
