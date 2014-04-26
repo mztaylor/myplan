@@ -23,8 +23,7 @@
     <bean abstract="true" id="Registration-FormView-parent" parent="MyPlanBaseFormView">
         <property name="id" value="Registration-FormView"/>
         <property name="formClass" value="org.kuali.student.myplan.registration.form.DefaultRegistrationForm"/>
-        <property name="width" value="600px"/>
-        <property name="style" value="padding: 5px;"/>
+        <property name="width" value="610px"/>
         <property name="items">
             <list>
                 <bean id="scheduleView" parent="KSAP-Page">
@@ -54,7 +53,8 @@
                                         <property name="actionScript"
                                                   value="KsapScheduleBuild.confirmRemovedSavedSchedule('@{uniqueId}', true, e)"/>
                                     </bean>
-                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Register for Courses" p:navigateToPageId="scheduleSelect"/>
+                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Register for Courses" p:navigateToPageId="scheduleSelect"
+                                          p:style="float: right;"/>
                                 </list>
                             </property>
                         </bean>
@@ -97,7 +97,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="scheduleRegisteredItems"/>
+                            <bean parent="scheduleRegisteredItems" p:additionalCssClasses="registrationForm__group--disabled registrationForm__group--indent"/>
                             <bean parent="schedulePlannedItems"/>
                             <bean parent="scheduleRegisterDelayMessage"/>
                         </list>
@@ -151,7 +151,7 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="scheduleRegisteredItems"/>
+                            <bean parent="scheduleRegisteredItems" p:additionalCssClasses="registrationForm__group--disabled"/>
                             <bean parent="schedulePlannedItems"/>
                             <bean parent="scheduleRegisterDelayMessage"/>
                         </list>
@@ -212,6 +212,7 @@
     </bean>
 
     <bean id="schedulePlannedItems" parent="KSAP-StackedCollectionGroup">
+        <property name="cssClasses" value="registrationForm__group"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo"/>
         <property name="propertyName" value="registrationDetails.plannedCourses"/>
         <property name="render" value="@{registrationDetails.plannedCourses.size() GT 0}"/>
@@ -263,6 +264,11 @@
                 </property>
             </bean>
         </property>
+        <property name="subCollections">
+            <list>
+                <bean parent="scheduleRegistrationItemActivitiesRegistered"/>
+            </list>
+        </property>
         <property name="propertyReplacers">
             <list>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
@@ -296,6 +302,24 @@
                 <bean parent="scheduleRegistrationActivityEnrollRestriction"/>
                 <bean parent="scheduleRegistrationActivityEnrollment"/>
                 <bean parent="scheduleRegistrationActivityEnrollStatus"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="scheduleRegistrationItemActivitiesRegistered" parent="KSAP-TableCollectionGroup">
+        <property name="propertyName" value="combinedActivities"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="readOnly" value="true"/>
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo"/>
+        <property name="layoutManager.numberOfColumns" value="4"/>
+        <property name="cssClasses" value="registrationActivity__data"/>
+        <property name="items">
+            <list>
+                <bean parent="scheduleRegistrationActivityCode"/>
+                <bean parent="scheduleRegistrationActivityMeetingDays"/>
+                <bean parent="scheduleRegistrationActivityMeetingTime"/>
+                <bean parent="scheduleRegistrationActivityMeetingLocation"/>
             </list>
         </property>
     </bean>
