@@ -333,7 +333,7 @@
         <property name="propertyReplacers">
             <list>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                      p:condition="dataObject.plannedList.size() EQ 0">
+                      p:condition="dataObject.backupList.size() EQ 0 AND (dataObject.completedTerm OR !dataObject.openForPlanning)">
                     <property name="replacement">
                         <list>
                             <!-- Plan list is empty -->
@@ -368,7 +368,7 @@
         <property name="propertyReplacers">
             <list>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                      p:condition="dataObject.backupList.size() EQ 0">
+                      p:condition="dataObject.backupList.size() EQ 0 AND (dataObject.completedTerm OR !dataObject.openForPlanning)">
                     <property name="replacement">
                         <list>
                             <!-- Backup list is empty -->
@@ -672,7 +672,6 @@
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject"/>
         <property name="propertyName" value="plannedList"/>
-        <property name="render" value="@{dataObject.plannedList.size() GT 0}"/>
         <property name="onDocumentReadyScript"
                   value="truncateField('@{dataObject.atpId}_planned', true);"/>
         <property name="cssClasses" value="planContainer--planned"/>
@@ -685,6 +684,18 @@
                 <property name="items">
                     <list>
                         <bean parent="single_quarter_planned_help_icon"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="instructionalMessage">
+            <bean parent="KSAP-Message" p:messageText="[0]">
+                <property name="inlineComponents">
+                    <list>
+                        <bean parent="Uif-ActionLink" p:actionLabel="Add course or placeholder" p:actionScript="
+                            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', atpId:@{dataObject.atpId}, backup:false, pageId:'plan_item_add_page'};
+                            openPopup('plan_item_add_page', retrieveData, 'plan', {width:'300px', height:'16px'}, {tail:{hidden:true}, position:'right', align:'middle', close:true}, e);
+                        " p:render="@{!dataObject.completedTerm AND dataObject.openForPlanning AND dataObject.plannedList.size() LT 8}"/>
                     </list>
                 </property>
             </bean>
@@ -729,9 +740,20 @@
 
     <bean id="termBackupItems" parent="termPlannedItems" p:headerText="Backup Courses">
         <property name="propertyName" value="backupList"/>
-        <property name="render" value="@{dataObject.backupList.size() gt 0}"/>
         <property name="onDocumentReadyScript"
                   value="truncateField('@{dataObject.atpId}_backup', true);"/>
+        <property name="instructionalMessage">
+            <bean parent="KSAP-Message" p:messageText="[0]">
+                <property name="inlineComponents">
+                    <list>
+                        <bean parent="Uif-ActionLink" p:actionLabel="Add course or placeholder" p:actionScript="
+                            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', atpId:@{dataObject.atpId}, backup:true, pageId:'plan_item_add_page'};
+                            openPopup('plan_item_add_page', retrieveData, 'plan', {width:'300px', height:'16px'}, {tail:{hidden:true}, position:'right', align:'middle', close:true}, e);
+                        " p:render="@{!dataObject.completedTerm AND dataObject.openForPlanning AND dataObject.backupList.size() LT 8}"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="cssClasses" value="planContainer--backup"/>
         <property name="header.rightGroup.items">
             <list>
@@ -1141,7 +1163,6 @@
     </bean>
 
     <bean id="termPlannedItems_Empty" parent="termItems_Empty" p:headerText="Planned Courses">
-        <property name="render" value="@{dataObject.plannedList.size() EQ 0}"/>
         <property name="header.rightGroup.items">
             <list>
                 <bean parent="single_quarter_planned_help_icon"/>
@@ -1159,7 +1180,6 @@
     </bean>
 
     <bean id="termBackupItems_Empty" parent="termItems_Empty" p:headerText="Backup Courses">
-        <property name="render" value="@{dataObject.backupList.size() EQ 0}"/>
         <property name="header.rightGroup.items">
             <list>
                 <bean parent="single_quarter_backup_help_icon"/>
