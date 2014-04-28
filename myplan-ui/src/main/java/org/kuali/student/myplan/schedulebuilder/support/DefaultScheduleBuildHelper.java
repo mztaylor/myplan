@@ -376,10 +376,12 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                             break;
                         } else {
                             ((SecondaryActivityOptionsInfo) secondaryActivityOption).setActivityOptions(validatedSecondaryActivities);
-                            /*because there is atleast one valid secondary activity options we can remove the existing invalid secondary activities form the invalid options only for closed and enrollment restriction error reasons*/
+                            /*Chance that at least one secondary activity option is available without errors for going to registration*/
                             if (!CollectionUtils.isEmpty(invalidOptions) && invalidOptions.containsKey(activityOption.getCourseCd())) {
                                 List<String> keySet = new ArrayList<String>(invalidOptions.get(activityOption.getCourseCd()).keySet());
                                 for (String errorKey : keySet) {
+                                    /*For all withdrawn, conflicts with reserved times, Time changes, and suspended reasons we need to add a No error error type
+                                     since there is a viable secondary option to go with, we silently take off the ones which come under these error type category */
                                     if (!containsPlannedItems && (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN.equals(errorKey) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED.equals(errorKey) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED.equals(errorKey) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_SUSPENDED.equals(errorKey))) {
                                         invalidOptions.get(activityOption.getCourseCd()).put(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR, invalidOptions.get(activityOption.getCourseCd()).get(errorKey));
                                     }
