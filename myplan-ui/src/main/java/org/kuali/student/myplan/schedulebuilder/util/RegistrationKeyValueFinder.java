@@ -64,6 +64,9 @@ public class RegistrationKeyValueFinder extends UifKeyValuesFinderBase {
         }
         String template = "<div class=\"" + StringUtils.join(cssClasses, " ") + "\">" + activityOption.getActivityCode() + "</div>";
 
+        template = template +
+                "<div class=\"registrationActivity__credits\">" + (activityOption.isPrimary() ? "(" + activityOption.getCourseCredit() + ")" : "") + "</div>";
+
         if (tbd) {
             template = template +
                     "<div class=\"registrationActivity__tbd\">To be arranged</div>";
