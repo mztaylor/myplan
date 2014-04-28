@@ -163,7 +163,7 @@
                             <property name="items">
                                 <list>
                                     <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back" p:navigateToPageId="scheduleSelect"/>
-                                    <bean parent="Uif-Link">
+                                    <bean parent="Uif-Link" p:id="sendToRegistration">
                                         <property name="render" value="@{registrationDetails.registrationUrl NE null}"/>
                                         <property name="linkText" value="Send SLNs to Registration"/>
                                         <property name="title" value="Send SLNs to Registration"/>
@@ -173,7 +173,14 @@
                                                   value="btn btn-primary btn-small"/>
                                         <property name="style" value="float: right;"/>
                                         <property name="target" value="_blank"/>
-                                        <!--<property name="onClickScript" value="alert('test!')"/>-->
+                                        <property name="onClickScript" value="actionInvokeHandler(this)"/>
+                                        <property name="dataAttributes">
+                                            <map>
+                                                <entry key="ajaxsubmit" value="true"/>
+                                                <entry key="validate" value="false"/>
+                                                <entry key="submit_data" value="{&quot;methodToCall&quot;:&quot;navigate&quot;,&quot;actionParameters[navigateToPageId]&quot;:&quot;scheduleCompleted&quot;,&quot;focusId&quot;:&quot;sendToRegistration&quot;,&quot;jumpToId&quot;:&quot;sendToRegistration&quot;}"/>
+                                            </map>
+                                        </property>
                                     </bean>
                                 </list>
                             </property>
@@ -202,6 +209,33 @@
                         </bean>
                     </property>
                     <property name="header.render" value="true"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-SuccessMessage">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-NoSpanMessage" p:messageText="Sent successfully."/>
+                                    </list>
+                                </property>
+                            </bean>
+                            <bean parent="KSAP-Message" p:cssClasses="block" p:messageText="A response from the registration system will open in a new browser window shortly. If your SLN submission was accepted, you'll see your updated schedule on MyPlan within a few minutes."/>
+                        </list>
+                    </property>
+                    <property name="footer">
+                        <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="uif-boxLayoutVerticalItem">
+                            <property name="items">
+                                <list>
+                                    <bean parent="Uif-Link">
+                                        <property name="linkText" value="Go to Plan Details"/>
+                                        <property name="title" value="Go to Plan Details"/>
+                                        <property name="href" value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{termId}"/>
+                                        <property name="target" value="_parent"/>
+                                        <property name="cssClasses" value="btn btn-primary btn-small"/>
+                                    </bean>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
                 </bean>
             </list>
         </property>
