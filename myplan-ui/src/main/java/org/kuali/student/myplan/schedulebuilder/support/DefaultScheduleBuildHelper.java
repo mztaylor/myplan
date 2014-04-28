@@ -380,8 +380,10 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                             if (!CollectionUtils.isEmpty(invalidOptions) && invalidOptions.containsKey(activityOption.getCourseCd())) {
                                 List<String> keySet = new ArrayList<String>(invalidOptions.get(activityOption.getCourseCd()).keySet());
                                 for (String errorKey : keySet) {
-                                    if (!containsPlannedItems) {
+                                    if (!containsPlannedItems && (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN.equals(errorKey) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED.equals(errorKey) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED.equals(errorKey) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_SUSPENDED.equals(errorKey))) {
                                         invalidOptions.get(activityOption.getCourseCd()).put(ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_NO_ERROR, invalidOptions.get(activityOption.getCourseCd()).get(errorKey));
+                                    }
+                                    if (!containsPlannedItems) {
                                         invalidOptions.get(activityOption.getCourseCd()).remove(errorKey);
                                     }
                                 }
