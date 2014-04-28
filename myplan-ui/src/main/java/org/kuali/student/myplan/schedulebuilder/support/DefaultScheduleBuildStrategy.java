@@ -517,6 +517,8 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
             courseOption.setSelected(true);
             courseOption.setUniqueId(UUID.randomUUID().toString());
             courseOption.setCourseId(c.getId());
+            String credits = CreditsFormatter.formatCredits((CourseInfo) c);
+            courseOption.setCredits(credits);
 
             StringBuilder code = new StringBuilder();
             String campusCode = getCampusCode(c);
@@ -552,7 +554,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
             }
 
             for (ActivityOfferingDisplayInfo aodi : courseHelper.getActivityOfferingDisplaysByCourseAndTerm(courseId, c.getCode(), termId)) {
-                ActivityOptionInfo activityOption = getActivityOption(term, aodi, courseIndex, courseId, c.getCode(), c.getCourseTitle(), campusCode, CreditsFormatter.formatCredits((CourseInfo) c), enrollmentData, plannedActivities, msg, tdf, udf, ddf, sdcal, edcal, tcal);
+                ActivityOptionInfo activityOption = getActivityOption(term, aodi, courseIndex, courseId, c.getCode(), c.getCourseTitle(), campusCode, credits, enrollmentData, plannedActivities, msg, tdf, udf, ddf, sdcal, edcal, tcal);
 
                 boolean enrollmentGroup = false;
                 String primaryOfferingId = null;
