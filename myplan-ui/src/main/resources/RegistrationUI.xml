@@ -22,6 +22,7 @@
     <bean id="Registration-FormView" parent="Registration-FormView-parent"/>
     <bean abstract="true" id="Registration-FormView-parent" parent="MyPlanBaseFormView">
         <property name="id" value="Registration-FormView"/>
+        <property name="persistFormToSession" value="true"/>
         <property name="formClass" value="org.kuali.student.myplan.registration.form.DefaultRegistrationForm"/>
         <property name="width" value="610px"/>
         <property name="items">
