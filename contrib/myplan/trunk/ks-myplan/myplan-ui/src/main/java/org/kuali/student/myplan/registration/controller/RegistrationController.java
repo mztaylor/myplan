@@ -2,8 +2,10 @@ package org.kuali.student.myplan.registration.controller;
 
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.registration.form.DefaultRegistrationForm;
 import org.kuali.student.myplan.registration.util.RegistrationForm;
+import org.kuali.student.myplan.registration.util.RegistrationHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,11 +23,11 @@ import java.io.IOException;
 @RequestMapping(value = "/registration")
 public class RegistrationController extends UifControllerBase {
 
-    private RegistrationForm registrationForm;
+    private RegistrationHelper registrationHelper;
 
     @Override
     protected UifFormBase createInitialForm(HttpServletRequest request) {
-        return (UifFormBase) getRegistrationForm();
+        return (UifFormBase) getRegistrationHelper().getInitialForm();
     }
 
     @RequestMapping(params = "methodToCall=registrationDetails")
@@ -35,14 +37,14 @@ public class RegistrationController extends UifControllerBase {
         return getUIFModelAndView(form);
     }
 
-    public RegistrationForm getRegistrationForm() {
-        if (registrationForm == null) {
-            registrationForm = new DefaultRegistrationForm();
+    public RegistrationHelper getRegistrationHelper() {
+        if (registrationHelper == null) {
+            registrationHelper = UwMyplanServiceLocator.getInstance().getRegistrationHelper();
         }
-        return registrationForm;
+        return registrationHelper;
     }
 
-    public void setRegistrationForm(RegistrationForm registrationForm) {
-        this.registrationForm = registrationForm;
+    public void setRegistrationHelper(RegistrationHelper registrationHelper) {
+        this.registrationHelper = registrationHelper;
     }
 }

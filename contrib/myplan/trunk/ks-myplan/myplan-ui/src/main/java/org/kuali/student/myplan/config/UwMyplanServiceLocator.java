@@ -5,6 +5,7 @@ import org.kuali.student.myplan.comment.util.CommentHelper;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
+import org.kuali.student.myplan.registration.util.RegistrationHelper;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
@@ -125,6 +126,14 @@ public class UwMyplanServiceLocator {
         this.scheduleBuildHelper = scheduleBuildHelper;
     }
 
+    public RegistrationHelper getRegistrationHelper() {
+        return registrationHelper;
+    }
+
+    public void setRegistrationHelper(RegistrationHelper registrationHelper) {
+        this.registrationHelper = registrationHelper;
+    }
+
     private PlanHelper planHelper;
 
     private UserSessionHelper userSessionHelper;
@@ -146,5 +155,7 @@ public class UwMyplanServiceLocator {
     private Comparator<ActivityOption> activityOptionComparator;
 
     private ScheduleBuildHelper scheduleBuildHelper;
+
+    private RegistrationHelper registrationHelper;
 
 }
