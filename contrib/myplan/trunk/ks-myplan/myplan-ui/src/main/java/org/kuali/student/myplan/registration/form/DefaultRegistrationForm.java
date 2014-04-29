@@ -343,7 +343,7 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
 
     @Override
     public Set<String> getSelectedRegistrationCodes() {
-        if (getSelectedRegistrationCodes() == null) {
+        if (selectedRegistrationCodes == null) {
             selectedRegistrationCodes = new HashSet<String>();
         }
         return selectedRegistrationCodes;
