@@ -54,7 +54,8 @@
                                         <property name="actionScript"
                                                   value="KsapScheduleBuild.confirmRemovedSavedSchedule('@{uniqueId}', true, e)"/>
                                     </bean>
-                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Register for Courses" p:navigateToPageId="scheduleSelect"
+                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Register for Courses"
+                                          p:navigateToPageId="scheduleSelect"
                                           p:style="float: right;"/>
                                 </list>
                             </property>
@@ -98,7 +99,8 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="scheduleRegisteredItems" p:additionalCssClasses="registrationForm__group--disabled registrationForm__group--indent"/>
+                            <bean parent="scheduleRegisteredItems"
+                                  p:additionalCssClasses="registrationForm__group--disabled registrationForm__group--indent"/>
                             <bean parent="schedulePlannedItems"/>
                             <bean parent="scheduleRegisterDelayMessage"/>
                         </list>
@@ -108,8 +110,20 @@
                             <property name="cssClasses" value="registrationForm__footer"/>
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back" p:navigateToPageId="scheduleView"/>
-                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Next" p:methodToCall="registrationDetails"/>
+                                    <!--<bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back" p:navigateToPageId="scheduleView" p:additionalCssClasses="registrationForm__back">
+                                        <property name="actionImage">
+                                            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+                                        </property>
+                                    </bean>
+                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Next" p:methodToCall="registrationDetails" p:additionalCssClasses="registrationForm__next">
+                                        <property name="actionImage">
+                                            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+                                        </property>
+                                    </bean>-->
+                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
+                                          p:navigateToPageId="scheduleView"/>
+                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Next"
+                                          p:methodToCall="registrationDetails"/>
                                 </list>
                             </property>
                         </bean>
@@ -152,7 +166,8 @@
                     </property>
                     <property name="items">
                         <list>
-                            <bean parent="scheduleRegisteredItems" p:additionalCssClasses="registrationForm__group--disabled"/>
+                            <bean parent="scheduleRegisteredItems"
+                                  p:additionalCssClasses="registrationForm__group--disabled"/>
                             <bean parent="schedulePlannedItems"/>
                             <bean parent="scheduleRegisterDelayMessage"/>
                         </list>
@@ -162,7 +177,8 @@
                             <property name="cssClasses" value="registrationForm__footer"/>
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back" p:navigateToPageId="scheduleSelect"/>
+                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
+                                          p:navigateToPageId="scheduleSelect"/>
                                     <bean parent="Uif-Link" p:id="sendToRegistration">
                                         <property name="render" value="@{registrationDetails.registrationUrl NE null}"/>
                                         <property name="linkText" value="Send SLNs to Registration"/>
@@ -178,7 +194,8 @@
                                             <map>
                                                 <entry key="ajaxsubmit" value="true"/>
                                                 <entry key="validate" value="false"/>
-                                                <entry key="submit_data" value="{&quot;methodToCall&quot;:&quot;navigate&quot;,&quot;actionParameters[navigateToPageId]&quot;:&quot;scheduleCompleted&quot;,&quot;focusId&quot;:&quot;sendToRegistration&quot;,&quot;jumpToId&quot;:&quot;sendToRegistration&quot;}"/>
+                                                <entry key="submit_data"
+                                                       value="{&quot;methodToCall&quot;:&quot;navigate&quot;,&quot;actionParameters[navigateToPageId]&quot;:&quot;scheduleCompleted&quot;,&quot;focusId&quot;:&quot;sendToRegistration&quot;,&quot;jumpToId&quot;:&quot;sendToRegistration&quot;}"/>
                                             </map>
                                         </property>
                                     </bean>
@@ -218,7 +235,8 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-Message" p:cssClasses="block" p:messageText="A response from the registration system will open in a new browser window shortly. If your SLN submission was accepted, you'll see your updated schedule on MyPlan within a few minutes."/>
+                            <bean parent="KSAP-Message" p:cssClasses="block"
+                                  p:messageText="A response from the registration system will open in a new browser window shortly. If your SLN submission was accepted, you'll see your updated schedule on MyPlan within a few minutes."/>
                         </list>
                     </property>
                     <property name="footer">
@@ -228,7 +246,8 @@
                                     <bean parent="Uif-Link">
                                         <property name="linkText" value="Go to Plan Details"/>
                                         <property name="title" value="Go to Plan Details"/>
-                                        <property name="href" value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{termId}"/>
+                                        <property name="href"
+                                                  value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{termId}"/>
                                         <property name="target" value="_parent"/>
                                         <property name="cssClasses" value="btn btn-primary btn-small"/>
                                     </bean>
@@ -350,31 +369,31 @@
         </property>
     </bean>
 
-   <!-- <bean id="scheduleRegistrationItemActivities" parent="KSAP-TableCollectionGroup">
-        <property name="propertyName" value="combinedActivities"/>
-        <property name="bindingInfo.bindToForm" value="true"/>
-        <property name="readOnly" value="true"/>
-        <property name="collectionObjectClass"
-                  value="org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo"/>
-        <property name="layoutManager.numberOfColumns" value="@{pageId NE 'scheduleView' ? 10 : 9}"/>
-        <property name="cssClasses" value="registrationActivity__data"/>
-        <property name="items">
-            <list>
-                <bean parent="scheduleRegistrationActivityCode"/>
-                <bean parent="scheduleRegistrationActivityCredits"/>
-                <bean parent="scheduleRegistrationActivityMeetingDays"/>
-                <bean parent="scheduleRegistrationActivityMeetingTime"/>
-                <bean parent="scheduleRegistrationActivityMeetingLocation"/>
-                <bean parent="scheduleRegistrationActivityRegCode"/>
-                <bean parent="scheduleRegistrationActivityInstituteCode"/>
-                <bean parent="scheduleRegistrationActivityEnrollRestriction"/>
-                <bean parent="scheduleRegistrationActivityEnrollment"/>
-                <bean parent="scheduleRegistrationActivityEnrollStatus"/>
-            </list>
-        </property>
-    </bean>-->
+    <!-- <bean id="scheduleRegistrationItemActivities" parent="KSAP-TableCollectionGroup">
+         <property name="propertyName" value="combinedActivities"/>
+         <property name="bindingInfo.bindToForm" value="true"/>
+         <property name="readOnly" value="true"/>
+         <property name="collectionObjectClass"
+                   value="org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo"/>
+         <property name="layoutManager.numberOfColumns" value="@{pageId NE 'scheduleView' ? 10 : 9}"/>
+         <property name="cssClasses" value="registrationActivity__data"/>
+         <property name="items">
+             <list>
+                 <bean parent="scheduleRegistrationActivityCode"/>
+                 <bean parent="scheduleRegistrationActivityCredits"/>
+                 <bean parent="scheduleRegistrationActivityMeetingDays"/>
+                 <bean parent="scheduleRegistrationActivityMeetingTime"/>
+                 <bean parent="scheduleRegistrationActivityMeetingLocation"/>
+                 <bean parent="scheduleRegistrationActivityRegCode"/>
+                 <bean parent="scheduleRegistrationActivityInstituteCode"/>
+                 <bean parent="scheduleRegistrationActivityEnrollRestriction"/>
+                 <bean parent="scheduleRegistrationActivityEnrollment"/>
+                 <bean parent="scheduleRegistrationActivityEnrollStatus"/>
+             </list>
+         </property>
+     </bean>-->
 
-    <bean id="scheduleRegistrationItemActivities" parent="KSAP-StackedCollectionGroup">
+    <bean id="scheduleRegistrationItemActivities" parent="KSAP-StackedHorizontalCollectionGroup">
         <property name="collectionObjectClass"
                   value="org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo"/>
         <property name="propertyName" value="combinedActivities"/>
@@ -384,7 +403,8 @@
         <property name="items">
             <list>
                 <bean parent="scheduleRegistrationActivityCode"/>
-                <bean parent="scheduleRegistrationActivityCredits"/>
+                <bean parent="scheduleRegistrationActivityCredits" p:render="@{pageId NE 'scheduleView' AND #line.primary}"/>
+                <bean parent="Uif-SpaceField" p:render="@{pageId NE 'scheduleView' AND !#line.primary}" p:width="36px"/>
                 <bean parent="scheduleRegistrationActivityMeetingDays"/>
                 <bean parent="scheduleRegistrationActivityMeetingTime"/>
                 <bean parent="scheduleRegistrationActivityMeetingLocation"/>
@@ -398,7 +418,8 @@
     </bean>
 
     <bean id="scheduleRegistrationItemActivities_confirm" parent="scheduleRegistrationItemActivities">
-        <property name="layoutManager.lineGroupPrototype.render" value="@{getSelectedRegistrationCodes().contains(#line.registrationCode)}"/>
+        <property name="layoutManager.lineGroupPrototype.render"
+                  value="@{getSelectedRegistrationCodes().contains(#line.registrationCode)}"/>
     </bean>
 
     <bean id="scheduleRegistrationItemActivitiesRegistered" parent="KSAP-TableCollectionGroup">
@@ -483,32 +504,45 @@
     </bean>
 
     <bean id="scheduleRegistrationActivityCode" parent="KSAP-MessageField" p:messageText="@{#line.activityCode}"
-          p:width="24px" p:cssClasses="registrationActivity__code @{#form.getPlannedItems().containsKey(#line.activityOfferingId) ? 'registrationActivity__sectionCd--planned':''}"/>
+          p:width="24px"
+          p:cssClasses="registrationActivity__code @{#form.getPlannedItems().containsKey(#line.activityOfferingId) ? 'registrationActivity__sectionCd--planned':''}"/>
 
-    <bean id="scheduleRegistrationActivityCredits" parent="KSAP-MessageField" p:messageText="@{#line.primary EQ true ? '(' + #line.courseCredit + ')' : ''}" p:width="36px" p:cssClasses="registrationActivity__credits"
+    <bean id="scheduleRegistrationActivityCredits" parent="KSAP-MessageField"
+          p:messageText="@{#line.primary EQ true ? '(' + #line.courseCredit + ')' : ''}" p:width="36px"
+          p:cssClasses="registrationActivity__credits"
           p:render="@{pageId NE 'scheduleView'}"/>
 
-    <bean id="scheduleRegistrationActivityMeetingDays" parent="KSAP-MessageField" p:messageText="@{#line.meetingDays}" p:width="72px" p:cssClasses="registrationActivity__meetingDays"/>
+    <bean id="scheduleRegistrationActivityMeetingDays" parent="KSAP-MessageField" p:messageText="@{#line.meetingDays}"
+          p:width="72px" p:cssClasses="registrationActivity__meetingDays"/>
 
-    <bean id="scheduleRegistrationActivityMeetingTime" parent="KSAP-MessageField" p:messageText="@{!#line.tbd ? #line.meetingTimes : 'To be arranged'}" p:width="124px" p:cssClasses="registrationActivity__meetingTime"/>
+    <bean id="scheduleRegistrationActivityMeetingTime" parent="KSAP-MessageField"
+          p:messageText="@{!#line.tbd ? #line.meetingTimes : 'To be arranged'}" p:width="124px"
+          p:cssClasses="registrationActivity__meetingTime"/>
 
-    <bean id="scheduleRegistrationActivityMeetingLocation" parent="KSAP-MessageField" p:messageText="@{#line.meetingLocation}"  p:width="72px" p:cssClasses="registrationActivity__meetingLocation"/>
+    <bean id="scheduleRegistrationActivityMeetingLocation" parent="KSAP-MessageField"
+          p:messageText="@{#line.meetingLocation}" p:width="72px" p:cssClasses="registrationActivity__meetingLocation"/>
 
-    <bean id="scheduleRegistrationActivityRegCode" parent="Uif-LinkField" p:linkText="@{#line.registrationCode}" p:href="@{#ConfigProperties['ks.myplan.externalizable.sln.url']}@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToQtrYrParam(#form.termId)}&amp;SLN=@{#line.registrationCode}" p:cssClasses="registrationActivity__regCode"
+    <bean id="scheduleRegistrationActivityRegCode" parent="Uif-LinkField" p:linkText="@{#line.registrationCode}"
+          p:href="@{#ConfigProperties['ks.myplan.externalizable.sln.url']}@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToQtrYrParam(#form.termId)}&amp;SLN=@{#line.registrationCode}"
+          p:cssClasses="registrationActivity__regCode"
           p:width="48px" p:target="_blank"/>
 
-    <bean id="scheduleRegistrationActivityInstituteCode" parent="KSAP-MessageField" p:cssClasses="registrationActivity__instituteCode registrationActivity__instituteCode--@{#line.instituteName NE '' ? 'show':'hide'}"
+    <bean id="scheduleRegistrationActivityInstituteCode" parent="KSAP-MessageField"
+          p:cssClasses="registrationActivity__instituteCode registrationActivity__instituteCode--@{#line.instituteName NE '' ? 'show':'hide'}"
           p:messageText="@{#line.instituteName}" p:width="24px"/>
 
     <bean id="scheduleRegistrationActivityEnrollRestriction" parent="Uif-ImageField" p:width="16px">
-        <property name="cssClasses" value="registrationActivity__enrollRest registrationActivity__enrollRest--@{#line.enrollmentRestriction}"/>
+        <property name="cssClasses"
+                  value="registrationActivity__enrollRest registrationActivity__enrollRest--@{#line.enrollmentRestriction}"/>
         <property name="source" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
     </bean>
 
-    <bean id="scheduleRegistrationActivityEnrollment" parent="KSAP-MessageField" p:cssClasses="registrationActivity__enrollState"
+    <bean id="scheduleRegistrationActivityEnrollment" parent="KSAP-MessageField"
+          p:cssClasses="registrationActivity__enrollState"
           p:messageText="[strong]@{#line.filledSeats}[/strong] / @{#line.totalSeats}" p:width="48px"/>
 
     <bean id="scheduleRegistrationActivityEnrollStatus" parent="KSAP-MessageField" p:messageText="@{#line.enrollStatus}"
-          p:width="48px" p:cssClasses="registrationActivity__enrollStatus registrationActivity__enrollStatus--@{#line.enrollStatus.toLowerCase()}"/>
+          p:width="48px"
+          p:cssClasses="registrationActivity__enrollStatus registrationActivity__enrollStatus--@{#line.enrollStatus.toLowerCase()}"/>
 
 </beans>
