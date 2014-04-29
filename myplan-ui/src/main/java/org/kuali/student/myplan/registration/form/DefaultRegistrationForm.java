@@ -52,7 +52,7 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
 
     @Override
     public void buildRegistrationDetails() {
-        if (getTermId() == null) {
+        if (getTermId() == null || getUniqueId() == null) {
             return;
         } else {
             setTerm(getTermHelper().getTermByAtpId(getTermId()));
@@ -81,10 +81,9 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
             if (registrationDetails != null && !CollectionUtils.isEmpty(getSelectedRegistrationCodes()) && getSelectedRegistrationCodes().size() > 0 && getSelectedRegistrationCodes().size() <= 8) {
                 registrationDetails.setRegistrationUrl(buildRegistrationUrl());
             } else {
-                GlobalVariables.getMessageMap().putWarningForSectionId(RegistrationConstants.REGISTRATION_PAGE_3, RegistrationConstants.ERROR_MAX_REGISTRATION_CODES);
+                GlobalVariables.getMessageMap().putWarningForSectionId(RegistrationConstants.REGISTRATION_PAGE_3, RegistrationConstants.ERROR_COUNT_REGISTRATION_CODES);
             }
         }
-
 
 
         setRegistrationDetails(registrationDetails);
@@ -102,7 +101,7 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
             if (index > 8) {
                 return null;
             }
-            regUrlParams.add(String.format(RegistrationConstants.REGISTRATION_CODE_URL_PARAMS_FROMAT, index, registrationCode, index, index, index));
+            regUrlParams.add(String.format(RegistrationConstants.REGISTRATION_CODE_URL_PARAMS_FORMAT, index, registrationCode, index, index, index));
             index++;
         }
         AtpHelper.YearTerm yearTerm = AtpHelper.atpToYearTerm(getTermId());
@@ -214,6 +213,8 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
                 List<ActivityOption> activityOptions = courseOption.getActivityOptions();
                 ((ActivityOptionInfo) activityOption).setSelectedForReg(activityOption.getRegistrationCode());
                 activityOptions.add(activityOption);
+
+                /*Error findings in Pinned schedules*/
                 Map<String, Map<String, List<String>>> invalidOptions = new LinkedHashMap<String, Map<String, List<String>>>();
                 PossibleScheduleErrorsInfo possibleScheduleErrorsInfo = new PossibleScheduleErrorsInfo();
                 List<ActivityOption> validatedActivities = getScheduleBuildHelper().validatedSavedActivities(activityOptions, invalidOptions, reservedTimes, new ArrayList<String>(getPlannedItems().keySet()), registeredPossibleSchedule);
@@ -342,6 +343,9 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
 
     @Override
     public Set<String> getSelectedRegistrationCodes() {
+        if (getSelectedRegistrationCodes() == null) {
+            selectedRegistrationCodes = new HashSet<String>();
+        }
         return selectedRegistrationCodes;
     }
 

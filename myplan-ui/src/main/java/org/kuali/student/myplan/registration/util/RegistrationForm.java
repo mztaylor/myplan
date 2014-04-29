@@ -45,7 +45,7 @@ public interface RegistrationForm {
 
 
     /**
-     * Registration codes which are selected for registration.
+     * Registration group Id's which are selected for registration.
      *
      * @return Registration codes selected
      */

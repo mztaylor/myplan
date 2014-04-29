@@ -14,7 +14,7 @@ public class RegistrationConstants {
 
     public static final String REGISTRATION_SERVER_PARAM = "myplan.registration.server";
     public static final String REGISTRATION_URL_FORMAT = ConfigContext.getCurrentContextConfig().getProperty(REGISTRATION_SERVER_PARAM) + "/students/UWNetID/register.asp?QTR=%s&YR=%s&INPUTFORM=UPDATE&PAC=0&MAXDROPS=0&CW=%s&%s";
-    public static final String REGISTRATION_CODE_URL_PARAMS_FROMAT = "sln%s=%s&entcode%s=&credits%s=&gr_sys%s";
+    public static final String REGISTRATION_CODE_URL_PARAMS_FORMAT = "sln%s=%s&entcode%s=&credits%s=&gr_sys%s";
 
-    public static final String ERROR_MAX_REGISTRATION_CODES = "myplan.text.error.check.registration.codes";
+    public static final String ERROR_COUNT_REGISTRATION_CODES = "myplan.text.error.check.registration.codes";
 }
