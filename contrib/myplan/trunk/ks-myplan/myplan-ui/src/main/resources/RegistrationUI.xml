@@ -110,20 +110,20 @@
                             <property name="cssClasses" value="registrationForm__footer"/>
                             <property name="items">
                                 <list>
-                                    <!--<bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back" p:navigateToPageId="scheduleView" p:additionalCssClasses="registrationForm__back">
+                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back" p:navigateToPageId="scheduleView" p:additionalCssClasses="registrationForm__back" p:actionImagePlacement="LEFT">
                                         <property name="actionImage">
                                             <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
                                         </property>
                                     </bean>
-                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Next" p:methodToCall="registrationDetails" p:additionalCssClasses="registrationForm__next">
+                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Next" p:methodToCall="registrationDetails" p:additionalCssClasses="registrationForm__next" p:actionImagePlacement="RIGHT" p:style="float:right;">
                                         <property name="actionImage">
                                             <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
                                         </property>
-                                    </bean>-->
-                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
+                                    </bean>
+                                    <!--<bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
                                           p:navigateToPageId="scheduleView"/>
                                     <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Next"
-                                          p:methodToCall="registrationDetails" p:style="float:right;"/>
+                                          p:methodToCall="registrationDetails" p:style="float:right;"/>-->
                                 </list>
                             </property>
                         </bean>
@@ -177,8 +177,11 @@
                             <property name="cssClasses" value="registrationForm__footer"/>
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
-                                          p:navigateToPageId="scheduleSelect"/>
+                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back" p:navigateToPageId="scheduleSelect" p:additionalCssClasses="registrationForm__back" p:actionImagePlacement="LEFT">
+                                        <property name="actionImage">
+                                            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+                                        </property>
+                                    </bean>
                                     <bean parent="Uif-Link" p:id="sendToRegistration">
                                         <property name="render" value="@{registrationDetails.registrationUrl NE null}"/>
                                         <property name="linkText" value="Send SLNs to Registration"/>
