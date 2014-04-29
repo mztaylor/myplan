@@ -123,7 +123,7 @@
                                     <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
                                           p:navigateToPageId="scheduleView"/>
                                     <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Next"
-                                          p:methodToCall="registrationDetails"/>
+                                          p:methodToCall="registrationDetails" p:style="float:right;"/>
                                 </list>
                             </property>
                         </bean>
