@@ -309,6 +309,14 @@
                         </list>
                     </property>
                 </bean>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="subCollections"
+                      p:condition="pageId EQ 'scheduleConfirm'">
+                    <property name="replacement">
+                        <list>
+                            <bean parent="scheduleRegistrationItemActivities_confirm"/>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
@@ -342,7 +350,7 @@
         </property>
     </bean>
 
-    <bean id="scheduleRegistrationItemActivities" parent="KSAP-TableCollectionGroup">
+   <!-- <bean id="scheduleRegistrationItemActivities" parent="KSAP-TableCollectionGroup">
         <property name="propertyName" value="combinedActivities"/>
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="readOnly" value="true"/>
@@ -364,6 +372,33 @@
                 <bean parent="scheduleRegistrationActivityEnrollStatus"/>
             </list>
         </property>
+    </bean>-->
+
+    <bean id="scheduleRegistrationItemActivities" parent="KSAP-StackedCollectionGroup">
+        <property name="collectionObjectClass"
+                  value="org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo"/>
+        <property name="propertyName" value="combinedActivities"/>
+        <property name="bindingInfo.bindToForm" value="true"/>
+        <property name="readOnly" value="true"/>
+        <property name="cssClasses" value="registrationActivity__data"/>
+        <property name="items">
+            <list>
+                <bean parent="scheduleRegistrationActivityCode"/>
+                <bean parent="scheduleRegistrationActivityCredits"/>
+                <bean parent="scheduleRegistrationActivityMeetingDays"/>
+                <bean parent="scheduleRegistrationActivityMeetingTime"/>
+                <bean parent="scheduleRegistrationActivityMeetingLocation"/>
+                <bean parent="scheduleRegistrationActivityRegCode"/>
+                <bean parent="scheduleRegistrationActivityInstituteCode"/>
+                <bean parent="scheduleRegistrationActivityEnrollRestriction"/>
+                <bean parent="scheduleRegistrationActivityEnrollment"/>
+                <bean parent="scheduleRegistrationActivityEnrollStatus"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="scheduleRegistrationItemActivities_confirm" parent="scheduleRegistrationItemActivities">
+        <property name="layoutManager.lineGroupPrototype.render" value="@{getSelectedRegistrationCodes().contains(#line.registrationCode)}"/>
     </bean>
 
     <bean id="scheduleRegistrationItemActivitiesRegistered" parent="KSAP-TableCollectionGroup">

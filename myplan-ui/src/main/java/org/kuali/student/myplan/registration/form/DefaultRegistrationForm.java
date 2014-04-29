@@ -39,7 +39,7 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
     private String termId;
     private String uniqueId;
     private String requestedLearningPlanId;
-    private List<String> selectedRegistrationCodes;
+    private Set<String> selectedRegistrationCodes;
     private Map<String, String> plannedItems;
     private RegistrationDetailsInfo registrationDetails;
 
@@ -62,7 +62,7 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
             return;
         }
 
-        setSelectedRegistrationCodes(new ArrayList<String>());
+        setSelectedRegistrationCodes(new HashSet<String>());
         RegistrationDetailsInfo registrationDetails = null;
         if (getPageId().equals(RegistrationConstants.REGISTRATION_PAGE_1)) {
             registrationDetails = getRegistrationDetailsInfo();
@@ -307,8 +307,8 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
                 populateSelectedActivitiesForReg(secondaryActivityOptions.getActivityOptions());
             }
             populateSelectedActivitiesForReg(ao.getAlternateActivties());
-            if (StringUtils.hasText(activityOption.getRegistrationCode())) {
-                getSelectedRegistrationCodes().add(activityOption.getRegistrationCode());
+            if (StringUtils.hasText(activityOption.getSelectedForReg())) {
+                getSelectedRegistrationCodes().add(activityOption.getSelectedForReg());
             }
         }
     }
@@ -341,14 +341,11 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
     }
 
     @Override
-    public List<String> getSelectedRegistrationCodes() {
-        if (selectedRegistrationCodes == null) {
-            selectedRegistrationCodes = new ArrayList<String>();
-        }
+    public Set<String> getSelectedRegistrationCodes() {
         return selectedRegistrationCodes;
     }
 
-    public void setSelectedRegistrationCodes(List<String> selectedRegistrationCodes) {
+    public void setSelectedRegistrationCodes(Set<String> selectedRegistrationCodes) {
         this.selectedRegistrationCodes = selectedRegistrationCodes;
     }
 
