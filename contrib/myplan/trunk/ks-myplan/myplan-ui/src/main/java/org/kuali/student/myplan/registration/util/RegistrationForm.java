@@ -67,8 +67,4 @@ public interface RegistrationForm {
      */
     String getRequestedLearningPlanId();
 
-    /**
-     * Builds the registration details.
-     */
-    void buildRegistrationDetails();
 }
