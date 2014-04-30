@@ -37,6 +37,26 @@ public class RegistrationKeyValueFinder extends UifKeyValuesFinderBase {
     }
 
 
+    /**
+     * Build template method builds the label for the radio buttons as Html...
+     *
+     * Example Template:
+     *
+     * <div class="registrationActivity__code">C</div>
+     * <div class="registrationActivity__credits">(5)</div>
+     * <div class="registrationActivity__meetingDays">MWF<br>Th</div>
+     * <div class="registrationActivity__meetingTime">10:30 AM - 11:20 AM<br>5:00 PM - 6:20 PM</div>
+     * <div class="registrationActivity__meetingLocation">PAA A102<br>SMI 120</div>
+     * <div class="registrationActivity__regCode">19528</div>
+     * <div class="registrationActivity__instituteCode registrationActivity__instituteCode--hide"></div>
+     * <div class="registrationActivity__enrollRest registrationActivity__enrollRest--false"><img src="../themes/ksap/images/pixel.gif"></div>
+     * <div class="registrationActivity__enrollState"><strong>0</strong> / 220</div>
+     * <div class="registrationActivity__enrollStatus registrationActivity__enrollStatus--open">Open</div>
+     *
+     * @param activityOption
+     * @param plannedActivityIds
+     * @return
+     */
     private String buildTemplate(ActivityOption activityOption, List<String> plannedActivityIds) {
         List<String> meetingDays = new ArrayList<String>();
         List<String> meetingTimes = new ArrayList<String>();
