@@ -407,7 +407,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
             }
 
             if ("CourseHasVariableContent".equalsIgnoreCase(key)) {
-                activityOption.setCourseHasVariableContent("true".equals(value));
+                activityOption.setCourseHasVariableContent(Boolean.valueOf(value));
             }
 
             if ("SameVariableContentAs".equalsIgnoreCase(key)) {
