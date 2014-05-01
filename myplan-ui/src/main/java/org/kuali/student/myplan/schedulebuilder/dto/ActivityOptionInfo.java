@@ -155,23 +155,21 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         parentIndex = copy.getParentIndex();
         courseId = copy.getCourseId();
         courseCd = copy.getCourseCd();
-        courseTitle = copy.getCourseTitle();
         courseCredit = copy.getCourseCredit();
-        termId = copy.getTermId();
-        planItemId = copy.getPlanItemId();
+        courseTitle = copy.getCourseTitle();
         activityOfferingId = copy.getActivityOfferingId();
         activityTypeDescription = copy.getActivityTypeDescription();
-        activityName = copy.getActivityName();
         courseOfferingCode = copy.getCourseOfferingCode();
         activityCode = copy.getActivityCode();
         registrationCode = copy.getRegistrationCode();
         academicSessionDescr = copy.getAcademicSessionDescr();
+        activityName = copy.getActivityName();
         courseLockedIn = copy.isCourseLockedIn();
         enrollmentGroup = copy.isEnrollmentGroup();
-        enrollmentRestriction = copy.isEnrollmentRestriction();
         duplicateEnrollmentAllowed = copy.isDuplicateEnrollmentAllowed();
         withdrawn = copy.isWithdrawn();
         suspended = copy.isSuspended();
+        enrollmentRestriction = copy.isEnrollmentRestriction();
         closed = copy.isClosed();
         openSeats = copy.getOpenSeats();
         filledSeats = copy.getFilledSeats();
@@ -181,16 +179,18 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
         parentActivityId = copy.getParentActivityId();
         minCredits = copy.getMinCredits();
         maxCredits = copy.getMaxCredits();
-        instituteCode = copy.getInstituteCode();
-        enrollStatus = copy.getEnrollStatus();
         List<String> copyNotes = copy.getNotes();
         notes = copyNotes == null ? null : new ArrayList<String>(copyNotes);
         setSecondaryOptions(copy.getSecondaryOptions());
         setAlternateActivities(copy.getAlternateActivties());
         setClassMeetingTimes(copy.getClassMeetingTimes());
+        termId = copy.getTermId();
+        planItemId = copy.getPlanItemId();
         courseHasVariableContent = copy.isCourseHasVariableContent();
-        selectedForReg = copy.getSelectedForReg();
         setSameVariableContentAs(copy.getSameVariableContentAs());
+        instituteCode = copy.getInstituteCode();
+        enrollStatus = copy.getEnrollStatus();
+        selectedForReg = copy.getSelectedForReg();
     }
 
     @Override
