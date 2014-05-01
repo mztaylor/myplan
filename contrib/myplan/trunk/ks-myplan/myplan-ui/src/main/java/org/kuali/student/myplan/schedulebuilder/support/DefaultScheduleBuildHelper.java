@@ -1,13 +1,17 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
 import org.apache.log4j.Logger;
+import org.dom4j.DocumentException;
 import org.joda.time.DateTimeComparator;
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
+import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
-import org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.SecondaryActivityOptionsInfo;
@@ -17,6 +21,7 @@ import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.myplan.utils.CalendarUtil;
+import org.kuali.student.r2.lum.course.infc.Course;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -24,6 +29,7 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.json.stream.JsonGenerator;
+import javax.xml.namespace.QName;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.text.DateFormat;
@@ -45,7 +51,11 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
 
     private Properties properties;
 
+    private CourseHelper courseHelper;
+
     private ScheduleBuildStrategy scheduleBuildStrategy;
+
+    private CourseOfferingService courseOfferingService;
 
     public DefaultScheduleBuildHelper() {
         properties = new Properties();
@@ -563,6 +573,63 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
         return false;
     }
 
+    /**
+     * Updates enrollment data for given activityOptions
+     *
+     * @param activityOptions
+     */
+    @Override
+    public void updateEnrollmentInfo(List<ActivityOption> activityOptions) {
+        LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
+        for (ActivityOption activityOption : activityOptions) {
+            String termId = activityOption.getTermId();
+            Course c = getCourseHelper().getCourseInfoByIdAndCd(activityOption.getCourseId(), activityOption.getCourseCd());
+            String curriculum = c.getSubjectArea();
+            String num = c.getCourseNumberSuffix();
+            LinkedHashMap<String, LinkedHashMap<String, Object>> data = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
+
+            try {
+                getCourseHelper().getAllSectionStatus(data, termId, curriculum, num);
+            } catch (DocumentException e) {
+                logger.error("Could not load enrollmentInformation for course : " + c.getCode() + " for term : " + termId, e);
+            }
+            if (!CollectionUtils.isEmpty(data)) {
+                enrollmentData.putAll(data);
+            }
+        }
+        List<ActivityOption> activityOptionList = populateEnrollInfo(activityOptions, enrollmentData);
+        activityOptions = new ArrayList<ActivityOption>();
+        activityOptions.addAll(activityOptionList);
+    }
+
+    /**
+     * recursive method goes through activity options, secondary activity options, and alternate activities to populate enrollment data.
+     *
+     * @param activityOptions
+     * @param enrollmentData
+     */
+    private List<ActivityOption> populateEnrollInfo(List<ActivityOption> activityOptions, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData) {
+        List<ActivityOption> activityOptionList = new ArrayList<ActivityOption>();
+        for (ActivityOption activityOption : activityOptions) {
+            ActivityOptionInfo activityOptionInfo = (ActivityOptionInfo) activityOption;
+            try {
+                ActivityOfferingDisplayInfo aodi = getCourseOfferingService().getActivityOfferingDisplay(activityOption.getActivityOfferingId(), PlanConstants.CONTEXT_INFO);
+                getScheduleBuildStrategy().populateEnrollmentInfo(activityOptionInfo, aodi, enrollmentData);
+                activityOptionInfo.setAlternateActivities(populateEnrollInfo(activityOption.getAlternateActivties(), enrollmentData));
+                List<SecondaryActivityOptions> secondaryActivityOptions = new ArrayList<SecondaryActivityOptions>();
+                for (SecondaryActivityOptions secondaryActivityOption : activityOption.getSecondaryOptions()) {
+                    SecondaryActivityOptionsInfo secondaryActivityOptionsInfo = (SecondaryActivityOptionsInfo) secondaryActivityOption;
+                    secondaryActivityOptionsInfo.setActivityOptions(populateEnrollInfo(secondaryActivityOption.getActivityOptions(), enrollmentData));
+                    secondaryActivityOptions.add(secondaryActivityOptionsInfo);
+                }
+                activityOptionList.add(activityOptionInfo);
+            } catch (Exception e) {
+                logger.error("Could not load activity offering details for activityOffering Id: " + activityOption.getActivityOfferingId(), e);
+            }
+        }
+        return activityOptionList;
+    }
+
 
     /**
      * Builds the json string with events  required for the calendar and sets that to the possibleScheduleOption event property
@@ -986,7 +1053,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                 } else if (ScheduleBuilderConstants.ROTC_INSTITUTE_CODE.equals(activityOption.getInstituteCode())) {
                     instituteCd = ScheduleBuilderConstants.ROTC_INSTITUTE_NAME;
                 }
-                jEvents.writeStartObject().write("sectionCd", activityOption.getActivityCode()).write("primary", activityOption.isPrimary()).write("activityId", activityOption.getActivityOfferingId()).write("registrationCode", activityOption.getRegistrationCode()).write("instituteCd", instituteCd).write("enrollRestriction", activityOption.isEnrollmentRestriction()).write("enrollStatus", String.format("%s/%s", activityOption.getFilledSeats(), activityOption.getTotalSeats())).write("enrollState", activityOption.getEnrollStatus()!=null ? activityOption.getEnrollStatus() : "").writeStartArray("meetings");
+                jEvents.writeStartObject().write("sectionCd", activityOption.getActivityCode()).write("primary", activityOption.isPrimary()).write("activityId", activityOption.getActivityOfferingId()).write("registrationCode", activityOption.getRegistrationCode()).write("instituteCd", instituteCd).write("enrollRestriction", activityOption.isEnrollmentRestriction()).write("enrollStatus", String.format("%s/%s", activityOption.getFilledSeats(), activityOption.getTotalSeats())).write("enrollState", activityOption.getEnrollStatus() != null ? activityOption.getEnrollStatus() : "").writeStartArray("meetings");
                 if (!isTBD) {
                     for (ClassMeetingTime meetingTime : activityOption.getClassMeetingTimes()) {
                         jEvents.writeStartObject().write("meetingDay", org.apache.commons.lang.StringUtils.join(meetingTime.getDays(), "")).write("meetingTime", meetingTime.getTimes() != null ? meetingTime.getTimes() : "").write("location", meetingTime.getLocation() != null ? meetingTime.getLocation() : "");
@@ -1082,6 +1149,28 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
         this.scheduleBuildStrategy = scheduleBuildStrategy;
     }
 
+    public CourseOfferingService getCourseOfferingService() {
+        if (this.courseOfferingService == null) {
+            //   TODO: Use constants for namespace.
+            this.courseOfferingService = (CourseOfferingService) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/courseOffering", "coService"));
+        }
+        return this.courseOfferingService;
+    }
+
+    public void setCourseOfferingService(CourseOfferingService courseOfferingService) {
+        this.courseOfferingService = courseOfferingService;
+    }
+
+    public CourseHelper getCourseHelper() {
+        if (courseHelper == null) {
+            courseHelper = KsapFrameworkServiceLocator.getCourseHelper();
+        }
+        return courseHelper;
+    }
+
+    public void setCourseHelper(CourseHelper courseHelper) {
+        this.courseHelper = courseHelper;
+    }
 }
 
 

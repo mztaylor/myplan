@@ -83,7 +83,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
             }
 
             for (PossibleScheduleOption possibleScheduleOption : savedSchedules) {
-
+                getScheduleBuildHelper().updateEnrollmentInfo(possibleScheduleOption.getActivityOptions());
                 PossibleScheduleErrorsInfo possibleScheduleErrorsInfo = new PossibleScheduleErrorsInfo();
                 Map<String, Map<String, List<String>>> invalidOptions = new LinkedHashMap<String, Map<String, List<String>>>();
                 List<ActivityOption> validatedActivities = getScheduleBuildHelper().validatedSavedActivities(possibleScheduleOption.getActivityOptions(), invalidOptions, reservedTimes == null ? new ArrayList<ReservedTime>() : reservedTimes, new ArrayList<String>(plannedItems.keySet()), registeredPossibleSchedule);

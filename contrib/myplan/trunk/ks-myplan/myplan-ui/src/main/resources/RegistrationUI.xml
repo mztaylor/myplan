@@ -546,6 +546,6 @@
 
     <bean id="scheduleRegistrationActivityEnrollStatus" parent="KSAP-MessageField" p:messageText="@{#line.enrollStatus}"
           p:width="48px"
-          p:cssClasses="registrationActivity__enrollStatus registrationActivity__enrollStatus--@{#line.enrollStatus.toLowerCase()}"/>
+          p:cssClasses="registrationActivity__enrollStatus registrationActivity__enrollStatus--@{#line.enrollStatus NE null ? #line.enrollStatus.toLowerCase() : ''}"/>
 
 </beans>
