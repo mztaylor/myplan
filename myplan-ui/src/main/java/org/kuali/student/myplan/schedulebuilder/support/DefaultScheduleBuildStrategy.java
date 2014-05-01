@@ -440,7 +440,8 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         return activityOption;
     }
 
-    protected void populateEnrollmentInfo(ActivityOptionInfo activityOption, ActivityOfferingDisplayInfo aodi, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData) {
+    @Override
+    public void populateEnrollmentInfo(ActivityOptionInfo activityOption, ActivityOfferingDisplayInfo aodi, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData) {
         activityOption.setClosed(!LuiServiceConstants.LUI_AO_STATE_OFFERED_KEY.equals(aodi.getStateKey()));
         activityOption.setTotalSeats(aodi.getMaximumEnrollment() != null ? aodi.getMaximumEnrollment() : 0);
     }

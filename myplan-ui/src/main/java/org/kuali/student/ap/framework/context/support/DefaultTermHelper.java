@@ -1,5 +1,6 @@
 package org.kuali.student.ap.framework.context.support;
 
+import org.dom4j.Document;
 import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.enrollment.acal.infc.AcademicCalendar;
 import org.kuali.student.enrollment.acal.infc.Term;
@@ -132,6 +133,19 @@ public class DefaultTermHelper implements TermHelper {
 
     @Override
     public List<Term> sortTermsByEndDate(List<Term> terms, boolean ascending) {
+        return null;
+    }
+
+    @Override
+    public boolean isOpenForRegistration(String termId){return false;}
+
+    @Override
+    public String getPriorityOneRegistrationStartDate(Document termDocument) {
+        return null;
+    }
+
+    @Override
+    public String getPriorityOneRegistrationEndDate(Document termDocument) {
         return null;
     }
 }

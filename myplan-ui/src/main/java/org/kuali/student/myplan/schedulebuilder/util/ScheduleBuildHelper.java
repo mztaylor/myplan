@@ -1,13 +1,8 @@
 package org.kuali.student.myplan.schedulebuilder.util;
 
 import org.kuali.student.enrollment.acal.infc.Term;
-import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
-import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
-import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
-import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
-import org.kuali.student.myplan.schedulebuilder.infc.ScheduleBuildEvent;
+import org.kuali.student.myplan.schedulebuilder.infc.*;
 
-import javax.json.JsonArrayBuilder;
 import java.util.List;
 import java.util.Map;
 
@@ -40,4 +35,6 @@ public interface ScheduleBuildHelper {
     public long[][] extractClassMeetingTimeWeekBitsFromCourseOptionList(List<CourseOption> coList);
 
     public void validateForErrors(PossibleScheduleErrorsInfo possibleScheduleErrors, String courseCd, List<ActivityOption> activityOptions, List<String> invalidatedActivities);
+
+    public void updateEnrollmentInfo(List<ActivityOption> activityOptions);
 }

@@ -1,11 +1,14 @@
 package org.kuali.student.myplan.schedulebuilder.util;
 
 import org.kuali.student.enrollment.acal.infc.Term;
+import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
+import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.kuali.student.r2.lum.course.infc.Course;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -190,4 +193,14 @@ public interface ScheduleBuildStrategy {
      * @param co the courseOption to have sections coalesced
      */
     void coalesceLeafActivities(CourseOption co);
+
+
+    /**
+     * Used to populate enrollment information for activity Option from activityOffering display info and enrollment data
+     *
+     * @param activityOption
+     * @param aodi
+     * @param enrollmentData
+     */
+    void populateEnrollmentInfo(ActivityOptionInfo activityOption, ActivityOfferingDisplayInfo aodi, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData);
 }
