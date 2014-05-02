@@ -37,7 +37,7 @@ import java.util.List;
 public class CoalescorAoListProcessor extends AbstractAoListProcessor {
     // using the count:
     //      meaning: counts the number of AO that are coalesced, ie., moved into an alternates list.
-    //      usage: caller should call startCount() before calling apply() and finally call getCount().
+    //      usage: caller should call resetCount() before calling apply() and finally call getCount().
 
     private Comparator<ActivityOption> coalesceComparator;
 

@@ -21,7 +21,7 @@ import java.util.List;
  * Does not make a new list like the other processors to date but returns from the apply()
  * the AoList that was passed in.
  * <p/>
- * The mutatorMethod is a ActivityOptionMutator and is passed in with the constuctor.
+ * The mutator is a ActivityOptionMutator and is passed in with the constuctor.
  * <p/>
  * This can be called before or after coalescing to the
  * AO.AlternateActivities, in other words, it supports AlternateActivities by traversing through them
@@ -32,23 +32,23 @@ public class MutatorAoListProcessor extends AbstractAoListProcessor {
 
     // using the count:
     //      meaning: counts the number of AO that are mutated.
-    //      usage: caller should call startCount() before calling apply() and finally call getCount().
+    //      usage: caller should call resetCount() before calling apply() and finally call getCount().
 
-    private ActivityOptionMutator mutatorMethod;
+    private ActivityOptionMutator mutator;
 
-    public MutatorAoListProcessor(ActivityOptionMutator mutatorMethod) {
-        this.mutatorMethod = mutatorMethod;
+    public MutatorAoListProcessor(ActivityOptionMutator mutator) {
+        this.mutator = mutator;
     }
 
     @Override
     public List<ActivityOption> apply(List<ActivityOption> aoList) {
         for (ActivityOption ao : aoList) {
-            if (mutatorMethod.mutator(ao))
-                incCount();    // caller needs to call startCount()
+            if (mutator.mutate(ao))
+                incCount();    // caller needs to call resetCount()
             // recurse to mutate alt activities
             if (!CollectionUtils.isEmpty(ao.getAlternateActivties())) {
                 int saveCount = getCount();
-                startCount();
+                resetCount();
                 // getAlternateActivties returns a copy
                 List<ActivityOption> alternates = apply(ao.getAlternateActivties());
                 ((ActivityOptionInfo) ao).setAlternateActivities(alternates);
@@ -62,7 +62,7 @@ public class MutatorAoListProcessor extends AbstractAoListProcessor {
                     List<ActivityOption> saList = secondaryActivity.getActivityOptions();
                     if (!CollectionUtils.isEmpty(saList)) {
                         int saveCount = getCount();
-                        startCount();
+                        resetCount();
                         apply(saList);
                         saveCount += getCount();
                         setCount(saveCount);
@@ -76,11 +76,11 @@ public class MutatorAoListProcessor extends AbstractAoListProcessor {
 
     @Override
     public String getProcessorDescription() {
-        return mutatorMethod.getMutatorName();
+        return mutator.getMutatorName();
     }
 
     @Override
     public int getProcessorCode() {
-        return mutatorMethod.getMutatorId();
+        return mutator.getMutatorId();
     }
 }

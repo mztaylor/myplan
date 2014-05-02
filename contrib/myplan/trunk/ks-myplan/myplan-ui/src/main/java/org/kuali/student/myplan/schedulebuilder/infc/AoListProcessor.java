@@ -16,7 +16,7 @@ public interface AoListProcessor {
     // count is provided to track the number of AO that are affected by the processor;
     // e.g., for a filter processor, it counts the number of AO that are deleted.
     // the processor can decide what is worth counting.  Use is optional.
-    void startCount();
+    void resetCount();
 
     int incCount();
 
