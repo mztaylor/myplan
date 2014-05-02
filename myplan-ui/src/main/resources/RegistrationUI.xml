@@ -56,7 +56,13 @@
                                     </bean>
                                     <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Register for Courses"
                                           p:navigateToPageId="scheduleSelect"
-                                          p:style="float: right;"/>
+                                          p:style="float: right;" >
+                                        <property name="cssClasses">
+                                            <list merge="true">
+                                                <value>@{getSelectedRegistrationCodes().size() EQ 0 OR getSelectedRegistrationCodes().size() GT 8 ? 'disabled' : ''}</value>
+                                            </list>
+                                       </property>
+                                       </bean>
                                 </list>
                             </property>
                         </bean>
