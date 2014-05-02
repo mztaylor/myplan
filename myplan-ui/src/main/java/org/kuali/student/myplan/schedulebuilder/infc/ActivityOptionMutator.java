@@ -20,7 +20,7 @@ public interface ActivityOptionMutator {
       * @return true if the mutator operated on the AO. Used to count AO in AoList that get mutated.
       * @param ao the ActivityOption representing a course section to be mutated
       */
-    boolean mutator(ActivityOption ao);
+    boolean mutate(ActivityOption ao);
 
     String getMutatorName();
 

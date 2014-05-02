@@ -24,7 +24,7 @@ public abstract class AbstractAoListProcessor implements AoListProcessor {
     private String processorDescription;
 
     @Override
-    public void startCount() {
+    public void resetCount() {
         count = 0;
     }
 
