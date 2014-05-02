@@ -39,7 +39,7 @@ public class FilterAoListProcessor extends AbstractAoListProcessor {
 
     // using the count:
     // meaning: counts the number of AO that are deleted.
-    // usage: caller should call startCount() before calling apply() and finally call getCount().
+    // usage: caller should call resetCount() before calling apply() and finally call getCount().
 
     private ActivityOptionFilter filter;
     private boolean invertLogic;
@@ -51,7 +51,7 @@ public class FilterAoListProcessor extends AbstractAoListProcessor {
     }
 
     public FilterAoListProcessor(ActivityOptionFilter filter, boolean invertLogic) {
-        this(filter, false, false);
+        this(filter, invertLogic, false);
     }
 
      public FilterAoListProcessor(ActivityOptionFilter filter, boolean invertLogic, boolean skipAlternates) {
@@ -65,18 +65,23 @@ public class FilterAoListProcessor extends AbstractAoListProcessor {
         List<ActivityOption> newAOList = new ArrayList<ActivityOption>();
         for (ActivityOption ao : aoList) {
             // assumes that a filter will return false to mean eliminate this section
-            if ((!filter.test(ao) && !invertLogic) || (filter.test(ao) && invertLogic)) {
+            if ((!filter.evaluateAo(ao) && !invertLogic) || (filter.evaluateAo(ao) && invertLogic)) {
                 // delete it implicitly, by not copying it to the new list
                 incCount();
                 incCount(countSecondaries(ao));
                 // look for an AO in the AlternateActivities that passes the filter, promote it
                 if (!CollectionUtils.isEmpty(ao.getAlternateActivties())) {
                     int saveCount = getCount();
-                    startCount();
+                    resetCount();
                     List<ActivityOption> newAlternateList = apply(ao.getAlternateActivties());
                     saveCount += getCount();
                     setCount(saveCount);
                     if (!CollectionUtils.isEmpty(newAlternateList)) {
+                        // currenlty, skipAlternates is only used by user-planned-sections filter. It is
+                        // run after sorting the alternates list, which would move any planned sections
+                        // to the master link. If we're running the user-planned-sections filter
+                        // and we're here, then none of the sections are planned, so we don't need to worry
+                        // about skipAlternates in this logic. Future uses of skipAlternates might change that.
                         ActivityOptionInfo newMasterAo = (ActivityOptionInfo) newAlternateList.get(0);
                         newAlternateList.remove(0);
                         newMasterAo.setAlternateActivities(newAlternateList.size() > 0 ? newAlternateList :
@@ -89,7 +94,7 @@ public class FilterAoListProcessor extends AbstractAoListProcessor {
                 // recurse to filter alt activities
                 if (!CollectionUtils.isEmpty(ao.getAlternateActivties()) && !skipAlternates) {
                     int saveCount = getCount();
-                    startCount();
+                    resetCount();
                     ((ActivityOptionInfo)ao).setAlternateActivities(apply(ao.getAlternateActivties()));
                     saveCount += getCount();
                     setCount(saveCount);
@@ -102,7 +107,7 @@ public class FilterAoListProcessor extends AbstractAoListProcessor {
                         List<ActivityOption> saList = secondaryActivity.getActivityOptions();
                         if (!CollectionUtils.isEmpty(saList)) {
                             int saveCount = getCount();
-                            startCount();
+                            resetCount();
                             List<ActivityOption> newSecondaryList = apply(saList);
                             if (CollectionUtils.isEmpty(newSecondaryList)) {
                                 noSecondaries = true;
