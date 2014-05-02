@@ -192,18 +192,16 @@ public class SingleQuarterHelperBase {
             plannedTerm.setCurrentTermForView(true);
         }
         LearningPlan learningPlan = getPlanHelper().getLearningPlan(getUserSessionHelper().getStudentId());
+        List<PossibleScheduleOption> savedSchedules = null;
         if (learningPlan != null) {
             plannedTerm.setLearningPlanId(learningPlan.getId());
+            try {
+                savedSchedules = getScheduleBuildStrategy().getSchedulesForTerm(learningPlan.getId(), termAtp);
+            } catch (PermissionDeniedException e) {
+                throw new IllegalStateException(
+                        "Failed to refresh saved schedules", e);
+            }
         }
-
-        List<PossibleScheduleOption> savedSchedules;
-        try {
-            savedSchedules = getScheduleBuildStrategy().getSchedulesForTerm(learningPlan.getId(), termAtp);
-        } catch (PermissionDeniedException e) {
-            throw new IllegalStateException(
-                    "Failed to refresh saved schedules", e);
-        }
-
         if (!CollectionUtils.isEmpty(savedSchedules)) {
             plannedTerm.setPinnedSchedulesExists(true);
         }
