@@ -452,7 +452,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
             return null;
 
         CourseHelper courseHelper = getCourseHelper();
-        Course course = courseHelper.getCourseInfo(courseId);
+        Course course = courseHelper.getCourseInfoByIdTermAndCd(courseId,courseCd,termId);
         if (course == null)
             return null;
 
