@@ -77,6 +77,9 @@ public class SortAlternativesAoListProcessor extends AbstractAoListProcessor {
             }
         }
 
+        // sort the top level AOs
+        Collections.sort(newAOList, sortComparator);
+
         return newAOList;
     }
 }
