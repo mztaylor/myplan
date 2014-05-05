@@ -121,7 +121,7 @@
                                             <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
                                         </property>
                                     </bean>
-                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Next" p:methodToCall="registrationDetails" p:additionalCssClasses="registrationForm__next" p:actionImagePlacement="RIGHT" p:style="float:right;">
+                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Next" p:methodToCall="getRegistrationUrl" p:additionalCssClasses="registrationForm__next" p:actionImagePlacement="RIGHT" p:style="float:right;">
                                         <property name="actionImage">
                                             <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
                                         </property>
