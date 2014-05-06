@@ -159,7 +159,7 @@
                                   p:render="@{buildFilters.getZeroResultsReasons().size() EQ 0 AND buildFilters.getResultsNotPossibleReasons().size() EQ 0}"/>
 
                             <bean parent="possible_schedules_empty"
-                                  p:messageText="Try turning on &quot;@{buildFilters.getZeroResultsReasons()}&quot; filter(s) and click on Update to get results."
+                                  p:messageText="No possible schedules found. Include more sections by selecting option(s) above:&lt;br&gt;&quot;@{T(org.apache.commons.lang.StringUtils).join(buildFilters.getZeroResultsReasons(), '&quot;, &quot;')}&quot;"
                                   p:render="@{buildFilters.getZeroResultsReasons().size() GT 0}"/>
 
                             <!-- TODO - get messageText to accept @{buildFilters.getResultsNotPossibleReasons()}; figure out why it barfs, complaining about
