@@ -15,7 +15,6 @@ import java.util.List;
  * User: dbmc
  * Date: 3/26/14
  * Time: 11:13 AM
- * To change this template use File | Settings | File Templates.
  * <p/>
  * This processor traverses an AO List and deletes any AO that fails the filter test.
  * Does not actually delete the AO from the AO List, it makes a new list
@@ -25,7 +24,7 @@ import java.util.List;
  * <p/>
  * This processor recursively processes the alternateActivities and SecondaryActivities lists too.
  * <p/>
- * Normal logic is delete the AO if the filter returns false; invertLogic flag changes that to false.
+ * Normal logic is delete the AO if the filter returns true; invertLogic flag changes that to false.
  * <p/>
  * The FilterAoListProcessor can be called before or after coalescing to the
  * AO.AlternateActivities, in other words, it supports AlternateActivities by traversing through them
@@ -64,8 +63,9 @@ public class FilterAoListProcessor extends AbstractAoListProcessor {
     public List<ActivityOption> apply(List<ActivityOption> aoList) {
         List<ActivityOption> newAOList = new ArrayList<ActivityOption>();
         for (ActivityOption ao : aoList) {
-            // assumes that a filter will return false to mean eliminate this section
-            if ((!filter.evaluateAo(ao) && !invertLogic) || (filter.evaluateAo(ao) && invertLogic)) {
+            // if we are using normal logic (not inverting it) and if filter returns true, delete the AO
+            // or, if we are inverting logic and filter returns false, the delete the ao
+            if ((!invertLogic && filter.evaluateAo(ao)) || (invertLogic && !filter.evaluateAo(ao))) {
                 // delete it implicitly, by not copying it to the new list
                 incCount();
                 incCount(countSecondaries(ao));

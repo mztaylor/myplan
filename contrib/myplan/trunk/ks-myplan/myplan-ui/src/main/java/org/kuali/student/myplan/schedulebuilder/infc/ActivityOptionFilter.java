@@ -9,15 +9,11 @@ package org.kuali.student.myplan.schedulebuilder.infc;
  */
 public interface ActivityOptionFilter {
      /**
-      * Determine if the ActivityOption satisfies the filter. Note the meaning of true and false
-      * below may require reversing the sense of the field being tested if it starts as a negative.
-      * eg., a flag sectionClosed: if you want to consider open sections only, the filter  would need to
-      * return true if the the flag is false
+      * Determine if the ActivityOption satisfies the filter.
       *
-      * @return true if the ActivityOption passes the filter and should be further considered
-      *         false if the ActivityOption fails the filter test and should be eliminated
-      * from further consideration
-      * @param ao the ActivityOption representing a course section to be filtered in or out
+      * @return true true if it has the attribute implied by the
+      *     class name, e.g. for AoFilterSectionOpen, return true if the Ao is open.
+      * @param ao the ActivityOption representing a course section to be filtered
       */
     boolean evaluateAo(ActivityOption ao);
 
