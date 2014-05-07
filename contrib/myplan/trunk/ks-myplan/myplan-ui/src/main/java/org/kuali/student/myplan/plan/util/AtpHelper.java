@@ -28,7 +28,6 @@ import org.kuali.student.r2.core.atp.service.AtpService;
 import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 import org.kuali.student.r2.core.class1.type.service.TypeService;
 import org.kuali.student.r2.core.constants.TypeServiceConstants;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -225,6 +224,48 @@ public class AtpHelper {
         return new String[]{yearTerm.getTermAsString(), yearTerm.getYearAsString()};
     }
 
+    /**
+     * Returns an String in the format of "Summer Quarter 2014" given an ATP ID.
+     * Initially to be used as label for secondary navigation.
+     *
+     * @param atpId String in format of "20121"
+     *
+     * @return String formatted label for the quarter passed in.
+     */
+    public static String formatQuarterLabel(String atpId) {
+        if (!StringUtils.hasText(atpId)) {
+            throw new NullPointerException("atpId");
+        }
+        YearTerm yearTerm = atpToYearTerm(atpId);
+        String formattedQtrLabel = yearTerm.getTermLabelInitialCap() + " Quarter " + yearTerm.getYearAsString();
+        return formattedQtrLabel;
+    }
+
+    /**
+     * Returns an String in the format of "Summer Quarter 2014" for the current quarter.
+     *
+     * @param
+     *
+     * @return String formatted label for the current quarter
+     */
+    public static String formatCurrentQuarterLabel() {
+        String atpId;
+        atpId = getCurrentAtpId();
+        return formatQuarterLabel(atpId);
+    }
+
+    /**
+     * Returns an String in the format of "Summer Quarter 2014" for the first quarter that can be planned.
+     *
+     * @param
+     *
+     * @return String formatted label for the quarter
+     */
+    public static String formatCurrentQuarterLabelForFirstPlanTerm() {
+        String atpId;
+        atpId = getFirstPlanTerm();
+        return formatQuarterLabel(atpId);
+    }
 
     /**
      * Returns ATP ID in format 19911 for term="Winter" and year = 1991
@@ -573,6 +614,11 @@ public class AtpHelper {
         // "Winter 1999"
         public String toLabel() {
             return TERM_LABELS_LIST.get(getTerm() - 1) + " " + getYearAsString();
+        }
+
+        // "Winter"
+        public String getTermLabelInitialCap() {
+            return TERM_LABELS_LIST.get(getTerm() - 1);
         }
 
         // "WIN+1999"
