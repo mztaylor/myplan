@@ -126,7 +126,7 @@
                                 <!--<property name="onClickScript"
                                           value="KsapScheduleBuild.viewScheduleDetails(jQuery(this).parents('.scheduleSaved__item').data('source').events, @{#index + 1}, '@{#line.id}', e)"/>-->
                                 <property name="onClickScript"
-                                          value="KsapScheduleBuild.viewScheduleDetails(jQuery('#schedule_build_termId_control').val(), jQuery('#schedule_build_learningPlanId_control').val(), '@{#line.id}', '@{#index + 1}', e)"/>
+                                          value="KsapScheduleBuild.viewScheduleDetails(jQuery('#schedule_build_termId_control').val(), jQuery('#schedule_build_learningPlanId_control').val(), '@{#line.id}', '@{#index + 1}', true, e)"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-NoSpanMessage" p:messageText="View details and register"/>

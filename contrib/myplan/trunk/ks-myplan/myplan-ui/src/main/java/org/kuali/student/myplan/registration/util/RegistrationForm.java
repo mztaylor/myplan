@@ -67,4 +67,11 @@ public interface RegistrationForm {
      */
     String getRequestedLearningPlanId();
 
+    /**
+     * Lets us know if the registration information is for pinned schedule or possible schedule.
+     *
+     * @return true for pinned schedule else false.
+     */
+    boolean isPinned();
+
 }
