@@ -404,7 +404,7 @@
                     function(event, element) {
                         jQuery(element).attr({
                             id: 'possible_schedule_event' + event._id,
-                            title: (typeof event.popoverContent !== 'undefined') ? event.popoverContent.courseCd : 'Reserved'
+                            title: (typeof event.popoverContent !== 'undefined') ? event.popoverContent.courseCd + ' ' + event.popoverContent.courseTitle: 'Reserved'
                         });
                     }
                 "/>
