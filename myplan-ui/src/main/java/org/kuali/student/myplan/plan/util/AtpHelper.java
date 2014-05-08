@@ -614,6 +614,10 @@ public class AtpHelper {
             return TERM_ID_LIST.get(getTerm() - 1);
         }
 
+        public String getTermLabel() {
+            return TERM_LABELS_LIST.get(getTerm() - 1);
+        }
+
         // "19991"
         public String toATP() {
             return toATP(year, term);

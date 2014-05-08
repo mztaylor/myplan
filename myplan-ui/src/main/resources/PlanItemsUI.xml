@@ -23,18 +23,37 @@
     <!-- #################################### Planned Courses Term View ########################### -->
 
     <!--Mock Plan View-->
-    <bean id="PlannedCourses-FormView" parent="MyPlanFormView">
-        <property name="id" value="PlannedCourses-FormView"/>
+    <bean id="PlannedCourses-FormView" p:viewName="PlannedCourses-FormView" parent="MyPlanFormView">
         <property name="formClass" value="org.kuali.student.myplan.plan.form.PlanForm"/>
-        <property name="footer.render" value="false"/>
+        <property name="entryPageId" value="academic_year_page"/>
         <property name="additionalScriptFiles">
             <list>
                 <value>plugins/carousel/carousel.js</value>
             </list>
         </property>
+        <property name="headerText" value="Your Academic Year"/>
+        <property name="navigation">
+            <bean parent="Uif-NavigationGroupBase">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-Link" p:linkText="Your Academic Year">
+                            <property name="href" value="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView"/>
+                            <property name="cssClasses" value="active"/>
+                        </bean>
+                        <bean parent="Uif-Link" p:linkText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpToYearTerm(T(org.kuali.student.myplan.plan.util.AtpHelper).getLastScheduledAtpId()).getTermLabel()} Quarter @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpToYearTerm(T(org.kuali.student.myplan.plan.util.AtpHelper).getLastScheduledAtpId()).getYearAsString()}">
+                            <property name="href" value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getLastScheduledAtpId()}"/>
+                        </bean>
+                        <bean parent="Uif-Link" p:linkText="Build Your Schedule">
+                            <property name="href" value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getLastScheduledAtpId()}&amp;requestedLearningPlanId=XXXXXXXXX&amp;pageId=schedule_build"/>
+                            <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-Page" p:id="academic_year_page">
+                <bean parent="KSAP-PageHorizontalLayout" id="academic_year_page" p:id="academic_year_page">
                     <property name="items">
                         <list>
                             <ref bean="planned_mock_detail"/>
@@ -310,33 +329,22 @@
     <!--
       This lookup provides the term by term view of Planned Courses.
     -->
-    <bean id="PlannedCourses-LookupView" parent="MyPlanBaseLookupView">
-        <property name="onLoadScript" value=""/>
-        <property name="headerText" value="Plan"/>
-        <property name="header.render" value="false"/>
-        <property name="viewName" value="PlannedCourses-LookupView"/>
+    <bean id="PlannedCourses-LookupView" p:viewName="PlannedCourses-LookupView" parent="MyPlanBaseLookupView">
         <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
         <property name="viewHelperServiceClass"
                   value="org.kuali.student.myplan.plan.service.PlannedCoursesLookupableHelperImpl"/>
-        <property name="singlePageView" value="true"/>
-        <property name="page.header.render" value="false"/>
-        <property name="page">
-            <bean parent="KSAP-Page" p:id="planned_courses_detail_page">
-                <property name="items">
-                    <list>
-                        <ref bean="planned_courses_detail"/>
-                    </list>
-                </property>
-            </bean>
+        <property name="entryPageId" value="planned_courses_detail_page"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-PageHorizontalLayout" id="planned_courses_detail_page" p:id="planned_courses_detail_page">
+                    <property name="items">
+                        <list>
+                            <ref bean="planned_courses_detail"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
         </property>
-
-        <property name="criteriaFields">
-            <list/>
-        </property>
-        <property name="resultFields">
-            <list/>
-        </property>
-        <property name="footer.render" value="false"/>
     </bean>
 
     <!-- Single term view that lists planned course, total credits and backup courses -->

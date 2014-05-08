@@ -786,6 +786,58 @@ function jqSelector(str) {
     return str.replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
 }
 
+function updateRegistrationUrl(componentId) {
+    var elementToBlock = jQuery('#' + componentId).parent();
+
+    var successCallback = function (response) {
+        if (!response.errorMessage) {
+            jQuery('#' + componentId).attr('href', response.registrationUrl);
+        } else {
+            var error = jQuery('<div />').attr({
+                'class': 'alert alert-error',
+                'style': 'float: right; margin: 0;'
+            }).html(response.errorMessage);
+            jQuery('#' + componentId).replaceWith(error);
+        }
+    };
+
+    var data = {
+        'methodToCall': 'getRegistrationUrl',
+        'renderFullView': false,
+        'reqComponentId': componentId,
+        'skipViewInit': 'false'
+    };
+
+    var blockOptions = {
+        centerX: true,
+        centerY: true,
+        message: '<img src="' + getConfigParam('ksapImageLocation') + 'loader/ajax_small.gif" />',
+        css: {
+            width: '100%',
+            border: 'none',
+            backgroundColor: 'transparent',
+            width: (elementToBlock.outerWidth() - 2) + 'px',
+            height: (elementToBlock.outerHeight() - 2) + 'px',
+            lineHeight: (elementToBlock.outerHeight() - 4) + 'px',
+            textAlign: 'center'
+        },
+        overlayCSS: {
+            backgroundColor: '#fff',
+            opacity: 0.3,
+            padding: '0px',
+            margin: '0px',
+            top: '-1px',
+            left: '-1px',
+            width: (elementToBlock.outerWidth()) + 'px',
+            height: (elementToBlock.outerHeight()) + 'px'
+        }
+    };
+
+    jQuery('form input[type=radio]').on('change', function(e) {
+        ksapAjaxSubmitForm(data, successCallback, elementToBlock, 'kualiForm', blockOptions);
+    });
+}
+
 (function ($) {
     // TODO remove publish method after old audits have been purged as audit FTL inline scripted a publish call
     $.publish = function (event) {

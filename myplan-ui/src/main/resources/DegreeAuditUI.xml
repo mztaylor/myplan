@@ -21,33 +21,21 @@
     -->
 
     <!-- Lookup View -->
-    <bean id="DegreeAuditsSummary-LookupView" parent="MyPlanBaseLookupView">
-        <property name="onLoadScript" value=""/>
-        <property name="headerText" value="Recent Audit Reports"/>
-        <property name="page.header.render" value="false"/>
-        <property name="header.render" value="false"/>
-        <property name="footer.render" value="false"/>
+    <bean id="DegreeAuditsSummary-LookupView" p:viewName="DegreeAuditsSummary-LookupView" parent="MyPlanBaseLookupView">
         <property name="dataObjectClassName" value="org.kuali.student.myplan.audit.dataobject.DegreeAuditItem"/>
         <property name="viewHelperServiceClass"
                   value="org.kuali.student.myplan.audit.service.DegreeAuditsLookupableHelperImpl"/>
-        <property name="singlePageView" value="true"/>
-        <property name="criteriaFields">
-            <list/>
-        </property>
-        <property name="resultFields">
-            <list/>
-        </property>
-
-        <!-- Not Displaying any criteria -->
-        <property name="criteriaGroup">
-            <bean parent="KSAP-VerticalBoxGroup">
-                <property name="footer">
-                    <bean parent="KSAP-EmptyLookupCriteriaFooter"/>
-                </property>
-            </bean>
-        </property>
-        <property name="resultsGroup">
-            <bean id="degree_audits_summary" parent="degree_audits_summary_list"/>
+        <property name="entryPageId" value="degree_audits_summary_page"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-PageVerticalLayout" id="degree_audits_summary_page" p:id="degree_audits_summary_page">
+                    <property name="items">
+                        <list>
+                            <bean id="degree_audits_summary" parent="degree_audits_summary_list"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
         </property>
     </bean>
 
@@ -131,17 +119,16 @@
         </property>
     </bean>
 
-    <bean id="DegreeAudit-FormView" parent="MyPlanFormView">
-        <property name="headerText" value="Audit"/>
+    <bean id="DegreeAudit-FormView" p:viewName="DegreeAudit-FormView" parent="MyPlanFormView">
         <property name="formClass" value="org.kuali.student.myplan.audit.form.AuditForm"/>
         <!-- To Support progressive disclosure of campus select -->
         <property name="persistFormToSession" value="true"/>
-        <property name="viewName" value="DegreeAudit-FormView"/>
-        <property name="id" value="DegreeAudit-FormView"/>
         <property name="entryPageId" value="degree_audit"/>
+        <property name="headerText" value="Audit Your Degree"/>
         <property name="items">
             <list>
-                <bean parent="KSAP-Page" p:id="degree_audit">
+                <bean parent="KSAP-PageHorizontalLayout" id="degree_audit" p:id="degree_audit">
+                    <property name="headerText" value="Audit"/>
                     <property name="items">
                         <list>
                             <bean id="degree_audit_block_item" parent="degree_audit_block"/>
@@ -164,7 +151,7 @@
                     </property>
                 </bean>
 
-                <bean parent="KSAP-Page" p:id="degree_audit_non_student_page">
+                <bean parent="KSAP-PageHorizontalLayout" p:id="degree_audit_non_student_page">
                     <property name="items">
                         <list>
                             <bean parent="KSAP-VerticalBoxGroup" p:style="width: 700px; margin-right: 10px;">
@@ -207,8 +194,6 @@
                 </bean>
             </list>
         </property>
-        <property name="footer.render" value="false"/>
-
     </bean>
 
     <bean id="degree_audit_block" parent="KSAP-VerticalBoxGroup" p:width="710px">

@@ -106,7 +106,7 @@ jQuery(document).ready(function () {
         profile = "3";
     }
     else if (subdomain.indexOf("uwksprod") != -1 || subdomain.indexOf("uwstudent") != -1) {
-        if (!jQuery("#applicationUser").data("adviser")) {
+        if (!jQuery(".appHeader__user").data("adviser")) {
             profile = "4";
         } // Students analytics profile
         else {

@@ -21,16 +21,12 @@
 
     <!--  Possible Schedules components -->
 
-    <bean id="PossibleSchedules-FormView" parent="MyPlanFormView">
-        <property name="id" value="PossibleSchedules-FormView"/>
-        <property name="entryPageId" value="planned_courses_detail_page"/>
+    <bean id="PossibleSchedules-FormView" p:viewName="PossibleSchedules-FormView" parent="MyPlanFormView">
         <property name="formClass" value="org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm"/>
+        <property name="entryPageId" value="planned_courses_detail_page"/>
         <property name="items">
             <list>
-                <bean parent="KSAP-Page" p:id="planned_courses_detail_page">
-                    <property name="layoutManager">
-                        <bean parent="Uif-VerticalBoxLayout"/>
-                    </property>
+                <bean parent="KSAP-PageVerticalLayout" id="planned_courses_detail_page" p:id="planned_courses_detail_page">
                     <property name="items">
                         <list>
                             <ref bean="sb_possible_schedules"/>
@@ -39,8 +35,6 @@
                 </bean>
             </list>
         </property>
-        <property name="header.render" value="false"/>
-        <property name="footer.render" value="false"/>
     </bean>
 
     <bean id="possible_schedules_nav" parent="Uif-ActionLink" p:actionImagePlacement="LEFT">
