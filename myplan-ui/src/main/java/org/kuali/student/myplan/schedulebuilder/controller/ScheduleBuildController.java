@@ -86,6 +86,7 @@ public class ScheduleBuildController extends UifControllerBase {
     public ModelAndView build(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
         ScheduleBuildForm sbform = (ScheduleBuildForm) form;
         sbform.buildSchedules();
+        request.getSession().setAttribute("possibleSchedules", sbform.getPossibleScheduleOptions());
         return getUIFModelAndView(form);
     }
 

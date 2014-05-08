@@ -21,6 +21,7 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
     private Term term;
     private String termId;
     private String uniqueId;
+    private boolean pinned;
     private String requestedLearningPlanId;
     private Set<String> selectedRegistrationCodes;
     private Map<String, String> plannedItems;
@@ -95,5 +96,12 @@ public class DefaultRegistrationForm extends UifFormBase implements Registration
         this.plannedItems = plannedItems;
     }
 
+    @Override
+    public boolean isPinned() {
+        return pinned;
+    }
 
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
+    }
 }

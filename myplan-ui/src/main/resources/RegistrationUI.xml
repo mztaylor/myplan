@@ -30,8 +30,8 @@
                     <property name="style" value="margin:0 auto 5px;"/>
                     <property name="onDocumentReadyScript" value="parent.jQuery.fancybox.update()"/>
                     <property name="header">
-                        <bean parent="KSAP-HeaderTwo"
-                              p:headerText="Pinned Schedule P@{registrationDetails.getPinnedIndex()}">
+                        <bean id="scheduleRegisterHeader" parent="KSAP-HeaderTwo"
+                              p:headerText="@{pinned ? 'Pinned Schedule P' : 'Schedule Details'}@{pinned ? registrationDetails.getPinnedIndex() : ''}">
                             <property name="lowerGroup">
                                 <bean parent="KSAP-HorizontalBoxGroup" p:render="@{!registrationDetails.openForRegistration}">
                                     <property name="items">
@@ -70,14 +70,15 @@
                                       value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Unpin this schedule">
+                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Unpin this schedule"
+                                          p:render="@{pinned}">
                                         <property name="actionScript"
                                                   value="KsapScheduleBuild.confirmRemovedSavedSchedule('@{uniqueId}', true, e)"/>
                                     </bean>
                                     <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Start Registration"
                                           p:navigateToPageId="scheduleSelect"
-                                          p:style="float: right;">
-                                        <!--p:render="@{registrationDetails.openForRegistration}">-->
+                                          p:style="float: right;"
+                                          p:render="@{registrationDetails.openForRegistration}">
                                         <property name="cssClasses">
                                             <list merge="true">
                                                 <value>@{getSelectedRegistrationCodes().size() EQ 0 OR
@@ -118,9 +119,6 @@
                                         <list>
                                             <bean parent="KSAP-Message"
                                                   p:messageText="Use the buttons below to choose the sections you&#39;d like to register for, then click the &quot;[strong]Send SLNs to Registration[/strong].&quot;"/>
-                                            <bean parent="KSAP-Message"
-                                                  p:messageText="Priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on @{registrationDetails.getRegistrationOpenDate()}."
-                                                  p:render="@{!registrationDetails.openForRegistration}"/>
                                         </list>
                                     </property>
                                 </bean>
@@ -157,8 +155,10 @@
                                         <property name="style" value="float: right;"/>
                                         <property name="items">
                                             <list>
-                                                <bean parent="Uif-Link" id="sendToRegistration" p:id="sendToRegistration">
-                                                    <property name="render" value="@{registrationDetails.registrationUrl NE null}"/>
+                                                <bean parent="Uif-Link" id="sendToRegistration"
+                                                      p:id="sendToRegistration">
+                                                    <property name="render"
+                                                              value="@{registrationDetails.registrationUrl NE null}"/>
                                                     <property name="linkText" value="Send SLNs to Registration"/>
                                                     <property name="title" value="Send SLNs to Registration"/>
                                                     <property name="href"
@@ -210,11 +210,13 @@
                             <bean parent="KSAP-InfoMessage">
                                 <property name="items">
                                     <list>
-                                        <bean parent="KSAP-NoSpanMessage" p:messageText="A response from the registration system will open in a new browser window shortly."/>
+                                        <bean parent="KSAP-NoSpanMessage"
+                                              p:messageText="A response from the registration system will open in a new browser window shortly."/>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-Message" p:cssClasses="block" p:messageText="[p]If your submission was accepted, you&#39;ll see your updated schedule on MyPlan within a few minutes.[/p][p]If your submission was unsuccessful, try one of the following steps:[/p][ul][li]Check the registration page to see which errors need to be resolved[/li][li]Try to [0][/li][li]Close this window and try sending SLNs from a different pinned schedule[/li][/ul]">
+                            <bean parent="KSAP-Message" p:cssClasses="block"
+                                  p:messageText="[p]If your submission was accepted, you&#39;ll see your updated schedule on MyPlan within a few minutes.[/p][p]If your submission was unsuccessful, try one of the following steps:[/p][ul][li]Check the registration page to see which errors need to be resolved[/li][li]Try to [0][/li][li]Close this window and try sending SLNs from a different pinned schedule[/li][/ul]">
                                 <property name="inlineComponents">
                                     <list>
                                         <bean parent="Uif-Link" p:linkText="resend your SLNs" p:target="_blank"
@@ -233,8 +235,8 @@
                             <property name="items">
                                 <list>
                                     <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Close">
-                                    <property name="actionScript"
-                                              value="parent.jQuery.fancybox.close()"/>
+                                        <property name="actionScript"
+                                                  value="parent.jQuery.fancybox.close()"/>
                                     </bean>
                                 </list>
                             </property>
@@ -466,7 +468,8 @@
           p:cssClasses="registrationActivity__code @{#form.getPlannedItems().containsKey(#line.activityOfferingId) ? 'registrationActivity__sectionCd--planned':''}"/>
 
     <bean id="scheduleRegistrationActivityCredits" parent="KSAP-MessageField"
-          p:messageText="@{#line.activityTypeDescription}@{#line.primary EQ true ? ' (' + #line.courseCredit + ')' : ''}" p:width="72px"
+          p:messageText="@{#line.activityTypeDescription}@{#line.primary EQ true ? ' (' + #line.courseCredit + ')' : ''}"
+          p:width="72px"
           p:cssClasses="registrationActivity__credits"/>
 
     <bean id="scheduleRegistrationActivityMeetingDays" parent="KSAP-MessageField" p:messageText="@{#line.meetingDays}"
