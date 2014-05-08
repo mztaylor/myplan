@@ -34,7 +34,25 @@
                     <property name="onDocumentReadyScript" value="parent.jQuery.fancybox.update()"/>
                     <property name="header">
                         <bean parent="KSAP-HeaderTwo"
-                              p:headerText="Pinned Schedule @{registrationDetails.getPinnedIndex() + 1}"/>
+                              p:headerText="Pinned Schedule @{registrationDetails.getPinnedIndex() + 1}">
+                            <property name="lowerGroup">
+                                <bean parent="KSAP-HorizontalBoxGroup" p:render="@{!registrationDetails.openForRegistration}">
+                                    <property name="items">
+                                        <list>
+                                            <bean parent="KSAP-Message"
+                                                  p:messageText="Priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on @{registrationDetails.getRegistrationOpenDate()}."/>
+                                            <bean parent="Uif-Link">
+                                                <property name="linkText" value="Priority registration dates"/>
+                                                <property name="title" value="Priority registration dates"/>
+                                                <property name="href"
+                                                          value="http://www.washington.edu/students/reg/prior@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToRegQtrYrParam(termId)}.html"/>
+                                                <property name="target" value="_blank"/>
+                                            </bean>
+                                        </list>
+                                    </property>
+                                </bean>
+                            </property>
+                        </bean>
                     </property>
                     <property name="header.render" value="true"/>
                     <property name="items">
@@ -60,10 +78,12 @@
                                           p:render="@{registrationDetails.openForRegistration}">
                                         <property name="cssClasses">
                                             <list merge="true">
-                                                <value>@{getSelectedRegistrationCodes().size() EQ 0 OR getSelectedRegistrationCodes().size() GT 8 ? 'disabled' : ''}</value>
+                                                <value>@{getSelectedRegistrationCodes().size() EQ 0 OR
+                                                    getSelectedRegistrationCodes().size() GT 8 ? 'disabled' : ''}
+                                                </value>
                                             </list>
-                                       </property>
-                                       </bean>
+                                        </property>
+                                    </bean>
                                 </list>
                             </property>
                         </bean>
@@ -94,6 +114,9 @@
                                         <list>
                                             <bean parent="KSAP-Message"
                                                   p:messageText="Use the buttons below to choose the sections you&#39;d like to submit to the registration system, then click &quot;[strong]Next[/strong].&quot;"/>
+                                            <bean parent="KSAP-Message"
+                                                  p:messageText="Priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on @{registrationDetails.getRegistrationOpenDate()}."
+                                                  p:render="@{!registrationDetails.openForRegistration}"/>
                                         </list>
                                     </property>
                                 </bean>
@@ -117,14 +140,21 @@
                             <property name="cssClasses" value="registrationForm__footer"/>
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back" p:navigateToPageId="scheduleView" p:additionalCssClasses="registrationForm__back" p:actionImagePlacement="LEFT">
+                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
+                                          p:navigateToPageId="scheduleView"
+                                          p:additionalCssClasses="registrationForm__back" p:actionImagePlacement="LEFT">
                                         <property name="actionImage">
-                                            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+                                            <bean parent="Uif-Image"
+                                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
                                         </property>
                                     </bean>
-                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Next" p:methodToCall="getRegistrationUrl" p:additionalCssClasses="registrationForm__next" p:actionImagePlacement="RIGHT" p:style="float:right;">
+                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Next"
+                                          p:methodToCall="getRegistrationUrl"
+                                          p:additionalCssClasses="registrationForm__next" p:actionImagePlacement="RIGHT"
+                                          p:style="float:right;">
                                         <property name="actionImage">
-                                            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+                                            <bean parent="Uif-Image"
+                                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
                                         </property>
                                     </bean>
                                     <!--<bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
@@ -184,9 +214,12 @@
                             <property name="cssClasses" value="registrationForm__footer"/>
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back" p:navigateToPageId="scheduleSelect" p:additionalCssClasses="registrationForm__back" p:actionImagePlacement="LEFT">
+                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
+                                          p:navigateToPageId="scheduleSelect"
+                                          p:additionalCssClasses="registrationForm__back" p:actionImagePlacement="LEFT">
                                         <property name="actionImage">
-                                            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+                                            <bean parent="Uif-Image"
+                                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
                                         </property>
                                     </bean>
                                     <bean parent="Uif-Link" p:id="sendToRegistration">
@@ -413,7 +446,8 @@
         <property name="items">
             <list>
                 <bean parent="scheduleRegistrationActivityCode"/>
-                <bean parent="scheduleRegistrationActivityCredits" p:render="@{pageId NE 'scheduleView' AND #line.primary}"/>
+                <bean parent="scheduleRegistrationActivityCredits"
+                      p:render="@{pageId NE 'scheduleView' AND #line.primary}"/>
                 <bean parent="Uif-SpaceField" p:render="@{pageId NE 'scheduleView' AND !#line.primary}" p:width="36px"/>
                 <bean parent="scheduleRegistrationActivityMeetingDays"/>
                 <bean parent="scheduleRegistrationActivityMeetingTime"/>

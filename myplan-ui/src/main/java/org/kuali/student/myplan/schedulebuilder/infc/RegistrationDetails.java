@@ -41,4 +41,11 @@ public interface RegistrationDetails {
      * @return
      */
     String getRegistrationUrl();
+
+    /**
+     * Used in Ui to display the registration open date.
+     *
+     * @return formatted date as string
+     */
+    String getRegistrationOpenDate();
 }

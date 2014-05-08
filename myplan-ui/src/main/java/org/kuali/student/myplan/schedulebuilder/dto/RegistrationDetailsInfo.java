@@ -14,6 +14,7 @@ public class RegistrationDetailsInfo implements RegistrationDetails {
     private List<CourseOption> registeredCourses;
     private List<CourseOption> plannedCourses;
     private boolean openForRegistration;
+    private String registrationOpenDate;
     private int pinnedIndex;
     private String registrationUrl;
 
@@ -65,5 +66,13 @@ public class RegistrationDetailsInfo implements RegistrationDetails {
 
     public void setRegistrationUrl(String registrationUrl) {
         this.registrationUrl = registrationUrl;
+    }
+
+    public String getRegistrationOpenDate() {
+        return registrationOpenDate;
+    }
+
+    public void setRegistrationOpenDate(String registrationOpenDate) {
+        this.registrationOpenDate = registrationOpenDate;
     }
 }

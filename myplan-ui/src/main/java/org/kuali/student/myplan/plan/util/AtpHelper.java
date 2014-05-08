@@ -307,11 +307,23 @@ public class AtpHelper {
     /**
      * Gives the quarter year param required for SLN link url
      * "WIN+1999"
+     *
      * @param atpId
      * @return
      */
     public static String atpIdToQtrYrParam(String atpId) {
         return atpToYearTerm(atpId).toQTRYRParam();
+    }
+
+    /**
+     * Gives the quarter Year param required for UW registraion page(http://www.washington.edu/students/reg/priorau14.html).
+     * "au14"
+     *
+     * @param atpId
+     * @return
+     */
+    public static String atpIdToRegQtrYrParam(String atpId) {
+        return atpToYearTerm(atpId).toRegQTRYRParam();
     }
 
     /**
@@ -624,6 +636,10 @@ public class AtpHelper {
         // "WIN+1999"
         public String toQTRYRParam() {
             return TERM_ID_LIST.get(getTerm() - 1).substring(0, 3).toUpperCase() + "+" + getYearAsString();
+        }
+
+        public String toRegQTRYRParam() {
+            return TERM_ID_LIST.get(getTerm() - 1).substring(0, 2) + getYearAsString().substring(2, 4);
         }
 
         // 19911
