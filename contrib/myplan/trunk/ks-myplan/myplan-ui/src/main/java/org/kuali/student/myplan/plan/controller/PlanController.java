@@ -208,6 +208,8 @@ public class PlanController extends UifControllerBase {
         super.start(form, result, request, response);
         PlanForm planForm = (PlanForm) form;
         planForm.setNewUser(isNewUser());
+        planForm.setLearningPlanId(getPlanHelper().getLearningPlan(getUserSessionHelper().getStudentId()).getId());
+
         return getUIFModelAndView(planForm);
     }
 

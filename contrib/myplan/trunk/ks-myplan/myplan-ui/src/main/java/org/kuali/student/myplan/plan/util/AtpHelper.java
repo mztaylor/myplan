@@ -865,6 +865,23 @@ public class AtpHelper {
 
 
     /**
+     * returns boolean indicating if schedule for atp has been published
+     *
+     * @param atpId
+     *
+     * @return
+     */
+    public static boolean isAtpPublished(String atpId) {
+        List<String> terms = getPublishedTerms();
+        YearTerm yt = AtpHelper.atpToYearTerm(atpId);
+        if (terms.contains(yt))
+            return true;
+        else
+            return false;
+    }
+
+
+    /**
      * returns the YearTerm of the firstTerm in student's AcademicPlan
      *
      * @return YearTerm
