@@ -1,6 +1,7 @@
 package org.kuali.student.ap.framework.context.support;
 
 import org.dom4j.Document;
+import org.joda.time.DateTime;
 import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.enrollment.acal.infc.AcademicCalendar;
 import org.kuali.student.enrollment.acal.infc.Term;
@@ -137,7 +138,7 @@ public class DefaultTermHelper implements TermHelper {
     }
 
     @Override
-    public boolean isOpenForRegistration(String termId){return false;}
+    public boolean isOpenForRegistration(String termId, DateTime dateTime){return false;}
 
     @Override
     public String getPriorityOneRegistrationStartDate(Document termDocument) {

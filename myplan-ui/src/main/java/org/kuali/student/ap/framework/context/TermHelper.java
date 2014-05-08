@@ -1,6 +1,7 @@
 package org.kuali.student.ap.framework.context;
 
 import org.dom4j.Document;
+import org.joda.time.DateTime;
 import org.kuali.student.enrollment.acal.infc.AcademicCalendar;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.schedulebuilder.util.YearTerm;
@@ -222,7 +223,7 @@ public interface TermHelper {
      * @param termId
      * @return true if open for registration else false.
      */
-    public boolean isOpenForRegistration(String termId);
+    public boolean isOpenForRegistration(String termId, DateTime dateTime);
 
 
     /**
