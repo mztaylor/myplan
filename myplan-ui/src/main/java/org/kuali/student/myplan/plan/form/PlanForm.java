@@ -83,6 +83,7 @@ public class PlanForm extends UifFormBase {
     //Used as a flag to differentiate courses being planned from recommendations
     private boolean recommended = false;
 
+    private String learningPlanId;
 
     /**
      * *******************************************************
@@ -561,5 +562,13 @@ public class PlanForm extends UifFormBase {
 
     public void setPlaceholderCode(String placeholderCode) {
         this.placeholderCode = placeholderCode;
+    }
+
+     public String getLearningPlanId() {
+        return learningPlanId;
+    }
+
+    public void setLearningPlanId(String learningPlanId) {
+        this.learningPlanId = learningPlanId;
     }
 }
