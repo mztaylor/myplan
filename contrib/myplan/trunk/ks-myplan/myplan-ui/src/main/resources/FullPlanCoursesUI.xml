@@ -22,18 +22,15 @@
     <!-- ################# Tabular view of full academic plan ############################# -->
 
     <!--Bean for the Full Academic Plan View  -->
-    <bean id="FullPlannedCourses-LookupView" parent="MyPlanBaseLookupView">
-        <property name="viewName" value="FullPlannedCourses-LookupView"/>
+    <bean id="FullPlannedCourses-LookupView" p:viewName="FullPlannedCourses-LookupView" parent="MyPlanBaseLookupView">
         <property name="dataObjectClassName" value="org.kuali.student.myplan.plan.dataobject.PlannedTerm"/>
         <property name="viewHelperServiceClass"
                   value="org.kuali.student.myplan.plan.service.FullPlanItemsLookupableHelperImpl"/>
-        <property name="singlePageView" value="true"/>
-        <property name="page.header.render" value="false"/>
-        <property name="footer.render" value="false"/>
-        <property name="resultsGroup.header.render" value="false"/>
+        <property name="entryPageId" value="full_planned_courses_detail_page"/>
         <property name="style" value="width:682px;"/>
-        <property name="page">
-                <bean parent="Uif-LookupPage" p:id="full_planned_courses_detail_page">
+        <property name="items">
+            <list>
+                <bean parent="Uif-LookupPage" id="full_planned_courses_detail_page" p:id="full_planned_courses_detail_page">
                     <property name="layoutManager">
                         <bean parent="Uif-VerticalBoxLayout"/>
                     </property>
@@ -60,6 +57,7 @@
                         </list>
                     </property>
                 </bean>
+            </list>
         </property>
     </bean>
 

@@ -19,20 +19,15 @@
      limitations under the License.
     -->
 
-    <bean id="Message-FormView" parent="MyPlanBaseFormView">
-        <property name="id" value="Message-FormView"/>
+    <bean id="Message-FormView" p:viewName="Message-FormView" parent="MyPlanBaseFormView">
         <property name="formClass" value="org.kuali.student.myplan.comment.form.CommentForm"/>
-        <property name="header.render" value="false"/>
-        <property name="footer.render" value="false"/>
+        <property name="entryPageId" value="message_dialog_response_page"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="message_dialog_response_page" p:width="640px"
+                <bean parent="KSAP-PageVerticalLayout" p:id="message_dialog_response_page" p:width="640px"
                         p:headerText="Leave a Message for @{#form.studentName}">
                     <property name="header">
                         <bean parent="KSAP-HeaderThree" p:cssClasses="messagesForm__header"/>
-                    </property>
-                    <property name="layoutManager">
-                        <bean parent="Uif-VerticalBoxLayout"/>
                     </property>
                     <property name="onDocumentReadyScript" value="
                         jQuery('form input, form textarea').on('keyup paste cut contextmenu change mouseout blur', function(e) {
@@ -66,13 +61,10 @@
                 </bean>
 
                 <!--Comment Page-->
-                <bean parent="Uif-Page" p:id="comment_dialog_response_page" p:width="640px"
+                <bean parent="KSAP-PageVerticalLayout" p:id="comment_dialog_response_page" p:width="640px"
                       p:headerText="View Message">
                     <property name="header">
                         <bean parent="KSAP-HeaderThree" p:cssClasses="messagesForm__header"/>
-                    </property>
-                    <property name="layoutManager">
-                        <bean parent="Uif-VerticalBoxLayout"/>
                     </property>
                     <property name="onDocumentReadyScript" value="
                         jQuery('button#postCommentButton').removeClass('disabled');
@@ -279,33 +271,21 @@
     </bean>
 
     <!--  Messages Summary (Gutter) Lookup -->
-    <bean id="MessagesSummary-LookupView" parent="MyPlanBaseLookupView">
-        <property name="onLoadScript" value=""/>
-        <property name="headerText" value="Messages Summary"/>
-        <property name="page.header.render" value="false"/>
-        <property name="header.render" value="false"/>
-        <property name="footer.render" value="false"/>
+    <bean id="MessagesSummary-LookupView" p:viewName="MessagesSummary-LookupView" parent="MyPlanBaseLookupView">
         <property name="dataObjectClassName" value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
         <property name="viewHelperServiceClass"
                   value="org.kuali.student.myplan.comment.service.MessagesLookupableHelperImpl"/>
-        <property name="singlePageView" value="true"/>
-        <property name="criteriaFields">
-            <list/>
-        </property>
-        <property name="resultFields">
-            <list/>
-        </property>
-
-        <!-- Not Displaying any criteria -->
-        <property name="criteriaGroup">
-            <bean parent="KSAP-VerticalBoxGroup">
-                <property name="footer">
-                    <bean parent="KSAP-EmptyLookupCriteriaFooter"/>
-                </property>
-            </bean>
-        </property>
-        <property name="resultsGroup">
-            <bean id="messages_summary" parent="messages_summary_list"/>
+        <property name="entryPageId" value="messages_summary_page"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-PageVerticalLayout" id="messages_summary_page" p:id="messages_summary_page">
+                    <property name="items">
+                        <list>
+                            <bean id="messages_summary" parent="messages_summary_list"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
         </property>
     </bean>
 
@@ -419,25 +399,23 @@
         <property name="footer.render" value="@{lookupResults NE null AND lookupResults.size() GT 0}"/>
     </bean>
 
-    <bean id="MessagesDetail-LookupView" parent="MyPlanLookupView">
-        <property name="viewName" value="MessagesDetail-LookupView"/>
-        <property name="headerText" value="Messages &amp; Comments"/>
-        <property name="page.header.render" value="false"/>
-        <property name="footer.render" value="false"/>
+    <bean id="MessagesDetail-LookupView" p:viewName="MessagesDetail-LookupView" parent="MyPlanLookupView">
         <property name="dataObjectClassName" value="org.kuali.student.myplan.comment.dataobject.MessageDataObject"/>
         <property name="viewHelperServiceClass"
                   value="org.kuali.student.myplan.comment.service.MessagesLookupableHelperImpl"/>
-        <property name="singlePageView" value="true"/>
-        <property name="page">
-            <bean parent="KSAP-Page" p:id="messages_detail_page">
-                <property name="items">
-                    <list>
-                        <bean parent="messages_detail_list" p:width="710px"/>
-                        <bean parent="messages_detail_list_empty" p:width="710px"/>
-                        <bean parent="KSAP-RightPane" p:width="230px"/>
-                    </list>
-                </property>
-            </bean>
+        <property name="entryPageId" value="messages_detail_page"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-PageHorizontalLayout" id="messages_detail_page" p:id="messages_detail_page">
+                    <property name="items">
+                        <list>
+                            <bean parent="messages_detail_list" p:width="710px"/>
+                            <bean parent="messages_detail_list_empty" p:width="710px"/>
+                            <bean parent="KSAP-RightPane" p:width="230px"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
         </property>
     </bean>
 

@@ -24,6 +24,7 @@
         <property name="theme">
             <bean parent="MyPlanBaseTheme"/>
         </property>
+        <property name="singlePageView" value="false"/>
         <property name="persistFormToSession" value="false"/>
         <property name="breadcrumbs.render" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
@@ -33,11 +34,8 @@
                     setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
                     setConfigParam('devMode', @{#ConfigProperties['rice.krad.dev.mode']});
         "/>
-        <property name="header">
-            <bean parent="Uif-ViewHeader">
-                <property name="headerLevel" value="h1"/>
-            </bean>
-        </property>
+        <property name="header.render" value="false"/>
+        <property name="footer.render" value="false"/>
     </bean>
 
     <!-- View without the header and footer and just the theme -->
@@ -47,6 +45,7 @@
         </property>
         <property name="persistFormToSession" value="false"/>
         <property name="breadcrumbs.render" value="false"/>
+        <property name="singlePageView" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
         <property name="onLoadScript" value="
                     try{Typekit.load();}catch(e){}
@@ -60,9 +59,8 @@
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
-        <property name="header">
-            <bean parent="KSAP-ViewHeader"/>
-        </property>
+        <property name="header.render" value="false"/>
+        <property name="footer.render" value="false"/>
         <property name="applicationHeader">
             <bean parent="KSAP-GlobalApplicationHeader"/>
         </property>
@@ -77,6 +75,7 @@
         </property>
         <property name="persistFormToSession" value="false"/>
         <property name="breadcrumbs.render" value="false"/>
+        <property name="singlePageView" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
         <property name="onLoadScript" value="
                     try{Typekit.load();}catch(e){}
@@ -98,9 +97,8 @@
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
-        <property name="header">
-            <bean parent="KSAP-ViewHeader"/>
-        </property>
+        <property name="header.render" value="false"/>
+        <property name="footer.render" value="false"/>
         <property name="applicationHeader">
             <bean parent="KSAP-GlobalApplicationHeader"/>
         </property>
@@ -116,6 +114,7 @@
         </property>
         <property name="persistFormToSession" value="false"/>
         <property name="breadcrumbs.render" value="false"/>
+        <property name="singlePageView" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
         <property name="onLoadScript" value="
                     try{Typekit.load();}catch(e){}
@@ -129,9 +128,8 @@
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
-        <property name="header">
-            <bean parent="KSAP-ViewHeader"/>
-        </property>
+        <property name="header.render" value="false"/>
+        <property name="footer.render" value="false"/>
         <property name="applicationHeader">
             <bean parent="KSAP-GlobalApplicationHeader"/>
         </property>
@@ -145,6 +143,7 @@
             <bean parent="MyPlanBaseTheme"/>
         </property>
         <property name="breadcrumbs.render" value="false"/>
+        <property name="singlePageView" value="false"/>
         <property name="applyDirtyCheck" value="false"/>
         <property name="onLoadScript" value="
                     try{Typekit.load();}catch(e){}
@@ -158,9 +157,8 @@
         <property name="theme">
             <bean parent="MyPlanTheme"/>
         </property>
-        <property name="header">
-            <bean parent="KSAP-ViewHeader"/>
-        </property>
+        <property name="header.render" value="false"/>
+        <property name="footer.render" value="false"/>
         <property name="footer" ref="MyPlanFooterDocument"/>
         <property name="applicationHeader">
             <bean parent="KSAP-GlobalApplicationHeader"/>
@@ -865,17 +863,26 @@
         </property>
     </bean>
 
-    <bean id="KSAP-ViewHeader" parent="Uif-ViewHeader">
-        <property name="cssClasses" value="viewHeader"/>
-        <property name="headerTagCssClasses" value="viewHeaderText"/>
-        <property name="headerLevel" value="h2"/>
-        <property name="supportTitleText" value=""/>
+    <bean id="KSAP-PageHeader" parent="Uif-PageHeader">
+        <property name="cssClasses" value="pageHeader"/>
+        <property name="headerTagCssClasses" value="pageHeaderText"/>
     </bean>
 
-    <bean id="KSAP-Page" parent="Uif-Page">
-        <property name="header.render" value="false"/>
+    <bean id="KSAP-PageHorizontalLayout" parent="Uif-Page">
+        <property name="header">
+            <bean parent="KSAP-PageHeader"/>
+        </property>
         <property name="layoutManager">
             <bean parent="Uif-HorizontalBoxLayout"/>
+        </property>
+    </bean>
+
+    <bean id="KSAP-PageVerticalLayout" parent="Uif-Page">
+        <property name="header">
+            <bean parent="KSAP-PageHeader"/>
+        </property>
+        <property name="layoutManager">
+            <bean parent="Uif-VerticalBoxLayout"/>
         </property>
     </bean>
 

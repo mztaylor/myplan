@@ -2,14 +2,7 @@ body {
     background: #fff;
 }
 
-.uif-application {
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-}
-
-#Uif-ApplicationHeader-Wrapper,
-form#kualiForm {
+.uif-pageContentWrapper {
     width: auto;
     margin: 0;
 }
@@ -17,4 +10,5 @@ form#kualiForm {
 #Uif-ApplicationFooter-Wrapper {
     background: none !important;
     border: none !important;
+    display: none;
 }

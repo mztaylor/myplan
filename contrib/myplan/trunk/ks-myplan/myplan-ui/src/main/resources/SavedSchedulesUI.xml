@@ -21,29 +21,29 @@
 
     <!--  Saved Schedules components -->
 
-    <bean id="SavedSchedulesSummary-LookupView" parent="MyPlanBaseLookupView">
-        <property name="onLoadScript" value=""/>
-        <property name="headerText" value="Saved Courses Summary"/>
-        <property name="page.header.render" value="false"/>
-        <property name="header.render" value="false"/>
-        <property name="footer.render" value="false"/>
+    <bean id="SavedSchedulesSummary-LookupView" p:viewName="SavedSchedulesSummary-LookupView" parent="MyPlanBaseLookupView">
         <property name="dataObjectClassName"
                   value="org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo"/>
         <property name="viewHelperServiceClass"
                   value="org.kuali.student.myplan.schedulebuilder.service.SavedSchedulesLookupableHelperImpl"/>
-        <property name="singlePageView" value="true"/>
-        <property name="criteriaFields">
+        <property name="entryPageId" value="saved_courses_schedule_page"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-PageVerticalLayout" id="saved_courses_schedule_page" p:id="saved_courses_schedule_page">
+                    <property name="items">
+                        <list>
+                            <bean id="saved_schedules_summary" parent="saved_courses_schedule_list"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <!--<property name="criteriaFields">
             <list>
                 <bean parent="Uif-LookupCriteriaInputField" p:propertyName="code"/>
                 <bean parent="Uif-LookupCriteriaInputField" p:propertyName="startDate" p:label="Year"/>
             </list>
-        </property>
-        <property name="resultFields">
-            <list/>
-        </property>
-        <property name="resultsGroup">
-            <bean id="saved_schedules_summary" parent="saved_courses_schedule_list"/>
-        </property>
+        </property>-->
     </bean>
 
     <bean id="saved_courses_schedule_list" parent="KSAP-StackedHorizontalCollectionGroup">
@@ -126,7 +126,7 @@
                                 <!--<property name="onClickScript"
                                           value="KsapScheduleBuild.viewScheduleDetails(jQuery(this).parents('.scheduleSaved__item').data('source').events, @{#index + 1}, '@{#line.id}', e)"/>-->
                                 <property name="onClickScript"
-                                          value="KsapScheduleBuild.viewScheduleDetails(jQuery('#schedule_build_termId_control').val(), jQuery('#schedule_build_learningPlanId_control').val(), '@{#line.id}', e)"/>
+                                          value="KsapScheduleBuild.viewScheduleDetails(jQuery('#schedule_build_termId_control').val(), jQuery('#schedule_build_learningPlanId_control').val(), '@{#line.id}', '@{#index + 1}', e)"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-NoSpanMessage" p:messageText="View details and register"/>

@@ -16,6 +16,7 @@
     <bean abstract="true" id="ScheduleBuild-ReservedTime-FormView-parent" parent="MyPlanBaseFormView">
         <property name="persistFormToSession" value="true"/>
         <property name="id" value="ScheduleBuild-ReservedTime-FormView"/>
+        <property name="viewName" value="ScheduleBuild-ReservedTime-FormView"/>
         <property name="items">
             <list>
                 <ref bean="sb_create_reserved_time_page"/>

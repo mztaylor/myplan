@@ -21,34 +21,21 @@
     -->
 
     <!-- Lookup View -->
-    <bean id="PlanAuditsSummary-LookupView" parent="MyPlanBaseLookupView">
-        <property name="onLoadScript" value=""/>
-        <property name="headerText" value="Recent Audit Reports"/>
-        <property name="page.header.render" value="false"/>
-        <property name="header.render" value="false"/>
-        <property name="footer.render" value="false"/>
+    <bean id="PlanAuditsSummary-LookupView" p:viewName="PlanAuditsSummary-LookupView" parent="MyPlanBaseLookupView">
         <property name="dataObjectClassName" value="org.kuali.student.myplan.audit.dataobject.PlanAuditItem"/>
         <property name="viewHelperServiceClass"
                   value="org.kuali.student.myplan.audit.service.PlanAuditsLookupableHelperImpl"/>
-        <property name="singlePageView" value="true"/>
-        <property name="criteriaFields">
-            <list/>
-        </property>
-        <property name="resultFields">
-            <list/>
-        </property>
-
-        <!-- Not Displaying any criteria -->
-        <property name="criteriaGroup">
-            <bean parent="KSAP-VerticalBoxGroup">
-                <property name="footer">
-                    <bean parent="KSAP-EmptyLookupCriteriaFooter"/>
-                </property>
-            </bean>
-
-        </property>
-        <property name="resultsGroup">
-            <bean id="plan_audits_summary" parent="plan_audits_summary_list"/>
+        <property name="entryPageId" value="plan_audits_summary_page"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-PageVerticalLayout" id="plan_audits_summary_page" p:id="plan_audits_summary_page">
+                    <property name="items">
+                        <list>
+                            <bean id="plan_audits_summary" parent="plan_audits_summary_list"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
         </property>
     </bean>
 
@@ -216,17 +203,16 @@
         <property name="cssClasses" value="module__planAuditData"/>
     </bean>
 
-    <bean id="PlanAudit-FormView" parent="MyPlanFormView">
-        <property name="headerText" value="Audit"/>
+    <bean id="PlanAudit-FormView" p:viewName="PlanAudit-FormView" parent="MyPlanFormView">
         <property name="formClass" value="org.kuali.student.myplan.audit.form.AuditForm"/>
         <!-- To Support progressive disclosure of campus select -->
         <property name="persistFormToSession" value="true"/>
-        <property name="viewName" value="PlanAudit-FormView"/>
-        <property name="id" value="PlanAudit-FormView"/>
         <property name="entryPageId" value="plan_audit"/>
+        <property name="headerText" value="Audit Your Plan"/>
         <property name="items">
             <list>
-                <bean parent="KSAP-Page" p:id="plan_audit">
+                <bean parent="KSAP-PageHorizontalLayout" id="plan_audit" p:id="plan_audit">
+                    <property name="headerText" value="Audit"/>
                     <property name="items">
                         <list>
                             <bean parent="plan_audit_block" p:width="710px"/>
@@ -249,7 +235,7 @@
                     </property>
                 </bean>
 
-                <bean parent="KSAP-Page" p:id="plan_audit_non_student_page">
+                <bean parent="KSAP-PageHorizontalLayout" p:id="plan_audit_non_student_page">
                     <property name="items">
                         <list>
                             <bean parent="KSAP-VerticalBoxGroup" p:width="710px">
@@ -524,20 +510,14 @@
 
 
     <!-- Not used to view audit reports. -->
-    <bean id="PlanAuditHandOff-FormView" parent="MyPlanBaseFormView">
+    <bean id="PlanAuditHandOff-FormView" p:viewName="PlanAuditHandOff-FormView" parent="MyPlanBaseFormView">
         <property name="formClass" value="org.kuali.student.myplan.audit.form.AuditForm"/>
-        <property name="onLoadScript" value=""/>
         <!-- To Support progressive disclosure of campus select -->
         <property name="persistFormToSession" value="true"/>
-        <property name="viewName" value="PlanAuditHandOff-FormView"/>
-        <property name="id" value="PlanAuditHandOff-FormView"/>
         <property name="entryPageId" value="plan_audit_hand_off"/>
         <property name="items">
             <list>
-                <bean parent="Uif-Page" p:id="plan_audit_hand_off" p:width="650px">
-                    <property name="layoutManager">
-                        <bean parent="Uif-VerticalBoxLayout"/>
-                    </property>
+                <bean parent="KSAP-PageVerticalLayout" id="plan_audit_hand_off" p:id="plan_audit_hand_off" p:width="650px">
                     <property name="cssClasses" value="auditHandOff"/>
                     <property name="header">
                         <bean parent="KSAP-HeaderTwo" p:headerText="Enter details about your plan">

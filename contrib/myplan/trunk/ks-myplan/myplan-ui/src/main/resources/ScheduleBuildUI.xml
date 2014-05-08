@@ -14,10 +14,9 @@
 
     <bean id="ScheduleBuild-FormView" parent="ScheduleBuild-FormView-parent"/>
     <bean abstract="true" id="ScheduleBuild-FormView-parent" parent="MyPlanFormView">
-        <property name="headerText" value="Schedule Builder"/>
-        <property name="id" value="ScheduleBuild-FormView"/>
-        <property name="entryPageId" value="schedule_build"/>
         <property name="formClass" value="org.kuali.student.myplan.schedulebuilder.util.ScheduleForm"/>
+        <property name="entryPageId" value="schedule_build"/>
+        <property name="viewName" value="ScheduleBuild-FormView"/>
         <property name="additionalCssFiles">
             <list>
                 <value>plugins/fullcalendar/fullcalendar.css</value>
@@ -30,13 +29,31 @@
                 <value>themes/ksap/scripts/ksap.sbcalendar.js</value>
             </list>
         </property>
+        <property name="headerText" value="Build Your Schedule"/>
+        <property name="navigation">
+            <bean parent="Uif-NavigationGroupBase">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-Link" p:linkText="Your Academic Year">
+                            <property name="href" value="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView&amp;focusAtpId=@{termId}"/>
+                        </bean>
+                        <bean parent="Uif-Link" p:linkText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpToYearTerm(termId).getTermLabel()} Quarter @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpToYearTerm(termId).getYearAsString()}">
+                            <property name="href" value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{termId}"/>
+                        </bean>
+                        <bean parent="Uif-Link" p:linkText="Build Your Schedule">
+                            <property name="href" value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{termId}&amp;requestedLearningPlanId=@{requestedLearningPlanId}&amp;pageId=schedule_build"/>
+                            <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+                            <property name="cssClasses" value="active"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="items">
             <list>
                 <ref bean="schedule_build_page"/>
             </list>
         </property>
-        <property name="header.render" value="false"/>
-        <property name="footer.render" value="false"/>
         <property name="dataAttributes">
             <map>
                 <entry key="planned-activities" value="@{plannedActivities}"/>
@@ -45,7 +62,7 @@
     </bean>
 
     <bean id="schedule_build_page" parent="schedule_build_page-parent"/>
-    <bean abstract="true" id="schedule_build_page-parent" parent="KSAP-Page" p:id="schedule_build">
+    <bean abstract="true" id="schedule_build_page-parent" parent="KSAP-PageVerticalLayout" p:id="schedule_build">
         <property name="onDocumentReadyScript" value="
             jQuery('body').on('SAVED_SCHEDULE_SAVE', function(event, data) {
                 KsapSbCalendar.updateAddedSavedSchedule(data);
@@ -57,9 +74,6 @@
                 KsapScheduleBuild.removePlannedActivity(data);
             });
         "/>
-        <property name="layoutManager">
-            <bean parent="Uif-VerticalBoxLayout"/>
-        </property>
         <property name="items">
             <list>
                 <bean id="schedule_build_termId" parent="KSAP-SimpleInputField" p:propertyName="termId">

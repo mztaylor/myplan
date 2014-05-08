@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.schedulebuilder.util;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.kuali.rice.core.api.util.ConcreteKeyValue;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.uif.control.UifKeyValuesFinderBase;
@@ -85,10 +86,11 @@ public class RegistrationKeyValueFinder extends UifKeyValuesFinderBase {
         String template = "<div class=\"" + StringUtils.join(cssClasses, " ") + "\">" + activityOption.getActivityCode() + "</div>";
 
         template = template +
-                "<div class=\"registrationActivity__credits\">" + (activityOption.isPrimary() ? "(" + activityOption.getCourseCredit() + ")" : "") + "</div>";
+                "<div class=\"registrationActivity__credits\">" + WordUtils.capitalize(activityOption.getActivityTypeDescription()) + (activityOption.isPrimary() ? " (" + activityOption.getCourseCredit() + ")" : "") + "</div>";
 
         if (tbd) {
             template = template +
+                    "<div class=\"registrationActivity__meetingDays\">&nbsp;</div>" +
                     "<div class=\"registrationActivity__tbd\">To be arranged</div>";
         } else {
             template = template +

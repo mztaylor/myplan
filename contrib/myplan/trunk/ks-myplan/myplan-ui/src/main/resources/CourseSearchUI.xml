@@ -14,20 +14,19 @@
          and limitations under the License. -->
 
 
-    <bean id="CourseSearch-FormView" parent="MyPlanFormView">
-        <property name="id" value="CourseSearch-FormView"/>
-        <property name="entryPageId" value="course_search"/>
+    <bean id="CourseSearch-FormView" p:viewName="CourseSearch-FormView" parent="MyPlanFormView">
         <property name="formClass" value="org.kuali.student.myplan.course.form.CourseSearchForm"/>
-        <property name="headerText" value="Find Courses"/>
-        <property name="footer.render" value="false"/>
+        <property name="entryPageId" value="course_search"/>
         <property name="additionalScriptFiles">
             <list>
                 <value>themes/ksap/scripts/ksap.search.js</value>
             </list>
         </property>
+        <property name="headerText" value="Find Courses"/>
         <property name="items">
             <list>
-                <bean parent="KSAP-Page" p:id="course_search">
+                <bean parent="KSAP-PageHorizontalLayout" id="course_search" p:id="course_search">
+                    <property name="headerText" value="Find Courses"/>
                     <property name="instructionalMessage">
                         <bean parent="KSAP-Message">
                             <property name="messageText"

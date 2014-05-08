@@ -102,13 +102,18 @@ function ksapAjaxSubmitForm(data, successCallback, elementToBlock, formId, block
     var submitOptions = {
         data: data,
         success: function (response) {
-            var tempDiv = document.createElement('div');
-            tempDiv.innerHTML = response;
-            var hasError = checkForIncidentReport(response);
-            var isSessionExpired = (jQuery("title", tempDiv).text() == "Session Expired");
-            if (!hasError) successCallback(tempDiv);
-            if (isSessionExpired) sessionExpired();
-            jQuery("#formComplete").empty();
+            try {
+                jQuery.parseJSON(response);
+                successCallback(response);
+            } catch(error) {
+                var tempDiv = document.createElement('div');
+                tempDiv.innerHTML = response;
+                var hasError = checkForIncidentReport(response);
+                var isSessionExpired = (jQuery("title", tempDiv).text() == "Session Expired");
+                if (!hasError) successCallback(tempDiv);
+                if (isSessionExpired) sessionExpired();
+                jQuery("#formComplete").empty();
+            }
         },
         error: function (jqXHR, textStatus) {
             alert("Request failed: " + textStatus);

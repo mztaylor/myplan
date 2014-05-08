@@ -20,6 +20,8 @@
 }
 
 .registrationActivity__data {
+    font-size: @fontSizeSmall;
+
     fieldset {
         & > span {
             position: relative;
@@ -65,6 +67,14 @@
             }
         }
     }
+
+    .uif-collectionItem {
+        .uif-boxLayoutHorizontalItem {
+            display: inline-block;
+            float: none;
+            vertical-align: top;
+        }
+    }
 }
 
 .registrationActivity__code {
@@ -73,16 +83,17 @@
     .bold();
 }
 .registrationActivity__credits {
-    width: 36px;
+    width: 72px;
+    text-transform: capitalize;
 }
 .registrationActivity__meetingDays {
     width: 72px;
 }
 .registrationActivity__meetingTime {
-    width: 124px;
+    width: 136px;
 }
 .registrationActivity__tbd {
-    width: 206px;
+    width: 136px;
 }
 .registrationActivity__meetingLocation {
     width: 72px;
@@ -93,7 +104,7 @@
 .registrationActivity__instituteCode {
     width: 24px;
     font-size: @fontSizeMin;
-    color: @white;
+    color: @white !important;
     background: @gray;
     padding: 1px @paddingMini;
     line-height: @fontSizeLarge;
@@ -108,9 +119,10 @@
 }
 .registrationActivity__enrollRest {
     width: 16px;
+    height: 16px;
 
     &.registrationActivity__enrollRest--true {
-
+        background: url('../images/icon_sprite.png') no-repeat -1px -217px transparent;
     }
 }
 .registrationActivity__enrollState {

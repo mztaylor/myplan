@@ -15,6 +15,33 @@
     background-repeat: no-repeat;
     background-position: 8px 9px;
     background-image: url('../images/icons/warning.png');
+
+    .alert-wrapper {
+        background-image: url('../images/icons/warning.png');
+        background-repeat: no-repeat;
+        background-position: 0px 5px;
+        width: 925px;
+        margin: 0 auto;
+    }
+
+    div {
+        margin-top: @marginSmall;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+}
+
+.alert-banner {
+    .border-radius(0);
+    margin: 0;
+    padding: 0;
+    background-image: none !important;
+
+    .alert-wrapper {
+        padding: 4px 5px 4px 20px;
+    }
 }
 
 .alert,
@@ -48,6 +75,10 @@
     border-color: @successBorder;
     color: @successText;
     background-image: url('../images/icons/accept.png');
+
+    .alert-wrapper {
+        background-image: url('../images/icons/accept.png');
+    }
 }
 
 .alert-success h4 {
@@ -64,6 +95,10 @@
     border-color: @errorBorder;
     color: @errorText;
     background-image: url('../images/icons/exclamation.png');
+
+    .alert-wrapper {
+        background-image: url('../images/icons/exclamation.png');
+    }
 }
 
 .alert-danger h4,
@@ -81,6 +116,10 @@
     border-color: @infoBorder;
     color: @infoText;
     background-image: url('../images/icons/infomation.png');
+
+    .alert-wrapper {
+        background-image: url('../images/icons/infomation.png');
+    }
 }
 
 .alert-info h4 {
@@ -89,6 +128,17 @@
 
 .alert-info a {
     color: @infoLink;
+}
+
+.alert-dismissable {
+    padding-right: 35px
+}
+
+.alert-dismissable .close {
+    position: relative;
+    top: -2px;
+    right: -21px;
+    color: inherit
 }
 
 // Block alerts
