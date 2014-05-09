@@ -280,36 +280,8 @@ var KsapScheduleBuild = {
 
     viewScheduleDetails: function (termId, learningPlanId, id, index, pinned, event) { //(calEvents, index, id, event) {
         stopEvent(event);
-        /*
-        var cache = [];
-        var lightboxHtml = "";
-        var registered = jQuery("div.scheduleRegistered__item[id^='registered-schedule']").data("source");
-        if(typeof registered.events !== "undefined") {
-            for (var i = 0; i < registered.events.length; i++) {
-                var course = "registered-" + registered.events[i].popoverContent.courseId + "-" + registered.events[i].popoverContent.courseCd.replace(/ /g,'');
-                if (cache.indexOf(course) === -1) {
-                    lightboxHtml += this.getPopoverHtml(registered.events[i].popoverContent, "u-" + registered.events[i].popoverContent.courseId, "sb_registered_full_details_template");
-                    cache.push(course);
-                }
-            }
-        }
-        for (var i = 0; i < calEvents.length; i++) {
-            var course = "planned-" + calEvents[i].popoverContent.courseId + "-" + calEvents[i].popoverContent.courseCd.replace(/ /g,'');
-            if (cache.indexOf(course) === -1) {
-                lightboxHtml += this.getPopoverHtml(calEvents[i].popoverContent, "u-" + calEvents[i].popoverContent.courseId, "sb_course_full_details_template");
-                cache.push(course);
-            }
-        }
-        var lightboxTemplate = jQuery("#sb_course_details_list_template").clone().wrap("<div/>").parent().html();
-        lightboxTemplate = lightboxTemplate.replace(/sb_course_details_list_template/gi, "u-" + id);
-        lightboxTemplate = lightboxTemplate.replace(/__KSAP_PINNED_INDEX__/gi, index);
-        lightboxTemplate = lightboxTemplate.replace(/__KSAP_PINNED_ID__/gi, id);
-        var lightboxContent = jQuery(lightboxTemplate);
-        lightboxContent.find(".uif-verticalBoxLayout").html(lightboxHtml);
-        */
         var url = 'registration?methodToCall=registrationDetails&viewId=Registration-FormView&termId=' + termId + '&pageId=scheduleView&requestedLearningPlanId=' + learningPlanId + '&uniqueId=' + id + '&registrationDetails.pinnedIndex=' + index + '&pinned=' + pinned;
         top.jQuery.fancybox({
-            //content: lightboxContent.wrap("<div/>").parent().html()
             helpers:{
                 overlay:{
                     closeClick: false
