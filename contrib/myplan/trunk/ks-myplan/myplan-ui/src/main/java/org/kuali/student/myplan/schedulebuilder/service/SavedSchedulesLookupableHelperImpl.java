@@ -83,10 +83,11 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
             }
 
             for (PossibleScheduleOption possibleScheduleOption : savedSchedules) {
-                getScheduleBuildHelper().updateEnrollmentInfo(possibleScheduleOption.getActivityOptions());
+                LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData = getScheduleBuildHelper().getEnrollmentDataForActivities(possibleScheduleOption.getActivityOptions());
+                getScheduleBuildHelper().updateEnrollmentInfo(possibleScheduleOption.getActivityOptions(), enrollmentData);
                 PossibleScheduleErrorsInfo possibleScheduleErrorsInfo = new PossibleScheduleErrorsInfo();
                 Map<String, Map<String, List<String>>> invalidOptions = new LinkedHashMap<String, Map<String, List<String>>>();
-                List<ActivityOption> validatedActivities = getScheduleBuildHelper().validatedSavedActivities(possibleScheduleOption.getActivityOptions(), invalidOptions, reservedTimes == null ? new ArrayList<ReservedTime>() : reservedTimes, new ArrayList<String>(plannedItems.keySet()), registeredPossibleSchedule);
+                List<ActivityOption> validatedActivities = getScheduleBuildHelper().validatedSavedActivities(possibleScheduleOption.getActivityOptions(), invalidOptions, reservedTimes == null ? new ArrayList<ReservedTime>() : reservedTimes, new ArrayList<String>(plannedItems.keySet()), registeredPossibleSchedule, enrollmentData);
                 if (!CollectionUtils.isEmpty(validatedActivities) && validatedActivities.size() == possibleScheduleOption.getActivityOptions().size()) {
                     if (!CollectionUtils.isEmpty(invalidOptions)) {
                         boolean otherErrors = false;
@@ -122,7 +123,6 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
         }
         return savedSchedulesList;
     }
-
 
 
     public ScheduleBuildStrategy getScheduleBuildStrategy() {

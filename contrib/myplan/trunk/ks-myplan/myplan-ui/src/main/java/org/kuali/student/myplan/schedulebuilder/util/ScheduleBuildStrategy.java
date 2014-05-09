@@ -163,7 +163,7 @@ public interface ScheduleBuildStrategy {
      * @return A populated activity option for a given term, course, and
      * registration code. Returns null if data is missing.
      */
-    ActivityOption getActivityOption(String termId, String courseId, String courseCd, String regCode);
+    ActivityOption getActivityOption(String termId, String courseId, String courseCd, String regCode, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData);
 
     /**
      * Get a CampusCode from the Course attributes.

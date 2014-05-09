@@ -370,7 +370,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
      * @param invalidOptions
      * @return ActivityOption list which are validated items and also populates all invalidActivityOptions course code wise.
      */
-    public List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, Map<String, List<String>>> invalidOptions, List<ReservedTime> reservedTimes, List<String> plannedActivities, PossibleScheduleOption registered) {
+    public List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, Map<String, List<String>>> invalidOptions, List<ReservedTime> reservedTimes, List<String> plannedActivities, PossibleScheduleOption registered, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData) {
         List<ActivityOption> activityOptionList = new ArrayList<ActivityOption>();
         for (ActivityOption activityOption : activityOptions) {
             ActivityOptionInfo savedActivity = new ActivityOptionInfo(activityOption);
@@ -380,7 +380,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                 for (SecondaryActivityOptions secondaryActivityOption : savedActivity.getSecondaryOptions()) {
                     boolean containsPlannedItems = activityOptionsContainsPlannedItems(secondaryActivityOption.getActivityOptions(), plannedActivities);
                     if (!CollectionUtils.isEmpty(secondaryActivityOption.getActivityOptions())) {
-                        List<ActivityOption> validatedSecondaryActivities = validatedSavedActivities(secondaryActivityOption.getActivityOptions(), invalidOptions, reservedTimes, plannedActivities, registered);
+                        List<ActivityOption> validatedSecondaryActivities = validatedSavedActivities(secondaryActivityOption.getActivityOptions(), invalidOptions, reservedTimes, plannedActivities, registered, enrollmentData);
                         if (CollectionUtils.isEmpty(validatedSecondaryActivities)) {
                             isValid = false;
                             break;
@@ -423,10 +423,10 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                     continue;
                 }
             } else if (!CollectionUtils.isEmpty(savedActivity.getAlternateActivties())) {
-                validatedAlternates = savedActivity.getAlternateActivties() == null ? new ArrayList<ActivityOption>() : validatedSavedActivities(savedActivity.getAlternateActivties(), invalidOptions, reservedTimes, plannedActivities, registered);
+                validatedAlternates = savedActivity.getAlternateActivties() == null ? new ArrayList<ActivityOption>() : validatedSavedActivities(savedActivity.getAlternateActivties(), invalidOptions, reservedTimes, plannedActivities, registered, enrollmentData);
             }
 
-            ActivityOption currentActivity = getScheduleBuildStrategy().getActivityOption(savedActivity.getTermId(), savedActivity.getCourseId(), savedActivity.getCourseCd(), savedActivity.getActivityCode());
+            ActivityOption currentActivity = getScheduleBuildStrategy().getActivityOption(savedActivity.getTermId(), savedActivity.getCourseId(), savedActivity.getCourseCd(), savedActivity.getActivityCode(), enrollmentData);
             String reasonForChange = areEqual(savedActivity, currentActivity, reservedTimes, registered);
             if (StringUtils.isEmpty(reasonForChange)) {
                 savedActivity.setAlternateActivities(validatedAlternates);
@@ -579,7 +579,19 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
      * @param activityOptions
      */
     @Override
-    public void updateEnrollmentInfo(List<ActivityOption> activityOptions) {
+    public void updateEnrollmentInfo(List<ActivityOption> activityOptions, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData) {
+        List<ActivityOption> activityOptionList = populateEnrollInfo(activityOptions, enrollmentData);
+        activityOptions = new ArrayList<ActivityOption>();
+        activityOptions.addAll(activityOptionList);
+    }
+
+    /**
+     * Gives the enrollment data for activityOptions given by courses level
+     *
+     * @param activityOptions
+     */
+    @Override
+    public LinkedHashMap<String, LinkedHashMap<String, Object>> getEnrollmentDataForActivities(List<ActivityOption> activityOptions) {
         LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
         for (ActivityOption activityOption : activityOptions) {
             String termId = activityOption.getTermId();
@@ -597,9 +609,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                 enrollmentData.putAll(data);
             }
         }
-        List<ActivityOption> activityOptionList = populateEnrollInfo(activityOptions, enrollmentData);
-        activityOptions = new ArrayList<ActivityOption>();
-        activityOptions.addAll(activityOptionList);
+        return enrollmentData;
     }
 
     /**
