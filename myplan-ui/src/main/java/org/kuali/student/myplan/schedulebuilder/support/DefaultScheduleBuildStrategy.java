@@ -447,7 +447,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     }
 
     @Override
-    public ActivityOption getActivityOption(String termId, String courseId, String courseCd, String regCode) {
+    public ActivityOption getActivityOption(String termId, String courseId, String courseCd, String regCode, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData) {
         if (regCode == null)
             return null;
 
@@ -461,14 +461,6 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
         Term term = getTermHelper().getTermByAtpId(termId);
         String curric = course.getSubjectArea();
         String num = course.getCourseNumberSuffix();
-
-        LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
-
-        try {
-            getCourseHelper().getAllSectionStatus(enrollmentData, termId, curric, num);
-        } catch (DocumentException e) {
-            LOG.error("Could not load enrollmentInformation for course : " + course.getCode() + " for term : " + termId, e);
-        }
 
         if (term == null)
             return null;

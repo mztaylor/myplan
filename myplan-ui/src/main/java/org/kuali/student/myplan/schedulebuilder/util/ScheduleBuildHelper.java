@@ -3,6 +3,7 @@ package org.kuali.student.myplan.schedulebuilder.util;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public interface ScheduleBuildHelper {
 
     public void buildPossibleScheduleEvents(PossibleScheduleOption pso, Term term);
 
-    public List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, Map<String, List<String>>> invalidOptions, List<ReservedTime> reservedTimes, List<String> plannedActivities, PossibleScheduleOption registered);
+    public List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, Map<String, List<String>>> invalidOptions, List<ReservedTime> reservedTimes, List<String> plannedActivities, PossibleScheduleOption registered, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData);
 
     public long[][] extractClassMeetingTimeWeekBitsFromAOList(List<ActivityOption> aoList);
 
@@ -36,5 +37,7 @@ public interface ScheduleBuildHelper {
 
     public void validateForErrors(PossibleScheduleErrorsInfo possibleScheduleErrors, String courseCd, List<ActivityOption> activityOptions, List<String> invalidatedActivities);
 
-    public void updateEnrollmentInfo(List<ActivityOption> activityOptions);
+    public void updateEnrollmentInfo(List<ActivityOption> activityOptions, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData);
+
+    public LinkedHashMap<String, LinkedHashMap<String, Object>> getEnrollmentDataForActivities(List<ActivityOption> activityOptions);
 }
