@@ -81,7 +81,7 @@ var KsapSbCalendar = {
             var cssClass = (target.attr("class").match(/scheduleCalendar\-\-([a-z]*)\b/g) || []).join(" ");
             this.removeSchedule(source);
             if (!isSaved) {
-                target.removeClass(cssClass);
+                target.removeClass(cssClass + " schedulePossible__option--active");
                 this.addCssClass(cssClass);
             } else {
                 target.removeClass("scheduleSaved__item--active");
@@ -108,7 +108,7 @@ var KsapSbCalendar = {
             var cssClass = isSaved ? "scheduleCalendar--saved" : this.getCssClass();
             this.addSchedule(source, [cssClass]);
             if (!isSaved) {
-                target.addClass(cssClass);
+                target.addClass(cssClass + " schedulePossible__option--active");
                 this.removeCssClass(cssClass);
             } else {
                 target.addClass("scheduleSaved__item--active");
@@ -118,9 +118,18 @@ var KsapSbCalendar = {
         }
     },
 
+    switchSaveSchedule: function (id, target, event) {
+        stopEvent(event);
+        var isSaved = target.data("saved");
+        if (isSaved) {
+            KsapScheduleBuild.confirmRemovedSavedSchedule(target.parents(".schedulePossible__option").data("saved"), false, event);
+        } else {
+            this.toggleSaveSchedule(id, 'save', event);
+        }
+    },
+
     toggleSaveSchedule: function (id, methodToCall, event) {
         stopEvent(event);
-        // TODO FIX THIS SO IT WORKS ON SQV
         var form = jQuery('<form />').attr("id", "scheduleForm").attr("action", "sb").attr("method", "post");
         form.ajaxSubmit({
             data: {
@@ -154,7 +163,7 @@ var KsapSbCalendar = {
         var possibleSchedule = jQuery("#possible-schedule-" + recentlyAdded.uniqueId);
         var possibleTba = jQuery("#tba-" + recentlyAdded.uniqueId);
         var cssClass = (possibleSchedule.attr("class").match(/scheduleCalendar\-\-([a-z]*)\b/g) || []).join(" ");
-        possibleSchedule.removeClass(cssClass).addClass("schedulePossible__option--saved").attr("data-saved", recentlyAdded.id);
+        possibleSchedule.removeClass(cssClass + " schedulePossible__option--active").addClass("schedulePossible__option--saved").attr("data-saved", recentlyAdded.id).find(".schedulePossible__save").data("saved", true);
         this.addCssClass(cssClass);
         if (possibleTba.length > 0) {
             possibleTba.removeClass(cssClass).addClass("scheduleCalendar--saved").attr("data-saved", recentlyAdded.id).find(".scheduleBuilder__tbaItemIndex").text(recentlyAdded.index);
@@ -172,7 +181,7 @@ var KsapSbCalendar = {
         fnCloseAllPopups();
         var possibleSchedule = jQuery('.schedulePossible__option[data-saved=' + data.scheduleIdRemoved + ']');
         var tba = jQuery('.scheduleBuilder__tbaItem[data-saved=' + data.scheduleIdRemoved + ']');
-        if (possibleSchedule.length > 0) possibleSchedule.removeClass('schedulePossible__option--saved').removeData('saved');
+        if (possibleSchedule.length > 0) possibleSchedule.removeClass('schedulePossible__option--saved').removeData('saved').find(".schedulePossible__save").data("saved", false);
         if (tba.length > 0) {
             tba.removeClass('scheduleCalendar--saved').removeData('saved').hide().find(".scheduleBuilder__tbaItemIndex").text(tba.data("index"));
             this.toggleTbaSection();

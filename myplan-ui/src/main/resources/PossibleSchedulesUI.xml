@@ -208,6 +208,7 @@
                     </property>
                 </bean>
                 <bean parent="KSAP-HorizontalFieldGroup">
+                    <property name="group.layoutManager.style" value="position: relative; height: 21px;"/>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-HorizontalFieldGroup">
@@ -215,7 +216,7 @@
                                 <property name="onClickScript"
                                           value="KsapScheduleBuild.viewScheduleDetails('@{#line.termId}', '@{#form.requestedLearningPlanId}', '@{#line.uniqueId}', 0, false,  e);"/>
                                 <property name="cssClasses"
-                                          value="schedulePossible__save"/>
+                                          value="schedulePossible__details"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-Message" p:messageText="View details"/>
@@ -225,12 +226,17 @@
                             <bean parent="KSAP-HorizontalFieldGroup">
                                 <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                                 <property name="onClickScript"
-                                          value="KsapSbCalendar.toggleSaveSchedule('@{#line.uniqueId}', 'save', e);"/>
+                                          value="KsapSbCalendar.switchSaveSchedule('@{#line.uniqueId}', jQuery(this), e);"/>
                                 <property name="cssClasses"
                                           value="schedulePossible__save"/>
+                                <property name="dataAttributes">
+                                    <map>
+                                        <entry key="saved" value="@{#line.id NE null}"/>
+                                    </map>
+                                </property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="KSAP-Message" p:messageText="Pin"/>
+                                        <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
                                     </list>
                                 </property>
                             </bean>
