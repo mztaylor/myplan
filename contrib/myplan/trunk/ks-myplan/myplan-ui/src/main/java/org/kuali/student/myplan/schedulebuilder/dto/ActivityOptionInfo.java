@@ -669,6 +669,15 @@ public class ActivityOptionInfo extends ScheduleBuildOptionInfo implements
     }
 
     @Override
+    public String getMeetingInstructor() {
+        List<String> meetingInstructors = new ArrayList<String>();
+        for (ClassMeetingTime classMeetingTime : getClassMeetingTimes()) {
+            meetingInstructors.add(classMeetingTime.getInstructorName()!=null ? classMeetingTime.getInstructorName() : " ");
+        }
+        return StringUtils.join(meetingInstructors, "<br/>");
+    }
+
+    @Override
     public String getInstituteName() {
         if (ScheduleBuilderConstants.PCE_INSTITUTE_CODE.equals(getInstituteCode())) {
             return ScheduleBuilderConstants.PCE_INSTITUTE_NAME;

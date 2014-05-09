@@ -40,9 +40,9 @@ public class RegistrationKeyValueFinder extends UifKeyValuesFinderBase {
 
     /**
      * Build template method builds the label for the radio buttons as Html...
-     *
+     * <p/>
      * Example Template:
-     *
+     * <p/>
      * <div class="registrationActivity__code">C</div>
      * <div class="registrationActivity__credits">(5)</div>
      * <div class="registrationActivity__meetingDays">MWF<br>Th</div>
@@ -62,6 +62,7 @@ public class RegistrationKeyValueFinder extends UifKeyValuesFinderBase {
         List<String> meetingDays = new ArrayList<String>();
         List<String> meetingTimes = new ArrayList<String>();
         List<String> meetingLocations = new ArrayList<String>();
+        List<String> meetingInstructors = new ArrayList<String>();
         boolean tbd = false;
         for (ClassMeetingTime classMeetingTime : activityOption.getClassMeetingTimes()) {
             if (!classMeetingTime.isArranged()) {
@@ -69,7 +70,8 @@ public class RegistrationKeyValueFinder extends UifKeyValuesFinderBase {
             }
             meetingDays.add(StringUtils.join(classMeetingTime.getDays(), ""));
             meetingTimes.add(classMeetingTime.getTimes());
-            meetingLocations.add(String.format("%s %s", classMeetingTime.getBuilding()!=null ? classMeetingTime.getBuilding() : "", classMeetingTime.getLocation()!=null ? classMeetingTime.getLocation() : ""));
+            meetingInstructors.add(classMeetingTime.getInstructorName() != null ? classMeetingTime.getInstructorName() : " ");
+            meetingLocations.add(String.format("%s %s", classMeetingTime.getBuilding() != null ? classMeetingTime.getBuilding() : "", classMeetingTime.getLocation() != null ? classMeetingTime.getLocation() : ""));
         }
         String instituteCd = "";
         if (ScheduleBuilderConstants.PCE_INSTITUTE_CODE.equals(activityOption.getInstituteCode())) {
@@ -100,6 +102,7 @@ public class RegistrationKeyValueFinder extends UifKeyValuesFinderBase {
 
         template = template +
                 "<div class=\"registrationActivity__meetingLocation\">" + StringUtils.join(meetingLocations, "<br/>") + "</div>" +
+                "<div class=\"registrationActivity__instructor\">" + StringUtils.join(meetingInstructors, "<br/>") + "</div>" +
                 "<div class=\"registrationActivity__regCode\">" + activityOption.getRegistrationCode() + "</div>" +
                 "<div class=\"registrationActivity__instituteCode registrationActivity__instituteCode--" + (!instituteCd.isEmpty() ? "show" : "hide") + "\">" + instituteCd + "</div>" +
                 "<div class=\"registrationActivity__enrollRest registrationActivity__enrollRest--" + String.valueOf(activityOption.isEnrollmentRestriction()) + "\">" + "<img src=\"../themes/ksap/images/pixel.gif\"/>" + "</div>" +

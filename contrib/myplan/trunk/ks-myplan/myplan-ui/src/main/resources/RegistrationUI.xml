@@ -26,7 +26,7 @@
         <property name="items">
             <list>
                 <bean id="scheduleView" parent="KSAP-PageVerticalLayout">
-                    <property name="width" value="700px"/>
+                    <property name="width" value="896px"/>
                     <property name="style" value="margin:0 auto 5px;"/>
                     <property name="onDocumentReadyScript" value="parent.jQuery.fancybox.update()"/>
                     <property name="header">
@@ -93,7 +93,7 @@
                     </property>
                 </bean>
                 <bean id="scheduleSelect" parent="KSAP-PageVerticalLayout">
-                    <property name="width" value="700px"/>
+                    <property name="width" value="896px"/>
                     <property name="style" value="margin:0 auto 5px;"/>
                     <property name="render"
                               value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
@@ -185,7 +185,7 @@
                     </property>
                 </bean>
                 <bean id="scheduleCompleted" parent="KSAP-PageVerticalLayout">
-                    <property name="width" value="700px"/>
+                    <property name="width" value="896px"/>
                     <property name="style" value="margin:0 auto 5px;"/>
                     <property name="render"
                               value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
@@ -370,6 +370,7 @@
                 <bean parent="scheduleRegistrationActivityMeetingDays"/>
                 <bean parent="scheduleRegistrationActivityMeetingTime"/>
                 <bean parent="scheduleRegistrationActivityMeetingLocation"/>
+                <bean parent="scheduleRegistrationActivityInstructor"/>
                 <bean parent="scheduleRegistrationActivityRegCode"/>
                 <bean parent="scheduleRegistrationActivityInstituteCode"/>
                 <bean parent="scheduleRegistrationActivityEnrollRestriction"/>
@@ -399,6 +400,7 @@
                 <bean parent="scheduleRegistrationActivityMeetingDays"/>
                 <bean parent="scheduleRegistrationActivityMeetingTime"/>
                 <bean parent="scheduleRegistrationActivityMeetingLocation"/>
+                <bean parent="scheduleRegistrationActivityInstructor"/>
             </list>
         </property>
     </bean>
@@ -481,6 +483,9 @@
 
     <bean id="scheduleRegistrationActivityMeetingLocation" parent="KSAP-MessageField"
           p:messageText="@{#line.meetingLocation}" p:width="72px" p:cssClasses="registrationActivity__meetingLocation"/>
+
+    <bean id="scheduleRegistrationActivityInstructor" parent="KSAP-MessageField"
+          p:messageText="@{#line.meetingInstructor}" p:width="185px" p:cssClasses="registrationActivity__instructor"/>
 
     <bean id="scheduleRegistrationActivityRegCode" parent="Uif-LinkField" p:linkText="@{#line.registrationCode}"
           p:href="@{#ConfigProperties['ks.myplan.externalizable.sln.url']}@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToQtrYrParam(#form.termId)}&amp;SLN=@{#line.registrationCode}"
