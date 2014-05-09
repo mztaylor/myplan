@@ -354,6 +354,13 @@ public interface ActivityOption extends ScheduleBuildOption, HasUniqueId, Compar
     String getMeetingLocation();
 
     /**
+     * To get the meetings Instructor names as a single string for display purpose.
+     *
+     * @return "InstructorName <br/> InstructorName"
+     */
+    String getMeetingInstructor();
+
+    /**
      * To get the institute name from institute code for display purpose.
      *
      * @return "instituteName"
