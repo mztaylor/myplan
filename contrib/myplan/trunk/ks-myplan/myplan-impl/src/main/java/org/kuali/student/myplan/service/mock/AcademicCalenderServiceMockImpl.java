@@ -257,7 +257,7 @@ public class AcademicCalenderServiceMockImpl implements AcademicCalendarService 
     public List<TermInfo> searchForTerms(@WebParam(name = "criteria") QueryByCriteria queryByCriteria, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         List<TermInfo> searTermInfos = new ArrayList<TermInfo>();
         TermInfo termInfo = new TermInfo();
-        termInfo.setId("kuali.uw.atp.2013.4");
+        termInfo.setId("20144");
         searTermInfos.add(termInfo);
         return searTermInfos;
     }
