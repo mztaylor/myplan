@@ -660,21 +660,35 @@
 
                 <entry key="myplan.course.getCourseTitleAndId">
                     <value>NATIVE:
-                        SELECT DISTINCT
-                        clu.id, ident2.LNG_NAME
-                        FROM
-                        KSLU_CLU_IDENT ident,
-                        KSLU_CLU_IDENT ident2,
-                        KSLU_CLU clu  left outer join KSLU_CLU_JN_CLU_IDENT jni on jni.CLU_ID = clu.ID
-                        WHERE
-                        (ident.ID = clu.OFFIC_CLU_ID OR ident.ID = jni.ALT_CLU_ID)
-                        AND
-                        trim( ident.SUFX_CD ) = :number
-                        AND
-                        trim( ident.DIVISION ) = :subject
-                        AND
-                        ident2.id = (select c.OFFIC_CLU_ID from kslu_clu c join kslu_clu_ident ide on ide.ID = c.OFFIC_CLU_ID where c.ID = clu.ID)
-                        AND clu.EXP_FIRST_ATP = (select min(c.EXP_FIRST_ATP) FROM KSLU_CLU c where c.ver_ind_id = clu.ver_ind_id and c.LAST_ATP >= :lastScheduledTerm group by c.ver_ind_id )
+                        SELECT DISTINCT clu.id,
+                        ident.LNG_NAME
+                        FROM KSLU_CLU_IDENT ident,
+                        KSLU_CLU clu
+                        WHERE ident.ID = clu.OFFIC_CLU_ID
+                        AND clu.EXP_FIRST_ATP =
+                        (
+                        SELECT min(c.EXP_FIRST_ATP)
+                        FROM KSLU_CLU c
+                        WHERE c.ver_ind_id = clu.ver_ind_id
+                        AND c.LAST_ATP >= (:lastScheduledTerm )
+                        GROUP BY c.ver_ind_id
+                        )
+                        AND  clu.id in
+                        (SELECT DISTINCT clu.id
+                        FROM KSLU_CLU_IDENT ident,
+                        KSLU_CLU clu
+                        WHERE ident.ID = clu.OFFIC_CLU_ID
+                        AND trim( ident.SUFX_CD ) = (:number )
+                        AND trim( ident.DIVISION ) = (:subject )
+                        Union
+                        SELECT DISTINCT clu.id
+                        FROM KSLU_CLU_IDENT ident,
+                        KSLU_CLU clu,
+                        KSLU_CLU_JN_CLU_IDENT jni
+                        WHERE jni.CLU_ID = clu.ID
+                        and ident.ID = jni.ALT_CLU_ID
+                        AND trim( ident.SUFX_CD ) = (:number )
+                        AND trim( ident.DIVISION ) = (:subject )  )
                     </value>
                 </entry>
 
