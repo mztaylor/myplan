@@ -236,7 +236,9 @@
                                 </property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+                                        <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif">
+                                            <property name="title" value="Pin this schedule"/>
+                                        </bean>
                                     </list>
                                 </property>
                             </bean>
@@ -422,7 +424,7 @@
                     function(event, element) {
                         jQuery(element).attr({
                             id: 'possible_schedule_event' + event._id,
-                            title: (typeof event.popoverContent !== 'undefined') ? event.popoverContent.courseCd + ' ' + event.popoverContent.courseTitle: 'Reserved'
+                            title: (typeof event.popoverContent !== 'undefined') ? event.popoverContent.courseCd + ' ' + event.popoverContent.courseTitle + ' (' + event.popoverContent.courseCredit + ')' : 'Reserved'
                         });
                     }
                 "/>

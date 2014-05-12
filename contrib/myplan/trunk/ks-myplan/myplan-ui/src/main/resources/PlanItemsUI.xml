@@ -38,14 +38,16 @@
                     <list>
                         <bean parent="Uif-Link" p:linkText="Your Academic Year">
                             <property name="href" value="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView"/>
-                            <property name="cssClasses" value="active"/>
+                            <property name="cssClasses" value="secondaryNavigation__year active"/>
                         </bean>
-                        <bean parent="Uif-Link" p:linkText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpToYearTerm(T(org.kuali.student.myplan.plan.util.AtpHelper).getLastScheduledAtpId()).getTermLabel()} Quarter @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpToYearTerm(T(org.kuali.student.myplan.plan.util.AtpHelper).getLastScheduledAtpId()).getYearAsString()}">
-                            <property name="href" value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getLastScheduledAtpId()}"/>
+                        <bean parent="Uif-Link" p:linkText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).formatCurrentQuarterLabelForFirstPlanTerm()}">
+                            <property name="href" value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getFirstPlanTerm()}"/>
+                            <property name="cssClasses" value="secondaryNavigation__term"/>
                         </bean>
                         <bean parent="Uif-Link" p:linkText="Build Your Schedule">
-                            <property name="href" value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getLastScheduledAtpId()}&amp;requestedLearningPlanId=XXXXXXXXX&amp;pageId=schedule_build"/>
+                            <property name="href" value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getFirstPlanTerm()}&amp;requestedLearningPlanId=@{learningPlanId}&amp;pageId=schedule_build"/>
                             <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+                            <property name="cssClasses" value="secondaryNavigation__schedule @{!T(org.kuali.student.myplan.plan.util.AtpHelper).isAtpPublished(T(org.kuali.student.myplan.plan.util.AtpHelper).getFirstPlanTerm()) AND learningPlanId EQ null ? 'disabled' : ''}"/>
                         </bean>
                     </list>
                 </property>
@@ -78,8 +80,8 @@
                             <ref bean="completed_plan_items_menu"/>
                             <ref bean="completed_placeholder_menu"/>
                             <ref bean="academic_course_menu"/>
-                            <bean id="hidden_new_user_flag" parent="KSAP-SimpleDataField" p:propertyName="newUser"
-                                  p:hidden="true"/>
+                            <bean id="newUser" parent="KSAP-SimpleDataField" p:propertyName="newUser" p:hidden="true"/>
+                            <bean id="learningPlanId" parent="KSAP-SimpleDataField" p:propertyName="learningPlanId" p:hidden="true"/>
                         </list>
                     </property>
                 </bean>
@@ -90,8 +92,8 @@
     <bean id="planned_mock_detail" parent="KSAP-VerticalBoxGroup" p:width="710px"
           p:style="min-height:400px;">
         <property name="onDocumentReadyScript" value="
-            var user = jQuery.trim(jQuery('#hidden_new_user_flag').text());
-            if (user == 'true' &amp;&amp; !jQuery.cookie('new_user_cookie')) {
+            var user = jQuery.trim(jQuery('#newUser').text());
+            if (user === 'true' &amp;&amp; !jQuery.cookie('new_user_cookie')) {
                 jQuery.cookie('new_user_cookie', 'true');
                 jQuery.fancybox({type: 'iframe', href: '@{#ConfigProperties['myplan.getting.started.page']}', height: '90%', width: '800', autoSize: false});
             }
@@ -398,10 +400,12 @@
                     start: iStart,
                     afterEnd: function(a) {
                         buildPlanHeader(a, '.planNavigation__header h2');
+                        setSecondaryNavigation(a, jQuery.trim(jQuery('#learningPlanId').text()));
                         setUrlHash('planView', jQuery(a[0]).index());
                     },
                     initCallback: function(a) {
                         buildPlanHeader(a, '.planNavigation__header h2');
+                        setSecondaryNavigation(a, jQuery.trim(jQuery('#learningPlanId').text()));
                         jQuery('#planned_courses_detail_list ul:not(.errorLines) li').css('height', 'auto');
                         jQuery.unblockUI();
                     }
@@ -444,47 +448,25 @@
                                 </property>
                             </bean>
                             <bean parent="KSAP-HeaderTwo" p:headerText="Academic Year" p:cssClasses="planNavigation__header"/>
-                            <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--view">
-                                <property name="items">
-                                    <list>
-                                        <bean id="single_quarter_button" parent="Uif-Link">
-                                            <property name="linkText" value="Quarter"/>
-                                            <property name="title" value="Quarter"/>
-                                            <property name="href"
-                                                      value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView"/>
-                                            <property name="cssClasses"
-                                                      value="btn btn-secondary planNavigation__button planNavigation__button--first"/>
-                                        </bean>
-                                        <bean id="one_year_button" parent="Uif-Link">
-                                            <property name="linkText" value="1 Year"/>
-                                            <property name="title" value="1 Year"/>
-                                            <property name="href" value="#"/>
-                                            <property name="onClickScript" value="e.preventDefault();"/>
-                                            <property name="cssClasses"
-                                                      value="btn btn-secondary planNavigation__button planNavigation__button--last active"/>
-                                        </bean>
-                                    </list>
+                            <bean id="overallPlanLink" parent="Uif-LinkField">
+                                <property name="linkText" value="Print your plan"/>
+                                <property name="title" value="Print your plan"/>
+                                <property name="href"
+                                          value="/student/myplan/lookup?methodToCall=search&amp;viewId=FullPlannedCourses-LookupView"/>
+                                <property name="lightBox">
+                                    <bean parent="Uif-LightBox">
+                                        <property name="templateOptions">
+                                            <map merge="true">
+                                                <entry key="width" value="700"/>
+                                                <entry key="fitToView" value="false"/>
+                                            </map>
+                                        </property>
+                                    </bean>
                                 </property>
+                                <property name="cssClasses" value="planNavigation__printable"/>
                             </bean>
                         </list>
                     </property>
-                </bean>
-                <bean id="overallPlanLink" parent="Uif-LinkField">
-                    <property name="linkText" value="Print your entire academic plan"/>
-                    <property name="title" value="Print your entire academic plan"/>
-                    <property name="href"
-                              value="/student/myplan/lookup?methodToCall=search&amp;viewId=FullPlannedCourses-LookupView"/>
-                    <property name="lightBox">
-                        <bean parent="Uif-LightBox">
-                            <property name="templateOptions">
-                                <map merge="true">
-                                    <entry key="width" value="700"/>
-                                    <entry key="fitToView" value="false"/>
-                                </map>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="cssClasses" value="planNavigation__printable"/>
                 </bean>
                 <ref bean="planned_courses_detail_list"/>
             </list>
@@ -519,10 +501,13 @@
                         <property name="dataAttributes">
                             <map>
                                 <entry key="atpid" value="@{#line.atpId}"/>
-                                <entry key="single-quarter-atpid" value="@{#line.singleQuarterAtp}"/>
                                 <entry key="start" value="@{#line.index GE 0 ? 'true':'false'}"/>
                                 <entry key="index" value="@{#line.index GE 0 ? #line.index :'-1'}"/>
                                 <entry key="openforplanning" value="@{#line.openForPlanning}"/>
+                                <!--Boolean for if this term in this year is for the secondary term link-->
+                                <entry key="term-view" value="@{#line.singleQuarterAtp EQ #line.atpId}"/>
+                                <entry key="term-label" value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).formatQuarterLabel(#line.atpId)}"/>
+                                <entry key="term-published" value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).isAtpPublished(#line.atpId)}"/>
                             </map>
                         </property>
                         <property name="cssClasses">

@@ -43,14 +43,15 @@
                     <list>
                         <bean parent="Uif-Link" p:linkText="Your Academic Year">
                             <property name="href" value="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView&amp;focusAtpId=@{dataObject.atpId}"/>
+                            <property name="cssClasses" value="secondaryNavigation__year"/>
                         </bean>
-                        <bean parent="Uif-Link" p:linkText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpToYearTerm(dataObject.atpId).getTermLabel()} Quarter @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpToYearTerm(dataObject.atpId).getYearAsString()}">
+                        <bean parent="Uif-Link" p:linkText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).formatQuarterLabel(dataObject.atpId)}">
                             <property name="href" value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{dataObject.atpId}"/>
-                            <property name="cssClasses" value="active"/>
+                            <property name="cssClasses" value="secondaryNavigation__term active"/>
                         </bean>
                         <bean parent="Uif-Link" p:linkText="Build Your Schedule">
                             <property name="href" value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{dataObject.atpId}&amp;requestedLearningPlanId=@{dataObject.learningPlanId}&amp;pageId=schedule_build"/>
-                            <property name="cssClasses" value="@{!dataObject.publishedTerm AND !dataObject.openForPlanning AND dataObject.learningPlanId EQ null ? 'disabled' : ''}"/>
+                            <property name="cssClasses" value="secondaryNavigation__schedule @{!dataObject.publishedTerm AND !dataObject.openForPlanning AND dataObject.learningPlanId EQ null ? 'disabled' : ''}"/>
                             <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                             <property name="onClickScript" value="if(jQuery(this).hasClass('disabled')){ e.preventDefault(); }"/>
                         </bean>
@@ -79,63 +80,47 @@
                                                           p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--term">
                                                         <property name="items">
                                                             <list>
-                                                                <bean id="sqv_previous_term_button" parent="Uif-Link"
-                                                                      p:title="Previous Quarter">
+                                                                <bean id="sqv_previous_term_button" parent="Uif-Link" p:title="Previous Quarter">
                                                                     <property name="linkText"
                                                                               value="&lt;img src=&quot;../themes/ksap/images/pixel.gif&quot; class=&quot;planNavigation__image&quot; /&gt;"/>
                                                                     <property name="href"
-                                                                              value="#"/>
+                                                                              value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}"/>
                                                                     <property name="cssClasses"
                                                                               value="btn btn-secondary planNavigation__button planNavigation__button--previous"/>
+                                                                    <property name="additionalCssClasses" value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId) EQ null ? 'disabled':''}"/>
                                                                     <property name="propertyReplacers">
                                                                         <list>
                                                                             <bean parent="Uif-ConditionalBeanPropertyReplacer"
                                                                                   p:propertyName="href"
-                                                                                  p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId) NE null">
-                                                                                <property name="replacement"
-                                                                                          value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId)}"/>
-                                                                            </bean>
-                                                                            <bean parent="Uif-ConditionalBeanPropertyReplacer"
-                                                                                  p:propertyName="cssClasses"
                                                                                   p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId) EQ null">
-                                                                                <property name="replacement"
-                                                                                          value="btn btn-secondary planNavigation__button planNavigation__button--previous disabled"/>
+                                                                                <property name="replacement" value="#"/>
                                                                             </bean>
                                                                             <bean parent="Uif-ConditionalBeanPropertyReplacer"
                                                                                   p:propertyName="onClickScript"
                                                                                   p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getPreviousAtpId(dataObject.atpId) EQ null">
-                                                                                <property name="replacement"
-                                                                                          value="e.preventDefault();"/>
+                                                                                <property name="replacement" value="e.preventDefault();"/>
                                                                             </bean>
                                                                         </list>
                                                                     </property>
                                                                 </bean>
-                                                                <bean id="sqv_next_term_button" parent="Uif-Link"
-                                                                      p:title="Next Quarter">
+                                                                <bean id="sqv_next_term_button" parent="Uif-Link" p:title="Next Quarter">
                                                                     <property name="linkText"
                                                                               value="&lt;img src=&quot;../themes/ksap/images/pixel.gif&quot; class=&quot;planNavigation__image&quot; /&gt;"/>
-                                                                    <property name="href" value="#"/>
+                                                                    <property name="href" value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}"/>
                                                                     <property name="cssClasses"
                                                                               value="btn btn-secondary planNavigation__button planNavigation__button--next"/>
+                                                                    <property name="additionalCssClasses" value="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId) EQ null ? 'disabled':''}"/>
                                                                     <property name="propertyReplacers">
                                                                         <list>
                                                                             <bean parent="Uif-ConditionalBeanPropertyReplacer"
                                                                                   p:propertyName="href"
-                                                                                  p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId) NE null">
-                                                                                <property name="replacement"
-                                                                                          value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId)}"/>
-                                                                            </bean>
-                                                                            <bean parent="Uif-ConditionalBeanPropertyReplacer"
-                                                                                  p:propertyName="cssClasses"
                                                                                   p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId) EQ null">
-                                                                                <property name="replacement"
-                                                                                          value="btn btn-secondary planNavigation__button planNavigation__button--next disabled"/>
+                                                                                <property name="replacement" value="#"/>
                                                                             </bean>
                                                                             <bean parent="Uif-ConditionalBeanPropertyReplacer"
                                                                                   p:propertyName="onClickScript"
                                                                                   p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getNextAtpId(dataObject.atpId) EQ null">
-                                                                                <property name="replacement"
-                                                                                          value="e.preventDefault();"/>
+                                                                                <property name="replacement" value="e.preventDefault();"/>
                                                                             </bean>
                                                                         </list>
                                                                     </property>
@@ -143,36 +128,12 @@
                                                             </list>
                                                         </property>
                                                     </bean>
-                                                    <bean parent="KSAP-HeaderTwo" p:headerText="Plan Details: @{dataObject.qtrYear}"
+                                                    <bean parent="KSAP-HeaderTwo" p:headerText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).formatQuarterLabel(dataObject.atpId)}"
                                                           p:cssClasses="planNavigation__header"/>
-                                                    <bean parent="KSAP-HorizontalBoxGroup"
-                                                          p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--view">
-                                                        <property name="items">
-                                                            <list>
-                                                                <bean id="sqv_term_button" parent="Uif-Link">
-                                                                    <property name="linkText" value="Quarter"/>
-                                                                    <property name="title" value="Quarter"/>
-                                                                    <property name="href" value="#"/>
-                                                                    <property name="onClickScript"
-                                                                              value="e.preventDefault();"/>
-                                                                    <property name="cssClasses"
-                                                                              value="btn btn-secondary planNavigation__button planNavigation__button--first active"/>
-                                                                </bean>
-                                                                <bean id="sqv_one_year_button" parent="Uif-Link">
-                                                                    <property name="linkText" value="1 Year"/>
-                                                                    <property name="title" value="1 Year"/>
-                                                                    <property name="href"
-                                                                              value="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView&amp;focusAtpId=@{dataObject.atpId}"/>
-                                                                    <property name="cssClasses"
-                                                                              value="btn btn-secondary planNavigation__button planNavigation__button--last"/>
-                                                                </bean>
-                                                            </list>
-                                                        </property>
-                                                    </bean>
+                                                    <bean parent="overallPlanLink"/>
                                                 </list>
                                             </property>
                                         </bean>
-                                        <ref bean="overallPlanLink"/>
 
                                         <bean parent="KSAP-Message" p:cssClasses="block">
                                             <property name="messageText"
@@ -298,20 +259,6 @@
                         <value>@{dataObject.completedTerm ? 'planTerm__header--past' : (dataObject.currentTermForView ?
                             'planTerm__header--current' : 'planTerm__header--future')}
                         </value>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="header.rightGroup">
-            <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="planTerm__header--right">
-                <property name="items">
-                    <list>
-                        <bean parent="Uif-Link" p:linkText="Schedule Builder" p:title="Schedule Builder">
-                            <property name="href"
-                                      value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{dataObject.atpId}&amp;requestedLearningPlanId=@{dataObject.learningPlanId}&amp;pageId=schedule_build"/>
-                            <property name="render" value="@{dataObject.publishedTerm AND dataObject.openForPlanning AND dataObject.learningPlanId NE null AND !T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
-                            <property name="cssClasses" value="btn btn-small planTerm__scheduleBuilder"/>
-                        </bean>
                     </list>
                 </property>
             </bean>
