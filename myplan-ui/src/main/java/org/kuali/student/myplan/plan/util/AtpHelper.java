@@ -878,7 +878,7 @@ public class AtpHelper {
     public static boolean isAtpPublished(String atpId) {
         List<String> terms = getPublishedTerms();
         YearTerm yt = AtpHelper.atpToYearTerm(atpId);
-        if (terms.contains(yt))
+        if (terms.contains(yt.toATP()))
             return true;
         else
             return false;

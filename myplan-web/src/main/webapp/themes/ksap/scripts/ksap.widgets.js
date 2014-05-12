@@ -37,9 +37,19 @@ function buildPlanHeader(aView, selector) {
     var sText = 'Academic Year';
     var aFirst = jQuery(aView[0]).find(".planYear__term").data("atpid").toString().substring(0,4);
     var aLast = jQuery(aView[aView.length - 1]).find(".planYear__term").data("atpid").toString().substring(0,4);
-    var quarterLink = "inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=" + jQuery(aView[0]).find(".planYear__term").data("single-quarter-atpid");
+
     jQuery(selector).html(sText + ' ' + aFirst + '-' + aLast);
-    jQuery("#single_quarter_button").attr("href", quarterLink);
+}
+
+function setSecondaryNavigation(aView, learningPlanId) {
+    var term = jQuery(aView).find(".planYear__term[data-term-view='true']");
+    var termUrl = "inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=" + term.data("atpid");
+    var termLabel = term.data("term-label");
+    var termPublished = term.data("term-published");
+    var scheduleUrl = "sb?methodToCall=start&viewId=ScheduleBuild-FormView&termId=" + term.data("atpid") + "&requestedLearningPlanId=" + learningPlanId + "&pageId=schedule_build";
+
+    jQuery(".secondaryNavigation__term").text(termLabel).attr("href", termUrl);
+    jQuery(".secondaryNavigation__schedule").attr("href", scheduleUrl).removeClass("disabled").addClass(!termPublished ? "disabled" : "");
 }
 /*
  ######################################################################################
