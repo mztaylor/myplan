@@ -49,7 +49,7 @@ function openPopup(getId, retrieveData, formAction, popupStyle, popupOptions, e)
     var popupItem = (typeof popupOptions.selector == "undefined") ? jQuery(target) : jQuery(target).parents(popupOptions.selector);
 
     if (!popupItem.HasPopOver()) popupItem.CreatePopOver({manageMouseEvents: false});
-    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
+    var popupSettings = jQuery.extend({}, popupOptionsDefault, popupOptions);
     var popupHtml = jQuery('<div />').attr("id", "KSAP-Popover");
     if (popupStyle) {
         jQuery.each(popupStyle, function (property, value) {
@@ -142,7 +142,7 @@ function openMenu(id, getId, atpId, e, selector, popupClasses, popupOptions, clo
     }
     var popupHtml = jQuery('<div />').attr("id", id + "_popup").attr("class", popupClasses).html(jQuery("#" + getId).html());
 
-    var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
+    var popupSettings = jQuery.extend({}, popupOptionsDefault, popupOptions);
     popupSettings.innerHtml = popupHtml.wrap("<div>").parent().clone().html();
 
     popupBox.ShowPopOver(popupSettings, false);
@@ -180,10 +180,14 @@ function openDialog(sText, e, close) {
 
     if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents: false});
 
-    popupOptionsDefault.tail.hidden = true;
-    popupOptionsDefault.innerHtml = '<div style="width:350px;">' + sText + '</div>';
+    var popupOptions = {
+        tail: {
+            hidden: true
+        },
+        innerHtml: '<div style="width:350px;">' + sText + '</div>'
+    };
 
-    popupBox.ShowPopOver(popupOptionsDefault, false);
+    popupBox.ShowPopOver(jQuery.extend({}, popupOptionsDefault, popupOptions), false);
     var popupBoxId = popupBox.GetPopOverID();
     popupBox.FreezePopOver();
 
