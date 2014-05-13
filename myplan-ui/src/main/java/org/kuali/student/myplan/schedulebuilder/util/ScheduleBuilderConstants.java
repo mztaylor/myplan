@@ -63,7 +63,7 @@ public class ScheduleBuilderConstants {
     public static final String ZERO_RESULTS_REASON_CLOSED = "Are currently closed";
     public static final String ZERO_RESULTS_REASON_RESTRICTION = "Have enrollment restrictions";
     public static final String ZERO_RESULTS_REASON_OVERLAPPED = "Overlap with my registered courses";
-    public static final String ZERO_RESULTS_REASON_OTHER_INSTITUTES = "Are UW PCE courses";
+    public static final String ZERO_RESULTS_REASON_OTHER_INSTITUTES = "Are UW PCE sections";
 
     public static final String RESULTS_NOT_POSSIBLE_REASON_NO_DEFINED_SECTIONS = "One or more of your planned courses is not offered this quarter.";
 
