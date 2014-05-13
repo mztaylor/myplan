@@ -246,7 +246,7 @@
                                                 <bean parent="Uif-KeyLabelPair" p:key="registered"
                                                       p:value="Overlap with my registered courses"/>
                                                 <bean parent="Uif-KeyLabelPair" p:key="otherInstitutes"
-                                                      p:value="Are UW PCE courses"/>
+                                                      p:value="Are UW PCE sections"/>
                                             </list>
                                         </property>
                                     </bean>
