@@ -1,6 +1,7 @@
 .appNavigation {
     margin: 0;
     padding: 0;
+    height: 36px;
 
     ul, ul li {
         list-style: none;
@@ -33,14 +34,14 @@
             }
 
             &.appNavigation__item--home {
-                background-image: url("../images/appnavigation_icon_home_purple.png");
-                background-repeat: no-repeat;
                 background-position: 10px 9px;
                 padding-left: 36px;
+                .retina('../images/appnavigation_icon_home_purple.png', 20px, 16px);
 
                 &.appNavigation__item--active,
                 &:hover {
-                    background-image: url("../images/appnavigation_icon_home_white.png");
+                    background-image: url("");
+                    .retina('../images/appnavigation_icon_home_white.png', 20px, 16px);
                 }
             }
 
@@ -96,7 +97,7 @@
                     opacity: 0.4;
 
                     &:hover {
-                        background-color: none !important;
+                        background-color: transparent !important;
                         color: #927b4b;
                         cursor: default;
                     }

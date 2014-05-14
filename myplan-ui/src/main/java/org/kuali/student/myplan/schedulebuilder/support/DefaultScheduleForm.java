@@ -7,6 +7,7 @@ import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.ScheduleBuildFiltersInfo;
 import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
@@ -19,6 +20,7 @@ import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -106,8 +108,9 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
         setTerm(null);
         StringBuilder pubs = new StringBuilder();
         List<Term> officialTerms = th.getOfficialTerms();
-        if (!CollectionUtils.isEmpty(officialTerms)) {
-            currentTermForView = getTermId().equals(officialTerms.get(0).getId());
+        String currentTermId = AtpHelper.getCurrentAtpId();
+        if (StringUtils.hasText(currentTermId)) {
+            currentTermForView = getTermId().equals(currentTermId);
         }
         for (Term t : officialTerms) {
             pubs.append(" ").append(t.getId());

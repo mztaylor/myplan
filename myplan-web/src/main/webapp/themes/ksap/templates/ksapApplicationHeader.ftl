@@ -52,7 +52,7 @@
                 </div>
                 </#if>
             </div>
-            <img class="appHeader__patch" src="../themes/ksap/images/appheader_icon_logo.png"/>
+            <img class="appHeader__patch" src="../themes/ksap/images/appheader_icon_logo@2x.png"/>
         </div>
 
         <div class="appNavigation">
