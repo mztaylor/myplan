@@ -31,7 +31,7 @@
         <property name="items">
             <list>
                 <bean id="scheduleView" parent="KSAP-PageVerticalLayout">
-                    <property name="width" value="896px"/>
+                    <property name="width" value="870px"/>
                     <property name="style" value="margin:0 auto;"/>
                     <property name="onDocumentReadyScript" value="parent.jQuery.fancybox.update()"/>
                     <property name="header">
@@ -98,7 +98,7 @@
                     </property>
                 </bean>
                 <bean id="scheduleSelect" parent="KSAP-PageVerticalLayout">
-                    <property name="width" value="896px"/>
+                    <property name="width" value="870px"/>
                     <property name="style" value="margin:0 auto;"/>
                     <property name="render"
                               value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
@@ -190,7 +190,7 @@
                     </property>
                 </bean>
                 <bean id="scheduleCompleted" parent="KSAP-PageVerticalLayout">
-                    <property name="width" value="896px"/>
+                    <property name="width" value="870px"/>
                     <property name="style" value="margin:0 auto;"/>
                     <property name="render"
                               value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
@@ -320,14 +320,6 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="subCollections"
-                      p:condition="pageId EQ 'scheduleConfirm'">
-                    <property name="replacement">
-                        <list>
-                            <bean parent="scheduleRegistrationItemActivities_confirm"/>
-                        </list>
-                    </property>
-                </bean>
             </list>
         </property>
     </bean>
@@ -368,6 +360,7 @@
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="readOnly" value="true"/>
         <property name="cssClasses" value="registrationActivity__data"/>
+        <property name="style" value="margin: 10px 0 0 0;"/>
         <property name="items">
             <list>
                 <bean parent="scheduleRegistrationActivityCode"/>
@@ -385,11 +378,6 @@
         </property>
     </bean>
 
-    <bean id="scheduleRegistrationItemActivities_confirm" parent="scheduleRegistrationItemActivities">
-        <property name="layoutManager.lineGroupPrototype.render"
-                  value="@{getSelectedRegistrationCodes().contains(#line.registrationCode)}"/>
-    </bean>
-
     <bean id="scheduleRegistrationItemActivitiesRegistered" parent="KSAP-TableCollectionGroup">
         <property name="propertyName" value="combinedActivities"/>
         <property name="bindingInfo.bindToForm" value="true"/>
@@ -398,6 +386,7 @@
                   value="org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo"/>
         <property name="layoutManager.numberOfColumns" value="5"/>
         <property name="cssClasses" value="registrationActivity__data"/>
+        <property name="style" value="margin: 10px 0 0 0;"/>
         <property name="items">
             <list>
                 <bean parent="scheduleRegistrationActivityCode"/>
@@ -416,6 +405,7 @@
         <property name="propertyName" value="activityOptions"/>
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="readOnly" value="false"/>
+        <property name="style" value="margin: 10px 0 0 0;"/>
         <property name="items">
             <list>
                 <bean parent="Uif-InputField" p:propertyName="selectedForReg">
@@ -509,7 +499,7 @@
 
     <bean id="scheduleRegistrationActivityEnrollment" parent="KSAP-MessageField"
           p:cssClasses="registrationActivity__enrollState"
-          p:messageText="[strong]@{#line.filledSeats}[/strong] / @{#line.totalSeats}" p:width="48px"/>
+          p:messageText="[strong]@{#line.filledSeats}[/strong] / @{#line.totalSeats}" p:width="56px"/>
 
     <bean id="scheduleRegistrationActivityEnrollStatus" parent="KSAP-MessageField" p:messageText="@{#line.enrollStatus}"
           p:width="48px"
