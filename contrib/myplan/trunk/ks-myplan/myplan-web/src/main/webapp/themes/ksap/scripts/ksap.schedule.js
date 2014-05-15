@@ -252,7 +252,7 @@ var KsapScheduleBuild = {
             jQuery.each(items, function (index, value) {
                 var item = jQuery("#action-" + items[index]).data();
                 if (KsapScheduleBuild.isPlanned(item.activityId)) {
-                    delete KsapSbCalendar.plannedActivities[item.activityId];
+                    delete KsapScheduleBuild.plannedActivities[item.activityId];
                     jQuery("#action-" + items[index]).removeClass("scheduleDetails__itemDelete").addClass("scheduleDetails__itemAdd");
                     jQuery("#section-code-" + items[index] + "_span").removeClass("scheduleDetails__sectionCd--planned");
                 }
