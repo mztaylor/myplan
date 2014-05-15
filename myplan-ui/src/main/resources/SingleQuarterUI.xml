@@ -65,7 +65,7 @@
                 <bean parent="KSAP-PageHorizontalLayout" id="term_planned_courses_detail_page" p:id="term_planned_courses_detail_page">
                     <property name="onDocumentReadyScript" value="
                         jQuery('body').on('SAVED_SCHEDULE_REMOVE', function(event, data) {
-                            jQuery.fancybox.close(true);
+                            parent.jQuery.fancybox.close(true);
                             fnCloseAllPopups();
                         });
                     "/>
@@ -157,9 +157,7 @@
                                         <bean parent="KSAP-VerticalBoxGroup" p:hidden="true">
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="sb_course_full_details_template"/>
-                                                    <bean parent="sb_registered_full_details_template"/>
-                                                    <bean parent="sb_course_details_list_template"/>
+                                                    <bean parent="sb_error_max_pinned"/>
                                                     <bean parent="sb_confirm_remove_pinned"/>
                                                 </list>
                                             </property>

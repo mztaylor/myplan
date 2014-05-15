@@ -23,11 +23,16 @@
         <property name="formClass" value="org.kuali.student.myplan.registration.form.DefaultRegistrationForm"/>
         <property name="entryPageId" value="scheduleView"/>
         <property name="persistFormToSession" value="true"/>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>themes/ksap/scripts/ksap.sbcalendar.js</value>
+            </list>
+        </property>
         <property name="items">
             <list>
                 <bean id="scheduleView" parent="KSAP-PageVerticalLayout">
                     <property name="width" value="896px"/>
-                    <property name="style" value="margin:0 auto 5px;"/>
+                    <property name="style" value="margin:0 auto;"/>
                     <property name="onDocumentReadyScript" value="parent.jQuery.fancybox.update()"/>
                     <property name="header">
                         <bean id="scheduleRegisterHeader" parent="KSAP-HeaderTwo"
@@ -94,7 +99,7 @@
                 </bean>
                 <bean id="scheduleSelect" parent="KSAP-PageVerticalLayout">
                     <property name="width" value="896px"/>
-                    <property name="style" value="margin:0 auto 5px;"/>
+                    <property name="style" value="margin:0 auto;"/>
                     <property name="render"
                               value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                     <property name="onDocumentReadyScript" value="
@@ -186,7 +191,7 @@
                 </bean>
                 <bean id="scheduleCompleted" parent="KSAP-PageVerticalLayout">
                     <property name="width" value="896px"/>
-                    <property name="style" value="margin:0 auto 5px;"/>
+                    <property name="style" value="margin:0 auto;"/>
                     <property name="render"
                               value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                     <property name="onDocumentReadyScript" value="parent.jQuery.fancybox.update()"/>

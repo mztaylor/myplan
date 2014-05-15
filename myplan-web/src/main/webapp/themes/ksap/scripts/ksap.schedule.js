@@ -287,7 +287,7 @@ var KsapScheduleBuild = {
                     closeClick: false
                 }
             },
-            width: 900,
+            width: 910,
             fitToView: false,
             type: "iframe",
             autoHeight: true,
@@ -297,12 +297,14 @@ var KsapScheduleBuild = {
 
     confirmRemovedSavedSchedule: function (id, inLightBox, event) {
         stopEvent(event);
-        var confirmHtml = jQuery("#sb_confirm_remove_pinned").clone().wrap("<div/>").parent().html();
+        var template = (inLightBox ? parent.jQuery("#sb_confirm_remove_pinned") : jQuery("#sb_confirm_remove_pinned"));
+        var confirmHtml = template.clone().wrap("<div/>").parent().html();
         confirmHtml = confirmHtml.replace(/sb_confirm_remove_pinned/gi, "u-" + id + "-remove");
         confirmHtml = confirmHtml.replace(/__KSAP_PINNED_ID__/gi, id);
         confirmHtml = confirmHtml.replace(/__KSAP_IN_LIGHTBOX__/gi, inLightBox);
         if (inLightBox) {
-            jQuery("#u-" + id).hide().parent(".fancybox-inner").append(confirmHtml);
+            jQuery("#scheduleView").hide().after(confirmHtml);
+            parent.jQuery.fancybox.update();
         } else {
             openDialog(confirmHtml, null, true);
         }
@@ -311,7 +313,8 @@ var KsapScheduleBuild = {
     cancel: function (id, inLightBox) {
         if (inLightBox) {
             jQuery("#u-" + id + "-remove").remove();
-            jQuery("#u-" + id).show();
+            jQuery("#scheduleView").show();
+            parent.jQuery.fancybox.update();
         } else {
             fnCloseAllPopups();
         }
