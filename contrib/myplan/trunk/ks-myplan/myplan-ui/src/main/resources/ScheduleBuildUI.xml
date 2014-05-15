@@ -358,10 +358,7 @@
             <list>
                 <bean parent="sb_reserved_item_template"/>
                 <bean parent="sb_course_details_template"/>
-                <bean parent="sb_course_full_details_template"/>
                 <bean parent="sb_registered_details_template"/>
-                <bean parent="sb_registered_full_details_template"/>
-                <bean parent="sb_course_details_list_template"/>
                 <bean parent="sb_error_max_schedules"/>
                 <bean parent="sb_error_max_pinned"/>
                 <bean parent="sb_confirm_remove_pinned"/>
@@ -438,28 +435,6 @@
         </property>
     </bean>
 
-    <bean id="sb_course_full_details_template" p:id="sb_course_full_details_template"
-          parent="sb_course_details_template">
-        <property name="additionalCssClasses" value="scheduleDetails--full"/>
-        <property name="width" value="488px"/>
-        <property name="layoutManager.style" value="width:488px;"/>
-        <property name="layoutManager.numberOfColumns" value="10"/>
-        <property name="items">
-            <list>
-                <bean parent="sb_course_section_code"/>
-                <bean parent="sb_course_meeting_day"/>
-                <bean parent="sb_course_meeting_time"/>
-                <bean parent="sb_course_meeting_location"/>
-                <bean parent="sb_course_registration_code"/>
-                <bean parent="sb_course_term_label"/>
-                <bean parent="sb_course_institute_code"/>
-                <bean parent="sb_course_enroll_restriction"/>
-                <bean parent="sb_course_enroll_status"/>
-                <bean parent="sb_course_enroll_state"/>
-            </list>
-        </property>
-    </bean>
-
     <bean id="sb_registered_details_template" p:id="sb_registered_details_template"
           parent="sb_course_details_template">
         <property name="header.upperGroup">
@@ -489,36 +464,6 @@
                 <bean parent="sb_course_term_label"/>
                 <bean parent="sb_course_institute_code"/>
             </list>
-        </property>
-    </bean>
-
-    <bean id="sb_registered_full_details_template" p:id="sb_registered_full_details_template"
-          parent="sb_registered_details_template">
-        <property name="additionalCssClasses" value="scheduleDetails--full"/>
-    </bean>
-
-    <bean id="sb_course_details_list_template" p:id="sb_course_details_list_template" parent="KSAP-VerticalBoxGroup">
-        <property name="header">
-            <bean parent="KSAP-HeaderTwo" p:headerText="Pinned Schedule P__KSAP_PINNED_INDEX__"/>
-        </property>
-        <property name="items">
-            <list/>
-        </property>
-        <property name="footer">
-            <bean parent="KSAP-HorizontalBoxGroup">
-                <property name="cssClasses" value="uif-boxLayoutVerticalItem"/>
-                <property name="items">
-                    <list>
-                        <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Unpin this schedule">
-                            <property name="actionScript" value="KsapScheduleBuild.confirmRemovedSavedSchedule('__KSAP_PINNED_ID__', true, e)"/>
-                            <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
-                        </bean>
-                        <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Close window">
-                            <property name="actionScript" value="jQuery.fancybox.close(true)"/>
-                        </bean>
-                    </list>
-                </property>
-            </bean>
         </property>
     </bean>
 
@@ -562,6 +507,7 @@
         <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
         <property name="headerText" value="Remove this pinned schedule?"/>
         <property name="cssClasses" value="removeMargin"/>
+        <property name="style" value="padding: 5px;"/>
         <property name="items">
             <list>
                 <bean parent="KSAP-NoSpanMessage" p:messageText="Are you sure that you want to remove this pinned schedule? (Your registered courses won&#39;t be affected.)"/>

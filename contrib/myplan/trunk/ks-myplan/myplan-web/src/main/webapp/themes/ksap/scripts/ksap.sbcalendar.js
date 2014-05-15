@@ -143,7 +143,7 @@ var KsapSbCalendar = {
             dataType: 'json',
             success: function (response, textStatus, jqXHR) {
                 if (response.success) {
-                    jQuery.event.trigger("SAVED_SCHEDULE_" + ((methodToCall === "save") ? "SAVE" : "REMOVE"), response);
+                    parent.jQuery.event.trigger("SAVED_SCHEDULE_" + ((methodToCall === "save") ? "SAVE" : "REMOVE"), response);
                 } else if (!response.success && response.limitReached) {
                     var messageHtml = jQuery("#sb_error_max_pinned").clone().show().wrap('<div/>').parent().html();
                     openDialog(messageHtml, null, true);
