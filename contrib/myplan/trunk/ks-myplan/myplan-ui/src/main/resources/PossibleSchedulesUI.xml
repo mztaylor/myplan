@@ -67,7 +67,15 @@
                     <property name="cssClasses" value="schedulePossible"/>
                     <property name="items">
                         <list>
-                            <ref bean="sb_icon_legend"/>
+
+                            <bean parent="KSAP-HorizontalBoxGroup">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="KSAP-Message" p:messageText="Select from the buttons below to view and compare schedules." p:render="@{possibleScheduleOptions.size() GT 0}"/>
+                                        <ref bean="sb_icon_legend"/>
+                                    </list>
+                                </property>
+                            </bean>
                             <ref bean="possible_schedules_details"/>
                         </list>
                     </property>

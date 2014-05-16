@@ -138,7 +138,7 @@
 
                                         <bean parent="KSAP-Message" p:cssClasses="block">
                                             <property name="messageText"
-                                                      value="View your courses and add or delete scheduled sections for each course to your plan. Remember that MyPlan allows you to create an academic plan, but does not currently check your eligibility for planned courses or sections, and does not register you. Registration is available via the through Schedule Builder."/>
+                                                      value="View, add, or delete courses and scheduled sections from your plan. Remember that MyPlan does not currently check your eligibility for planned courses or sections. To prepare for registration, choose &quot;Build Your Schedule&quot; to view schedule options in a calendar grid."/>
                                         </bean>
                                         <ref bean="term_collection_data"/>
                                         <bean p:id="schedule_build_termId" parent="KSAP-SimpleInputField" p:propertyName="atpId" p:readOnly="false">
