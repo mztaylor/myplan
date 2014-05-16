@@ -227,8 +227,8 @@
                                 <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                                 <property name="onClickScript"
                                           value="KsapSbCalendar.switchSaveSchedule('@{#line.uniqueId}', jQuery(this), e);"/>
-                                <property name="cssClasses"
-                                          value="schedulePossible__save"/>
+                                <property name="cssClasses" value="schedulePossible__save"/>
+                                <property name="title" value="@{#line.id NE null ? 'Unpin' : 'Pin'} this schedule"/>
                                 <property name="dataAttributes">
                                     <map>
                                         <entry key="saved" value="@{#line.id NE null}"/>
@@ -236,9 +236,7 @@
                                 </property>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif">
-                                            <property name="title" value="Pin this schedule"/>
-                                        </bean>
+                                        <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
                                     </list>
                                 </property>
                             </bean>

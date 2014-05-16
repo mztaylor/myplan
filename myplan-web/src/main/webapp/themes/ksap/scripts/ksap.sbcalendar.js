@@ -163,7 +163,12 @@ var KsapSbCalendar = {
         var possibleSchedule = jQuery("#possible-schedule-" + recentlyAdded.uniqueId);
         var possibleTba = jQuery("#tba-" + recentlyAdded.uniqueId);
         var cssClass = (possibleSchedule.attr("class").match(/scheduleCalendar\-\-([a-z]*)\b/g) || []).join(" ");
-        possibleSchedule.removeClass(cssClass + " schedulePossible__option--active").addClass("schedulePossible__option--saved").attr("data-saved", recentlyAdded.id).find(".schedulePossible__save").data("saved", true);
+        possibleSchedule.removeClass(cssClass + " schedulePossible__option--active")
+            .addClass("schedulePossible__option--saved")
+            .attr("data-saved", recentlyAdded.id)
+            .find(".schedulePossible__save")
+            .data("saved", true)
+            .attr("title", "Unpin this schedule");
         this.addCssClass(cssClass);
         if (possibleTba.length > 0) {
             possibleTba.removeClass(cssClass).addClass("scheduleCalendar--saved").attr("data-saved", recentlyAdded.id).find(".scheduleBuilder__tbaItemIndex").text(recentlyAdded.index);
@@ -181,7 +186,13 @@ var KsapSbCalendar = {
         fnCloseAllPopups();
         var possibleSchedule = jQuery('.schedulePossible__option[data-saved=' + data.scheduleIdRemoved + ']');
         var tba = jQuery('.scheduleBuilder__tbaItem[data-saved=' + data.scheduleIdRemoved + ']');
-        if (possibleSchedule.length > 0) possibleSchedule.removeClass('schedulePossible__option--saved').removeData('saved').find(".schedulePossible__save").data("saved", false);
+        if (possibleSchedule.length > 0) {
+            possibleSchedule.removeClass('schedulePossible__option--saved')
+                .removeData('saved')
+                .find(".schedulePossible__save")
+                .data("saved", false)
+                .attr("title", "Pin this schedule");
+        }
         if (tba.length > 0) {
             tba.removeClass('scheduleCalendar--saved').removeData('saved').hide().find(".scheduleBuilder__tbaItemIndex").text(tba.data("index"));
             this.toggleTbaSection();
