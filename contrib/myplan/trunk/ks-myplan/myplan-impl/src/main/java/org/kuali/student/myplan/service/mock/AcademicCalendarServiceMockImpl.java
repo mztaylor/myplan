@@ -1,17 +1,32 @@
 package org.kuali.student.myplan.service.mock;
 
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
-import org.kuali.student.enrollment.acal.dto.*;
+import org.kuali.student.enrollment.acal.dto.AcademicCalendarInfo;
+import org.kuali.student.enrollment.acal.dto.AcalEventInfo;
+import org.kuali.student.enrollment.acal.dto.HolidayCalendarInfo;
+import org.kuali.student.enrollment.acal.dto.HolidayInfo;
+import org.kuali.student.enrollment.acal.dto.KeyDateInfo;
+import org.kuali.student.enrollment.acal.dto.TermInfo;
 import org.kuali.student.enrollment.acal.service.AcademicCalendarService;
+import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.dto.ValidationResultInfo;
-import org.kuali.student.r2.common.exceptions.*;
+import org.kuali.student.r2.common.exceptions.AlreadyExistsException;
+import org.kuali.student.r2.common.exceptions.DataValidationErrorException;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
+import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
+import org.kuali.student.r2.common.exceptions.ReadOnlyException;
+import org.kuali.student.r2.common.exceptions.VersionMismatchException;
 import org.kuali.student.r2.core.class1.state.dto.StateInfo;
 import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 
 import javax.jws.WebParam;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +37,7 @@ import java.util.List;
  * Time: 1:59 PM
  * To change this template use File | Settings | File Templates.
  */
-public class AcademicCalenderServiceMockImpl implements AcademicCalendarService {
+public class AcademicCalendarServiceMockImpl implements AcademicCalendarService {
     @Override
     public TypeInfo getAcademicCalendarType(@WebParam(name = "academicCalendarTypeKey") String s, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws DoesNotExistException, InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
@@ -255,11 +270,24 @@ public class AcademicCalenderServiceMockImpl implements AcademicCalendarService 
 
     @Override
     public List<TermInfo> searchForTerms(@WebParam(name = "criteria") QueryByCriteria queryByCriteria, @WebParam(name = "contextInfo") ContextInfo contextInfo) throws InvalidParameterException, MissingParameterException, OperationFailedException, PermissionDeniedException {
-        List<TermInfo> searTermInfos = new ArrayList<TermInfo>();
+        List<TermInfo> searchTermInfos = new ArrayList<TermInfo>();
         TermInfo termInfo = new TermInfo();
         termInfo.setId("20144");
-        searTermInfos.add(termInfo);
-        return searTermInfos;
+        Calendar termCal = Calendar.getInstance();
+        termCal.set(2014, 8, 24); // 9/24/2014
+        termInfo.setStartDate(termCal.getTime());
+        termCal.set(2014, 11, 5); // 12/5/2014
+        termInfo.setEndDate(termCal.getTime());
+        termInfo.setName("Autumn 2014");
+        List<AttributeInfo> atts = new ArrayList<AttributeInfo>();
+        atts.add(new AttributeInfo("last_add_day","2014-10-14"));
+        atts.add(new AttributeInfo("priority_one_registration_start","2014-05-09"));
+        atts.add(new AttributeInfo("priority_one_registration_end","2014-09-30"));
+        termInfo.setAttributes(atts);
+
+        searchTermInfos.add(termInfo);
+
+        return searchTermInfos;
     }
 
     @Override

@@ -32,12 +32,12 @@
                   value="org.kuali.student.myplan.util.DegreeAuditAtpHelper.setAcademicCalendarService"/>
         <property name="arguments">
             <list>
-                <ref bean="academicCalenderService"/>
+                <ref bean="academicCalendarService"/>
             </list>
         </property>
     </bean>
 
-    <bean id="academicCalenderService" class="org.kuali.student.myplan.service.mock.AcademicCalenderServiceMockImpl"/>
+    <bean id="academicCalendarService" class="org.kuali.student.myplan.service.mock.AcademicCalendarServiceMockImpl"/>
 
 
 
@@ -52,7 +52,7 @@
     </bean>
 
 
-    <!--<bean id="acalService" class="org.kuali.student.myplan.service.mock.AcademicCalenderServiceMockImpl">
+    <!--<bean id="acalService" class="org.kuali.student.myplan.service.mock.AcademicCalendarServiceMockImpl">
 
     </bean>-->
 
