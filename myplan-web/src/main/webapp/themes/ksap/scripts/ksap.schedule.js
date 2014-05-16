@@ -181,6 +181,7 @@ var KsapScheduleBuild = {
             }
         } else {
             popupOptions.position = "bottom";
+            popupElement.addClass("scheduleCalendar--highlight");
             var tba = popupElement.parents(".scheduleBuilder__tba").find(".scheduleBuilder__tbaItem").filter(function () {
                 return jQuery(this).css('display') != 'none';
             });
@@ -214,6 +215,7 @@ var KsapScheduleBuild = {
     },
 
     closePopover: function () {
+        jQuery(".scheduleBuilder__tbaItem").removeClass("scheduleCalendar--highlight");
         KsapSbCalendar.clearActiveEvents();
         fnCloseAllPopups();
         jQuery("body").off("click");
@@ -287,7 +289,7 @@ var KsapScheduleBuild = {
                     closeClick: false
                 }
             },
-            width: 886,
+            width: 890,
             fitToView: false,
             type: "iframe",
             autoHeight: true,
