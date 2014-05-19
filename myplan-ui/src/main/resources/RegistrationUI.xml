@@ -271,6 +271,7 @@
           p:linkText="@{#line.courseCode} @{#line.courseTitle} (@{#line.credits})">
         <property name="href"
                   value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{#line.courseId}&amp;courseCd=@{#line.courseCode}"/>
+        <property name="target" value="_blank"/>
     </bean>
 
     <bean id="schedulePlannedItems" parent="KSAP-StackedCollectionGroup">
