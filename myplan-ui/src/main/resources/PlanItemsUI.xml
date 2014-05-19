@@ -120,7 +120,16 @@
           p:title="View Course Summary">
         <property name="actionScript" value="
             var backupFlag = jQuery(this).data('type') == 'backup';
-            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:jQuery(this).data('courseid'),backup:backupFlag, pageId:'course_summary_dialog_page'};
+            var retrieveData = {
+                action:'plan',
+                viewId:'PlannedCourse-FormView',
+                methodToCall:'startAddPlannedCourseForm',
+                courseId:jQuery(this).data('courseid'),
+                courseCd: jQuery(this).data('coursecd'),
+                code: jQuery(this).data('code'),
+                backup:backupFlag,
+                pageId:'course_summary_dialog_page'
+            };
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
             openPopup('course_summary_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
