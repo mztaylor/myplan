@@ -208,7 +208,17 @@
           p:title="Copy to Another Quarter">
         <property name="actionScript" value="
             var backupFlag = jQuery(this).data('type') == 'backup';
-            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:jQuery(this).data('courseid'), atpId:jQuery(this).data('atpid'),backup:backupFlag, pageId:'copy_dialog_page'};
+            var retrieveData = {
+                action:'plan',
+                viewId:'PlannedCourse-FormView',
+                methodToCall:'startAddPlannedCourseForm',
+                courseId: jQuery(this).data('courseid'),
+                courseCd: jQuery(this).data('coursecd'),
+                code: jQuery(this).data('code'),
+                atpId:jQuery(this).data('atpid'),
+                backup:backupFlag,
+                pageId:'copy_dialog_page'
+            };
             var popupStyle = {width:'300px', height:'16px'};
             var popupOptions = {tail:{hidden:true}, align:'top', close:true};
             openPopup('copy_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
@@ -814,6 +824,8 @@
         <property name="dataAttributes">
             <map>
                 <entry key="courseid" value="@{#line.courseId}"/>
+                <entry key="coursecd" value="@{#line.courseCode}"/>
+                <entry key="code" value="@{#line.courseCode}"/>
                 <entry key="atpid" value="@{#line.atpId}"/>
                 <entry key="acadrecatpid" value="@{#line.atpId}"/>
             </map>
