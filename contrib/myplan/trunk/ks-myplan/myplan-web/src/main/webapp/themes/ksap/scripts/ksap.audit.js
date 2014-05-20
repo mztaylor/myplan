@@ -78,10 +78,7 @@ function setPendingAudit(obj, minutes) {
                         jQuery.event.trigger('REFRESH_AUDITS', data);
                         setUrlHash('modified', 'true');
                     }
-                },
-                statusCode: { 500: function () {
-                    sessionExpired();
-                } }
+                }
             });
         }
     } else {

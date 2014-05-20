@@ -109,14 +109,9 @@ function ksapAjaxSubmitForm(data, successCallback, elementToBlock, formId, block
                 var tempDiv = document.createElement('div');
                 tempDiv.innerHTML = response;
                 var hasError = checkForIncidentReport(response);
-                var isSessionExpired = (jQuery("title", tempDiv).text() == "Session Expired");
                 if (!hasError) successCallback(tempDiv);
-                if (isSessionExpired) sessionExpired();
                 jQuery("#formComplete").empty();
             }
-        },
-        error: function (jqXHR, textStatus) {
-            alert("Request failed: " + textStatus);
         }
     };
 
@@ -148,7 +143,7 @@ function ksapAjaxSubmitForm(data, successCallback, elementToBlock, formId, block
                             left: '0px'
                         }
                     };
-                    elementToBlock.block(jQuery.extend(elementBlockingDefaults, blockingSettings));
+                    elementToBlock.block(jQuery.extend({}, elementBlockingDefaults, blockingSettings));
                 }
             },
             complete: function () {

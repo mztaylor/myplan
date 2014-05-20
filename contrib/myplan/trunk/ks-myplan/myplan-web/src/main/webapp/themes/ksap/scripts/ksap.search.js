@@ -220,12 +220,6 @@ function searchForCourses(id, parentId) {
                 url: sSource,
                 data: aoData,
                 success: fnCallback,
-                error: function(jqXHR, textStatus, errorThrown) {
-                    var tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = jqXHR.responseText;
-                    var isSessionExpired = (jQuery("title", tempDiv).text() == "Session Expired");
-                    if (isSessionExpired) sessionExpired();
-                },
                 beforeSend: function () {
                     jQuery("#" + parentId).block({
                         centerX: true,
