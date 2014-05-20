@@ -107,4 +107,8 @@ function setupLightboxForm() {
 
     var kualiLightboxForm = jQuery('#kualiLightboxForm');
     setupValidator(kualiLightboxForm);
+}8
+
+function handleAjaxSessionTimeout(redirectUrl) {
+    top.location = redirectUrl;
 }

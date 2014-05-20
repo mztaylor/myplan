@@ -137,10 +137,6 @@ jQuery(document).ready(function () {
     ');
 });
 
-function sessionExpired() {
-    window.location = '/student/myplan/sessionExpired';
-}
-
 function stopEvent(e) {
     if (!e) var e = window.event;
     if (typeof e !== "undefined"){
