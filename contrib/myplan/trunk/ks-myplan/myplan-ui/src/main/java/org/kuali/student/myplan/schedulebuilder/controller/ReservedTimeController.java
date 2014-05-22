@@ -57,22 +57,11 @@ public class ReservedTimeController extends KsapControllerBase {
                                      HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         try {
-            getScheduleBuildStrategy()
-                    .getLearningPlan(form.getRequestedLearningPlanId());
+            getScheduleBuildStrategy().getLearningPlan(form.getRequestedLearningPlanId());
             return true;
         } catch (PermissionDeniedException e) {
-            LOG.warn(
-                    "User "
-                            + request.getRemoteUser()
-                            + " is not permitted to build a schedule based on this learning plan.",
-                    e
-            );
-            response.sendError(
-                    HttpServletResponse.SC_FORBIDDEN,
-                    "User "
-                            + request.getRemoteUser()
-                            + " is not permitted to build a schedule based on this learning plan."
-            );
+            LOG.warn("User "+ request.getRemoteUser()+ " is not permitted to build a schedule based on this learning plan.",e);
+            response.sendError(HttpServletResponse.SC_FORBIDDEN,"User "+ request.getRemoteUser()+ " is not permitted to build a schedule based on this learning plan.");
             return false;
         }
 

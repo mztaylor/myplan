@@ -4,13 +4,16 @@ import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
 import org.joda.time.DateTimeComparator;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
+import org.kuali.rice.krad.exception.AuthorizationException;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.enrollment.courseoffering.dto.ActivityOfferingDisplayInfo;
 import org.kuali.student.enrollment.courseoffering.service.CourseOfferingService;
+import org.kuali.student.myplan.academicplan.infc.LearningPlan;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.plan.PlanConstants;
+import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ReservedTimeInfo;
@@ -21,6 +24,7 @@ import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.myplan.utils.CalendarUtil;
+import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.lum.course.infc.Course;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -52,6 +56,10 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
     private Properties properties;
 
     private CourseHelper courseHelper;
+
+    private PlanHelper planHelper;
+
+    private UserSessionHelper userSessionHelper;
 
     private ScheduleBuildStrategy scheduleBuildStrategy;
 
@@ -610,6 +618,30 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
             }
         }
         return enrollmentData;
+    }
+
+    /**
+     * validates the given learningPlanId if it belongs to the user or not.
+     * if the learningPlanId provided is null then the it is populated with the learningPlanId of the student
+     *
+     * @param requestedLearningPlanId
+     */
+    public String validateOrPopulateLearningPlanId(String requestedLearningPlanId) {
+        LearningPlan learningPlan = getPlanHelper().getLearningPlan(getUserSessionHelper().getStudentId());
+        if (learningPlan != null) {
+            if (StringUtils.isEmpty(requestedLearningPlanId)) {
+                requestedLearningPlanId = learningPlan.getId();
+            } else {
+                /*validating to see if the user requesting learningPlan is same as the id provided*/
+                if (!learningPlan.getId().equals(requestedLearningPlanId)) {
+                    throw new AuthorizationException(learningPlan.getStudentId(), "Un authorized", null);
+                }
+            }
+        } else {
+            logger.error("User does not have learningPlan, user might be a new user. StudentId: " + getUserSessionHelper().getStudentId());
+            return null;
+        }
+        return requestedLearningPlanId;
     }
 
     /**
@@ -1180,6 +1212,28 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
 
     public void setCourseHelper(CourseHelper courseHelper) {
         this.courseHelper = courseHelper;
+    }
+
+    public PlanHelper getPlanHelper() {
+        if (planHelper == null) {
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
+        }
+        return planHelper;
+    }
+
+    public void setPlanHelper(PlanHelper planHelper) {
+        this.planHelper = planHelper;
+    }
+
+    public UserSessionHelper getUserSessionHelper() {
+        if (userSessionHelper == null) {
+            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
+        }
+        return userSessionHelper;
+    }
+
+    public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
+        this.userSessionHelper = userSessionHelper;
     }
 }
 

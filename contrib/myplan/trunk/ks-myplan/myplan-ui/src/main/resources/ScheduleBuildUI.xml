@@ -180,7 +180,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-HeaderTwo" p:headerText="Schedule Builder: @{term.name}"
+                            <bean parent="KSAP-HeaderTwo" p:headerText="Schedule Builder: @{term NE null ? term.name : ''}"
                                   p:cssClasses="planNavigation__header" p:style="left: 70px; width: 470px;"/>
                             <bean parent="overallPlanLink"/>
                         </list>

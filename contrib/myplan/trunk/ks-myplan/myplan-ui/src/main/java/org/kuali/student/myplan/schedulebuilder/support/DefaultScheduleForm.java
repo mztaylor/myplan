@@ -1,6 +1,7 @@
 package org.kuali.student.myplan.schedulebuilder.support;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.kuali.rice.krad.exception.AuthorizationException;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.TermHelper;
@@ -60,7 +61,7 @@ public class DefaultScheduleForm extends UifFormBase implements ScheduleForm {
         includeClosed = false;
         buildFilters = new ScheduleBuildFiltersInfo();
         includeFilters = new ArrayList<String>();
-
+        requestedLearningPlanId = getScheduleBuildHelper().validateOrPopulateLearningPlanId(requestedLearningPlanId);
         /*Filters those needs to be selected in default are added*/
         getIncludeFilters().add(ScheduleBuilderConstants.RESTRICTION_FILTER.toLowerCase());
 

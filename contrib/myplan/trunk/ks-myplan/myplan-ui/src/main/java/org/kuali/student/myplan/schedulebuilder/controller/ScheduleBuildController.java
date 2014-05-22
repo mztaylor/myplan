@@ -1,19 +1,21 @@
 package org.kuali.student.myplan.schedulebuilder.controller;
 
 import org.apache.log4j.Logger;
+import org.kuali.rice.krad.exception.AuthorizationException;
 import org.kuali.rice.krad.uif.UifConstants;
 import org.kuali.rice.krad.util.GlobalVariables;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.CourseHelper;
-import org.kuali.student.enrollment.acal.infc.Term;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
-import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.PlanHelper;
-import org.kuali.student.myplan.schedulebuilder.dto.*;
-import org.kuali.student.myplan.schedulebuilder.infc.*;
-import org.kuali.student.myplan.schedulebuilder.support.DefaultScheduleBuildForm;
+import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
+import org.kuali.student.myplan.schedulebuilder.dto.SecondaryActivityOptionsInfo;
+import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
+import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
+import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
+import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
@@ -31,13 +33,12 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonWriter;
 import javax.json.stream.JsonGenerator;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/sb")
@@ -74,6 +75,14 @@ public class ScheduleBuildController extends UifControllerBase {
         ScheduleForm sbform = (ScheduleForm) form;
         try {
             sbform.reset();
+        } catch (AuthorizationException e) {
+            LOG.info("UNAUTHORIZED Access: " + GlobalVariables.getUserSession().getPerson().getPrincipalId());
+            try {
+                response.sendRedirect("/student/myplan/unauthorized");
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            return null;
         } catch (RuntimeException e) {
             GlobalVariables.getMessageMap().putWarningForSectionId(ScheduleBuilderConstants.SCHEDULE_BUILDER_PAGE_ID,
                     ScheduleBuilderConstants.WARNING_STUDENT_SERVICES_DOWN);
@@ -85,7 +94,17 @@ public class ScheduleBuildController extends UifControllerBase {
     @RequestMapping(params = "methodToCall=build")
     public ModelAndView build(@ModelAttribute("KualiForm") UifFormBase form, BindingResult result, HttpServletRequest request, HttpServletResponse response) throws IOException {
         ScheduleBuildForm sbform = (ScheduleBuildForm) form;
-        sbform.buildSchedules();
+        try {
+            sbform.buildSchedules();
+        }catch (AuthorizationException e){
+            LOG.info("UNAUTHORIZED Access: " + GlobalVariables.getUserSession().getPerson().getPrincipalId());
+            try {
+                response.sendRedirect("/student/myplan/unauthorized");
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            return null;
+        }
         request.getSession().setAttribute("possibleSchedules", sbform.getPossibleScheduleOptions());
         return getUIFModelAndView(form);
     }

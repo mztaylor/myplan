@@ -9,11 +9,12 @@ import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.util.PlanHelper;
-import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
 import org.kuali.student.myplan.schedulebuilder.dto.ScheduleBuildFiltersInfo;
-import org.kuali.student.myplan.schedulebuilder.dto.SecondaryActivityOptionsInfo;
-import org.kuali.student.myplan.schedulebuilder.infc.*;
+import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
+import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
+import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
+import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
 import org.kuali.student.myplan.schedulebuilder.util.PossibleScheduleErrorsInfo;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
@@ -26,7 +27,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hemanthg on 2/7/14.
@@ -50,7 +54,7 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String termId = request.getParameter(PlanConstants.TERM_ID_KEY);
         String requestedLearningPlanId = request.getParameter(ScheduleBuilderConstants.LEARNING_PLAN_KEY);
-
+        requestedLearningPlanId = getScheduleBuildHelper().validateOrPopulateLearningPlanId(requestedLearningPlanId);
         ScheduleBuildStrategy sb = getScheduleBuildStrategy();
         List<PossibleScheduleOption> savedSchedulesList = new ArrayList<PossibleScheduleOption>();
         if (StringUtils.hasText(termId) && StringUtils.hasText(requestedLearningPlanId)) {
