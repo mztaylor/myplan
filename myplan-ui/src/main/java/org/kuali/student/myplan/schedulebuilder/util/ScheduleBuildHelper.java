@@ -40,4 +40,6 @@ public interface ScheduleBuildHelper {
     public void updateEnrollmentInfo(List<ActivityOption> activityOptions, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData);
 
     public LinkedHashMap<String, LinkedHashMap<String, Object>> getEnrollmentDataForActivities(List<ActivityOption> activityOptions);
+
+    public String validateOrPopulateLearningPlanId(String requestedLearningPlanId);
 }

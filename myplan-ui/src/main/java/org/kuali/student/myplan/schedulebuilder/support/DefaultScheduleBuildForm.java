@@ -132,6 +132,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
 
     @Override
     public void buildSchedules() {
+        setRequestedLearningPlanId(getScheduleBuildHelper().validateOrPopulateLearningPlanId(getRequestedLearningPlanId()));
         updateReservedTimesOnBuild();
         updateSavedSchedulesOnBuild();
 
