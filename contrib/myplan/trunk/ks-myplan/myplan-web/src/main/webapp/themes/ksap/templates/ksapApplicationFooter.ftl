@@ -14,7 +14,7 @@
             </ul>
         </div>
 
-    <div class="appfooter__version">Version: ${ConfigProperties['myplan.version']}</div>
+    <div class="appfooter__version">Version: ${ConfigProperties['myplan.version']} - Build ${ConfigProperties['myplan.buildNumber']} </div>
     <div class="appfooter__host">${Request.hostName}</div>
 </div>
 </#macro>
