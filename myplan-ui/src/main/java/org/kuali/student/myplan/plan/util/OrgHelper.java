@@ -32,19 +32,6 @@ public class OrgHelper {
 
     public static OrganizationService organizationService;
 
-    public static HashMap<String, List<OrgInfo>> orgTypeCache;
-
-    public static HashMap<String, List<OrgInfo>> getOrgTypeCache() {
-        if (OrgHelper.orgTypeCache == null) {
-            OrgHelper.orgTypeCache = new HashMap<String, List<OrgInfo>>();
-        }
-        return OrgHelper.orgTypeCache;
-    }
-
-    public static void setOrgTypeCache(HashMap<String, List<OrgInfo>> orgTypeCache) {
-        OrgHelper.orgTypeCache = orgTypeCache;
-    }
-
     public static OrganizationService getOrganizationService() {
         if (OrgHelper.organizationService == null) {
             //   TODO: Use constants for namespace.
@@ -59,31 +46,24 @@ public class OrgHelper {
 
 
     public static List<OrgInfo> getOrgInfo(String param, String searchRequestKey, String paramKey) {
-        if (OrgHelper.getOrgTypeCache() != null && OrgHelper.getOrgTypeCache().containsKey(param)) {
-            return getOrgTypeCache().get(param);
-        } else {
-            List<OrgInfo> orgInfoList = new ArrayList<OrgInfo>();
-            SearchRequestInfo searchRequest = new SearchRequestInfo(searchRequestKey);
-            searchRequest.addParam(paramKey, param);
-            SearchResultInfo searchResult = new SearchResultInfo();
-            try {
-                searchResult = getOrganizationService().search(searchRequest, CourseSearchConstants.CONTEXT_INFO);
-            } catch (Exception e) {
-                logger.error("Search Failed to get the Organization Data ", e);
-            }
-            for (SearchResultRow row : searchResult.getRows()) {
-                OrgInfo orgInfo = new OrgInfo();
-                orgInfo.setId(SearchHelper.getCellValue(row, "org.resultColumn.orgId"));
-                orgInfo.setShortName(SearchHelper.getCellValue(row, "org.resultColumn.orgShortName"));
-                orgInfo.setLongName(SearchHelper.getCellValue(row, "org.resultColumn.orgLongName"));
-                orgInfoList.add(orgInfo);
-
-            }
-            if (orgInfoList.size() > 0) {
-                OrgHelper.getOrgTypeCache().put(param, orgInfoList);
-            }
-            return orgInfoList;
+        List<OrgInfo> orgInfoList = new ArrayList<OrgInfo>();
+        SearchRequestInfo searchRequest = new SearchRequestInfo(searchRequestKey);
+        searchRequest.addParam(paramKey, param);
+        SearchResultInfo searchResult = new SearchResultInfo();
+        try {
+            searchResult = getOrganizationService().search(searchRequest, CourseSearchConstants.CONTEXT_INFO);
+        } catch (Exception e) {
+            logger.error("Search Failed to get the Organization Data ", e);
         }
+        for (SearchResultRow row : searchResult.getRows()) {
+            OrgInfo orgInfo = new OrgInfo();
+            orgInfo.setId(SearchHelper.getCellValue(row, "org.resultColumn.orgId"));
+            orgInfo.setShortName(SearchHelper.getCellValue(row, "org.resultColumn.orgShortName"));
+            orgInfo.setLongName(SearchHelper.getCellValue(row, "org.resultColumn.orgLongName"));
+            orgInfoList.add(orgInfo);
+
+        }
+        return orgInfoList;
     }
 
     public static Map<String, String> getSubjectAreas() {
