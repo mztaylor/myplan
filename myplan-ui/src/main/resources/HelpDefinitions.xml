@@ -68,7 +68,7 @@
     <bean id="planned_help_icon" parent="KSAP-HelpImage" p:render="@{#line.displayPlannedHelp}">
         <property name="toolTip">
             <bean parent="KSAP-TooltipLeft"
-                  p:tooltipContent="MyPlan allows you to add courses to your plan. Check the Time Schedule each quarter to verify whether your planned courses will be offered. &lt;a target=_blank href=http://depts.washington.edu/myplan/help-site/#825&gt;Learn more&lt;/a&gt;"/>
+                  p:tooltipContent="Check the Time Schedule each quarter to verify whether your planned courses will be offered. &lt;a target=_blank href=http://depts.washington.edu/myplan/help-site/#825&gt;Learn more&lt;/a&gt;"/>
         </property>
     </bean>
 
