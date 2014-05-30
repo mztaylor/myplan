@@ -15,6 +15,11 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/* this was also copied to
+    uw-myplan/uw-myplan-overrides/src/test/java/edu.uw.kuali.student.myplan/course/controller
+    consider copying changes made here to there as well.
+*/
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:myplan-test-context.xml"})
 public class CourseSearchStrategyTest {
