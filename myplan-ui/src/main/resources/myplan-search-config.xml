@@ -449,22 +449,53 @@
 
                 <entry key="myplan.lu.search.divisionAndCode">
                     <value>NATIVE:
-                        SELECT DISTINCT clu.ID, ident.TYPE FROM KSLU_CLU_IDENT ident, KSLU_CLU_ATTR attr, KSLU_CLU clu  left outer join KSLU_CLU_JN_CLU_IDENT jni on jni.CLU_ID = clu.ID
-                        WHERE attr.OWNER = clu.ID
-                        AND (ident.ID = clu.OFFIC_CLU_ID OR ident.ID = jni.ALT_CLU_ID)
-                        AND ident.DIVISION = :division
-                        AND ident.SUFX_CD = :code
-                        AND attr.ATTR_NAME = 'course.campus'
-                        AND attr.ATTR_VALUE IN ( :campus1, :campus2, :campus3 )
-                        AND clu.ID NOT IN (SELECT att.OWNER
-                        FROM   KSLU_CLU_ATTR att
-                        WHERE  att.ATTR_NAME = 'course.catalogOmit_ind'
-                        AND att.ATTR_VALUE = 'true')
-                        AND clu.EXP_FIRST_ATP = (SELECT Min(c.EXP_FIRST_ATP)
-                        FROM   kslu_clu c
-                        WHERE  c.VER_IND_ID = clu.VER_IND_ID
-                        AND c.LAST_ATP >= :lastScheduledTerm
-                        GROUP  BY c.VER_IND_ID)
+                        SELECT DISTINCT clu.id,  ident.type
+                            FROM kslu_clu_ident ident,
+                                 kslu_clu_attr attr,
+                                 kslu_clu clu
+                            WHERE attr.owner = clu.id
+                                AND ident.id = clu.offic_clu_id
+                                AND TRIM(ident.sufx_cd)   = TRIM(:code)
+                                AND TRIM( ident.division) = TRIM(:division)
+                                AND attr.attr_name  = 'course.campus'
+                                AND attr.attr_value IN  ( :campus1, :campus2, :campus3 )
+                                AND clu.exp_first_atp  =
+                                    (SELECT MIN(cluatp.exp_first_atp)
+                                     FROM kslu_clu cluatp
+                                     WHERE cluatp.ver_ind_id  = clu.ver_ind_id
+                                        AND cluatp.last_atp >= (:lastScheduledTerm )
+                                     GROUP BY cluatp.ver_ind_id )
+                                AND clu.id NOT IN
+                                    (SELECT attromit.owner
+                                     FROM  kslu_clu_attr attromit
+                                     WHERE attromit.attr_name  = 'course.catalog.omit_ind'
+                                        AND  attromit.owner = clu.id
+                                        AND attromit.attr_value = 'true' )
+                        UNION
+                        SELECT DISTINCT clu.id,  ident.type
+                            FROM kslu_clu_ident ident,
+                                 kslu_clu_attr attr,
+                                 kslu_clu clu,
+                                 kslu_clu_jn_clu_ident clujoin
+                            WHERE attr.owner = clu.id
+                                AND TRIM(ident.sufx_cd) = TRIM(:code)
+                                AND TRIM(ident.division) = TRIM(:division)
+                                AND clujoin.clu_id = clu.id
+                                AND clujoin.alt_clu_id = ident.id
+                                AND attr.attr_name = 'course.campus'
+                                AND attr.attr_value IN ( :campus1, :campus2, :campus3 )
+                                AND clu.exp_first_atp  =
+                                    (SELECT MIN(cluatp.exp_first_atp)
+                                     FROM kslu_clu cluatp
+                                     WHERE cluatp.ver_ind_id  = clu.ver_ind_id
+                                        AND cluatp.last_atp >= (:lastScheduledTerm )
+                                     GROUP BY cluatp.ver_ind_id  )
+                                AND clu.id NOT IN
+                                    (SELECT attromit.owner
+                                     FROM  kslu_clu_attr attromit
+                                     WHERE attromit.attr_name  = 'course.catalog.omit_ind'
+                                        AND attromit.owner = clu.id
+                                        AND attromit.attr_value = 'true'  )
                     </value>
                 </entry>
 
