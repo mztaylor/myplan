@@ -367,7 +367,13 @@ function fnCreateFacetList(i, obj, oData, sorter, formatter) {
             }
         }
         var jAll = jQuery('<li />').attr("title", "All").addClass(allClass).html('<a href="#">All</a>').click(function (e) {
-            fnFacetFilter('All', i, e, oTable.fnGetColumnIndex(obj.data("related-column")), oTable.fnGetColumnIndex(obj.data("merged-column")));
+            fnFacetFilter('All', i, e,
+                oTable.fnGetColumnIndex(obj.data("related-column")),
+                oTable.fnGetColumnIndex(obj.data("merged-column")),
+                obj.data("save-facet"),
+                obj.data("save-facet-property"),
+                obj.data("save-facet-key")
+            );
         });
         jFacets.find(".courseResults__facetAll ul").append(jAll);
     }
@@ -386,7 +392,13 @@ function fnCreateFacetList(i, obj, oData, sorter, formatter) {
         jItem.append(jLink);
         if (!obj.data("skip-count")) jItem.append(' <span>(' + oData[key].count + ')</span>')
         jItem.click(function (e) {
-            fnFacetFilter(key, i, e, oTable.fnGetColumnIndex(obj.data("related-column")), oTable.fnGetColumnIndex(obj.data("merged-column")));
+            fnFacetFilter(key, i, e,
+                oTable.fnGetColumnIndex(obj.data("related-column")),
+                oTable.fnGetColumnIndex(obj.data("merged-column")),
+                obj.data("save-facet"),
+                obj.data("save-facet-property"),
+                obj.data("save-facet-key")
+            );
         });
         if (oData[key].checked) jItem.addClass("courseResults__facet--checked");
         if (Object.size(oData) == 1) jItem.addClass("courseResults__facet--static");
@@ -425,9 +437,10 @@ function fnUpdateFacetList(columnTitle, obj, n) {
     }
 }
 
-function fnFacetFilter(sFilter, i, e, iRelated, iMerged) {
+function fnFacetFilter(sFilter, i, e, iRelated, iMerged, bSaveFacet, sProperty, sKey) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
+    var facetData = {};
     if (!jQuery(target).is('.courseResults__facet--disabled') && !jQuery(target).is('.courseResults__facet--static')) {
         if (sFilter === 'All') {
             // Set all facets within column to checked false
@@ -439,6 +452,10 @@ function fnFacetFilter(sFilter, i, e, iRelated, iMerged) {
             // Clear filter
             oTable.fnFilter('', i, true, false);
             setUrlHash(i, '');
+            if (bSaveFacet) {
+                facetData[sKey] = '';
+                setSessionFacets(sProperty, facetData);
+            }
             // If facet group is related, clear merged column filter as well
             if (iRelated) {
                 oTable.fnFilter('', iMerged, true, false);
@@ -455,6 +472,10 @@ function fnFacetFilter(sFilter, i, e, iRelated, iMerged) {
                 return ";" + value + ";"
             }).join("|"), i, true, false);
             setUrlHash(i, aSelections.join("|"));
+            if (bSaveFacet) {
+                facetData[sKey] = aSelections.join(",");
+                setSessionFacets(sProperty, facetData);
+            }
             if (iRelated && isFiltered(oFacets[iRelated])) {
                 if (i < iRelated) {
                     aSelections = permutate(aSelections, getSelections(oFacets[iRelated]));
@@ -518,5 +539,18 @@ function fnSaveState(id, oSettings) {
     });
     jQuery("#" + id + "_paginate a.ui-button").click(function (e) {
         setUrlHash("start", oSettings._iDisplayStart);
+    });
+}
+
+function setSessionFacets(property, data) {
+    var submitData = {
+        "formKey": jQuery("#formKey").val()
+    };
+    submitData[property] = JSON.stringify(data);
+
+    jQuery.ajax({
+        url: "/student/myplan/course/updateFacets",
+        data: submitData,
+        dataType: "json"
     });
 }
