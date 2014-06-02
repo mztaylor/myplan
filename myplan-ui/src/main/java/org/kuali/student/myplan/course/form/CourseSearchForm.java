@@ -22,6 +22,7 @@ import org.kuali.student.myplan.course.util.CourseSearchConstants;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class CourseSearchForm extends UifFormBase {
     private static final long serialVersionUID = 4898118410378641665L;
@@ -37,6 +38,13 @@ public class CourseSearchForm extends UifFormBase {
     private String searchTerm = CourseSearchConstants.SEARCH_TERM_ANY_ITEM;
     private List<String> campusSelect;
 
+    private String startTimeCount;
+    private String endTimeCount;
+
+    private List<String> selectedDays;
+
+    private Map<String,List<String>> meetingFacets;
+
     public List<String> getCampusSelect() {
         return campusSelect;
     }
@@ -50,28 +58,28 @@ public class CourseSearchForm extends UifFormBase {
     }
 
     public Boolean getCampusBothell() {
-		return campusBothell;
-	}
+        return campusBothell;
+    }
 
-	public void setCampusBothell(Boolean campusBothell) {
-		this.campusBothell = campusBothell;
-	}
+    public void setCampusBothell(Boolean campusBothell) {
+        this.campusBothell = campusBothell;
+    }
 
-	public Boolean getCampusSeattle() {
-		return campusSeattle;
-	}
+    public Boolean getCampusSeattle() {
+        return campusSeattle;
+    }
 
-	public void setCampusSeattle(Boolean campusSeattle) {
-		this.campusSeattle = campusSeattle;
-	}
+    public void setCampusSeattle(Boolean campusSeattle) {
+        this.campusSeattle = campusSeattle;
+    }
 
-	public Boolean getCampusTacoma() {
-		return campusTacoma;
-	}
+    public Boolean getCampusTacoma() {
+        return campusTacoma;
+    }
 
-	public void setCampusTacoma(Boolean campusTacoma) {
-		this.campusTacoma = campusTacoma;
-	}
+    public void setCampusTacoma(Boolean campusTacoma) {
+        this.campusTacoma = campusTacoma;
+    }
 
     public String getSearchQuery() {
         return searchQuery;
@@ -87,5 +95,37 @@ public class CourseSearchForm extends UifFormBase {
 
     public void setSearchTerm(String searchTerm) {
         this.searchTerm = searchTerm;
+    }
+
+    public String getStartTimeCount() {
+        return startTimeCount;
+    }
+
+    public void setStartTimeCount(String startTimeCount) {
+        this.startTimeCount = startTimeCount;
+    }
+
+    public String getEndTimeCount() {
+        return endTimeCount;
+    }
+
+    public void setEndTimeCount(String endTimeCount) {
+        this.endTimeCount = endTimeCount;
+    }
+
+    public List<String> getSelectedDays() {
+        return selectedDays;
+    }
+
+    public void setSelectedDays(List<String> selectedDays) {
+        this.selectedDays = selectedDays;
+    }
+
+    public Map<String, List<String>> getMeetingFacets() {
+        return meetingFacets;
+    }
+
+    public void setMeetingFacets(Map<String, List<String>> meetingFacets) {
+        this.meetingFacets = meetingFacets;
     }
 }

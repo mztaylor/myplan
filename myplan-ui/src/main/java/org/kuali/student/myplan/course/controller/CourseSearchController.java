@@ -23,6 +23,7 @@ import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
+import org.kuali.rice.krad.web.form.UifFormManager;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
 import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
@@ -70,10 +71,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.json.Json;
+import javax.json.stream.JsonGenerator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.*;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
@@ -83,9 +87,14 @@ import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 public class CourseSearchController extends UifControllerBase {
 
 
-    public static final String QUERY_TEXT = "queryText";
-    public static final String CAMPUS_PARAM = "campusParam";
-    public static final String TERM_PARAM = "termParam";
+    public static final String QUERY_TEXT = "searchQuery";
+    public static final String CAMPUS_PARAM = "campusSelect";
+    public static final String TERM_PARAM = "searchTerm";
+    public static final String START_TIME_PARAM = "startTimeCount";
+    public static final String END_TIME_PARAM = "endTimeCount";
+    public static final String SELECTED_DAYS_PARAM = "selectedDays";
+    public static final String FORM_KEY_PARAM = "formKey";
+    public static final String MEETING_FACETS_PARAM = "meetingFacets";
     private final Logger logger = Logger.getLogger(CourseSearchController.class);
 
     public static final String COURSE_SEARCH_URL = "/student/myplan/course?#searchQuery=%s&searchTerm=any&campusSelect=%s";
@@ -333,6 +342,46 @@ public class CourseSearchController extends UifControllerBase {
 
     }
 
+    @RequestMapping(value = "/course/updateFacets")
+    public void updateFacets(HttpServletResponse response, HttpServletRequest request) {
+        String formKey = request.getParameter(FORM_KEY_PARAM);
+        response.setHeader("content-type", "application/json");
+        response.setHeader("Cache-Control", "No-cache");
+        response.setHeader("Cache-Control", "No-store");
+        response.setHeader("Cache-Control", "max-age=0");
+
+        HashMap<String, Object> meetingResults = new HashMap<String, Object>();
+        String meetings = request.getParameter(MEETING_FACETS_PARAM);
+        CourseSearchForm searchForm = null;
+        if (StringUtils.hasText(formKey)) {
+            try {
+                meetingResults = new ObjectMapper().readValue(meetings, HashMap.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            searchForm = (CourseSearchForm) ((UifFormManager) request.getSession().getAttribute("formManager")).getSessionForm(formKey);
+            Map<String, List<String>> meetingfacets = new HashMap<String, List<String>>();
+            for (String meeting : meetingResults.keySet()) {
+                List<String> values = Arrays.asList(((String) meetingResults.get(meeting)).split(","));
+                meetingfacets.put(meeting, values);
+            }
+            searchForm.setMeetingFacets(meetingfacets);
+        }
+
+
+        StringWriter stringWriter = new StringWriter();
+        JsonGenerator jsonString = Json.createGenerator(stringWriter);
+        jsonString.writeStartObject();
+        try {
+            jsonString.write("STATUS", "SUCCESS");
+            jsonString.writeEnd().flush();
+            response.getWriter().println(stringWriter.toString());
+        } catch (Exception e) {
+            logger.error("Could not write the response", e);
+        }
+
+    }
+
     @RequestMapping(value = "/course/search")
     public void getJsonResponse(HttpServletResponse response, HttpServletRequest request) {
         /*Params from the Url*/
@@ -342,6 +391,18 @@ public class CourseSearchController extends UifControllerBase {
         String campusParamStr = request.getParameter(CAMPUS_PARAM);
         List<String> campusParams = Arrays.asList(campusParamStr.split(CourseSearchConstants.CAMPUS_PARAM_REGEX));
         String termParam = request.getParameter(TERM_PARAM);
+        String formKey = request.getParameter(FORM_KEY_PARAM);
+        String selectedDays = request.getParameter(SELECTED_DAYS_PARAM);
+        String startTime = request.getParameter(START_TIME_PARAM);
+        String endTime = request.getParameter(END_TIME_PARAM);
+        CourseSearchForm searchForm = null;
+        if (StringUtils.hasText(formKey)) {
+            searchForm = (CourseSearchForm) ((UifFormManager) request.getSession().getAttribute("formManager")).getSessionForm(formKey);
+            searchForm.setMeetingFacets(new HashMap<String, List<String>>());
+            searchForm.setSelectedDays(Arrays.asList(selectedDays.split(",")));
+            searchForm.setStartTimeCount(startTime);
+            searchForm.setEndTimeCount(endTime);
+        }
 
         /*populating the form with the params*/
         CourseSearchForm form = new CourseSearchForm();
