@@ -453,7 +453,7 @@ public class CourseSearchController extends UifControllerBase {
 
             jsonString.append("[\"").append(item.getCode()).
                     append("\",\" <a href=\\\"inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=").
-                    append(courseId + "&courseCd=" + item.getCode().replace("&", "%26")).append("\\\" target=\\\"_self\\\" title=\\\"").append(courseName).append("\\\" class=\\\"ellipsisItem\\\">").
+                    append(courseId + "&courseCd=" + item.getCode().replace("&", "%26")).append("&searchFormKey=" + formKey).append("\\\" target=\\\"_self\\\" title=\\\"").append(courseName).append("\\\" class=\\\"ellipsisItem\\\">").
                     append(courseName).append("</a>\",\"").
                     append(item.getCredit()).append("\",").append(scheduledAndOfferedTerms).append(",\"").
                     append(item.getGenEduReq()).append("\",\"").append(status).
