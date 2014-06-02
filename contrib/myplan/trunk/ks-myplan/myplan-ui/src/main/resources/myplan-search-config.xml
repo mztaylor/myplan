@@ -402,24 +402,26 @@
                 </entry>
                 <entry key="myplan.lu.search.description">
                     <value>
-                        SELECT
-                        clu.id
+                        SELECT clu.id
                         FROM CluAttribute attr
-                        JOIN attr.owner clu
-                        JOIN clu.officialIdentifier ident
-                        JOIN clu.descr cludesc
-                        WHERE
-                        (
-                        UPPER( ' ' || cludesc.plain || ' ' ) LIKE '% '||:queryText||'%'
-                        )
-                        AND
-                        attr.name = 'course.campus'
-                        AND
-                        attr.value IN ( :campus1, :campus2, :campus3 )
-                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where
-                        att.name='course.catalogOmit_ind' and att.value='true')
-                        AND clu.expectedFirstAtp = (select min(c.expectedFirstAtp) FROM Clu c where c.version.versionIndId = clu.version.versionIndId and c.lastAtp &gt;= :lastScheduledTerm group by c.version.versionIndId )
-                        ORDER BY ident.code
+                            JOIN attr.owner clu
+                            JOIN clu.officialIdentifier ident
+                            JOIN clu.descr cludesc
+                        WHERE (UPPER( ' ' || cludesc.plain || ' ' ) LIKE '% '||:queryText||'%')
+                            AND attr.name = 'course.campus'
+                            AND attr.value IN ( :campus1, :campus2, :campus3 )
+                            AND clu.id NOT IN
+                                (SELECT att.owner
+                                FROM CluAttribute att
+                                WHERE att.name='course.catalog.omit_ind'
+                                    AND att.value='true')
+                            AND clu.expectedFirstAtp = (
+                                SELECT MIN(c.expectedFirstAtp)
+                                FROM Clu c
+                                WHERE c.version.versionIndId = clu.version.versionIndId
+                                    AND c.lastAtp &gt;= :lastScheduledTerm
+                                GROUP BY c.version.versionIndId)
+                            ORDER BY ident.code
                     </value>
                 </entry>
 
