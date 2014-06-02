@@ -8,13 +8,9 @@ import org.kuali.student.myplan.audit.dataobject.PlanAuditItem;
 import org.kuali.student.myplan.audit.dto.AuditReportInfo;
 import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
-import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import javax.xml.namespace.QName;
@@ -26,7 +22,7 @@ import java.util.Map;
 @Component
 public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
 
-    private final Logger logger = Logger.getLogger(CourseDetailsInquiryHelperImpl.class);
+    private final Logger logger = Logger.getLogger(PlanAuditsLookupableHelperImpl.class);
 
     private transient DegreeAuditService degreeAuditService;
 
