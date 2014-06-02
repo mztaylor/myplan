@@ -17,6 +17,7 @@
     <bean id="CourseSearch-FormView" p:viewName="CourseSearch-FormView" parent="MyPlanFormView">
         <property name="formClass" value="org.kuali.student.myplan.course.form.CourseSearchForm"/>
         <property name="entryPageId" value="course_search"/>
+        <property name="persistFormToSession" value="true"/>
         <property name="additionalScriptFiles">
             <list>
                 <value>themes/ksap/scripts/ksap.search.js</value>
@@ -68,6 +69,7 @@
             <list>
                 <ref bean="course_search_fields"/>
                 <ref bean="course_search_params"/>
+                <ref bean="course_search_filters"/>
             </list>
         </property>
     </bean>
@@ -82,6 +84,11 @@
                     <property name="labelPlacement" value="LEFT"/>
                     <property name="control">
                         <bean parent="Uif-TextControl" p:watermarkText="e.g. COM, Math 124, ENGL 1XX, sun">
+                            <property name="dataAttributes">
+                                <map>
+                                    <entry key="save-value" value="true"/>
+                                </map>
+                            </property>
                             <property name="cssClasses" value="courseSearch__field"/>
                             <property name="onDocumentReadyScript" value="
                                 if (readUrlHash('searchQuery')) {
@@ -105,6 +112,11 @@
                     <property name="labelPlacement" value="LEFT"/>
                     <property name="control">
                         <bean parent="Uif-DropdownControl">
+                            <property name="dataAttributes">
+                                <map>
+                                    <entry key="save-value" value="true"/>
+                                </map>
+                            </property>
                             <property name="cssClasses" value="courseSearch__field"/>
                             <property name="onDocumentReadyScript" value="
                                 if (readUrlHash('searchTerm')) {
@@ -155,6 +167,11 @@
                     </property>
                     <property name="control">
                         <bean parent="Uif-HorizontalCheckboxesControl">
+                            <property name="dataAttributes">
+                                <map>
+                                    <entry key="save-value" value="true"/>
+                                </map>
+                            </property>
                             <property name="cssClasses" value="courseSearch__input"/>
                             <property name="onDocumentReadyScript" value="
                                 if (readUrlHash('campusSelect')) {
@@ -173,6 +190,177 @@
                     </property>
                 </bean>
             </list>
+        </property>
+    </bean>
+
+    <!-- Disclosure property for filter search-->
+    <bean id="course_search_filters" parent="KSAP-HorizontalBoxGroup" p:headerText="Filter Search">
+        <property name="header">
+            <bean parent="KSAP-HeaderDiv" p:headerTagCssClasses="uif-headerText-span"/>
+        </property>
+        <property name="disclosure">
+            <bean parent="Uif-Disclosure" p:render="true" p:defaultOpen="false">
+                <property name="expandImageSrc" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/header_expand.png"/>
+                <property name="collapseImageSrc" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/header_collapse.png"/>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-VerticalBoxGroup">
+                    <property name="items">
+                        <list>
+                            <ref bean="meetingtimes"/>
+                            <ref bean="meetingdays"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="KSAP-ErrorMessage" p:progressiveRender="searchTerm eq 'any'">
+                    <property name="items">
+                        <list>
+                            <ref bean="conditionalMessage"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="conditionalMessage" parent="KSAP-Message" p:messageText="You must choose a single quarter to use filters."/>
+
+         <!-- dropdown control for meeting times-->
+    <bean id="meetingtimes" parent="KSAP-HorizontalBoxGroup">
+        <property name="items">
+            <list>
+                <bean id="startTime" parent="Uif-InputField" p:propertyName="startTimeCount" p:label="Meeting Times">
+                    <property name="dataAttributes">
+                        <map>
+                            <entry key="save-value" value="true"/>
+                        </map>
+                    </property>
+                    <property name="fieldLabel.render" value="true"/>
+                    <property name="fieldLabel.cssClasses" value="courseSearch__label courseSearch__label--bold"/>
+                    <property name="labelPlacement" value="LEFT"/>
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:disabled="@{searchTerm eq 'any'}">
+                            <property name="dataAttributes">
+                                <map>
+                                    <entry key="save-value" value="true"/>
+                                </map>
+                            </property>
+                            <property name="cssClasses" value="courseSearch__field"/>
+                            <property name="onDocumentReadyScript" value="if (readUrlHash('meetingtimes')) {jQuery('#StartTimeCount_control').val(readUrlHash('meetingtimes'));}"/>
+                            <property name="options">
+                                <list>
+                                    <bean parent="Uif-KeyLabelPair" p:key="any" p:value="Any Start Time"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="0730" p:value="7:30 AM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="0830" p:value="8:30 AM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="0930" p:value="9:30 AM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1030" p:value="10:30 AM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1130" p:value="11:30 AM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1230" p:value="12:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1330" p:value="1:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1430" p:value="2:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1530" p:value="3:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1630" p:value="4:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1730" p:value="5:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1830" p:value="6:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1930" p:value="7:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="2030" p:value="8:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="2130" p:value="9:30 PM"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+                <bean id="endTime" parent="Uif-InputField" p:propertyName="endTimeCount" p:label="to">
+                    <property name="dataAttributes">
+                        <map>
+                            <entry key="save-value" value="true"/>
+                        </map>
+                    </property>
+                    <property name="fieldLabel.render" value="true"/>
+                    <property name="fieldLabel.cssClasses" value="courseSearch__label courseSearch__label--bold"/>
+                    <property name="labelPlacement" value="LEFT"/>
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:disabled="@{searchTerm eq 'any'}">
+                            <property name="dataAttributes">
+                                <map>
+                                    <entry key="save-value" value="true"/>
+                                </map>
+                            </property>
+                            <property name="cssClasses" value="courseSearch__field"/>
+                            <property name="onDocumentReadyScript" value="if (readUrlHash('meetingtimes')) {jQuery('#EndTimeCount_control').val(readUrlHash('meetingtimes'));}"/>
+                            <property name="options">
+                                <list>
+                                    <bean parent="Uif-KeyLabelPair" p:key="any" p:value="Any End Time"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="0730" p:value="7:30 AM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="0830" p:value="8:30 AM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="0930" p:value="9:30 AM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1030" p:value="10:30 AM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1130" p:value="11:30 AM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1230" p:value="12:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1330" p:value="1:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1430" p:value="2:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1530" p:value="3:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1630" p:value="4:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1730" p:value="5:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1830" p:value="6:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="1930" p:value="7:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="2030" p:value="8:30 PM"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="2130" p:value="9:30 PM"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!--checkbox for meeting days-->
+    <bean id="meetingdays" parent="Uif-InputField" p:propertyName="selectedDays" p:label="Meeting Days">
+        <property name="dataAttributes">
+            <map>
+                <entry key="save-value" value="true"/>
+            </map>
+        </property>
+        <property name="defaultValues">
+            <list>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+                <value>4</value>
+                <value>5</value>
+                <value>6</value>
+            </list>
+        </property>
+        <property name="control">
+            <bean parent="Uif-HorizontalCheckboxesControl" p:disabled="@{searchTerm eq 'any'}">
+                <property name="dataAttributes">
+                    <map>
+                        <entry key="save-value" value="true"/>
+                    </map>
+                </property>
+                <property name="onDocumentReadyScript" value="if (readUrlHash('selectedDays')) {jQuery.each(jQuery(&quot;input[name='selectedDays']&quot;), function() {
+                                        if (jQuery.inArray(jQuery(this).val(), readUrlHash('selectedDays').split(',')) != -1) {
+                                            jQuery(this).attr('checked','checked');
+                                        } else {
+                                            jQuery(this).removeAttr('checked');
+                                        }
+                                    });
+                                }"/>
+                <property name="options">
+                    <list>
+                        <bean parent="Uif-KeyLabelPair" p:key="1" p:value="Mon"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="2" p:value="Tue"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="3" p:value="Wed"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="4" p:value="Thu"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="5" p:value="Fri"/>
+                        <bean parent="Uif-KeyLabelPair" p:key="6" p:value="Sat"/>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
 
@@ -274,6 +462,8 @@
         </property>
         <property name="items">
             <list>
+                <ref bean="facet_meeting_times"/>
+                <ref bean="facet_meeting_days"/>
                 <ref bean="facet_quarter"/>
                 <ref bean="facet_genedureq"/>
                 <ref bean="facet_credits"/>
@@ -287,12 +477,21 @@
         <property name="disclosure.render" value="true"/>
         <property name="disclosure.expandImageSrc" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
         <property name="disclosure.collapseImageSrc" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+        <property name="dataAttributes">
+            <map>
+                <entry key="skip-processing" value="false"/>
+                <entry key="skip-count" value="false"/>
+            </map>
+        </property>
         <property name="cssClasses" value="courseResults__facet"/>
         <property name="header">
             <bean parent="KSAP-HeaderDiv">
                 <property name="cssClasses" value="courseResults__facetHeader"/>
                 <property name="headerTagCssClasses" value="uif-headerText-span"/>
             </bean>
+        </property>
+        <property name="footer">
+            <bean parent="Uif-FooterBase" p:render="false"/>
         </property>
     </bean>
 
@@ -309,9 +508,9 @@
         </property>
         <property name="onDocumentReadyScript" value="
             jQuery('#facet_quarter').on('GENERATE_FACETS', function(event){
-                fnGenerateFacetGroup(6, jQuery(this), terms);
+                fnGenerateFacetGroup('facet_quarter', jQuery(this), terms);
             }).on('UPDATE_FACETS', function(event, data){
-                fnUpdateFacetList(data, 6, jQuery(this));
+                fnUpdateFacetList('facet_quarter', jQuery(this), data);
             });
         "/>
     </bean>
@@ -319,9 +518,9 @@
     <bean id="facet_genedureq" parent="facet_group" p:headerText="Gen. Edu. Req.">
         <property name="onDocumentReadyScript" value="
             jQuery('#facet_genedureq').on('GENERATE_FACETS', function(event){
-                fnGenerateFacetGroup(7, jQuery(this), alpha);
+                fnGenerateFacetGroup('facet_genedureq', jQuery(this), alpha);
             }).on('UPDATE_FACETS', function(event, data){
-                fnUpdateFacetList(data, 7, jQuery(this));
+                fnUpdateFacetList('facet_genedureq', jQuery(this), data);
             });
         "/>
     </bean>
@@ -329,9 +528,9 @@
     <bean id="facet_credits" parent="facet_group" p:headerText="Credits">
         <property name="onDocumentReadyScript" value="
             jQuery('#facet_credits').on('GENERATE_FACETS', function(event){
-                fnGenerateFacetGroup(8, jQuery(this), numeric);
+                fnGenerateFacetGroup('facet_credits', jQuery(this), numeric);
             }).on('UPDATE_FACETS', function(event, data){
-                fnUpdateFacetList(data, 8, jQuery(this));
+                fnUpdateFacetList('facet_credits', jQuery(this), data);
             });
         "/>
     </bean>
@@ -339,9 +538,9 @@
     <bean id="facet_level" parent="facet_group" p:headerText="Course Level">
         <property name="onDocumentReadyScript" value="
             jQuery('#facet_level').on('GENERATE_FACETS', function(event){
-                fnGenerateFacetGroup(9, jQuery(this), numeric);
+                fnGenerateFacetGroup('facet_level', jQuery(this), numeric);
             }).on('UPDATE_FACETS', function(event, data){
-                fnUpdateFacetList(data, 9, jQuery(this));
+                fnUpdateFacetList('facet_level', jQuery(this), data);
             });
         "/>
     </bean>
@@ -349,12 +548,64 @@
     <bean id="facet_curriculum" parent="facet_group" p:headerText="Course Prefix">
         <property name="onDocumentReadyScript" value="
             jQuery('#facet_curriculum').on('GENERATE_FACETS', function(event){
-                fnGenerateFacetGroup(10, jQuery(this), alpha);
+                fnGenerateFacetGroup('facet_curriculum', jQuery(this), alpha);
             }).on('UPDATE_FACETS', function(event, data){
-                fnUpdateFacetList(data, 10, jQuery(this));
+                fnUpdateFacetList('facet_curriculum', jQuery(this), data);
             });
         "/>
     </bean>
+
+    <bean id="facet_meeting_days" parent="facet_group" p:headerText="Meeting Days">
+        <property name="onDocumentReadyScript" value="
+            jQuery('#facet_meeting_days').on('GENERATE_FACETS', function(event){
+                fnGenerateFacetGroup('facet_meeting_days', jQuery(this), numeric, meetingDay);
+            }).on('UPDATE_FACETS', function(event, data){
+                fnUpdateFacetList('facet_meeting_days', jQuery(this), data);
+            });
+        "/>
+        <property name="dataAttributes">
+            <map merge="true">
+                <entry key="save-facets" value="true"/>
+                <entry key="skip-count" value="true"/>
+                <entry key="related-column" value="facet_meeting_times"/>
+                <entry key="merged-column" value="facet_meeting_day_time"/>
+            </map>
+        </property>
+        <property name="footer.additionalCssClasses" value="courseResults__facetDisable"/>
+        <property name="footer.items">
+            <list>
+                <bean parent="course_search_facet_disable"/>
+            </list>
+        </property>
+        <property name="footer.render" value="true"/>
+    </bean>
+
+    <bean id="facet_meeting_times" parent="facet_group" p:headerText="Meeting Times">
+        <property name="onDocumentReadyScript" value="
+            jQuery('#facet_meeting_times').on('GENERATE_FACETS', function(event){
+                fnGenerateFacetGroup('facet_meeting_times', jQuery(this), alpha, meetingTime);
+            }).on('UPDATE_FACETS', function(event, data){
+                fnUpdateFacetList('facet_meeting_times', jQuery(this), data);
+            });
+        "/>
+        <property name="dataAttributes">
+            <map merge="true">
+                <entry key="save-facets" value="true"/>
+                <entry key="skip-count" value="true"/>
+                <entry key="related-column" value="facet_meeting_days"/>
+                <entry key="merged-column" value="facet_meeting_day_time"/>
+            </map>
+        </property>
+        <property name="footer.additionalCssClasses" value="courseResults__facetDisable"/>
+        <property name="footer.items">
+            <list>
+                <bean parent="course_search_facet_disable"/>
+            </list>
+        </property>
+        <property name="footer.render" value="true"/>
+    </bean>
+
+    <bean id="course_search_facet_disable" parent="KSAP-NoSpanMessage" p:messageText="Choose a single quarter above to use this filter."/>
 
     <!--Add Course Menu-->
     <bean id="add_course_items" parent="KSAP-VerticalBoxGroup" p:width="75px" p:hidden="true" p:cssClasses="popover__menu">

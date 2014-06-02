@@ -9,7 +9,7 @@
     padding: 8px 16px 8px 30px;
     margin-bottom: @baseLineHeight;
     text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
-    background-color: @warningBackground;
+    background-color: @warningBackground !important;
     border: 1px solid @warningBorder;
     .border-radius(@baseBorderRadius);
     background-repeat: no-repeat;
@@ -71,7 +71,7 @@
 // -------------------------
 
 .alert-success {
-    background-color: @successBackground;
+    background-color: @successBackground !important;
     border-color: @successBorder;
     color: @successText;
     background-image: url('../images/icons/accept.png');
@@ -91,7 +91,7 @@
 
 .alert-danger,
 .alert-error {
-    background-color: @errorBackground;
+    background-color: @errorBackground !important;
     border-color: @errorBorder;
     color: @errorText;
     background-image: url('../images/icons/exclamation.png');
@@ -112,7 +112,7 @@
 }
 
 .alert-info {
-    background-color: @infoBackground;
+    background-color: @infoBackground !important;
     border-color: @infoBorder;
     color: @infoText;
     background-image: url('../images/icons/infomation.png');
