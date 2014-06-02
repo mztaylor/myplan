@@ -251,7 +251,7 @@
                             <property name="onDocumentReadyScript" value="if (readUrlHash('meetingtimes')) {jQuery('#StartTimeCount_control').val(readUrlHash('meetingtimes'));}"/>
                             <property name="options">
                                 <list>
-                                    <bean parent="Uif-KeyLabelPair" p:key="any" p:value="Any Start Time"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="0000" p:value="Any Start Time"/>
                                     <bean parent="Uif-KeyLabelPair" p:key="0730" p:value="7:30 AM"/>
                                     <bean parent="Uif-KeyLabelPair" p:key="0830" p:value="8:30 AM"/>
                                     <bean parent="Uif-KeyLabelPair" p:key="0930" p:value="9:30 AM"/>
@@ -292,7 +292,7 @@
                             <property name="onDocumentReadyScript" value="if (readUrlHash('meetingtimes')) {jQuery('#EndTimeCount_control').val(readUrlHash('meetingtimes'));}"/>
                             <property name="options">
                                 <list>
-                                    <bean parent="Uif-KeyLabelPair" p:key="any" p:value="Any End Time"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="2359" p:value="Any End Time"/>
                                     <bean parent="Uif-KeyLabelPair" p:key="0730" p:value="7:30 AM"/>
                                     <bean parent="Uif-KeyLabelPair" p:key="0830" p:value="8:30 AM"/>
                                     <bean parent="Uif-KeyLabelPair" p:key="0930" p:value="9:30 AM"/>
@@ -565,7 +565,9 @@
         "/>
         <property name="dataAttributes">
             <map merge="true">
-                <entry key="save-facets" value="true"/>
+                <entry key="save-facet" value="true"/>
+                <entry key="save-facet-property" value="meetingFacets"/>
+                <entry key="save-facet-key" value="day"/>
                 <entry key="skip-count" value="true"/>
                 <entry key="related-column" value="facet_meeting_times"/>
                 <entry key="merged-column" value="facet_meeting_day_time"/>
@@ -590,7 +592,9 @@
         "/>
         <property name="dataAttributes">
             <map merge="true">
-                <entry key="save-facets" value="true"/>
+                <entry key="save-facet" value="true"/>
+                <entry key="save-facet-property" value="meetingFacets"/>
+                <entry key="save-facet-key" value="time"/>
                 <entry key="skip-count" value="true"/>
                 <entry key="related-column" value="facet_meeting_days"/>
                 <entry key="merged-column" value="facet_meeting_day_time"/>
