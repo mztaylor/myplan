@@ -392,6 +392,7 @@
                                 (SELECT att.owner
                                 FROM CluAttribute att
                                 WHERE att.name='course.catalog.omit_ind'
+                                    AND att.owner = clu.id
                                     AND att.value='true')
                             AND clu.expectedFirstAtp =
                                 (SELECT MIN(c.expectedFirstAtp)
@@ -416,6 +417,7 @@
                                 (SELECT att.owner
                                 FROM CluAttribute att
                                 WHERE att.name='course.catalog.omit_ind'
+                                    AND att.owner = clu.id
                                     AND att.value='true')
                             AND clu.expectedFirstAtp = (
                                 SELECT MIN(c.expectedFirstAtp)
