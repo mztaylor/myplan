@@ -16,12 +16,9 @@ package org.kuali.student.myplan.course.form;
 
 import org.kuali.rice.krad.web.form.UifFormBase;
 
-import org.kuali.student.myplan.course.dataobject.CourseSearchItem;
-import org.kuali.student.myplan.course.dataobject.FacetItem;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class CourseSearchForm extends UifFormBase {
@@ -38,8 +35,8 @@ public class CourseSearchForm extends UifFormBase {
     private String searchTerm = CourseSearchConstants.SEARCH_TERM_ANY_ITEM;
     private List<String> campusSelect;
 
-    private String startTimeCount;
-    private String endTimeCount;
+    private String startTime;
+    private String endTime;
 
     private List<String> selectedDays;
 
@@ -97,20 +94,20 @@ public class CourseSearchForm extends UifFormBase {
         this.searchTerm = searchTerm;
     }
 
-    public String getStartTimeCount() {
-        return startTimeCount;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public void setStartTimeCount(String startTimeCount) {
-        this.startTimeCount = startTimeCount;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
-    public String getEndTimeCount() {
-        return endTimeCount;
+    public String getEndTime() {
+        return endTime;
     }
 
-    public void setEndTimeCount(String endTimeCount) {
-        this.endTimeCount = endTimeCount;
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
     public List<String> getSelectedDays() {
