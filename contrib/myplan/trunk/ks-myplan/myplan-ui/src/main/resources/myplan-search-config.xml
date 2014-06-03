@@ -372,8 +372,7 @@
 
                 <entry key="myplan.distinct.clu.divisions">
                     <value>
-                        SELECT
-                        distinct( ident.division )
+                        SELECT DISTINCT( ident.division )
                         FROM CluIdentifier ident
                         WHERE ident.division IS NOT null
                     </value>
@@ -431,25 +430,27 @@
 
                 <entry key="myplan.lu.search.fulltext">
                     <value>
-                        SELECT
-                        clu.id
+                        SELECT clu.id
                         FROM CluAttribute attr
-                        JOIN attr.owner clu
-                        JOIN clu.officialIdentifier ident
-                        JOIN clu.descr cludesc
-                        WHERE
-                        (
-                        UPPER( ' ' || ident.longName || ' ' ) LIKE '% '||:queryText||'%'
-                        OR
-                        UPPER( ' ' || cludesc.plain || ' ' ) LIKE '% '||:queryText||'%'
-                        )
-                        AND
-                        attr.name = 'course.campus'
-                        AND
-                        attr.value IN ( :campus1, :campus2, :campus3 )
-                        AND clu.id NOT IN (SELECT att.owner FROM CluAttribute att where
-                        att.name='course.catalogOmit_ind' and att.value='true')
-                        AND clu.expectedFirstAtp = (select min(c.expectedFirstAtp) FROM Clu c where c.version.versionIndId = clu.version.versionIndId and c.lastAtp &gt;= :lastScheduledTerm group by c.version.versionIndId )
+                            JOIN attr.owner clu
+                            JOIN clu.officialIdentifier ident
+                            JOIN clu.descr cludesc
+                        WHERE ( UPPER( ' ' || ident.longName || ' ' ) LIKE '% '||:queryText||'%'
+                                OR
+                                UPPER( ' ' || cludesc.plain || ' ' ) LIKE '% '||:queryText||'%' )
+                            AND attr.name = 'course.campus'
+                            AND attr.value IN ( :campus1, :campus2, :campus3 )
+                            AND clu.id NOT IN (
+                                SELECT att.owner
+                                FROM CluAttribute att
+                                WHERE att.name='course.catalogOmit_ind'
+                                    AND att.value='true')
+                            AND clu.expectedFirstAtp = (
+                                SELECT MIN(c.expectedFirstAtp)
+                                FROM Clu c
+                                WHERE c.version.versionIndId = clu.version.versionIndId
+                                    AND c.lastAtp &gt;= :lastScheduledTerm
+                                GROUP BY c.version.versionIndId )
                     </value>
                 </entry>
 
@@ -507,42 +508,51 @@
 
                 <entry key="myplan.lu.search.divisionAndLevel">
                     <value>NATIVE:
-                        SELECT DISTINCT clu.ID, ident.SUFX_CD FROM KSLU_CLU_IDENT ident, KSLU_CLU_ATTR attr, KSLU_CLU clu  left outer join KSLU_CLU_JN_CLU_IDENT jni on jni.CLU_ID = clu.ID
+                        SELECT DISTINCT clu.ID, ident.SUFX_CD
+                        FROM KSLU_CLU_IDENT ident, KSLU_CLU_ATTR attr, KSLU_CLU clu
+                            LEFT OUTER JOIN KSLU_CLU_JN_CLU_IDENT jni
+                                ON jni.CLU_ID = clu.ID
                         WHERE attr.OWNER = clu.ID
-                        AND (ident.ID = clu.OFFIC_CLU_ID OR ident.ID = jni.ALT_CLU_ID)
-                        AND ident.DIVISION = :division
-                        AND (ident.LVL = :level OR (ident.LVL IS NULL AND ident.SUFX_CD LIKE :levelStart||'%'))
-                        AND attr.ATTR_NAME = 'course.campus'
-                        AND attr.ATTR_VALUE IN ( :campus1, :campus2, :campus3 )
-                        AND clu.ID NOT IN (SELECT att.OWNER
-                        FROM   KSLU_CLU_ATTR att
-                        WHERE  att.ATTR_NAME = 'course.catalogOmit_ind'
-                        AND att.ATTR_VALUE = 'true')
-                        AND clu.EXP_FIRST_ATP = (SELECT Min(c.EXP_FIRST_ATP)
-                        FROM   kslu_clu c
-                        WHERE  c.VER_IND_ID = clu.VER_IND_ID
-                        AND c.LAST_ATP >= :lastScheduledTerm
-                        GROUP  BY c.VER_IND_ID)
+                            AND (ident.ID = clu.OFFIC_CLU_ID OR ident.ID = jni.ALT_CLU_ID)
+                            AND ident.DIVISION = :division
+                            AND (ident.LVL = :level OR (ident.LVL IS NULL AND ident.SUFX_CD LIKE :levelStart||'%'))
+                            AND attr.ATTR_NAME = 'course.campus'
+                            AND attr.ATTR_VALUE IN ( :campus1, :campus2, :campus3 )
+                            AND clu.ID NOT IN
+                                (SELECT att.OWNER
+                                FROM KSLU_CLU_ATTR att
+                                WHERE  att.ATTR_NAME = 'course.catalogOmit_ind'
+                                    AND att.ATTR_VALUE = 'true')
+                            AND clu.EXP_FIRST_ATP =
+                                (SELECT Min(c.EXP_FIRST_ATP)
+                                FROM   kslu_clu c
+                                WHERE  c.VER_IND_ID = clu.VER_IND_ID
+                                    AND c.LAST_ATP >= :lastScheduledTerm
+                                GROUP BY c.VER_IND_ID)
                         ORDER  BY ident.SUFX_CD
                     </value>
                 </entry>
                 <entry key="myplan.lu.search.additionalDivision">
                     <value>NATIVE:
-                        SELECT DISTINCT clu.ID, ident.SUFX_CD FROM KSLU_CLU_IDENT ident, KSLU_CLU_ATTR attr, KSLU_CLU clu  left outer join KSLU_CLU_JN_CLU_IDENT jni on jni.CLU_ID = clu.ID
+                        SELECT DISTINCT clu.ID, ident.SUFX_CD
+                        FROM KSLU_CLU_IDENT ident, KSLU_CLU_ATTR attr, KSLU_CLU clu
+                            LEFT OUTER JOIN KSLU_CLU_JN_CLU_IDENT jni ON jni.CLU_ID = clu.ID
                         WHERE attr.OWNER = clu.ID
-                        AND (ident.ID = clu.OFFIC_CLU_ID OR ident.ID = jni.ALT_CLU_ID)
-                        AND ident.DIVISION IN (:divisions)
-                        AND attr.ATTR_NAME = 'course.campus'
-                        AND attr.ATTR_VALUE IN ( :campus1, :campus2, :campus3 )
-                        AND clu.ID NOT IN (SELECT att.OWNER
-                        FROM   KSLU_CLU_ATTR att
-                        WHERE  att.ATTR_NAME = 'course.catalogOmit_ind'
-                        AND att.ATTR_VALUE = 'true')
-                        AND clu.EXP_FIRST_ATP = (SELECT Min(c.EXP_FIRST_ATP)
-                        FROM   kslu_clu c
-                        WHERE  c.VER_IND_ID = clu.VER_IND_ID
-                        AND c.LAST_ATP >= :lastScheduledTerm
-                        GROUP  BY c.VER_IND_ID)
+                            AND (ident.ID = clu.OFFIC_CLU_ID OR ident.ID = jni.ALT_CLU_ID)
+                            AND ident.DIVISION IN (:divisions)
+                            AND attr.ATTR_NAME = 'course.campus'
+                            AND attr.ATTR_VALUE IN ( :campus1, :campus2, :campus3 )
+                            AND clu.ID NOT IN
+                                (SELECT att.OWNER
+                                FROM   KSLU_CLU_ATTR att
+                                WHERE  att.ATTR_NAME = 'course.catalogOmit_ind'
+                                    AND att.ATTR_VALUE = 'true')
+                            AND clu.EXP_FIRST_ATP =
+                                (SELECT Min(c.EXP_FIRST_ATP)
+                                FROM   kslu_clu c
+                                WHERE  c.VER_IND_ID = clu.VER_IND_ID
+                                    AND c.LAST_ATP >= :lastScheduledTerm
+                                GROUP  BY c.VER_IND_ID)
                         ORDER  BY ident.SUFX_CD
                     </value>
                 </entry>
@@ -604,13 +614,10 @@
 
                 <entry key="myplan.course.info.atp">
                     <value>NATIVE:
-                        SELECT
-                        ATP_TYPE_KEY
+                        SELECT ATP_TYPE_KEY
                         FROM KSLU_CLU_ATP_TYPE_KEY
-                        WHERE
-                        clu_id = :courseID
-                        AND
-                        ATP_TYPE_KEY NOT  IN ('kuali.atp.type.OddYears', 'kuali.atp.type.EvenYears')
+                        WHERE clu_id = :courseID
+                            AND ATP_TYPE_KEY NOT IN ('kuali.atp.type.OddYears', 'kuali.atp.type.EvenYears')
                     </value>
                 </entry>
 
@@ -752,8 +759,13 @@
                     <value>NATIVE:
                         SELECT clu.ID
                         FROM KSLU_CLU clu
-                        WHERE clu.id = :courseId OR (clu.ver_ind_id = :courseId) AND clu.EXP_FIRST_ATP = (select min(c.EXP_FIRST_ATP)
-                        FROM KSLU_CLU c where c.ver_ind_id = clu.ver_ind_id and c.LAST_ATP >= :lastScheduledTerm group by c.ver_ind_id )
+                        WHERE clu.id = :courseId OR (clu.ver_ind_id = :courseId)
+                            AND clu.EXP_FIRST_ATP =
+                                (select min(c.EXP_FIRST_ATP)
+                                FROM KSLU_CLU c
+                                where c.ver_ind_id = clu.ver_ind_id
+                                    and c.LAST_ATP >= :lastScheduledTerm
+                                group by c.ver_ind_id )
                     </value>
                 </entry>
 
