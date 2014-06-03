@@ -848,6 +848,28 @@ function updateRegistrationUrl(componentId) {
     });
 }
 
+function evaluateDisclosureScripts(selector) {
+    if (selector) {
+        //run dataScript first always
+        jQuery(selector).find("input[data-role='dataScript']").each(function () {
+            customEvalHiddenScript(jQuery(this));
+        });
+
+        jQuery(selector).find("input[name='script']").each(function () {
+            customEvalHiddenScript(jQuery(this));
+        });
+    }
+}
+
+function customEvalHiddenScript(jqueryObj) {
+    if (jqueryObj.attr("name") === undefined) {
+        return;
+    }
+    jqueryObj.attr("script", "first_run");
+    jqueryObj.removeAttr("name");
+    eval(jqueryObj.val());
+}
+
 (function ($) {
     // TODO remove publish method after old audits have been purged as audit FTL inline scripted a publish call
     $.publish = function (event) {

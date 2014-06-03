@@ -348,7 +348,15 @@ function fnGenerateFacetGroup(columnTitle, obj, sorter, formatter) {
         }
     }
 }
-
+/**
+ * Create a list of facets
+ *
+ * @param i - column index int that contains the facet data
+ * @param obj - jquery obj of the facet group
+ * @param oData - object of facet group data
+ * @param sorter - function which dictates how to sort the facet list
+ * @param formatter - function which will format facet key data into user friendly text in UI
+ */
 function fnCreateFacetList(i, obj, oData, sorter, formatter) {
     if (typeof oData === "undefined") return false;
     var aSelections = [];
@@ -367,13 +375,7 @@ function fnCreateFacetList(i, obj, oData, sorter, formatter) {
             }
         }
         var jAll = jQuery('<li />').attr("title", "All").addClass(allClass).html('<a href="#">All</a>').click(function (e) {
-            fnFacetFilter('All', i, e,
-                oTable.fnGetColumnIndex(obj.data("related-column")),
-                oTable.fnGetColumnIndex(obj.data("merged-column")),
-                obj.data("save-facet"),
-                obj.data("save-facet-property"),
-                obj.data("save-facet-key")
-            );
+            fnFacetFilter('All', i, e, obj);
         });
         jFacets.find(".courseResults__facetAll ul").append(jAll);
     }
@@ -392,13 +394,7 @@ function fnCreateFacetList(i, obj, oData, sorter, formatter) {
         jItem.append(jLink);
         if (!obj.data("skip-count")) jItem.append(' <span>(' + oData[key].count + ')</span>')
         jItem.click(function (e) {
-            fnFacetFilter(key, i, e,
-                oTable.fnGetColumnIndex(obj.data("related-column")),
-                oTable.fnGetColumnIndex(obj.data("merged-column")),
-                obj.data("save-facet"),
-                obj.data("save-facet-property"),
-                obj.data("save-facet-key")
-            );
+            fnFacetFilter(key, i, e, obj);
         });
         if (oData[key].checked) jItem.addClass("courseResults__facet--checked");
         if (Object.size(oData) == 1) jItem.addClass("courseResults__facet--static");
@@ -412,7 +408,13 @@ function fnCreateFacetList(i, obj, oData, sorter, formatter) {
         }
     }
 }
-
+/**
+ * Update the list of facets within a facet group (check state and facet counts)
+ *
+ * @param columnTitle - title of the hidden column which contains the facet data
+ * @param obj - jquery obj of the facet group
+ * @param n - column index of the facet group that generated the update event
+ */
 function fnUpdateFacetList(columnTitle, obj, n) {
     var i = oTable.fnGetColumnIndex(columnTitle);
     if (typeof oTable.fnSettings().aoColumns[i] !== "undefined") {
@@ -436,30 +438,62 @@ function fnUpdateFacetList(columnTitle, obj, n) {
         }
     }
 }
-
-function fnFacetFilter(sFilter, i, e, iRelated, iMerged, bSaveFacet, sProperty, sKey) {
+/**
+ * Filter Course Search Results based on a facet selection (on click)
+ *
+ * @param sFilter - facet key string to filter the table on
+ * @param i - column index int for which column to limit filtering to
+ * @param e - the click event
+ * @param obj - jquery obj of the facet group current facet belongs to (used to get data attributes that apply to all facets within the group)
+ */
+function fnFacetFilter(sFilter, i, e, obj) {
     stopEvent(e);
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
-    var facetData = {};
     if (!jQuery(target).is('.courseResults__facet--disabled') && !jQuery(target).is('.courseResults__facet--static')) {
+        var facetData = {};
+        jQuery("#course_search_results_panel").block({
+            centerX: false,
+            centerY: false,
+            message: ' ',
+            fadeIn: 0,
+            fadeOut: 0,
+            overlayCSS: {
+                backgroundColor: '#fff',
+                opacity: 0.9,
+                cursor: 'wait',
+                border: 'none'
+            },
+            css: {
+                top: '50px',
+                left: '412.5px',
+                color: '#24282f',
+                backgroundColor: '#24282f',
+                background: '#24282f url(' + getConfigParam("ksapImageLocation") + 'loader/ajax_refresh_large.gif) center center no-repeat',
+                border: 'none',
+                borderRadius: '10px',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                width: '55px',
+                height: '55px',
+                opacity: 0.75
+            }
+        });
         if (sFilter === 'All') {
             // Set all facets within column to checked false
             for (var key in oFacets[i]) {
-                if (oFacets[i].hasOwnProperty(key)) {
-                    oFacets[i][key].checked = false;
-                }
+                if (oFacets[i].hasOwnProperty(key)) oFacets[i][key].checked = false;
             }
             // Clear filter
             oTable.fnFilter('', i, true, false);
             setUrlHash(i, '');
-            if (bSaveFacet) {
-                facetData[sKey] = '';
-                setSessionFacets(sProperty, facetData);
+            if (obj.data("save-facet")) {
+                facetData[obj.data("save-facet-key")] = '';
+                setSessionFacets(obj.data("save-facet-property"), facetData);
             }
             // If facet group is related, clear merged column filter as well
-            if (iRelated) {
-                oTable.fnFilter('', iMerged, true, false);
-                setUrlHash(iMerged, '');
+            if (oTable.fnGetColumnIndex(obj.data("related-column"))) {
+                oTable.fnFilter('', oTable.fnGetColumnIndex(obj.data("merged-column")), true, false);
+                setUrlHash(oTable.fnGetColumnIndex(obj.data("merged-column")), '');
             }
             jQuery.event.trigger("UPDATE_FACETS", -1);
         } else {
@@ -468,30 +502,31 @@ function fnFacetFilter(sFilter, i, e, iRelated, iMerged, bSaveFacet, sProperty, 
             // Build array of selected items in facet group
             var aSelections = getSelections(oFacets[i]);
             // Filter results of facet selection
-            oTable.fnFilter(aSelections.map(function(value){
-                return ";" + value + ";"
-            }).join("|"), i, true, false);
+            oTable.fnFilter(aSelections.map(function(value){return ";" + value + ";"}).join("|"), i, true, false);
             setUrlHash(i, aSelections.join("|"));
-            if (bSaveFacet) {
-                facetData[sKey] = aSelections.join(",");
-                setSessionFacets(sProperty, facetData);
+            if (obj.data("save-facet")) {
+                facetData[obj.data("save-facet-key")] = aSelections.join(",");
+                setSessionFacets(obj.data("save-facet-property"), facetData);
             }
-            if (iRelated && isFiltered(oFacets[iRelated])) {
-                if (i < iRelated) {
-                    aSelections = permutate(aSelections, getSelections(oFacets[iRelated]));
+            if (oTable.fnGetColumnIndex(obj.data("related-column")) && isFiltered(oFacets[oTable.fnGetColumnIndex(obj.data("related-column"))])) {
+                if (i < oTable.fnGetColumnIndex(obj.data("related-column"))) {
+                    aSelections = permutate(aSelections, getSelections(oFacets[oTable.fnGetColumnIndex(obj.data("related-column"))]));
                 } else {
-                    aSelections = permutate(getSelections(oFacets[iRelated]), aSelections);
+                    aSelections = permutate(getSelections(oFacets[oTable.fnGetColumnIndex(obj.data("related-column"))]), aSelections);
                 }
-                oTable.fnFilter(aSelections.map(function(value){
-                    return ";" + value + ";"
-                }).join("|"), iMerged, true, false);
-                setUrlHash(iMerged, aSelections.join("|"));
+                oTable.fnFilter(aSelections.map(function(value){return ";" + value + ";"}).join("|"), oTable.fnGetColumnIndex(obj.data("merged-column")), true, false);
+                setUrlHash(oTable.fnGetColumnIndex(obj.data("merged-column")), aSelections.join("|"));
             }
             jQuery.event.trigger("UPDATE_FACETS", i);
         }
+        if (!obj.data("save-facet")) jQuery("#course_search_results_panel").unblock();
     }
 }
-
+/**
+ * Return an array of only the facet keys that are selected
+ *
+ * @param oFacetGroup - object of facet group data
+ */
 function getSelections(oFacetGroup) {
     var aSelections = [];
     for (var key in oFacetGroup) {
@@ -503,7 +538,11 @@ function getSelections(oFacetGroup) {
     }
     return aSelections;
 }
-
+/**
+ * Take a list of arrays and returns an array which combines all the permutations of the provide array values
+ *
+ * @param list of arrays
+ */
 function permutate() {
     var r = [], arg = arguments, max = arg.length-1;
     function helper(arr, i) {
@@ -519,7 +558,11 @@ function permutate() {
     helper([], 0);
     return r;
 }
-
+/**
+ * Returns a boolean of whether a facet group is filtered or not ('not' meaning 'All' is the selected state in UI)
+ *
+ * @param oFacetGroup - object of facet group data
+ */
 function isFiltered(oFacetGroup) {
     var filtered = false;
     for (var key in oFacetGroup) {
@@ -551,6 +594,9 @@ function setSessionFacets(property, data) {
     jQuery.ajax({
         url: "/student/myplan/course/updateFacets",
         data: submitData,
-        dataType: "json"
+        dataType: "json",
+        complete: function () {
+            jQuery("#" + "course_search_results_panel").unblock();
+        }
     });
 }

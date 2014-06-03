@@ -198,6 +198,7 @@
         <property name="header">
             <bean parent="KSAP-HeaderDiv" p:headerTagCssClasses="uif-headerText-span"/>
         </property>
+        <property name="onDocumentReadyScript" value="evaluateDisclosureScripts('#course_search_filters')"/>
         <property name="disclosure">
             <bean parent="Uif-Disclosure" p:render="true" p:defaultOpen="false">
                 <property name="expandImageSrc" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/header_expand.png"/>
