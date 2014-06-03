@@ -231,7 +231,7 @@
     <bean id="meetingtimes" parent="KSAP-HorizontalBoxGroup">
         <property name="items">
             <list>
-                <bean id="startTime" parent="Uif-InputField" p:propertyName="startTimeCount" p:label="Meeting Times">
+                <bean id="startTime" parent="Uif-InputField" p:propertyName="startTime" p:label="Meeting Times">
                     <property name="dataAttributes">
                         <map>
                             <entry key="save-value" value="true"/>
@@ -272,7 +272,7 @@
                         </bean>
                     </property>
                 </bean>
-                <bean id="endTime" parent="Uif-InputField" p:propertyName="endTimeCount" p:label="to">
+                <bean id="endTime" parent="Uif-InputField" p:propertyName="endTime" p:label="to">
                     <property name="dataAttributes">
                         <map>
                             <entry key="save-value" value="true"/>
