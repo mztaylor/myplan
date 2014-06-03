@@ -360,7 +360,7 @@ public class CourseSearchController extends UifControllerBase {
                 e.printStackTrace();
             }
             searchForm = (CourseSearchForm) ((UifFormManager) request.getSession().getAttribute("formManager")).getSessionForm(formKey);
-            Map<String, List<String>> meetingfacets = new HashMap<String, List<String>>();
+            Map<String, List<String>> meetingfacets = searchForm.getMeetingFacets();
             for (String meeting : meetingResults.keySet()) {
                 List<String> values = Arrays.asList(((String) meetingResults.get(meeting)).split(","));
                 meetingfacets.put(meeting, values);

@@ -18,6 +18,7 @@ import org.kuali.rice.krad.web.form.UifFormBase;
 
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -119,6 +120,9 @@ public class CourseSearchForm extends UifFormBase {
     }
 
     public Map<String, List<String>> getMeetingFacets() {
+        if(meetingFacets == null){
+            meetingFacets = new HashMap<String, List<String>>();
+        }
         return meetingFacets;
     }
 
