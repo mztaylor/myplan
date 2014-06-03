@@ -319,7 +319,8 @@ function searchForCourses(id, parentId) {
         },
         oLanguage: {
             "sEmptyTable": '<div class="courseResults__empty"><h4>We couldn&#39;t find anything matching your search.</h4><p>A few suggestions:</p><ul><li>Check your spelling</li><li>Try a more general search (Any quarter, ENGL 1xx)</li><li>Use at least 3 characters</li></ul></div>',
-            "sInfo": "Showing _START_-_END_ of _TOTAL_ results",
+            "sInfo": "Showing _START_-_END_ of _TOTAL_ " + (formData.searchTerm === 'any' ? 'results': 'filtered search results'),
+            "sInfoPostFix": (formData.searchTerm === 'any' ? '' : "<br><div class='courseResults__note'><p>Special note: Results below may include secondary sections that occur outside of your search filters.</p></div> "),
             "sInfoEmpty": "0 results found",
             "sInfoFiltered": "",
             "sLengthMenu": "Show _MENU_",
