@@ -400,8 +400,8 @@ public class CourseSearchController extends UifControllerBase {
             searchForm = (CourseSearchForm) ((UifFormManager) request.getSession().getAttribute("formManager")).getSessionForm(formKey);
             searchForm.setMeetingFacets(new HashMap<String, List<String>>());
             searchForm.setSelectedDays(Arrays.asList(selectedDays.split(",")));
-            searchForm.setStartTimeCount(startTime);
-            searchForm.setEndTimeCount(endTime);
+            searchForm.setStartTime(startTime);
+            searchForm.setEndTime(endTime);
         }
 
         /*populating the form with the params*/

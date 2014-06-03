@@ -195,8 +195,9 @@
 
     <!-- Disclosure property for filter search-->
     <bean id="course_search_filters" parent="KSAP-HorizontalBoxGroup" p:headerText="Filter Search">
+        <property name="cssClasses" value="courseSearch__filters"/>
         <property name="header">
-            <bean parent="KSAP-HeaderDiv" p:headerTagCssClasses="uif-headerText-span"/>
+            <bean parent="KSAP-HeaderDiv" p:cssClasses="courseSearch__filtersHeader" p:headerTagCssClasses="uif-headerText-span"/>
         </property>
         <property name="onDocumentReadyScript" value="evaluateDisclosureScripts('#course_search_filters')"/>
         <property name="disclosure">
@@ -210,12 +211,12 @@
                 <bean parent="KSAP-VerticalBoxGroup">
                     <property name="items">
                         <list>
-                            <ref bean="meetingtimes"/>
-                            <ref bean="meetingdays"/>
+                            <ref bean="meetingTimes"/>
+                            <ref bean="meetingDays"/>
                         </list>
                     </property>
                 </bean>
-                <bean parent="KSAP-ErrorMessage" p:progressiveRender="searchTerm eq 'any'">
+                <bean parent="KSAP-ErrorMessage" p:progressiveRender="searchTerm eq 'any'" p:width="200px">
                     <property name="items">
                         <list>
                             <ref bean="conditionalMessage"/>
@@ -229,7 +230,7 @@
     <bean id="conditionalMessage" parent="KSAP-Message" p:messageText="You must choose a single quarter to use filters."/>
 
          <!-- dropdown control for meeting times-->
-    <bean id="meetingtimes" parent="KSAP-HorizontalBoxGroup">
+    <bean id="meetingTimes" parent="KSAP-HorizontalBoxGroup">
         <property name="items">
             <list>
                 <bean id="startTime" parent="Uif-InputField" p:propertyName="startTime" p:label="Meeting Times">
@@ -320,7 +321,7 @@
 
 
     <!--checkbox for meeting days-->
-    <bean id="meetingdays" parent="Uif-InputField" p:propertyName="selectedDays" p:label="Meeting Days">
+    <bean id="meetingDays" parent="Uif-InputField" p:propertyName="selectedDays" p:label="Meeting Days">
         <property name="dataAttributes">
             <map>
                 <entry key="save-value" value="true"/>
