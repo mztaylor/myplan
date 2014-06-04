@@ -521,7 +521,7 @@
                             AND clu.ID NOT IN
                                 (SELECT att.OWNER
                                 FROM KSLU_CLU_ATTR att
-                                WHERE  att.ATTR_NAME = 'course.catalogOmit_ind'
+                                WHERE  att.ATTR_NAME = 'course.catalog.omit_ind'
                                     AND att.ATTR_VALUE = 'true')
                             AND clu.EXP_FIRST_ATP =
                                 (SELECT Min(c.EXP_FIRST_ATP)
