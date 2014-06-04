@@ -22,6 +22,7 @@
         <property name="ksapTermHelper" ref="ksapTermHelper"/>
         <property name="ksapCourseHelper" ref="ksapCourseHelper"/>
         <property name="ksapCalendarUtil" ref="ksapCalendarUtil"/>
+        <property name="ksapCourseOfferingSearchService" ref="ksapCourseOfferingSearchService"/>
         <!--<property name="ksapContext" ref="ksapContext"/>-->
         <!--<property name="ksapTextHelper" ref="ksapTextHelper"/>-->
         <!--<property name="ksapUserSessionHelper" ref="ksapUserSessionHelper"/>-->
@@ -131,6 +132,8 @@
     <!--<bean name="enrollStatusHelper" class="org.kuali.student.ap.framework.context.support.DefaultEnrollmentStatusHelper" />-->
 
     <bean id="ksapCourseHelper" class="org.kuali.student.ap.framework.context.support.DefaultCourseHelper" />
+
+    <bean id="ksapCourseOfferingSearchService" class="org.kuali.student.myplan.search.service.KsapCourseOfferingSearchServiceImpl" />
 
     <!--<bean name="shoppingCartHelper" class="org.kuali.student.ap.framework.context.support.MockShoppingCartHelper" />-->
 

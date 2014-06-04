@@ -57,12 +57,13 @@ import org.kuali.student.r2.core.search.dto.SearchParamInfo;
 import org.kuali.student.r2.core.search.dto.SearchRequestInfo;
 import org.kuali.student.r2.core.search.dto.SearchResultInfo;
 import org.kuali.student.r2.core.search.infc.SearchResultRow;
+import org.kuali.student.r2.core.search.service.SearchService;
 import org.kuali.student.r2.lum.clu.service.CluService;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.service.assembler.CourseAssemblerConstants;
 import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -90,11 +91,15 @@ public class CourseSearchController extends UifControllerBase {
     public static final String QUERY_TEXT = "searchQuery";
     public static final String CAMPUS_PARAM = "campusSelect";
     public static final String TERM_PARAM = "searchTerm";
-    public static final String START_TIME_PARAM = "startTimeCount";
-    public static final String END_TIME_PARAM = "endTimeCount";
+    public static final String START_TIME_PARAM = "startTime";
+    public static final String END_TIME_PARAM = "endTime";
     public static final String SELECTED_DAYS_PARAM = "selectedDays";
     public static final String FORM_KEY_PARAM = "formKey";
     public static final String MEETING_FACETS_PARAM = "meetingFacets";
+    public static final String MEETING_DAYS = "meetingDays";
+    public static final String MEETING_TIMES = "meetingTimes";
+    public static final String MEETING_DAY_TIMES = "meetingDayTimes";
+    public static final String MEETING_DAY_TIMES_TBA = "tba";
     private final Logger logger = Logger.getLogger(CourseSearchController.class);
 
     public static final String COURSE_SEARCH_URL = "/student/myplan/course?#searchQuery=%s&searchTerm=any&campusSelect=%s";
@@ -113,6 +118,7 @@ public class CourseSearchController extends UifControllerBase {
 
     private transient TypeService typeService;
 
+    private transient SearchService courseOfferingSearchService;
 
     private Comparator<TypeInfo> atpTypeComparator;
 
@@ -324,7 +330,7 @@ public class CourseSearchController extends UifControllerBase {
                 }
             }
 
-            loadScheduledTerms(courseList, subjectArea);
+            loadScheduledTerms(courseList, subjectArea, form);
             if (!CourseSearchConstants.SEARCH_TERM_ANY_ITEM.equals(form.getSearchTerm())) {
                 List<CourseSearchItem> filteredCourses = new ArrayList<CourseSearchItem>();
                 filteredCourses = filterCoursesByTerm(courseList, form.getSearchTerm());
@@ -395,17 +401,16 @@ public class CourseSearchController extends UifControllerBase {
         String selectedDays = request.getParameter(SELECTED_DAYS_PARAM);
         String startTime = request.getParameter(START_TIME_PARAM);
         String endTime = request.getParameter(END_TIME_PARAM);
-        CourseSearchForm searchForm = null;
+        CourseSearchForm form = CourseSearchConstants.SEARCH_TERM_ANY_ITEM.equals(termParam) ? new CourseSearchForm() : null;
         if (StringUtils.hasText(formKey)) {
-            searchForm = (CourseSearchForm) ((UifFormManager) request.getSession().getAttribute("formManager")).getSessionForm(formKey);
-            searchForm.setMeetingFacets(new HashMap<String, List<String>>());
-            searchForm.setSelectedDays(Arrays.asList(selectedDays.split(",")));
-            searchForm.setStartTime(startTime);
-            searchForm.setEndTime(endTime);
+            form = (CourseSearchForm) ((UifFormManager) request.getSession().getAttribute("formManager")).getSessionForm(formKey);
+            form.setMeetingFacets(new HashMap<String, List<String>>());
+            form.setSelectedDays(Arrays.asList(selectedDays.split(",")));
+            form.setStartTime(startTime);
+            form.setEndTime(endTime);
         }
 
         /*populating the form with the params*/
-        CourseSearchForm form = new CourseSearchForm();
         form.setSearchQuery(queryText);
         form.setCampusSelect(campusParams);
         form.setSearchTerm(termParam);
@@ -453,7 +458,7 @@ public class CourseSearchController extends UifControllerBase {
 
             jsonString.append("[\"").append(item.getCode()).
                     append("\",\" <a href=\\\"inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=").
-                    append(courseId + "&courseCd=" + item.getCode().replace("&", "%26")).append("&searchFormKey=" + formKey).append("\\\" target=\\\"_self\\\" title=\\\"").append(courseName).append("\\\" class=\\\"ellipsisItem\\\">").
+                    append(courseId + "&courseCd=" + item.getCode().replace("&", "%26")).append("&" + PlanConstants.PARAM_SEARCH_FORM_KEY + "=" + formKey).append("&" + PlanConstants.PARAM_FILTER_ACTIVITIES + "=" + !CourseSearchConstants.SEARCH_TERM_ANY_ITEM.equals(termParam)).append("\\\" target=\\\"_self\\\" title=\\\"").append(courseName).append("\\\" class=\\\"ellipsisItem\\\">").
                     append(courseName).append("</a>\",\"").
                     append(item.getCredit()).append("\",").append(scheduledAndOfferedTerms).append(",\"").
                     append(item.getGenEduReq()).append("\",\"").append(status).
@@ -462,6 +467,9 @@ public class CourseSearchController extends UifControllerBase {
                     append("\",\"").append(item.getCreditsFacetKeys()).
                     append("\",\"").append(item.getCourseLevelFacetKeys()).
                     append("\",\"").append(item.getCurriculumFacetKeys()).
+                    append("\",\"").append(item.getMeetingDayFacetKeys()).
+                    append("\",\"").append(item.getMeetingTimeFacetKeys()).
+                    append("\",\"").append(item.getMeetingDayTimeFacetKeys()).
                     append("\"]");
         }
         jsonString.append("]}");
@@ -625,7 +633,7 @@ public class CourseSearchController extends UifControllerBase {
     //  Load scheduled terms.
     //  Fetch the available terms from the Academic Calendar Service.
 
-    private void loadScheduledTerms(List<CourseSearchItem> courses, Set<String> subjectSet) {
+    private void loadScheduledTerms(List<CourseSearchItem> courses, Set<String> subjectSet, CourseSearchForm form) {
         try {
 
             logger.info("Start of method loadScheduledTerms of CourseSearchController:" + System.currentTimeMillis());
@@ -633,21 +641,61 @@ public class CourseSearchController extends UifControllerBase {
 
             List<TermInfo> terms = atpService.searchForTerms(QueryByCriteria.Builder.fromPredicates(equalIgnoreCase("query", PlanConstants.PUBLISHED)), CourseSearchConstants.CONTEXT_INFO);
 
-            CourseOfferingService offeringService = getCourseOfferingService();
-
             // For each term load all course offerings by subjectArea
             for (TermInfo term : terms) {
                 Set<String> courseOfferingByTermSet = new HashSet<String>();
+                Map<String, Set<String>> coursesToMeetingTimes = new LinkedHashMap<String, Set<String>>();
 
-                for (String subjectArea : subjectSet) {
-                    List<String> offeringIds = getCourseOfferingService().getCourseOfferingIdsByTermAndSubjectArea(term.getId(), subjectArea, CourseSearchConstants.CONTEXT_INFO);
-                    courseOfferingByTermSet.addAll(offeringIds);
+                /*If the search term is ANY then we do regular search for course offeringIds otherwise we do a section search based on meeting times and days passed in the form.*/
+                if (CourseSearchConstants.SEARCH_TERM_ANY_ITEM.equals(form.getSearchTerm())) {
+                    for (String subjectArea : subjectSet) {
+                        List<String> offeringIds = getCourseOfferingService().getCourseOfferingIdsByTermAndSubjectArea(term.getId(), subjectArea, CourseSearchConstants.CONTEXT_INFO);
+                        courseOfferingByTermSet.addAll(offeringIds);
+                    }
+                } else {
+                    AtpHelper.YearTerm yt = AtpHelper.atpToYearTerm(form.getSearchTerm());
+                    for (String subjectArea : subjectSet) {
+
+                        SearchRequestInfo request = new SearchRequestInfo(CourseSearchConstants.COURSE_OFFERING_MEETING_TIME_SEARCH);
+                        request.addParam(CourseSearchConstants.COURSE_OFFERING_SEARCH_DAYS_PARAM, org.apache.commons.lang.StringUtils.join(form.getSelectedDays(), ":"));
+                        request.addParam(CourseSearchConstants.COURSE_OFFERING_SEARCH_START_TIME_PARAM, form.getStartTime());
+                        request.addParam(CourseSearchConstants.COURSE_OFFERING_SEARCH_END_TIME_PARAM, form.getEndTime());
+                        request.addParam(CourseSearchConstants.COURSE_OFFERING_SEARCH_TERM_PARAM, yt.getTermAsID());
+                        request.addParam(CourseSearchConstants.COURSE_OFFERING_SEARCH_YEAR_PARAM, yt.getYearAsString());
+                        request.addParam(CourseSearchConstants.COURSE_OFFERING_SEARCH_SUBJECT_PARAM, subjectArea.trim());
+
+                        SearchResultInfo result = null;
+                        try {
+                            result = getCourseOfferingSearchService().search(request, CourseSearchConstants.CONTEXT_INFO);
+                        } catch (Exception e) {
+                            logger.error("Could not retrieve course offering by meeting times for subject: " + subjectArea + " for term: " + form.getSearchTerm(), e);
+                        }
+
+                        for (SearchResultRow row : result.getRows()) {
+                            String id = SearchHelper.getCellValue(row, "section.id");
+                            String meetingTimes = SearchHelper.getCellValue(row, "section.meeting.days.and.times");
+                            String subject = SearchHelper.getCellValue(row, "section.curriculum.abbreviation");
+                            String number = SearchHelper.getCellValue(row, "section.course.number");
+                            courseOfferingByTermSet.add(id);
+                            String code = getCourseHelper().joinStringsByDelimiter(' ', subject.trim(), number.trim());
+                            Set<String> meetings = CollectionUtils.isEmpty(coursesToMeetingTimes.get(code)) ? new HashSet<String>() : coursesToMeetingTimes.get(code);
+                            meetings.add(meetingTimes);
+                            coursesToMeetingTimes.put(code, meetings);
+                        }
+
+                    }
                 }
+
 
                 // Check to see if the course is offered
                 for (CourseSearchItem item : courses) {
                     if (getCourseHelper().isCourseInOfferingIds(item.getSubject(), item.getNumber(), courseOfferingByTermSet)) {
                         item.addScheduledTerm(term.getName());
+                        String code = getCourseHelper().joinStringsByDelimiter(' ', item.getSubject().trim(), item.getNumber().trim());
+                        item.getMeetingDaysAndTimes().addAll(coursesToMeetingTimes.get(code));
+                        item.setMeetingDayFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_DAYS));
+                        item.setMeetingTimeFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_TIMES));
+                        item.setMeetingDayTimeFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_DAY_TIMES));
                     }
                 }
 
@@ -657,6 +705,54 @@ public class CourseSearchController extends UifControllerBase {
             // TODO: Eating this error sucks
             logger.error("Web service call failed.", e);
         }
+    }
+
+
+    /**
+     * Returns back the data from the given meeting day times for given type with delimiters added.
+     * Types:
+     * MEETING_DAYS
+     * MEETING_TIMES
+     * MEETING_DAY_TIMES
+     *
+     * @param meetingDayTimes
+     * @param type
+     * @return
+     */
+    private Set<String> getMeetingDataByTypeWithDelimiters(Set<String> meetingDayTimes, String type) {
+        Set<String> data = new LinkedHashSet<String>();
+        if (MEETING_DAYS.equals(type)) {
+            for (String meetingDayTime : meetingDayTimes) {
+                List<String> dayTimes = Arrays.asList(meetingDayTime.split(":"));
+                for (String dayTime : dayTimes) {
+                    if (MEETING_DAY_TIMES_TBA.equalsIgnoreCase(dayTime)) {
+                        data.add(";" + MEETING_DAY_TIMES_TBA + ";");
+                    } else {
+                        data.add(";" + dayTime.charAt(0) + ";");
+                    }
+                }
+            }
+        } else if (MEETING_TIMES.equals(type)) {
+            for (String meetingDayTime : meetingDayTimes) {
+                List<String> dayTimes = Arrays.asList(meetingDayTime.split(":"));
+                for (String dayTime : dayTimes) {
+                    if (MEETING_DAY_TIMES_TBA.equalsIgnoreCase(dayTime)) {
+                        data.add(";" + MEETING_DAY_TIMES_TBA + ";");
+                    } else {
+                        data.add(";" + dayTime.substring(1, dayTime.length()) + ";");
+                    }
+                }
+            }
+        } else if (MEETING_DAY_TIMES.equals(type)) {
+            for (String meetingDayTime : meetingDayTimes) {
+                List<String> dayTimes = Arrays.asList(meetingDayTime.split(":"));
+                for (String dayTime : dayTimes) {
+                    data.add(";" + dayTime + ";");
+                }
+            }
+        }
+
+        return data;
     }
 
     private void loadTermsOffered(CourseSearchItem course) throws MissingParameterException {
@@ -1026,7 +1122,16 @@ public class CourseSearchController extends UifControllerBase {
         this.planHelper = planHelper;
     }
 
+    public SearchService getCourseOfferingSearchService() {
+        if (courseOfferingSearchService == null) {
+            this.courseOfferingSearchService = KsapFrameworkServiceLocator.getCourseOfferingSearchService();
+        }
+        return courseOfferingSearchService;
+    }
 
+    public void setCourseOfferingSearchService(SearchService courseOfferingSearchService) {
+        this.courseOfferingSearchService = courseOfferingSearchService;
+    }
 }
 
 
