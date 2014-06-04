@@ -38,6 +38,9 @@ public class CourseSearchItem {
     private float creditMax;
     private CreditType creditType;
 
+    /*used for the section search*/
+    private Set<String> meetingDaysAndTimes;
+
     private String genEduReq = EMPTY_RESULT_VALUE_KEY;
 
     public enum PlanState {
@@ -66,6 +69,9 @@ public class CourseSearchItem {
     private Set<String> termsFacetKeys = new HashSet<String>();
     private Set<String> scheduledFacetKeys = new HashSet<String>();
     private Set<String> creditsFacetKeys = new HashSet<String>();
+    private Set<String> meetingDayFacetKeys = new HashSet<String>();
+    private Set<String> meetingTimeFacetKeys = new HashSet<String>();
+    private Set<String> meetingDayTimeFacetKeys = new HashSet<String>();
 
     private List<TypeInfo> termInfoList;
 
@@ -334,6 +340,41 @@ public class CourseSearchItem {
 
     public void setCourseVersionIndependentId(String courseVersionIndependentId) {
         this.courseVersionIndependentId = courseVersionIndependentId;
+    }
+
+    public Set<String> getMeetingDaysAndTimes() {
+        if (meetingDaysAndTimes == null) {
+            meetingDaysAndTimes = new HashSet<String>();
+        }
+        return meetingDaysAndTimes;
+    }
+
+    public void setMeetingDaysAndTimes(Set<String> meetingDaysAndTimes) {
+        this.meetingDaysAndTimes = meetingDaysAndTimes;
+    }
+
+    public Set<String> getMeetingDayFacetKeys() {
+        return meetingDayFacetKeys;
+    }
+
+    public void setMeetingDayFacetKeys(Set<String> meetingDayFacetKeys) {
+        this.meetingDayFacetKeys = meetingDayFacetKeys;
+    }
+
+    public Set<String> getMeetingTimeFacetKeys() {
+        return meetingTimeFacetKeys;
+    }
+
+    public void setMeetingTimeFacetKeys(Set<String> meetingTimeFacetKeys) {
+        this.meetingTimeFacetKeys = meetingTimeFacetKeys;
+    }
+
+    public Set<String> getMeetingDayTimeFacetKeys() {
+        return meetingDayTimeFacetKeys;
+    }
+
+    public void setMeetingDayTimeFacetKeys(Set<String> meetingDayTimeFacetKeys) {
+        this.meetingDayTimeFacetKeys = meetingDayTimeFacetKeys;
     }
 
     @Override

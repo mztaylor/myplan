@@ -66,10 +66,10 @@ public class CourseSearchConstants {
 
     public static final String SEARCH_REQUEST_SUBJECT_PARAM = "subject";
 
-    public static final String SEARCH_REQUEST_NUMBER_PARAM = "number"; 
-    
+    public static final String SEARCH_REQUEST_NUMBER_PARAM = "number";
+
     public static final String COURSE_LEVEL_XX = "XX";
-    
+
     public static final String COURSE_LEVEL_ZERO = "00";
 
     public static final String SEARCH_REQUEST_LAST_SCHEDULED_PARAM = "lastScheduledTerm";
@@ -93,10 +93,18 @@ public class CourseSearchConstants {
 
     /* for Enum service search */
     public static final String ENUM_CONTEXT_KEY_SEARCH_PLACEHOLDER_KEY = "uw.enumcontext.academicplan.placeholder";
-    public static final String ENUM_CONTEXT_KEY_SEARCH_TYPE            = "enum.search.by.context.key";
+    public static final String ENUM_CONTEXT_KEY_SEARCH_TYPE = "enum.search.by.context.key";
     // param_name must be '_' separated, not '.' separated b/c we have code that mutiliates . into _ and that's
     // what it looks for.
-    public static final String ENUM_CONTEXT_KEY_SEARCH_PARAM_NAME      = "enum_query_param_context_key";
+    public static final String ENUM_CONTEXT_KEY_SEARCH_PARAM_NAME = "enum_query_param_context_key";
+
+    public static final String COURSE_OFFERING_MEETING_TIME_SEARCH = "course_offering_meeting_time_search";
+    public static final String COURSE_OFFERING_SEARCH_DAYS_PARAM = "course_offering_search_days_param";
+    public static final String COURSE_OFFERING_SEARCH_START_TIME_PARAM = "course_offering_search_start_time_param";
+    public static final String COURSE_OFFERING_SEARCH_END_TIME_PARAM = "course_offering_search_end_time_param";
+    public static final String COURSE_OFFERING_SEARCH_TERM_PARAM = "course_offering_search_term_param";
+    public static final String COURSE_OFFERING_SEARCH_YEAR_PARAM = "course_offering_search_year_param";
+    public static final String COURSE_OFFERING_SEARCH_SUBJECT_PARAM = "course_offering_search_subject_param";
 
     /*Activity Constants*/
 

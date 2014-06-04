@@ -3,6 +3,7 @@ package org.kuali.student.ap.framework.config;
 import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.myplan.utils.CalendarUtil;
+import org.kuali.student.r2.core.search.service.SearchService;
 
 import javax.ejb.EJB;
 
@@ -325,6 +326,15 @@ public final class KsapFrameworkServiceLocator {
         return getInstance().ksapCalendarUtil;
     }
 
+    /**
+     * Gets the course offering search service.
+     *
+     * @return the CourseOfferingSearchService.
+     */
+    public static SearchService getCourseOfferingSearchService() {
+        return getInstance().ksapCourseOfferingSearchService;
+    }
+
 
 //    public void setKsCoreAtpService(AtpService ksCoreAtpService) {
 //        getInstance().ksCoreAtpService = ksCoreAtpService;
@@ -447,6 +457,10 @@ public final class KsapFrameworkServiceLocator {
         getInstance().ksapCalendarUtil = ksapCalendarUtil;
     }
 
+    public void setKsapCourseOfferingSearchService(SearchService ksapCourseOfferingSearchService) {
+        this.ksapCourseOfferingSearchService = ksapCourseOfferingSearchService;
+    }
+
     //	@EJB
 //	private transient AtpService ksCoreAtpService;
 //	@EJB
@@ -517,6 +531,9 @@ public final class KsapFrameworkServiceLocator {
 
     @EJB
     private transient CalendarUtil ksapCalendarUtil;
+
+    @EJB
+    private transient SearchService ksapCourseOfferingSearchService;
 
     private KsapFrameworkServiceLocator() {
     }
