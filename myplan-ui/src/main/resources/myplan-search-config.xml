@@ -534,26 +534,26 @@
                 </entry>
                 <entry key="myplan.lu.search.additionalDivision">
                     <value>NATIVE:
-                        SELECT DISTINCT clu.ID, ident.SUFX_CD
-                        FROM KSLU_CLU_IDENT ident, KSLU_CLU_ATTR attr, KSLU_CLU clu
-                            LEFT OUTER JOIN KSLU_CLU_JN_CLU_IDENT jni ON jni.CLU_ID = clu.ID
-                        WHERE attr.OWNER = clu.ID
-                            AND (ident.ID = clu.OFFIC_CLU_ID OR ident.ID = jni.ALT_CLU_ID)
-                            AND ident.DIVISION IN (:divisions)
-                            AND attr.ATTR_NAME = 'course.campus'
-                            AND attr.ATTR_VALUE IN ( :campus1, :campus2, :campus3 )
-                            AND clu.ID NOT IN
-                                (SELECT att.OWNER
-                                FROM   KSLU_CLU_ATTR att
-                                WHERE  att.ATTR_NAME = 'course.catalogOmit_ind'
-                                    AND att.ATTR_VALUE = 'true')
-                            AND clu.EXP_FIRST_ATP =
-                                (SELECT Min(c.EXP_FIRST_ATP)
+                        SELECT DISTINCT clu.id, ident.sufx_cd
+                        FROM kslu_clu_ident ident, kslu_clu_attr attr, kslu_clu clu
+                            LEFT OUTER JOIN kslu_clu_jn_clu_ident  jni ON jni.clu_id = clu.id
+                        WHERE attr.owner = clu.id
+                            AND (ident.id= clu.offic_clu_id OR ident.id = jni.alt_clu_id)
+                            AND ident.division IN (:divisions)
+                            AND attr.attr_name = 'course.campus'
+                            AND attr.attr_value IN ( :campus1, :campus2, :campus3 )
+                            AND clu.id NOT IN
+                                (SELECT att.owner
+                                FROM    kslu_clu_attr att
+                                WHERE  att.attr_name = 'course.catalogOmit_ind'
+                                    AND att.attr_value = 'true')
+                            AND clu.exp_first_atp =
+                                (SELECT MIN(c.exp_first_atp)
                                 FROM   kslu_clu c
-                                WHERE  c.VER_IND_ID = clu.VER_IND_ID
-                                    AND c.LAST_ATP >= :lastScheduledTerm
-                                GROUP  BY c.VER_IND_ID)
-                        ORDER  BY ident.SUFX_CD
+                                WHERE  c.ver_ind_id = clu.ver_ind_id
+                                AND c.last_atp >= :lastScheduledTerm
+                                GROUP  BY c.ver_ind_id)
+                        ORDER  BY ident.sufx_cd
                     </value>
                 </entry>
                 <entry key="myplan.lu.search.division">
