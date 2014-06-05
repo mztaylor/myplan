@@ -6,6 +6,7 @@ import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.kns.inquiry.KualiInquirableImpl;
 import org.kuali.student.ap.framework.config.KsapFrameworkServiceLocator;
+import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.enrollment.academicrecord.dto.StudentCourseRecordInfo;
 import org.kuali.student.enrollment.academicrecord.service.AcademicRecordService;
 import org.kuali.student.enrollment.acal.dto.TermInfo;
@@ -20,8 +21,12 @@ import org.kuali.student.myplan.academicplan.infc.PlanItem;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanService;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.config.UwMyplanServiceLocator;
-import org.kuali.student.myplan.course.dataobject.*;
-import org.kuali.student.ap.framework.context.CourseHelper;
+import org.kuali.student.myplan.course.dataobject.ActivityOfferingItem;
+import org.kuali.student.myplan.course.dataobject.CourseDetails;
+import org.kuali.student.myplan.course.dataobject.CourseOfferingInstitution;
+import org.kuali.student.myplan.course.dataobject.CourseOfferingTerm;
+import org.kuali.student.myplan.course.dataobject.CourseSummaryDetails;
+import org.kuali.student.myplan.course.dataobject.MeetingDetails;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.course.util.CreditsFormatter;
 import org.kuali.student.myplan.plan.PlanConstants;
@@ -29,8 +34,12 @@ import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
 import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
-import org.kuali.student.myplan.plan.util.*;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
+import org.kuali.student.myplan.plan.util.DateFormatHelper;
+import org.kuali.student.myplan.plan.util.EnumerationHelper;
+import org.kuali.student.myplan.plan.util.OrgHelper;
+import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.CalendarUtil;
 import org.kuali.student.myplan.utils.TimeStringMillisConverter;
@@ -53,7 +62,6 @@ import org.kuali.student.r2.lum.course.dto.CourseInfo;
 import org.kuali.student.r2.lum.course.service.CourseService;
 import org.kuali.student.r2.lum.util.constants.CluServiceConstants;
 import org.kuali.student.r2.lum.util.constants.CourseServiceConstants;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -62,7 +70,14 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 
@@ -208,25 +223,32 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         // -- Course Description
         // -- Course Requisites
         if (course.getDescr() != null) {
-            String formatted = course.getDescr().getFormatted();
+            // Use plain description, unless it's not there
+            String courseDesc = StringUtils.isEmpty(course.getDescr().getPlain()) ? course.getDescr().getFormatted() : course.getDescr().getPlain();
 
-            // Split course description "AAA Prerequisite: BBB Offering: CCC" and pull out "AAA" and "BBB"
-            // Guarantee result arrays will always have at least one element
-            if (formatted == null) formatted = "";
-            String[] aaa = formatted.split("Offered:");
-            String[] bbb = aaa[0].split("Prerequisite:");
+            if (courseDesc == null) {
+                courseDetails.setCourseDescription(""); // guard against NPEs in clients, and   skip all the processing below
+            } else {
+                // Split course description "AAA Prerequisite: BBB Offering: CCC" and pull out "AAA" and "BBB"
+                // Guarantee result arrays will always have at least one element
+                String[] aaa = courseDesc.split("Offered:");
+                String[] bbb = aaa[0].split("Prerequisite:");
 
-            String descr = bbb[0].trim();
-            descr = getCourseLinkBuilder().makeLinks(descr);
-            courseDetails.setCourseDescription(descr);
+                String descr = bbb[0].trim();
+                descr = getCourseLinkBuilder().makeLinks(descr);
+                courseDetails.setCourseDescription(descr);
 
-            if (bbb.length > 1) {
-                String prereq = bbb[1].trim();
-                prereq = prereq.substring(0, 1).toUpperCase().concat(prereq.substring(1));
-                prereq = getCourseLinkBuilder().makeLinks(prereq);
-                courseDetails.getRequisites().add(prereq);
+                if (bbb.length > 1) {
+                    String prereq = bbb[1].trim();
+                    prereq = prereq.substring(0, 1).toUpperCase().concat(prereq.substring(1));
+                    prereq = getCourseLinkBuilder().makeLinks(prereq);
+                    courseDetails.getRequisites().add(prereq);
+                }
             }
+        } else {
+           courseDetails.setCourseDescription(""); // guard against NPEs in clients
         }
+
 
 
         // -- Terms Offered
