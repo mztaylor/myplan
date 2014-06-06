@@ -338,7 +338,7 @@
             </list>
         </property>
         <property name="control">
-            <bean parent="Uif-HorizontalCheckboxesControl" p:disabled="@{searchTerm eq 'any'}">
+            <bean parent="Uif-HorizontalCheckboxesControl" p:cssClasses="uif-horizontalCheckboxesFieldset" p:disabled="@{searchTerm eq 'any'}">
                 <property name="dataAttributes">
                     <map>
                         <entry key="save-value" value="true"/>
