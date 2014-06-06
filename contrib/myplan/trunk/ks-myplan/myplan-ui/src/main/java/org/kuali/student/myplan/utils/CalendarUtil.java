@@ -44,6 +44,21 @@ public class CalendarUtil {
         return null;
     }
 
+
+    /**
+     * Equivalent short name for the day is returned:
+     * Eg: 0 --> Su, 1 --> M, 2 -->Tu etc..
+     *
+     * @param dayOfWeekValue
+     * @return shortName
+     */
+    public String getShortNameByVal(int dayOfWeekValue) {
+        if (shortNames != null && days != null) {
+            return shortNames.get(dayOfWeekValue);
+        }
+        return null;
+    }
+
     /**
      * takes index value of day of week in Calendar
      * eg: Calendar.SUNDAY --> 1 is passed as param and the short name returned i.e. Su
