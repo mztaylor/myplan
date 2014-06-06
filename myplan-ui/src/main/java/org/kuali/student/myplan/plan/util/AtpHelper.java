@@ -229,7 +229,6 @@ public class AtpHelper {
      * Initially to be used as label for secondary navigation.
      *
      * @param atpId String in format of "20121"
-     *
      * @return String formatted label for the quarter passed in.
      */
     public static String formatQuarterLabel(String atpId) {
@@ -245,7 +244,6 @@ public class AtpHelper {
      * Returns an String in the format of "Summer Quarter 2014" for the current quarter.
      *
      * @param
-     *
      * @return String formatted label for the current quarter
      */
     public static String formatCurrentQuarterLabel() {
@@ -258,7 +256,6 @@ public class AtpHelper {
      * Returns an String in the format of "Summer Quarter 2014" for the first quarter that can be planned.
      *
      * @param
-     *
      * @return String formatted label for the quarter
      */
     public static String formatCurrentQuarterLabelForFirstPlanTerm() {
@@ -302,6 +299,17 @@ public class AtpHelper {
      */
     public static String atpIdToShortTermName(String atpId) {
         return atpToYearTerm(atpId).toShortTermName();
+    }
+
+    /**
+     * Gives the short form of Term name and full year
+     * for given atp 20131 the short form of term and full year is WI 2013
+     *
+     * @param atpId
+     * @return
+     */
+    public static String atpIdToShortTermNameFullYear(String atpId) {
+        return atpToYearTerm(atpId).toShortTermNameFullYear();
     }
 
     /**
@@ -664,6 +672,17 @@ public class AtpHelper {
             return a + " " + b;
         }
 
+        /**
+         * returns term as 'AU 2013'
+         *
+         * @return
+         */
+        public String toShortTermNameFullYear() {
+            String a = TERM_ID_LIST.get(getTerm() - 1).substring(0, 2).toUpperCase();
+            String b = getYearAsString();
+            return a + " " + b;
+        }
+
         @Override
         public int compareTo(YearTerm that) {
             final int BEFORE = -1;
@@ -872,7 +891,6 @@ public class AtpHelper {
      * returns boolean indicating if schedule for atp has been published
      *
      * @param atpId
-     *
      * @return
      */
     public static boolean isAtpPublished(String atpId) {

@@ -422,6 +422,8 @@ public class CourseSearchController extends UifControllerBase {
         form.setCampusSelect(campusParams);
         form.setSearchTerm(termParam);
 
+        form.setView(form.getPostedView());
+
         /*populating the CourseSearchItem list*/
         String user = getUserSessionHelper().getStudentId();
         List<CourseSearchItem> courses = courseSearch(form, user);

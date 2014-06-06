@@ -231,9 +231,8 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 }
             }
         } else {
-           courseDetails.setCourseDescription(""); // guard against NPEs in clients
+            courseDetails.setCourseDescription(""); // guard against NPEs in clients
         }
-
 
 
         // -- Terms Offered
@@ -381,6 +380,55 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
             }
             List<CourseOfferingInstitution> courseOfferingInstitutions = getCourseOfferingInstitutions(course, termList, form, filterActivityOfferings);
             courseDetails.setCourseOfferingInstitutionList(courseOfferingInstitutions);
+            if (form != null && filterActivityOfferings) {
+                List<String> selectedDays = form.getSelectedDays();
+                List<String> selectedTimes = new ArrayList<String>();
+                boolean exactTimeMatch = false;
+                String startTime = form.getStartTime();
+                String endTime = form.getEndTime();
+                {
+                    String hours = startTime.substring(0, 2);
+                    String minutes = startTime.substring(2, startTime.length());
+                    startTime = TimeStringMillisConverter.millisToStandardTime(TimeStringMillisConverter.militaryTimeToMillis(String.format("%s:%s", hours, minutes)), null);
+                }
+                {
+                    String hours = endTime.substring(0, 2);
+                    String minutes = endTime.substring(2, endTime.length());
+                    endTime = TimeStringMillisConverter.millisToStandardTime(TimeStringMillisConverter.militaryTimeToMillis(String.format("%s:%s", hours, minutes)), null);
+                }
+                Map<String, List<String>> meetingFacets = form.getMeetingFacets();
+                for (String key : meetingFacets.keySet()) {
+                    List<String> facets = meetingFacets.get(key);
+                    if (!CollectionUtils.isEmpty(facets)) {
+                        if ("day".equals(key)) {
+                            selectedDays = facets;
+                        } else if ("time".equals(key)) {
+                            for (String facet : facets) {
+                                String from = facet.substring(0, 4);
+                                String to = facet.substring(4, facet.length());
+                                {
+                                    String hours = from.substring(0, 2);
+                                    String minutes = from.substring(2, from.length());
+                                    from = TimeStringMillisConverter.millisToStandardTime(TimeStringMillisConverter.militaryTimeToMillis(String.format("%s:%s", hours, minutes)), null);
+                                }
+                                {
+                                    String hours = to.substring(0, 2);
+                                    String minutes = to.substring(2, to.length());
+                                    to = TimeStringMillisConverter.millisToStandardTime(TimeStringMillisConverter.militaryTimeToMillis(String.format("%s:%s", hours, minutes)), null);
+                                }
+                                selectedTimes.add(String.format("%s TO %s", from, to));
+                            }
+                            exactTimeMatch = true;
+                        }
+                    }
+                }
+                List<String> selectedDayNames = new ArrayList<String>();
+                for (String facet : selectedDays) {
+                    selectedDayNames.add(getCalendarUtil().getShortNameByVal(Integer.parseInt(facet)));
+                }
+            /*Setting the filters applied*/
+                courseDetails.setFiltersApplied(String.format("%s - %s - %s", AtpHelper.atpIdToShortTermNameFullYear(form.getSearchTerm()), org.apache.commons.lang.StringUtils.join(selectedDayNames, ""), exactTimeMatch ? org.apache.commons.lang.StringUtils.join(selectedTimes, " - ") : String.format("%s TO %s", startTime, endTime)));
+            }
         }
         return courseDetails;
     }
@@ -753,7 +801,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     if ("day".equals(key)) {
                         selectedDays = facets;
                     } else if ("time".equals(key)) {
-                        selectedTimes = meetingFacets.get(key);
+                        selectedTimes = facets;
                         exactTimeMatch = true;
                     }
                 }
