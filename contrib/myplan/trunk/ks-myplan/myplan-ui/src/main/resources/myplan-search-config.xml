@@ -350,22 +350,6 @@
         </search:searchCriteriaTypeInfo>
     </search:searchType>
 
-    <search:searchType id="myplan.course.getCampusLocations">
-        <search:searchResultTypeInfo>
-            <search:name/>
-            <search:desc/>
-            <search:resultColumns>
-                <search:resultColumn id="lu.resultColumn.campusVal">
-                    <search:dataType>string</search:dataType>
-                </search:resultColumn>
-            </search:resultColumns>
-        </search:searchResultTypeInfo>
-        <search:searchCriteriaTypeInfo>
-            <search:queryParams>
-            </search:queryParams>
-        </search:searchCriteriaTypeInfo>
-    </search:searchType>
-
     <bean id="queryMap" parent="queryMap-parent">
         <property name="sourceMap">
             <map merge="true">
@@ -443,7 +427,7 @@
                             AND clu.id NOT IN (
                                 SELECT att.owner
                                 FROM CluAttribute att
-                                WHERE att.name='course.catalogOmit_ind'
+                                WHERE att.name='course.catalog.omit_ind'
                                     AND att.value='true')
                             AND clu.expectedFirstAtp = (
                                 SELECT MIN(c.expectedFirstAtp)
@@ -594,7 +578,7 @@
                         AND attr.ATTR_VALUE IN ( :campus1, :campus2, :campus3 )
                         AND clu.ID NOT IN (SELECT att.OWNER
                         FROM   KSLU_CLU_ATTR att
-                        WHERE  att.ATTR_NAME = 'course.catalogOmit_ind'
+                        WHERE  att.ATTR_NAME = 'course.catalog.omit_ind'
                         AND att.ATTR_VALUE = 'true')
                         AND clu.EXP_FIRST_ATP = (SELECT Min(c.EXP_FIRST_ATP)
                         FROM   kslu_clu c
@@ -758,25 +742,6 @@
                                         AND ident.id = jni.alt_clu_id
                                         AND trim( ident.sufx_cd ) = (:number)
                                         AND trim( ident.division ) = (:subject)  )
-                    </value>
-                </entry>
-
-                <entry key="myplan.course.getCampusLocations">
-                    <value>
-                        SELECT
-                        attr.value
-                        FROM CluAttribute attr
-                        JOIN attr.owner clu
-                        JOIN clu.officialIdentifier ident
-                        WHERE
-                        clu.id = :cluId
-                        AND
-                        attr.name = 'course.campus'
-                        AND
-                        clu.id NOT IN (SELECT att.owner FROM CluAttribute att where att.name='course.catalogOmit_ind'
-                        and att.value='true')
-                        AND clu.expectedFirstAtp = (select min(c.expectedFirstAtp) FROM Clu c where c.version.versionIndId = clu.version.versionIndId and c.lastAtp &gt;= :lastScheduledTerm group by c.version.versionIndId )
-                        ORDER BY ident.suffixCode
                     </value>
                 </entry>
 
