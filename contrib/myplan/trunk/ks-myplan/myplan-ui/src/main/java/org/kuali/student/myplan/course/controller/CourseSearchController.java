@@ -655,12 +655,13 @@ public class CourseSearchController extends UifControllerBase {
                 Map<String, Set<String>> coursesToMeetingTimes = new LinkedHashMap<String, Set<String>>();
 
                 /*If the search term is ANY then we do regular search for course offeringIds otherwise we do a section search based on meeting times and days passed in the form.*/
-                if (CourseSearchConstants.SEARCH_TERM_ANY_ITEM.equals(form.getSearchTerm())) {
+                if (CourseSearchConstants.SEARCH_TERM_ANY_ITEM.equals(form.getSearchTerm()) || !term.getId().equals(form.getSearchTerm())) {
                     for (String subjectArea : subjectSet) {
                         List<String> offeringIds = getCourseOfferingService().getCourseOfferingIdsByTermAndSubjectArea(term.getId(), subjectArea, CourseSearchConstants.CONTEXT_INFO);
                         courseOfferingByTermSet.addAll(offeringIds);
                     }
                 } else {
+
                     AtpHelper.YearTerm yt = AtpHelper.atpToYearTerm(form.getSearchTerm());
                     for (String subjectArea : subjectSet) {
 
@@ -684,11 +685,13 @@ public class CourseSearchController extends UifControllerBase {
                             String meetingTimes = SearchHelper.getCellValue(row, "section.meeting.days.and.times");
                             String subject = SearchHelper.getCellValue(row, "section.curriculum.abbreviation");
                             String number = SearchHelper.getCellValue(row, "section.course.number");
+
                             courseOfferingByTermSet.add(id);
                             String code = getCourseHelper().joinStringsByDelimiter(' ', subject.trim(), number.trim());
                             Set<String> meetings = CollectionUtils.isEmpty(coursesToMeetingTimes.get(code)) ? new HashSet<String>() : coursesToMeetingTimes.get(code);
                             meetings.add(meetingTimes);
                             coursesToMeetingTimes.put(code, meetings);
+
                         }
 
                     }
@@ -699,7 +702,7 @@ public class CourseSearchController extends UifControllerBase {
                 for (CourseSearchItem item : courses) {
                     if (getCourseHelper().isCourseInOfferingIds(item.getSubject(), item.getNumber(), courseOfferingByTermSet)) {
                         item.addScheduledTerm(term.getName());
-                        if (!CourseSearchConstants.SEARCH_TERM_ANY_ITEM.equals(form.getSearchTerm())) {
+                        if (!CourseSearchConstants.SEARCH_TERM_ANY_ITEM.equals(form.getSearchTerm()) && term.getId().equals(form.getSearchTerm())) {
                             String code = getCourseHelper().joinStringsByDelimiter(' ', item.getSubject().trim(), item.getNumber().trim());
                             if (!CollectionUtils.isEmpty(coursesToMeetingTimes.get(code))) {
                                 item.getMeetingDaysAndTimes().addAll(coursesToMeetingTimes.get(code));
