@@ -699,11 +699,15 @@ public class CourseSearchController extends UifControllerBase {
                 for (CourseSearchItem item : courses) {
                     if (getCourseHelper().isCourseInOfferingIds(item.getSubject(), item.getNumber(), courseOfferingByTermSet)) {
                         item.addScheduledTerm(term.getName());
-                        String code = getCourseHelper().joinStringsByDelimiter(' ', item.getSubject().trim(), item.getNumber().trim());
-                        item.getMeetingDaysAndTimes().addAll(coursesToMeetingTimes.get(code));
-                        item.setMeetingDayFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_DAYS));
-                        item.setMeetingTimeFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_TIMES));
-                        item.setMeetingDayTimeFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_DAY_TIMES));
+                        if (!CourseSearchConstants.SEARCH_TERM_ANY_ITEM.equals(form.getSearchTerm())) {
+                            String code = getCourseHelper().joinStringsByDelimiter(' ', item.getSubject().trim(), item.getNumber().trim());
+                            if (!CollectionUtils.isEmpty(coursesToMeetingTimes.get(code))) {
+                                item.getMeetingDaysAndTimes().addAll(coursesToMeetingTimes.get(code));
+                                item.setMeetingDayFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_DAYS));
+                                item.setMeetingTimeFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_TIMES));
+                                item.setMeetingDayTimeFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_DAY_TIMES));
+                            }
+                        }
                     }
                 }
 
