@@ -22,6 +22,8 @@ public class CourseDetails {
 
     private PlannedCourseSummary plannedCourseSummary;
 
+    private String filtersApplied;
+
 
     public CourseDetails() {
         plannedCourseSummary = new PlannedCourseSummary();
@@ -54,6 +56,14 @@ public class CourseDetails {
 
     public void setPlannedCourseSummary(PlannedCourseSummary plannedCourseSummary) {
         this.plannedCourseSummary = plannedCourseSummary;
+    }
+
+    public String getFiltersApplied() {
+        return filtersApplied;
+    }
+
+    public void setFiltersApplied(String filtersApplied) {
+        this.filtersApplied = filtersApplied;
     }
 
     //TODO: Review why we really need this

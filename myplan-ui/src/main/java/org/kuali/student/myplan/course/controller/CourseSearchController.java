@@ -21,6 +21,8 @@ import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.KeyValue;
+import org.kuali.rice.krad.uif.UifConstants;
+import org.kuali.rice.krad.uif.UifParameters;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.rice.krad.web.form.UifFormManager;
@@ -358,6 +360,7 @@ public class CourseSearchController extends UifControllerBase {
 
         HashMap<String, Object> meetingResults = new HashMap<String, Object>();
         String meetings = request.getParameter(MEETING_FACETS_PARAM);
+
         CourseSearchForm searchForm = null;
         if (StringUtils.hasText(formKey)) {
             try {
@@ -368,7 +371,11 @@ public class CourseSearchController extends UifControllerBase {
             searchForm = (CourseSearchForm) ((UifFormManager) request.getSession().getAttribute("formManager")).getSessionForm(formKey);
             Map<String, List<String>> meetingfacets = searchForm.getMeetingFacets();
             for (String meeting : meetingResults.keySet()) {
-                List<String> values = Arrays.asList(((String) meetingResults.get(meeting)).split(","));
+                List<String> values = new ArrayList<String>();
+                if (StringUtils.hasText((String) meetingResults.get(meeting))) {
+                    values = Arrays.asList(((String) meetingResults.get(meeting)).split(","));
+
+                }
                 meetingfacets.put(meeting, values);
             }
             searchForm.setMeetingFacets(meetingfacets);
@@ -401,9 +408,9 @@ public class CourseSearchController extends UifControllerBase {
         String selectedDays = request.getParameter(SELECTED_DAYS_PARAM);
         String startTime = request.getParameter(START_TIME_PARAM);
         String endTime = request.getParameter(END_TIME_PARAM);
-        CourseSearchForm form = CourseSearchConstants.SEARCH_TERM_ANY_ITEM.equals(termParam) ? new CourseSearchForm() : null;
+        CourseSearchForm form = new CourseSearchForm();
         if (StringUtils.hasText(formKey)) {
-            form = (CourseSearchForm) ((UifFormManager) request.getSession().getAttribute("formManager")).getSessionForm(formKey);
+            form = (CourseSearchForm) request.getAttribute(UifConstants.REQUEST_FORM);
             form.setMeetingFacets(new HashMap<String, List<String>>());
             form.setSelectedDays(Arrays.asList(selectedDays.split(",")));
             form.setStartTime(startTime);
@@ -414,7 +421,6 @@ public class CourseSearchController extends UifControllerBase {
         form.setSearchQuery(queryText);
         form.setCampusSelect(campusParams);
         form.setSearchTerm(termParam);
-
 
         /*populating the CourseSearchItem list*/
         String user = getUserSessionHelper().getStudentId();
@@ -727,7 +733,7 @@ public class CourseSearchController extends UifControllerBase {
                 for (String dayTime : dayTimes) {
                     if (MEETING_DAY_TIMES_TBA.equalsIgnoreCase(dayTime)) {
                         data.add(";" + MEETING_DAY_TIMES_TBA + ";");
-                    } else {
+                    } else if (StringUtils.hasText(dayTime)) {
                         data.add(";" + dayTime.charAt(0) + ";");
                     }
                 }
@@ -738,7 +744,7 @@ public class CourseSearchController extends UifControllerBase {
                 for (String dayTime : dayTimes) {
                     if (MEETING_DAY_TIMES_TBA.equalsIgnoreCase(dayTime)) {
                         data.add(";" + MEETING_DAY_TIMES_TBA + ";");
-                    } else {
+                    } else if (StringUtils.hasText(dayTime)) {
                         data.add(";" + dayTime.substring(1, dayTime.length()) + ";");
                     }
                 }
@@ -747,7 +753,9 @@ public class CourseSearchController extends UifControllerBase {
             for (String meetingDayTime : meetingDayTimes) {
                 List<String> dayTimes = Arrays.asList(meetingDayTime.split(":"));
                 for (String dayTime : dayTimes) {
-                    data.add(";" + dayTime + ";");
+                    if (StringUtils.hasText(dayTime)) {
+                        data.add(";" + dayTime + ";");
+                    }
                 }
             }
         }
