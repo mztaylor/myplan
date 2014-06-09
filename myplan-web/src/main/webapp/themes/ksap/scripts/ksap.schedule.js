@@ -201,7 +201,7 @@ var KsapScheduleBuild = {
                     break;
             }
         }
-        var popupSettings = jQuery.extend(popupOptionsDefault, popupOptions);
+        var popupSettings = jQuery.extend({}, popupOptionsDefault, popupOptions);
         if (!popupElement.HasPopOver()) popupElement.CreatePopOver({manageMouseEvents: false});
         popupElement.ShowPopOver(popupSettings, false);
         popupElement.FreezePopOver();
