@@ -492,28 +492,31 @@
 
                 <entry key="myplan.lu.search.divisionAndLevel">
                     <value>NATIVE:
-                        SELECT DISTINCT clu.ID, ident.SUFX_CD
-                        FROM KSLU_CLU_IDENT ident, KSLU_CLU_ATTR attr, KSLU_CLU clu
-                            LEFT OUTER JOIN KSLU_CLU_JN_CLU_IDENT jni
-                                ON jni.CLU_ID = clu.ID
-                        WHERE attr.OWNER = clu.ID
-                            AND (ident.ID = clu.OFFIC_CLU_ID OR ident.ID = jni.ALT_CLU_ID)
-                            AND ident.DIVISION = :division
-                            AND (ident.LVL = :level OR (ident.LVL IS NULL AND ident.SUFX_CD LIKE :levelStart||'%'))
-                            AND attr.ATTR_NAME = 'course.campus'
-                            AND attr.ATTR_VALUE IN ( :campus1, :campus2, :campus3 )
-                            AND clu.ID NOT IN
-                                (SELECT att.OWNER
-                                FROM KSLU_CLU_ATTR att
-                                WHERE  att.ATTR_NAME = 'course.catalog.omit_ind'
-                                    AND att.ATTR_VALUE = 'true')
-                            AND clu.EXP_FIRST_ATP =
-                                (SELECT Min(c.EXP_FIRST_ATP)
+                        SELECT DISTINCT clu.id, ident.sufx_cd
+                        FROM kslu_clu_ident ident,
+                            kslu_clu_attr attr,
+                            kslu_clu clu
+                            LEFT OUTER JOIN kslu_clu_jn_clu_ident jni
+                                ON jni.clu_id = clu.id
+                        WHERE attr.owner = clu.id
+                            AND (ident.id = clu.offic_clu_id OR ident.id = jni.alt_clu_id)
+                            AND ident.division = :division
+                            AND (ident.lvl = :level
+                                OR (ident.lvl IS NULL AND ident.sufx_cd LIKE :levelStart||'%'))
+                            AND attr.attr_name = 'course.campus'
+                            AND attr.attr_value IN ( :campus1, :campus2, :campus3 )
+                            AND clu.id NOT IN
+                                (SELECT att.owner
+                                FROM kslu_clu_attr att
+                                WHERE  att.attr_name = 'course.catalog.omit_ind'
+                                    AND att.attr_value = 'true')
+                            AND clu.exp_first_atp =
+                                (SELECT MIN(c.exp_first_atp)
                                 FROM   kslu_clu c
-                                WHERE  c.VER_IND_ID = clu.VER_IND_ID
-                                    AND c.LAST_ATP >= :lastScheduledTerm
-                                GROUP BY c.VER_IND_ID)
-                        ORDER  BY ident.SUFX_CD
+                                WHERE  c.ver_ind_id = clu.ver_ind_id
+                                    AND c.last_atp >= :lastScheduledTerm
+                                GROUP BY c.ver_ind_id)
+                        ORDER  BY ident.sufx_cd
                     </value>
                 </entry>
                 <entry key="myplan.lu.search.additionalDivision">
@@ -541,7 +544,7 @@
                                         AND cluatp.last_atp >= (:lastScheduledTerm )
                                     GROUP BY cluatp.ver_ind_id )
                             UNION
-                            SELECT DISTINCT clu.id,  ident.sufx_cd code
+                            SELECT DISTINCT clu.id, ident.sufx_cd code
                             FROM kslu_clu_ident ident,
                                  kslu_clu_attr attr,
                                  kslu_clu clu,
@@ -570,147 +573,131 @@
                 </entry>
                 <entry key="myplan.lu.search.division">
                     <value>NATIVE:
-                        SELECT DISTINCT clu.ID, ident.SUFX_CD FROM KSLU_CLU_IDENT ident, KSLU_CLU_ATTR attr, KSLU_CLU clu  left outer join KSLU_CLU_JN_CLU_IDENT jni on jni.CLU_ID = clu.ID
-                        WHERE attr.OWNER = clu.ID
-                        AND (ident.ID = clu.OFFIC_CLU_ID OR ident.ID = jni.ALT_CLU_ID)
-                        AND ident.DIVISION = :division
-                        AND attr.ATTR_NAME = 'course.campus'
-                        AND attr.ATTR_VALUE IN ( :campus1, :campus2, :campus3 )
-                        AND clu.ID NOT IN (SELECT att.OWNER
-                        FROM   KSLU_CLU_ATTR att
-                        WHERE  att.ATTR_NAME = 'course.catalog.omit_ind'
-                        AND att.ATTR_VALUE = 'true')
-                        AND clu.EXP_FIRST_ATP = (SELECT Min(c.EXP_FIRST_ATP)
-                        FROM   kslu_clu c
-                        WHERE  c.VER_IND_ID = clu.VER_IND_ID
-                        AND c.LAST_ATP >= :lastScheduledTerm
-                        GROUP  BY c.VER_IND_ID)
-                        ORDER  BY ident.SUFX_CD
+                        SELECT DISTINCT clu.id, ident.sufx_cd
+                        FROM kslu_clu_ident ident,
+                            kslu_clu_attr attr,
+                            kslu_clu clu
+                            LEFT OUTER JOIN kslu_clu_jn_clu_ident jni
+                                ON jni.clu_id = clu.id
+                        WHERE attr.owner = clu.id
+                            AND (ident.id = clu.offic_clu_id OR ident.id = jni.alt_clu_id)
+                            AND ident.division = :division
+                            AND attr.attr_name = 'course.campus'
+                            AND attr.attr_value IN ( :campus1, :campus2, :campus3 )
+                            AND clu.ID NOT IN
+                                (SELECT att.owner
+                                FROM   kslu_clu_attr att
+                                WHERE  att.attr_name = 'course.catalog.omit_ind'
+                                AND att.attr_value = 'true')
+                            AND clu.exp_first_atp =
+                                (SELECT MIN(c.exp_first_atp)
+                                FROM   kslu_clu c
+                                WHERE  c.ver_ind_id = clu.ver_ind_id
+                                    AND c.last_atp >= :lastScheduledTerm
+                                GROUP  BY c.ver_ind_id)
+                        ORDER  BY ident.sufx_cd
                     </value>
                 </entry>
                 <entry key="myplan.course.info">
                     <value>NATIVE:
-                        SELECT
-                        DISTINCT ident2.LNG_NAME,
-                        ident.SUFX_CD,
-                        trim( ident.DIVISION ),
-                        ident2.LVL,
-                        opt.RES_COMP_ID,
-                        ident.cd,
-                        clu.VER_IND_ID
-                        FROM
-                        KSLU_CLU_IDENT ident,
-                        KSLU_CLU_IDENT ident2,
-                        KSLU_CLU_RSLT res,
-                        KSLU_CLURES_JN_RESOPT jn,
-                        KSLU_RSLT_OPT opt,
-                        KSLU_CLU clu  left outer join KSLU_CLU_JN_CLU_IDENT jni on jni.CLU_ID = clu.ID
-                        WHERE
-                        (clu.offic_clu_id = ident.id OR jni.ALT_CLU_ID = ident.ID)
-                        and
-                        clu.id = res.clu_id
-                        AND
-                        res.id = jn.clu_res_id
-                        AND
-                        jn.res_opt_id = opt.id
-                        AND
-                        res.TYPE_KEY_ID = 'kuali.resultType.creditCourseResult'
-                        AND
-                        clu.id = :courseID
-                        AND
-                        ident2.id = (select c.OFFIC_CLU_ID from kslu_clu c join kslu_clu_ident ide on ide.ID = c.OFFIC_CLU_ID where c.ID = clu.ID)
-                        ORDER BY ident.SUFX_CD
+                        SELECT DISTINCT ident2.lng_name,
+                                ident.sufx_cd,
+                                trim( ident.division ),
+                                ident2.lvl,
+                                opt.res_comp_id,
+                                ident.cd,
+                                clu.ver_ind_id
+                        FROM kslu_clu_ident ident,
+                             kslu_clu_ident ident2,
+                             kslu_clu_rslt res,
+                             kslu_clures_jn_resopt jn,
+                             kslu_rslt_opt opt,
+                             kslu_clu clu LEFT OUTER JOIN kslu_clu_jn_clu_ident jni
+                                ON jni.clu_id = clu.id
+                        WHERE (clu.offic_clu_id = ident.id OR jni.alt_clu_id = ident.id)
+                            AND clu.id = res.clu_id
+                            AND res.id = jn.clu_res_id
+                            AND jn.res_opt_id = opt.id
+                            AND res.type_key_id = 'kuali.resultType.creditCourseResult'
+                            AND clu.id = :courseID
+                            AND ident2.id =
+                                (SELECT c.offic_clu_id
+                                FROM kslu_clu c
+                                    JOIN kslu_clu_ident ide ON ide.id = c.offic_clu_id
+                                WHERE c.id = clu.id)
+                        ORDER BY ident.sufx_cd
                     </value>
                 </entry>
 
 
                 <entry key="myplan.course.info.atp">
                     <value>NATIVE:
-                        SELECT ATP_TYPE_KEY
-                        FROM KSLU_CLU_ATP_TYPE_KEY
+                        SELECT atp_type_key
+                        FROM kslu_clu_atp_type_key
                         WHERE clu_id = :courseID
-                            AND ATP_TYPE_KEY NOT IN ('kuali.atp.type.OddYears', 'kuali.atp.type.EvenYears')
+                            AND atp_type_key NOT IN ('kuali.atp.type.OddYears', 'kuali.atp.type.EvenYears')
                     </value>
                 </entry>
 
                 <entry key="myplan.course.info.gened">
                     <value>NATIVE:
-                        SELECT
-                        ATTR_NAME
-                        FROM KSLU_CLU_ATTR
-                        WHERE
-                        owner = :courseID
-                        AND
-                        ATTR_VALUE = 'true'
-                        AND
-                        ATTR_NAME like 'course.genedrequirement.%'
+                        SELECT attr_name
+                        FROM kslu_clu_attr
+                        WHERE owner = :courseID
+                            AND attr_value = 'true'
+                            AND attr_name LIKE 'course.genedrequirement.%'
                     </value>
                 </entry>
 
                 <entry key="myplan.course.info.credits.details">
                     <value>NATIVE:
-                        SELECT Max(a.id),
-                        Max(a.rvg_type),
-                        Min(To_number(b.result_value)),
-                        Max(To_number(b.result_value))
-                        FROM   ksen_lrc_rvg a,
-                        ksen_lrc_result_value b,
-                        ksen_lrc_rvg_result_value c
-                        WHERE  b.id = c.result_value_id
-                        AND c.rvg_id = a.id
-                        AND a.id LIKE 'kuali.creditType.credit.degree.%'
-                        GROUP  BY a.id
+                        SELECT MAX(a.id),
+                            MAX(a.rvg_type),
+                            MIN(TO_NUMBER(b.result_value)),
+                            MAX(TO_NUMBER(b.result_value))
+                        FROM ksen_lrc_rvg a,
+                            ksen_lrc_result_value b,
+                            ksen_lrc_rvg_result_value c
+                        WHERE b.id = c.result_value_id
+                            AND c.rvg_id = a.id
+                            AND a.id LIKE 'kuali.creditType.credit.degree.%'
+                        GROUP BY a.id
                     </value>
                 </entry>
 
                 <entry key="myplan.course.prereqsearch.subject">
                     <value>NATIVE:
-                        SELECT
-                        clu.id
-                        FROM
-                        KSLU_CLU clu,
-                        KSLU_CLU_IDENT id
-                        WHERE
-                        clu.offic_clu_id = id.id
-                        AND
-                        trim( id.division ) = :subject
+                        SELECT clu.id
+                        FROM kslu_clu clu,
+                             kslu_clu_ident id
+                        WHERE clu.offic_clu_id = id.id
+                            AND TRIM( id.division ) = :subject
                         ORDER BY id.sufx_cd
                     </value>
                 </entry>
 
                 <entry key="myplan.course.prereqsearch.range">
                     <value>NATIVE:
-                        SELECT
-                        clu.id
-                        FROM
-                        KSLU_CLU clu,
-                        KSLU_CLU_IDENT id
-                        WHERE
-                        clu.offic_clu_id = id.id
-                        AND
-                        trim( id.division ) = :subject
-                        AND
-                        trim( id.lvl ) like :range
+                        SELECT clu.id
+                        FROM kslu_clu clu,
+                             kslu_clu_ident id
+                        WHERE clu.offic_clu_id = id.id
+                            AND TRIM( id.division ) = :subject
+                            AND TRIM( id.lvl ) LIKE :range
                         ORDER BY id.sufx_cd
                     </value>
                 </entry>
 
                 <entry key="myplan.course.prereqsearch.exclusions">
                     <value>NATIVE:
-                        SELECT
-                        clu.id,
-                        id.sufx_cd
-                        FROM
-                        KSLU_CLU clu,
-                        KSLU_CLU_IDENT id
-                        WHERE
-                        clu.offic_clu_id = id.id
-                        AND
-                        trim( id.division ) like :subject
-                        AND
-                        trim( id.sufx_cd ) like :range
-                        ORDER BY
-                        id.sufx_cd
+                        SELECT clu.id,
+                               id.sufx_cd
+                        FROM kslu_clu clu,
+                             kslu_clu_ident id
+                        WHERE clu.offic_clu_id = id.id
+                            AND TRIM( id.division ) LIKE :subject
+                            AND TRIM( id.sufx_cd ) LIKE :range
+                        ORDER BY id.sufx_cd
                     </value>
                 </entry>
 
@@ -726,13 +713,13 @@
                                 WHERE c.ver_ind_id = clu.ver_ind_id
                                     AND c.last_atp >= (:lastScheduledTerm)
                                 GROUP BY c.ver_ind_id )
-                            AND  clu.id in
+                            AND clu.id in
                                     (SELECT DISTINCT clu.id
                                     FROM kslu_clu_ident ident,
                                          kslu_clu clu
                                     WHERE ident.id = clu.offic_clu_id
-                                        AND trim( ident.sufx_cd ) = (:number)
-                                        AND trim( ident.division ) = (:subject)
+                                        AND TRIM( ident.sufx_cd ) = (:number)
+                                        AND TRIM( ident.division ) = (:subject)
                                 UNION
                                     SELECT DISTINCT clu.id
                                     FROM kslu_clu_ident ident,
@@ -740,31 +727,33 @@
                                          kslu_clu_jn_clu_ident jni
                                     WHERE jni.clu_id = clu.id
                                         AND ident.id = jni.alt_clu_id
-                                        AND trim( ident.sufx_cd ) = (:number)
-                                        AND trim( ident.division ) = (:subject)  )
+                                        AND TRIM( ident.sufx_cd ) = (:number)
+                                        AND TRIM( ident.division ) = (:subject)  )
                     </value>
                 </entry>
 
                 <entry key="myplan.course.version.id">
                     <value>NATIVE:
-                        SELECT clu.ID
-                        FROM KSLU_CLU clu
-                        WHERE clu.id = :courseId OR (clu.ver_ind_id = :courseId)
-                            AND clu.EXP_FIRST_ATP =
-                                (select min(c.EXP_FIRST_ATP)
-                                FROM KSLU_CLU c
-                                where c.ver_ind_id = clu.ver_ind_id
-                                    and c.LAST_ATP >= :lastScheduledTerm
-                                group by c.ver_ind_id )
+                        SELECT clu.id
+                        FROM kslu_clu clu
+                        WHERE clu.id = :courseId
+                            OR (clu.ver_ind_id = :courseId)
+                                AND clu.exp_first_atp =
+                                    (SELECT MIN(c.exp_first_atp)
+                                    FROM kslu_clu c
+                                    WHERE c.ver_ind_id = clu.ver_ind_id
+                                        AND c.last_atp >= :lastScheduledTerm
+                                    GROUP BY c.ver_ind_id )
                     </value>
                 </entry>
 
                 <entry key="myplan.clu.division.level">
                     <value>NATIVE:
-                        SELECT ident.CD
-                        FROM KSLU_CLU_IDENT ident
-                        WHERE TRIM(ident.DIVISION) = :subject and ident.LVL = :number
-                        ORDER BY ident.SUFX_CD
+                        SELECT ident.cd
+                        FROM kslu_clu_ident ident
+                        WHERE TRIM(ident.division) = :subject
+                            AND ident.lvl = :number
+                        ORDER BY ident.sufx_cd
                     </value>
                 </entry>
 
