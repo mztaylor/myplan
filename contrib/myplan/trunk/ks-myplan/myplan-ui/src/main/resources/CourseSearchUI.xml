@@ -58,6 +58,7 @@
                 <ref bean="course_search_panel"/>
                 <ref bean="course_search_results_panel"/>
                 <ref bean="add_course_items"/>
+                <ref bean="course_search_empty_result"/>
             </list>
         </property>
     </bean>
@@ -90,11 +91,6 @@
                                 </map>
                             </property>
                             <property name="cssClasses" value="courseSearch__field"/>
-                            <property name="onDocumentReadyScript" value="
-                                if (readUrlHash('searchQuery')) {
-                                    jQuery('#searchQuery_control').val(readUrlHash('searchQuery'));
-                                }
-                            "/>
                             <property name="onKeyPressScript" value="
                                 var code = (e.keyCode ? e.keyCode : e.which);
                                 if (code == 13) {
@@ -118,10 +114,6 @@
                                 </map>
                             </property>
                             <property name="cssClasses" value="courseSearch__field"/>
-                            <property name="onDocumentReadyScript" value="
-                                if (readUrlHash('searchTerm')) {
-                                    jQuery('#selectTerm_control').val(readUrlHash('searchTerm'));
-                                }"/>
                         </bean>
                     </property>
                     <property name="optionsFinder">
@@ -156,7 +148,7 @@
     <bean id="course_search_params" parent="KSAP-HorizontalBoxGroup">
         <property name="items">
             <list>
-                <bean id="radio_campusSelect" parent="KSAP-SimpleInputField" p:propertyName="campusSelect">
+                <bean id="campusSelect" parent="KSAP-SimpleInputField" p:propertyName="campusSelect">
                     <property name="cssClasses" value="courseSearch__fieldset"/>
                     <property name="defaultValues">
                         <list>
@@ -173,16 +165,6 @@
                                 </map>
                             </property>
                             <property name="cssClasses" value="courseSearch__input"/>
-                            <property name="onDocumentReadyScript" value="
-                                if (readUrlHash('campusSelect')) {
-                                    jQuery.each(jQuery(&quot;input[name='campusSelect']&quot;), function() {
-                                        if (jQuery.inArray(jQuery(this).val(), readUrlHash('campusSelect').split(',')) != -1) {
-                                            jQuery(this).attr('checked','checked');
-                                        } else {
-                                            jQuery(this).removeAttr('checked');
-                                        }
-                                    });
-                                }"/>
                         </bean>
                     </property>
                     <property name="optionsFinder">
@@ -233,7 +215,7 @@
     <bean id="meetingTimes" parent="KSAP-HorizontalBoxGroup">
         <property name="items">
             <list>
-                <bean id="startTime" parent="Uif-InputField" p:propertyName="startTime" p:label="Meeting Times">
+                <bean id="startTime" parent="KSAP-SimpleInputField" p:propertyName="startTime" p:label="Meeting Times">
                     <property name="dataAttributes">
                         <map>
                             <entry key="save-value" value="true"/>
@@ -249,8 +231,6 @@
                                     <entry key="save-value" value="true"/>
                                 </map>
                             </property>
-                            <property name="cssClasses" value="courseSearch__field"/>
-                            <property name="onDocumentReadyScript" value="if (readUrlHash('meetingtimes')) {jQuery('#StartTimeCount_control').val(readUrlHash('meetingtimes'));}"/>
                             <property name="options">
                                 <list>
                                     <bean parent="Uif-KeyLabelPair" p:key="0000" p:value="Any Start Time"/>
@@ -274,7 +254,7 @@
                         </bean>
                     </property>
                 </bean>
-                <bean id="endTime" parent="Uif-InputField" p:propertyName="endTime" p:label="to">
+                <bean id="endTime" parent="KSAP-SimpleInputField" p:propertyName="endTime" p:label="to">
                     <property name="dataAttributes">
                         <map>
                             <entry key="save-value" value="true"/>
@@ -290,8 +270,6 @@
                                     <entry key="save-value" value="true"/>
                                 </map>
                             </property>
-                            <property name="cssClasses" value="courseSearch__field"/>
-                            <property name="onDocumentReadyScript" value="if (readUrlHash('meetingtimes')) {jQuery('#EndTimeCount_control').val(readUrlHash('meetingtimes'));}"/>
                             <property name="options">
                                 <list>
                                     <bean parent="Uif-KeyLabelPair" p:key="2359" p:value="Any End Time"/>
@@ -321,7 +299,7 @@
 
 
     <!--checkbox for meeting days-->
-    <bean id="meetingDays" parent="Uif-InputField" p:propertyName="selectedDays" p:label="Meeting Days">
+    <bean id="meetingDays" parent="KSAP-SimpleInputField" p:propertyName="selectedDays" p:label="Meeting Days">
         <property name="dataAttributes">
             <map>
                 <entry key="save-value" value="true"/>
@@ -344,14 +322,6 @@
                         <entry key="save-value" value="true"/>
                     </map>
                 </property>
-                <property name="onDocumentReadyScript" value="if (readUrlHash('selectedDays')) {jQuery.each(jQuery(&quot;input[name='selectedDays']&quot;), function() {
-                                        if (jQuery.inArray(jQuery(this).val(), readUrlHash('selectedDays').split(',')) != -1) {
-                                            jQuery(this).attr('checked','checked');
-                                        } else {
-                                            jQuery(this).removeAttr('checked');
-                                        }
-                                    });
-                                }"/>
                 <property name="options">
                     <list>
                         <bean parent="Uif-KeyLabelPair" p:key="1" p:value="Mon"/>
@@ -368,12 +338,6 @@
 
     <!-- Layout for Search Facets and Search Results -->
     <bean id="course_search_results_panel" parent="KSAP-HorizontalBoxGroup">
-        <property name="onDocumentReadyScript" value="
-            if (readUrlHash('searchQuery')) {
-                jQuery('button.courseSearch__submit').prop('disabled', false).removeClass('disabled');
-                searchForCourses('course_search_results','course_search_results_panel');
-            }
-        "/>
         <property name="cssClasses" value="courseResults"/>
         <property name="layoutManager.style" value="display: none;"/>
         <property name="items">
@@ -404,6 +368,11 @@
                     actionFeedback(data.courseId + '_' + data.subject.replace(/ /g,'_') + '_' + data.number + '_status', false, null, 'planned', 'Planned');
                 }
             });
+            if (readUrlHash('searchQuery')) {
+                reapplySearchParams(jQuery('#kualiForm'));
+                jQuery('button.courseSearch__submit').prop('disabled', false).removeClass('disabled');
+                searchForCourses('course_search_results','course_search_results_panel');
+            }
         "/>
         <property name="richTable.templateOptions">
             <map merge="true">
@@ -412,44 +381,27 @@
                 <entry key="aoColumns" value="[
                     {'sTitle':'Code','bSortable':true, 'bSearchable':false, 'sClass':'courseResults__tableHeader--sortable', 'sWidth':'73px'},
                     {'sTitle':'Course Name','bSortable':true, 'bSearchable':false, 'sClass':'courseResults__tableHeader--sortable', 'sWidth':'188px'},
-                            {'sTitle':'Credits','bSortable':false, 'bSearchable':false, 'sWidth':'36px'},
+                    {'sTitle':'Credits','bSortable':false, 'bSearchable':false, 'sWidth':'36px'},
                     {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'termBadge', 'sWidth':'80px'},
-                            {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'69px'},
+                    {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'69px'},
                     {'sTitle':'', 'bSortable':false, 'bSearchable':false, 'sClass':'courseResults__item--right', 'sWidth':'62px'},
-                            {'sTitle':'facetQuarter', 'bVisible':false},
-                            {'sTitle':'facetGenEduReq', 'bVisible':false},
-                            {'sTitle':'facetCredits', 'bVisible':false},
-                            {'sTitle':'facetLevel', 'bVisible':false},
-                            {'sTitle':'facetCurriculum', 'bVisible':false}
-                        ]"/>
+                    {'sTitle':'facet_quarter', 'bVisible':false},
+                    {'sTitle':'facet_genedureq', 'bVisible':false},
+                    {'sTitle':'facet_credits', 'bVisible':false},
+                    {'sTitle':'facet_level', 'bVisible':false},
+                    {'sTitle':'facet_curriculum', 'bVisible':false},
+                    {'sTitle':'facet_meeting_days', 'bVisible': false},
+                    {'sTitle':'facet_meeting_times', 'bVisible': false},
+                    {'sTitle':'facet_meeting_day_time', 'bVisible': false}
+                ]"/>
                 <entry key="bAutoWidth" value="false"/>
                 <entry key="bDeferRender" value="true"/>
                 <entry key="bDestroy" value="true"/>
                 <entry key="bJQueryUI" value="true"/>
                 <entry key="bScrollCollapse" value="true"/>
-                <entry key="bServerSide" value="false"/>
                 <entry key="bSortClasses" value="false"/>
-                <entry key="bStateSave" value="false"/>
-                <entry key="iCookieDuration" value="0"/>
                 <entry key="iDisplayLength" value="20"/>
-                <entry key="fnDrawCallback" value="
-                    function (oSettings) {
-                            if (Math.ceil((oSettings.fnRecordsDisplay()) / oSettings._iDisplayLength) > 1)  {
-                                jQuery('.dataTables_paginate span').not('.first, .last').show();
-                            } else {
-                                jQuery('.dataTables_paginate span').hide();
-                            }
-                    }
-                "/>
-                <entry key="oLanguage" value="{
-                    'sEmptyTable':'0 results found',
-                    'sInfo':'Showing _START_-_END_ of _TOTAL_ results',
-                    'sInfoEmpty':'0 results found',
-                    'sInfoFiltered':'',
-                    'sLengthMenu':'Show _MENU_',
-                    'sZeroRecords':'0 results found'
-                       }"/>
-                <entry key="sCookiePrefix" value="course_search_"/>
+                <entry key="iDisplayStart" value="0"/>
                 <entry key="sDom" value="ilrtSp"/>
                 <entry key="sPaginationType" value="full_numbers"/>
             </map>
@@ -466,11 +418,11 @@
             <list>
                 <ref bean="facet_meeting_times"/>
                 <ref bean="facet_meeting_days"/>
-                <ref bean="facet_quarter"/>
                 <ref bean="facet_genedureq"/>
                 <ref bean="facet_credits"/>
                 <ref bean="facet_level"/>
                 <ref bean="facet_curriculum"/>
+                <ref bean="facet_quarter"/>
             </list>
         </property>
     </bean>
@@ -573,6 +525,7 @@
                 <entry key="skip-count" value="true"/>
                 <entry key="related-column" value="facet_meeting_times"/>
                 <entry key="merged-column" value="facet_meeting_day_time"/>
+                <entry key="exclude-keys" value="tba"/>
             </map>
         </property>
         <property name="footer.additionalCssClasses" value="courseResults__facetDisable"/>
@@ -600,6 +553,7 @@
                 <entry key="skip-count" value="true"/>
                 <entry key="related-column" value="facet_meeting_days"/>
                 <entry key="merged-column" value="facet_meeting_day_time"/>
+                <entry key="exclude-keys" value="tba"/>
             </map>
         </property>
         <property name="footer.additionalCssClasses" value="courseResults__facetDisable"/>
@@ -631,6 +585,21 @@
                         submitHiddenForm('plan', additionalFormData, true, e);
                     "/>
                 </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="course_search_empty_result" parent="Uif-ListGroup" p:hidden="true" p:cssClasses="courseResults__empty">
+        <property name="validationMessages"><null /></property>
+        <property name="header">
+            <bean parent="KSAP-HeaderFour" p:headerText="We couldn&#39;t find anything matching your search."/>
+        </property>
+        <property name="instructionalText" value="A few suggestions:"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-Message" p:messageText="Check your spelling"/>
+                <bean parent="KSAP-Message" p:messageText="Try a more general search (Any quarter, ENGL 1xx)"/>
+                <bean parent="KSAP-Message" p:messageText="Use at least 3 characters"/>
             </list>
         </property>
     </bean>
