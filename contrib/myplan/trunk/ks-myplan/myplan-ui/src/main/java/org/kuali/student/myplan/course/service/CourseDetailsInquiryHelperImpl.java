@@ -824,6 +824,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     }
                     boolean dayMatchSuccess = false;
                     boolean timeMatchSuccess = false;
+                    boolean primaryAdded = false;
                     for (ActivityOfferingDisplayInfo aodi : aodiList) {
 
                         String planRefObjId = aodi.getId();
@@ -888,8 +889,9 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                             }
                             if (dayMatchSuccess && timeMatchSuccess) {
                                 activityOfferingItemList.add(activityOfferingItem);
+                                primaryAdded = true;
                             }
-                        } else {
+                        }else if (primaryAdded) {
                             activityOfferingItemList.add(activityOfferingItem);
                         }
 
