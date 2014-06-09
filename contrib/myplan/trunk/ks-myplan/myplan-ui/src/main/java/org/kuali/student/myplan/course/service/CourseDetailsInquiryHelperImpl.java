@@ -826,56 +826,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     boolean timeMatchSuccess = false;
                     for (ActivityOfferingDisplayInfo aodi : aodiList) {
 
-
-                        ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
-                        for (ScheduleComponentDisplay scdi : sdi.getScheduleComponentDisplays()) {
-                            MeetingDetails meeting = new MeetingDetails();
-
-                            for (TimeSlot timeSlot : scdi.getTimeSlots()) {
-
-                                /*TBA sections are included all times*/
-                                if (CollectionUtils.isEmpty(timeSlot.getWeekdays())) {
-                                    dayMatchSuccess = true;
-                                }
-
-                                String days = "";
-                                for (int weekday : timeSlot.getWeekdays()) {
-                                    /*TODO: The weekday is giving wrong calendar value for days either fix the timeslot weekdays to return Monday as 1 instead of 2 OR change the selected days to have Monday as 2*/
-                                    if (selectedDays.contains(String.valueOf(weekday - 1))) {
-                                        dayMatchSuccess = true;
-                                    }
-                                    if (weekday > 0 && weekday < 8) {
-                                        String letter = getCalendarUtil().getShortName(weekday);
-                                        days += letter;
-                                    }
-                                }
-                                if (!"".equals(days)) {
-                                    meeting.setDays(days);
-                                }
-
-                                TimeOfDayInfo startInfo = timeSlot.getStartTime();
-                                TimeOfDayInfo endInfo = timeSlot.getEndTime();
-                                if (startInfo != null && endInfo != null) {
-                                    long startTimeMillis = startInfo.getMilliSeconds();
-                                    String start = TimeStringMillisConverter.millisToMilitaryTime(startTimeMillis).replace(":", "");
-
-                                    long endTimeMillis = endInfo.getMilliSeconds();
-                                    String end = TimeStringMillisConverter.millisToMilitaryTime(endTimeMillis).replace(":", "");
-
-                                    String time = start + end;
-                                    if (exactTimeMatch) {
-                                        timeMatchSuccess = selectedTimes.contains(time);
-                                    } else {
-                                        timeMatchSuccess = Integer.parseInt(start) >= startTime && Integer.parseInt(end) <= endTime;
-                                    }
-                                } else {
-                                    /*TBA sections are included all times*/
-                                    timeMatchSuccess = true;
-                                }
-
-                            }
-                        }
-
                         String planRefObjId = aodi.getId();
                         String planItemId = null;
                         if (null != planItemMap) {
@@ -884,10 +834,65 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                                 planItemId = planItem.getId();
                             }
                         }
-                        if (dayMatchSuccess && timeMatchSuccess) {
-                            ActivityOfferingItem activityOfferingItem = getActivityItem(aodi, courseInfo, openForPlanning, termId, planItemId);
+
+                        ActivityOfferingItem activityOfferingItem = getActivityItem(aodi, courseInfo, openForPlanning, termId, planItemId);
+
+                        if (activityOfferingItem.isPrimary()) {
+                            ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
+                            for (ScheduleComponentDisplay scdi : sdi.getScheduleComponentDisplays()) {
+                                MeetingDetails meeting = new MeetingDetails();
+
+                                for (TimeSlot timeSlot : scdi.getTimeSlots()) {
+
+                                /*TBA sections are included all times*/
+                                    if (CollectionUtils.isEmpty(timeSlot.getWeekdays())) {
+                                        dayMatchSuccess = true;
+                                    }
+
+                                    String days = "";
+                                    for (int weekday : timeSlot.getWeekdays()) {
+                                    /*TODO: The weekday is giving wrong calendar value for days either fix the timeslot weekdays to return Monday as 1 instead of 2 OR change the selected days to have Monday as 2*/
+                                        if (selectedDays.contains(String.valueOf(weekday - 1))) {
+                                            dayMatchSuccess = true;
+                                        }
+                                        if (weekday > 0 && weekday < 8) {
+                                            String letter = getCalendarUtil().getShortName(weekday);
+                                            days += letter;
+                                        }
+                                    }
+                                    if (!"".equals(days)) {
+                                        meeting.setDays(days);
+                                    }
+
+                                    TimeOfDayInfo startInfo = timeSlot.getStartTime();
+                                    TimeOfDayInfo endInfo = timeSlot.getEndTime();
+                                    if (startInfo != null && endInfo != null) {
+                                        long startTimeMillis = startInfo.getMilliSeconds();
+                                        String start = TimeStringMillisConverter.millisToMilitaryTime(startTimeMillis).replace(":", "");
+
+                                        long endTimeMillis = endInfo.getMilliSeconds();
+                                        String end = TimeStringMillisConverter.millisToMilitaryTime(endTimeMillis).replace(":", "");
+
+                                        String time = start + end;
+                                        if (exactTimeMatch) {
+                                            timeMatchSuccess = selectedTimes.contains(time);
+                                        } else {
+                                            timeMatchSuccess = Integer.parseInt(start) >= startTime && Integer.parseInt(end) <= endTime;
+                                        }
+                                    } else {
+                                    /*TBA sections are included all times*/
+                                        timeMatchSuccess = true;
+                                    }
+
+                                }
+                            }
+                            if (dayMatchSuccess && timeMatchSuccess) {
+                                activityOfferingItemList.add(activityOfferingItem);
+                            }
+                        } else {
                             activityOfferingItemList.add(activityOfferingItem);
                         }
+
                         if (plannedActivities.contains(planRefObjId)) {
                             plannedActivities.remove(planRefObjId);
                         }
