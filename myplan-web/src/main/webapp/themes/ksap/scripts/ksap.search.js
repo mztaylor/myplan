@@ -75,9 +75,9 @@ function numeric(a, b) {
 
 // Facet sorter for alpha keys
 function alpha(a, b) {
-    //  Unknown/None/TBA is always last in the facet group
-    if (a == 'Unknown' || a == 'None' || a == 'tba') return 1;
-    if (b == 'Unknown' || b == 'None' || a == 'tba') return -1;
+    //  Unknown/None is always last in the facet group
+    if (a == 'Unknown' || a == 'None') return 1;
+    if (b == 'Unknown' || b == 'None') return -1;
     if (a > b) return 1;
     else if (a < b) return -1;
     else return 0;
@@ -146,7 +146,7 @@ jQuery.fn.iterateSorted = function (sorter, print) {
         return -1;
     }
 
-    $.fn.dataTableExt.oApi.fnGetColumnData = function (oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty) {
+    $.fn.dataTableExt.oApi.fnGetColumnData = function (oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty, aExclude) {
         // check for column id
         if (typeof iColumn == "undefined") return new Array();
         // by default only use unique data
@@ -174,20 +174,16 @@ jQuery.fn.iterateSorted = function (sorter, print) {
             if (!oFacets[iColumn]) oFacets[iColumn] = {};
             for (var n = 0; n < aTemp.length; n++) {
                 var sTemp = jQuery.trim(aTemp[n]);
-                if (!oFacets[iColumn][sTemp]) oFacets[iColumn][sTemp] = {count: 0};
-                if (!oFacets[iColumn][sTemp].checked) {
-                    oFacets[iColumn][sTemp].checked = false;
-                    if (readUrlHash(iColumn)) {
-                        if (jQuery.inArray(sTemp, readUrlHash(iColumn).split("|")) != -1) {
-                            oFacets[iColumn][sTemp].checked = true;
-                        }
-                    }
-                }
-                if (bIgnoreEmpty === true && aTemp[n].length === 0) {
+                if (bIgnoreEmpty && sTemp.length === 0 || jQuery.inArray(sTemp, aExclude) !== -1) {
                     continue;
-                } else if (bUnique === true && oFacets[iColumn].hasOwnProperty(sTemp)) {
+                } else if (bUnique && oFacets[iColumn].hasOwnProperty(sTemp)) {
                     ++oFacets[iColumn][sTemp].count;
                     continue;
+                } else if (!oFacets[iColumn].hasOwnProperty(sTemp)) {
+                    oFacets[iColumn][sTemp] = {count: 0, checked: false};
+                    if (readUrlHash(iColumn)) {
+                        oFacets[iColumn][sTemp].checked = (jQuery.inArray(sTemp, readUrlHash(iColumn).split("|")) !== -1);
+                    }
                 }
             }
         }
@@ -209,36 +205,48 @@ function getSearchParams(form) {
     return formData;
 }
 
+function reapplySearchParams(form) {
+    form.find("[data-save-value=true]:input").each(function(){
+        var savedValue = readUrlHash(this.name);
+        if (savedValue) {
+            var type = this.type || this.tagName.toLowerCase();
+            if (type === "checkbox" || type === "select-multiple") {
+                jQuery(this).val(savedValue.split(','));
+            } else {
+                jQuery(this).val(savedValue);
+            }
+        }
+    });
+}
+
 function searchForCourses(id, parentId) {
     var formData = getSearchParams(jQuery("#kualiForm"));
     jQuery(".courseSearch__field, .courseSearch__input, .courseSearch__submit").addClass("disabled").prop("disabled", true);
-    var results = jQuery("#" + parentId + " > .uif-horizontalBoxLayout"); // course_search_results_panel
+    var results = jQuery("#" + parentId + " > .uif-horizontalBoxLayout");
     results.fadeOut("fast");
     jQuery(".courseResults__facet").data("skip-processing", false);
-    if (formData.searchTerm === 'any') jQuery("#facet_meeting_times, #facet_meeting_days").data("skip-processing", true);
-    var iDisplayLength = 20;
-    if (readUrlHash("show")) iDisplayLength = parseFloat(readUrlHash("show"));
-    var iDisplayStart = 0;
-    if (readUrlHash("start")) iDisplayStart = parseFloat(readUrlHash("start"));
+    if (formData.searchTerm === 'any') {
+        jQuery("#facet_meeting_times, #facet_meeting_days").data("skip-processing", true);
+    }
     oFacets = new Object();
     oTable = jQuery("#" + id).dataTable({
-        aLengthMenu: [20, 50, 100],
+        aLengthMenu: [ 20, 50, 100 ],
         aaSorting: [],
         aoColumns: [
-            {'sTitle': 'Code', 'bSortable': true, 'bSearchable': false, 'sClass': 'courseResults__tableHeader--sortable', 'sWidth': '73px', 'sType': 'string'},
-            {'sTitle': 'Course Name', 'bSortable': true, 'bSearchable': false, 'sClass': 'courseResults__tableHeader--sortable', 'sWidth': '188px'},
-            {'sTitle': 'Credits', 'bSortable': false, 'bSearchable': false, 'sWidth': '36px'},
-            {'sTitle': 'Quarter Offered', 'bSortable': false, 'bSearchable': false, 'sClass': 'termBadge', 'sWidth': '80px'},
-            {'sTitle': 'Gen Edu Req', 'bSortable': false, 'bSearchable': false, 'sWidth': '69px'},
-            {'sTitle': '', 'bSortable': false, 'bSearchable': false, 'sClass':'courseResults__item--right', 'sWidth': '62px'},
-            {'sTitle': 'facet_quarter', 'bVisible': false},
-            {'sTitle': 'facet_genedureq', 'bVisible': false},
-            {'sTitle': 'facet_credits', 'bVisible': false},
-            {'sTitle': 'facet_level', 'bVisible': false},
-            {'sTitle': 'facet_curriculum', 'bVisible': false},
-            {'sTitle': 'facet_meeting_days', 'bVisible': false},
-            {'sTitle': 'facet_meeting_times', 'bVisible': false},
-            {'sTitle': 'facet_meeting_day_time', 'bVisible': false, 'bSearchable': false}
+            {'sTitle':'Code','bSortable':true, 'bSearchable':false, 'sClass':'courseResults__tableHeader--sortable', 'sWidth':'73px'},
+            {'sTitle':'Course Name','bSortable':true, 'bSearchable':false, 'sClass':'courseResults__tableHeader--sortable', 'sWidth':'188px'},
+            {'sTitle':'Credits','bSortable':false, 'bSearchable':false, 'sWidth':'36px'},
+            {'sTitle':'Quarter Offered', 'bSortable':false, 'bSearchable':false, 'sClass':'termBadge', 'sWidth':'80px'},
+            {'sTitle':'Gen Edu Req', 'bSortable':false, 'bSearchable':false, 'sWidth':'69px'},
+            {'sTitle':'', 'bSortable':false, 'bSearchable':false, 'sClass':'courseResults__item--right', 'sWidth':'62px'},
+            {'sTitle':'facet_quarter', 'bVisible':false},
+            {'sTitle':'facet_genedureq', 'bVisible':false},
+            {'sTitle':'facet_credits', 'bVisible':false},
+            {'sTitle':'facet_level', 'bVisible':false},
+            {'sTitle':'facet_curriculum', 'bVisible':false},
+            {'sTitle':'facet_meeting_days', 'bVisible': false},
+            {'sTitle':'facet_meeting_times', 'bVisible': false},
+            {'sTitle':'facet_meeting_day_time', 'bVisible': false}
         ],
         bAutoWidth: false,
         bDeferRender: true,
@@ -246,28 +254,29 @@ function searchForCourses(id, parentId) {
         bJQueryUI: true,
         bScrollCollapse: true,
         bSortClasses: false,
-        iDisplayLength: iDisplayLength,
-        iDisplayStart: iDisplayStart,
         fnDrawCallback: function (oSettings) {
-            if (Math.ceil((oSettings.fnRecordsDisplay()) / oSettings._iDisplayLength) > 1) {
-                jQuery(".dataTables_paginate .ui-button").not(".first, .last").show();
+            if (Math.ceil((oSettings.fnRecordsDisplay()) / oSettings._iDisplayLength) > 1)  {
+                jQuery('.dataTables_paginate .ui-button').not(".first, .last").show();
             } else {
-                jQuery(".dataTables_paginate .ui-button").hide();
+                jQuery('.dataTables_paginate .ui-button').hide();
             }
-            fnSaveState(id, oSettings);
+            jQuery("#" + oSettings.sInstance + "_length select").on("change", function () {
+                setUrlHash("show", oSettings._iDisplayLength);
+            });
+            jQuery("#" + oSettings.sInstance + "_paginate a.ui-button").on("click", function (e) {
+                setUrlHash("start", oSettings._iDisplayStart);
+            });
         },
         fnInitComplete: function (oSettings, json) {
-            //oTable.fnDraw(); //Clears the iDisplayStart from being initially set.
             for (var key in formData) {
                 if (formData.hasOwnProperty(key) && !readUrlHash(key)) {
                     setUrlHash(key, formData[key]);
                 }
             }
             results.fadeIn("fast");
-            jQuery("#" + parentId).bind('page', function () {
-                if (jQuery("#" + parentId).height() > jQuery(window).height()) {
-                    var targetOffset = jQuery("#" + parentId).offset().top;
-                    jQuery('html,body').animate({scrollTop: targetOffset}, 200);
+            jQuery("#" + parentId).on("page", function () {
+                if (jQuery(this).height() > jQuery(window).height()) {
+                    jQuery("html, body").animate({scrollTop: jQuery(this).offset().top}, 100);
                 }
             });
             jQuery(".courseResults__facet .uif-disclosureContent .uif-verticalBoxLayout").each(function () {
@@ -279,7 +288,7 @@ function searchForCourses(id, parentId) {
         },
         fnServerData: function (sSource, aoData, fnCallback) {
             jQuery.ajax({
-                dataType: 'json',
+                dataType: "json",
                 type: "GET",
                 url: sSource,
                 data: aoData,
@@ -292,22 +301,22 @@ function searchForCourses(id, parentId) {
                         fadeIn: 0,
                         fadeOut: 0,
                         overlayCSS: {
-                            backgroundColor: '#fff',
+                            backgroundColor: "#fff",
                             opacity: 0.9,
-                            cursor: 'wait',
-                            border: 'none'
+                            cursor: "wait",
+                            border: "none"
                         },
                         css: {
-                            top: '20px',
-                            color: '#c09853',
-                            backgroundColor: '#fcf8e3',
-                            border: 'solid 1px #fbeed5',
-                            borderRadius: '15px',
-                            '-webkit-border-radius': '15px',
-                            '-moz-border-radius': '15px',
-                            width: '230px',
-                            textAlign: 'center',
-                            padding: '20px'
+                            top: "20px",
+                            color: "#c09853",
+                            backgroundColor: "#fcf8e3",
+                            border: "solid 1px #fbeed5",
+                            borderRadius: "15px",
+                            "-webkit-border-radius": "15px",
+                            "-moz-border-radius": "15px",
+                            width: "230px",
+                            textAlign: "center",
+                            padding: "20px"
                         }
                     });
                 },
@@ -317,16 +326,17 @@ function searchForCourses(id, parentId) {
                 }
             });
         },
+        iDisplayLength: (readUrlHash("show") ? parseFloat(readUrlHash("show")) : 20),
+        iDisplayStart: (readUrlHash("start") ? parseFloat(readUrlHash("start")) : 0),
         oLanguage: {
-            "sEmptyTable": '<div class="courseResults__empty"><h4>We couldn&#39;t find anything matching your search.</h4><p>A few suggestions:</p><ul><li>Check your spelling</li><li>Try a more general search (Any quarter, ENGL 1xx)</li><li>Use at least 3 characters</li></ul></div>',
-            "sInfo": "Showing _START_-_END_ of _TOTAL_ " + (formData.searchTerm === 'any' ? 'results': 'filtered search results'),
-            "sInfoPostFix": (formData.searchTerm === 'any' ? '' : "<br><div class='courseResults__note'><p>Special note: Results below may include secondary sections that occur outside of your search filters.</p></div> "),
+            "sEmptyTable": jQuery("#course_search_empty_result").clone().show().wrap('<div/>').parent().html(),
+            "sInfo": (formData.searchTerm === 'any' ? 'Showing _START_-_END_ of _TOTAL_ results' : 'Showing _START_-_END_ of _TOTAL_ filtered search results<br><div class="courseResults__note"><p>Special note: Results below may include secondary sections that occur outside of your search filters.</p></div>'),
             "sInfoEmpty": "0 results found",
             "sInfoFiltered": "",
             "sLengthMenu": "Show _MENU_",
             "sZeroRecords": "0 results found"
         },
-        sAjaxSource: '/student/myplan/course/search?' + jQuery.param(formData).replace(/\+/g, "%20") + '&formKey=' + jQuery("#formKey").val() + '&time=' + new Date().getTime(),
+        sAjaxSource: "/student/myplan/course/search?" + jQuery.param(formData).replace(/\+/g, "%20") + "&formKey=" + jQuery("#formKey").val() + "&time=" + new Date().getTime(),
         sDom: "ilrtSp",
         sPaginationType: "full_numbers"
     });
@@ -337,7 +347,8 @@ function fnGenerateFacetGroup(columnTitle, obj, sorter, formatter) {
     if (typeof obj.data("skip-processing") === "undefined" || obj.data("skip-processing") === false) {
         var oTableSettings = oTable.fnSettings();
         if (typeof oTableSettings.aoColumns[iColumn] !== "undefined" && oTableSettings.aoColumns[iColumn].bSearchable) {
-            oTable.fnGetColumnData(iColumn, true, false);
+            var aExclude = (obj.data("exclude-keys") ? obj.data("exclude-keys").split(",") : []);
+            oTable.fnGetColumnData(iColumn, true, false, true, aExclude);
             fnCreateFacetList(iColumn, obj, oFacets[iColumn], sorter, formatter);
         }
         if (nonEmpty(obj.find(".uif-footer"))) {
@@ -418,9 +429,10 @@ function fnCreateFacetList(i, obj, oData, sorter, formatter) {
  */
 function fnUpdateFacetList(columnTitle, obj, n) {
     var i = oTable.fnGetColumnIndex(columnTitle);
+    var aExclude = (obj.data("exclude-keys") ? obj.data("exclude-keys").split(",") : []);
     if (typeof oTable.fnSettings().aoColumns[i] !== "undefined") {
         if (i != n && oTable.fnSettings().aoColumns[i].bSearchable) {
-            oTable.fnGetColumnData(i);
+            oTable.fnGetColumnData(i, true, true, true, aExclude);
         }
         // Update the style (checked/not checked) on facet links and the count view
         obj.find(".courseResults__facetList li").each(function () {
@@ -498,13 +510,14 @@ function fnFacetFilter(sFilter, i, e, obj) {
             }
             jQuery.event.trigger("UPDATE_FACETS", -1);
         } else {
+            var aExclude = (obj.data("exclude-keys") ? obj.data("exclude-keys").split(",") : []);
             // Update checked status of facet
             oFacets[i][sFilter].checked = !oFacets[i][sFilter].checked;
             // Build array of selected items in facet group
             var aSelections = getSelections(oFacets[i]);
             // Filter results of facet selection
-            oTable.fnFilter(aSelections.map(function(value){return ";" + value + ";"}).join("|"), i, true, false);
-            setUrlHash(i, aSelections.join("|"));
+            oTable.fnFilter(aSelections.concat(aExclude).map(function(value){return ";" + value + ";"}).join("|"), i, true, false);
+            setUrlHash(i, aSelections.concat(aExclude).join("|"));
             if (obj.data("save-facet")) {
                 facetData[obj.data("save-facet-key")] = aSelections.join(",");
                 setSessionFacets(obj.data("save-facet-property"), facetData);
@@ -515,8 +528,8 @@ function fnFacetFilter(sFilter, i, e, obj) {
                 } else {
                     aSelections = permutate(getSelections(oFacets[oTable.fnGetColumnIndex(obj.data("related-column"))]), aSelections);
                 }
-                oTable.fnFilter(aSelections.map(function(value){return ";" + value + ";"}).join("|"), oTable.fnGetColumnIndex(obj.data("merged-column")), true, false);
-                setUrlHash(oTable.fnGetColumnIndex(obj.data("merged-column")), aSelections.join("|"));
+                oTable.fnFilter(aSelections.concat(aExclude).map(function(value){return ";" + value + ";"}).join("|"), oTable.fnGetColumnIndex(obj.data("merged-column")), true, false);
+                setUrlHash(oTable.fnGetColumnIndex(obj.data("merged-column")), aSelections.concat(aExclude).join("|"));
             }
             jQuery.event.trigger("UPDATE_FACETS", i);
         }
@@ -575,15 +588,6 @@ function isFiltered(oFacetGroup) {
         }
     }
     return filtered;
-}
-
-function fnSaveState(id, oSettings) {
-    jQuery("#" + id + "_length select").change(function () {
-        setUrlHash("show", oSettings._iDisplayLength);
-    });
-    jQuery("#" + id + "_paginate a.ui-button").click(function (e) {
-        setUrlHash("start", oSettings._iDisplayStart);
-    });
 }
 
 function setSessionFacets(property, data) {
