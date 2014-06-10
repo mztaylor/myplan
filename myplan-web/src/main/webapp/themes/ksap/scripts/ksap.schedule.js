@@ -58,6 +58,22 @@ var KsapScheduleBuild = {
     },
 
     removeReservedSchedule: function (id, event) {
+        var target = (event.currentTarget) ? jQuery(event.currentTarget) : jQuery(event.srcElement);
+        target.parent(".uif-linkGroup").block({
+            centerX: true,
+            centerY: true,
+            message: '<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_small.gif"/>',
+            css: {
+                width: '100%',
+                border: 'none',
+                backgroundColor: 'transparent',
+                textAlign: 'center'
+            },
+            overlayCSS: {
+                backgroundColor: '#fff',
+                opacity: 0.3
+            }
+        });
         var form = jQuery("#kualiForm");
         form.ajaxSubmit({
             data: ksapAdditionalFormData({
@@ -66,7 +82,7 @@ var KsapScheduleBuild = {
             }),
             dataType: 'json',
             success: function (response, textStatus, jqXHR) {
-                var target = (event.currentTarget) ? jQuery(event.currentTarget) : jQuery(event.srcElement);
+                target.parent(".uif-linkGroup").unblock();
                 target.parents(".scheduleReserved__item").remove();
                 KsapScheduleBuild.toggleAddReservedAction(jQuery(".scheduleReserved"));
                 jQuery.event.trigger("REFRESH_POSSIBLE_SCHEDULES");
