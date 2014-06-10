@@ -412,7 +412,7 @@ public class CourseSearchController extends UifControllerBase {
         if (StringUtils.hasText(formKey)) {
             form = (CourseSearchForm) request.getAttribute(UifConstants.REQUEST_FORM);
             form.setMeetingFacets(new HashMap<String, List<String>>());
-            form.setSelectedDays(Arrays.asList(selectedDays.split(",")));
+            form.setSelectedDays(StringUtils.hasText(selectedDays) ? Arrays.asList(selectedDays.split(",")) : new ArrayList<String>());
             form.setStartTime(startTime);
             form.setEndTime(endTime);
         }
