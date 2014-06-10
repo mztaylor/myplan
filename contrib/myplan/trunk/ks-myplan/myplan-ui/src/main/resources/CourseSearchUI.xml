@@ -528,6 +528,9 @@
                 <entry key="exclude-keys" value="tba"/>
             </map>
         </property>
+        <property name="instructionalMessage">
+            <bean parent="KSAP-Message" p:messageText="No data avaliable" p:cssClasses="uif-instructionalMessage courseResults__facetEmpty"/>
+        </property>
         <property name="footer.additionalCssClasses" value="courseResults__facetDisable"/>
         <property name="footer.items">
             <list>
@@ -555,6 +558,9 @@
                 <entry key="merged-column" value="facet_meeting_day_time"/>
                 <entry key="exclude-keys" value="tba"/>
             </map>
+        </property>
+        <property name="instructionalMessage">
+            <bean parent="KSAP-Message" p:messageText="No data avaliable" p:cssClasses="uif-instructionalMessage courseResults__facetEmpty"/>
         </property>
         <property name="footer.additionalCssClasses" value="courseResults__facetDisable"/>
         <property name="footer.items">

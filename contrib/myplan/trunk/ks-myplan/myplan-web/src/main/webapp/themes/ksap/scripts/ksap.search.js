@@ -180,7 +180,7 @@ jQuery.fn.iterateSorted = function (sorter, print) {
                     ++oFacets[iColumn][sTemp].count;
                     continue;
                 } else if (!oFacets[iColumn].hasOwnProperty(sTemp)) {
-                    oFacets[iColumn][sTemp] = {count: 0, checked: false};
+                    oFacets[iColumn][sTemp] = {count: 1, checked: false};
                     if (readUrlHash(iColumn)) {
                         oFacets[iColumn][sTemp].checked = (jQuery.inArray(sTemp, readUrlHash(iColumn).split("|")) !== -1);
                     }
@@ -344,15 +344,18 @@ function searchForCourses(id, parentId) {
 
 function fnGenerateFacetGroup(columnTitle, obj, sorter, formatter) {
     var iColumn = oTable.fnGetColumnIndex(columnTitle);
+    if (nonEmpty(obj.find(".uif-footer"))) {
+        obj.find(".uif-footer").hide();
+    }
+    if (nonEmpty(obj.find(".uif-instructionalMessage"))) {
+        obj.find(".uif-instructionalMessage").css("display", "none");
+    }
     if (typeof obj.data("skip-processing") === "undefined" || obj.data("skip-processing") === false) {
         var oTableSettings = oTable.fnSettings();
         if (typeof oTableSettings.aoColumns[iColumn] !== "undefined" && oTableSettings.aoColumns[iColumn].bSearchable) {
             var aExclude = (obj.data("exclude-keys") ? obj.data("exclude-keys").split(",") : []);
             oTable.fnGetColumnData(iColumn, true, false, true, aExclude);
             fnCreateFacetList(iColumn, obj, oFacets[iColumn], sorter, formatter);
-        }
-        if (nonEmpty(obj.find(".uif-footer"))) {
-            obj.find(".uif-footer").hide();
         }
     } else {
         if (nonEmpty(obj.find(".uif-footer"))) {
@@ -375,48 +378,52 @@ function fnCreateFacetList(i, obj, oData, sorter, formatter) {
     var oTableSettings = oTable.fnSettings();
     var jFacets = obj.find(".uif-disclosureContent .uif-verticalBoxLayout");
     jFacets.empty();
-    if (Object.size(oData) > 1) {
-        jFacets.append(jQuery('<div class="courseResults__facetAll"><ul /></div>'));
-        var allClass = 'courseResults__facet--checked';
-        for (var key in oData) {
-            if (oData.hasOwnProperty(key)) {
-                if (oData[key].checked === true) {
-                    allClass = '';
-                    aSelections.push(";" + key + ";");
+    if (Object.size(oData) === 0) {
+        obj.find(".uif-instructionalMessage").css("display", "block");
+    } else {
+        if (Object.size(oData) > 1) {
+            jFacets.append(jQuery('<div class="courseResults__facetAll"><ul /></div>'));
+            var allClass = 'courseResults__facet--checked';
+            for (var key in oData) {
+                if (oData.hasOwnProperty(key)) {
+                    if (oData[key].checked === true) {
+                        allClass = '';
+                        aSelections.push(";" + key + ";");
+                    }
                 }
             }
+            var jAll = jQuery('<li />').attr("title", "All").addClass(allClass).html('<a href="#">All</a>').click(function (e) {
+                fnFacetFilter('All', i, e, obj);
+            });
+            jFacets.find(".courseResults__facetAll ul").append(jAll);
         }
-        var jAll = jQuery('<li />').attr("title", "All").addClass(allClass).html('<a href="#">All</a>').click(function (e) {
-            fnFacetFilter('All', i, e, obj);
+        jFacets.append(jQuery('<div class="courseResults__facetList"><ul /></div>'));
+        jQuery(oData).iterateSorted(sorter, function (key) {
+            var jItem = jQuery('<li />').data("key", key);
+            var jLink = jQuery('<a />').attr("href", "#");
+            if (key in oGenEduNames) {
+                jLink.attr("title", oGenEduNames[key]);
+            }
+            if (formatter) {
+                jLink.text(formatter(key));
+            } else {
+                jLink.text(key);
+            }
+            jItem.append(jLink);
+            if (!obj.data("skip-count")) jItem.append(' <span>(' + oData[key].count + ')</span>')
+            jItem.click(function (e) {
+                fnFacetFilter(key, i, e, obj);
+            });
+            if (oData[key].checked) jItem.addClass("courseResults__facet--checked");
+            if (Object.size(oData) == 1) jItem.addClass("courseResults__facet--static");
+            jFacets.find(".courseResults__facetList ul").append(jItem);
         });
-        jFacets.find(".courseResults__facetAll ul").append(jAll);
-    }
-    jFacets.append(jQuery('<div class="courseResults__facetList"><ul /></div>'));
-    jQuery(oData).iterateSorted(sorter, function (key) {
-        var jItem = jQuery('<li />').data("key", key);
-        var jLink = jQuery('<a />').attr("href", "#");
-        if (key in oGenEduNames) {
-            jLink.attr("title", oGenEduNames[key]);
-        }
-        if (formatter) {
-            jLink.text(formatter(key));
-        } else {
-            jLink.text(key);
-        }
-        jItem.append(jLink);
-        if (!obj.data("skip-count")) jItem.append(' <span>(' + oData[key].count + ')</span>')
-        jItem.click(function (e) {
-            fnFacetFilter(key, i, e, obj);
-        });
-        if (oData[key].checked) jItem.addClass("courseResults__facet--checked");
-        if (Object.size(oData) == 1) jItem.addClass("courseResults__facet--static");
-        jFacets.find(".courseResults__facetList ul").append(jItem);
-    });
-    if (aSelections.length > 0) {
-        oTable.fnFilter(aSelections.join("|"), i, true, false);
-        if (readUrlHash("start")) {
-            oTableSettings._iDisplayStart = parseFloat(readUrlHash("start"));
-            oTable.fnDraw(false);
+        if (aSelections.length > 0) {
+            oTable.fnFilter(aSelections.join("|"), i, true, false);
+            if (readUrlHash("start")) {
+                oTableSettings._iDisplayStart = parseFloat(readUrlHash("start"));
+                oTable.fnDraw(false);
+            }
         }
     }
 }
