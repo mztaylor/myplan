@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.course.service;
 
+import com.google.common.collect.Sets;
 import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.criteria.QueryByCriteria;
@@ -68,14 +69,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 
@@ -806,7 +800,15 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                     }
                 }
             }
-
+            Set<Set<Object>> powerSets = Sets.powerSet(new LinkedHashSet<Object>(selectedDays));
+            List<String> daysListCombo = new ArrayList<String>();
+            for (Set<Object> powerSet : powerSets) {
+                List<Object> obj = Arrays.asList(powerSet.toArray());
+                String value = org.apache.commons.lang.StringUtils.join(obj, "");
+                if (StringUtils.hasText(value)) {
+                    daysListCombo.add(value);
+                }
+            }
 
             if (AtpHelper.getPublishedTerms().contains(termId)) {
                 boolean openForPlanning = AtpHelper.isAtpSetToPlanning(termId);
@@ -850,19 +852,23 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                                         dayMatchSuccess = true;
                                     }
 
+                                    String dayNumber = "";
                                     String days = "";
+                                    Collections.sort(timeSlot.getWeekdays());
                                     for (int weekday : timeSlot.getWeekdays()) {
-                                    /*TODO: The weekday is giving wrong calendar value for days either fix the timeslot weekdays to return Monday as 1 instead of 2 OR change the selected days to have Monday as 2*/
-                                        if (selectedDays.contains(String.valueOf(weekday - 1))) {
-                                            dayMatchSuccess = true;
-                                        }
                                         if (weekday > 0 && weekday < 8) {
                                             String letter = getCalendarUtil().getShortName(weekday);
                                             days += letter;
+                                            /*TODO: The weekday is giving wrong calendar value for days either fix the timeslot weekdays to return Monday as 1 instead of 2 OR change the selected days to have Monday as 2*/
+                                            dayNumber += weekday - 1;
                                         }
                                     }
                                     if (!"".equals(days)) {
                                         meeting.setDays(days);
+                                    }
+
+                                    if (daysListCombo.contains(dayNumber)) {
+                                        dayMatchSuccess = true;
                                     }
 
                                     TimeOfDayInfo startInfo = timeSlot.getStartTime();
@@ -891,7 +897,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                                 activityOfferingItemList.add(activityOfferingItem);
                                 primaryAdded = true;
                             }
-                        }else if (primaryAdded) {
+                        } else if (primaryAdded) {
                             activityOfferingItemList.add(activityOfferingItem);
                         }
 
