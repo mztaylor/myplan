@@ -49,7 +49,12 @@ function setSecondaryNavigation(aView, learningPlanId) {
     var scheduleUrl = "sb?methodToCall=start&viewId=ScheduleBuild-FormView&termId=" + term.data("atpid") + "&requestedLearningPlanId=" + learningPlanId + "&pageId=schedule_build";
 
     jQuery(".secondaryNavigation__term").text(termLabel).attr("href", termUrl);
-    jQuery(".secondaryNavigation__schedule").attr("href", scheduleUrl).removeClass("disabled").addClass(!termPublished ? "disabled" : "");
+    jQuery(".secondaryNavigation__schedule").attr("href", scheduleUrl).removeClass("disabled").addClass(!termPublished || learningPlanId === "" ? "disabled" : "");
+}
+
+function setVisibleTerms(aView) {
+    jQuery(".planYear__term").parents("li").removeClass("visible");
+    jQuery(aView).addClass("visible");
 }
 /*
  ######################################################################################

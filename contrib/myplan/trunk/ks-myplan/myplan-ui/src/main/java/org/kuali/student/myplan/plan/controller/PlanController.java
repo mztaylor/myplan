@@ -2751,6 +2751,7 @@ public class PlanController extends UifControllerBase {
         Map<PlanConstants.JS_EVENT_NAME, Map<String, String>> events = new LinkedHashMap<PlanConstants.JS_EVENT_NAME, Map<String, String>>();
         Map<String, String> params = new HashMap<String, String>();
         params.put("planItemId", planItem.getId());
+        params.put("learningPlanId", planItem.getLearningPlanId());
         params.put("planItemType", formatTypeKey(planItem.getTypeKey()));
 
         boolean placeHolder = isPlaceHolderType(planItem.getRefObjectType());

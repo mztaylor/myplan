@@ -50,6 +50,15 @@
                             <property name="cssClasses" value="secondaryNavigation__schedule"/>
                             <property name="additionalCssClasses" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).isAtpPublished(T(org.kuali.student.myplan.plan.util.AtpHelper).getFirstPlanTerm()) OR learningPlanId EQ null ? 'disabled' : ''}"/>
                             <property name="onClickScript" value="if(jQuery(this).hasClass('disabled')){ e.preventDefault(); }"/>
+                            <property name="onDocumentReadyScript" value="
+                                if (@{learningPlanId EQ null}) {
+                                    jQuery('a.secondaryNavigation__schedule').on('PLAN_ITEM_ADDED', function(event, data) {
+                                        var aVisible = jQuery('.visible .planYear__term').parents('li');
+                                        setSecondaryNavigation(aVisible, data.learningPlanId);
+                                        jQuery(this).off('PLAN_ITEM_ADDED');
+                                    });
+                                }
+                            "/>
                         </bean>
                     </list>
                 </property>
@@ -83,7 +92,16 @@
                             <ref bean="completed_placeholder_menu"/>
                             <ref bean="academic_course_menu"/>
                             <bean id="newUser" parent="KSAP-SimpleDataField" p:propertyName="newUser" p:hidden="true"/>
-                            <bean id="learningPlanId" parent="KSAP-SimpleDataField" p:propertyName="learningPlanId" p:hidden="true"/>
+                            <bean id="learningPlanId" parent="KSAP-SimpleDataField" p:propertyName="learningPlanId" p:hidden="true">
+                                <property name="onDocumentReadyScript" value="
+                                    if (@{learningPlanId EQ null}) {
+                                        jQuery('#learningPlanId').on('PLAN_ITEM_ADDED', function(event, data) {
+                                            customRetrieveComponent('learningPlanId', 'learningPlanId', 'start', 'plan', {viewId:'PlannedCourses-FormView'});
+                                            jQuery(this).off('PLAN_ITEM_ADDED');
+                                        });
+                                    }
+                                "/>
+                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -420,11 +438,13 @@
                     visible: 4,
                     start: iStart,
                     afterEnd: function(a) {
+                        setVisibleTerms(a);
                         buildPlanHeader(a, '.planNavigation__header h2');
                         setSecondaryNavigation(a, jQuery.trim(jQuery('#learningPlanId').text()));
                         setUrlHash('planView', jQuery(a[0]).index());
                     },
                     initCallback: function(a) {
+                        setVisibleTerms(a);
                         buildPlanHeader(a, '.planNavigation__header h2');
                         setSecondaryNavigation(a, jQuery.trim(jQuery('#learningPlanId').text()));
                         jQuery('#planned_courses_detail_list ul:not(.errorLines) li').css('height', 'auto');
