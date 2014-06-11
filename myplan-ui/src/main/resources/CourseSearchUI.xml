@@ -529,7 +529,7 @@
             </map>
         </property>
         <property name="instructionalMessage">
-            <bean parent="KSAP-Message" p:messageText="No data avaliable" p:cssClasses="uif-instructionalMessage courseResults__facetEmpty"/>
+            <bean parent="KSAP-Message" p:messageText="Filter not available. Section days to be arranged." p:cssClasses="uif-instructionalMessage courseResults__facetEmpty"/>
         </property>
         <property name="footer.additionalCssClasses" value="courseResults__facetDisable"/>
         <property name="footer.items">
@@ -560,7 +560,7 @@
             </map>
         </property>
         <property name="instructionalMessage">
-            <bean parent="KSAP-Message" p:messageText="No data avaliable" p:cssClasses="uif-instructionalMessage courseResults__facetEmpty"/>
+            <bean parent="KSAP-Message" p:messageText="Filter not available. Section times to be arranged." p:cssClasses="uif-instructionalMessage courseResults__facetEmpty"/>
         </property>
         <property name="footer.additionalCssClasses" value="courseResults__facetDisable"/>
         <property name="footer.items">
