@@ -208,7 +208,7 @@
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-NoSpanMessage"
-                                              p:messageText="A response from the registration system will open in a new browser window."/>
+                                              p:messageText="A response from the registration system will open in a new browser window or tab."/>
                                     </list>
                                 </property>
                             </bean>
