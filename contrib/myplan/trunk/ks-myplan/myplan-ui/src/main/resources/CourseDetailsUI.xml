@@ -445,12 +445,12 @@
     </bean>
 
     <bean id="course_details_banner" parent="Uif-Message" p:cssClasses="alert alert-info alert-search-icon" p:render="@{dataObject.filtersApplied NE null}">
-        <property name="messageText" value="[b]Search filter: @{dataObject.filtersApplied}[/b] [0] [br/][css='courseDetails__text']Additional sections may be available that are not showing due to your filters. View them by clicking on the remove filters link.[/css]"/>
+        <property name="messageText" value="[css='courseDetails__search'][b]Search filter:[/b] @{dataObject.filtersApplied}[/css] [0] [br/][css='courseDetails__text']Additional sections may be available that are not showing due to your filters. View them by clicking on the remove filters link.[/css]"/>
         <property name="inlineComponents">
             <list>
                 <bean parent="Uif-ActionLink" p:actionLabel="Remove filters" p:actionScript="
                                                     customRetrieveComponent('course_details_sections_list','course_details_sections_list','start','inquiry',{viewId:'CourseDetailsSections-InquiryView',courseId:'@{dataObject.courseSummaryDetails.courseId}',courseCd:'@{dataObject.courseSummaryDetails.code}',loadActivityOffering:'true'}, null, {centerX:true, centerY:false, message:'&lt;p&gt;&lt;img src=&quot;../themes/ksap/images/loader/ajax_large.gif&quot; alt=&quot;loading...&quot; /&gt;&lt;/p&gt;&lt;p&gt;Please wait while we are fetching sections...&lt;/p&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff',opacity:0,cursor:'wait'}, css:{color:'#c09853', backgroundColor:'#fcf8e3', border:'solid 1px #fbeed5', borderRadius:'15px','-webkit-border-radius':'15px','-moz-border-radius':'15px', width:'230px', textAlign:'center', padding:'20px', top:'20px'}});"
-                      p:style="float:right; text-decoration:underline;"/>
+                      p:cssClasses="courseDetails__filter"/>
             </list>
         </property>
     </bean>
