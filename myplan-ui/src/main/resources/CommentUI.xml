@@ -407,7 +407,7 @@
         <property name="items">
             <list>
                 <bean parent="KSAP-PageHorizontalLayout" id="messages_detail_page" p:id="messages_detail_page">
-                    <property name="headerText" value="Messages & Comments"/>
+                    <property name="headerText" value="Messages and Comments"/>
                     <property name="items">
                         <list>
                             <bean parent="messages_detail_list" p:width="710px"/>
