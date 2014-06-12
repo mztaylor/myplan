@@ -198,7 +198,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="KSAP-ErrorMessage" p:progressiveRender="searchTerm eq 'any'" p:width="200px">
+                <bean parent="KSAP-ErrorMessage" p:cssClasses="alert alert-info" p:progressiveRender="searchTerm eq 'any'" p:width="210px" p:style="float:right;">
                     <property name="items">
                         <list>
                             <ref bean="conditionalMessage"/>
@@ -209,7 +209,7 @@
         </property>
     </bean>
 
-    <bean id="conditionalMessage" parent="KSAP-Message" p:messageText="You must choose a single quarter to use filters."/>
+    <bean id="conditionalMessage" parent="KSAP-Message" p:cssClasses="courseSearch__condition" p:messageText="Choose a single quarter to use filters."/>
 
          <!-- dropdown control for meeting times-->
     <bean id="meetingTimes" parent="KSAP-HorizontalBoxGroup">
