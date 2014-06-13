@@ -631,7 +631,7 @@ function restoreSearchAddButton(data) {
         "data-coursecd": data.courseCd,
         "onclick": "openMenu('" + data.courseId + "_add','add_course_items',null,event,null,'popover__menu popover__menu--small',{tail:{align:'middle'},align:'middle',position:'right'},false);"
     });
-    jQuery(oNodes).find("#" + data.courseId + "_" + data.subject.replace(/ /g,'_') + "_" + data.number + "_status").fadeOut(250, function () {
+    jQuery(oNodes).find("#" + data.subject.replace(/\&|\s/g, '') + data.number + "-" + data.courseId + "_status").fadeOut(250, function () {
         jQuery(this).removeClass().html(button);
         jQuery(this).fadeIn(250);
     });
