@@ -416,8 +416,8 @@
         </property>
         <property name="items">
             <list>
-                <ref bean="facet_meeting_times"/>
-                <ref bean="facet_meeting_days"/>
+                <!--<ref bean="facet_meeting_times"/>-->
+                <!--<ref bean="facet_meeting_days"/>-->
                 <ref bean="facet_genedureq"/>
                 <ref bean="facet_credits"/>
                 <ref bean="facet_level"/>
@@ -509,6 +509,7 @@
         "/>
     </bean>
 
+    <!--
     <bean id="facet_meeting_days" parent="facet_group" p:headerText="Meeting Days">
         <property name="onDocumentReadyScript" value="
             jQuery('#facet_meeting_days').on('GENERATE_FACETS', function(event){
@@ -570,6 +571,7 @@
         </property>
         <property name="footer.render" value="true"/>
     </bean>
+    -->
 
     <bean id="course_search_facet_disable" parent="KSAP-NoSpanMessage" p:messageText="Choose a single quarter above to use this filter."/>
 
