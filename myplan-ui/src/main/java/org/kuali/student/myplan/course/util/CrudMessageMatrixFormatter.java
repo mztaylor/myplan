@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.course.util;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
@@ -60,7 +61,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
 
     public UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper =  UwMyplanServiceLocator.getInstance().getUserSessionHelper();
+            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }
@@ -360,20 +361,22 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
             }
         }
         for (String section : sections) {
-            String sln = getCourseHelper().getSLN(yearTerm.getYearAsString(), yearTerm.getTermAsString(), courseDetails.getCourseSummaryDetails().getSubjectArea(), courseDetails.getCourseSummaryDetails().getCourseNumber(), section);
-            String sectionSln = String.format("Section %s (%s)", section, sln);
-            String sec = null;
-            CourseDetailsInquiryHelperImpl courseHelper = new CourseDetailsInquiryHelperImpl();
-            List<String> terms = new ArrayList<String>();
-            terms.add(term);
-            List<CourseOfferingInstitution> courseOfferingInstitutions = courseHelper.getCourseOfferingInstitutionsById(courseDetails.getCourseSummaryDetails().getCourseId(), terms);
-            if (AtpHelper.getPublishedTerms().contains(yearTerm.toATP()) && !CollectionUtils.isEmpty(courseOfferingInstitutions)) {
-                sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=" + AtpHelper.getAtpIdFromTermYear(term), sectionSln);
-            } else {
-                sec = sectionSln;
-            }
+            if (StringUtils.isNotBlank(section)) {
+                String sln = getCourseHelper().getSLN(yearTerm.getYearAsString(), yearTerm.getTermAsString(), courseDetails.getCourseSummaryDetails().getSubjectArea(), courseDetails.getCourseSummaryDetails().getCourseNumber(), section);
+                String sectionSln = String.format("Section %s (%s)", section, sln);
+                String sec = null;
+                CourseDetailsInquiryHelperImpl courseHelper = new CourseDetailsInquiryHelperImpl();
+                List<String> terms = new ArrayList<String>();
+                terms.add(term);
+                List<CourseOfferingInstitution> courseOfferingInstitutions = courseHelper.getCourseOfferingInstitutionsById(courseDetails.getCourseSummaryDetails().getCourseId(), terms);
+                if (AtpHelper.getPublishedTerms().contains(yearTerm.toATP()) && !CollectionUtils.isEmpty(courseOfferingInstitutions)) {
+                    sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=" + AtpHelper.getAtpIdFromTermYear(term), sectionSln);
+                } else {
+                    sec = sectionSln;
+                }
 
-            sectionAndSln.add(sec);
+                sectionAndSln.add(sec);
+            }
         }
         return sectionAndSln;
     }
