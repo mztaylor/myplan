@@ -361,11 +361,11 @@
                 }
             }).on('PLAN_ITEM_ADDED', function(event, data){
                 if (data.planItemType === 'wishlist') {
-                    actionFeedback(data.courseId + '_' + data.subject.replace(/ /g,'_') + '_' + data.number + '_status', false, null, 'bookmarked', 'Bookmarked');
+                    actionFeedback(data.subject.replace(/\&amp;|\s/g, '') + data.number + '-' + data.courseId + '_status', false, null, 'bookmarked', 'Bookmarked');
                 }
             }).on('PLAN_ITEM_ADDED', function(event, data){
                 if (data.planItemType === 'planned' || data.planItemType === 'backup') {
-                    actionFeedback(data.courseId + '_' + data.subject.replace(/ /g,'_') + '_' + data.number + '_status', false, null, 'planned', 'Planned');
+                    actionFeedback(data.subject.replace(/\&amp;|\s/g, '') + data.number + '-' + data.courseId + '_status', false, null, 'planned', 'Planned');
                 }
             });
             if (readUrlHash('searchQuery')) {

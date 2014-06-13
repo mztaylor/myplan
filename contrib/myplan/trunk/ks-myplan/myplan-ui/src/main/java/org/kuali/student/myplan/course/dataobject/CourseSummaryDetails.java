@@ -2,6 +2,7 @@ package org.kuali.student.myplan.course.dataobject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -202,5 +203,19 @@ public class CourseSummaryDetails {
 
     public void setCampusCd(String campusCd) {
         this.campusCd = campusCd;
+    }
+
+    /**
+     * This is used in UI as a Id for elements in DOM.
+     * The unique id is combination of courseCode with & and spaces removed AND courseId
+     *
+     * @return
+     */
+    public String getUiId(){
+        if(org.springframework.util.StringUtils.hasText(getCode()) && org.springframework.util.StringUtils.hasText(getCourseId())){
+            return String.format("%s-%s", getCode().replace("&","").replace(" ",""),getCourseId());
+        }
+        /*This should never happen*/
+        return UUID.randomUUID().toString();
     }
 }

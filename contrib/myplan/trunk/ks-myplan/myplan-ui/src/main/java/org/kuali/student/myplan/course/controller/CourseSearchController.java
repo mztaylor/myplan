@@ -444,13 +444,18 @@ public class CourseSearchController extends UifControllerBase {
             String status = "";
             String courseId = item.getCourseId();
             String label = item.getStatus().getLabel();
+            String domId = item.getSubject().trim().replaceAll("[\\&|\\s]", "") + item.getNumber().trim() + "-" + courseId;
 
             if (label.length() > 0) {
-                status = String.format("<span id=\\\"%s_%s_%s_status\\\" class=\\\"%s\\\">%s</span>", courseId, item.getSubject().trim().replaceAll(" ", "_"), item.getNumber().trim(), label.toLowerCase(), label);
+                status = String.format("<span id=\\\"%s_status\\\" class=\\\"%s\\\">%s</span>", domId, label.toLowerCase(), label);
             } else if (getUserSessionHelper().isAdviser()) {
-                status = String.format("<span id=\\\"%s_%s_%s_status\\\">%s</span>", courseId, item.getSubject().trim().replaceAll(" ", "_"), item.getNumber().trim(), CourseSearchItem.EMPTY_RESULT_VALUE_KEY);
+                status = String.format("<span id=\\\"%s_status\\\">%s</span>", domId, CourseSearchItem.EMPTY_RESULT_VALUE_KEY);
             } else {
-                status = String.format("<span id=\\\"%s_%s_%s_status\\\"><input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"/student/themes/ksap/images/pixel.gif\\\" alt=\\\"Bookmark or Add to Plan\\\" class=\\\"courseResults__itemAdd\\\" data-courseid= \\\"%s\\\" data-coursecd= \\\"%s\\\" data-subject= \\\"%s\\\" data-number= \\\"%s\\\" onclick=\\\"openMenu('%s_add','add_course_items',null,event,null,'popover__menu popover__menu--small',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>", courseId, item.getSubject().trim().replaceAll(" ", "_"), item.getNumber().trim(), courseId, item.getCode().trim(), item.getSubject().trim(), item.getNumber().trim(), courseId);
+                status = String.format("<span id=\\\"%s_status\\\">" +
+                        "<input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"/student/themes/ksap/images/pixel.gif\\\" " +
+                        "alt=\\\"Bookmark or Add to Plan\\\" class=\\\"courseResults__itemAdd\\\" data-courseid= \\\"%s\\\" " +
+                        "data-coursecd= \\\"%s\\\" data-subject= \\\"%s\\\" data-number= \\\"%s\\\" " +
+                        "onclick=\\\"openMenu('%s_add','add_course_items',null,event,null,'popover__menu popover__menu--small',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>", domId, courseId, item.getCode().trim(), item.getSubject().trim(), item.getNumber().trim(), courseId);
             }
 
             String courseName = "";
