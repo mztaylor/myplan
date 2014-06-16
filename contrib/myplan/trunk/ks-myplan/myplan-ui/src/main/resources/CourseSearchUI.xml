@@ -198,7 +198,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="KSAP-ErrorMessage" p:cssClasses="alert alert-info" p:progressiveRender="searchTerm eq 'any'" p:width="210px" p:style="float:right;">
+                <bean parent="KSAP-ErrorMessage" p:cssClasses="alert alert-info alert-margin" p:progressiveRender="searchTerm eq 'any'" p:width="32%" p:style="float:right;">
                     <property name="items">
                         <list>
                             <ref bean="conditionalMessage"/>
@@ -226,6 +226,7 @@
                     <property name="labelPlacement" value="LEFT"/>
                     <property name="control">
                         <bean parent="Uif-DropdownControl" p:disabled="@{searchTerm eq 'any'}">
+                            <property name="cssClasses" value="courseSearch__select"/>
                             <property name="dataAttributes">
                                 <map>
                                     <entry key="save-value" value="true"/>
@@ -265,6 +266,7 @@
                     <property name="labelPlacement" value="LEFT"/>
                     <property name="control">
                         <bean parent="Uif-DropdownControl" p:disabled="@{searchTerm eq 'any'}">
+                            <property name="cssClasses" value="courseSearch__select"/>
                             <property name="dataAttributes">
                                 <map>
                                     <entry key="save-value" value="true"/>
