@@ -445,7 +445,7 @@
     </bean>
 
     <bean id="course_details_banner" parent="Uif-Message" p:cssClasses="alert alert-info alert-search-icon" p:render="@{dataObject.filtersApplied NE null}">
-        <property name="messageText" value="[css='courseDetails__search'][b]Search filter:[/b] @{dataObject.filtersApplied}[/css] [0] [br/][css='courseDetails__text']Additional sections may be available that are not showing due to your filters. View them by clicking on the remove filters link.[/css]"/>
+        <property name="messageText" value="[css='courseDetails__search'][b]Search filter:[/b] @{dataObject.filtersApplied}[/css] [0]"/>
         <property name="inlineComponents">
             <list>
                 <bean parent="Uif-ActionLink" p:actionLabel="Remove filters" p:actionScript="
