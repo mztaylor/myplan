@@ -157,8 +157,8 @@
     <bean abstract="true" id="sb_reserved_time_buttons-parent" parent="Uif-FooterBase">
         <property name="items">
             <list>
-                <bean parent="sb_reserved_times_submit_button" p:render="@{id EQ null}"/>
-                <bean parent="sb_reserved_times_update_button" p:render="@{id NE null}"/>
+                <bean id="sb_reserved_times_add_button1" parent="sb_reserved_times_submit_button" p:render="@{id EQ null}"/>
+                <bean id="sb_reserved_times_update_button1" parent="sb_reserved_times_update_button" p:render="@{id NE null}"/>
             </list>
         </property>
     </bean>
