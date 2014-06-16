@@ -40,6 +40,7 @@ public class CourseSearchItem {
 
     /*used for the section search*/
     private Set<String> meetingDaysAndTimes;
+    private boolean bothPrimaryAndSecondary;
 
     private String genEduReq = EMPTY_RESULT_VALUE_KEY;
 
@@ -375,6 +376,14 @@ public class CourseSearchItem {
 
     public void setMeetingDayTimeFacetKeys(Set<String> meetingDayTimeFacetKeys) {
         this.meetingDayTimeFacetKeys = meetingDayTimeFacetKeys;
+    }
+
+    public boolean hasBothPrimaryAndSecondary() {
+        return bothPrimaryAndSecondary;
+    }
+
+    public void setBothPrimaryAndSecondary(boolean bothPrimaryAndSecondary) {
+        this.bothPrimaryAndSecondary = bothPrimaryAndSecondary;
     }
 
     @Override

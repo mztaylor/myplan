@@ -22,7 +22,6 @@ import org.kuali.rice.core.api.criteria.QueryByCriteria;
 import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.core.api.util.KeyValue;
 import org.kuali.rice.krad.uif.UifConstants;
-import org.kuali.rice.krad.uif.UifParameters;
 import org.kuali.rice.krad.web.controller.UifControllerBase;
 import org.kuali.rice.krad.web.form.UifFormBase;
 import org.kuali.rice.krad.web.form.UifFormManager;
@@ -334,6 +333,14 @@ public class CourseSearchController extends UifControllerBase {
 
             loadScheduledTerms(courseList, subjectArea, form);
             if (!CourseSearchConstants.SEARCH_TERM_ANY_ITEM.equals(form.getSearchTerm())) {
+                Collections.sort(courseList, new Comparator<CourseSearchItem>() {
+                    @Override
+                    public int compare(CourseSearchItem p1, CourseSearchItem p2) {
+                        boolean v1 = p1.hasBothPrimaryAndSecondary();
+                        boolean v2 = p2.hasBothPrimaryAndSecondary();
+                        return v1 == v2 ? 0 : (v1 ? -1 : 1);
+                    }
+                });
                 List<CourseSearchItem> filteredCourses = new ArrayList<CourseSearchItem>();
                 filteredCourses = filterCoursesByTerm(courseList, form.getSearchTerm());
                 populateFacets(form, filteredCourses);
@@ -643,6 +650,35 @@ public class CourseSearchController extends UifControllerBase {
         }
         return filteredCourses;
     }
+
+    public class ActivitySearchItem {
+
+        private Map<String, Set<String>> primaryToSecondaries;
+        private Set<String> meetingTimes;
+
+        public Set<String> getMeetingTimes() {
+            if (meetingTimes == null) {
+                meetingTimes = new LinkedHashSet<String>();
+            }
+            return meetingTimes;
+        }
+
+        public void setMeetingTimes(Set<String> meetingTimes) {
+            this.meetingTimes = meetingTimes;
+        }
+
+        public Map<String, Set<String>> getPrimaryToSecondaries() {
+            if (primaryToSecondaries == null) {
+                primaryToSecondaries = new HashMap<String, Set<String>>();
+            }
+            return primaryToSecondaries;
+        }
+
+        public void setPrimaryToSecondaries(Map<String, Set<String>> primaryToSecondaries) {
+            this.primaryToSecondaries = primaryToSecondaries;
+        }
+    }
+
     //  Load scheduled terms.
     //  Fetch the available terms from the Academic Calendar Service.
 
@@ -657,7 +693,7 @@ public class CourseSearchController extends UifControllerBase {
             // For each term load all course offerings by subjectArea
             for (TermInfo term : terms) {
                 Set<String> courseOfferingByTermSet = new HashSet<String>();
-                Map<String, Set<String>> coursesToMeetingTimes = new LinkedHashMap<String, Set<String>>();
+                Map<String, ActivitySearchItem> coursesToActivitySearchItem = new LinkedHashMap<String, ActivitySearchItem>();
 
                 /*If the search term is ANY then we do regular search for course offeringIds otherwise we do a section search based on meeting times and days passed in the form.*/
                 if (CourseSearchConstants.SEARCH_TERM_ANY_ITEM.equals(form.getSearchTerm()) || !term.getId().equals(form.getSearchTerm())) {
@@ -690,13 +726,23 @@ public class CourseSearchController extends UifControllerBase {
                             String meetingTimes = SearchHelper.getCellValue(row, "section.meeting.days.and.times");
                             String subject = SearchHelper.getCellValue(row, "section.curriculum.abbreviation");
                             String number = SearchHelper.getCellValue(row, "section.course.number");
-
-                            courseOfferingByTermSet.add(id);
+                            boolean primary = Boolean.valueOf(SearchHelper.getCellValue(row, "section.primary"));
+                            int secondaryCount = Integer.parseInt(SearchHelper.getCellValue(row, "section.secondary.count"));
+                            String primaryId = SearchHelper.getCellValue(row, "section.primary.id");
                             String code = getCourseHelper().joinStringsByDelimiter(' ', subject.trim(), number.trim());
-                            Set<String> meetings = CollectionUtils.isEmpty(coursesToMeetingTimes.get(code)) ? new HashSet<String>() : coursesToMeetingTimes.get(code);
-                            meetings.add(meetingTimes);
-                            coursesToMeetingTimes.put(code, meetings);
-
+                            ActivitySearchItem activitySearchItem = coursesToActivitySearchItem.get(code) != null ? coursesToActivitySearchItem.get(code) : new ActivitySearchItem();
+                            if (primary) {
+                                courseOfferingByTermSet.add(id);
+                                activitySearchItem.getPrimaryToSecondaries().put(id, secondaryCount > 0 ? new LinkedHashSet<String>() : null);
+                            } else {
+                                if (activitySearchItem.getPrimaryToSecondaries().get(primaryId) == null) {
+                                    continue;
+                                } else {
+                                    activitySearchItem.getPrimaryToSecondaries().get(primaryId).add(id);
+                                }
+                            }
+                            activitySearchItem.getMeetingTimes().add(meetingTimes);
+                            coursesToActivitySearchItem.put(code, activitySearchItem);
                         }
 
                     }
@@ -709,11 +755,22 @@ public class CourseSearchController extends UifControllerBase {
                         item.addScheduledTerm(term.getName());
                         if (!CourseSearchConstants.SEARCH_TERM_ANY_ITEM.equals(form.getSearchTerm()) && term.getId().equals(form.getSearchTerm())) {
                             String code = getCourseHelper().joinStringsByDelimiter(' ', item.getSubject().trim(), item.getNumber().trim());
-                            if (!CollectionUtils.isEmpty(coursesToMeetingTimes.get(code))) {
-                                item.getMeetingDaysAndTimes().addAll(coursesToMeetingTimes.get(code));
-                                item.setMeetingDayFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_DAYS));
-                                item.setMeetingTimeFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_TIMES));
-                                item.setMeetingDayTimeFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_DAY_TIMES));
+                            ActivitySearchItem activitySearchItem = coursesToActivitySearchItem.get(code);
+                            if (activitySearchItem != null) {
+                                if (!CollectionUtils.isEmpty(activitySearchItem.getPrimaryToSecondaries())) {
+                                    for (String primaryId : activitySearchItem.getPrimaryToSecondaries().keySet()) {
+                                        if (!item.hasBothPrimaryAndSecondary()) {
+                                            item.setBothPrimaryAndSecondary(activitySearchItem.getPrimaryToSecondaries().get(primaryId) == null || activitySearchItem.getPrimaryToSecondaries().get(primaryId).size() > 0);
+                                        } else {
+                                            /*Since we only need to check if there is atLeast one match of primary and secondary for this particular course*/
+                                            break;
+                                        }
+                                    }
+                                    item.getMeetingDaysAndTimes().addAll(activitySearchItem.getMeetingTimes());
+                                    item.setMeetingDayFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_DAYS));
+                                    item.setMeetingTimeFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_TIMES));
+                                    item.setMeetingDayTimeFacetKeys(getMeetingDataByTypeWithDelimiters(item.getMeetingDaysAndTimes(), MEETING_DAY_TIMES));
+                                }
                             }
                         }
                     }
