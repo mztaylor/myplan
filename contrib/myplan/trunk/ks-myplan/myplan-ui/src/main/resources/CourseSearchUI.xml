@@ -133,7 +133,7 @@
                             <value>courseSearch__submit</value>
                         </list>
                     </property>
-                    <property name="disabled" value="@{#form.searchQuery EQ null}"/>
+                    <property name="disabled" value="@{#form.searchQuery EQ null OR (#form.searchTerm NE 'any' AND #form.selectedDays EQ null)}"/>
                     <property name="evaluateDisabledOnKeyUp" value="true"/>
                     <property name="actionScript" value="
                         window.location.replace('#');
