@@ -133,7 +133,7 @@
                             <value>courseSearch__submit</value>
                         </list>
                     </property>
-                    <property name="disabled" value="@{#form.searchQuery EQ null OR (#form.searchTerm NE 'any' AND #form.selectedDays EQ null) OR (#form.searchTerm NE 'any' AND #form.endTime LT #form.startTime)}"/>
+                    <property name="disabled" value="@{#form.searchQuery EQ null OR #form.campusSelect EQ null OR (#form.searchTerm NE 'any' AND #form.selectedDays EQ null) OR (#form.searchTerm NE 'any' AND #form.endTime LT #form.startTime)}"/>
                     <property name="evaluateDisabledOnKeyUp" value="true"/>
                     <property name="actionScript" value="
                         window.location.replace('#');
@@ -198,20 +198,21 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="KSAP-VerticalBoxGroup" p:width="225px" p:style="float:right; margin:0;">
+                <bean parent="KSAP-VerticalBoxGroup" p:width="225px">
+                    <property name="cssClasses" value="courseSearch__condition"/>
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-ErrorMessage" p:cssClasses="alert alert-info removeMargin" p:progressiveRender="searchTerm EQ 'any'">
+                            <bean parent="KSAP-InfoMessage" p:additionalCssClasses="removeMargin" p:progressiveRender="searchTerm EQ 'any'">
                                 <property name="items">
                                     <list>
-                                        <bean parent="KSAP-Message" p:cssClasses="courseSearch__condition" p:messageText="Choose a single quarter to use filters."/>
+                                        <bean parent="KSAP-Message" p:messageText="Choose a single quarter to use filters."/>
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-ErrorMessage" p:cssClasses="alert alert-info removeMargin" p:progressiveRender="searchTerm NE 'any' AND endTime LT startTime">
+                            <bean parent="KSAP-InfoMessage" p:additionalCssClasses="removeMargin" p:progressiveRender="searchTerm NE 'any' AND endTime LT startTime">
                                 <property name="items">
                                     <list>
-                                        <bean parent="KSAP-Message" p:cssClasses="courseSearch__condition" p:messageText="Start time must occur before end time."/>
+                                        <bean parent="KSAP-Message" p:messageText="Start time must occur before end time."/>
                                     </list>
                                 </property>
                             </bean>
