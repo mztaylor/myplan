@@ -336,8 +336,8 @@ public class CourseSearchController extends UifControllerBase {
                 Collections.sort(courseList, new Comparator<CourseSearchItem>() {
                     @Override
                     public int compare(CourseSearchItem p1, CourseSearchItem p2) {
-                        boolean v1 = p1.hasBothPrimaryAndSecondary();
-                        boolean v2 = p2.hasBothPrimaryAndSecondary();
+                        boolean v1 = p1.isSortToTop();
+                        boolean v2 = p2.isSortToTop();
                         return v1 == v2 ? 0 : (v1 ? -1 : 1);
                     }
                 });
@@ -759,8 +759,8 @@ public class CourseSearchController extends UifControllerBase {
                             if (activitySearchItem != null) {
                                 if (!CollectionUtils.isEmpty(activitySearchItem.getPrimaryToSecondaries())) {
                                     for (String primaryId : activitySearchItem.getPrimaryToSecondaries().keySet()) {
-                                        if (!item.hasBothPrimaryAndSecondary()) {
-                                            item.setBothPrimaryAndSecondary(activitySearchItem.getPrimaryToSecondaries().get(primaryId) == null || activitySearchItem.getPrimaryToSecondaries().get(primaryId).size() > 0);
+                                        if (!item.isSortToTop()) {
+                                            item.setSortToTop(activitySearchItem.getPrimaryToSecondaries().get(primaryId) == null || activitySearchItem.getPrimaryToSecondaries().get(primaryId).size() > 0);
                                         } else {
                                             /*Since we only need to check if there is atLeast one match of primary and secondary for this particular course*/
                                             break;
