@@ -40,7 +40,8 @@ public class CourseSearchItem {
 
     /*used for the section search*/
     private Set<String> meetingDaysAndTimes;
-    private boolean bothPrimaryAndSecondary;
+    /*Set to true if there are no secondary sections for a primary section OR primary sections has atLeast one secondary section*/
+    private boolean sortToTop;
 
     private String genEduReq = EMPTY_RESULT_VALUE_KEY;
 
@@ -378,12 +379,12 @@ public class CourseSearchItem {
         this.meetingDayTimeFacetKeys = meetingDayTimeFacetKeys;
     }
 
-    public boolean hasBothPrimaryAndSecondary() {
-        return bothPrimaryAndSecondary;
+    public boolean isSortToTop() {
+        return sortToTop;
     }
 
-    public void setBothPrimaryAndSecondary(boolean bothPrimaryAndSecondary) {
-        this.bothPrimaryAndSecondary = bothPrimaryAndSecondary;
+    public void setSortToTop(boolean sortToTop) {
+        this.sortToTop = sortToTop;
     }
 
     @Override
