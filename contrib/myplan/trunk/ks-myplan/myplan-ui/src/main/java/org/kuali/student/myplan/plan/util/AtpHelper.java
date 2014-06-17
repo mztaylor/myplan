@@ -261,6 +261,9 @@ public class AtpHelper {
     public static String formatCurrentQuarterLabelForFirstPlanTerm() {
         String atpId;
         atpId = getFirstPlanTerm();
+        if (StringUtils.isEmpty(atpId)) {
+            atpId = getCurrentAtpIdFromCalender();
+        }
         return formatQuarterLabel(atpId);
     }
 
