@@ -115,7 +115,7 @@
             var user = jQuery.trim(jQuery('#newUser').text());
             if (user === 'true' &amp;&amp; !jQuery.cookie('new_user_cookie')) {
                 jQuery.cookie('new_user_cookie', 'true');
-                jQuery.fancybox({type: 'iframe', href: '@{#ConfigProperties['myplan.getting.started.page']}', height: '90%', width: '800', autoSize: false});
+                jQuery.fancybox({type: 'iframe', href: '@{#ConfigProperties['myplan.getting.started.page']}', height: '90%', width: '885', autoSize: false});
             }
             var retrieveOptions = {};
             var sFocusAtpId = '';
