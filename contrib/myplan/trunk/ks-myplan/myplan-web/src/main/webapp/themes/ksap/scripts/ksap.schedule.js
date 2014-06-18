@@ -111,6 +111,7 @@ var KsapScheduleBuild = {
         var regex = new RegExp(' id="u[0-9]*"', "gi");
         popoverTemplate = popoverTemplate.replace(regex, "");
         popoverTemplate = popoverTemplate.replace(/__KSAP_COURSECD__/gi, popoverContent.courseCd);
+        popoverTemplate = popoverTemplate.replace(/__KSAP_COURSECD_URL__/gi, encodeURIComponent(popoverContent.courseCd));
         popoverTemplate = popoverTemplate.replace(/__KSAP_COURSEID__/gi, popoverContent.courseId);
         popoverTemplate = popoverTemplate.replace(/__KSAP_COURSETITLE__/gi, popoverContent.courseTitle);
         popoverTemplate = popoverTemplate.replace(/__KSAP_COURSECREDIT__/gi, popoverContent.courseCredit);
