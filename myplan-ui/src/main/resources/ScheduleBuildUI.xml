@@ -406,7 +406,7 @@
                         <property name="items">
                             <list>
                                 <bean parent="Uif-Link" p:linkText="__KSAP_COURSECD__ __KSAP_COURSETITLE__ (__KSAP_COURSECREDIT__)"
-                                      p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=__KSAP_COURSEID__&amp;courseCd=__KSAP_COURSECD__"/>
+                                      p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=__KSAP_COURSEID__&amp;courseCd=__KSAP_COURSECD_URL__"/>
                             </list>
                         </property>
                     </bean>
@@ -583,7 +583,7 @@
     <bean id="schedule_build_possible" parent="KSAP-VerticalBoxGroup" p:id="schedule_build_possible">
         <property name="cssClasses" value="scheduleBuilder__placeholder"/>
         <property name="onDocumentReadyScript" value="
-            customRetrieveComponent('schedule_build_possible','sb_possible_schedules','build','sb',{viewId:'PossibleSchedules-FormView',termId:'@{termId}', learningPlanId:'@{requestedLearningPlanId}', pageId:'planned_courses_detail_page', 'buildFilters.showClosed':jQuery('#schedule_build_filters input[value=&quot;closed&quot;]').prop('checked'), 'buildFilters.showRestricted':jQuery('#schedule_build_filters input[value=&quot;restrictions&quot;]').prop('checked'), 'buildFilters.showOtherInstitutes':jQuery('#schedule_build_filters input[value=&quot;otherInstitutes&quot;]').prop('checked'), 'buildFilters.showOverlapped':jQuery('#schedule_build_filters input[value=&quot;registered&quot;]').prop('checked')},null,{centerX:true, centerY:false, message:'&lt;div class=&quot;blockInnerMsg&quot;&gt;Please wait while we are fetching schedule options...&lt;/div&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff', opacity:0.9, cursor:'wait'}, css:{}, blockMsgClass:'blockSection'});
+            customRetrieveComponent('schedule_build_possible','sb_possible_schedules','build','sb',{viewId:'PossibleSchedules-FormView',termId:'@{termId}', learningPlanId:'@{requestedLearningPlanId}', pageId:'possible_schedules_detail_page', 'buildFilters.showClosed':jQuery('#schedule_build_filters input[value=&quot;closed&quot;]').prop('checked'), 'buildFilters.showRestricted':jQuery('#schedule_build_filters input[value=&quot;restrictions&quot;]').prop('checked'), 'buildFilters.showOtherInstitutes':jQuery('#schedule_build_filters input[value=&quot;otherInstitutes&quot;]').prop('checked'), 'buildFilters.showOverlapped':jQuery('#schedule_build_filters input[value=&quot;registered&quot;]').prop('checked')},null,{centerX:true, centerY:false, message:'&lt;div class=&quot;blockInnerMsg&quot;&gt;Please wait while we are fetching schedule options...&lt;/div&gt;', fadeIn:0, fadeOut:0, overlayCSS:{backgroundColor:'#fff', opacity:0.9, cursor:'wait'}, css:{}, blockMsgClass:'blockSection'});
         "/>
     </bean>
 
