@@ -842,6 +842,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
                         if (activityOfferingItem.isPrimary()) {
                             ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
+                            String dayNumber = "";
                             for (ScheduleComponentDisplay scdi : sdi.getScheduleComponentDisplays()) {
                                 MeetingDetails meeting = new MeetingDetails();
 
@@ -852,7 +853,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                                         dayMatchSuccess = true;
                                     }
 
-                                    String dayNumber = "";
+
                                     String days = "";
                                     Collections.sort(timeSlot.getWeekdays());
                                     for (int weekday : timeSlot.getWeekdays()) {
@@ -865,10 +866,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                                     }
                                     if (!"".equals(days)) {
                                         meeting.setDays(days);
-                                    }
-
-                                    if (daysListCombo.contains(dayNumber)) {
-                                        dayMatchSuccess = true;
                                     }
 
                                     TimeOfDayInfo startInfo = timeSlot.getStartTime();
@@ -892,6 +889,9 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                                     }
 
                                 }
+                            }
+                            if (daysListCombo.contains(dayNumber)) {
+                                dayMatchSuccess = true;
                             }
                             if (dayMatchSuccess && timeMatchSuccess) {
                                 activityOfferingItemList.add(activityOfferingItem);
