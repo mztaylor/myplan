@@ -255,7 +255,14 @@
                             <bean parent="schedule_builder_pce_help_icon" p:id="schedule_builder_pce_help_icon" p:additionalCssClasses="removeMargin"
                                   p:style="vertical-align: middle; margin: 0 0 0 5px;"/>
                             <bean id="sb_filters_submit_button" parent="KSAP-PrimaryActionButton"
-                                  p:actionLabel="Update">
+                                  p:actionLabel="Update" p:disabled="true">
+                                <property name="onDocumentReadyScript" value="
+                                    jQuery('#sb_filters_submit_button').on('REFRESH_POSSIBLE_SCHEDULES', function(event) {
+                                        jQuery(this).addClass('disabled').prop('disabled', true);
+                                    }).on('POSSIBLE_SCHEDULES_COMPLETED', function(event) {
+                                        jQuery(this).removeClass('disabled').prop('disabled', false);
+                                    });
+                                "/>
                                 <property name="actionScript" value="
                                     jQuery('#sb_filters input[name=includeFilters][type=checkbox]').each(function(index){
                                         if (jQuery(this).prop('checked')) {
