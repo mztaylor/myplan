@@ -76,6 +76,13 @@ public class CourseSearchConstants {
 
     public static final String COURSE_SEARCH_FORM_VIEW = "CourseSearch-FormView";
 
+    public static final String COURSE_SEARCH_DEFAULT_START_TIME = "0000";
+    public static final String COURSE_DETAILS_DEFAULT_TIME = "All Meeting Times";
+    public static final String COURSE_SEARCH_DEFAULT_END_TIME = "2359";
+    public static final String COURSE_DETAILS_DEFAULT_DAYS = "All Meeting Days";
+    public static final String COURSE_SEARCH_DEFAULT_DAYS = "123456";
+
+
     public static final String CAMPUS_PARAM_REGEX = "\\s*,\\s*";
 
     /*Regex to Split Digits and alphabets Eg: COM 348 --> COM  348*/

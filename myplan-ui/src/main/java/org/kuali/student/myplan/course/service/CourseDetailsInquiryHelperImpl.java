@@ -380,48 +380,63 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 boolean exactTimeMatch = false;
                 String startTime = form.getStartTime();
                 String endTime = form.getEndTime();
-                {
-                    String hours = startTime.substring(0, 2);
-                    String minutes = startTime.substring(2, startTime.length());
-                    startTime = TimeStringMillisConverter.millisToStandardTime(TimeStringMillisConverter.militaryTimeToMillis(String.format("%s:%s", hours, minutes)), null);
-                }
-                {
-                    String hours = endTime.substring(0, 2);
-                    String minutes = endTime.substring(2, endTime.length());
-                    endTime = TimeStringMillisConverter.millisToStandardTime(TimeStringMillisConverter.militaryTimeToMillis(String.format("%s:%s", hours, minutes)), null);
-                }
-                Map<String, List<String>> meetingFacets = form.getMeetingFacets();
-                for (String key : meetingFacets.keySet()) {
-                    List<String> facets = meetingFacets.get(key);
-                    if (!CollectionUtils.isEmpty(facets)) {
-                        if ("day".equals(key)) {
-                            selectedDays = facets;
-                        } else if ("time".equals(key)) {
-                            for (String facet : facets) {
-                                String from = facet.substring(0, 4);
-                                String to = facet.substring(4, facet.length());
-                                {
-                                    String hours = from.substring(0, 2);
-                                    String minutes = from.substring(2, from.length());
-                                    from = TimeStringMillisConverter.millisToStandardTime(TimeStringMillisConverter.militaryTimeToMillis(String.format("%s:%s", hours, minutes)), null);
+                String meetingTimeText = "";
+                String meetingDaysText = "";
+                if (CourseSearchConstants.COURSE_SEARCH_DEFAULT_START_TIME.equals(startTime) && CourseSearchConstants.COURSE_SEARCH_DEFAULT_END_TIME.equals(endTime)) {
+                    meetingTimeText = CourseSearchConstants.COURSE_DETAILS_DEFAULT_TIME;
+                } else {
+                    {
+                        String hours = startTime.substring(0, 2);
+                        String minutes = startTime.substring(2, startTime.length());
+                        startTime = TimeStringMillisConverter.millisToStandardTime(TimeStringMillisConverter.militaryTimeToMillis(String.format("%s:%s", hours, minutes)), null);
+                    }
+                    {
+                        String hours = endTime.substring(0, 2);
+                        String minutes = endTime.substring(2, endTime.length());
+                        endTime = TimeStringMillisConverter.millisToStandardTime(TimeStringMillisConverter.militaryTimeToMillis(String.format("%s:%s", hours, minutes)), null);
+                    }
+
+                    Map<String, List<String>> meetingFacets = form.getMeetingFacets();
+                    for (String key : meetingFacets.keySet()) {
+                        List<String> facets = meetingFacets.get(key);
+                        if (!CollectionUtils.isEmpty(facets)) {
+                            if ("day".equals(key)) {
+                                selectedDays = facets;
+                            } else if ("time".equals(key)) {
+                                for (String facet : facets) {
+                                    String from = facet.substring(0, 4);
+                                    String to = facet.substring(4, facet.length());
+                                    {
+                                        String hours = from.substring(0, 2);
+                                        String minutes = from.substring(2, from.length());
+                                        from = TimeStringMillisConverter.millisToStandardTime(TimeStringMillisConverter.militaryTimeToMillis(String.format("%s:%s", hours, minutes)), null);
+                                    }
+                                    {
+                                        String hours = to.substring(0, 2);
+                                        String minutes = to.substring(2, to.length());
+                                        to = TimeStringMillisConverter.millisToStandardTime(TimeStringMillisConverter.militaryTimeToMillis(String.format("%s:%s", hours, minutes)), null);
+                                    }
+                                    selectedTimes.add(String.format("%s TO %s", from, to));
                                 }
-                                {
-                                    String hours = to.substring(0, 2);
-                                    String minutes = to.substring(2, to.length());
-                                    to = TimeStringMillisConverter.millisToStandardTime(TimeStringMillisConverter.militaryTimeToMillis(String.format("%s:%s", hours, minutes)), null);
-                                }
-                                selectedTimes.add(String.format("%s TO %s", from, to));
+                                exactTimeMatch = true;
                             }
-                            exactTimeMatch = true;
                         }
                     }
+                    meetingTimeText = exactTimeMatch ? org.apache.commons.lang.StringUtils.join(selectedTimes, " - ") : String.format("%s TO %s", startTime, endTime);
                 }
-                List<String> selectedDayNames = new ArrayList<String>();
-                for (String facet : selectedDays) {
-                    selectedDayNames.add(getCalendarUtil().getShortNameByVal(Integer.parseInt(facet)));
+                if (CourseSearchConstants.COURSE_SEARCH_DEFAULT_DAYS.equals(org.apache.commons.lang.StringUtils.join(selectedDays, ""))) {
+                    meetingDaysText = CourseSearchConstants.COURSE_DETAILS_DEFAULT_DAYS;
+                } else {
+                    List<String> selectedDayNames = new ArrayList<String>();
+                    for (String facet : selectedDays) {
+                        selectedDayNames.add(getCalendarUtil().getShortNameByVal(Integer.parseInt(facet)));
+                    }
+                    meetingDaysText = org.apache.commons.lang.StringUtils.join(selectedDayNames, "");
                 }
-            /*Setting the filters applied*/
-                courseDetails.setFiltersApplied(String.format("%s - %s - %s", AtpHelper.atpIdToShortTermNameFullYear(form.getSearchTerm()), org.apache.commons.lang.StringUtils.join(selectedDayNames, ""), exactTimeMatch ? org.apache.commons.lang.StringUtils.join(selectedTimes, " - ") : String.format("%s TO %s", startTime, endTime)));
+                if (!(CourseSearchConstants.COURSE_DETAILS_DEFAULT_TIME + CourseSearchConstants.COURSE_DETAILS_DEFAULT_DAYS).equals(meetingTimeText + meetingDaysText)) {
+                    /*Setting the filters applied*/
+                    courseDetails.setFiltersApplied(String.format("%s - %s - %s", AtpHelper.atpIdToShortTermNameFullYear(form.getSearchTerm()), meetingDaysText, meetingTimeText));
+                }
             }
         }
         return courseDetails;
