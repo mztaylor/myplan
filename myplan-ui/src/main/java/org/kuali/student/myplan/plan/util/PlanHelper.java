@@ -25,8 +25,6 @@ public interface PlanHelper {
 
     public LearningPlan getLearningPlan(String studentId);
 
-    public LearningPlan getLearningPlanForCurrentStudent();
-
     public List<RecommendedItemDataObject> getRecommendedItems(String refObjId);
 
     public String getCrossListedCourse(List<AttributeInfo> attributeInfoList);
