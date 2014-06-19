@@ -71,6 +71,8 @@ public class AtpHelper {
 
     private static UserSessionHelper userSessionHelper;
 
+    private static transient PlanHelper planHelper;
+
 
     /**
      * Query the Academic Calendar Service, determine the current ATP, and the return the ID.
@@ -1092,5 +1094,16 @@ public class AtpHelper {
 
     public static void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         AtpHelper.userSessionHelper = userSessionHelper;
+    }
+
+    public static PlanHelper getPlanHelper() {
+        if (planHelper == null) {
+            planHelper = UwMyplanServiceLocator.getInstance().getPlanHelper();
+        }
+        return planHelper;
+    }
+
+    public static void setPlanHelper(PlanHelper planHelper) {
+        AtpHelper.planHelper = planHelper;
     }
 }

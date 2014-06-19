@@ -25,11 +25,13 @@ public interface PlanHelper {
 
     public LearningPlan getLearningPlan(String studentId);
 
+    public LearningPlan getLearningPlanForCurrentStudent();
+
     public List<RecommendedItemDataObject> getRecommendedItems(String refObjId);
 
     public String getCrossListedCourse(List<AttributeInfo> attributeInfoList);
 
-    public Map<String,String> getPlanItemIdAndRefObjIdByRefObjType(String learningPlanId, String refObjType, String termId);
+    public Map<String, String> getPlanItemIdAndRefObjIdByRefObjType(String learningPlanId, String refObjType, String termId);
 
 
 }
