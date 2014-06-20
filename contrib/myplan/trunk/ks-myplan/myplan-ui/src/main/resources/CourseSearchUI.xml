@@ -181,13 +181,13 @@
         <!--<property name="header">
             <bean parent="KSAP-HeaderDiv" p:cssClasses="courseSearch__filtersHeader" p:headerTagCssClasses="uif-headerText-span"/>
         </property>
-        <property name="onDocumentReadyScript" value="evaluateDisclosureScripts('#course_search_filters')"/>
+        &lt;!&ndash;<property name="onDocumentReadyScript" value="evaluateDisclosureScripts('#course_search_filters')"/>
         <property name="disclosure">
             <bean parent="Uif-Disclosure" p:render="true" p:defaultOpen="false">
                 <property name="expandImageSrc" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/header_expand.png"/>
                 <property name="collapseImageSrc" value="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/header_collapse.png"/>
             </bean>
-        </property>-->
+        </property>&ndash;&gt;&ndash;&gt;-->
         <property name="items">
             <list>
                 <bean parent="KSAP-VerticalBoxGroup">
@@ -205,7 +205,7 @@
                             <bean parent="KSAP-InfoMessage" p:additionalCssClasses="removeMargin" p:progressiveRender="searchTerm EQ 'any'">
                                 <property name="items">
                                     <list>
-                                        <bean parent="KSAP-Message" p:messageText="Choose a single quarter to use filters."/>
+                                        <bean parent="KSAP-Message" p:messageText="Choose a quarter to use filters."/>
                                     </list>
                                 </property>
                             </bean>
