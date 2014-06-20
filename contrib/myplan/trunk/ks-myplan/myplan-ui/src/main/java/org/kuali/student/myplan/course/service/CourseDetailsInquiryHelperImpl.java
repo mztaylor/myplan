@@ -858,6 +858,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                         if (activityOfferingItem.isPrimary()) {
                             ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
                             String dayNumber = "";
+                            Set<Integer> dayNumbers = new TreeSet<Integer>();
                             for (ScheduleComponentDisplay scdi : sdi.getScheduleComponentDisplays()) {
                                 MeetingDetails meeting = new MeetingDetails();
 
@@ -876,7 +877,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                                             String letter = getCalendarUtil().getShortName(weekday);
                                             days += letter;
                                             /*TODO: The weekday is giving wrong calendar value for days either fix the timeslot weekdays to return Monday as 1 instead of 2 OR change the selected days to have Monday as 2*/
-                                            dayNumber += weekday - 1;
+                                            dayNumbers.add(weekday - 1);
                                         }
                                     }
                                     if (!"".equals(days)) {
@@ -904,6 +905,9 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                                     }
 
                                 }
+                            }
+                            if (!CollectionUtils.isEmpty(dayNumbers)) {
+                                dayNumber = org.apache.commons.lang.StringUtils.join(dayNumbers, "");
                             }
                             if (daysListCombo.contains(dayNumber)) {
                                 dayMatchSuccess = true;
