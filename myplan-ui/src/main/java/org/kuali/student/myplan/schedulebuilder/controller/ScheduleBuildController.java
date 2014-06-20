@@ -96,7 +96,7 @@ public class ScheduleBuildController extends UifControllerBase {
         ScheduleBuildForm sbform = (ScheduleBuildForm) form;
         try {
             sbform.buildSchedules();
-        }catch (AuthorizationException e){
+        } catch (AuthorizationException e) {
             LOG.info("UNAUTHORIZED Access: " + GlobalVariables.getUserSession().getPerson().getPrincipalId());
             try {
                 response.sendRedirect("/student/myplan/unauthorized");
@@ -238,7 +238,7 @@ public class ScheduleBuildController extends UifControllerBase {
 
         String removedId = form.removeSchedule();
 
-        String uniqueId = null;
+        String uniqueId = "";
 
         for (ReservedTime reservedTime : form.getReservedTimes()) {
             if (reservedTime.getId().equals(form.getUniqueId())) {
@@ -251,7 +251,7 @@ public class ScheduleBuildController extends UifControllerBase {
 
         json.add("success", true);
         json.add("uniqueIdRemoved", uniqueId);
-        json.add("scheduleIdRemoved", removedId);
+        json.add("scheduleIdRemoved", removedId != null ? removedId : "");
 
         response.setContentType("application/json");
         response.setHeader("Cache-Control", "No-cache");
