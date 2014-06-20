@@ -574,6 +574,33 @@
             <bean parent="KSAP-Message" p:cssClasses="">
                 <property name="messageText"
                           value="Prepare for registration with MyPlan. Create your academic plan by finding and adding courses to any quarter. Add scheduled course sections in the Quarter view, or choose &quot;Build Your Schedule&quot; to view schedule options in a calendar grid."/>
+                <!--<property name="inlineComponents">
+                    <list>
+                        <bean parent="Uif-Link" p:linkText="Quarter view">
+                            <property name="href" value="#"/>
+                            <property name="cssClasses" value="secondaryNavigation__term__text"/>
+                        </bean>
+                        <bean parent="Uif-Link" p:linkText="Build Your Schedule">
+                            <property name="href" value="#"/>
+                            <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+                            <property name="cssClasses" value="secondaryNavigation__schedule"/>
+                        </bean>
+                    </list>
+                </property>
+                <property name="propertyReplacers">
+                    <list>
+                        <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="inlineComponents" p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() OR learningPlanId EQ null">
+                            <property name="replacement">
+                                <list>
+                                    <bean parent="Uif-Link" p:linkText="Quarter view">
+                                        <property name="href" value="#"/>
+                                    </bean>
+                                    <bean parent="KSAP-Message" p:messageText="Build Your Schedule"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>-->
             </bean>
         </property>
         <property name="subCollections">
