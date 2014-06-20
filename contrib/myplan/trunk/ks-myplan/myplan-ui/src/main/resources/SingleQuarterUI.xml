@@ -138,7 +138,27 @@
 
                                         <bean parent="KSAP-Message" p:cssClasses="block">
                                             <property name="messageText"
-                                                      value="View, add, or delete courses and scheduled sections from your plan. Remember that MyPlan does not currently check your eligibility for planned courses or sections. To prepare for registration, choose &quot;Build Your Schedule&quot; to view schedule options in a calendar grid."/>
+                                                      value="View your courses and add or delete scheduled sections from your [0]. MyPlan allows you to create an academic plan, but does not currently check your eligibility for planned courses or sections. To prepare for registration, [1]"/>
+                                            <property name="inlineComponents">
+                                                <list>
+                                                    <bean parent="Uif-Link" p:linkText="plan" p:href="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView&amp;focusAtpId=@{dataObject.atpId}"/>
+                                                    <bean parent="Uif-Link" p:linkText="build your schedule">
+                                                        <property name="href" value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{dataObject.atpId}&amp;requestedLearningPlanId=@{dataObject.learningPlanId}&amp;pageId=schedule_build"/>
+                                                    </bean>
+                                                </list>
+                                            </property>
+                                            <property name="propertyReplacers">
+                                                <list>
+                                                    <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="inlineComponents" p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() OR !T(org.kuali.student.myplan.plan.util.AtpHelper).isAtpPublished(dataObject.atpId) OR dataObject.learningPlanId EQ null">
+                                                        <property name="replacement">
+                                                            <list>
+                                                                <bean parent="Uif-Link" p:linkText="plan" p:href="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView&amp;focusAtpId=@{dataObject.atpId}"/>
+                                                                <bean parent="KSAP-Message" p:messageText="build your schedule"/>
+                                                            </list>
+                                                        </property>
+                                                    </bean>
+                                                </list>
+                                            </property>
                                         </bean>
                                         <ref bean="term_collection_data"/>
                                         <bean p:id="schedule_build_termId" parent="KSAP-SimpleInputField" p:propertyName="atpId" p:readOnly="false">
