@@ -138,7 +138,7 @@
 
                                         <bean parent="KSAP-Message" p:cssClasses="block">
                                             <property name="messageText"
-                                                      value="View your courses and add or delete scheduled sections from your [0]. MyPlan allows you to create an academic plan, but does not currently check your eligibility for planned courses or sections. To prepare for registration, [1]"/>
+                                                      value="View your courses and add or delete scheduled sections from your [0]. MyPlan allows you to create an academic plan, but does not currently check your eligibility for planned courses or sections. To prepare for registration, [1]."/>
                                             <property name="inlineComponents">
                                                 <list>
                                                     <bean parent="Uif-Link" p:linkText="plan" p:href="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView&amp;focusAtpId=@{dataObject.atpId}"/>
