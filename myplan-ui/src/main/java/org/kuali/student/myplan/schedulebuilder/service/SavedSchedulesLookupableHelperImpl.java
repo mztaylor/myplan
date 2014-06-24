@@ -85,13 +85,13 @@ public class SavedSchedulesLookupableHelperImpl extends MyPlanLookupableImpl {
             if (registeredPossibleSchedule != null) {
                 ((PossibleScheduleOptionInfo) registeredPossibleSchedule).setLockedIn(true);
             }
-
+            LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData = getScheduleBuildHelper().getEnrollmentDataForPossibleSchedules(savedSchedules);
             for (PossibleScheduleOption possibleScheduleOption : savedSchedules) {
-                LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData = getScheduleBuildHelper().getEnrollmentDataForActivities(possibleScheduleOption.getActivityOptions());
                 getScheduleBuildHelper().updateEnrollmentInfo(possibleScheduleOption.getActivityOptions(), enrollmentData);
                 PossibleScheduleErrorsInfo possibleScheduleErrorsInfo = new PossibleScheduleErrorsInfo();
                 Map<String, Map<String, List<String>>> invalidOptions = new LinkedHashMap<String, Map<String, List<String>>>();
-                List<ActivityOption> validatedActivities = getScheduleBuildHelper().validatedSavedActivities(possibleScheduleOption.getActivityOptions(), invalidOptions, reservedTimes == null ? new ArrayList<ReservedTime>() : reservedTimes, new ArrayList<String>(plannedItems.keySet()), registeredPossibleSchedule, enrollmentData);
+                Map<String, Map<String, ActivityOption>> currentActivityOptions = getScheduleBuildStrategy().getActivityOptionsForCoursesByActivities(possibleScheduleOption.getActivityOptions(), enrollmentData, plannedItems);
+                List<ActivityOption> validatedActivities = getScheduleBuildHelper().validatedSavedActivities(possibleScheduleOption.getActivityOptions(), invalidOptions, reservedTimes == null ? new ArrayList<ReservedTime>() : reservedTimes, new ArrayList<String>(plannedItems.keySet()), registeredPossibleSchedule, enrollmentData, currentActivityOptions);
                 if (!CollectionUtils.isEmpty(validatedActivities) && validatedActivities.size() == possibleScheduleOption.getActivityOptions().size()) {
                     if (!CollectionUtils.isEmpty(invalidOptions)) {
                         boolean otherErrors = false;

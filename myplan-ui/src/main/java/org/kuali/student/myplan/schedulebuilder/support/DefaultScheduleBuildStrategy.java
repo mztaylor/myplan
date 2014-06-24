@@ -452,7 +452,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
             return null;
 
         CourseHelper courseHelper = getCourseHelper();
-        Course course = courseHelper.getCourseInfoByIdTermAndCd(courseId,courseCd,termId);
+        Course course = courseHelper.getCourseInfoByIdTermAndCd(courseId, courseCd, termId);
         if (course == null)
             return null;
 
@@ -1132,6 +1132,44 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     @Override
     public ShoppingCartForm getInitialCartForm() {
         return new DefaultShoppingCartForm();
+    }
+
+    @Override
+    public Map<String, Map<String, ActivityOption>> getActivityOptionsForCoursesByActivities(List<ActivityOption> activityOptions, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData, Map<String, String> plannedActivities) {
+        Map<String, Map<String, ActivityOption>> activityOptionsMap = new HashMap<String, Map<String, ActivityOption>>();
+        Map<String, Map<String, String>> termToPlannedActivities = new HashMap<String, Map<String, String>>();
+        for (ActivityOption activityOption : activityOptions) {
+            if (activityOptionsMap.containsKey(activityOption.getCourseCd())) {
+                continue;
+            }
+            CourseHelper courseHelper = getCourseHelper();
+            Course course = courseHelper.getCourseInfoByIdTermAndCd(activityOption.getCourseId(), activityOption.getCourseCd(), activityOption.getTermId());
+            if (course == null)
+                return null;
+
+            String campusCode = getCampusCode(course);
+
+            Term term = getTermHelper().getTermByAtpId(activityOption.getTermId());
+
+            if (term == null) {
+                return null;
+            }
+            Map<String, ActivityOption> activityMap = new HashMap<String, ActivityOption>();
+            for (ActivityOfferingDisplayInfo aodi : getCourseHelper().getActivityOfferingDisplaysByCourseAndTerm(activityOption.getCourseId(), activityOption.getCourseCd(), activityOption.getTermId())) {
+                DateFormat tdf = new SimpleDateFormat("h:mm a");
+                DateFormat udf = new SimpleDateFormat("MM/dd/yyyy");
+                DateFormat ddf = new SimpleDateFormat("M/d");
+                Calendar sdcal = Calendar.getInstance();
+                Calendar edcal = Calendar.getInstance();
+                Calendar tcal = Calendar.getInstance();
+                ActivityOption activity = getActivityOption(term, aodi, 0, activityOption.getCourseId(), course.getCode(), course.getCourseTitle(), campusCode, CreditsFormatter.formatCredits((CourseInfo) course), enrollmentData, plannedActivities, null, tdf, udf, ddf,
+                        sdcal, edcal, tcal);
+                activityMap.put(activity.getActivityOfferingId(), activity);
+            }
+            activityOptionsMap.put(activityOption.getCourseCd(), activityMap);
+
+        }
+        return activityOptionsMap;
     }
 
     public AcademicPlanService getAcademicPlanService() {

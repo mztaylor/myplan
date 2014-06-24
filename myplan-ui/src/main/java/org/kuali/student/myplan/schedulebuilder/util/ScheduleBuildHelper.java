@@ -29,7 +29,7 @@ public interface ScheduleBuildHelper {
 
     public void buildPossibleScheduleEvents(PossibleScheduleOption pso, Term term);
 
-    public List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, Map<String, List<String>>> invalidOptions, List<ReservedTime> reservedTimes, List<String> plannedActivities, PossibleScheduleOption registered, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData);
+    public List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, Map<String, List<String>>> invalidOptions, List<ReservedTime> reservedTimes, List<String> plannedActivities, PossibleScheduleOption registered, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData, Map<String, Map<String, ActivityOption>> courseCodeToActivities);
 
     public long[][] extractClassMeetingTimeWeekBitsFromAOList(List<ActivityOption> aoList);
 
@@ -40,6 +40,8 @@ public interface ScheduleBuildHelper {
     public void updateEnrollmentInfo(List<ActivityOption> activityOptions, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData);
 
     public LinkedHashMap<String, LinkedHashMap<String, Object>> getEnrollmentDataForActivities(List<ActivityOption> activityOptions);
+
+    public LinkedHashMap<String, LinkedHashMap<String, Object>> getEnrollmentDataForPossibleSchedules(List<PossibleScheduleOption> possibleScheduleOptions);
 
     public String validateOrPopulateLearningPlanId(String requestedLearningPlanId);
 }

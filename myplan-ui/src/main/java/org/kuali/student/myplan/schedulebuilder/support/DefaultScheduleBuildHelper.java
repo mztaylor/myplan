@@ -378,7 +378,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
      * @param invalidOptions
      * @return ActivityOption list which are validated items and also populates all invalidActivityOptions course code wise.
      */
-    public List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, Map<String, List<String>>> invalidOptions, List<ReservedTime> reservedTimes, List<String> plannedActivities, PossibleScheduleOption registered, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData) {
+    public List<ActivityOption> validatedSavedActivities(List<ActivityOption> activityOptions, Map<String, Map<String, List<String>>> invalidOptions, List<ReservedTime> reservedTimes, List<String> plannedActivities, PossibleScheduleOption registered, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData, Map<String, Map<String, ActivityOption>> courseCodeToActivities) {
         List<ActivityOption> activityOptionList = new ArrayList<ActivityOption>();
         for (ActivityOption activityOption : activityOptions) {
             ActivityOptionInfo savedActivity = new ActivityOptionInfo(activityOption);
@@ -388,7 +388,7 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                 for (SecondaryActivityOptions secondaryActivityOption : savedActivity.getSecondaryOptions()) {
                     boolean containsPlannedItems = activityOptionsContainsPlannedItems(secondaryActivityOption.getActivityOptions(), plannedActivities);
                     if (!CollectionUtils.isEmpty(secondaryActivityOption.getActivityOptions())) {
-                        List<ActivityOption> validatedSecondaryActivities = validatedSavedActivities(secondaryActivityOption.getActivityOptions(), invalidOptions, reservedTimes, plannedActivities, registered, enrollmentData);
+                        List<ActivityOption> validatedSecondaryActivities = validatedSavedActivities(secondaryActivityOption.getActivityOptions(), invalidOptions, reservedTimes, plannedActivities, registered, enrollmentData, courseCodeToActivities);
                         if (CollectionUtils.isEmpty(validatedSecondaryActivities)) {
                             isValid = false;
                             break;
@@ -431,10 +431,14 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                     continue;
                 }
             } else if (!CollectionUtils.isEmpty(savedActivity.getAlternateActivties())) {
-                validatedAlternates = savedActivity.getAlternateActivties() == null ? new ArrayList<ActivityOption>() : validatedSavedActivities(savedActivity.getAlternateActivties(), invalidOptions, reservedTimes, plannedActivities, registered, enrollmentData);
+                validatedAlternates = savedActivity.getAlternateActivties() == null ? new ArrayList<ActivityOption>() : validatedSavedActivities(savedActivity.getAlternateActivties(), invalidOptions, reservedTimes, plannedActivities, registered, enrollmentData, courseCodeToActivities);
             }
 
-            ActivityOption currentActivity = getScheduleBuildStrategy().getActivityOption(savedActivity.getTermId(), savedActivity.getCourseId(), savedActivity.getCourseCd(), savedActivity.getActivityCode(), enrollmentData);
+            //ActivityOption currentActivity = getScheduleBuildStrategy().getActivityOption(savedActivity.getTermId(), savedActivity.getCourseId(), savedActivity.getCourseCd(), savedActivity.getActivityCode(), enrollmentData);
+            ActivityOption currentActivity = null;
+            if (!CollectionUtils.isEmpty(courseCodeToActivities) && courseCodeToActivities.containsKey(savedActivity.getCourseCd()) && !CollectionUtils.isEmpty(courseCodeToActivities.get(savedActivity.getCourseCd())) && courseCodeToActivities.get(savedActivity.getCourseCd()).get(savedActivity.getActivityOfferingId()) != null) {
+                currentActivity = courseCodeToActivities.get(savedActivity.getCourseCd()).get(savedActivity.getActivityOfferingId());
+            }
             String reasonForChange = areEqual(savedActivity, currentActivity, reservedTimes, registered);
             if (StringUtils.isEmpty(reasonForChange)) {
                 savedActivity.setAlternateActivities(validatedAlternates);
@@ -616,6 +620,44 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
             if (!CollectionUtils.isEmpty(data)) {
                 enrollmentData.putAll(data);
             }
+        }
+        return enrollmentData;
+    }
+
+
+    /**
+     * Gives the enrollment data for possible schedule option activityOptions given by courses level
+     * Makes sure that the calls made to the section status service is limited to per course in all activities in all possibles schedules
+     *
+     * @param possibleScheduleOptions
+     * @return
+     */
+    public LinkedHashMap<String, LinkedHashMap<String, Object>> getEnrollmentDataForPossibleSchedules(List<PossibleScheduleOption> possibleScheduleOptions) {
+        Map<String, LinkedHashMap<String, LinkedHashMap<String, Object>>> courseToEnrollments = new LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, Object>>>();
+        LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
+        for (PossibleScheduleOption possibleScheduleOption : possibleScheduleOptions) {
+            for (ActivityOption activityOption : possibleScheduleOption.getActivityOptions()) {
+                if (courseToEnrollments.containsKey(activityOption.getCourseCd())) {
+                    continue;
+                }
+                String termId = activityOption.getTermId();
+                Course c = getCourseHelper().getCourseInfoByIdAndCd(activityOption.getCourseId(), activityOption.getCourseCd());
+                String curriculum = c.getSubjectArea();
+                String num = c.getCourseNumberSuffix();
+                LinkedHashMap<String, LinkedHashMap<String, Object>> data = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
+
+                try {
+                    getCourseHelper().getAllSectionStatus(data, termId, curriculum, num);
+                } catch (DocumentException e) {
+                    logger.error("Could not load enrollmentInformation for course : " + c.getCode() + " for term : " + termId, e);
+                }
+                if (!CollectionUtils.isEmpty(data)) {
+                    courseToEnrollments.put(activityOption.getCourseCd(), data);
+                    enrollmentData.putAll(data);
+                }
+
+            }
+
         }
         return enrollmentData;
     }
