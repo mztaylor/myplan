@@ -203,4 +203,16 @@ public interface ScheduleBuildStrategy {
      * @param enrollmentData
      */
     void populateEnrollmentInfo(ActivityOptionInfo activityOption, ActivityOfferingDisplayInfo aodi, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData);
+
+    /**
+     * Reduces number of calls made to Course offering service for each activityOption for a course.
+     * Gets the current activity options for each course in activityOptions.
+     * Eg: CHEM 321 A, CHEM 321 B, COM 202 A, COM 202 B
+     * then the calls that are made to CourseOfferingService would be only two to get the activityOptions instead of four.
+     * Call 1 to get CHEM activityOptions and Call 2 to get COM activityOptions
+     *
+     * @param activityOptions
+     * @return
+     */
+    Map<String, Map<String, ActivityOption>> getActivityOptionsForCoursesByActivities(List<ActivityOption> activityOptions, LinkedHashMap<String, LinkedHashMap<String, Object>> enrollmentData, Map<String, String> plannedActivities);
 }
