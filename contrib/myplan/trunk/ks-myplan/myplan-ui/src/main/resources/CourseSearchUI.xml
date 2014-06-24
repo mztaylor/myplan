@@ -20,7 +20,7 @@
         <property name="persistFormToSession" value="true"/>
         <property name="additionalScriptFiles">
             <list>
-                <value>themes/ksap/scripts/ksap.search.js</value>
+                <value>themes/ksap/scripts/ksap.search.js?@{#ConfigProperties['myplan.version']}</value>
             </list>
         </property>
         <property name="headerText" value="Find Courses"/>
@@ -133,7 +133,7 @@
                             <value>courseSearch__submit</value>
                         </list>
                     </property>
-                    <property name="disabled" value="@{#form.searchQuery EQ null OR #form.campusSelect EQ null OR (#form.searchTerm NE 'any' AND #form.selectedDays EQ null) OR (#form.searchTerm NE 'any' AND #form.endTime LT #form.startTime)}"/>
+                    <property name="disabled" value="@{#form.searchQuery EQ null OR #form.campusSelect EQ null OR (#form.searchTerm NE 'any' AND #form.selectedDays EQ null) OR (#form.searchTerm NE 'any' AND (#form.endTime LT #form.startTime OR #form.endTime EQ #form.startTime))}"/>
                     <property name="evaluateDisabledOnKeyUp" value="true"/>
                     <property name="actionScript" value="
                         window.location.replace('#');
@@ -209,7 +209,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-InfoMessage" p:additionalCssClasses="removeMargin" p:progressiveRender="searchTerm NE 'any' AND endTime LT startTime">
+                            <bean parent="KSAP-InfoMessage" p:additionalCssClasses="removeMargin" p:progressiveRender="searchTerm NE 'any' AND (endTime LT startTime OR endTime EQ startTime)">
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-Message" p:messageText="Start time must occur before end time."/>

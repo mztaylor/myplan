@@ -25,7 +25,7 @@
         <property name="persistFormToSession" value="true"/>
         <property name="additionalScriptFiles">
             <list>
-                <value>themes/ksap/scripts/ksap.sbcalendar.js</value>
+                <value>themes/ksap/scripts/ksap.sbcalendar.js?@{#ConfigProperties['myplan.version']}</value>
             </list>
         </property>
         <property name="items">
@@ -280,6 +280,7 @@
         <property name="propertyName" value="registrationDetails.plannedCourses"/>
         <property name="render" value="@{registrationDetails.plannedCourses.size() GT 0}"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses" value="registrationForm__course"/>
+        <property name="layoutManager.lineGroupPrototype.render" value="@{pageId NE 'scheduleSelect' OR (pageId EQ 'scheduleSelect' AND #line.activityOptions.size() GT 0)}"/>
         <property name="items">
             <list>
                 <bean parent="scheduleRegistrationItemLink"/>
