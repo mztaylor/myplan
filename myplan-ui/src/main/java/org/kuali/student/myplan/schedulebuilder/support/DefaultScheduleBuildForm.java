@@ -132,6 +132,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
 
     @Override
     public void buildSchedules() {
+        LOG.info("Implementing build schedule");
         setRequestedLearningPlanId(getScheduleBuildHelper().validateOrPopulateLearningPlanId(getRequestedLearningPlanId()));
         updateReservedTimesOnBuild();
         updateSavedSchedulesOnBuild();
@@ -241,7 +242,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
 
     @Override
     public PossibleScheduleOption saveSchedule() {
-
+        LOG.info("Implementing save schedule");
         if (getPossibleScheduleOptions() == null || getUniqueId() == null
                 || getPossibleScheduleOptions().isEmpty()) {
             LOG.error("No possible schedule options to save from - uniqueId = " + getUniqueId());
@@ -365,6 +366,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
 
     @Override
     public List<PossibleScheduleOption> getPossibleScheduleOptions() {
+        LOG.info("Form key: " + getFormKey());
         if (possibleScheduleOptions == null) {
             possibleScheduleOptions = new ArrayList<PossibleScheduleOption>();
         }
@@ -373,6 +375,7 @@ public class DefaultScheduleBuildForm extends DefaultScheduleForm implements
 
     public void setPossibleScheduleOptions(
             List<PossibleScheduleOption> possibleScheduleOptions) {
+        LOG.info("Form key: " + getFormKey());
         this.possibleScheduleOptions = possibleScheduleOptions;
     }
 
