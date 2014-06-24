@@ -28,7 +28,7 @@
         <property name="entryPageId" value="academic_year_page"/>
         <property name="additionalScriptFiles">
             <list>
-                <value>plugins/carousel/carousel.js</value>
+                <value>plugins/carousel/carousel.js?1.0.1</value>
             </list>
         </property>
         <property name="headerText" value="Your Academic Year"/>

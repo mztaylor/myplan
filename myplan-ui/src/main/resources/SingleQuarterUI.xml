@@ -28,7 +28,7 @@
         <property name="entryPageId" value="term_planned_courses_detail_page"/>
         <property name="additionalScriptFiles">
             <list>
-                <value>themes/ksap/scripts/ksap.sbcalendar.js</value>
+                <value>themes/ksap/scripts/ksap.sbcalendar.js?@{#ConfigProperties['myplan.version']}</value>
             </list>
         </property>
         <property name="headerText" value="@{dataObject.qtrYear}"/>

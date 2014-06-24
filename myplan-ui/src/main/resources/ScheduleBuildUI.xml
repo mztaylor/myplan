@@ -19,14 +19,14 @@
         <property name="viewName" value="ScheduleBuild-FormView"/>
         <property name="additionalCssFiles">
             <list>
-                <value>plugins/fullcalendar/fullcalendar.css</value>
+                <value>plugins/fullcalendar/fullcalendar.css?1.6.4</value>
             </list>
         </property>
         <property name="additionalScriptFiles">
             <list>
-                <value>plugins/carousel/carousel.js</value>
-                <value>plugins/fullcalendar/fullcalendar.js</value>
-                <value>themes/ksap/scripts/ksap.sbcalendar.js</value>
+                <value>plugins/carousel/carousel.js?1.0.1</value>
+                <value>plugins/fullcalendar/fullcalendar.js?1.6.4</value>
+                <value>themes/ksap/scripts/ksap.sbcalendar.js?@{#ConfigProperties['myplan.version']}</value>
             </list>
         </property>
         <property name="headerText" value="Build Your Schedule"/>
