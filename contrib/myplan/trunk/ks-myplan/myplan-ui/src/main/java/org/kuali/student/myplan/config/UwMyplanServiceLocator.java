@@ -1,16 +1,15 @@
 package org.kuali.student.myplan.config;
 
+import org.apache.log4j.Logger;
 import org.kuali.student.myplan.audit.util.DegreeAuditHelper;
 import org.kuali.student.myplan.comment.util.CommentHelper;
 import org.kuali.student.myplan.course.service.CourseDetailsInquiryHelperImpl;
-import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.registration.util.RegistrationHelper;
 import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
-import org.kuali.student.ap.framework.context.TermHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ShoppingCartStrategy;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
@@ -28,6 +27,8 @@ import java.util.Comparator;
 public class UwMyplanServiceLocator {
 
     private static UwMyplanServiceLocator instance;
+
+    private final Logger logger = Logger.getLogger(UwMyplanServiceLocator.class);
 
 
     public static UwMyplanServiceLocator getInstance() {
@@ -87,7 +88,16 @@ public class UwMyplanServiceLocator {
     }
 
     public ScheduleBuildForm getScheduleBuildForm() {
-        return scheduleBuildForm;
+        ScheduleBuildForm sb = null;
+        try {
+            sb = (ScheduleBuildForm) Class.forName(scheduleBuildForm.getClass().getName()).newInstance();
+        } catch (Exception e) {
+            logger.error("Schedule build form cannot be initialized.", e);
+        }
+        if (sb == null) {
+            logger.error("Schedule build form cannot be initialized. It is set as null");
+        }
+        return sb;
     }
 
     public void setScheduleBuildForm(ScheduleBuildForm scheduleBuildForm) {

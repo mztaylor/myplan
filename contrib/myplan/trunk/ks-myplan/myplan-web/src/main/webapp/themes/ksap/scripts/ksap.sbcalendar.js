@@ -138,7 +138,8 @@ var KsapSbCalendar = {
                 requestedLearningPlanId: jQuery('#schedule_build_learningPlanId_control').val(),
                 learningPlanId: jQuery('#schedule_build_learningPlanId_control').val(),
                 methodToCall: methodToCall,
-                uniqueId: id
+                uniqueId: id,
+                formKey: jQuery("#formKey").val()
             },
             dataType: 'json',
             success: function (response, textStatus, jqXHR) {
