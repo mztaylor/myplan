@@ -577,6 +577,22 @@ public class AtpHelper {
         return futureAtpIds;
     }
 
+
+    /**
+     * Takes in a array with term and year and moves the term to next term.
+     * Eg: "2014","4" --> "2015","1"
+     *
+     * @param currentTermYear
+     */
+    public static void moveToNextTerm(String[] currentTermYear) {
+        if (currentTermYear[0].equalsIgnoreCase(PlanConstants.ATP_TERM_4)) {
+            currentTermYear[0] = PlanConstants.ATP_TERM_1;
+            currentTermYear[1] = String.valueOf(Integer.parseInt(currentTermYear[1]) + 1);
+        } else {
+            currentTermYear[0] = String.valueOf(Integer.parseInt(currentTermYear[0]) + 1);
+        }
+    }
+
     /**
      * Checks if the atpIf format is in valid form
      *
