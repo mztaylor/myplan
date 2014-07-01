@@ -53,6 +53,7 @@ public class ActivityOfferingItem {
     private boolean hasSyllabus;
     private String gradingOption;
     private String sectionComments;
+    private List<String> timeScheduleGeneratedComments;
     private String summerTerm;
 
     private String planItemId;
@@ -353,6 +354,12 @@ public class ActivityOfferingItem {
 
     public void setSectionComments(String sectionComments) {
         this.sectionComments = sectionComments;
+    }
+
+    public List<String> getTimeScheduleGeneratedComments() { return (null != timeScheduleGeneratedComments ? timeScheduleGeneratedComments : new ArrayList<String>()); }
+
+    public void setTimeScheduleGeneratedComments(List<String> timeScheduleGeneratedComments) {
+        this.timeScheduleGeneratedComments = timeScheduleGeneratedComments;
     }
 
     public String getInstituteCode() {
