@@ -125,6 +125,8 @@ public class CourseSearchConstants {
     public static final String INSTITUTE_CODE = "InstituteCode";
     public static final String INSTITUTE_NAME = "InstituteName";
     public static final String SECTION_COMMENTS = "SectionComments";
+    public static final String TIME_SCHEDULE_GENERATED_COMMENTS = "TimeScheduleGeneratedComments";
+    public static final String COMMENTS_LIST_DELIMITER = ":|:";
     public static final String SUMMER_TERM = "SummerTerm";
     public static final String PRIMARY_ACTIVITY_OFFERING_CODE = "PrimaryActivityOfferingCode";
     public static final String SERVICE_LEARNING = "ServiceLearning";

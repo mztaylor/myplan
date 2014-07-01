@@ -37,8 +37,12 @@ import org.kuali.student.myplan.plan.dataobject.AcademicRecordDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseSummary;
 import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
-import org.kuali.student.myplan.plan.util.*;
+import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
+import org.kuali.student.myplan.plan.util.DateFormatHelper;
+import org.kuali.student.myplan.plan.util.EnumerationHelper;
+import org.kuali.student.myplan.plan.util.OrgHelper;
+import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
 import org.kuali.student.myplan.utils.CalendarUtil;
 import org.kuali.student.myplan.utils.TimeStringMillisConverter;
@@ -69,7 +73,18 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 
@@ -1065,6 +1080,8 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         return activityOfferingItemList;
     }
 
+    static Pattern commentPattern = Pattern.compile(CourseSearchConstants.COMMENTS_LIST_DELIMITER, Pattern.LITERAL);
+
     /**
      * Used to retrieve a ActivityOffering using the following params
      *
@@ -1164,6 +1181,11 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
             if (CourseSearchConstants.SECTION_COMMENTS.equalsIgnoreCase(key)) {
                 activity.setSectionComments(value);
+                continue;
+            }
+
+            if (CourseSearchConstants.TIME_SCHEDULE_GENERATED_COMMENTS.equalsIgnoreCase(key)) {
+                activity.setTimeScheduleGeneratedComments(Arrays.asList(commentPattern.split(value)));
                 continue;
             }
 
