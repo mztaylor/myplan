@@ -306,7 +306,7 @@
         </property>
     </bean>
 
-    <bean id="MyPlanRegistrationStatusIcon" parent="Uif-Image"
+    <bean id="MyPlanRegistrationStatusIcon" parent="Uif-Image" p:altText="locked or unlocked indicates that registration is closed or opened for that particular quarter respectively"
           p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif">
         <property name="cssClasses">
             <list merge="true">
