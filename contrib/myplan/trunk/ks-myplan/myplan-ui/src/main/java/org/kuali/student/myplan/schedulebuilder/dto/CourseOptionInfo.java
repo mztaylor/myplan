@@ -37,6 +37,9 @@ public class CourseOptionInfo extends ScheduleBuildOptionInfo implements CourseO
     @XmlTransient
     private PossibleScheduleErrors possibleErrors;
 
+    @XmlTransient
+    private boolean selectedForRegistration;
+
     @XmlAnyElement
     private List<?> _futureElements;
 
@@ -186,7 +189,15 @@ public class CourseOptionInfo extends ScheduleBuildOptionInfo implements CourseO
     }
 
     @Override
+    public boolean isSelectedForRegistration() {
+        return selectedForRegistration;
+    }
 
+    public void setSelectedForRegistration(boolean selectedForRegistration) {
+        this.selectedForRegistration = selectedForRegistration;
+    }
+
+    @Override
     public PossibleScheduleErrors getPossibleErrors() {
         return possibleErrors;
     }

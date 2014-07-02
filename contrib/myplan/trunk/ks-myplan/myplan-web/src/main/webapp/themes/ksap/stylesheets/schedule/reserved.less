@@ -15,7 +15,7 @@
 }
 
 .scheduleCalendar {
-   & .scheduleReserved__event {
+   & .scheduleReserved__event.fc-event {
        background-color: @gray;
        opacity: 0.15;
        cursor: default;
@@ -25,8 +25,13 @@
            .border-radius(0px) !important;
        }
 
-       & .fc-event-inner,
-       & .fc-event-bg {
+       &:hover {
+           background-color: @gray;
+           cursor: default;
+       }
+
+       .fc-event-inner,
+       .fc-event-bg {
            display: none;
        }
    }

@@ -38,7 +38,7 @@
                     <list>
                         <bean parent="Uif-Link" p:linkText="Your Academic Year">
                             <property name="href" value="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView"/>
-                            <property name="cssClasses" value="secondaryNavigation__year ui-state-active"/>
+                            <property name="cssClasses" value="secondaryNavigation__year active"/>
                         </bean>
                         <bean parent="Uif-Link" p:linkText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).formatCurrentQuarterLabelForFirstPlanTerm()}">
                             <property name="href" value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getFirstPlanTerm()}"/>

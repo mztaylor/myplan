@@ -670,8 +670,7 @@
         </property>-->
         <property name="items">
             <list>
-                <bean parent="activityCode" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
-                <bean parent="activityCode" p:render="@{!#line.primary OR #line.stateKey NE 'active'}" p:rowSpan="1"/>
+                <bean parent="activityCode"/>
 
                 <bean parent="activityType"/>
 
@@ -685,7 +684,7 @@
                 <bean parent="activityEnrlStatus" p:render="@{#line.stateKey NE 'active'}"/>
 
                 <bean id="activityActionGroup" parent="KSAP-VerticalFieldGroup" p:valign="TOP"
-                      p:render="@{#line.primary AND #line.stateKey EQ 'active'}" p:rowSpan="3" p:colSpan="1"
+                      p:rowSpan="3" p:colSpan="1"
                       p:cssClasses="courseActivities__action">
                     <property name="label" value="Add"/>
                     <property name="items">
@@ -701,46 +700,11 @@
                                   p:render="@{#line.planItemId NE null}"/>
                         </list>
                     </property>
-                </bean>
-                <bean parent="activityActionGroup" p:render="@{!#line.primary OR #line.stateKey NE 'active'}"
-                      p:rowSpan="1"/>
-
-                <bean parent="activityInstructor" p:render="@{#line.stateKey EQ 'active'}"/>
-
-                <bean parent="activityOther" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
-                <bean parent="activityOther" p:render="@{!#line.primary AND #line.stateKey EQ 'active'}" p:colSpan="5"/>
-
-                <bean parent="activityAdditionalDetails" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
-                <bean parent="activityAdditionalDetails" p:render="@{!#line.primary AND #line.stateKey EQ 'active'}"
-                      p:colSpan="7"/>
-            </list>
-        </property>
-        <property name="propertyReplacers">
-            <list>
-                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                      p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
-                    <property name="replacement">
+                    <property name="propertyReplacers">
                         <list>
-                            <bean parent="activityCode" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
-                            <bean parent="activityCode" p:render="@{!#line.primary OR #line.stateKey NE 'active'}"
-                                  p:rowSpan="1"/>
-
-                            <bean parent="activityType"/>
-
-                            <bean parent="activityMeetingData"/>
-
-                            <bean parent="activityRegCode"/>
-
-                            <bean parent="activityEnrlRestr"/>
-
-                            <bean parent="activityEnrlData" p:render="@{#line.stateKey EQ 'active'}"/>
-                            <bean parent="activityEnrlStatus" p:render="@{#line.stateKey NE 'active'}"/>
-
-                            <bean id="activityActionsCDPAdvisor" parent="KSAP-VerticalFieldGroup" p:valign="TOP"
-                                  p:render="@{#line.primary AND #line.stateKey EQ 'active'}" p:rowSpan="3"
-                                  p:colSpan="1" p:cssClasses="courseActivities__action">
-                                <property name="label" value="Add"/>
-                                <property name="items">
+                            <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
+                                  p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()">
+                                <property name="replacement">
                                     <list>
                                         <bean parent="emptyAction"
                                               p:render="@{#line.planItemId EQ null}"/>
@@ -749,26 +713,19 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="activityActionsCDPAdvisor"
-                                  p:render="@{!#line.primary OR #line.stateKey NE 'active'}" p:rowSpan="1"/>
-
-                            <bean parent="activityInstructor" p:render="@{#line.stateKey EQ 'active'}"/>
-
-                            <bean parent="activityOther" p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
-                            <bean parent="activityOther" p:render="@{!#line.primary AND #line.stateKey EQ 'active'}"
-                                  p:colSpan="5"/>
-
-                            <bean parent="activityAdditionalDetails"
-                                  p:render="@{#line.primary AND #line.stateKey EQ 'active'}"/>
-                            <bean parent="activityAdditionalDetails"
-                                  p:render="@{!#line.primary AND #line.stateKey EQ 'active'}" p:colSpan="7"/>
                         </list>
                     </property>
                 </bean>
+
+                <bean parent="activityInstructor"/>
+
+                <bean parent="activityOther"/>
+
+                <bean parent="activityAdditionalDetails"/>
+
             </list>
         </property>
     </bean>
-
 
     <bean id="activityCode" parent="KSAP-VerticalFieldGroup" p:rowSpan="3" p:colSpan="1" p:valign="TOP">
         <property name="label" value="Section"/>
@@ -787,21 +744,6 @@
                 <bean parent="KSAP-MessageField" p:messageText="PCE"
                       p:title="UW Professional &amp; Continuing Education"
                       p:render="@{#line.primary AND #line.instituteCode.startsWith('95')}">
-                    <property name="cssClasses">
-                        <list merge="true">
-                            <value>courseActivities__code--small</value>
-                        </list>
-                    </property>
-                </bean>
-                <bean parent="Uif-Link" p:linkText="View more"
-                      p:render="@{!#line.primary AND #line.stateKey eq 'active'}">
-                    <property name="dataAttributes">
-                        <map>
-                            <entry key="collapsed" value="true"/>
-                        </map>
-                    </property>
-                    <property name="onClickScript"
-                              value="stopEvent(e); toggleSectionDetails(jQuery(this).parents('tr'), jQuery(this), 'View more', 'View less')"/>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>courseActivities__code--small</value>

@@ -46,7 +46,7 @@
                         <bean parent="Uif-Link" p:linkText="Build Your Schedule">
                             <property name="href" value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{termId}&amp;requestedLearningPlanId=@{requestedLearningPlanId}&amp;pageId=schedule_build"/>
                             <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
-                            <property name="cssClasses" value="secondaryNavigation__schedule ui-state-active"/>
+                            <property name="cssClasses" value="secondaryNavigation__schedule active"/>
                         </bean>
                     </list>
                 </property>

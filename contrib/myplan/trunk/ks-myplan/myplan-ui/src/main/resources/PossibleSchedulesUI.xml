@@ -208,17 +208,25 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-SimpleDataField">
-                    <property name="propertyName" value="schedule"/>
-                    <property name="escapeHtmlInPropertyValue" value="false"/>
-                    <property name="propertyEditor">
-                        <bean parent="possible_schedule_editor">
-                            <property name="tbdSchedule" value="false"/>
-                        </bean>
+                <bean parent="KSAP-HorizontalFieldGroup">
+                    <property name="items">
+                        <list>
+                            <bean parent="KSAP-SimpleDataField">
+                                <property name="propertyName" value="schedule"/>
+                                <property name="escapeHtmlInPropertyValue" value="false"/>
+                                <property name="propertyEditor">
+                                    <bean parent="possible_schedule_editor">
+                                        <property name="tbdSchedule" value="false"/>
+                                    </bean>
+                                </property>
+                            </bean>
+                            <bean parent="KSAP-Message" p:messageText="@{#index + 1}"
+                                  p:cssClasses="schedulePossible__index"/>
+                        </list>
                     </property>
                 </bean>
                 <bean parent="KSAP-HorizontalFieldGroup">
-                    <property name="group.layoutManager.style" value="position: relative; height: 21px;"/>
+                    <property name="group.layoutManager.style" value="height:21px;"/>
                     <property name="items">
                         <list>
                             <bean parent="KSAP-HorizontalFieldGroup">
@@ -229,7 +237,7 @@
                                           value="schedulePossible__details"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="KSAP-Message" p:messageText="View details"/>
+                                        <bean parent="KSAP-Message" p:messageText="View / Register"/>
                                     </list>
                                 </property>
                             </bean>
@@ -250,8 +258,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-Message" p:messageText="@{#index + 1}"
-                                  p:cssClasses="schedulePossible__index"/>
+
                         </list>
                     </property>
                 </bean>
