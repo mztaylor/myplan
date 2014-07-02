@@ -38,7 +38,7 @@ public class CourseOptionInfo extends ScheduleBuildOptionInfo implements CourseO
     private PossibleScheduleErrors possibleErrors;
 
     @XmlTransient
-    private boolean selectedForRegistration;
+    private boolean selectedForRegistration = true;
 
     @XmlAnyElement
     private List<?> _futureElements;
