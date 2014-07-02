@@ -146,7 +146,7 @@
             <bean parent="KSAP-HeaderFour">
                 <property name="inlineComponents">
                     <list>
-                        <bean parent="Uif-Image"
+                        <bean parent="Uif-Image" p:altText="adding notes to planned or registerer or backup courses"
                               p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/icon_note_12.png"
                               p:cssClasses="planPreview__noteImage"/>
                     </list>
