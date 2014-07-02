@@ -330,7 +330,7 @@ function searchForCourses(id, parentId) {
         iDisplayStart: (readUrlHash("start") ? parseFloat(readUrlHash("start")) : 0),
         oLanguage: {
             "sEmptyTable": jQuery("#course_search_empty_result").clone().show().wrap('<div/>').parent().html(),
-            "sInfo": (formData.searchTerm === 'any' ? 'Showing _START_-_END_ of _TOTAL_ results' : '<div>Showing _START_-_END_ of _TOTAL_ filtered search results</div><div class="courseResults__note">Special note: Results below may include secondary sections that occur outside of your search filters.</div>'),
+            "sInfo": (formData.searchTerm === 'any' ? 'Showing _START_-_END_ of _TOTAL_ results' : '<div>Showing _START_-_END_ of _TOTAL_ filtered search results</div><div class="courseResults__note">Courses listed below may include sections that occur outside of your search filters.</div>'),
             "sInfoEmpty": "0 results found",
             "sInfoFiltered": "",
             "sLengthMenu": "Show _MENU_",
