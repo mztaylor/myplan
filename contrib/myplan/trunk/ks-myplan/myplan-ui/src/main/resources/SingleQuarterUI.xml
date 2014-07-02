@@ -47,7 +47,7 @@
                         </bean>
                         <bean parent="Uif-Link" p:linkText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).formatQuarterLabel(dataObject.atpId)}">
                             <property name="href" value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{dataObject.atpId}"/>
-                            <property name="cssClasses" value="secondaryNavigation__term active"/>
+                            <property name="cssClasses" value="secondaryNavigation__term ui-state-active"/>
                         </bean>
                         <bean parent="Uif-Link" p:linkText="Build Your Schedule">
                             <property name="href" value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{dataObject.atpId}&amp;requestedLearningPlanId=@{dataObject.learningPlanId}&amp;pageId=schedule_build"/>
