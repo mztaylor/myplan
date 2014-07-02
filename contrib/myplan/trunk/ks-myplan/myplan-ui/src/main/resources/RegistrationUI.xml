@@ -99,7 +99,7 @@
                     "/>
                     <property name="header">
                         <bean parent="KSAP-HeaderTwo" p:headerText="Choose Sections">
-                            <property name="upperGroup">
+                            <!--<property name="upperGroup">
                                 <bean parent="KSAP-VerticalBoxGroup">
                                     <property name="items">
                                         <list>
@@ -108,13 +108,20 @@
                                         </list>
                                     </property>
                                 </bean>
-                            </property>
+                            </property>-->
                             <property name="lowerGroup">
                                 <bean parent="KSAP-VerticalBoxGroup">
                                     <property name="items">
                                         <list>
                                             <bean parent="KSAP-Message"
-                                                  p:messageText="Select the sections of courses that you&#39;d like to register for by using the buttons below."/>
+                                                  p:messageText="Select the courses and sections that you&#39;d like to send to registration below. When you&#39;ve finalized your choices, use the &quot;Send to Registration&quot; button to submit them to the registration system. Period I priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on xyz.[0] [br/][css='registrationForm__enrollment'] [1] Has enrollment restrictions[/css]">
+                                                <property name="inlineComponents">
+                                                    <list>
+                                                        <bean parent="Uif-Link" p:linkText="Registration deadlines" p:href="#"/>
+                                                        <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/sb/icon_key.png"/>
+                                                    </list>
+                                                </property>
+                                                  </bean>
                                             <bean parent="registrationDateLink"/>
                                         </list>
                                     </property>
@@ -123,15 +130,15 @@
                         </bean>
                     </property>
                     <property name="header.render" value="true"/>
-                    <property name="instructionalMessage">
+                    <!--<property name="instructionalMessage">
                         <bean parent="scheduleRegisterDelayMessage"/>
-                    </property>
+                    </property>-->
                     <property name="items">
                         <list>
                             <bean parent="scheduleRegisteredItems"
                                   p:additionalCssClasses="registrationForm__group--disabled registrationForm__group--indent"/>
                             <bean parent="schedulePlannedItems"/>
-                            <bean parent="scheduleRegisterDelayMessage"/>
+                            <!--<bean parent="scheduleRegisterDelayMessage"/>-->
                         </list>
                     </property>
                     <property name="footer">
@@ -140,14 +147,14 @@
                             <property name="layoutManager.style" value="height: 40px;"/>
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
+                                    <!--<bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
                                           p:navigateToPageId="scheduleView"
                                           p:additionalCssClasses="registrationForm__back" p:actionImagePlacement="LEFT">
                                         <property name="actionImage">
-                                            <bean parent="Uif-Image"
+                                            <bean parent="Uif-Image" p:altText="this action lets you to go to the first page of registartion"
                                                   p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
                                         </property>
-                                    </bean>
+                                    </bean>-->
                                     <bean parent="KSAP-HorizontalBoxGroup">
                                         <property name="style" value="float: right;"/>
                                         <property name="items">
@@ -156,8 +163,8 @@
                                                       p:id="sendToRegistration">
                                                     <property name="render"
                                                               value="@{registrationDetails.registrationUrl NE null}"/>
-                                                    <property name="linkText" value="Send SLNs to Registration"/>
-                                                    <property name="title" value="Send SLNs to Registration"/>
+                                                    <property name="linkText" value="Send to Registration"/>
+                                                    <property name="title" value="Send to Registration"/>
                                                     <property name="href"
                                                               value="@{registrationDetails.registrationUrl}"/>
                                                     <property name="cssClasses"
@@ -189,7 +196,7 @@
                     <property name="onDocumentReadyScript" value="parent.jQuery.fancybox.update()"/>
                     <property name="header">
                         <bean parent="KSAP-HeaderTwo" p:headerText="Check Schedule Status">
-                            <property name="upperGroup">
+                            <!--<property name="upperGroup">
                                 <bean parent="KSAP-VerticalBoxGroup">
                                     <property name="items">
                                         <list>
@@ -198,7 +205,7 @@
                                         </list>
                                     </property>
                                 </bean>
-                            </property>
+                            </property>-->
                         </bean>
                     </property>
                     <property name="header.render" value="true"/>
@@ -213,10 +220,10 @@
                                 </property>
                             </bean>
                             <bean parent="KSAP-Message" p:cssClasses="block"
-                                  p:messageText="[p]If your submission was accepted, you&#39;ll see your updated schedule on MyPlan within a few minutes.[/p][p]If your submission was unsuccessful, try one of the following steps:[/p][br /][ul][li]Check the registration page to see which errors need to be resolved[/li][li]Try to [0][/li][li]Close this window and send SLNs from a different pinned schedule[/li][/ul]">
+                                  p:messageText="[p][b]If your submission was accepted, you&#39;ll see your updated schedule on MyPlan within a few minutes.[/b][/p][p][b]If your submission was unsuccessful, try one of the following steps:[b][/p][br /][color=#666][ul][li]Use &quot;Edit schedule&quot; to change the sections that weren't accepted[/li][li]Check the registration page to see which errors need to be resolved[/li][li]Try to [0][/li][li]Close this window and send SLNs from a different pinned schedule[/li][/ul][/color]">
                                 <property name="inlineComponents">
                                     <list>
-                                        <bean parent="Uif-Link" p:linkText="resend your SLNs" p:target="_blank"
+                                        <bean parent="Uif-Link" p:style="text-decoration:underline" p:linkText="resend your SLNs" p:target="_blank"
                                               p:href="@{registrationDetails.registrationUrl}">
                                             <property name="title" value="Send SLNs to Registration"/>
                                         </bean>
@@ -231,9 +238,24 @@
                             <property name="layoutManager.style" value="height: 40px;"/>
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Close this window">
-                                        <property name="actionScript"
-                                                  value="parent.jQuery.fancybox.close()"/>
+                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Edit schedule"
+                                          p:navigateToPageId="scheduleSelect"
+                                          p:additionalCssClasses="registrationForm__back" p:actionImagePlacement="LEFT">
+                                        <property name="actionImage">
+                                            <bean parent="Uif-Image" p:altText="this action lets you to edit the schedule which you can register for"
+                                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
+                                        </property>
+                                    </bean>
+                                    <bean parent="KSAP-HorizontalBoxGroup">
+                                        <property name="style" value="float: right;"/>
+                                        <property name="items">
+                                            <list>
+                                                <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Close this window">
+                                                    <property name="actionScript"
+                                                              value="parent.jQuery.fancybox.close()"/>
+                                                </bean>
+                                            </list>
+                                        </property>
                                     </bean>
                                 </list>
                             </property>
@@ -246,8 +268,8 @@
         <property name="footer.render" value="false"/>
     </bean>
 
-    <bean id="scheduleRegisterDelayMessage" parent="KSAP-Message" p:cssClasses="registrationForm__note"
-          p:messageText="[strong]Note[/strong]: Open/closed status is delayed by 1-2 minutes."/>
+    <!--<bean id="scheduleRegisterDelayMessage" parent="KSAP-Message" p:cssClasses="registrationForm__note"
+          p:messageText="[strong]Note[/strong]: Open/closed status is delayed by 1-2 minutes."/>-->
 
     <bean id="scheduleCurrentRegisteredItemHeader" parent="KSAP-VerticalBoxGroup">
         <property name="items">
@@ -279,7 +301,7 @@
         <property name="collectionObjectClass" value="org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo"/>
         <property name="propertyName" value="registrationDetails.plannedCourses"/>
         <property name="render" value="@{registrationDetails.plannedCourses.size() GT 0}"/>
-        <property name="layoutManager.lineGroupPrototype.cssClasses" value="registrationForm__course"/>
+        <property name="layoutManager.lineGroupPrototype.cssClasses" value="registrationForm__course registrationForm__border"/>
         <property name="layoutManager.lineGroupPrototype.render" value="@{pageId NE 'scheduleSelect' OR (pageId EQ 'scheduleSelect' AND #line.activityOptions.size() GT 0)}"/>
         <property name="items">
             <list>
@@ -358,12 +380,13 @@
         <property name="items">
             <list>
                 <bean parent="scheduleRegistrationActivityCode"/>
+                <bean parent="scheduleRegistrationActivityRegCode"/>
                 <bean parent="scheduleRegistrationActivityCredits"/>
                 <bean parent="scheduleRegistrationActivityMeetingDays"/>
                 <bean parent="scheduleRegistrationActivityMeetingTime"/>
                 <bean parent="scheduleRegistrationActivityMeetingLocation"/>
                 <bean parent="scheduleRegistrationActivityInstructor"/>
-                <bean parent="scheduleRegistrationActivityRegCode"/>
+                <!--<bean parent="scheduleRegistrationActivityRegCode"/>-->
                 <bean parent="scheduleRegistrationActivityInstituteCode"/>
                 <bean parent="scheduleRegistrationActivityEnrollRestriction"/>
                 <bean parent="scheduleRegistrationActivityEnrollment"/>
