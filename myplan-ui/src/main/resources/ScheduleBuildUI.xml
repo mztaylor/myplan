@@ -46,7 +46,7 @@
                         <bean parent="Uif-Link" p:linkText="Build Your Schedule">
                             <property name="href" value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{termId}&amp;requestedLearningPlanId=@{requestedLearningPlanId}&amp;pageId=schedule_build"/>
                             <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
-                            <property name="cssClasses" value="secondaryNavigation__schedule active"/>
+                            <property name="cssClasses" value="secondaryNavigation__schedule ui-state-active"/>
                         </bean>
                     </list>
                 </property>
@@ -453,7 +453,7 @@
                         <bean parent="KSAP-NoSpanMessage" p:messageText="[0] Registered">
                             <property name="inlineComponents">
                                 <list>
-                                    <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/sb/icon_lock.png"/>
+                                    <bean parent="Uif-Image" p:altText="courses are registered courses" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/sb/icon_lock.png"/>
                                 </list>
                             </property>
                         </bean>
