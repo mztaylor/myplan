@@ -108,23 +108,14 @@ function toggleSections(actionId, toggleId, showClass, showText, hideText) {
     var action = jQuery("#" + actionId);
     if (action.data("hidden")) {
         group.each(function () {
-            var toggle = jQuery(this).find("a[id^='toggle_']");
-            if (toggle.data("hidden") || typeof toggle.data("hidden") == "undefined") {
-                jQuery(this).show();
-            } else {
-                jQuery(this).show().next("tr.collapsible").show().next("tr.collapsible").show();
-            }
+            jQuery(this).show().next("tr.collapsible").show().next("tr.collapsible").show();
         });
         jQuery("#" + toggleId + " .planTerm__activitiesInstitution").show();
         action.text(hideText).data("hidden", false);
     } else {
         group.each(function () {
+            jQuery(this).hide().next("tr.collapsible").hide().next("tr.collapsible").hide();
             var toggle = jQuery(this).find("a[id^='toggle_']");
-            if (toggle.data("hidden") || typeof toggle.data("hidden") == "undefined") {
-                jQuery(this).hide();
-            } else {
-                jQuery(this).hide().next("tr.collapsible").hide().next("tr.collapsible").hide();
-            }
         });
         jQuery("#" + toggleId + " .planTerm__activitiesInstitution").hide();
         action.text(showText).data("hidden", true);
@@ -787,7 +778,7 @@ function formatTimeString(date) {
 function showError(jqXHR, textStatus, errorThrown) {
     if (textStatus == "parsererror") textStatus = "JSON Parse Error";
     if (getConfigParam("devMode")) {
-        jQuery.fancybox({
+        parent.jQuery.fancybox({
             title: textStatus,
             content: jQuery(jqXHR.responseText).find("pre").parent().html()
         });

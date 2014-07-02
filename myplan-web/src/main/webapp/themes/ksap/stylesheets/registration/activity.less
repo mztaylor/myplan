@@ -82,6 +82,13 @@
     }
 }
 
+.registrationActivity__label {
+    font-size: @fontSizeMin;
+    color: @textColorMin;
+    text-transform: uppercase;
+    margin: 0 0 0 7px;
+}
+
 .registrationActivity__code {
     width: 24px;
     color: @textColor !important;
@@ -91,15 +98,15 @@
         background: url('../images/planned_activity_bkgrd.png');
     }
 }
-.registrationActivity__credits {
+.registrationActivity__type {
     width: 72px;
     text-transform: capitalize;
 }
 .registrationActivity__meetingDays {
-    width: 72px;
+    width: 64px;
 }
 .registrationActivity__meetingTime {
-    width: 136px;
+    width: 124px;
 }
 .registrationActivity__tbd {
     width: 136px;
@@ -108,7 +115,7 @@
     width: 72px;
 }
 .registrationActivity__instructor {
-    width: 185px;
+    width: 170px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -133,10 +140,14 @@
     }
 }
 .registrationActivity__enrollRest {
-    width: 16px;
-    height: 16px;
+    width: 56px;
 
-    &.registrationActivity__enrollRest--true {
+    img {
+        width: 16px;
+        height: 16px;
+    }
+
+    &.registrationActivity__enrollRest--true img {
         background: url('../images/icon_sprite.png') no-repeat -1px -217px transparent;
     }
 }

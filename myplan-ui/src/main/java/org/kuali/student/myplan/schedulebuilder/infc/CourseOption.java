@@ -88,4 +88,11 @@ public interface CourseOption extends ScheduleBuildOption, Comparable<CourseOpti
     List<ActivityOption> getCombinedActivities();
 
 
+    /**
+     * Used to see if the course is selected for registration or not.
+     * @return
+     */
+    boolean isSelectedForRegistration();
+
+
 }

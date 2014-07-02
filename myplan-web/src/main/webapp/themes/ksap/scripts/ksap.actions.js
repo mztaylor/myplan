@@ -39,7 +39,11 @@ function submitPopupForm(additionalFormData, e, bDialog) {
         var pageId = jQuery("#pageId", htmlContent).val();
         var status = jQuery.trim(jQuery("#requestStatus", htmlContent).text().toLowerCase());
         var data = {};
-        data.messages = jQuery("#" + pageId, htmlContent).data("validation_messages");
+        if (typeof jQuery("#" + pageId, htmlContent).data("validation_messages") === "string") {
+            data.messages = jQuery.parseJSON(jQuery("#" + pageId, htmlContent).data("validation_messages").replace(/\\/g, "\\\\"));
+        } else {
+            data.messages = jQuery("#" + pageId, htmlContent).data("validation_messages");
+        }
         data.cssClasses = "alert alert-" + status;
         switch (status) {
             case 'success':
