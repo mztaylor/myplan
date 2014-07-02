@@ -38,7 +38,7 @@
                     <list>
                         <bean parent="Uif-Link" p:linkText="Your Academic Year">
                             <property name="href" value="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView"/>
-                            <property name="cssClasses" value="secondaryNavigation__year active"/>
+                            <property name="cssClasses" value="secondaryNavigation__year ui-state-active"/>
                         </bean>
                         <bean parent="Uif-Link" p:linkText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).formatCurrentQuarterLabelForFirstPlanTerm()}">
                             <property name="href" value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getFirstPlanTerm()}"/>
@@ -466,7 +466,7 @@
                                             <property name="cssClasses"
                                                       value="btn btn-secondary planNavigation__button planNavigation__button--previous"/>
                                             <property name="actionImage">
-                                                <bean parent="Uif-Image"
+                                                <bean parent="Uif-Image" p:altText="clicking on this takes you to the previous quarter"
                                                       p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"
                                                       p:cssClasses="planNavigation__image"/>
                                             </property>
@@ -478,7 +478,7 @@
                                             <property name="cssClasses"
                                                       value="btn btn-secondary planNavigation__button planNavigation__button--next"/>
                                             <property name="actionImage">
-                                                <bean parent="Uif-Image"
+                                                <bean parent="Uif-Image" p:altText="clicking on this takes you to the next quarter"
                                                       p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"
                                                       p:cssClasses="planNavigation__image"/>
                                             </property>
