@@ -96,7 +96,16 @@
                     <property name="onDocumentReadyScript" value="
                         parent.jQuery.fancybox.update();
                         updateRegistrationUrl('sendToRegistration');
+
                     "/>
+                    <!--jQuery('.registrationForm__group').find(':radio').each(function(){
+                            var name = jQuery(this).attr('name').replace(/\.plannedCourses\[(\d*)\].*/gi, '.plannedCourses[$1].selectedForRegistration');
+                            if (jQuery('input[name='+name+']').is(':checked')) {
+                                jQuery(this).attr('disabled', false);
+                            } else {
+                                jQuery(this).attr('disabled', true);
+                            }
+                        });-->
                     <property name="header">
                         <bean parent="KSAP-HeaderTwo" p:headerText="Choose Sections and Register">
                             <!--<property name="upperGroup">
