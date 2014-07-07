@@ -129,7 +129,7 @@
                                           value="KsapScheduleBuild.viewScheduleDetails(jQuery('#schedule_build_termId_control').val(), jQuery('#schedule_build_learningPlanId_control').val(), '@{#line.id}', '@{#index + 1}', true, e)"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="KSAP-NoSpanMessage" p:messageText="View details and register"/>
+                                        <bean parent="KSAP-NoSpanMessage" p:messageText="View / Register"/>
                                     </list>
                                 </property>
                             </bean>
