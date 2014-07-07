@@ -96,7 +96,14 @@
                     <property name="onDocumentReadyScript" value="
                         parent.jQuery.fancybox.update();
                         updateRegistrationUrl('sendToRegistration');
-
+                        jQuery('.registrationForm__group').find(':radio').each(function(){
+                            var name = jQuery(this).attr('name').replace(/\.plannedCourses\[(\d*)\].*/gi, '.plannedCourses[$1].selectedForRegistration');
+                            if (jQuery(document.getElementsByName(name)).is(':checked')) {
+                                jQuery(this).attr('disabled', false);
+                            } else {
+                                jQuery(this).attr('disabled', true);
+                            }
+                        });
                     "/>
                     <!--jQuery('.registrationForm__group').find(':radio').each(function(){
                             var name = jQuery(this).attr('name').replace(/\.plannedCourses\[(\d*)\].*/gi, '.plannedCourses[$1].selectedForRegistration');
@@ -311,6 +318,7 @@
         <property name="propertyName" value="registrationDetails.plannedCourses"/>
         <property name="render" value="@{registrationDetails.plannedCourses.size() GT 0}"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses" value="registrationForm__course registrationForm__border"/>
+        <property name="layoutManager.lineGroupPrototype.additionalCssClasses" value="@{!#line.selectedForRegistration ? 'disabled':''}"/>
         <property name="layoutManager.lineGroupPrototype.render" value="@{pageId NE 'scheduleSelect' OR (pageId EQ 'scheduleSelect' AND #line.activityOptions.size() GT 0)}"/>
         <property name="items">
             <list>
