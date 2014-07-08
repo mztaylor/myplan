@@ -25,6 +25,7 @@
     fieldset {
         & > span {
             position: relative;
+          border-bottom: dotted 1px #A4A4A4;
         }
 
         input.uif-verticalRadioControl {
@@ -106,16 +107,16 @@
     width: 64px;
 }
 .registrationActivity__meetingTime {
-    width: 124px;
+    width: 120px;
 }
 .registrationActivity__tbd {
-    width: 136px;
+    width: 122px;
 }
 .registrationActivity__meetingLocation {
     width: 72px;
 }
 .registrationActivity__instructor {
-    width: 170px;
+    width: 150px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -164,4 +165,9 @@
     &.registrationActivity__enrollStatus--open{
         color: @green;
     }
+}
+
+.registrationActivity__label--background{
+  background-color: #e1e1e0;
+  border-bottom: none !important;
 }
