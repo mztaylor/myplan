@@ -42,7 +42,13 @@
                                     <property name="items">
                                         <list>
                                             <bean parent="KSAP-Message"
-                                                  p:messageText="This list shows the scheduled meeting days and times for courses in your plan for this quarter. [strong]If your registration period is open[/strong], select the &quot;Start Registration&quot; button to choose and submit SLNs."/>
+                                                  p:messageText="This list shows the scheduled meeting days and times for courses in your plan for this quarter. If your registration period is open, select the &quot;Start Registration&quot; button to choose and submit SLNs.[br/]Period I priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on xyz.[0]">
+                                                <property name="inlineComponents">
+                                                    <list>
+                                                        <bean parent="Uif-Link" p:linkText="Registration deadlines" p:href="#"/>
+                                                    </list>
+                                                </property>
+                                            </bean>
                                             <bean parent="registrationDateLink"/>
                                             <!-- START OF REGISTRATION DATE @{registrationDetails.getRegistrationOpenDate()} -->
                                         </list>
@@ -54,7 +60,8 @@
                     <property name="header.render" value="true"/>
                     <property name="items">
                         <list>
-                            <bean parent="scheduleRegisteredItems"/>
+                            <bean parent="scheduleRegisteredItems" p:additionalCssClasses="registrationForm__group--disabled registrationForm__group--indent"/>
+                            <bean parent="scheduleRegistrationInfo"/>
                             <bean parent="schedulePlannedItems"/>
                         </list>
                     </property>
@@ -130,14 +137,13 @@
                                     <property name="items">
                                         <list>
                                             <bean parent="KSAP-Message"
-                                                  p:messageText="Select the courses and sections that you&#39;d like to send to registration below. When you&#39;ve finalized your choices, use the &quot;Send to Registration&quot; button to submit them to the registration system. Period I priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on xyz.[0] [br/][css='registrationForm__enrollment'] [1] Has enrollment restrictions[/css]">
+                                                  p:messageText="Select the courses and sections that you&#39;d like to send to registration below. When you&#39;ve finalized your choices, use the &quot;Send to Registration&quot; button to submit them to the registration system. [br/]Period I priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on xyz.[0]">
                                                 <property name="inlineComponents">
                                                     <list>
                                                         <bean parent="Uif-Link" p:linkText="Registration deadlines" p:href="#"/>
-                                                        <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/sb/icon_key.png"/>
                                                     </list>
                                                 </property>
-                                                  </bean>
+                                            </bean>
                                             <bean parent="registrationDateLink"/>
                                         </list>
                                     </property>
@@ -153,6 +159,7 @@
                         <list>
                             <bean parent="scheduleRegisteredItems"
                                   p:additionalCssClasses="registrationForm__group--disabled registrationForm__group--indent"/>
+                            <bean parent="scheduleRegistrationInfo"/>
                             <bean parent="schedulePlannedItems"/>
                             <!--<bean parent="scheduleRegisterDelayMessage"/>-->
                         </list>
@@ -163,14 +170,14 @@
                             <property name="layoutManager.style" value="height: 40px;"/>
                             <property name="items">
                                 <list>
-                                    <!--<bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
+                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
                                           p:navigateToPageId="scheduleView"
                                           p:additionalCssClasses="registrationForm__back" p:actionImagePlacement="LEFT">
                                         <property name="actionImage">
                                             <bean parent="Uif-Image" p:altText="this action lets you to go to the first page of registartion"
                                                   p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
                                         </property>
-                                    </bean>-->
+                                    </bean>
                                     <bean parent="KSAP-HorizontalBoxGroup">
                                         <property name="style" value="float: right;"/>
                                         <property name="items">
@@ -179,8 +186,8 @@
                                                       p:id="sendToRegistration">
                                                     <property name="render"
                                                               value="@{registrationDetails.registrationUrl NE null}"/>
-                                                    <property name="linkText" value="Send to Registration"/>
-                                                    <property name="title" value="Send to Registration"/>
+                                                    <property name="linkText" value="Registration"/>
+                                                    <property name="title" value="Registration"/>
                                                     <property name="href"
                                                               value="@{registrationDetails.registrationUrl}"/>
                                                     <property name="cssClasses"
@@ -290,7 +297,7 @@
     <bean id="scheduleCurrentRegisteredItemHeader" parent="KSAP-VerticalBoxGroup">
         <property name="items">
             <list>
-                <bean parent="KSAP-NoSpanMessage" p:messageText="[0] Registered">
+                <bean parent="KSAP-NoSpanMessage" p:messageText="[0] [css='registrationForm__registered'][i] Registered [/i][/css]">
                     <property name="inlineComponents">
                         <list>
                             <bean parent="Uif-Image"
@@ -312,6 +319,18 @@
         <property name="target" value="_blank"/>
     </bean>
 
+
+
+    <bean id="scheduleRegistrationInfo" parent="KSAP-MessageField" p:cssClasses="registrationForm__enrollment"
+          p:messageText="[0] Add or Faculty code required">
+        <property name="inlineComponents">
+            <list>
+                <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/sb/icon_key.png"/>
+            </list>
+        </property>
+    </bean>
+
+
     <bean id="schedulePlannedItems" parent="KSAP-StackedCollectionGroup" p:readOnly="false">
         <property name="cssClasses" value="registrationForm__group"/>
         <property name="collectionObjectClass" value="org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo"/>
@@ -324,6 +343,7 @@
             <list>
                 <!--<bean parent="scheduleRegistrationItem"/>-->
                 <bean parent="Uif-InputField" p:propertyName="selectedForRegistration" p:defaultValue="true" p:readOnly="false">
+                    <property name="cssClasses" value="registrationForm__courseTitle"/>
                     <property name="label" value="@{#line.courseCode} @{#line.courseTitle}"/>
                     <property name="labelPlacement" value="RIGHT"/>
                     <property name="fieldLabel.renderColon" value="false"/>
@@ -370,6 +390,14 @@
                         </list>
                     </property>
                 </bean>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="subCollections"
+                      p:condition="pageId EQ 'scheduleView'">
+                    <property name="replacement">
+                        <list>
+                            <bean parent="scheduleRegistrationItemActivitySelect"/>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>
@@ -396,6 +424,22 @@
                     <property name="replacement">
                         <list>
                             <bean parent="scheduleRegistrationItem"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="subCollections"
+                      p:condition="pageId EQ 'scheduleSelect'">
+                    <property name="replacement">
+                        <list>
+                            <bean parent="scheduleRegistrationItemActivitySelect"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="subCollections"
+                      p:condition="pageId EQ 'scheduleView'">
+                    <property name="replacement">
+                        <list>
+                            <bean parent="scheduleRegistrationItemActivitySelect"/>
                         </list>
                     </property>
                 </bean>
@@ -461,13 +505,14 @@
                 <property name="upperGroup">
                     <bean parent="KSAP-HorizontalBoxGroup">
                         <property name="layoutManager.style" value="margin: 0 0 0 24px;"/>
+                        <property name="cssClasses" value="registrationActivity__label--background"/>
                         <property name="items">
                             <list>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Sect" p:width="24px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="SLN" p:width="48px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Type (Credit)" p:width="72px"/>
-                                <bean parent="scheduleRegistrationActivity-Label" p:labelText="Meeting Time &amp; Location" p:width="274px"/>
-                                <bean parent="scheduleRegistrationActivity-Label" p:labelText="Instructor" p:width="207px"/>
+                                <bean parent="scheduleRegistrationActivity-Label" p:labelText="Meeting Time &amp; Location" p:width="270px"/>
+                                <bean parent="scheduleRegistrationActivity-Label" p:labelText="Instructor" p:width="184px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Enrl Restr" p:width="56px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Enrl Status" p:width="111px"/>
                             </list>
