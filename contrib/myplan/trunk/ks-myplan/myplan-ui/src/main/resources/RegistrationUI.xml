@@ -41,7 +41,7 @@
                                 <bean parent="KSAP-VerticalBoxGroup">
                                     <property name="items">
                                         <list>
-                                            <bean parent="KSAP-Message"
+                                            <bean parent="KSAP-Message" p:cssClasses="registrationForm__Info"
                                                   p:messageText="This list shows the scheduled meeting days and times for courses in your plan for this quarter. If your registration period is open, select the &quot;Start Registration&quot; button to choose and submit SLNs.[br/]Period I priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on xyz.[0]">
                                                 <property name="inlineComponents">
                                                     <list>
@@ -78,7 +78,7 @@
                                         <property name="actionScript"
                                                   value="KsapScheduleBuild.confirmRemovedSavedSchedule('@{uniqueId}', true, e)"/>
                                     </bean>
-                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Start Registration"
+                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Choose Sections"
                                           p:navigateToPageId="scheduleSelect"
                                           p:style="float: right;"
                                           p:render="@{registrationDetails.openForRegistration}">
@@ -136,7 +136,7 @@
                                 <bean parent="KSAP-VerticalBoxGroup">
                                     <property name="items">
                                         <list>
-                                            <bean parent="KSAP-Message"
+                                            <bean parent="KSAP-Message" p:cssClasses="registrationForm__Info"
                                                   p:messageText="Select the courses and sections that you&#39;d like to send to registration below. When you&#39;ve finalized your choices, use the &quot;Send to Registration&quot; button to submit them to the registration system. [br/]Period I priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on xyz.[0]">
                                                 <property name="inlineComponents">
                                                     <list>
