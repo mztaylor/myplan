@@ -862,7 +862,7 @@
                     <property name="linkText" value="View syllabus description"/>
                     <property name="title" value="View syllabus description"/>
                     <property name="href"
-                              value="/student/myplan/inquiry?methodToCall=start&amp;viewId=CourseSyllabus-InquiryView&amp;activityId=@{#line.activityId}"/>
+                              value="inquiry?methodToCall=start&amp;viewId=CourseSyllabus-InquiryView&amp;activityId=@{#line.activityId}"/>
                     <property name="lightBox">
                         <bean parent="Uif-LightBox">
                             <property name="templateOptions">
@@ -1028,13 +1028,14 @@
                         <list>
                             <bean id="course_details_sections_list" parent="KSAP-VerticalBoxGroup">
                                 <property name="onDocumentReadyScript" value="
+                                    var url =  '/'+'@{#ConfigProperties['app.code']}'+'/myplan/plan/enroll';
                                     jQuery('a.lightBoxLink').each(function() {
                                         createLightBoxLink(jQuery(this).attr('id'), {helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, false);
                                     });
                                     jQuery('body').on('SECTION_ITEM_ADDED', function(event, data){
                                         addSectionAddedLink(data);
                                     });
-                                    getActivityEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}', 'courseCd':'@{dataObject.courseSummaryDetails.code}'});
+                                    getActivityEnrollment(url, {'courseId':'@{dataObject.courseSummaryDetails.courseId}', 'courseCd':'@{dataObject.courseSummaryDetails.code}'});
                                 "/>
                                 <property name="items">
                                     <list>

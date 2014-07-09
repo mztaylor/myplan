@@ -35,10 +35,11 @@
                             <bean p:id="@{dataObject.courseSummaryDetails.uiId}_sections_collection"
                                   parent="course_details_institution_data_single">
                                 <property name="onDocumentReadyScript" value="
+                                    var url =  '/'+'@{#ConfigProperties['app.code']}'+'/myplan/plan/enroll';
                                     jQuery('#@{dataObject.courseSummaryDetails.uiId}_sections_collection a.lightBoxLink').each(function() {
                                         createLightBoxLink(jQuery(this).attr('id'), {helpers:{overlay:{closeClick:false}},autoScale:true,centerOnScroll:true,transitionIn:'fade',transitionOut:'fade',speedIn:200,speedOut:200,type:'iframe'}, false);
                                     });
-                                        getActivityEnrollment('/student/myplan/plan/enroll', {'courseId':'@{dataObject.courseSummaryDetails.courseId}','atpId':'@{dataObject.sectionAtp}','courseCd':'@{dataObject.courseSummaryDetails.code}'}, '@{dataObject.courseSummaryDetails.uiId}_sections_collection');
+                                    getActivityEnrollment(url, {'courseId':'@{dataObject.courseSummaryDetails.courseId}','atpId':'@{dataObject.sectionAtp}','courseCd':'@{dataObject.courseSummaryDetails.code}'}, '@{dataObject.courseSummaryDetails.uiId}_sections_collection');
                                 "/>
                                 <property name="render" value="true"/>
                                 <property name="header.render" value="false"/>
