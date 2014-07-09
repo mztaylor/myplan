@@ -20,6 +20,7 @@ import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilderConstants;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleForm;
+import org.kuali.student.myplan.utils.GlobalConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.exceptions.PermissionDeniedException;
 import org.springframework.stereotype.Controller;
@@ -78,7 +79,7 @@ public class ScheduleBuildController extends UifControllerBase {
         } catch (AuthorizationException e) {
             LOG.info("UNAUTHORIZED Access: " + GlobalVariables.getUserSession().getPerson().getPrincipalId());
             try {
-                response.sendRedirect("/student/myplan/unauthorized");
+                response.sendRedirect("/" + GlobalConstants.MYPLAN_APP_CODE + "/myplan/unauthorized");
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -99,7 +100,7 @@ public class ScheduleBuildController extends UifControllerBase {
         } catch (AuthorizationException e) {
             LOG.info("UNAUTHORIZED Access: " + GlobalVariables.getUserSession().getPerson().getPrincipalId());
             try {
-                response.sendRedirect("/student/myplan/unauthorized");
+                response.sendRedirect("/" + GlobalConstants.MYPLAN_APP_CODE + "/myplan/unauthorized");
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
