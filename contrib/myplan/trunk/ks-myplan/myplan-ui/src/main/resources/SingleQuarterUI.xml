@@ -762,8 +762,9 @@
         <property name="layoutManager.id" value="@{#line.courseDetails.courseId}_sections"/>
         <property name="onDocumentReadyScript" value="
             var selected = @{#line.planActivities.size()};
+            var url =  '/'+'@{#ConfigProperties['app.code']}'+'/myplan/plan/enroll';
             if (selected &gt; 0) {
-                getActivityEnrollment('/student/myplan/plan/enroll', {'courseId':'@{#line.courseDetails.courseId}', 'atpId':'@{dataObject.atpId}'}, '@{#line.courseDetails.uiId}_sections_collection');
+                getActivityEnrollment(url, {'courseId':'@{#line.courseDetails.courseId}', 'atpId':'@{dataObject.atpId}'}, '@{#line.courseDetails.uiId}_sections_collection');
                 var table = jQuery('table#@{#line.courseDetails.courseId}_sections');
                 var tableHead = table.find('thead');
                 tableHead.before('
