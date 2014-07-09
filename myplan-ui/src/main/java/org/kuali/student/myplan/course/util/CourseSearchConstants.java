@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.course.util;
 
+import org.kuali.student.myplan.utils.GlobalConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
 
 import java.util.regex.Pattern;
@@ -54,9 +55,8 @@ public class CourseSearchConstants {
 
     public static final String SWS_SERVICES_STATUS = "swsServicesStatus";
 
-    public static final String LINK = "<a href=\"%s/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=%s#%s_tab-%s\">%s</a>";
-
-    public static final String COURSE_DETAILS_URL = "/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=%s&courseCd=%s";
+   public static final String COURSE_DETAILS_URL = "/" + GlobalConstants.MYPLAN_APP_CODE +
+            "/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=%s&courseCd=%s";
 
     public static final String APP_URL = "appserver.url";
 

@@ -113,7 +113,7 @@ public class DegreeAuditController extends UifControllerBase {
 
     /**
      * Method used to load the degree audit page
-     * url: http://localhost:8080/student/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
+     * url: http://localhost:8080/{app code}/myplan/audit?methodToCall=audit&viewId=DegreeAudit-FormView
      *
      * @param auditForm
      * @param result
