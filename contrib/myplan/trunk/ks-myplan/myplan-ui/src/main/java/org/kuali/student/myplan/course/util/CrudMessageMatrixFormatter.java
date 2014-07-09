@@ -17,6 +17,7 @@ import org.kuali.student.myplan.plan.dataobject.PlanItemDataObject;
 import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.DateFormatHelper;
+import org.kuali.student.myplan.utils.GlobalConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -345,7 +346,7 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
 
     /**
      * returns the section links string for given courseId and term in the form
-     * ("<a href="http://localhost:8080/student/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=60325fa8-7307-454a-be73-3cc1c642122d#kuali-uw-atp-2013-1-19889"> Section (SLN) </a>")
+     * ("<a href="http://localhost:8080/{appcode}/myplan/inquiry?methodToCall=start&viewId=CourseDetails-InquiryView&courseId=60325fa8-7307-454a-be73-3cc1c642122d#kuali-uw-atp-2013-1-19889"> Section (SLN) </a>")
      *
      * @param courseDetails
      * @param term
@@ -370,7 +371,8 @@ public class CrudMessageMatrixFormatter extends PropertyEditorSupport {
                 terms.add(term);
                 List<CourseOfferingInstitution> courseOfferingInstitutions = courseHelper.getCourseOfferingInstitutionsById(courseDetails.getCourseSummaryDetails().getCourseId(), terms);
                 if (AtpHelper.getPublishedTerms().contains(yearTerm.toATP()) && !CollectionUtils.isEmpty(courseOfferingInstitutions)) {
-                    sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url") + "/student/myplan/inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=" + AtpHelper.getAtpIdFromTermYear(term), sectionSln);
+                    sec = String.format("<a href=\"%s\">%s</a>", ConfigContext.getCurrentContextConfig().getProperty("application.url") +
+                        "/myplan/inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id=" + AtpHelper.getAtpIdFromTermYear(term), sectionSln);
                 } else {
                     sec = sectionSln;
                 }

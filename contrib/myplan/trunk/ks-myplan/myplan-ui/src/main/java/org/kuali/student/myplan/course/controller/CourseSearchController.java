@@ -44,6 +44,7 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.plan.util.SearchHelper;
+import org.kuali.student.myplan.utils.GlobalConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
@@ -103,7 +104,8 @@ public class CourseSearchController extends UifControllerBase {
     public static final String MEETING_DAY_TIMES_TBA = "tba";
     private final Logger logger = Logger.getLogger(CourseSearchController.class);
 
-    public static final String COURSE_SEARCH_URL = "/student/myplan/course?#searchQuery=%s&searchTerm=any&campusSelect=%s";
+    public static final String COURSE_SEARCH_URL = "/" + GlobalConstants.MYPLAN_APP_CODE +
+          "/myplan/course?#searchQuery=%s&searchTerm=any&campusSelect=%s";
 
     private static final int MAX_HITS = 1000;
 
@@ -180,7 +182,8 @@ public class CourseSearchController extends UifControllerBase {
             return null;
 
         }
-        response.sendRedirect(String.format(CourseSearchConstants.COURSE_DETAILS_URL, courseId, urlEscape(String.format("%s %s", subject.trim(), number))));
+        String url =  String.format(CourseSearchConstants.COURSE_DETAILS_URL, courseId, urlEscape(String.format("%s %s", subject.trim(), number)));
+        response.sendRedirect(url);
         return null;
     }
 
@@ -459,7 +462,7 @@ public class CourseSearchController extends UifControllerBase {
                 status = String.format("<span id=\\\"%s_status\\\">%s</span>", domId, CourseSearchItem.EMPTY_RESULT_VALUE_KEY);
             } else {
                 status = String.format("<span id=\\\"%s_status\\\">" +
-                        "<input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"/student/themes/ksap/images/pixel.gif\\\" " +
+                        "<input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"themes/ksap/images/pixel.gif\\\" " +
                         "alt=\\\"Bookmark or Add to Plan\\\" class=\\\"courseResults__itemAdd\\\" data-courseid= \\\"%s\\\" " +
                         "data-coursecd= \\\"%s\\\" data-subject= \\\"%s\\\" data-number= \\\"%s\\\" " +
                         "onclick=\\\"openMenu('%s_add','add_course_items',null,event,null,'popover__menu popover__menu--small',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>", domId, courseId, item.getCode().trim(), item.getSubject().trim(), item.getNumber().trim(), courseId);
