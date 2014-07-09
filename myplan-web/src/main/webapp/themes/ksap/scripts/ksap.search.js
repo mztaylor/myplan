@@ -336,7 +336,7 @@ function searchForCourses(id, parentId) {
             "sLengthMenu": "Show _MENU_",
             "sZeroRecords": "0 results found"
         },
-        sAjaxSource: "/student/myplan/course/search?" + jQuery.param(formData).replace(/\+/g, "%20") + "&formKey=" + jQuery("#formKey").val() + "&time=" + new Date().getTime(),
+        sAjaxSource: "course/search?" + jQuery.param(formData).replace(/\+/g, "%20") + "&formKey=" + jQuery("#formKey").val() + "&time=" + new Date().getTime(),
         sDom: "ilrtSp",
         sPaginationType: "full_numbers"
     });
@@ -604,7 +604,7 @@ function setSessionFacets(property, data) {
     submitData[property] = JSON.stringify(data);
 
     jQuery.ajax({
-        url: "/student/myplan/course/updateFacets",
+        url: "course/updateFacets",
         data: submitData,
         dataType: "json",
         complete: function () {
