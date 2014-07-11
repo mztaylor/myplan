@@ -14,47 +14,84 @@
 
 .registrationForm__course {
     margin: @marginDefault 0 0 0;
-
-    &:first-child {
-        margin: 0;
-    }
+    border: @baseBorderStyle;
+    .border-radius(@baseBorderRadius);
+    padding: @paddingDefault;
 
     .uif-subCollection.uif-boxLayoutVerticalItem {
         margin: 0;
     }
+
+    &.disabled {
+        border: solid 1px #f2f2f2;
+        background-color: #f2f2f2;
+        color: #999 !important;
+
+        * {
+            color: #999 !important;
+        }
+    }
+
+    &.registrationForm__course--registered {
+        border: solid 1px #ededed;
+        background-color: #ededed;
+        color: #666 !important;
+
+        * {
+            color: #666 !important;
+        }
+
+        .registrationForm__courseTitle--registered {
+            color: #999 !important;
+        }
+    }
 }
+
 .registrationForm__courseTitle {
     border-bottom: @baseBorderStyle;
     padding: 0 0 @paddingMini 0;
-    margin: @marginSmall 0 0 0;
+    margin: 0;
+    font-size: 15px;
+
+    label {
+        cursor: pointer;
+    }
+
+    .uif-checkboxControl {
+        margin: 0 3px 0 0;
+    }
+
+    .registrationForm__courseTitle--registered {
+        font-size: @fontSizeSmall;
+        font-style: italic;
+        float: right;
+    }
 }
+
 .registrationForm__note {
     color: @red;
     font-style: italic;
     margin: @marginLarge 0 @marginDefault 0;
 }
+
 .registrationForm__footer {
     margin: @marginLarge 0 0 0;
     padding: @paddingLarge 0 0 0;
     border-top: @baseBorderStyle;
 }
 
-.registrationForm__enrollment{
-  float: right;
-  color: @textColorLight;
-  margin: 10px 8px 0 0;
-}
+.registrationForm__addCode {
+    font-size: @fontSizeMini;
+    color: #666;
+    vertical-align: middle;
+    margin-bottom: -@marginDefault;
+    padding: 0 @paddingSmall;
+    text-align: right;
 
-.registrationForm__border{
-  border: solid 1px @baseBorderColor;
-  border-radius: @baseBorderRadius;
-  padding: 10px;
-}
-
-.registrationForm__registered{
-  float: right;
-}
-.registrationForm__Info{
-  margin-bottom: 15px !important;
-  line-height: initial;
+    img {
+        width: 16px;
+        height: 16px;
+        background: url('../images/icon_sprite.png') no-repeat -1px -217px transparent;
+        vertical-align: middle;
+    }
 }

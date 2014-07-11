@@ -796,15 +796,25 @@ function updateRegistrationUrl(componentId) {
     var elementToBlock = jQuery('#' + componentId).parent();
 
     var successCallback = function (response) {
-        if (!response.errorMessage) {
-            jQuery('#' + componentId).attr('href', response.registrationUrl);
-        } else {
+        //if (!response.errorMessage) {
+            if (response.registrationUrl != "") {
+                jQuery('#' + componentId).attr({
+                    "href": response.registrationUrl,
+                    "target": "_blank"
+                }).removeClass("disabled");
+            } else {
+                jQuery('#' + componentId).attr({
+                    "href": "#",
+                    "target": "_self"
+                }).addClass("disabled");
+            }
+        /*} else {
             var error = jQuery('<div />').attr({
                 'class': 'alert alert-error',
                 'style': 'float: right; margin: 0;'
             }).html(response.errorMessage);
             jQuery('#' + componentId).replaceWith(error);
-        }
+        }*/
     };
 
     var data = {
@@ -839,9 +849,15 @@ function updateRegistrationUrl(componentId) {
         }
     };
 
-    jQuery('form input[type=radio]').on('change', function(e) {
+    jQuery('form input[type=radio], form input[type=checkbox]').on('change', function(e) {
         ksapAjaxSubmitForm(data, successCallback, elementToBlock, 'kualiForm', blockOptions);
     });
+}
+
+function setLightboxScrollable() {
+    var setHeight = (parseFloat(parent.jQuery(".fancybox-skin").css("padding")) * 2) + 48 + (jQuery(".uif-page").height() - jQuery(".uif-page > .uif-verticalBoxLayout").height());
+    var maxHeight = jQuery(window.parent).height() - setHeight;
+    jQuery(".uif-page > .uif-verticalBoxLayout").css("max-height", maxHeight + "px").css("overflow-y", "auto");
 }
 
 function evaluateDisclosureScripts(selector) {
