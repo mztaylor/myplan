@@ -1,7 +1,10 @@
 package org.kuali.student.myplan.plan;
 
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
+import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
+
+import java.util.regex.Pattern;
 
 public class PlanConstants extends AcademicPlanServiceConstants {
 
@@ -175,6 +178,8 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String ENROLL_COUNT_KEY = "enrollCount";
     public static final String ENROLL_ESTIMATE_KEY = "enrollEstimate";
     public static final String ENROLL_KEY_FORMAT = "enrl_%s_%s";
+
+    public static final Pattern COMMON_PATTERN = Pattern.compile(CourseSearchConstants.COMMENTS_LIST_DELIMITER, Pattern.LITERAL);
 
 
     /**

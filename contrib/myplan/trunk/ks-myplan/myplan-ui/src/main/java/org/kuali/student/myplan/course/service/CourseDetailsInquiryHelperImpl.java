@@ -1080,7 +1080,6 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         return activityOfferingItemList;
     }
 
-    static Pattern commentPattern = Pattern.compile(CourseSearchConstants.COMMENTS_LIST_DELIMITER, Pattern.LITERAL);
 
     /**
      * Used to retrieve a ActivityOffering using the following params
@@ -1179,13 +1178,13 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                 continue;
             }
 
-            if (CourseSearchConstants.SECTION_COMMENTS.equalsIgnoreCase(key)) {
-                activity.setSectionComments(value);
+            if (CourseSearchConstants.SECTION_COMMENTS.equalsIgnoreCase(key) && StringUtils.hasText(value)) {
+                activity.setSectionComments(value.replace(CourseSearchConstants.COMMENTS_LIST_DELIMITER, " "));
                 continue;
             }
 
-            if (CourseSearchConstants.TIME_SCHEDULE_GENERATED_COMMENTS.equalsIgnoreCase(key)) {
-                activity.setTimeScheduleGeneratedComments(Arrays.asList(commentPattern.split(value)));
+            if (CourseSearchConstants.TIME_SCHEDULE_GENERATED_COMMENTS.equalsIgnoreCase(key) && StringUtils.hasText(value)) {
+                activity.setTimeScheduleGeneratedComments(Arrays.asList(PlanConstants.COMMON_PATTERN.split(value)));
                 continue;
             }
 
