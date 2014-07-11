@@ -107,7 +107,8 @@ public class RegistrationKeyValueFinder extends UifKeyValuesFinderBase {
                 "<div class=\"registrationActivity__instituteCode registrationActivity__instituteCode--" + (!instituteCd.isEmpty() ? "show" : "hide") + "\">" + instituteCd + "</div>" +
                 "<div class=\"registrationActivity__enrollRest registrationActivity__enrollRest--" + String.valueOf(activityOption.isEnrollmentRestriction()) + "\">" + "<img src=\"../themes/ksap/images/pixel.gif\"/>" + "</div>" +
                 "<div class=\"registrationActivity__enrollState\">" + String.format("<strong>%s</strong> / %s", activityOption.getFilledSeats(), activityOption.getTotalSeats()) + "</div>" +
-                "<div class=\"registrationActivity__enrollStatus registrationActivity__enrollStatus--" + activityOption.getEnrollStatus().toLowerCase() + "\">" + activityOption.getEnrollStatus() + "</div>";
+                "<div class=\"registrationActivity__enrollStatus registrationActivity__enrollStatus--" + activityOption.getEnrollStatus().toLowerCase() + "\">" + activityOption.getEnrollStatus() + "</div>" +
+                "<div class=\"registrationActivity__sectionComments\">" + StringUtils.join(activityOption.getNotes(), "<br/>") + "</div>";
         return template;
     }
 
