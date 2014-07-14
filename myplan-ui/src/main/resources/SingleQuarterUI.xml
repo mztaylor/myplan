@@ -476,7 +476,7 @@
                 jQuery(this).attr('colspan', '1');
             });
             table.find('.courseActivities__additionalDetails').parents('tr').each(function() {
-                jQuery(this).addClass('collapsible');
+                jQuery(this).addClass('collapsible').hide();
             });
         "/>
         <property name="width" value="708px"/>
