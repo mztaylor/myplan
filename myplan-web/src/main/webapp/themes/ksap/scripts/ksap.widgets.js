@@ -855,7 +855,7 @@ function updateRegistrationUrl(componentId) {
 }
 
 function setLightboxScrollable() {
-    var setHeight = (parseFloat(parent.jQuery(".fancybox-skin").css("padding")) * 2) + 48 + (jQuery(".uif-page").height() - jQuery(".uif-page > .uif-verticalBoxLayout").height());
+    var setHeight = (parseFloat(parent.jQuery(".fancybox-skin").css("padding-top")) + parseFloat(parent.jQuery(".fancybox-skin").css("padding-bottom"))) + 48 + (jQuery(".uif-page").height() - jQuery(".uif-page > .uif-verticalBoxLayout").height());
     var maxHeight = jQuery(window.parent).height() - setHeight;
     jQuery(".uif-page > .uif-verticalBoxLayout").css("max-height", maxHeight + "px");
 }
