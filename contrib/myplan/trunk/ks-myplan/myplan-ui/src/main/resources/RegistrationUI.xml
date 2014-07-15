@@ -47,6 +47,7 @@
                             </property>
                         </bean>
                     </property>
+                    <property name="layoutManager.style" value="overflow-y: scroll;"/>
                     <property name="items">
                         <list>
                             <bean parent="scheduleRegisteredItems"/>
@@ -114,6 +115,7 @@
                             </property>
                         </bean>
                     </property>
+                    <property name="layoutManager.style" value="overflow-y: scroll;"/>
                     <property name="items">
                         <list>
                             <bean parent="scheduleRegisteredItems"/>
@@ -546,7 +548,7 @@
         <property name="cssClasses"
                   value="registrationActivity__enrollRest registrationActivity__enrollRest--@{#line.enrollmentRestriction}"/>
         <property name="image">
-            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif" p:altText="Has enrollment restrictions" p:title="Has enrollment restrictions"/>
+            <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif" p:altText="Add or Faculty code required" p:title="Add or Faculty code required"/>
         </property>
     </bean>
 
