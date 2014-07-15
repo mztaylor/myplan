@@ -443,12 +443,12 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
             if (StringUtils.isEmpty(reasonForChange)) {
                 savedActivity.setAlternateActivities(validatedAlternates);
                 activityOptionList.add(savedActivity);
-            } else if (StringUtils.hasText(reasonForChange) && !CollectionUtils.isEmpty(validatedAlternates)) {
+            } else if (StringUtils.hasText(reasonForChange) && !CollectionUtils.isEmpty(validatedAlternates) && (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_SUSPENDED.equals(reasonForChange))) {
                 ActivityOptionInfo alAo = (ActivityOptionInfo) validatedAlternates.get(0);
                 validatedAlternates.remove(0);
                 alAo.setAlternateActivities(validatedAlternates.size() > 0 ? validatedAlternates : new ArrayList<ActivityOption>());
                 activityOptionList.add(alAo);
-                if (plannedActivities.contains(savedActivity.getActivityOfferingId()) && (ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_WITHDRAWN.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_CONFLICTS_RESERVED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_TIME_CHANGED.equals(reasonForChange) || ScheduleBuilderConstants.PINNED_SCHEDULES_ERROR_REASON_SUSPENDED.equals(reasonForChange))) {
+                if (plannedActivities.contains(savedActivity.getActivityOfferingId())) {
                     if (invalidOptions == null) {
                         invalidOptions = new HashMap<String, Map<String, List<String>>>();
                     }
