@@ -17,6 +17,7 @@ public class RegistrationDetailsInfo implements RegistrationDetails {
     private String registrationOpenDate;
     private int pinnedIndex;
     private String registrationUrl;
+    private boolean activitiesAvailable;
 
     @Override
     public List<CourseOption> getRegisteredCourses() {
@@ -68,11 +69,21 @@ public class RegistrationDetailsInfo implements RegistrationDetails {
         this.registrationUrl = registrationUrl;
     }
 
+    @Override
     public String getRegistrationOpenDate() {
         return registrationOpenDate;
     }
 
     public void setRegistrationOpenDate(String registrationOpenDate) {
         this.registrationOpenDate = registrationOpenDate;
+    }
+
+    @Override
+    public boolean isActivitiesAvailable() {
+        return activitiesAvailable;
+    }
+
+    public void setActivitiesAvailable(boolean activitiesAvailable) {
+        this.activitiesAvailable = activitiesAvailable;
     }
 }
