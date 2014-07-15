@@ -73,8 +73,7 @@
                                           p:render="@{registrationDetails.openForRegistration}">
                                         <property name="cssClasses">
                                             <list merge="true">
-                                                <value>@{getSelectedRegistrationCodes().size() EQ 0 OR
-                                                    getSelectedRegistrationCodes().size() GT 8 ? 'disabled' : ''}
+                                                <value>@{registrationDetails.activitiesAvailable ? '' : 'disabled'}
                                                 </value>
                                             </list>
                                         </property>

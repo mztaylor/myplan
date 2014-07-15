@@ -48,4 +48,12 @@ public interface RegistrationDetails {
      * @return formatted date as string
      */
     String getRegistrationOpenDate();
+
+    /**
+     * Used to determine if there are valid number of activities available for registration or not.
+     * set to true if available activities for sending to registration are greater than 0 and less than or equal to 8
+     *
+     * @return
+     */
+    public boolean isActivitiesAvailable();
 }
