@@ -31,7 +31,7 @@
         <property name="items">
             <list>
                 <bean id="scheduleView" parent="KSAP-PageVerticalLayout">
-                    <property name="width" value="870px"/>
+                    <property name="width" value="894px"/>
                     <property name="style" value="margin:0 auto;"/>
                     <property name="onDocumentReadyScript" value="setLightboxScrollable(); parent.jQuery.fancybox.update();"/>
                     <property name="header">
@@ -47,7 +47,7 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="layoutManager.style" value="overflow-y: scroll;"/>
+                    <property name="layoutManager.style" value="overflow-x: hidden; overflow-y: scroll; padding-right: 24px;"/>
                     <property name="items">
                         <list>
                             <bean parent="scheduleRegisteredItems"/>
@@ -84,7 +84,7 @@
                     </property>
                 </bean>
                 <bean id="scheduleSelect" parent="KSAP-PageVerticalLayout">
-                    <property name="width" value="870px"/>
+                    <property name="width" value="894px"/>
                     <property name="style" value="margin:0 auto;"/>
                     <property name="render"
                               value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
@@ -114,7 +114,7 @@
                             </property>
                         </bean>
                     </property>
-                    <property name="layoutManager.style" value="overflow-y: scroll;"/>
+                    <property name="layoutManager.style" value="overflow-x: hidden; overflow-y: scroll; padding-right: 24px;"/>
                     <property name="items">
                         <list>
                             <bean parent="scheduleRegisteredItems"/>
@@ -141,14 +141,12 @@
                                             <list>
                                                 <bean parent="Uif-Link" id="sendToRegistration"
                                                       p:id="sendToRegistration">
-                                                    <property name="render"
-                                                              value="@{registrationDetails.registrationUrl NE null}"/>
                                                     <property name="linkText" value="Register"/>
                                                     <property name="title" value="Register"/>
                                                     <property name="href"
                                                               value="@{registrationDetails.registrationUrl}"/>
                                                     <property name="cssClasses"
-                                                              value="btn btn-primary btn-small"/>
+                                                              value="btn btn-primary btn-small @{registrationDetails.registrationUrl EQ null ? 'disabled':''}"/>
                                                     <property name="target" value="_blank"/>
                                                     <property name="onClickScript" value="if(jQuery(this).hasClass('disabled')){return false;} actionInvokeHandler(this);"/>
                                                     <property name="dataAttributes">
@@ -169,7 +167,7 @@
                     </property>
                 </bean>
                 <bean id="scheduleCompleted" parent="KSAP-PageVerticalLayout">
-                    <property name="width" value="870px"/>
+                    <property name="width" value="894px"/>
                     <property name="style" value="margin:0 auto;"/>
                     <property name="render"
                               value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
