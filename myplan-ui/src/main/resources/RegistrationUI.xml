@@ -392,11 +392,9 @@
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="readOnly" value="true"/>
         <property name="cssClasses" value="registrationActivity__data"/>
-        <property name="render"
-                  value="@{#line NE null ? #line.activityOptions.size() GT 0 : true}"/>
         <property name="layoutManager.lineGroupPrototype.additionalCssClasses" value="registrationActivity__row"/>
         <property name="header">
-            <bean parent="KSAP-HeaderDiv">
+            <bean parent="KSAP-HeaderDiv" p:render="@{#line NE null ? #line.activityOptions.size() GT 0 : true}">
                 <property name="upperGroup">
                     <bean parent="KSAP-HorizontalBoxGroup">
                         <property name="items">
