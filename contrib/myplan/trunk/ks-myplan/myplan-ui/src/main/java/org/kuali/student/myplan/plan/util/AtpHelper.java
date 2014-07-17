@@ -506,6 +506,7 @@ public class AtpHelper {
             }
         } catch (Exception e) {
             logger.error("Web service call failed.", e);
+            publishedTerms = getCurrentAtpIdFromCalender();
         }
 
         return publishedTerms;
