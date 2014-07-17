@@ -312,7 +312,7 @@
         <property name="propertyReplacers">
             <list>
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items"
-                      p:condition="dataObject.backupList.size() EQ 0 AND (dataObject.completedTerm OR !dataObject.openForPlanning)">
+                      p:condition="dataObject.plannedList.size() EQ 0 AND (dataObject.completedTerm OR !dataObject.openForPlanning)">
                     <property name="replacement">
                         <list>
                             <!-- Plan list is empty -->
@@ -668,7 +668,7 @@
             </bean>
         </property>
         <property name="instructionalMessage">
-            <bean parent="KSAP-Message" p:messageText="[0]" p:cssClasses="planTerm__add @{dataObject.plannedList.size() EQ 0 ? 'planTerm__add--empty':''}">
+            <bean parent="KSAP-Message" p:messageText="[0]" p:cssClasses="planTerm__add @{dataObject.plannedList.size() EQ 0 ? 'planTerm__add--empty':''}" p:render="@{dataObject.openForPlanning}">
                 <property name="inlineComponents">
                     <list>
                         <bean parent="Uif-ActionLink" p:actionLabel="Add course or placeholder" p:actionScript="
@@ -722,7 +722,7 @@
         <property name="onDocumentReadyScript"
                   value="truncateField('@{dataObject.atpId}_backup', true);"/>
         <property name="instructionalMessage">
-            <bean parent="KSAP-Message" p:messageText="[0]" p:cssClasses="planTerm__add @{dataObject.backupList.size() EQ 0 ? 'planTerm__add--empty':''}">
+            <bean parent="KSAP-Message" p:messageText="[0]" p:cssClasses="planTerm__add @{dataObject.backupList.size() EQ 0 ? 'planTerm__add--empty':''}" p:render="@{dataObject.openForPlanning}">
                 <property name="inlineComponents">
                     <list>
                         <bean parent="Uif-ActionLink" p:actionLabel="Add course or placeholder" p:actionScript="
