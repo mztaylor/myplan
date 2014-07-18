@@ -62,10 +62,9 @@ public class CourseSectionDetailsLayoutManager extends TableLayoutManager {
 
             r2css.append(aoi.getPlanItemId() != null ? " courseActivities--planned" : "");
 
-            if (offered) {
-                rowCss.add(r2css.toString());
-                rowCss.add(r2css.toString());
-            }
+            rowCss.add(r2css.toString());
+            rowCss.add(r2css.toString());
+
             if (LOG.isDebugEnabled())
                 LOG.debug("AO luiId " + aoi.getCode() + " lineIndex = "
                         + lineIndex + " css(1) " + r1css.toString()
