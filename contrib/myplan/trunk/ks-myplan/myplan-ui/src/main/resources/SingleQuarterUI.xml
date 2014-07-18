@@ -668,7 +668,7 @@
             </bean>
         </property>
         <property name="instructionalMessage">
-            <bean parent="KSAP-Message" p:messageText="[0]" p:cssClasses="planTerm__add @{dataObject.plannedList.size() EQ 0 ? 'planTerm__add--empty':''}" p:render="@{dataObject.openForPlanning}">
+            <bean parent="KSAP-Message" p:messageText="[0]" p:cssClasses="planTerm__add @{dataObject.plannedList.size() EQ 0 ? 'planTerm__add--empty':''}" p:render="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND dataObject.openForPlanning}">
                 <property name="inlineComponents">
                     <list>
                         <bean parent="Uif-ActionLink" p:actionLabel="Add course or placeholder" p:actionScript="
@@ -700,6 +700,18 @@
 
     <bean id="termRecommendedItems" parent="termPlannedItems" p:headerText="Recommended Courses">
         <property name="propertyName" value="recommendedList"/>
+        <property name="instructionalMessage">
+            <bean parent="KSAP-Message" p:messageText="[0]" p:cssClasses="planTerm__add @{dataObject.recommendedList.size() EQ 0 ? 'planTerm__add--empty':''}" p:render="@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND dataObject.openForPlanning}">
+                <property name="inlineComponents">
+                    <list>
+                        <bean parent="Uif-ActionLink" p:actionLabel="Recommend" p:actionScript="
+                            var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', atpId:@{dataObject.atpId}, backup:false, pageId:'recommended_add_page'};
+                            openPopup('recommended_add_page', retrieveData, 'plan', {width:'300px', height:'16px'}, {tail:{hidden:true}, position:'right', align:'middle', close:true}, e);
+                        " p:render="@{!dataObject.completedTerm AND dataObject.openForPlanning AND dataObject.plannedList.size() LT 8}"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
         <property name="render" value="@{dataObject.recommendedList.size() gt 0}"/>
         <property name="onDocumentReadyScript"
                   value="truncateField('@{dataObject.atpId}_recommended', true);"/>
@@ -722,7 +734,7 @@
         <property name="onDocumentReadyScript"
                   value="truncateField('@{dataObject.atpId}_backup', true);"/>
         <property name="instructionalMessage">
-            <bean parent="KSAP-Message" p:messageText="[0]" p:cssClasses="planTerm__add @{dataObject.backupList.size() EQ 0 ? 'planTerm__add--empty':''}" p:render="@{dataObject.openForPlanning}">
+            <bean parent="KSAP-Message" p:messageText="[0]" p:cssClasses="planTerm__add @{dataObject.backupList.size() EQ 0 ? 'planTerm__add--empty':''}" p:render="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND dataObject.openForPlanning}">
                 <property name="inlineComponents">
                     <list>
                         <bean parent="Uif-ActionLink" p:actionLabel="Add course or placeholder" p:actionScript="
