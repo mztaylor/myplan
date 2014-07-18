@@ -106,13 +106,13 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="KSAP-Message" p:messageText="[0] Closed section">
+                <!--<bean parent="KSAP-Message" p:messageText="[0] Closed section">
                     <property name="inlineComponents">
                         <list>
                             <bean parent="Uif-Image" p:altText="registration is closed" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/sb/icon_no.png"/>
                         </list>
                     </property>
-                </bean>
+                </bean>-->
             </list>
         </property>
     </bean>

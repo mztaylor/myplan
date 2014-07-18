@@ -99,10 +99,8 @@
                                                                 <bean parent="activityMeetingData"/>
                                                                 <bean parent="activityRegCode"/>
                                                                 <bean parent="activityEnrlRestr"/>
-                                                                <bean parent="activityEnrlData"
-                                                                      p:render="@{#line.stateKey EQ 'active'}"/>
-                                                                <bean parent="activityEnrlStatus"
-                                                                      p:render="@{#line.stateKey NE 'active'}"/>
+                                                                <bean parent="activityEnrlData" p:render="@{#line.stateKey EQ 'active'}"/>
+                                                                <bean parent="activityEnrlStatus" p:render="@{#line.stateKey NE 'active'}"/>
                                                                 <bean parent="KSAP-VerticalFieldGroup" p:valign="TOP"
                                                                       p:rowSpan="3" p:colSpan="1" p:cssClasses="courseActivities__action">
                                                                     <property name="items">
@@ -116,7 +114,7 @@
                                                                                     </map>
                                                                                 </property>
                                                                             </bean>
-                                                                            <!-- Delete button when planned -->
+                                                                            <!-- Delete button when planned  -->
                                                                             <bean parent="activityActionDelete"
                                                                                   p:render="@{#line.planItemId NE null}">
                                                                                 <property name="dataAttributes">
@@ -125,7 +123,7 @@
                                                                                     </map>
                                                                                 </property>
                                                                             </bean>
-                                                                            <!-- Empty when unplanned and not active or uplanned and closed for planning and active-->
+                                                                            <!-- Empty when unplanned and not active or uplanned and closed for planning and active  -->
                                                                             <bean parent="emptyAction"
                                                                                   p:render="@{(#line.planItemId EQ null AND #line.stateKey NE 'active') OR (#line.planItemId EQ null AND !#line.openForPlanning AND #line.stateKey EQ 'active')}"/>
                                                                         </list>
@@ -144,12 +142,9 @@
                                                                         </list>
                                                                     </property>
                                                                 </bean>
-                                                                <bean parent="activityInstructor"
-                                                                      p:render="@{#line.stateKey EQ 'active'}"/>
-                                                                <bean parent="activityOther" p:colSpan="3"
-                                                                      p:render="@{#line.stateKey EQ 'active'}"/>
-                                                                <bean parent="activityAdditionalDetails" p:colSpan="5"
-                                                                      p:render="@{#line.stateKey EQ 'active'}"/>
+                                                                <bean parent="activityInstructor"/>
+                                                                <bean parent="activityOther" p:colSpan="3"/>
+                                                                <bean parent="activityAdditionalDetails" p:colSpan="5"/>
                                                             </list>
                                                         </property>
                                                     </bean>

@@ -834,9 +834,9 @@
                         </list>
                     </property>
                 </bean>
-                <bean parent="activityInstructor" p:render="@{#line.stateKey EQ 'active'}"/>
-                <bean parent="activityOther" p:colSpan="3" p:render="@{#line.stateKey EQ 'active'}"/>
-                <bean parent="activityAdditionalDetails" p:colSpan="5" p:render="@{#line.stateKey EQ 'active'}"/>
+                <bean parent="activityInstructor"/>
+                <bean parent="activityOther" p:colSpan="3"/>
+                <bean parent="activityAdditionalDetails" p:colSpan="5"/>
             </list>
         </property>
     </bean>
