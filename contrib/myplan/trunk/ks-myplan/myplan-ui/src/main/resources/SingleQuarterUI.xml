@@ -906,6 +906,7 @@
     </bean>
 
     <bean id="termCopyCourse" parent="Uif-ActionLink" p:actionLabel="Copy" p:cssClasses="inlineBlock">
+        <property name="additionalCssClasses" value="courseDeleteAction"/>
         <property name="actionScript" value="
             var backupFlag = '@{#line.planItemDataObject.type}'=='backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', backup:backupFlag, pageId:'copy_dialog_page'};
