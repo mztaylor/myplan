@@ -597,7 +597,7 @@
     <bean id="add_course_items" parent="KSAP-VerticalBoxGroup" p:width="75px" p:hidden="true" p:cssClasses="popover__menu">
         <property name="items">
             <list>
-                <bean parent="Uif-ActionLink" p:actionLabel="Add to Plan" p:title="Add to Plan">
+                <bean parent="Uif-ActionLink" p:id="course_add" p:actionLabel="Add to Plan" p:title="Add to Plan">
                     <property name="actionScript" value="
                         var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', courseId:jQuery(this).data('courseid'), code:jQuery(this).data('coursecd'), pageId:'add_dialog_page'};
                         var popupStyle = {width:'300px', height:'16px'};
@@ -605,7 +605,7 @@
                         openPopup('add_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
                     "/>
                 </bean>
-                <bean parent="Uif-ActionLink" p:actionLabel="Bookmark" p:title="Bookmark">
+                <bean parent="Uif-ActionLink" p:id="course_bookmark" p:actionLabel="Bookmark" p:title="Bookmark">
                     <property name="actionScript" value="
                         var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:jQuery(this).data('courseid'), code:jQuery(this).data('coursecd')};
                         submitHiddenForm('plan', additionalFormData, true, e);
