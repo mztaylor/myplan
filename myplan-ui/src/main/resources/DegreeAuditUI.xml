@@ -125,6 +125,11 @@
         <property name="persistFormToSession" value="true"/>
         <property name="entryPageId" value="degree_audit"/>
         <property name="headerText" value="Audit Your Degree"/>
+        <property name="componentSecurity.additionalRoleQualifiers">
+            <map>
+                <entry key="authorizedToView" value="STUDENT"/>
+            </map>
+        </property>
         <property name="items">
             <list>
                 <bean parent="KSAP-PageHorizontalLayout" id="degree_audit" p:id="degree_audit">
@@ -221,10 +226,16 @@
         </property>
     </bean>
 
-    <bean id="audit_tab_plan" parent="Uif-Link" p:linkText="Audit Your Plan"
-              p:href="audit?methodToCall=audit&amp;viewId=PlanAudit-FormView"/>
-    <bean id="audit_tab_degree" parent="Uif-Link" p:linkText="Audit Your Degree (DARS)"
-              p:href="audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView"/>
+    <bean id="audit_tab_plan" parent="Uif-LinkField" p:linkText="Audit Your Plan"
+          p:href="audit?methodToCall=audit&amp;viewId=PlanAudit-FormView"/>
+    <bean id="audit_tab_degree" parent="Uif-LinkField" p:linkText="Audit Your Degree (DARS)"
+          p:href="audit?methodToCall=audit&amp;viewId=DegreeAudit-FormView">
+        <property name="componentSecurity.additionalRoleQualifiers">
+            <map>
+                <entry key="authorizedToView" value="STUDENT"/>
+            </map>
+        </property>
+    </bean>
 
     <bean id="run_degree_audits" parent="KSAP-VerticalBoxGroup">
         <property name="cssClasses" value="auditRun"/>

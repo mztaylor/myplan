@@ -136,10 +136,15 @@
                                         </property>
                                     </bean>
                                     <bean parent="KSAP-HorizontalBoxGroup">
+                                        <property name="componentSecurity.additionalRoleQualifiers">
+                                            <map>
+                                                <entry key="authorizedToView" value="STUDENT"/>
+                                            </map>
+                                        </property>
                                         <property name="style" value="float: right;"/>
                                         <property name="items">
                                             <list>
-                                                <bean parent="Uif-Link" id="sendToRegistration"
+                                                <bean parent="Uif-LinkField" id="sendToRegistration"
                                                       p:id="sendToRegistration">
                                                     <property name="linkText" value="Register"/>
                                                     <property name="title" value="Register"/>
