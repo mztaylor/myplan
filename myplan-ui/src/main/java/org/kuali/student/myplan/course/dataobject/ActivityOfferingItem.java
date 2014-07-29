@@ -195,7 +195,6 @@ public class ActivityOfferingItem {
 
     /*
         Other course attribute indicators
-
      */
 
     public boolean isDistanceLearning() {
