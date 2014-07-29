@@ -1112,7 +1112,7 @@
         <property name="items">
             <list>
                 <!--TODO: https://jira.kuali.org/browse/KULRICE-9846 disabled expressions are evaluated before the defaultValue is set, workaround is to set the value on the backend -->
-                <bean parent="Uif-InputField" p:propertyName="type" p:defaultValue="course">
+                <bean parent="Uif-InputField" p:id="course_placeholder_radio" p:propertyName="type" p:defaultValue="course">
                     <property name="control">
                         <bean parent="Uif-VerticalRadioControl">
                             <property name="fieldsetClasses" value="popoverForm__radioSet"/>
@@ -1163,7 +1163,7 @@
     <bean id="addItemPlaceholder" parent="KSAP-VerticalBoxGroup">
         <property name="items">
             <list>
-                <bean parent="Uif-InputField" p:id="general_radio" p:propertyName="type" p:defaultValue="course">
+                <bean parent="Uif-InputField" p:id="general_placeholder_radio" p:propertyName="type" p:defaultValue="course">
                     <property name="control">
                         <bean parent="Uif-VerticalRadioControl">
                             <property name="fieldsetClasses" value="popoverForm__radioSet"/>
