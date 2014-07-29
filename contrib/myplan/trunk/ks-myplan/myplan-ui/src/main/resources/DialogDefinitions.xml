@@ -986,6 +986,11 @@
                                 </property>
                             </bean>
                             <bean parent="KSAP-VerticalBoxGroup" p:cssClasses="popover__groupSeparator">
+                                <property name="componentSecurity.additionalRoleQualifiers">
+                                    <map>
+                                        <entry key="authorizedToView" value="STUDENT"/>
+                                    </map>
+                                </property>
                                 <property name="items">
                                     <list>
                                         <bean id="plan_access" parent="KSAP-SimpleInputField" p:label="MyPlan Settings"

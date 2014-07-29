@@ -36,6 +36,7 @@
         "/>
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
+        <property name="authorizerClass" value="org.kuali.rice.krad.uif.view.MyplanViewAuthorizer"/>
     </bean>
 
     <!-- View without the header and footer and just the theme -->
@@ -53,6 +54,7 @@
                     setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
                     setConfigParam('devMode', @{#ConfigProperties['rice.krad.dev.mode']});
         "/>
+        <property name="authorizerClass" value="org.kuali.rice.krad.uif.view.MyplanViewAuthorizer"/>
     </bean>
 
     <bean id="MyPlanFormView" abstract="true" parent="MyPlanBaseFormView">
@@ -91,6 +93,7 @@
         </property>
         <property name="renderSearchButtons" value="false"/>
         <property name="renderLookupCriteria" value="false"/>
+        <property name="authorizerClass" value="org.kuali.rice.krad.uif.view.MyplanLookupViewAuthorizer"/>
     </bean>
 
     <bean id="MyPlanLookupView" abstract="true" parent="MyPlanBaseLookupView">
@@ -122,6 +125,7 @@
                     setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
                     setConfigParam('devMode', @{#ConfigProperties['rice.krad.dev.mode']});
         "/>
+        <property name="authorizerClass" value="org.kuali.rice.krad.uif.view.MyplanInquiryViewAuthorizer"/>
     </bean>
 
     <bean id="MyPlanInquiryView" abstract="true" parent="MyPlanBaseInquiryView">
@@ -151,6 +155,7 @@
                     setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
                     setConfigParam('devMode', @{#ConfigProperties['rice.krad.dev.mode']});
         "/>
+        <property name="authorizerClass" value="org.kuali.rice.krad.uif.view.MyplanViewAuthorizer"/>
     </bean>
 
     <bean id="MyPlanMaintenanceView" abstract="true" parent="MyPlanBaseMaintenanceView">
@@ -432,6 +437,11 @@
 
     <bean id="KSAP-DegreeAuditList" parent="KSAP-Module" p:headerText="Recent Degree Audits (DARS)"
           p:id="KSAP-DegreeAuditList">
+        <property name="componentSecurity.additionalRoleQualifiers">
+            <map>
+                <entry key="authorizedToView" value="STUDENT"/>
+            </map>
+        </property>
         <property name="onDocumentReadyScript" value="
             customRetrieveComponent('KSAP-DegreeAuditList','degree_audits_summary','search','lookup',{viewId:'DegreeAuditsSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
         "/>
