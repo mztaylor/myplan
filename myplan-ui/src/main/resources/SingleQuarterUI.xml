@@ -895,7 +895,7 @@
         </property>
     </bean>
 
-    <bean id="termMoveCourse" parent="Uif-ActionLink" p:id="@{#line.courseDetails.code.replace('&amp;','').replace(' ','')}_move" p:actionLabel="Move" p:cssClasses="inlineBlock">
+    <bean id="termMoveCourse" parent="Uif-ActionLink" p:id="@{#line.placeHolder ? #line.placeHolderCode.replace('&amp;','').replace(' ','') : #line.courseDetails.code.replace('&amp;','').replace(' ','')}_move_@{#index}" p:actionLabel="Move" p:cssClasses="inlineBlock">
         <property name="actionScript" value="
             var backupFlag = '@{#line.planItemDataObject.type}'=='backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', backup:backupFlag, pageId:'move_dialog_page'};
@@ -905,7 +905,7 @@
         "/>
     </bean>
 
-    <bean id="termCopyCourse" parent="Uif-ActionLink" p:id="@{#line.courseDetails.code.replace('&amp;','').replace(' ','')}_copy" p:actionLabel="Copy" p:cssClasses="inlineBlock">
+    <bean id="termCopyCourse" p:id="@{#line.placeHolder ? 'palceholder': #line.courseDetails.code.replace('&amp;','').replace(' ','')}_copy_@{#index}" parent="Uif-ActionLink" p:actionLabel="Copy" p:cssClasses="inlineBlock">
         <property name="actionScript" value="
             var backupFlag = '@{#line.planItemDataObject.type}'=='backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', backup:backupFlag, pageId:'copy_dialog_page'};
@@ -915,7 +915,7 @@
         "/>
     </bean>
 
-    <bean id="termDeleteCourse" parent="Uif-ActionLink" p:id="@{#line.courseDetails.code.replace('&amp;','').replace(' ','')}_delete" p:actionLabel="Delete" p:cssClasses="inlineBlock">
+    <bean id="termDeleteCourse" parent="Uif-ActionLink" p:id="@{#line.placeHolder ? #line.placeHolderCode.replace('&amp;','').replace(' ','') : #line.courseDetails.code.replace('&amp;','').replace(' ','')}_delete_@{#index}" p:actionLabel="Delete" p:cssClasses="inlineBlock">
         <property name="actionScript" value="
             var backupFlag = '@{#line.planItemDataObject.type}'=='backup';
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', backup:backupFlag, pageId:'plan_item_delete_page'};
@@ -925,7 +925,7 @@
         "/>
     </bean>
 
-    <bean id="termAddRecommended" parent="Uif-ActionLink" p:id="@{#line.courseDetails.code.replace('&amp;','').replace(' ','')}_add" p:actionLabel="Add to Plan" p:cssClasses="inlineBlock">
+    <bean id="termAddRecommended" parent="Uif-ActionLink" p:id="recommendedTerm_add" p:actionLabel="Add to Plan" p:cssClasses="inlineBlock">
         <property name="actionScript" value="
             var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', atpId:'@{#line.planItemDataObject.atp}', pageId:'recommended_dialog_page'};
             if (!@{#line.placeHolder}) retrieveData.courseId = '@{#line.courseDetails.courseId}';
