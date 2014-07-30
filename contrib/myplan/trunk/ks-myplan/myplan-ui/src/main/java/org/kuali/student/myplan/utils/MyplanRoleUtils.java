@@ -26,6 +26,7 @@ public class MyplanRoleUtils extends ViewAuthorizerBase {
         roleQualifiers.put(AUTHORIZED_TO_VIEW, expectedRoles);
         boolean isAuthorized = getPermissionService().isAuthorizedByTemplate(principalId, KRADConstants.KRAD_NAMESPACE, "View", new HashMap<String, String>(), roleQualifiers);
         return isAuthorized;
+
     }
 
 }
