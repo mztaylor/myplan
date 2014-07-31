@@ -17,4 +17,6 @@ public class GlobalConstants {
     public static final String SLN_URL_PARAM = "ks.myplan.externalizable.sln.url";
     public static final String MYPLAN_APP_CODE = ConfigContext.getCurrentContextConfig().getProperty(APP_CODE_PARAM);
     public static final String MYPLAN_SLN_URL = ConfigContext.getCurrentContextConfig().getProperty(SLN_URL_PARAM);
+
+    public static final String MYPLAN_ADVISER = "adviser";
 }
