@@ -344,7 +344,7 @@
                         <list>
                             <bean parent="addItemCourse"/>
                             <bean parent="addItemPlaceholder"/>
-                            <bean parent="planItemNote" p:label="Notes"/>
+                            <bean parent="planItemNote" p:id="notes_placeholder" p:label="Notes"/>
                             <bean parent="KSAP-SimpleInputField" p:propertyName="planItemId"
                                   p:hidden="true" p:render="@{#form.planItemId NE null}">
                                 <property name="control">
