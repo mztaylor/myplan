@@ -439,7 +439,7 @@
           p:id="KSAP-DegreeAuditList">
         <property name="componentSecurity.additionalRoleQualifiers">
             <map>
-                <entry key="authorizedToView" value="STUDENT"/>
+                <entry key="authorizedToView" value="STUDENT,ADVISER"/>
             </map>
         </property>
         <property name="onDocumentReadyScript" value="
