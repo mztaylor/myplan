@@ -322,7 +322,7 @@
                     <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                     <property name="items">
                         <list>
-                            <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Add to Plan">
+                            <bean parent="KSAP-PrimaryActionButton-Small" p:id="bookmark_add" p:actionLabel="Add to Plan">
                                 <property name="actionScript" value="
                                     var retrieveData = {
                                         action:'plan',
@@ -338,7 +338,7 @@
                                     openPopup('add_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
                                 "/>
                             </bean>
-                            <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Delete">
+                            <bean parent="KSAP-SecondaryActionButton-Small" p:id="@{#line.placeHolder ? #line.placeHolderCode.replace('&amp;','').replace(' ','') : #line.courseDetails.code.replace('&amp;','').replace(' ','')}_delete_@{#index}" p:actionLabel="Delete">
                                 <property name="actionScript" value="
                                     var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', planItemId:'@{#line.planItemDataObject.id}', pageId:'plan_item_delete_page'};
                                     var popupStyle = {width:'300px', height:'16px'};
