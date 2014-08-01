@@ -22,6 +22,11 @@
     <bean id="Message-FormView" p:viewName="Message-FormView" parent="MyPlanBaseFormView">
         <property name="formClass" value="org.kuali.student.myplan.comment.form.CommentForm"/>
         <property name="entryPageId" value="message_dialog_response_page"/>
+        <property name="componentSecurity.additionalRoleQualifiers">
+            <map>
+                <entry key="authorizedToView" value="STUDENT,ADVISER"/>
+            </map>
+        </property>
         <property name="items">
             <list>
                 <bean parent="KSAP-PageVerticalLayout" p:id="message_dialog_response_page" p:width="640px"
@@ -404,9 +409,19 @@
         <property name="viewHelperServiceClass"
                   value="org.kuali.student.myplan.comment.service.MessagesLookupableHelperImpl"/>
         <property name="entryPageId" value="messages_detail_page"/>
+        <property name="componentSecurity.additionalRoleQualifiers">
+            <map>
+                <entry key="authorizedToView" value="STUDENT,ADVISER"/>
+            </map>
+        </property>
         <property name="items">
             <list>
                 <bean parent="KSAP-PageHorizontalLayout" id="messages_detail_page" p:id="messages_detail_page">
+                    <property name="componentSecurity.additionalRoleQualifiers">
+                        <map>
+                            <entry key="authorizedToView" value="STUDENT,ADVISER"/>
+                        </map>
+                    </property>
                     <property name="headerText" value="Messages and Comments"/>
                     <property name="items">
                         <list>

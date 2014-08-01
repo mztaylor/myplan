@@ -134,6 +134,11 @@
             <list>
                 <bean parent="KSAP-PageHorizontalLayout" id="degree_audit" p:id="degree_audit">
                     <property name="headerText" value="Audit"/>
+                    <property name="componentSecurity.additionalRoleQualifiers">
+                        <map>
+                            <entry key="authorizedToView" value="STUDENT,ADVISER"/>
+                        </map>
+                    </property>
                     <property name="items">
                         <list>
                             <bean id="degree_audit_block_item" parent="degree_audit_block"/>

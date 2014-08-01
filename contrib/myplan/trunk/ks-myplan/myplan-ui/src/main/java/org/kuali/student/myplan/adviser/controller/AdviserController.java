@@ -190,7 +190,9 @@ public class AdviserController extends UifControllerBase {
         Person person = getPersonService().getPerson(studentId);
         if (person != null) {
             session.addObject(PlanConstants.SESSION_KEY_STUDENT_NAME, person.getFirstName().substring(0, 1).toUpperCase() + person.getFirstName().substring(1, person.getFirstName().length()) + " " + person.getLastName().substring(0, 1).toUpperCase() + person.getLastName().substring(1, person.getLastName().length()));
-            session.addObject(PlanConstants.SESSION_KEY_STUDENT_NUMBER, person.getExternalIdentifiers().get("studentID"));
+            if (person.getExternalIdentifiers() != null && StringUtils.isNotBlank(person.getExternalIdentifiers().get("studentID"))) {
+                session.addObject(PlanConstants.SESSION_KEY_STUDENT_NUMBER, person.getExternalIdentifiers().get("studentID"));
+            }
             return "redirect:/myplan/plan?methodToCall=start&viewId=PlannedCourses-FormView";
 
         } else {
