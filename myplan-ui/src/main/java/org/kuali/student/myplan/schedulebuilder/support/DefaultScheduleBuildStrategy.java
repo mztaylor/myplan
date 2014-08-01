@@ -27,6 +27,8 @@ import org.kuali.student.myplan.schedulebuilder.dto.*;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.myplan.schedulebuilder.util.*;
 import org.kuali.student.myplan.utils.CalendarUtil;
+import org.kuali.student.myplan.utils.GlobalConstants;
+import org.kuali.student.myplan.utils.MyplanRoleUtils;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -859,7 +861,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     @Override
     public LearningPlan getLearningPlan(String requestedLearningPlanId)
             throws PermissionDeniedException {
-        if (!getUserSessionHelper().isStudent()) {
+        if (!MyplanRoleUtils.principalHasRole(getUserSessionHelper().getCurrentUserId(), String.format("%s,%s", GlobalConstants.STUDENT_ROLE, GlobalConstants.NON_STUDENT_ROLE))) {
             throw new PermissionDeniedException(
                     "Must be a student to build a schedule");
         }

@@ -205,7 +205,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
         List<PlanItemEntity> planItemEntities = planItemDao.getLearningPlanItems(learningPlanId, category);
         if (null == planItemEntities) {
             throw new DoesNotExistException(String.format("Plan item with learning plan Id [%s] and category (%s) does not exist",
-                    learningPlanId,category.toString()));
+                    learningPlanId, category.toString()));
         } else {
             for (PlanItemEntity planItemEntity : planItemEntities) {
                 planItemInfos.add(planItemEntity.toDto());
@@ -936,7 +936,7 @@ public class AcademicPlanServiceImpl implements AcademicPlanService {
 
             if (regId != null) {
                 Person person = getPersonService().getPerson(regId);
-                if (person != null && StringUtils.hasText(person.getExternalIdentifiers().get(externalIdentifier))) {
+                if (person != null && person.getExternalIdentifiers() != null && StringUtils.hasText(person.getExternalIdentifiers().get(externalIdentifier))) {
                     String systemKey = person.getExternalIdentifiers().get(externalIdentifier);
                     if (CollectionUtils.isEmpty(learningPlanInfo.getAttributes())) {
                         List<AttributeInfo> attributeInfos = new ArrayList<AttributeInfo>();

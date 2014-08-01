@@ -19,4 +19,9 @@ public class GlobalConstants {
     public static final String MYPLAN_SLN_URL = ConfigContext.getCurrentContextConfig().getProperty(SLN_URL_PARAM);
 
     public static final String MYPLAN_ADVISER = "adviser";
+
+    public static final String NON_STUDENT_ROLE = "NON-STUDENT";
+    public static final String APPLICANT_ROLE = "APPLICANT";
+    public static final String STUDENT_ROLE = "STUDENT";
+    public static final String ADVISER_ROLE = "ADVISER";
 }
