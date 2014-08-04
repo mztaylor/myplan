@@ -24,4 +24,6 @@ public class GlobalConstants {
     public static final String APPLICANT_ROLE = "APPLICANT";
     public static final String STUDENT_ROLE = "STUDENT";
     public static final String ADVISER_ROLE = "ADVISER";
+    public static final String MYPLAN_VIEW_COMPONENT_TEMPLATE_NAME = "View Myplan Component";
+    public static final String AUTHORIZED_TO_VIEW = "authorizedToView";
 }

@@ -36,7 +36,7 @@
         "/>
         <property name="header.render" value="false"/>
         <property name="footer.render" value="false"/>
-        <property name="authorizerClass" value="org.kuali.rice.krad.uif.view.MyplanViewAuthorizer"/>
+        <property name="authorizerClass" value="org.kuali.student.myplan.view.MyplanViewAuthorizer"/>
     </bean>
 
     <!-- View without the header and footer and just the theme -->
@@ -54,7 +54,7 @@
                     setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
                     setConfigParam('devMode', @{#ConfigProperties['rice.krad.dev.mode']});
         "/>
-        <property name="authorizerClass" value="org.kuali.rice.krad.uif.view.MyplanViewAuthorizer"/>
+        <property name="authorizerClass" value="org.kuali.student.myplan.view.MyplanViewAuthorizer"/>
     </bean>
 
     <bean id="MyPlanFormView" abstract="true" parent="MyPlanBaseFormView">
@@ -93,7 +93,7 @@
         </property>
         <property name="renderSearchButtons" value="false"/>
         <property name="renderLookupCriteria" value="false"/>
-        <property name="authorizerClass" value="org.kuali.rice.krad.uif.view.MyplanLookupViewAuthorizer"/>
+        <property name="authorizerClass" value="org.kuali.student.myplan.view.MyplanLookupViewAuthorizer"/>
     </bean>
 
     <bean id="MyPlanLookupView" abstract="true" parent="MyPlanBaseLookupView">
@@ -125,7 +125,7 @@
                     setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
                     setConfigParam('devMode', @{#ConfigProperties['rice.krad.dev.mode']});
         "/>
-        <property name="authorizerClass" value="org.kuali.rice.krad.uif.view.MyplanInquiryViewAuthorizer"/>
+        <property name="authorizerClass" value="org.kuali.student.myplan.view.MyplanInquiryViewAuthorizer"/>
     </bean>
 
     <bean id="MyPlanInquiryView" abstract="true" parent="MyPlanBaseInquiryView">
@@ -155,7 +155,7 @@
                     setConfigParam('ksapImageLocation', '@{#ConfigProperties['ks.myplan.externalizable.images.url']}/');
                     setConfigParam('devMode', @{#ConfigProperties['rice.krad.dev.mode']});
         "/>
-        <property name="authorizerClass" value="org.kuali.rice.krad.uif.view.MyplanViewAuthorizer"/>
+        <property name="authorizerClass" value="org.kuali.student.myplan.view.MyplanViewAuthorizer"/>
     </bean>
 
     <bean id="MyPlanMaintenanceView" abstract="true" parent="MyPlanBaseMaintenanceView">
