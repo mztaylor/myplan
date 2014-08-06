@@ -1,13 +1,10 @@
 package org.kuali.student.myplan.utils;
 
 import org.apache.commons.lang.StringUtils;
-import org.kuali.rice.kim.api.identity.Person;
+import org.kuali.rice.core.api.resourceloader.GlobalResourceLoader;
 import org.kuali.rice.krad.uif.view.ViewAuthorizerBase;
-import org.kuali.rice.krad.util.KRADConstants;
-import org.kuali.student.myplan.config.UwMyplanServiceLocator;
-import org.kuali.student.myplan.plan.PlanConstants;
-import org.kuali.student.r2.common.dto.ContextInfo;
 
+import javax.xml.namespace.QName;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,9 +18,9 @@ public class MyplanRoleUtils extends ViewAuthorizerBase {
 
     /**
      * This Utility Method is used to define if the user is authorized to view the component or not.
-     *
+     * <p/>
      * expectedRoles param takes in a comma separated role names.
-     *
+     * <p/>
      * For eg: principalHasRole("730FA4DCAE3411D689DA0004AC494FFE","STUDENT,NON-STUDENT,ADVISER")
      *
      * @param principalId
@@ -40,17 +37,17 @@ public class MyplanRoleUtils extends ViewAuthorizerBase {
         Map<String, String> roleQualifiers = new HashMap<String, String>();
         roleQualifiers.put(GlobalConstants.AUTHORIZED_TO_VIEW, expectedRoles);
         roleQualifiers.put(GlobalConstants.MYPLAN_ADVISER, String.valueOf(getUserSessionHelper().isAdviser()));
-        return authorizedByTemplate(principalId, roleQualifiers, GlobalConstants.MYPLAN_VIEW_COMPONENT_TEMPLATE_NAME);
+        return getUserSessionHelper().authorizedByTemplate(principalId, roleQualifiers, GlobalConstants.MYPLAN_VIEW_COMPONENT_TEMPLATE_NAME);
     }
 
-    public static boolean authorizedByTemplate(String userId, Map<String, String> roleQualifiers, String permissionTemplateName) {
+    /*public static boolean authorizedByTemplate(String userId, Map<String, String> roleQualifiers, String permissionTemplateName) {
         return getPermissionService().isAuthorizedByTemplate(userId, KRADConstants.KRAD_NAMESPACE, permissionTemplateName, new HashMap<String, String>(), roleQualifiers);
-    }
+    }*/
 
 
     public static UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
+            userSessionHelper = (UserSessionHelper) GlobalResourceLoader.getService(new QName("http://student.kuali.org/wsdl/userSession", "UserSessionHelper"));
         }
 
         return userSessionHelper;
