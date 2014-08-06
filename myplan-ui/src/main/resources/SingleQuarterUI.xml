@@ -43,15 +43,15 @@
                     <list>
                         <bean parent="Uif-Link" p:linkText="Your Academic Year">
                             <property name="href" value="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView&amp;focusAtpId=@{dataObject.atpId}"/>
-                            <property name="cssClasses" value="secondaryNavigation__year"/>
+                            <property name="cssClasses" value="secondaryNavigation__year printDisplay"/>
                         </bean>
                         <bean parent="Uif-Link" p:linkText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).formatQuarterLabel(dataObject.atpId)}">
                             <property name="href" value="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{dataObject.atpId}"/>
-                            <property name="cssClasses" value="secondaryNavigation__term active"/>
+                            <property name="cssClasses" value="secondaryNavigation__term active printDisplay"/>
                         </bean>
                         <bean parent="Uif-Link" p:linkText="Build Your Schedule">
                             <property name="href" value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{dataObject.atpId}&amp;requestedLearningPlanId=@{dataObject.learningPlanId}&amp;pageId=schedule_build"/>
-                            <property name="cssClasses" value="secondaryNavigation__schedule"/>
+                            <property name="cssClasses" value="secondaryNavigation__schedule printDisplay"/>
                             <property name="additionalCssClasses" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).isAtpPublished(dataObject.atpId) OR dataObject.learningPlanId EQ null ? 'disabled' : ''}"/>
                             <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                             <property name="onClickScript" value="if(jQuery(this).hasClass('disabled')){ e.preventDefault(); }"/>
@@ -78,7 +78,7 @@
                                             <property name="items">
                                                 <list>
                                                     <bean parent="KSAP-HorizontalBoxGroup"
-                                                          p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--term">
+                                                          p:cssClasses="planNavigation__buttonGroup planNavigation__buttonGroup--term printDisplay">
                                                         <property name="items">
                                                             <list>
                                                                 <bean id="sqv_previous_term_button" parent="Uif-Link" p:title="Previous Quarter">
@@ -136,7 +136,7 @@
                                             </property>
                                         </bean>
 
-                                        <bean parent="KSAP-Message" p:cssClasses="block">
+                                        <bean parent="KSAP-Message" p:cssClasses="block printDisplay">
                                             <property name="messageText"
                                                       value="View your courses and add or delete scheduled sections from your [0]. MyPlan allows you to create an academic plan, but does not currently check your eligibility for planned courses or sections. To prepare for registration, [1]."/>
                                             <property name="inlineComponents">
@@ -186,6 +186,7 @@
                                 </property>
                             </bean>
                             <bean parent="KSAP-RightPane" p:width="230px">
+                                <property name="cssClasses" value="printDisplay"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-ModuleContainer" p:headerText="Pinned Schedules" p:render="@{dataObject.openForPlanning AND dataObject.publishedTerm AND dataObject.pinnedSchedulesExists}">
