@@ -143,6 +143,7 @@
                         <list>
                             <bean id="degree_audit_block_item" parent="degree_audit_block"/>
                             <bean parent="KSAP-RightPane" p:width="230px">
+                                <property name="cssClasses" value="printDisplay"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-YourStuff">
@@ -221,6 +222,7 @@
             <null/>
         </property>
         <property name="cssClasses" value="auditTabs"/>
+        <property name="additionalCssClasses" value="printDisplay"/>
         <property name="linkSeparator" value=""/>
         <property name="emptyLinkGroupString" value=""/>
         <property name="items">
@@ -244,6 +246,7 @@
 
     <bean id="run_degree_audits" parent="KSAP-VerticalBoxGroup">
         <property name="cssClasses" value="auditRun"/>
+        <property name="additionalCssClasses" value="printDisplay"/>
         <property name="instructionalMessage">
             <bean parent="KSAP-Message" p:messageText="Select your campus and choose a degree program or minor from the dropdown menu below."/>
         </property>
