@@ -31,7 +31,9 @@
                     <property name="items">
                         <list>
                             <ref bean="course_details_section"/>
-                            <bean parent="KSAP-RightPane" p:width="230px"/>
+                            <bean parent="KSAP-RightPane" p:width="230px">
+                                <property name="cssClasses" value="printDisplay"/>
+                            </bean>
                         </list>
                     </property>
                 </bean>
@@ -45,6 +47,7 @@
                 <ref bean="course_details_actions"/>
                 <bean parent="KSAP-InfoMessage" p:style="margin-top:20px;"
                       p:render="@{(dataObject.plannedCourseSummary.backupList.size() gt 0 or dataObject.plannedCourseSummary.plannedList.size() gt 0 or dataObject.plannedCourseSummary.academicTerms.size() gt 0) ? true : false}">
+                    <property name="additionalCssClasses" value="printBanner"/>
                     <property name="cssClasses">
                         <list merge="true">
                             <value>alert-inline</value>
@@ -64,6 +67,7 @@
         </property>
     </bean>
     <bean id="course_details_actions" parent="KSAP-HorizontalBoxGroup">
+        <property name="cssClasses" value="printDisplay"/>
         <property name="onDocumentReadyScript" value="
             jQuery('#course_details_actions').on('PLAN_ITEM_ADDED', function(event, data){
                 if (data.planItemType === 'wishlist' &amp;&amp; data.courseId === '@{dataObject.courseSummaryDetails.courseId}') {
