@@ -217,6 +217,7 @@
                         <list>
                             <bean parent="plan_audit_block" p:width="710px"/>
                             <bean parent="KSAP-RightPane" p:width="230px">
+                                <property name="cssClasses" value="printDisplay"/>
                                 <property name="items">
                                     <list>
                                         <bean parent="KSAP-YourStuff">
@@ -282,7 +283,7 @@
                 <bean parent="audit_tabs">
                     <property name="items">
                         <list>
-                            <bean parent="audit_tab_plan" p:cssClasses="auditTabs--active"/>
+                            <bean parent="audit_tab_plan" p:cssClasses="auditTabs--active" p:additionalCssClasses="printDisplay"/>
                             <bean parent="audit_tab_degree"/>
                         </list>
                     </property>
@@ -295,6 +296,7 @@
 
     <bean id="run_plan_audits" parent="KSAP-VerticalBoxGroup">
         <property name="cssClasses" value="auditRun"/>
+        <property name="additionalCssClasses" value="printDisplay"/>
         <property name="items">
             <list>
                 <bean parent="plan_items_empty_message"/>
