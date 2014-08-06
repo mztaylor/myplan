@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by hemanth on 7/29/14.
  */
-public class MyplanRoleUtils extends ViewAuthorizerBase {
+public class KSAPRoleUtils extends ViewAuthorizerBase {
 
     private static UserSessionHelper userSessionHelper;
 
@@ -40,10 +40,6 @@ public class MyplanRoleUtils extends ViewAuthorizerBase {
         return getUserSessionHelper().authorizedByTemplate(principalId, roleQualifiers, GlobalConstants.MYPLAN_VIEW_COMPONENT_TEMPLATE_NAME);
     }
 
-    /*public static boolean authorizedByTemplate(String userId, Map<String, String> roleQualifiers, String permissionTemplateName) {
-        return getPermissionService().isAuthorizedByTemplate(userId, KRADConstants.KRAD_NAMESPACE, permissionTemplateName, new HashMap<String, String>(), roleQualifiers);
-    }*/
-
 
     public static UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
@@ -54,7 +50,7 @@ public class MyplanRoleUtils extends ViewAuthorizerBase {
     }
 
     public static void setUserSessionHelper(UserSessionHelper userSessionHelper) {
-        MyplanRoleUtils.userSessionHelper = userSessionHelper;
+        KSAPRoleUtils.userSessionHelper = userSessionHelper;
     }
 
 
