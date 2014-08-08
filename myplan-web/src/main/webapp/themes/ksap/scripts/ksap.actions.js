@@ -72,7 +72,7 @@ function submitPopupForm(additionalFormData, e, bDialog) {
     var blockOptions = {
         centerX: true,
         centerY: true,
-        message: '<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_small.gif"/>',
+        message: '<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_small.gif" alt="Please wait, loading..."/>',
         css: {
             width: '100%',
             border: 'none',
@@ -123,7 +123,7 @@ function ksapAjaxSubmitForm(data, successCallback, elementToBlock, formId, block
         var elementBlockingOptions = {
             beforeSend: function () {
                 if (elementToBlock.hasClass("unrendered")) {
-                    elementToBlock.append('<img src="' + getConfigParam("kradImageLocation") + 'loader.gif" alt="Loading..." /> Loading...');
+                    elementToBlock.append('<img src="' + getConfigParam("kradImageLocation") + 'loader.gif" alt="Please wait, loading..." /> Loading...');
                     elementToBlock.show();
                 }
                 else {
@@ -131,7 +131,7 @@ function ksapAjaxSubmitForm(data, successCallback, elementToBlock, formId, block
                         baseZ: 100,
                         centerY: false,
                         centerX: false,
-                        message: '<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_refresh.gif" alt="loading..." />',
+                        message: '<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_refresh.gif" alt="Please wait, loading..." />',
                         fadeIn: 0,
                         fadeOut: 0,
                         overlayCSS: {

@@ -68,8 +68,7 @@ function openPopup(getId, retrieveData, formAction, popupStyle, popupOptions, e)
 
     var popupId = popupItem.GetPopOverID();
 
-    fnPositionPopUp(popupId);
-    clickOutsidePopOver(popupId, popupItem);
+    setupPopover(popupId, e);
 
     var retrieveForm = '<form id="retrieveForm" action="' + retrieveData.action + '" method="post" />'
     jQuery("body").append(retrieveForm);
@@ -88,12 +87,17 @@ function openPopup(getId, retrieveData, formAction, popupStyle, popupOptions, e)
         }
         if (jQuery("#KSAP-Popover").length) {
             popupItem.SetPopOverInnerHtml(component);
-            fnPositionPopUp(popupId);
-            if (popupOptions.close || typeof popupOptions.close === 'undefined') jQuery("#" + popupId + " .jquerypopover-innerHtml").append('<img src="' + getConfigParam("ksapImageLocation") + 'icons/close.png" class="popover__close"/>');
-            jQuery("#" + popupId + " img.popover__close").on('click', function () {
-                popupItem.HidePopOver();
-                fnCloseAllPopups();
-            });
+            var popup =  jQuery("#" + popupId);
+            if (popup.offset().top < 0 || popup.offset().left < 0) {
+                fnPositionPopUp(popup);
+            }
+            if (popupOptions.close || typeof popupOptions.close === 'undefined') {
+                popup.find(".jquerypopover-innerHtml").append('<a href="javascript:void(0)" class="popover__close" title="Close Popup"/>');
+                popup.find("a.popover__close").on('click', function () {
+                    popupItem.HidePopOver();
+                    fnCloseAllPopups();
+                });
+            }
         }
         runHiddenScripts(getId);
         elementToBlock.unblock();
@@ -162,7 +166,9 @@ function openMenu(id, getId, atpId, e, selector, popupClasses, popupOptions, clo
 
     runHiddenScripts(id + "_popup");
 
-    clickOutsidePopOver(popupBoxId, popupBox);
+    setupPopover(popupBoxId, e);
+
+    //clickOutsidePopOver(popupBoxId, popupBox);
 }
 /**
  *
@@ -191,26 +197,25 @@ function openDialog(sText, e, close) {
     var popupBoxId = popupBox.GetPopOverID();
     popupBox.FreezePopOver();
 
-    if (close || typeof close === 'undefined') jQuery("#" + popupBoxId + " .jquerypopover-innerHtml").append('<img src="' + getConfigParam("ksapImageLocation") + 'icons/close.png" class="popover__close"/>');
+    if (close || typeof close === 'undefined') {
+        jQuery("#" + popupBoxId + " .jquerypopover-innerHtml").append('<a href="javascript:void(0)" class="popover__close" title="Close Popup"/>');
+        jQuery("#" + popupBoxId + " a.popover__close").on('click', function () {
+            popupBox.HidePopOver();
+            fnCloseAllPopups();
+        });
+    }
 
-    fnPositionPopUp(popupBoxId);
-
-    clickOutsidePopOver(popupBoxId, popupBox);
-
-    jQuery("#" + popupBoxId + " img.popover__close").on('click', function () {
-        popupBox.HidePopOver();
-        fnCloseAllPopups();
-    });
+    setupPopover(popupBoxId, e);
 }
 
-function fnPositionPopUp(popupBoxId) {
-    if (parseFloat(jQuery("#" + popupBoxId).css("top")) < 0 || parseFloat(jQuery("#" + popupBoxId).css("left")) < 0) {
-        var top = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
-        var left = (document.documentElement && document.documentElement.scrollLeft) || document.body.scrollLeft;
-        var iTop = ( top + ( jQuery(window).height() / 2 ) ) - ( jQuery("#" + popupBoxId).height() / 2 );
-        var iLeft = ( left + ( jQuery(window).width() / 2 ) ) - ( jQuery("#" + popupBoxId).width() / 2 );
-        jQuery("#" + popupBoxId).css({top: iTop + 'px', left: iLeft + 'px'});
+function fnPositionPopUp(popup) {
+    var top = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
+    var left = (document.documentElement && document.documentElement.scrollLeft) || document.body.scrollLeft;
+    var offset = {
+        top: ( top + ( jQuery(window).height() / 2 ) ) - ( popup.height() / 2 ),
+        left: ( left + ( jQuery(window).width() / 2 ) ) - ( popup.width() / 2 )
     }
+    popup.offset(offset);
 }
 
 /*
@@ -232,6 +237,7 @@ function fnPopoverSlider(showId, parentId, direction) {
         jQuery("#" + parentId + " > .uif-horizontalBoxLayout > div.uif-boxLayoutHorizontalItem").filter("#" + showId).show("slide", {
             direction: newDirection
         }, 100, function () {
+            jQuery("#" + parentId + " > .uif-horizontalBoxLayout > div.uif-boxLayoutHorizontalItem:visible").find("button:not([disabled]):first").focus();
         });
     });
 }
@@ -286,4 +292,46 @@ function editNote(obj, e) {
         selector: "body"
     };
     openPopup('edit_note_page', retrieveData, 'plan', null, popupOptions, e);
+}
+
+function setupPopover(id, event) {
+    var popup = jQuery("#" + id);
+
+    jQuery("body").on("click", function (e) {
+        var target = (e.target) ? jQuery(e.target) : jQuery(e.srcElement);
+        if (target.parents("#" + id).length === 0) {
+            fnCloseAllPopups();
+            jQuery("body").off("click");
+        }
+    });
+    popup.on("keydown", function(e) {
+        if (e.which == 9) {
+            var focusableItems = popup.find("a:not(.disabled), :input:not([disabled])").filter(':visible');
+            var focusedItem = jQuery(':focus');
+            if (e.shiftKey) {
+                //back tab
+                // if focused on first item and user preses back-tab, go to the last focusable item
+                if (focusableItems.index(focusedItem) === 0){
+                    focusableItems.get(focusableItems.length - 1).focus();
+                    e.preventDefault();
+                }
+            } else {
+                //forward tab
+                // if focused on the last item and user preses tab, go to the first focusable item
+                if (focusableItems.index(focusedItem) === (focusableItems.length - 1)) {
+                    focusableItems.get(0).focus();
+                    e.preventDefault();
+                }
+            }
+        }
+        if (e.which == 27) {
+            var close = popup.find("a.popover__close");
+            close.click();
+            fnCloseAllPopups();
+            e.preventDefault();
+        }
+    });
+    if (popup.offset().top < 0 || popup.offset().left < 0) {
+        fnPositionPopUp(popup);
+    }
 }

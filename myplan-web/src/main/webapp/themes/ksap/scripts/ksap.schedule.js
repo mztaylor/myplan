@@ -62,7 +62,7 @@ var KsapScheduleBuild = {
         target.parent(".uif-linkGroup").block({
             centerX: true,
             centerY: true,
-            message: '<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_small.gif"/>',
+            message: '<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_small.gif" alt="Please wait, loading..."/>',
             css: {
                 width: '100%',
                 border: 'none',
@@ -179,7 +179,7 @@ var KsapScheduleBuild = {
             KsapSbCalendar.highlightActiveEvents(calEvent);
         }
         var popupOptions = {
-            innerHtml: popupHtml + '<img src="' + getConfigParam("ksapImageLocation") + 'icons/close.png" class="popover__close"/>',
+            innerHtml: popupHtml + '<a href="javascript:void(0)" class="popover__close" title="Close Popup"/>',
             position: "top",
             align: "center",
             tail: {align: "center"}
@@ -338,6 +338,4 @@ var KsapScheduleBuild = {
             fnCloseAllPopups();
         }
     }
-
-
 };
