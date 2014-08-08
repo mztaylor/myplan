@@ -294,17 +294,17 @@
         </property>
     </bean>
 
-    <bean id="run_plan_audits" parent="KSAP-VerticalBoxGroup">
+    <bean id="run_plan_audits" parent="KSAP-VerticalFieldGroup">
         <property name="cssClasses" value="auditRun"/>
+        <property name="label" value="Select your campus and intended degree program from the dropdown menu below."/>
+        <property name="fieldLabel.render" value="true"/>
         <property name="additionalCssClasses" value="printDisplay"/>
         <property name="items">
             <list>
                 <bean parent="plan_items_empty_message"/>
                 <!--TODO: https://jira.kuali.org/browse/KULRICE-9846 progressiveRender expressions are evaluated before the defaultValue is set, workaround is to set the value on the backend -->
                 <bean parent="KSAP-SimpleInputField" p:propertyName="planAudit.campusParam" p:defaultValue="306">
-                    <property name="instructionalMessage">
-                        <bean parent="KSAP-Message" p:messageText="Select your campus and intended degree program from the dropdown menu below."/>
-                    </property>
+                    <property name="label" value="Select your campus"/>
                     <property name="control">
                         <bean parent="Uif-HorizontalRadioControl" p:fieldsetClasses="auditRun__radioSet"/>
                     </property>

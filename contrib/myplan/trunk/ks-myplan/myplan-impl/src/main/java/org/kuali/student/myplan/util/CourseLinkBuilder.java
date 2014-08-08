@@ -24,7 +24,7 @@ public class CourseLinkBuilder {
 
     private transient static CluService luService;
 
-    static String link = "<a onclick=\"openCourse('%s','%s %s', event);\" href=\"#\" title=\"%s\">%s</a>";
+    static String link = "<a onclick=\"openCourse('%s','%s %s', event);\" href=\"#\" title=\"%s\" aria-haspopup=\"true\">%s</a>";
 
     public static final ContextInfo CONTEXT_INFO = new ContextInfo();
 

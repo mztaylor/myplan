@@ -290,7 +290,7 @@ function validatePlanAudit(obj) {
     var blockOptions = {
         centerX: false,
         centerY: false,
-        message: '<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_small.gif" style="vertical-align:middle; margin-right:10px;"/>Processing request',
+        message: '<img src="' + getConfigParam("ksapImageLocation") + 'loader/ajax_small.gif" style="vertical-align:middle; margin-right:10px;" alt="Processing request..."/>Processing request',
         css: {
             top: '0px',
             left: '0px',

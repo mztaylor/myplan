@@ -144,23 +144,27 @@
                                         <property name="style" value="float: right;"/>
                                         <property name="items">
                                             <list>
-                                                <bean parent="Uif-LinkField" id="sendToRegistration"
-                                                      p:id="sendToRegistration">
-                                                    <property name="linkText" value="Register"/>
-                                                    <property name="title" value="Register"/>
-                                                    <property name="href"
-                                                              value="@{registrationDetails.registrationUrl}"/>
-                                                    <property name="cssClasses"
-                                                              value="btn btn-primary btn-small @{registrationDetails.registrationUrl EQ null ? 'disabled':''}"/>
-                                                    <property name="target" value="_blank"/>
-                                                    <property name="onClickScript" value="if(jQuery(this).hasClass('disabled')){return false;} actionInvokeHandler(this);"/>
-                                                    <property name="dataAttributes">
-                                                        <map>
-                                                            <entry key="ajaxsubmit" value="true"/>
-                                                            <entry key="validate" value="false"/>
-                                                            <entry key="submit_data"
-                                                                   value="{&quot;methodToCall&quot;:&quot;navigate&quot;,&quot;actionParameters[navigateToPageId]&quot;:&quot;scheduleCompleted&quot;,&quot;focusId&quot;:&quot;sendToRegistration&quot;,&quot;jumpToId&quot;:&quot;sendToRegistration&quot;}"/>
-                                                        </map>
+                                                <bean parent="Uif-LinkField">
+                                                    <property name="link">
+                                                        <bean parent="Uif-Link" id="sendToRegistration"
+                                                              p:id="sendToRegistration">
+                                                            <property name="linkText" value="Register"/>
+                                                            <property name="title" value="Register"/>
+                                                            <property name="href"
+                                                                      value="@{registrationDetails.registrationUrl}"/>
+                                                            <property name="cssClasses"
+                                                                      value="btn btn-primary btn-small @{registrationDetails.registrationUrl EQ null ? 'disabled':''}"/>
+                                                            <property name="target" value="_blank"/>
+                                                            <property name="onClickScript" value="if(jQuery(this).hasClass('disabled')){return false;} actionInvokeHandler(this);"/>
+                                                            <property name="dataAttributes">
+                                                                <map>
+                                                                    <entry key="ajaxsubmit" value="true"/>
+                                                                    <entry key="validate" value="false"/>
+                                                                    <entry key="submit_data"
+                                                                           value="{&quot;methodToCall&quot;:&quot;navigate&quot;,&quot;actionParameters[navigateToPageId]&quot;:&quot;scheduleCompleted&quot;,&quot;focusId&quot;:&quot;sendToRegistration&quot;,&quot;jumpToId&quot;:&quot;sendToRegistration&quot;}"/>
+                                                                </map>
+                                                            </property>
+                                                        </bean>
                                                     </property>
                                                 </bean>
                                             </list>
@@ -294,7 +298,8 @@
                             <list>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Sect" p:width="24px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Type (Credit)" p:width="72px"/>
-                                <bean parent="scheduleRegistrationActivity-Label" p:labelText="Meeting Time &amp; Location" p:width="268px"/>
+                                <bean parent="scheduleRegistrationActivity-Label" p:labelText="Meeting Time" p:width="190px"/>
+                                <bean parent="scheduleRegistrationActivity-Label" p:labelText="Location" p:width="72px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Instructor" p:width="180px"/>
                             </list>
                         </property>
@@ -407,7 +412,8 @@
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Sect" p:width="24px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="SLN" p:width="48px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Type (Credit)" p:width="72px"/>
-                                <bean parent="scheduleRegistrationActivity-Label" p:labelText="Meeting Time &amp; Location" p:width="268px"/>
+                                <bean parent="scheduleRegistrationActivity-Label" p:labelText="Meeting Time" p:width="190px"/>
+                                <bean parent="scheduleRegistrationActivity-Label" p:labelText="Location" p:width="72px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Instructor" p:width="180px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Enrl Restr" p:width="60px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Enrl Status" p:width="110px"/>
@@ -451,7 +457,8 @@
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Sect" p:width="24px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="SLN" p:width="48px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Type (Credit)" p:width="72px"/>
-                                <bean parent="scheduleRegistrationActivity-Label" p:labelText="Meeting Time &amp; Location" p:width="268px"/>
+                                <bean parent="scheduleRegistrationActivity-Label" p:labelText="Meeting Time" p:width="190px"/>
+                                <bean parent="scheduleRegistrationActivity-Label" p:labelText="Location" p:width="72px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Instructor" p:width="180px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Enrl Restr" p:width="60px"/>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Enrl Status" p:width="110px"/>
@@ -546,7 +553,7 @@
 
     <bean id="scheduleRegistrationActivityEnrollRestriction" parent="Uif-ImageField">
         <property name="cssClasses"
-                  value="registrationActivity__enrollRest registrationActivity__enrollRest--@{#line.enrollmentRestriction}"/>
+                  value="registrationActivity__enrollRest registrationActivity__enrollRest--@{#line.enrollmentRestriction} center"/>
         <property name="image">
             <bean parent="Uif-Image" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif" p:altText="Add or Faculty code required" p:title="Add or Faculty code required"/>
         </property>

@@ -111,6 +111,9 @@ function toggleSections(actionId, toggleId, showClass, showText, hideText) {
             jQuery(this).show().next("tr.collapsible").show().next("tr.collapsible").show();
         });
         jQuery("#" + toggleId + " .planTerm__activitiesInstitution").show();
+        jQuery("#" + toggleId + " table").each(function () {
+            if (jQuery(this).find("tbody tr:visible").length > 0) jQuery(this).find("thead").show();
+        });
         action.text(hideText).data("hidden", false);
     } else {
         group.each(function () {
@@ -118,6 +121,9 @@ function toggleSections(actionId, toggleId, showClass, showText, hideText) {
             var toggle = jQuery(this).find("a[id^='toggle_']");
         });
         jQuery("#" + toggleId + " .planTerm__activitiesInstitution").hide();
+        jQuery("#" + toggleId + " table").each(function () {
+           if (jQuery(this).find("tbody tr:visible").length === 0) jQuery(this).find("thead").hide();
+        });
         action.text(showText).data("hidden", true);
     }
 }
@@ -452,7 +458,7 @@ function planItemTemplate(data) {
         var note = jQuery("<div/>").attr({
             "id": itemId + "-note",
             "class": "planItem__note uif-boxLayoutHorizontalItem uif-tooltip"
-        }).append(image.clone());
+        }).append(image.clone().attr("alt", ""));
         itemGroup.append(note);
         var decoded = data.note.replace(/&lt;br\/&gt;|\n/g, '<br/>');//jQuery("<div/>").html(data.note).text();
         var popoverTheme = "note";
@@ -719,7 +725,7 @@ function toggleSectionAction(actionId, regId, action, data, primaryPlan) {
 
 function removeSectionRow(actionId) {
     var row = jQuery("#" + actionId).parents("tr.courseActivities--planned");
-    row.remove().next("tr.collapsible").remove().next("tr.collapsible").remove();
+    row.nextUntil(".courseActivities--primary, .courseActivities--secondary").andSelf().remove();
 }
 
 function fnUpdateQuarterViewCredits(termCredits) {
@@ -827,7 +833,7 @@ function updateRegistrationUrl(componentId) {
     var blockOptions = {
         centerX: true,
         centerY: true,
-        message: '<img src="' + getConfigParam('ksapImageLocation') + 'loader/ajax_small.gif" />',
+        message: '<img src="' + getConfigParam('ksapImageLocation') + 'loader/ajax_small.gif" alt="Please wait, loading..."/>',
         css: {
             width: '100%',
             border: 'none',

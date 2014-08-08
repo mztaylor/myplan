@@ -783,13 +783,13 @@
                 tableHead.before('
                     &lt;col style=&quot;width: 62px;&quot;&gt;
                     &lt;col style=&quot;width: 103px;&quot;&gt;
-                    &lt;col style=&quot;width: 268px;&quot;&gt;
+                    &lt;col style=&quot;width: 180px;&quot;&gt;
+                    &lt;col style=&quot;width: 88px;&quot;&gt;
                     &lt;col style=&quot;width: 50px;&quot;&gt;
                     &lt;col style=&quot;width: 100px;&quot;&gt;
                     &lt;col style=&quot;width: 80px;&quot;&gt;
                     &lt;col style=&quot;width: 45px;&quot;&gt;
                 ');
-                tableHead.remove();
             }
         "/>
         <property name="items">
@@ -811,6 +811,7 @@
                 </bean>
                 <bean parent="activityType"/>
                 <bean parent="activityMeetingData"/>
+                <bean parent="activityLocationData"/>
                 <bean parent="activityRegCode"/>
                 <bean parent="activityEnrlRestr"/>
                 <bean parent="activityEnrlData" p:render="@{#line.stateKey EQ 'active'}"/>
@@ -836,8 +837,8 @@
                     </property>
                 </bean>
                 <bean parent="activityInstructor"/>
-                <bean parent="activityOther" p:colSpan="3"/>
-                <bean parent="activityAdditionalDetails" p:colSpan="5"/>
+                <bean parent="activityOther"/>
+                <bean parent="activityAdditionalDetails"/>
             </list>
         </property>
     </bean>

@@ -411,7 +411,9 @@ public class ActivityOfferingItem {
         return AtpHelper.atpIdToTermName(this.getAtpId());
     }
 
-    public ActivityOfferingItem getActivityItem() {
+    public ActivityOfferingItem getActivityItemMeeting() { return this; }
+
+    public ActivityOfferingItem getActivityItemLocation() {
         return this;
     }
 

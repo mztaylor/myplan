@@ -247,7 +247,7 @@
                                 <property name="cssClasses" value="courseDetails__fieldLabel"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-Label" p:labelText="Course Requisites"
+                                        <bean parent="Uif-Label" p:labelText="Course Prerequisite"
                                               p:renderColon="false"/>
                                         <ref bean="course_requisite_help_icon"/>
                                     </list>
@@ -425,8 +425,12 @@
         </property>
     </bean>
 
-    <bean id="meeting_building_link_formatter"
+    <bean id="meeting_formatter"
           class="org.kuali.student.myplan.course.util.MeetingDetailsPropertyEditor">
+    </bean>
+
+    <bean id="location_formatter"
+          class="org.kuali.student.myplan.course.util.LocationDetailsPropertyEditor">
     </bean>
 
     <bean id="course_details_sections" parent="KSAP-VerticalBoxGroup" p:headerText="@{dataObject.courseSummaryDetails.code} Course Sections">
@@ -591,7 +595,8 @@
             tableHead.before('
                 &lt;col style=&quot;width: 62px;&quot;&gt;
                 &lt;col style=&quot;width: 103px;&quot;&gt;
-                &lt;col style=&quot;width: 268px;&quot;&gt;
+                &lt;col style=&quot;width: 180px;&quot;&gt;
+                &lt;col style=&quot;width: 88px;&quot;&gt;
                 &lt;col style=&quot;width: 50px;&quot;&gt;
                 &lt;col style=&quot;width: 100px;&quot;&gt;
                 &lt;col style=&quot;width: 80px;&quot;&gt;
@@ -601,7 +606,7 @@
                 jQuery(this).attr('colspan', '3');
             });
             table.find('.courseActivities__additionalDetails').parents('td').each(function() {
-                jQuery(this).attr('colspan', '5');
+                jQuery(this).attr('colspan', '6');
             });
         "/>
         <property name="header">
@@ -654,7 +659,7 @@
                   class="org.kuali.rice.krad.uif.layout.extension.CourseSectionDetailsLayoutManager">
                 <property name="id"
                           value="@{dataObject.courseSummaryDetails.courseId}_@{#line.instituteCode}_@{#line.yearTerm.toATP()}"/>
-                <property name="numberOfColumns" value="7"/>
+                <property name="numberOfColumns" value="8"/>
                 <property name="suppressLineWrapping" value="false"/>
                 <property name="renderSequenceField" value="false"/>
                 <property name="applyDefaultCellWidths" value="false"/>
@@ -679,6 +684,8 @@
                 <bean parent="activityType"/>
 
                 <bean parent="activityMeetingData"/>
+
+                <bean parent="activityLocationData"/>
 
                 <bean parent="activityRegCode"/>
 
@@ -767,13 +774,25 @@
     </bean>
 
     <bean id="activityMeetingData" parent="KSAP-SimpleDataField" p:rowSpan="1" p:colSpan="1">
-        <property name="label" value="Meeting Time &amp; Location"/>
-        <property name="propertyName" value="activityItem"/>
+        <property name="label" value="Meeting Time"/>
+        <property name="propertyName" value="activityItemMeeting"/>
         <property name="escapeHtmlInPropertyValue" value="false"/>
-        <property name="propertyEditor" ref="meeting_building_link_formatter"/>
+        <property name="propertyEditor" ref="meeting_formatter"/>
         <property name="cssClasses">
             <list merge="false">
                 <value>courseActivities__meetingData</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="activityLocationData" parent="KSAP-SimpleDataField" p:rowSpan="1" p:colSpan="1">
+        <property name="label" value="Location"/>
+        <property name="propertyName" value="activityItemLocation"/>
+        <property name="escapeHtmlInPropertyValue" value="false"/>
+        <property name="propertyEditor" ref="location_formatter"/>
+        <property name="cssClasses">
+            <list merge="false">
+                <value>courseActivities__locationData</value>
             </list>
         </property>
     </bean>
@@ -853,7 +872,7 @@
         </property>
     </bean>
 
-    <bean id="activityInstructor" parent="KSAP-VerticalFieldGroup" p:rowSpan="1" p:colSpan="2" p:valign="TOP">
+    <bean id="activityInstructor" parent="KSAP-VerticalFieldGroup" p:rowSpan="1" p:colSpan="3" p:valign="TOP">
         <property name="id" value="instructor_@{#line.atpId}_@{#line.registrationCode}"/>
         <property name="cssClasses" value="courseActivities__instructor"/>
         <property name="items">
@@ -923,7 +942,7 @@
         </property>
     </bean>
 
-    <bean id="activityAdditionalDetails" parent="KSAP-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="5">
+    <bean id="activityAdditionalDetails" parent="KSAP-VerticalFieldGroup" p:valign="TOP" p:rowSpan="1" p:colSpan="6">
         <property name="id" value="details_@{#line.atpId}_@{#line.registrationCode}"/>
         <property name="cssClasses" value="courseActivities__additionalDetails"/>
         <property name="items">

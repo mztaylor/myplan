@@ -260,7 +260,7 @@ function searchForCourses(id, parentId) {
             } else {
                 jQuery('.dataTables_paginate .ui-button').hide();
             }
-            jQuery("#" + oSettings.sInstance + "_length select").on("change", function () {
+            jQuery("#" + oSettings.sInstance + "_length select").attr("id", oSettings.sInstance + "_length_control").on("change", function () {
                 setUrlHash("show", oSettings._iDisplayLength);
             });
             jQuery("#" + oSettings.sInstance + "_paginate a.ui-button").on("click", function (e) {

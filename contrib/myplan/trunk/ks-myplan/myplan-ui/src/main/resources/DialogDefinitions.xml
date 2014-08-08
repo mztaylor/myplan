@@ -120,7 +120,7 @@
                                                                 }
                                                             }).on('ERROR', function(event, data){
                                                                 actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
-                                                            });
+                                                            }).focus();
                                                         "/>
                                                     </bean>
                                                     <bean parent="closePopoverCancel"/>
@@ -175,7 +175,7 @@
                                                                 }
                                                             }).on('ERROR', function(event, data){
                                                                 actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
-                                                            });
+                                                            }).focus();
                                                         "/>
                                                     </bean>
                                                     <bean parent="closePopoverCancel"/>
@@ -226,7 +226,7 @@
                                                                 }
                                                             }).on('ERROR', function(event, data){
                                                                 actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
-                                                            });
+                                                            }).focus();
                                                         "/>
                                                     </bean>
                                                     <bean p:id="copyPastPlannedCourse"
@@ -244,7 +244,7 @@
                                                                 }
                                                             }).on('ERROR', function(event, data){
                                                                 actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
-                                                            });
+                                                            }).focus();
                                                         "/>
                                                     </bean>
                                                     <bean p:id="copyAcademicCourse"
@@ -267,7 +267,7 @@
                                                                 }
                                                             }).on('ERROR', function(event, data){
                                                                 actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
-                                                            });
+                                                            }).focus();
                                                         "/>
                                                     </bean>
                                                     <bean parent="closePopoverCancel"/>
@@ -321,7 +321,7 @@
                                                                 actionFeedback('actionButtonsGroup', false, null, data.cssClasses, data.message);
                                                             }).on('ERROR', function(event, data) {
                                                                 actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
-                                                            });
+                                                            }).focus();
                                                         "/>
                                                     </bean>
                                                     <bean parent="closePopoverCancel"/>
@@ -378,7 +378,7 @@
                                                                 fnCloseAllPopups();
                                                             }).on('ERROR', function(event, data) {
                                                                 actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
-                                                            });
+                                                            }).focus();
                                                         "/>
                                                     </bean>
                                                     <bean parent="closePopoverCancel"/>
@@ -438,7 +438,7 @@
                                                                 fnCloseAllPopups();
                                                             }).on('ERROR', function(event, data){
                                                                 actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
-                                                            });
+                                                            }).focus();
                                                         "/>
                                                     </bean>
                                                     <bean parent="closePopoverCancel"/>
@@ -489,7 +489,7 @@
                                                                 fnCloseAllPopups();
                                                             }).on('ERROR', function(event, data){
                                                                 actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
-                                                            });
+                                                            }).focus();
                                                         "/>
                                                     </bean>
                                                     <bean parent="closePopoverCancel"/>
@@ -554,7 +554,7 @@
                                                                 actionFeedback('actionButtonsGroup', false, null, data.cssClasses + ' defaultTopMargin', data.message);
                                                             }).on('ERROR', function(event, data) {
                                                                 actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
-                                                            });
+                                                            }).focus();
                                                         "/>
                                                     </bean>
                                                     <bean parent="closePopoverCancel"/>
@@ -613,7 +613,7 @@
                                                 openPopup('recommended_delete_page', retrieveData, 'plan', popupStyle, popupOptions, e);
                                             "/>
                                         </bean>
-                                        <bean parent="addToPlanButton"
+                                        <bean parent="addToPlanButton" p:onDocumentReadyScript="jQuery('#addToPlanButton').focus();"
                                               p:render="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() AND !setToPlanning}">
                                             <property name="actionScript"
                                                       value="fnPopoverSlider('add_planned_course_fields', 'recommended_popover_group', 'left');"/>
@@ -639,7 +639,7 @@
                                                     fnCloseAllPopups();
                                                 }).on('ERROR', function(event, data){
                                                     actionFeedback('errorPlaceholder', false, null, data.cssClasses, data.message);
-                                                });
+                                                }).focus();
                                             "/>
                                         </bean>
                                         <bean parent="closePopoverCancel" p:actionLabel="Cancel"/>
@@ -795,7 +795,8 @@
                     <property name="render" value="@{courseSummaryDetails.requisites.size() EQ 0}"/>
                 </bean>
                 <!-- Link to view more details (course details view) -->
-                <bean parent="Uif-Link" p:linkText="View more details" p:cssClasses="blockLink">
+                <bean parent="Uif-Link" p:id="courseViewMoreDetails" p:linkText="View more details" p:cssClasses="blockLink">
+                    <property name="onDocumentReadyScript" value="jQuery('#courseViewMoreDetails').focus()"/>
                     <property name="title" value="View more details about @{courseSummaryDetails.code}"/>
                     <property name="href"
                               value="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=@{courseSummaryDetails.courseId}&amp;courseCd=@{courseSummaryDetails.code NE null ? courseSummaryDetails.code.replace('&amp;','%26') : courseSummaryDetails.code}"/>
@@ -847,7 +848,7 @@
                                                     }
                                                 }).on('ERROR', function(event, data){
                                                     actionFeedback('addErrorPlaceholder', false, null, data.cssClasses, data.message);
-                                                });
+                                                }).focus();
                                             "/>
                                         </bean>
                                         <bean p:id="cancelAddPlannedCourse" parent="KSAP-SecondaryActionButton-Small"
@@ -902,7 +903,7 @@
                                         <bean p:id="deleteCourseYesButton" parent="KSAP-PrimaryActionButton-Small"
                                               p:actionLabel="Delete">
                                             <property name="actionScript" value="
-                                    var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'removeItem', courseId:'@{courseSummaryDetails.courseId}', code:'@{courseSummaryDetails.code}'};
+                                                var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'removeItem', courseId:'@{courseSummaryDetails.courseId}', code:'@{courseSummaryDetails.code}'};
                                                 submitPopupForm(additionalFormData, e, false);
                                             "/>
                                             <property name="onDocumentReadyScript" value="
@@ -910,7 +911,7 @@
                                                    actionFeedback('actionButtonsGroup2', false, null, data.cssClasses + ' defaultTopMargin', data.message);
                                                }).on('ERROR', function(event, data) {
                                                    actionFeedback('deleteErrorPlaceholder', false, null, data.cssClasses, data.message);
-                                               });"/>
+                                               }).focus();"/>
                                         </bean>
                                         <bean p:id="deleteCourseNoButton" parent="KSAP-SecondaryActionButton-Small"
                                               p:actionLabel="Cancel">
@@ -1287,6 +1288,7 @@
                 <property name="cssClasses" value="rightArrowSmall"/>
             </bean>
         </property>
+        <property name="onDocumentReadyScript" value="jQuery('#addToPlanButton').focus();"/>
     </bean>
 
     <!--  Add to saved courses. Used contextually in course details popup actions -->
