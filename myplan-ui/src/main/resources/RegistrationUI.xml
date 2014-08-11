@@ -39,7 +39,7 @@
                     </property>
                     <property name="header.render" value="true"/>
                     <property name="instructionalMessage">
-                        <bean parent="KSAP-Message" p:messageText="[p]This list shows the scheduled meeting days and times for courses in your plan for this quarter. If your registration period is open, select the &quot;Start Registration&quot; button to choose and submit SLNs.[/p][p]Period 1 priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on @{registrationDetails.getRegistrationOpenDate()}. [0][/p]">
+                        <bean parent="KSAP-Message" p:messageText="[p]This list shows the scheduled meeting days and times for courses in your plan for this quarter. If your registration period is open, select the &quot;Register for These Courses&quot; button to choose and submit SLNs.[/p][p]Period 1 priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on @{registrationDetails.getRegistrationOpenDate()}. [0][/p]">
                             <property name="inlineComponents">
                                 <list>
                                     <bean parent="registrationDateLink"/>
@@ -67,7 +67,7 @@
                                         <property name="actionScript"
                                                   value="KsapScheduleBuild.confirmRemovedSavedSchedule('@{uniqueId}', true, e)"/>
                                     </bean>
-                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Start Registration"
+                                    <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Register for These Courses"
                                           p:navigateToPageId="scheduleSelect"
                                           p:style="float: right;"
                                           p:render="@{registrationDetails.openForRegistration}">
