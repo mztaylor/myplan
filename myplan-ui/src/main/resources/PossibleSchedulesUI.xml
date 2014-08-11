@@ -52,7 +52,7 @@
     <bean abstract="true" id="sb_possible_schedules-parent" parent="KSAP-VerticalBoxGroup"
           p:id="sb_possible_schedules">
         <property name="header">
-            <bean parent="KSAP-HeaderDiv" p:headerText="Possible Schedules: @{possibleScheduleOptions.size()}" p:headerTagCssClasses="planTerm__headerText capitalize">
+            <bean parent="KSAP-HeaderDiv" p:headerText="Possible Schedules: @{possibleScheduleOptions.size()} @{possibleScheduleOptions.size() EQ 25 OR possibleScheduleOptions.size() GT 25 ? 'of many':''}" p:headerTagCssClasses="planTerm__headerText textTransformNone">
                 <property name="cssClasses" value="planTerm__header planTerm__header--@{currentTermForView ? 'current' : 'future'}"/>
             </bean>
         </property>
