@@ -29,7 +29,10 @@
           p:id="sb_create_reserved_time_page">
         <property name="width" value="375px"/>
         <property name="innerViewWrapperId" value="sb_create_reserved_time_inner"/>
-        <property name="headerText" value="New Reserved Time"/>
+        <property name="headerText" value="Exclude sections that meet on..."/>
+        <property name="instructionalMessage">
+            <bean parent="KSAP-Message" p:messageText="You may choose multiple days." p:cssClasses="block center defaultBottomMargin"/>
+        </property>
         <property name="layoutManager">
             <bean parent="Uif-VerticalBoxLayout"/>
         </property>
