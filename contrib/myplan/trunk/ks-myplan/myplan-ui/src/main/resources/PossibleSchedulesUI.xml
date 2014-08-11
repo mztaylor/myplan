@@ -402,8 +402,8 @@
         <property name="dataAttributes">
             <map>
                 <!-- List of classes for each selection, where the length sets the limit of how many items can be selected at once -->
-                <entry key="selection-limit" value="5"/>
-                <entry key="selection-classes" value="scheduleCalendar--orange,scheduleCalendar--gold,scheduleCalendar--pink,scheduleCalendar--blue,scheduleCalendar--green"/>
+                <entry key="selection-limit" value="3"/>
+                <entry key="selection-classes" value="scheduleCalendar--green,scheduleCalendar--gold,scheduleCalendar--blue"/>
                 <entry key="registered-schedule" value="@{registeredSchedule NE null ? registeredSchedule.getEvent() : ''}"/>
             </map>
         </property>
@@ -440,7 +440,7 @@
                         jQuery(element).attr({
                             id: 'possible_schedule_event' + event._id,
                             title: (typeof event.popoverContent !== 'undefined') ? event.popoverContent.courseCd + ' ' + event.popoverContent.courseTitle + ' (' + event.popoverContent.courseCredit + ')' : 'Reserved'
-                        });
+                        }).find('.fc-event-title').html(event.title);
                     }
                 "/>
                 <entry key="lazyFetching" value="false"/>

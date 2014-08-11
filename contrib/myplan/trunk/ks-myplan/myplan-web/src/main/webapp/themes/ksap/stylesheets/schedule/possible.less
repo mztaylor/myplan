@@ -113,12 +113,14 @@
     padding: @paddingSmall;
     width: 136px;
     cursor: pointer;
-    background-color: #666666;
+    background-color: @textColorLight;
 
     & .schedulePossible__index {
         font-size: @fontSizeMax;
         margin: 0;
         float: right;
+        color: @white;
+        opacity: 1;
     }
 
     & .schedulePossible__courseCode {
@@ -178,6 +180,11 @@
     }
 
     &.schedulePossible__option--active {
+        .schedulePossible__index {
+            color: @black;
+            opacity: 0.35;
+        }
+
         .schedulePossible__save,
         .schedulePossible__details {
             display: block;
