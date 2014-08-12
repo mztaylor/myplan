@@ -179,7 +179,7 @@
                                 <property name="cssClasses" value="courseDetails__fieldLabel"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-Label" p:labelText="Course Description"
+                                        <bean parent="Uif-Label" p:id="course_description" p:labelText="Course Description"
                                               p:renderColon="false"/>
                                     </list>
                                 </property>
@@ -247,7 +247,7 @@
                                 <property name="cssClasses" value="courseDetails__fieldLabel"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-Label" p:labelText="Course Prerequisite"
+                                        <bean parent="Uif-Label" p:id="course_prerequisite" p:labelText="Course Prerequisite"
                                               p:renderColon="false"/>
                                         <ref bean="course_requisite_help_icon"/>
                                     </list>
@@ -282,7 +282,7 @@
                                 <property name="cssClasses" value="courseDetails__fieldLabel"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-Label" p:labelText="Quarters"
+                                        <bean parent="Uif-Label" p:id="course_quarters" p:labelText="Quarters"
                                               p:renderColon="false"/>
                                         <ref bean="course_quarter_help_icon"/>
                                     </list>
@@ -368,7 +368,7 @@
                                 <property name="cssClasses" value="courseDetails__fieldLabel"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-Label" p:labelText="General Edu. Req."
+                                        <bean parent="Uif-Label" p:id="course_general" p:labelText="General Edu. Req."
                                               p:renderColon="false"/>
                                         <ref bean="course_gened_help_icon"/>
                                     </list>
@@ -399,7 +399,7 @@
                                 <property name="cssClasses" value="courseDetails__fieldLabel"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-Label" p:labelText="Curriculum"
+                                        <bean parent="Uif-Label" p:id="course_curriculum" p:labelText="Curriculum"
                                               p:renderColon="false"/>
                                     </list>
                                 </property>
