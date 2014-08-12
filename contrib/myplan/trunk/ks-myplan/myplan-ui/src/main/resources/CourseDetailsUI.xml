@@ -217,7 +217,7 @@
                                 <property name="cssClasses" value="courseDetails__fieldLabel"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-Label" p:labelText="Offered Jointly With"
+                                        <bean parent="Uif-Label" p:id="offered_jointly" p:labelText="Offered Jointly With"
                                               p:renderColon="false"/>
                                         <ref bean="course_cross_listings_help_icon"/>
                                     </list>
@@ -295,7 +295,7 @@
                                         <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="KSAP-SimpleDataField" p:label="Scheduled For"
+                                                    <bean parent="KSAP-SimpleDataField" p:id="schedule_for" p:label="Scheduled For"
                                                           p:propertyName="courseSummaryDetails"
                                                           p:escapeHtmlInPropertyValue="false"
                                                           p:render="@{dataObject.courseSummaryDetails.scheduledTerms.size() gt 0}">
@@ -319,7 +319,7 @@
                                               p:render="@{dataObject.courseSummaryDetails.scheduledTerms.size() gt 0 ? false : true}">
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="KSAP-SimpleDataField" p:label="Last Offered"
+                                                    <bean parent="KSAP-SimpleDataField" p:id="last_offered" p:label="Last Offered"
                                                           p:propertyName="courseSummaryDetails.lastOffered"
                                                           p:render="@{dataObject.courseSummaryDetails.lastOffered ne null ? true : false}">
                                                         <property name="fieldLabel.render" value="true"/>
@@ -331,7 +331,7 @@
                                         <bean parent="KSAP-HorizontalBoxGroup">
                                             <property name="items">
                                                 <list>
-                                                    <bean parent="KSAP-SimpleDataField" p:label="Projected Quarter Info"
+                                                    <bean parent="KSAP-SimpleDataField" p:id="projected_quarter" p:label="Projected Quarter Info"
                                                           p:propertyName="courseSummaryDetails.termsOffered"
                                                           p:escapeHtmlInPropertyValue="false"
                                                           p:render="@{dataObject.courseSummaryDetails.termsOffered.size() gt 0}">
@@ -340,7 +340,7 @@
                                                         <property name="fieldLabel.cssClasses" value="normalLightText"/>
                                                         <property name="cssClasses" value="inlineElement"/>
                                                     </bean>
-                                                    <bean parent="KSAP-MessageField" p:label="Projected Quarter Info"
+                                                    <bean parent="KSAP-MessageField" p:id="projected_info" p:label="Projected Quarter Info"
                                                           p:render="@{dataObject.courseSummaryDetails.termsOffered.size() eq 0}">
                                                         <property name="fieldLabel.cssClasses" value="normalLightText"/>
                                                         <property name="cssClasses" value="inlineElement"/>
