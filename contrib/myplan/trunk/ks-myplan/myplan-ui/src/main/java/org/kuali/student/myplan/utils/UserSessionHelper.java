@@ -48,6 +48,7 @@ public interface UserSessionHelper {
 
     public boolean authorizedByTemplate(String userId, Map<String, String> roleQualifiers, String permissionTemplateName);
 
+    public String getIdentityProvider();
 
 
 }
