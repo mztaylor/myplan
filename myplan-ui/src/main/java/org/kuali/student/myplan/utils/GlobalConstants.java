@@ -26,8 +26,8 @@ public class GlobalConstants {
     public static final String ADVISER_ROLE = "ADVISER";
     public static final String MYPLAN_VIEW_COMPONENT_TEMPLATE_NAME = "View Myplan Component";
     public static final String AUTHORIZED_TO_VIEW = "authorizedToView";
-    public static final String IDENTITY_PROVIDER__UW = "washington.edu";
+    public static final String IDENTITY_PROVIDER_UW = "washington.edu";
     public static final String IDENTITY_PROVIDER_GOOGLE = "google";
-    public static final String IDENTITY_PROVIDER__FACEBOOK = "facebook";
+    public static final String IDENTITY_PROVIDER_FACEBOOK = "facebook";
     public static final String IDENTITY_PROVIDER = "identityProvider";
 }
