@@ -310,7 +310,9 @@
         </property>
         <property name="items">
             <list>
-                <!--<bean parent="KSAP-SimpleDataField">
+                <bean parent="KSAP-MessageField" p:messageText="@{#index + 1}"
+                      p:cssClasses="scheduleBuilder__tbaItemIndex"/>
+                <bean parent="KSAP-SimpleDataField" p:cssClasses="scheduleBuilder__tbaItemTitle">
                     <property name="propertyName" value="thisSchedule"/>
                     <property name="escapeHtmlInPropertyValue" value="false"/>
                     <property name="propertyEditor">
@@ -318,9 +320,7 @@
                             <property name="tbdSchedule" value="true"/>
                         </bean>
                     </property>
-                </bean>-->
-                <bean parent="KSAP-MessageField" p:messageText="@{#index + 1}"
-                      p:cssClasses="scheduleBuilder__tbaItemIndex"/>
+                </bean>
             </list>
         </property>
     </bean>
@@ -350,7 +350,9 @@
         </property>
         <property name="items">
             <list>
-                <!--<bean parent="KSAP-SimpleDataField">
+                <bean parent="KSAP-MessageField" p:messageText="P@{#index + 1}"
+                      p:cssClasses="scheduleBuilder__tbaItemIndex"/>
+                <bean parent="KSAP-SimpleDataField" p:cssClasses="scheduleBuilder__tbaItemTitle">
                     <property name="propertyName" value="thisSchedule"/>
                     <property name="escapeHtmlInPropertyValue" value="false"/>
                     <property name="propertyEditor">
@@ -358,9 +360,7 @@
                             <property name="tbdSchedule" value="true"/>
                         </bean>
                     </property>
-                </bean>-->
-                <bean parent="KSAP-MessageField" p:messageText="P@{#index + 1}"
-                      p:cssClasses="scheduleBuilder__tbaItemIndex"/>
+                </bean>
             </list>
         </property>
     </bean>
@@ -391,6 +391,15 @@
                         <list>
                             <bean parent="Uif-Image" p:altText="possible schedule is registered" p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/sb/icon_lock.png"/>
                         </list>
+                    </property>
+                </bean>
+                <bean parent="KSAP-SimpleDataField" p:cssClasses="scheduleBuilder__tbaItemTitle">
+                    <property name="propertyName" value="thisSchedule"/>
+                    <property name="escapeHtmlInPropertyValue" value="false"/>
+                    <property name="propertyEditor">
+                        <bean parent="possible_schedule_editor">
+                            <property name="tbdSchedule" value="true"/>
+                        </bean>
                     </property>
                 </bean>
             </list>

@@ -53,7 +53,7 @@
                             <property name="onDocumentReadyScript" value="
                                 if (@{learningPlanId EQ null}) {
                                     jQuery('a.secondaryNavigation__schedule').on('PLAN_ITEM_ADDED', function(event, data) {
-                                        var aVisible = jQuery('.visible .planYear__term').parents('li');
+                                        var aVisible = jQuery('.planYear__carousel li:visible .planYear__term').parents('li');
                                         setSecondaryNavigation(aVisible, data.learningPlanId);
                                         jQuery(this).off('PLAN_ITEM_ADDED');
                                     });
@@ -443,13 +443,11 @@
                     visible: 4,
                     start: iStart,
                     afterEnd: function(a) {
-                        setVisibleTerms(a);
                         buildPlanHeader(a, '.planNavigation__header h2');
                         setSecondaryNavigation(a, jQuery.trim(jQuery('#learningPlanId').text()));
                         setUrlHash('planView', jQuery(a[0]).index());
                     },
                     initCallback: function(a) {
-                        setVisibleTerms(a);
                         buildPlanHeader(a, '.planNavigation__header h2');
                         setSecondaryNavigation(a, jQuery.trim(jQuery('#learningPlanId').text()));
                         jQuery('#planned_courses_detail_list ul:not(.errorLines) li').css('height', 'auto');
@@ -467,11 +465,11 @@
                                 <property name="items">
                                     <list>
                                         <bean id="previous_year_button" parent="Uif-ActionLink"
-                                              p:title="Previous Academic Year">
+                                              p:title="Navigate to the Previous Academic Year">
                                             <property name="cssClasses"
                                                       value="btn btn-secondary planNavigation__button planNavigation__button--previous"/>
                                             <property name="actionImage">
-                                                <bean parent="Uif-Image" p:altText="clicking on this takes you to the previous quarter"
+                                                <bean parent="Uif-Image" p:altText="Navigate to the Previous Academic Year"
                                                       p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"
                                                       p:cssClasses="planNavigation__image"/>
                                             </property>
@@ -479,11 +477,11 @@
                                             <property name="onMouseOutScript" value="jQuery(this).blur();"/>
                                         </bean>
                                         <bean id="next_year_button" parent="Uif-ActionLink"
-                                              p:title="Next Academic Year">
+                                              p:title="Navigate to the Next Academic Year">
                                             <property name="cssClasses"
                                                       value="btn btn-secondary planNavigation__button planNavigation__button--next"/>
                                             <property name="actionImage">
-                                                <bean parent="Uif-Image" p:altText="clicking on this takes you to the next quarter"
+                                                <bean parent="Uif-Image" p:altText="Navigate to the Next Academic Year"
                                                       p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"
                                                       p:cssClasses="planNavigation__image"/>
                                             </property>

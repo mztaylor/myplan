@@ -456,21 +456,22 @@ public class CourseSearchController extends UifControllerBase {
             String label = item.getStatus().getLabel();
             String domId = item.getSubject().trim().replaceAll("[\\&|\\s]", "") + item.getNumber().trim() + "-" + courseId;
 
+            String courseName = "";
+            if (item.getCourseName() != null) {
+                courseName = item.getCourseName().replace('\"', '\'');
+            }
+
             if (label.length() > 0) {
                 status = String.format("<span id=\\\"%s_status\\\" class=\\\"%s\\\">%s</span>", domId, label.toLowerCase(), label);
             } else if (getUserSessionHelper().isAdviser()) {
                 status = String.format("<span id=\\\"%s_status\\\">%s</span>", domId, CourseSearchItem.EMPTY_RESULT_VALUE_KEY);
             } else {
                 status = String.format("<span id=\\\"%s_status\\\">" +
-                        "<input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan\\\" src=\\\"../themes/ksap/images/pixel.gif\\\" " +
-                        "alt=\\\"Bookmark or Add to Plan\\\" class=\\\"courseResults__itemAdd\\\" data-courseid= \\\"%s\\\" " +
+                        "<input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan %s %s\\\" src=\\\"../themes/ksap/images/pixel.gif\\\" " +
+                        "alt=\\\"Bookmark or Add to Plan %s %s\\\" class=\\\"courseResults__itemAdd\\\" data-courseid= \\\"%s\\\" " +
                         "data-coursecd= \\\"%s\\\" data-subject= \\\"%s\\\" data-number= \\\"%s\\\" " +
-                        "onclick=\\\"openMenu('%s_add','add_course_items',null,event,null,'popover__menu popover__menu--small',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>", domId, courseId, item.getCode().trim(), item.getSubject().trim(), item.getNumber().trim(), courseId);
-            }
-
-            String courseName = "";
-            if (item.getCourseName() != null) {
-                courseName = item.getCourseName().replace('\"', '\'');
+                        "onclick=\\\"openMenu('%s_add','add_course_items',null,event,null,'popover__menu popover__menu--small',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>",
+                        domId, item.getCode().trim(), courseName, item.getCode().trim(), courseName, courseId, item.getCode().trim(), item.getSubject().trim(), item.getNumber().trim(), courseId);
             }
 
             if (first) {

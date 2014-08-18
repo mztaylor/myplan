@@ -41,22 +41,26 @@
         float: left;
         cursor: pointer;
         position: relative;
-        color: @white;
-        height: @fontSizeLarge;
-        line-height: @fontSizeLarge;
         width: 167px;
-        padding: @paddingDefault;
+        padding: 4px;
         margin-left: 2px;
         /* background: #5a5a5a; */
         border: dotted 1px transparent;
         .border-radius(0 @baseBorderRadius @baseBorderRadius 0);
 
         .scheduleBuilder__tbaItemIndex {
-            position: absolute;
-            right: 10px;
-            top: 10px;
+            width: 22px;
             margin: 0;
             font-size: @fontSizeExtraLarge;
+            color: @white;
+            opacity: 0.70;
+        }
+
+        .scheduleBuilder__tbaItemTitle {
+            margin: @marginMini 0 0 @marginSmall;
+            color: @white;
+            font-size: @fontSizeTiny;
+            line-height: @baseFontSize;
         }
 
         &:hover {
