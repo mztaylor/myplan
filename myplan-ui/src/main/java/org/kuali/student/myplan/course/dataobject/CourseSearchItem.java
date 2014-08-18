@@ -167,16 +167,16 @@ public class CourseSearchItem {
      */
     public String getScheduledAndOfferedTerms() {
 
-        CollectionListPropertyEditorHtmlListType listType = CollectionListPropertyEditorHtmlListType.DL;
+        CollectionListPropertyEditorHtmlListType listType = CollectionListPropertyEditorHtmlListType.UL;
 
-        Element termsList = DocumentHelper.createElement(listType.getListElementName()); // dl
+        Element termsList = DocumentHelper.createElement(listType.getListElementName()); // ul
 
         if (scheduledTermsList != null && scheduledTermsList.size() > 0) {
-            Element termsListItem = termsList.addElement(listType.getListItemElementName()); // dd
+            Element termsListItem = termsList.addElement(listType.getListItemElementName()); // li
             termsListItem.addAttribute("class", "scheduled");
-            Element scheduledListElement = termsListItem.addElement(listType.getListElementName()); //  dl
+            Element scheduledListElement = termsListItem.addElement(listType.getListElementName()); //  ul
             for (String scheduledTerm : scheduledTermsList) {
-                Element scheduledListItem = scheduledListElement.addElement(listType.getListItemElementName()); //  dd
+                Element scheduledListItem = scheduledListElement.addElement(listType.getListItemElementName()); //  li
                 String termAbbreviation = scheduledTerm.substring(0, 2).toUpperCase();
                 scheduledListItem.addAttribute("class", termAbbreviation);
                 String year = scheduledTerm.substring(scheduledTerm.length() - 2);
@@ -185,11 +185,11 @@ public class CourseSearchItem {
         }
 
         if (termInfoList != null && termInfoList.size() > 0) {
-            Element termsListItem = termsList.addElement(listType.getListItemElementName()); // dd
+            Element termsListItem = termsList.addElement(listType.getListItemElementName()); // li
             termsListItem.addAttribute("class", "projected");
-            Element termListElement = termsListItem.addElement(listType.getListElementName()); // dl
+            Element termListElement = termsListItem.addElement(listType.getListElementName()); // ul
             for (TypeInfo term : termInfoList) {
-                Element scheduledListItem = termListElement.addElement(listType.getListItemElementName()); //dd
+                Element scheduledListItem = termListElement.addElement(listType.getListItemElementName()); //li
                 scheduledListItem.setText(term.getName().substring(0, 2).toUpperCase());
             }
         }

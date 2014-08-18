@@ -58,18 +58,23 @@ button, a {
     .text-overflow();
 }
 
-.termBadge dl {
+.termBadge dl,
+.termBadge ul {
     margin: 0;
     padding: 0;
     display: inline-block;
+    list-style: none;
 }
 
-.termBadge dd {
+.termBadge dd,
+.termBadge li {
     margin: 0;
     padding: 0;
+    list-style: none;
 }
 
-.termBadge dl dl {
+.termBadge dl dl,
+.termBadge ul ul {
     display: block;
 }
 
@@ -77,7 +82,8 @@ button, a {
     vertical-align: 1px;
 }
 
-.termBadge .scheduled dd {
+.termBadge .scheduled dd,
+.termBadge .scheduled li {
     .border-radius(@borderRadiusSmall);
     .bold();
     font-size: @fontSizeMin;
@@ -88,15 +94,18 @@ button, a {
     display: inline-block;
 }
 
-.termBadge .projected dd {
+.termBadge .projected dd,
+.termBadge .projected li {
     display: inline;
 }
 
-.termBadge .projected dd:before {
+.termBadge .projected dd:before,
+.termBadge .projected li:before {
     content: ", ";
 }
 
-.termBadge .projected dd:first-child:before {
+.termBadge .projected dd:first-child:before,
+.termBadge .projected li:first-child:before {
     content: "";
 }
 

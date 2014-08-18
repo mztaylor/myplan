@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 public class ScheduledTermsPropertyEditor extends PropertyEditorSupport {
-    protected CollectionListPropertyEditorHtmlListType listType = CollectionListPropertyEditorHtmlListType.DL;
+    protected CollectionListPropertyEditorHtmlListType listType = CollectionListPropertyEditorHtmlListType.UL;
 
     @Override
     public void setValue(Object value) {

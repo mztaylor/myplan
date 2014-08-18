@@ -246,7 +246,9 @@
             var divSize = liSize * v;                           // size of entire div(total length for just the visible items)
 
             li.css({width:li.width(), height:li.height()});
-            ul.css(sizeCss, ulSize + "px").css(animCss, -(curr * liSize));
+            ul.css(sizeCss, ulSize + "px").css(animCss, -(curr * liSize)).attr("aria-live", "polite");
+            li.css("visibility", "hidden");
+            li.slice(curr).slice(0, v).css("visibility", "visible");
 
             div.css(sizeCss, divSize + "px");                     // Width of the DIV. length of visible images
 
@@ -279,9 +281,15 @@
 
             function vis() {
                 return li.slice(curr).slice(0, v);
-            }
+            };
 
-            ;
+            function future(to) {
+                return li.slice(to).slice(0, v);
+            };
+
+            function past(from) {
+                return li.slice(from).slice(0, v);
+            };
 
             if (o.initCallback) {
                 o.initCallback.call(this, vis(), o);
@@ -294,6 +302,9 @@
 
             function go(to) {
                 if (!running) {
+                    ul.attr("aria-busy", true);
+                    future(to).css("visibility", "visible");
+                    var from = curr;
                     if (o.beforeStart) o.beforeStart.call(this, vis(), o);
 
                     if (o.circular) {            // If circular we are in first or last, then goto the other end
@@ -316,7 +327,9 @@
                     ul.animate(
                         animCss == "left" ? { left:-(curr * liSize) } : { top:-(curr * liSize) }, o.speed, o.easing,
                         function () {
+                            past(from).css("visibility", "hidden");
                             if (o.afterEnd) o.afterEnd.call(this, vis(), o);
+                            ul.attr("aria-busy", false);
                             running = false;
                         }
                     );
@@ -327,26 +340,18 @@
                     }
                 }
                 //return false;
-            }
-
-            ;
+            };
         });
     };
 
     function css(el, prop) {
         return parseInt($.css(el[0], prop)) || 0;
-    }
-
-    ;
+    };
     function width(el) {
         return el[0].offsetWidth + css(el, 'marginLeft') + css(el, 'marginRight');
-    }
-
-    ;
+    };
     function height(el) {
         return el[0].offsetHeight + css(el, 'marginTop') + css(el, 'marginBottom');
-    }
-
-    ;
+    };
 
 })(jQuery);
