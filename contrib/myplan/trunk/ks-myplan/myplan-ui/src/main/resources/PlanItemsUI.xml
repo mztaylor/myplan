@@ -97,6 +97,7 @@
                             <ref bean="completed_placeholder_menu"/>
                             <ref bean="academic_course_menu"/>
                             <bean id="newUser" parent="KSAP-SimpleDataField" p:propertyName="newUser" p:hidden="true"/>
+                            <bean id="student_affiliation" parent="KSAP-SimpleDataField" p:propertyName="student" p:hidden="true"/>
                             <bean id="learningPlanId" parent="KSAP-SimpleDataField" p:propertyName="learningPlanId" p:hidden="true">
                                 <property name="onDocumentReadyScript" value="
                                     if (@{learningPlanId EQ null}) {
@@ -118,9 +119,14 @@
           p:style="min-height:400px;">
         <property name="onDocumentReadyScript" value="
             var user = jQuery.trim(jQuery('#newUser').text());
+            var student = jQuery.trim(jQuery('#student_affiliation').text());
             if (user === 'true' &amp;&amp; !jQuery.cookie('new_user_cookie')) {
                 jQuery.cookie('new_user_cookie', 'true');
-                jQuery.fancybox({type: 'iframe', href: '@{#ConfigProperties['myplan.getting.started.page']}', height: '95%', width: '885', autoSize: false});
+                if(student === 'true'){
+                    jQuery.fancybox({type: 'iframe', href: '@{#ConfigProperties['myplan.getting.started.page.student']}', height: '597', width: '905', autoSize: false});
+                }else {
+                    jQuery.fancybox({type: 'iframe', href: '@{#ConfigProperties['myplan.getting.started.page.nonstudent']}', height: '597', width: '905', autoSize: false});
+                }
             }
             var retrieveOptions = {};
             var sFocusAtpId = '';
