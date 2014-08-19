@@ -41,9 +41,9 @@
                 <div class="appHeader__identity">
                     Welcome,
                     <#if isAdviser>
-                        <span class="appHeader__person appHeader__person--adviser">${UserSession.person.firstName?cap_first} ${UserSession.person.lastName?substring(0,1)?capitalize}.</span>
+                        <span class="appHeader__person appHeader__person--adviser">${UserSession.person.firstNameUnmasked?cap_first} ${UserSession.person.lastNameUnmasked?substring(0,1)?capitalize}.</span>
                     <#else>
-                        <a class="appHeader__person" onclick="var retrieveData = {action:'plan', viewId:'StudentAcademicPlanner-FormView', methodToCall:'startPlanAccessForm', pageId:'student_academic_planner_page'}; var popupStyle = {width:'16px', height:'16px'}; var popupOptions = {tail:{align:'right'}, position:'bottom', align:'right', close:true}; openPopup('student_academic_planner_page', retrieveData, 'plan', popupStyle, popupOptions, ((event) ? event : window.event));">${UserSession.person.firstName?cap_first} ${UserSession.person.lastName?substring(0,1)?capitalize}.</a>
+                        <a class="appHeader__person" onclick="var retrieveData = {action:'plan', viewId:'StudentAcademicPlanner-FormView', methodToCall:'startPlanAccessForm', pageId:'student_academic_planner_page'}; var popupStyle = {width:'16px', height:'16px'}; var popupOptions = {tail:{align:'right'}, position:'bottom', align:'right', close:true}; openPopup('student_academic_planner_page', retrieveData, 'plan', popupStyle, popupOptions, ((event) ? event : window.event));">${UserSession.person.firstNameUnmasked?cap_first} ${UserSession.person.lastNameUnmasked?substring(0,1)?capitalize}.</a>
                     </#if>
                 </div>
                 <#if isAdviser>
