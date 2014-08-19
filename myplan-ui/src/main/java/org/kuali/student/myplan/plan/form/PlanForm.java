@@ -129,6 +129,8 @@ public class PlanForm extends UifFormBase {
 
     private boolean newUser;
 
+    private boolean student;
+
     /**
      * ********************************************************
      * Quick Add properties
@@ -570,5 +572,13 @@ public class PlanForm extends UifFormBase {
 
     public void setLearningPlanId(String learningPlanId) {
         this.learningPlanId = learningPlanId;
+    }
+
+    public boolean isStudent() {
+        return student;
+    }
+
+    public void setStudent(boolean student) {
+        this.student = student;
     }
 }
