@@ -55,6 +55,8 @@ import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.myplan.plan.form.PlanForm;
 import org.kuali.student.myplan.plan.service.PlannedTermsHelperBase;
 import org.kuali.student.myplan.plan.util.*;
+import org.kuali.student.myplan.utils.GlobalConstants;
+import org.kuali.student.myplan.utils.KSAPRoleUtils;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -208,6 +210,7 @@ public class PlanController extends UifControllerBase {
         super.start(form, result, request, response);
         PlanForm planForm = (PlanForm) form;
         planForm.setNewUser(isNewUser());
+        planForm.setStudent(KSAPRoleUtils.principalHasRole(getUserSessionHelper().getStudentId(), GlobalConstants.STUDENT_ROLE));
         LearningPlan learningPlan = getPlanHelper().getLearningPlan(getUserSessionHelper().getStudentId());
         if (learningPlan != null) {
             planForm.setLearningPlanId(learningPlan.getId());
