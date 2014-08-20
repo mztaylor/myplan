@@ -30,4 +30,5 @@ public class GlobalConstants {
     public static final String IDENTITY_PROVIDER_GOOGLE = "google";
     public static final String IDENTITY_PROVIDER_FACEBOOK = "facebook";
     public static final String IDENTITY_PROVIDER = "identityProvider";
+    public static final String NON_STUDENT_SYS_KEY = "non_student_sys_key";
 }
