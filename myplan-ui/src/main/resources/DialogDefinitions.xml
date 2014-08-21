@@ -1035,6 +1035,10 @@
                                             <property name="target" value="_blank"/>
                                             <property name="cssClasses" value="blockLink"/>
                                         </bean>
+                                        <bean parent="Uif-MessageField" p:id="loginInfo" p:messageText="Logged in with [css='capitalize']@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getIdentityProvider() EQ 'washington.edu' ? 'UWNetID' : T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getIdentityProvider()}[/css]">
+                                            <property name="cssClasses" value="blockLink login_source"/>
+                                            <property name="additionalCssClasses" value="login_@{T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getIdentityProvider() EQ 'washington.edu' ? 'UWNetID' : T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getIdentityProvider()}"/>
+                                        </bean>
                                         <bean parent="Uif-Link" p:linkText="Log out">
                                             <property name="href"
                                                       value="/@{#ConfigProperties['app.code']}/logout.do"/>
