@@ -44,6 +44,7 @@ import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.util.CourseLinkBuilder;
+import org.kuali.student.myplan.utils.AcademicRecordHelper;
 import org.kuali.student.myplan.utils.CalendarUtil;
 import org.kuali.student.myplan.utils.TimeStringMillisConverter;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -84,7 +85,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
 
 import static org.kuali.rice.core.api.criteria.PredicateFactory.equalIgnoreCase;
 
@@ -127,6 +127,8 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
     private UserSessionHelper userSessionHelper;
 
     private CalendarUtil calendarUtil;
+
+    private AcademicRecordHelper academicRecordHelper;
 
     @Override
     public CourseDetails retrieveDataObject(Map fieldValues) {
@@ -552,7 +554,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
             // Get  Academic Record Data from the SWS and set that to CourseDetails acadRecordList
             try {
-                List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
+                List<StudentCourseRecordInfo> studentCourseRecordInfos = getAcademicRecordHelper().getCompletedCourseRecordsForStudents(studentId);
                 Map<String, Map<String, AcademicRecordDataObject>> academicRecordsByTerm = new HashMap<String, Map<String, AcademicRecordDataObject>>();
                 for (StudentCourseRecordInfo studentInfo : studentCourseRecordInfos) {
 
@@ -1502,5 +1504,16 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
 
     public void setCalendarUtil(CalendarUtil calendarUtil) {
         this.calendarUtil = calendarUtil;
+    }
+
+    public AcademicRecordHelper getAcademicRecordHelper() {
+        if (academicRecordHelper == null) {
+            academicRecordHelper = UwMyplanServiceLocator.getInstance().getAcademicRecordHelper();
+        }
+        return academicRecordHelper;
+    }
+
+    public void setAcademicRecordHelper(AcademicRecordHelper academicRecordHelper) {
+        this.academicRecordHelper = academicRecordHelper;
     }
 }
