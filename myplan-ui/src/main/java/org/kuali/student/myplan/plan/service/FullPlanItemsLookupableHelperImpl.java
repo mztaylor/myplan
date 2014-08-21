@@ -12,8 +12,8 @@ import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
+import org.kuali.student.myplan.utils.AcademicRecordHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -37,6 +37,8 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
     private final Logger logger = Logger.getLogger(FullPlanItemsLookupableHelperImpl.class);
 
     private transient AcademicRecordService academicRecordService;
+
+    private AcademicRecordHelper academicRecordHelper;
 
 
     private UserSessionHelper userSessionHelper;
@@ -70,7 +72,7 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
 
         List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
         try {
-            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
+            studentCourseRecordInfos = getAcademicRecordHelper().getCompletedCourseRecordsForStudents(studentId);
         } catch (Exception e) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS.", e);
         }
@@ -132,5 +134,16 @@ public class FullPlanItemsLookupableHelperImpl extends PlanItemLookupableHelperB
 
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
+    }
+
+    public AcademicRecordHelper getAcademicRecordHelper() {
+        if (academicRecordHelper == null) {
+            academicRecordHelper = UwMyplanServiceLocator.getInstance().getAcademicRecordHelper();
+        }
+        return academicRecordHelper;
+    }
+
+    public void setAcademicRecordHelper(AcademicRecordHelper academicRecordHelper) {
+        this.academicRecordHelper = academicRecordHelper;
     }
 }

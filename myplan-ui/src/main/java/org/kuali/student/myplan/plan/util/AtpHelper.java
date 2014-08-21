@@ -20,6 +20,7 @@ import org.kuali.student.ap.framework.context.CourseHelper;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.DeconstructedCourseCode;
+import org.kuali.student.myplan.utils.AcademicRecordHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.util.constants.AcademicCalendarServiceConstants;
@@ -70,6 +71,8 @@ public class AtpHelper {
 
 
     private static UserSessionHelper userSessionHelper;
+
+    private static AcademicRecordHelper academicRecordHelper;
 
 
     /**
@@ -931,7 +934,7 @@ public class AtpHelper {
     public static YearTerm getFirstAcademicPlanTermForStudent() {
         List<StudentCourseRecordInfo> studentCourseRecordInfos = null;
         try {
-            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(getUserSessionHelper().getStudentId(), PlanConstants.CONTEXT_INFO);
+            studentCourseRecordInfos = getAcademicRecordHelper().getCompletedCourseRecordsForStudents(getUserSessionHelper().getStudentId());
         } catch (Exception e) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS");
         }
@@ -1109,5 +1112,16 @@ public class AtpHelper {
 
     public static void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         AtpHelper.userSessionHelper = userSessionHelper;
+    }
+
+    public static AcademicRecordHelper getAcademicRecordHelper() {
+        if (academicRecordHelper == null) {
+            academicRecordHelper = UwMyplanServiceLocator.getInstance().getAcademicRecordHelper();
+        }
+        return academicRecordHelper;
+    }
+
+    public static void setAcademicRecordHelper(AcademicRecordHelper academicRecordHelper) {
+        AtpHelper.academicRecordHelper = academicRecordHelper;
     }
 }

@@ -29,6 +29,7 @@ import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.EnumerationHelper;
 import org.kuali.student.myplan.plan.util.OrgHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
+import org.kuali.student.myplan.utils.AcademicRecordHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -36,7 +37,6 @@ import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.common.exceptions.InvalidParameterException;
 import org.kuali.student.r2.common.exceptions.MissingParameterException;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -67,6 +67,8 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
     private transient CourseDetailsInquiryHelperImpl courseDetailsInquiryHelper;
 
     private transient CourseOfferingService courseOfferingService;
+
+    private AcademicRecordHelper academicRecordHelper;
 
 
     private CourseHelper courseHelper;
@@ -99,7 +101,7 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
         List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
 
         try {
-            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
+            studentCourseRecordInfos = getAcademicRecordHelper().getCompletedCourseRecordsForStudents(studentId);
         } catch (OperationFailedException ofe) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS due to OperationFailedException.", ofe);
             GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.TERM_PAGE_ID,
@@ -475,5 +477,16 @@ public class SingleQuarterInquiryHelperImpl extends KualiInquirableImpl {
 
     public void setPlanHelper(PlanHelper planHelper) {
         this.planHelper = planHelper;
+    }
+
+    public AcademicRecordHelper getAcademicRecordHelper() {
+        if (academicRecordHelper == null) {
+            academicRecordHelper = UwMyplanServiceLocator.getInstance().getAcademicRecordHelper();
+        }
+        return academicRecordHelper;
+    }
+
+    public void setAcademicRecordHelper(AcademicRecordHelper academicRecordHelper) {
+        this.academicRecordHelper = academicRecordHelper;
     }
 }

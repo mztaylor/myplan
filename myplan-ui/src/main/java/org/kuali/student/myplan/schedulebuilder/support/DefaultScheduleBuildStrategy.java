@@ -26,10 +26,7 @@ import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.schedulebuilder.dto.*;
 import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.myplan.schedulebuilder.util.*;
-import org.kuali.student.myplan.utils.CalendarUtil;
-import org.kuali.student.myplan.utils.GlobalConstants;
-import org.kuali.student.myplan.utils.KSAPRoleUtils;
-import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.myplan.utils.*;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.TimeOfDayInfo;
@@ -71,6 +68,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     private transient AcademicRecordService academicRecordService;
     private transient ShoppingCartStrategy shoppingCartStrategy;
     private CourseDetailsInquiryHelperImpl courseDetailsHelper;
+    private AcademicRecordHelper academicRecordHelper;
     private static final long serialVersionUID = -3524818039744728212L;
 
     private static final String SCHEDULE_BUILD_ATTR = ScheduleBuildStrategy.class
@@ -771,8 +769,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
         List<StudentCourseRecordInfo> completedRecords;
         try {
-            completedRecords = getAcademicRecordService().getCompletedCourseRecords(
-                    studentId, context);
+            completedRecords = getAcademicRecordHelper().getCompletedCourseRecordsForStudents(studentId);
         } catch (DoesNotExistException e) {
             throw new IllegalArgumentException("AR lookup failure", e);
         } catch (InvalidParameterException e) {
@@ -1273,5 +1270,16 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
 
     public void setCalendarUtil(CalendarUtil calendarUtil) {
         this.calendarUtil = calendarUtil;
+    }
+
+    public AcademicRecordHelper getAcademicRecordHelper() {
+        if (academicRecordHelper == null) {
+            academicRecordHelper = UwMyplanServiceLocator.getInstance().getAcademicRecordHelper();
+        }
+        return academicRecordHelper;
+    }
+
+    public void setAcademicRecordHelper(AcademicRecordHelper academicRecordHelper) {
+        this.academicRecordHelper = academicRecordHelper;
     }
 }

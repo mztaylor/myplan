@@ -11,6 +11,7 @@ import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildForm;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildHelper;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ShoppingCartStrategy;
+import org.kuali.student.myplan.utils.AcademicRecordHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.core.class1.type.dto.TypeInfo;
 
@@ -144,6 +145,14 @@ public class UwMyplanServiceLocator {
         this.registrationHelper = registrationHelper;
     }
 
+    public AcademicRecordHelper getAcademicRecordHelper() {
+        return academicRecordHelper;
+    }
+
+    public void setAcademicRecordHelper(AcademicRecordHelper academicRecordHelper) {
+        this.academicRecordHelper = academicRecordHelper;
+    }
+
     private PlanHelper planHelper;
 
     private UserSessionHelper userSessionHelper;
@@ -167,5 +176,7 @@ public class UwMyplanServiceLocator {
     private ScheduleBuildHelper scheduleBuildHelper;
 
     private RegistrationHelper registrationHelper;
+
+    private AcademicRecordHelper academicRecordHelper;
 
 }

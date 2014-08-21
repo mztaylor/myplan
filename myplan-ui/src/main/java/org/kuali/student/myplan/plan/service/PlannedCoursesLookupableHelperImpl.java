@@ -10,9 +10,9 @@ import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
+import org.kuali.student.myplan.utils.AcademicRecordHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.exceptions.OperationFailedException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -37,6 +37,8 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
 
     private UserSessionHelper userSessionHelper;
+
+    private AcademicRecordHelper academicRecordHelper;
 
     public AcademicRecordService getAcademicRecordService() {
         if (this.academicRecordService == null) {
@@ -80,7 +82,7 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
         List<StudentCourseRecordInfo> studentCourseRecordInfos = new ArrayList<StudentCourseRecordInfo>();
 
         try {
-            studentCourseRecordInfos = getAcademicRecordService().getCompletedCourseRecords(studentId, PlanConstants.CONTEXT_INFO);
+            studentCourseRecordInfos = getAcademicRecordHelper().getCompletedCourseRecordsForStudents(studentId);
         } catch (OperationFailedException ofe) {
             logger.error("Could not retrieve StudentCourseRecordInfo from the SWS due to OperationFailedException.", ofe);
             GlobalVariables.getMessageMap().putWarningForSectionId(PlanConstants.PLAN_COMPONENT_ID,
@@ -124,5 +126,16 @@ public class PlannedCoursesLookupableHelperImpl extends PlanItemLookupableHelper
 
     public void setUserSessionHelper(UserSessionHelper userSessionHelper) {
         this.userSessionHelper = userSessionHelper;
+    }
+
+    public AcademicRecordHelper getAcademicRecordHelper() {
+        if (academicRecordHelper == null) {
+            academicRecordHelper = UwMyplanServiceLocator.getInstance().getAcademicRecordHelper();
+        }
+        return academicRecordHelper;
+    }
+
+    public void setAcademicRecordHelper(AcademicRecordHelper academicRecordHelper) {
+        this.academicRecordHelper = academicRecordHelper;
     }
 }

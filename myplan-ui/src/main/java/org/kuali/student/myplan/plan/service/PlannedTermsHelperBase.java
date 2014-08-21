@@ -21,6 +21,7 @@ import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.PlannedTerm;
 import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.AtpHelper.YearTerm;
+import org.kuali.student.myplan.utils.AcademicRecordHelper;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
@@ -51,6 +52,8 @@ public class PlannedTermsHelperBase {
     private transient CourseHelper courseHelper;
 
     private static UserSessionHelper userSessionHelper;
+
+    private AcademicRecordHelper academicRecordHelper;
 
 
     public static List<PlannedTerm> populatePlannedTerms(List<PlannedCourseDataObject> plannedCoursesList, List<PlannedCourseDataObject> backupCoursesList, List<PlannedCourseDataObject> recommendedCoursesList, List<StudentCourseRecordInfo> studentCourseRecordInfos, String focusAtpId, int futureTerms, boolean fullPlanView) {
@@ -709,7 +712,7 @@ public class PlannedTermsHelperBase {
                         creditList.add(credit);
                     }
                 }
-                List<StudentCourseRecordInfo> recordList = getAcademicRecordService().getCompletedCourseRecords(studentID, PlanConstants.CONTEXT_INFO);
+                List<StudentCourseRecordInfo> recordList = getAcademicRecordHelper().getCompletedCourseRecordsForStudents(studentID);
                 for (StudentCourseRecordInfo record : recordList) {
                     if (record.getTermName().equalsIgnoreCase(termId)) {
                         String credit = record.getCreditsEarned();
@@ -736,6 +739,17 @@ public class PlannedTermsHelperBase {
      */
     private String generateKey(String subject, String courseNumber) {
         return getCourseHelper().joinStringsByDelimiter('=', subject, courseNumber);
+    }
+
+    public AcademicRecordHelper getAcademicRecordHelper() {
+        if (academicRecordHelper == null) {
+            academicRecordHelper = UwMyplanServiceLocator.getInstance().getAcademicRecordHelper();
+        }
+        return academicRecordHelper;
+    }
+
+    public void setAcademicRecordHelper(AcademicRecordHelper academicRecordHelper) {
+        this.academicRecordHelper = academicRecordHelper;
     }
 
 }
