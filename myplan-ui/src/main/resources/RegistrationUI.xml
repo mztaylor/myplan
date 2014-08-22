@@ -134,11 +134,7 @@
                                 <list>
                                     <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
                                           p:navigateToPageId="scheduleView"
-                                          p:additionalCssClasses="registrationForm__back" p:actionImagePlacement="LEFT">
-                                        <property name="actionImage">
-                                            <bean parent="Uif-Image" p:altText="this action lets you to go to the first page of registartion"
-                                                  p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
-                                        </property>
+                                          p:additionalCssClasses="registrationForm__back">
                                     </bean>
                                     <bean parent="KSAP-HorizontalBoxGroup">
                                         <property name="componentSecurity.additionalRoleQualifiers">
