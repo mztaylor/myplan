@@ -61,4 +61,5 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
 
     public static final String DEGREE_AUDIT_PROGRAM_PARAM_SEATTLE = "degreeAudit.programParamSeattle";
     public static final String PLAN_AUDIT_PROGRAM_PARAM_SEATTLE = "planAudit.programParamSeattle";
+    public static final int DEFAULT_PLAN_AUDITS_VIEWABLE = 7;
 }
