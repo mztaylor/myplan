@@ -237,7 +237,14 @@
                                           value="schedulePossible__details"/>
                                 <property name="items">
                                     <list>
-                                        <bean parent="KSAP-Message" p:messageText="View / Register"/>
+                                        <bean parent="KSAP-Message" p:messageText="View / Register">
+                                            <property name="propertyReplacers">
+                                                <list>
+                                                    <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="messageText" p:replacement="View"
+                                                          p:condition="T(org.kuali.student.myplan.utils.KSAPRoleUtils).principalHasRole(T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentId(),&quot;NON-STUDENT&quot;)"/>
+                                                </list>
+                                            </property>
+                                        </bean>
                                     </list>
                                 </property>
                             </bean>

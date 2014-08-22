@@ -207,6 +207,11 @@
                                             </property>
                                         </bean>
                                         <bean parent="KSAP-ModuleContainer" p:headerText="Messages">
+                                            <property name="componentSecurity.additionalRoleQualifiers">
+                                                <map>
+                                                    <entry key="authorizedToView" value="STUDENT,ADVISER"/>
+                                                </map>
+                                            </property>
                                             <property name="items">
                                                 <list>
                                                     <bean parent="KSAP-MessagesList"/>

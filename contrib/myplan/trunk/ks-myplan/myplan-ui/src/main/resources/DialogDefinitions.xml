@@ -950,15 +950,25 @@
                             <bean parent="KSAP-VerticalBoxGroup" p:cssClasses="popover__groupSeparator">
                                 <property name="items">
                                     <list>
-                                        <bean parent="Uif-Link" p:linkText="Messages (@{messagesCount})">
+                                        <bean parent="Uif-LinkField" p:linkText="Messages (@{messagesCount})">
                                             <property name="href"
                                                       value="lookup?methodToCall=search&amp;viewId=MessagesDetail-LookupView"/>
                                             <property name="render" value="@{messagesCount NE 0}"/>
                                             <property name="cssClasses" value="blockLink"/>
+                                            <property name="componentSecurity.additionalRoleQualifiers">
+                                                <map>
+                                                    <entry key="authorizedToView" value="STUDENT"/>
+                                                </map>
+                                            </property>
                                         </bean>
                                         <bean parent="Uif-MessageField" p:messageText="Messages (0)">
                                             <property name="render" value="@{messagesCount EQ 0}"/>
                                             <property name="cssClasses" value="normalLightText blockLink"/>
+                                            <property name="componentSecurity.additionalRoleQualifiers">
+                                                <map>
+                                                    <entry key="authorizedToView" value="STUDENT"/>
+                                                </map>
+                                            </property>
                                         </bean>
                                         <bean parent="Uif-Link" p:linkText="Bookmarked Courses (@{bookmarkedCount})">
                                             <property name="href"
