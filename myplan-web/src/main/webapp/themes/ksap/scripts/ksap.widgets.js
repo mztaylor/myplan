@@ -695,6 +695,7 @@ function toggleSectionAction(actionId, regId, action, data, primaryPlan) {
     var script;
     var component = jQuery("#" + actionId);
     var row = component.parents("tr");
+    var table = row.parents("table");
     component.unbind('click');
     switch (action) {
         case "added":
@@ -706,7 +707,7 @@ function toggleSectionAction(actionId, regId, action, data, primaryPlan) {
             component.removeClass("courseActivities__itemDelete").addClass("courseActivities__itemAdd").attr("data-planned", "false").data("planned", false);
             row.removeClass("courseActivities--planned").next("tr.collapsible").removeClass("courseActivities--planned").next("tr.collapsible").removeClass("courseActivities--planned");
             script = "jQuery('#' + '" + actionId + "').click(function(e) { var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addUpdatePlanItem', code:'" + data.courseCd + "',courseId:'" + data.courseId + "', sectionCode:'" + component.data("coursesection") + "', atpId:'" + data.atpId + "', instituteCode:'" + data.InstituteCode + "', registrationCode:'" + regId + "', primary:" + component.data("primary") + "}; submitHiddenForm('plan', additionalFormData, false, e); }); ";
-            if (jQuery("#" + data.courseId + "_toggle").data("hidden")) {
+            if (jQuery("#" + data.subject.replace("&", "") + data.number + "-" + data.courseId + "_toggle").data("hidden")) {
                 row.hide().next("tr.collapsible").hide().next("tr.collapsible").hide();
             }
             break;
@@ -714,10 +715,15 @@ function toggleSectionAction(actionId, regId, action, data, primaryPlan) {
             component.removeClass("courseActivities__itemDelete").attr("data-planned", "false").data("planned", false).html("--");
             row.removeClass("courseActivities--planned");
             script = "jQuery('#' + '" + actionId + "').off('click'); ";
-            if (jQuery("#" + data.courseId + "_toggle").data("hidden")) {
+            if (jQuery("#" + data.subject.replace("&", "") + data.number + "-" + data.courseId + "_toggle").data("hidden")) {
                 row.hide();
             }
             break;
+    }
+    if (table.find("tbody tr:visible").length > 0) {
+        table.find("thead").show();
+    } else {
+        table.find("thead").hide();
     }
     if (action != "suspended") script += "jQuery('#' + '" + actionId + "').mouseover(function(){ buildHoverText(jQuery(this)); }); ";
     updateHiddenScript(actionId, script);
