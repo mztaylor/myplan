@@ -11,6 +11,7 @@ import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.springframework.stereotype.Component;
 
 import javax.xml.namespace.QName;
@@ -37,28 +38,35 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
         List<PlanAuditItem> planAuditItems = new ArrayList<PlanAuditItem>();
         try {
             String regId = getUserSessionHelper().getStudentId();
-            //  TODO: Calculate dates that make sense.
-            Date begin = new Date();
-            Date end = new Date();
             Map<String, PlanAuditItem> auditsInLearningPlan = getDegreeAuditHelper().getPlanItemSnapShots(regId);
-
-            List<AuditReportInfo> audits = getDegreeAuditService().getAuditsForStudentInDateRange(regId, begin, end, DegreeAuditConstants.CONTEXT_INFO);
 
             /**
              *  Make a list of PlanAuditItem, but only include the most recent audit for a particular program.
              */
-//            HashSet<String> programSet = new HashSet<String>();
-            for (AuditReportInfo audit : audits) {
-                if (auditsInLearningPlan.containsKey(audit.getAuditId())) {
-                    PlanAuditItem planAuditItem = auditsInLearningPlan.get(audit.getAuditId());
-                    if (planAuditItem == null) {
-                        planAuditItem = new PlanAuditItem();
-                    }
-                    planAuditItem.setReport(audit);
-                    planAuditItem.setProgramTitle(audit.getProgramTitle());
-                    planAuditItem.setProgramType("ProgramType");
-                    planAuditItems.add(planAuditItem);
+            int planAuditsCount = 0;
+            for (String auditId : auditsInLearningPlan.keySet()) {
+                planAuditsCount++;
+                if (planAuditsCount > DegreeAuditConstants.DEFAULT_PLAN_AUDITS_VIEWABLE) {
+                    break;
                 }
+                AuditReportInfo audit = null;
+                try {
+                    audit = getDegreeAuditService().getAuditReport(auditId, DegreeAuditConstants.AUDIT_TYPE_KEY_DEFAULT, DegreeAuditConstants.CONTEXT_INFO);
+                } catch (DoesNotExistException e) {
+                    logger.error("Could not find a plan Audit with auditId: " + auditId);
+                    continue;
+                }
+                if (audit == null) {
+                    continue;
+                }
+                PlanAuditItem planAuditItem = auditsInLearningPlan.get(audit.getAuditId());
+                if (planAuditItem == null) {
+                    planAuditItem = new PlanAuditItem();
+                }
+                planAuditItem.setReport(audit);
+                planAuditItem.setProgramTitle(audit.getProgramTitle());
+                planAuditItem.setProgramType("ProgramType");
+                planAuditItems.add(planAuditItem);
             }
             if (planAuditItems.size() > 0) {
                 planAuditItems.get(0).setRecentAudit(true);
