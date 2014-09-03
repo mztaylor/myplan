@@ -283,7 +283,9 @@
                 <bean parent="audit_tabs">
                     <property name="items">
                         <list>
-                            <bean parent="audit_tab_plan" p:cssClasses="auditTabs--active" p:additionalCssClasses="printDisplay"/>
+                            <bean parent="audit_tab_plan" p:additionalCssClasses="printDisplay">
+                                <property name="link.cssClasses" value="auditTabs--active"/>
+                            </bean>
                             <bean parent="audit_tab_degree"/>
                         </list>
                     </property>
