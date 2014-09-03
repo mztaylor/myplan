@@ -401,7 +401,7 @@
                     </property>
                 </bean>
                 <bean parent="KSAP-SimpleDataField" p:cssClasses="scheduleBuilder__tbaItemTitle">
-                    <property name="propertyName" value="thisSchedule"/>
+                    <property name="propertyName" value="registeredSchedule"/>
                     <property name="escapeHtmlInPropertyValue" value="false"/>
                     <property name="propertyEditor">
                         <bean parent="possible_schedule_editor">
