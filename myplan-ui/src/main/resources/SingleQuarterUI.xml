@@ -736,6 +736,7 @@
                 <bean parent="termRecommendedItemGroup"/>
             </list>
         </property>
+        <property name="subCollections"><list /></property>
         <property name="footer.render" value="false"/>
     </bean>
 

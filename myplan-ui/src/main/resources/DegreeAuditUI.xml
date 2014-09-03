@@ -228,7 +228,9 @@
         <property name="items">
             <list>
                 <bean parent="audit_tab_plan"/>
-                <bean parent="audit_tab_degree" p:cssClasses="auditTabs--active"/>
+                <bean parent="audit_tab_degree">
+                    <property name="link.cssClasses" value="auditTabs--active"/>
+                </bean>
             </list>
         </property>
     </bean>
