@@ -138,10 +138,9 @@
 
                                         <bean parent="KSAP-Message" p:cssClasses="block printDisplay">
                                             <property name="messageText"
-                                                      value="View, add, or delete courses and sections from your [0]. MyPlan allows you to create an academic plan, but does not check your eligibility for planned courses or sections. To view schedule options in a calendar grid and register, choose &quot;[1]&quot;."/>
+                                                      value="View, add, or delete courses and sections from your plan. MyPlan allows you to create an academic plan, but does not check your eligibility for planned courses or sections. To view schedule options in a calendar grid and register, choose &quot;[0]&quot;."/>
                                             <property name="inlineComponents">
                                                 <list>
-                                                    <bean parent="Uif-Link" p:linkText="plan" p:href="plan?methodToCall=start&amp;viewId=PlannedCourses-FormView&amp;focusAtpId=@{dataObject.atpId}"/>
                                                     <bean parent="Uif-Link" p:linkText="Build Your Schedule">
                                                         <property name="href" value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{dataObject.atpId}&amp;requestedLearningPlanId=@{dataObject.learningPlanId}&amp;pageId=schedule_build"/>
                                                     </bean>

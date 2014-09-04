@@ -596,7 +596,7 @@
                         </bean>
                     </list>
                 </property>
-                <property name="propertyReplacers">
+                <!--<property name="propertyReplacers">
                     <list>
                         <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="inlineComponents" p:condition="T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() OR learningPlanId EQ null">
                             <property name="replacement">
