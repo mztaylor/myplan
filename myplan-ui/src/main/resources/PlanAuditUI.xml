@@ -471,7 +471,7 @@
                         <list>
                             <bean parent="KSAP-Message">
                                 <property name="messageText"
-                                          value="Plan Audit compares your academic record and the courses in your plan with program requirements to five you an idea of what will be needed to complete your degree.[br/][br/]This Audit is meant as a planning tool and is not an official evaluation of your academic progress. UW students, work with your adviser to ensure that your planned courses will meet your degree or program requirements."/>
+                                          value="Plan Audit compares your academic record and the courses in your plan with program requirements to give you an idea of what will be needed to complete your degree.[br/][br/]This Audit is meant as a planning tool and is not an official evaluation of your academic progress. UW students, work with your adviser to ensure that your planned courses will meet your degree or program requirements."/>
                             </bean>
                         </list>
                     </property>
