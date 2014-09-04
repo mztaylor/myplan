@@ -31,7 +31,7 @@
                     <property name="instructionalMessage">
                         <bean parent="KSAP-Message">
                             <property name="messageText"
-                                      value="Enter a course code, title, or a keyword to search the Course Catalog and Time Schedule if applicable. [0]"/>
+                                      value="Enter a course code, title or keyword to search the Course Catalog and Time Schedule if applicable. [0]"/>
                             <property name="inlineComponents">
                                 <list>
                                     <bean parent="Uif-Link" p:linkText="Learn more" p:target="_blank"
