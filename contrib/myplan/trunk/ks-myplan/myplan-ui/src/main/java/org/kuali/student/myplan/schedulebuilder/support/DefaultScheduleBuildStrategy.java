@@ -858,7 +858,7 @@ public class DefaultScheduleBuildStrategy implements ScheduleBuildStrategy,
     @Override
     public LearningPlan getLearningPlan(String requestedLearningPlanId)
             throws PermissionDeniedException {
-        if (!KSAPRoleUtils.principalHasRole(getUserSessionHelper().getCurrentUserId(), String.format("%s,%s", GlobalConstants.STUDENT_ROLE, GlobalConstants.NON_STUDENT_ROLE))) {
+        if (!KSAPRoleUtils.principalHasRole(getUserSessionHelper().getStudentId(), String.format("%s,%s,%s", GlobalConstants.STUDENT_ROLE, GlobalConstants.NON_STUDENT_ROLE, GlobalConstants.ADVISER_ROLE))) {
             throw new PermissionDeniedException(
                     "Must be a student to build a schedule");
         }
