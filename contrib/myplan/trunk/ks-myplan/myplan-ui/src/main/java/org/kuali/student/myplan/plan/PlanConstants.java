@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.plan;
 
+import org.kuali.rice.core.api.config.property.ConfigContext;
 import org.kuali.student.myplan.academicplan.service.AcademicPlanServiceConstants;
 import org.kuali.student.myplan.course.util.CourseSearchConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
@@ -100,7 +101,7 @@ public class PlanConstants extends AcademicPlanServiceConstants {
     public static final String APP_URL = "appserver.url";
 
     //  {host} will be replac{atp} will be replaced by an ATP ID and {label} will be replaced with the link text at runtime.
-    public static final String QUARTER_LINK = "<a href=\"inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id={atpId}\">{label}</a>";
+    public static final String QUARTER_LINK = String.format("<a href=\"%s/%s/%s/inquiry?methodToCall=start&viewId=SingleTerm-InquiryView&term_atp_id={atpId}\">{label}</a>", ConfigContext.getCurrentContextConfig().getProperty("appserver.url"),ConfigContext.getCurrentContextConfig().getProperty("app.code"),ConfigContext.getCurrentContextConfig().getProperty("application.id"));
 
     public static final String PLANNED_TYPE = "planned";
     public static final String BACKUP_TYPE = "backup";
