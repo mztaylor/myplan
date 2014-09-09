@@ -35,9 +35,13 @@ public class KSAPRoleUtils extends ViewAuthorizerBase {
         }
 
         Map<String, String> roleQualifiers = new HashMap<String, String>();
+        boolean adviser = getUserSessionHelper().isAdviser();
+        if (adviser && !expectedRoles.contains(GlobalConstants.ADVISER_ROLE)) {
+            expectedRoles = expectedRoles.trim() + "," + GlobalConstants.ADVISER_ROLE;
+        }
         roleQualifiers.put(GlobalConstants.AUTHORIZED_TO_VIEW, expectedRoles);
-        roleQualifiers.put(GlobalConstants.MYPLAN_ADVISER,     String.valueOf(getUserSessionHelper().isAdviser()));
-        roleQualifiers.put(GlobalConstants.IDENTITY_PROVIDER,  String.valueOf(getUserSessionHelper().getIdentityProvider()));
+        roleQualifiers.put(GlobalConstants.MYPLAN_ADVISER, String.valueOf(adviser));
+        roleQualifiers.put(GlobalConstants.IDENTITY_PROVIDER, String.valueOf(getUserSessionHelper().getIdentityProvider()));
         return getUserSessionHelper().authorizedByTemplate(principalId, roleQualifiers, GlobalConstants.MYPLAN_VIEW_COMPONENT_TEMPLATE_NAME);
     }
 
