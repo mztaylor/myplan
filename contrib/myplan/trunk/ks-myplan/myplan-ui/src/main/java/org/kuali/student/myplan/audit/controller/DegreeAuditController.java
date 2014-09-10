@@ -288,6 +288,7 @@ public class DegreeAuditController extends UifControllerBase {
                 if (!programId.equalsIgnoreCase(DegreeAuditConstants.DEFAULT_KEY)) {
                     DegreeAuditService degreeAuditService = getDegreeAuditService();
                     ContextInfo context = new ContextInfo();
+                    context.setAttributes(Arrays.asList(new AttributeInfo(DegreeAuditConstants.BYPASS_DOES_NOT_EXIST_EXCEPTION, "true")));
                     String auditType = form.getAuditType();
                     AuditReportInfo info = degreeAuditService.runAudit(regid, programId, auditType, context);
                     String auditID = info.getAuditId();
@@ -347,6 +348,7 @@ public class DegreeAuditController extends UifControllerBase {
                 if (!programId.equals(DegreeAuditConstants.DEFAULT_KEY)) {
                     ContextInfo context = new ContextInfo();
                     context.setPrincipalId(regid);
+                    context.setAttributes(Arrays.asList(new AttributeInfo(DegreeAuditConstants.BYPASS_DOES_NOT_EXIST_EXCEPTION, "true")));
                     DegreeAuditService degreeAuditService = getDegreeAuditService();
                     List<LearningPlanInfo> learningPlanList =
                             getAcademicPlanService().getLearningPlansForStudentByType(regid, LEARNING_PLAN_TYPE_PLAN,
@@ -718,7 +720,7 @@ public class DegreeAuditController extends UifControllerBase {
 
     public UserSessionHelper getUserSessionHelper() {
         if (userSessionHelper == null) {
-            userSessionHelper =  UwMyplanServiceLocator.getInstance().getUserSessionHelper();
+            userSessionHelper = UwMyplanServiceLocator.getInstance().getUserSessionHelper();
         }
         return userSessionHelper;
     }
