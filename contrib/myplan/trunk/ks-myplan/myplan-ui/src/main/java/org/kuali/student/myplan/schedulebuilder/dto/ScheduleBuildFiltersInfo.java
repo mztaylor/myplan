@@ -13,6 +13,7 @@ public class ScheduleBuildFiltersInfo implements ScheduleBuildFilters {
     private boolean showRestricted;
     private boolean showOverlapped;
     private boolean showOtherInstitutes;
+    private boolean excludeReservedTimes;
     private List<String> zeroResultsReasons;
     private List<String> resultsNotPossibleReasons;
 
@@ -75,5 +76,14 @@ public class ScheduleBuildFiltersInfo implements ScheduleBuildFilters {
 
     public void setResultsNotPossibleReasons(List<String> resultsNotPossibleReasons) {
         this.resultsNotPossibleReasons = resultsNotPossibleReasons;
+    }
+
+    @Override
+    public boolean isExcludeReservedTimes() {
+        return excludeReservedTimes;
+    }
+
+    public void setExcludeReservedTimes(boolean excludeReservedTimes) {
+        this.excludeReservedTimes = excludeReservedTimes;
     }
 }

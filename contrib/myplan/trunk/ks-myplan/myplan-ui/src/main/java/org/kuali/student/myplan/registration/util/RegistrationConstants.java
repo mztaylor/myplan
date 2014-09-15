@@ -21,4 +21,6 @@ public class RegistrationConstants {
     public static final String REGISTRATION_CODE_URL_PARAMS_FORMAT = "sln%s=%s&entcode%s=&credits%s=&gr_sys%s=";
 
     public static final String ERROR_COUNT_REGISTRATION_CODES = "myplan.text.error.check.registration.codes";
+    public static final String POSSIBLE_SCHEDULES = "possibleSchedules";
+    public static final String REGISTRATION_POSSIBLE_SCHEDULES = "registrationPossibleSchedules";
 }

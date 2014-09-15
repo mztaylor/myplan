@@ -37,6 +37,13 @@ public interface ScheduleBuildFilters {
      */
     boolean isShowOtherInstitutes();
 
+    /**
+     * True if the reserved times need to be excluded as part of check for time conflicts.
+     *
+     * @return
+     */
+    boolean isExcludeReservedTimes();
+
 
     /**
      * Populated when no possible schedule results are returned because of above filters.
