@@ -22,7 +22,7 @@
                 useNativeClamp:     typeof(options.useNativeClamp) != 'undefined' ? options.useNativeClamp : true,
                 splitOnChars:       options.splitOnChars || ['.', '-', 'â€“', 'â€”', ' '], //Split on sentences (periods), hypens, en-dashes, em-dashes, and words (spaces).
                 animate:            options.animate || false,
-                truncationChar:     options.truncationChar || 'â€¦',
+                truncationChar:     options.truncationChar || '...',
                 truncationHTML:     options.truncationHTML
             },
 
