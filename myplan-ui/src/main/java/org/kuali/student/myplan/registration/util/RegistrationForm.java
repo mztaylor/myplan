@@ -74,4 +74,11 @@ public interface RegistrationForm {
      */
     boolean isPinned();
 
+    /**
+     * Lets us know if the registration information is for Registration component.
+     *
+     * @return true for registration component else false.
+     */
+    boolean isForRegistration();
+
 }

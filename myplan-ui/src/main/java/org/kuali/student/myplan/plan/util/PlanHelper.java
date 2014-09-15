@@ -2,8 +2,13 @@ package org.kuali.student.myplan.plan.util;
 
 import org.kuali.student.myplan.academicplan.dto.PlanItemInfo;
 import org.kuali.student.myplan.academicplan.infc.LearningPlan;
+import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.dataobject.RecommendedItemDataObject;
 import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.common.exceptions.DoesNotExistException;
+import org.kuali.student.r2.common.exceptions.InvalidParameterException;
+import org.kuali.student.r2.common.exceptions.MissingParameterException;
+import org.kuali.student.r2.common.exceptions.OperationFailedException;
 
 import java.util.List;
 import java.util.Map;
@@ -30,6 +35,8 @@ public interface PlanHelper {
     public String getCrossListedCourse(List<AttributeInfo> attributeInfoList);
 
     public Map<String, String> getPlanItemIdAndRefObjIdByRefObjType(String learningPlanId, String refObjType, String termId);
+
+    public List<PlannedCourseDataObject> getPlanItemListByTermId(String planItemType, String studentId, String termId) throws InvalidParameterException, MissingParameterException, DoesNotExistException, OperationFailedException;
 
 
 }
