@@ -230,7 +230,6 @@
                     <property name="items">
                         <list>
                             <bean parent="KSAP-HorizontalFieldGroup">
-                                <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                                 <property name="onClickScript"
                                           value="KsapScheduleBuild.viewScheduleDetails('@{#line.termId}', '@{#form.requestedLearningPlanId}', '@{#line.uniqueId}', 0, false,  e);"/>
                                 <property name="cssClasses"
@@ -241,7 +240,7 @@
                                             <property name="propertyReplacers">
                                                 <list>
                                                     <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="messageText" p:replacement="View"
-                                                          p:condition="T(org.kuali.student.myplan.utils.KSAPRoleUtils).principalHasRole(T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentId(),&quot;NON-STUDENT&quot;)"/>
+                                                          p:condition="T(org.kuali.student.myplan.utils.KSAPRoleUtils).principalHasRole(T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentId(),&quot;NON-STUDENT,ADVISER&quot;)"/>
                                                 </list>
                                             </property>
                                         </bean>
