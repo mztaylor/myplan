@@ -45,7 +45,6 @@
                         </bean>
                         <bean parent="Uif-Link" p:linkText="Build Your Schedule">
                             <property name="href" value="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;termId=@{termId}&amp;requestedLearningPlanId=@{requestedLearningPlanId}&amp;pageId=schedule_build"/>
-                            <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                             <property name="cssClasses" value="secondaryNavigation__schedule active"/>
                         </bean>
                     </list>
@@ -324,6 +323,7 @@
                                     <list>
                                         <bean parent="Uif-LinkGroup" p:linkSeparator="|" p:groupBeginDelimiter=""
                                               p:groupEndDelimiter="">
+                                            <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                                             <property name="validationMessages">
                                                 <null/>
                                             </property>
@@ -413,8 +413,10 @@
                         <property name="layoutManager.cssClasses" value="scheduleDetails__header"/>
                         <property name="items">
                             <list>
-                                <bean parent="Uif-Link" p:linkText="__KSAP_COURSECD__ __KSAP_COURSETITLE__ (__KSAP_COURSECREDIT__)"
-                                      p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=__KSAP_COURSEID__&amp;courseCd=__KSAP_COURSECD_URL__"/>
+                                <bean parent="Uif-Link" p:id="sbcalenderCourse" p:linkText="__KSAP_COURSECD__ __KSAP_COURSETITLE__ (__KSAP_COURSECREDIT__)"
+                                      p:href="inquiry?methodToCall=start&amp;viewId=CourseDetails-InquiryView&amp;courseId=__KSAP_COURSEID__&amp;courseCd=__KSAP_COURSECD_URL__">
+                                    <property name="onDocumentReadyScript" value="jQuery('#sbcalenderCourse').focus()"/>
+                                </bean>
                             </list>
                         </property>
                     </bean>
@@ -526,7 +528,8 @@
                 <property name="cssClasses" value="uif-boxLayoutVerticalItem"/>
                 <property name="items">
                     <list>
-                        <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Unpin">
+                        <bean parent="KSAP-PrimaryActionButton-Small" p:id="scheduleSaved__unpin" p:actionLabel="Unpin">
+                            <property name="onDocumentReadyScript" value="jQuery('#scheduleSaved__unpin').focus()"/>
                             <property name="actionScript" value="KsapSbCalendar.toggleSaveSchedule('__KSAP_PINNED_ID__', 'removeSchedule', e)"/>
                         </bean>
                         <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Cancel">
