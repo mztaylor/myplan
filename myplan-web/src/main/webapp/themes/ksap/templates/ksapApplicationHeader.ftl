@@ -14,7 +14,7 @@
         <div>
             You&#39;re viewing <strong>${UserSession.objectMap["kuali.uw.authn.studentName"]}&#39;s</strong>
             <#if UserSession.objectMap["kuali.uw.authn.studentNumber"]??><strong>(${UserSession.objectMap["kuali.uw.authn.studentNumber"]})</strong></#if>
-            MyPlan. Some features are restricted in Adviser View. <a href="javascript:openHelpWindow('https://depts.washington.edu/myplan/?page_id=985#view');">Learn more.</a>
+            MyPlan. Some features are restricted in Adviser View. <a href="https://depts.washington.edu/myplan/?page_id=985#view/" target="_blank">Learn more.</a>
         </div>
     </#if>
     <#if UserSession?? && UserSession.backdoorInUse>
@@ -39,7 +39,13 @@
             <div class="appHeader__logo">MyPlan</div>
             <div class="appHeader__user" data-adviser="${isAdviser?string("true","false")}">
                 <div class="appHeader__identity">
-                    Welcome,
+                    <#if UserSession.objectMap["identityProvider"]?? && UserSession.objectMap["identityProvider"]?contains("washington.edu")>
+                        <img class="appHeader__loginSource" src="../themes/ksap/images/icon-uwnetid.gif"/>
+                    <#elseif UserSession.objectMap["identityProvider"]?? && UserSession.objectMap["identityProvider"]?contains("facebook")>
+                        <img class="appHeader__loginSource" src="../themes/ksap/images/icon-facebook.gif"/>
+                    <#elseif UserSession.objectMap["identityProvider"]?? && UserSession.objectMap["identityProvider"]?contains("google")>
+                        <img class="appHeader__loginSource" src="../themes/ksap/images/icon-google.gif"/>
+                    </#if>
                     <#if isAdviser>
                         <span class="appHeader__person appHeader__person--adviser">${UserSession.person.firstNameUnmasked?cap_first} ${UserSession.person.lastNameUnmasked?substring(0,1)?capitalize}.</span>
                     <#else>
