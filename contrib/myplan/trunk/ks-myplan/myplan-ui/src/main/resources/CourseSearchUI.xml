@@ -604,6 +604,7 @@
                         var popupOptions = {tail:{hidden:true}, align:'top', close:true};
                         openPopup('add_dialog_page', retrieveData, 'plan', popupStyle, popupOptions, e);
                     "/>
+                    <property name="onDocumentReadyScript" value="jQuery('#course_add').focus()"/>
                 </bean>
                 <bean parent="Uif-ActionLink" p:id="course_bookmark" p:actionLabel="Bookmark" p:title="Bookmark">
                     <property name="actionScript" value="
