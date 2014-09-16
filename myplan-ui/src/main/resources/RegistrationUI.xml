@@ -62,15 +62,16 @@
                                       value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
                             <property name="componentSecurity.additionalRoleQualifiers">
                                 <map>
-                                    <entry key="authorizedToView" value="STUDENT"/>
+                                    <entry key="authorizedToView" value="STUDENT,NON-STUDENT"/>
                                 </map>
                             </property>
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Unpin this schedule"
+                                    <bean parent="KSAP-SecondaryActionButton-Small" p:id="registrationUnpin" p:actionLabel="Unpin this schedule"
                                           p:render="@{pinned}">
                                         <property name="actionScript"
                                                   value="KsapScheduleBuild.confirmRemovedSavedSchedule('@{uniqueId}', true, e)"/>
+                                        <property name="onDocumentReadyScript" value="jQuery('#registrationUnpin').focus()"/>
                                     </bean>
                                     <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Register for These Courses"
                                           p:navigateToPageId="scheduleSelect"
@@ -132,9 +133,10 @@
                             <property name="layoutManager.style" value="height: 40px;"/>
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Back"
+                                    <bean parent="KSAP-SecondaryActionButton-Small" p:id="registrationBack" p:actionLabel="Back"
                                           p:navigateToPageId="scheduleView"
                                           p:additionalCssClasses="registrationForm__back">
+                                        <property name="onDocumentReadyScript" value="jQuery('#registrationBack').focus()"/>
                                     </bean>
                                     <bean parent="KSAP-HorizontalBoxGroup">
                                         <property name="componentSecurity.additionalRoleQualifiers">
@@ -215,13 +217,14 @@
                             <property name="layoutManager.style" value="height: 40px;"/>
                             <property name="items">
                                 <list>
-                                    <bean parent="KSAP-SecondaryActionButton-Small" p:actionLabel="Edit schedule"
+                                    <bean parent="KSAP-SecondaryActionButton-Small" p:id="registrationEdit" p:actionLabel="Edit schedule"
                                           p:navigateToPageId="scheduleSelect"
                                           p:additionalCssClasses="registrationForm__back" p:actionImagePlacement="LEFT">
                                         <property name="actionImage">
                                             <bean parent="Uif-Image" p:altText="this action lets you to edit the schedule which you can register for"
                                                   p:source="@{#ConfigProperties['ks.myplan.externalizable.images.url']}/pixel.gif"/>
                                         </property>
+                                        <property name="onDocumentReadyScript" value="jQuery('#registrationEdit').focus()"/>
                                     </bean>
                                     <bean parent="KSAP-HorizontalBoxGroup">
                                         <property name="style" value="float: right;"/>
