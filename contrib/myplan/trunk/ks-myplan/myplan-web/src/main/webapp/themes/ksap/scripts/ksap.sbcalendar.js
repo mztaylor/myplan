@@ -5,6 +5,14 @@ var KsapSbCalendar = {
         this.limit = parseFloat(this.widget.data("selection-limit"));
         this.registeredSchedule = (this.widget.data("registered-schedule") ? this.widget.data("registered-schedule") : {});
         if(typeof this.registeredSchedule.events !== "undefined" && this.registeredSchedule.events.length > 0) {
+            for (var i = 0; i < this.registeredSchedule.events.length; i++) {
+                if (!this.registeredSchedule.events[i].tbd) {
+                    var courseCode = this.registeredSchedule.events[i].popoverContent.courseCd;
+                    var curr = jQuery.trim(courseCode.substr(0, courseCode.length - 3));
+                    var num = jQuery.trim(courseCode.substr(courseCode.length - 3));
+                    this.registeredSchedule.events[i].title = '<div class="scheduleCalendar__code">' + curr + '<br>' + num +'</div>';
+                }
+            }
             this.addSchedule(this.registeredSchedule, "scheduleCalendar--registered");
         }
         this.toggleTbaSection();

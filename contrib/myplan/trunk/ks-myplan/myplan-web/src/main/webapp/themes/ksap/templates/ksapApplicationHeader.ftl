@@ -26,7 +26,7 @@
 
 <#macro ksap_app_header element>
 <#if banner?has_content>
-<div id="KSAP-Banner-Wrapper" class="alert alert-banner alert-info">
+<div id="KSAP-Banner-Wrapper" class="alert alert-banner alert-info" role="marquee" aria-label="Application Messages">
     <div id="KSAP-Banner" class="alert-wrapper">
     ${banner}
     </div>
@@ -35,7 +35,7 @@
 
 <div id="KSAP-ApplicationHeader-Wrapper">
     <div id="KSAP-ApplicationHeader">
-        <div class="appHeader">
+        <div class="appHeader" role="banner" aria-label="Header">
             <div class="appHeader__logo">MyPlan</div>
             <div class="appHeader__user" data-adviser="${isAdviser?string("true","false")}">
                 <div class="appHeader__identity">
@@ -61,7 +61,7 @@
             <img class="appHeader__patch" src="../themes/ksap/images/appheader_icon_logo@2x.png"/>
         </div>
 
-        <div class="appNavigation">
+        <div class="appNavigation" role="navigation" aria-label="Main Navigation">
             <ul>
                 <#if RequestParameters.viewId??>
                 <#--Plan Page Link-->

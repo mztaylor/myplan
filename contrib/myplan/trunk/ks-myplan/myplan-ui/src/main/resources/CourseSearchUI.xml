@@ -43,7 +43,14 @@
                     <property name="items">
                         <list>
                             <bean parent="course_search_result_section" p:width="710px"/>
-                            <ref bean="KSAP-RightPane"/>
+                            <bean parent="KSAP-RightPane">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="registration_widget"/>
+                                        <bean parent="KSAP-YourStuff"/>
+                                    </list>
+                                </property>
+                            </bean>
                         </list>
                     </property>
                 </bean>

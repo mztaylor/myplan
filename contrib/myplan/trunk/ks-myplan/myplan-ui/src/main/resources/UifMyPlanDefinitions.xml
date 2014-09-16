@@ -382,6 +382,7 @@
     <bean id="KSAP-ModuleContainer" parent="KSAP-VerticalBoxGroup">
         <property name="header">
             <bean parent="KSAP-HeaderBase">
+                <property name="headerLevel" value="h2"/>
                 <property name="cssClasses" value="moduleContainer__header"/>
                 <property name="headerTagCssClasses" value="moduleContainer__headerText"/>
             </bean>
@@ -421,6 +422,12 @@
         "/>
     </bean>
 
+    <bean id="KSAP-Registration" parent="KSAP-Module" p:headerText="Registration" p:id="KSAP-Registration">
+        <property name="header.render" value="false"/>
+        <property name="onDocumentReadyScript" value="
+            customRetrieveComponent('KSAP-Registration','registration_summary','search','lookup',{viewId:'RegistrationSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+        "/>
+    </bean>
 
     <bean id="KSAP-BookmarkList" parent="KSAP-Module" p:headerText="Bookmarked Courses" p:id="KSAP-BookmarkList">
         <property name="onDocumentReadyScript" value="
@@ -451,6 +458,28 @@
         <property name="onDocumentReadyScript" value="
             customRetrieveComponent('KSAP-PlanAuditList','plan_audits_summary','search','lookup',{viewId:'PlanAuditsSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
         "/>
+    </bean>
+
+    <bean id="registration_widget" parent="KSAP-ModuleContainer" p:headerText="Registration">
+        <property name="header.rightGroup">
+            <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="moduleContainer__header--right">
+                <property name="items">
+                    <list>
+                        <ref bean="registration_help_icon"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="componentSecurity.additionalRoleQualifiers">
+            <map>
+                <entry key="authorizedToView" value="STUDENT,ADVISER"/>
+            </map>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-Registration"/>
+            </list>
+        </property>
     </bean>
 
 
@@ -821,6 +850,7 @@
     </bean>
 
     <bean id="KSAP-ModuleHeader" parent="KSAP-HeaderBase">
+        <property name="headerLevel" value="h3"/>
         <property name="cssClasses" value="module__header"/>
         <property name="headerTagCssClasses" value="module__headerText"/>
     </bean>
@@ -874,6 +904,7 @@
     </bean>
 
     <bean id="KSAP-PageHeader" parent="Uif-PageHeader">
+        <property name="headerLevel" value="h1"/>
         <property name="cssClasses" value="pageHeader"/>
         <property name="headerTagCssClasses" value="pageHeaderText"/>
     </bean>

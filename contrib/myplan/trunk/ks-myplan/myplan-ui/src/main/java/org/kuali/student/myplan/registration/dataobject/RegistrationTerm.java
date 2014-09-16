@@ -9,6 +9,7 @@ public class RegistrationTerm {
     private String possibleScheduleUniqueId;
     private String requestedLearningPlanId;
     private int courseRegistrationCount;
+    private int plannedItemsCount;
     private boolean openForRegistration;
     private boolean plannedCourses;
     private boolean plannedActivities;
@@ -43,6 +44,14 @@ public class RegistrationTerm {
 
     public void setCourseRegistrationCount(int courseRegistrationCount) {
         this.courseRegistrationCount = courseRegistrationCount;
+    }
+
+    public int getPlannedItemsCount() {
+        return plannedItemsCount;
+    }
+
+    public void setPlannedItemsCount(int plannedItemsCount) {
+        this.plannedItemsCount = plannedItemsCount;
     }
 
     public boolean isOpenForRegistration() {

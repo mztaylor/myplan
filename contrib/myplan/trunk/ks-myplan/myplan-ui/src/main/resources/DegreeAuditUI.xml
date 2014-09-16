@@ -146,6 +146,7 @@
                                 <property name="cssClasses" value="printDisplay"/>
                                 <property name="items">
                                     <list>
+                                        <bean parent="registration_widget"/>
                                         <bean parent="KSAP-YourStuff">
                                             <property name="items">
                                                 <list>

@@ -304,31 +304,44 @@ function setupPopover(id, event) {
             jQuery("body").off("click");
         }
     });
-    popup.on("keydown", function(e) {
-        if (e.which == 9) {
-            var focusableItems = popup.find("a:not(.disabled), :input:not([disabled])").filter(':visible');
+    /*
+    document.addEventListener("focus", function(event) {
+
+        event.preventDefault();
+        if (jQuery("#" + id).find(event.target).length === 0) {
+            event.stopPropagation();
+            var focusableItems = jQuery("#" + id).find("a:not(.disabled), :input:not([disabled])").filter(':visible');
+            jQuery(focusableItems[0]).focus();
+        }
+    }, true);
+     */
+    jQuery("#" + id).on("keydown", function(e) {
+        var event = e || window.event;
+        var keyCode = event.which || event.keyCode;
+        if (keyCode === 9) {
+            var focusableItems = jQuery("#" + id).find("a:not(.disabled), :input:not([disabled])").filter(':visible');
             var focusedItem = jQuery(':focus');
-            if (e.shiftKey) {
+            if (event.shiftKey) {
                 //back tab
                 // if focused on first item and user preses back-tab, go to the last focusable item
                 if (focusableItems.index(focusedItem) === 0){
                     focusableItems.get(focusableItems.length - 1).focus();
-                    e.preventDefault();
+                    event.preventDefault();
                 }
             } else {
                 //forward tab
                 // if focused on the last item and user preses tab, go to the first focusable item
                 if (focusableItems.index(focusedItem) === (focusableItems.length - 1)) {
                     focusableItems.get(0).focus();
-                    e.preventDefault();
+                    event.preventDefault();
                 }
             }
         }
-        if (e.which == 27) {
+        if (keyCode === 27) {
             var close = popup.find("a.popover__close");
             close.click();
             fnCloseAllPopups();
-            e.preventDefault();
+            event.preventDefault();
         }
     });
     if (popup.offset().top < 0 || popup.offset().left < 0) {

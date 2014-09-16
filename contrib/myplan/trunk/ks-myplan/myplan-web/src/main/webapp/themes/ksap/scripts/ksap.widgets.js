@@ -731,7 +731,13 @@ function toggleSectionAction(actionId, regId, action, data, primaryPlan) {
 
 function removeSectionRow(actionId) {
     var row = jQuery("#" + actionId).parents("tr.courseActivities--planned");
+    var table = row.parents("table");
     row.nextUntil(".courseActivities--primary, .courseActivities--secondary").andSelf().remove();
+    if (table.find("tbody tr:visible").length > 0) {
+        table.find("thead").show();
+    } else {
+        table.find("thead").hide();
+    }
 }
 
 function fnUpdateQuarterViewCredits(termCredits) {
