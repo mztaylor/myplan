@@ -27,7 +27,7 @@
 
         label {
             display: block;
-            padding: 2px 0 2px 24px !important;
+            padding: 2px 0 2px 24px;
             border-top: @dottedBorderStyle;
 
             div {
@@ -67,6 +67,16 @@
     .registrationActivity__row {
         border-top: @dottedBorderStyle;
         padding: 2px 0;
+    }
+
+    &.registrationActivity__data--noRadio {
+        .uif-verticalRadioControl {
+            display: none;
+        }
+
+        fieldset label {
+            padding-left: 0;
+        }
     }
 }
 

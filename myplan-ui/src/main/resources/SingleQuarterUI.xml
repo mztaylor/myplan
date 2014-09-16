@@ -187,7 +187,7 @@
                                 <property name="cssClasses" value="printDisplay"/>
                                 <property name="items">
                                     <list>
-
+                                        <bean parent="registration_widget"/>
                                         <bean parent="KSAP-ModuleContainer" p:headerText="Messages">
                                             <property name="componentSecurity.additionalRoleQualifiers">
                                                 <map>

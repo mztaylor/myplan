@@ -78,6 +78,7 @@ public class RegistrationLookupableHelperImpl extends MyPlanLookupableImpl {
                 registrationTerm.setRequestedLearningPlanId(learningPlan.getId());
 
                 if (CollectionUtils.isNotEmpty(plannedCoursesList)) {
+                    registrationTerm.setPlannedItemsCount(plannedCoursesList.size());
                     //There are planned courses for this term
                     registrationTerm.setPlannedCourses(true);
 

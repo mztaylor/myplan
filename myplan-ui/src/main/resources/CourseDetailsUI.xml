@@ -33,6 +33,12 @@
                             <ref bean="course_details_section"/>
                             <bean parent="KSAP-RightPane" p:width="230px">
                                 <property name="cssClasses" value="printDisplay"/>
+                                <property name="items">
+                                    <list>
+                                        <bean parent="registration_widget"/>
+                                        <bean parent="KSAP-YourStuff"/>
+                                    </list>
+                                </property>
                             </bean>
                         </list>
                     </property>

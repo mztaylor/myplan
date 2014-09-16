@@ -1,5 +1,5 @@
 <#macro ksap_app_footer group>
-<div class="appfooter">
+<div class="appfooter" role="contentinfo" aria-label="Footer">
     <div class="appfooter__links">
             <ul>
                 <li><a href="http://depts.washington.edu/myplan/help-site/" target="_blank">Help</a></li>

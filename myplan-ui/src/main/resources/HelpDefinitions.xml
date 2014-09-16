@@ -27,6 +27,14 @@
     </bean>
 
 
+    <bean id="registration_help_icon" parent="KSAP-HelpImage">
+        <property name="toolTip">
+            <bean parent="KSAP-TooltipRight"
+                  p:tooltipContent="Select course sections without time conflicts and once your &lt;a target=_blank href=http://www.washington.edu/students/reg/1415cal.html#Q3&gt;registration period&lt;/a&gt; has opened you can send them to the registration system . Courses may require that you select more than one type of section. &lt;a target=_blank href=https://depts.washington.edu/myplan/help-site/#1614&gt;Learn more&lt;/a&gt;"/>
+        </property>
+    </bean>
+
+
     <bean id="bookmarks_help_icon" parent="KSAP-HelpImage">
         <property name="toolTip">
             <bean parent="KSAP-TooltipRight"

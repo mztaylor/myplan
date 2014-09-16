@@ -1,0 +1,47 @@
+.registrationSummary {
+    li {
+        padding: @paddingDefault @paddingSmall;
+        border-top: @dottedBorderStyle;
+        font-size: @fontSizeSmall;
+
+        &:first-child {
+            border: none;
+        }
+
+        h3 {
+            font-size: @baseFontSize;
+            line-height: @baseLineHeight;
+            text-transform: uppercase;
+            .bold();
+        }
+
+        .uif-boxLayoutVerticalItem {
+            margin: 0;
+        }
+    }
+}
+
+.registrationSummary__button {
+    .border-radius(@baseBorderRadius);
+    color: @white;
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    font-size: @fontSizeSmall;
+    margin: @marginSmall @marginSmall 0;
+
+    &:hover {
+        text-decoration: none;
+        color: @white;
+    }
+
+    &.registrationSummary__button--active {
+        background: @greenDark;
+        border: solid 1px #426e12;
+    }
+
+    &.registrationSummary__button--disabled {
+        background: #ccc;
+        border: solid 1px #aaa;
+    }
+}

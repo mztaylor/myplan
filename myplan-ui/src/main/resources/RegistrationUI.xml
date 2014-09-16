@@ -108,7 +108,7 @@
                         });
                     "/>
                     <property name="header">
-                        <bean parent="KSAP-HeaderTwo" p:headerText="Choose Sections and Register"/>
+                        <bean parent="KSAP-HeaderTwo" p:headerText="@{forRegistration ? '':'Choose Sections and '}Register"/>
                     </property>
                     <property name="header.render" value="true"/>
                     <property name="instructionalMessage">
@@ -135,7 +135,8 @@
                                 <list>
                                     <bean parent="KSAP-SecondaryActionButton-Small" p:id="registrationBack" p:actionLabel="Back"
                                           p:navigateToPageId="scheduleView"
-                                          p:additionalCssClasses="registrationForm__back">
+                                          p:additionalCssClasses="registrationForm__back"
+                                          p:render="@{!forRegistration}">
                                         <property name="onDocumentReadyScript" value="jQuery('#registrationBack').focus()"/>
                                     </bean>
                                     <bean parent="KSAP-HorizontalBoxGroup">
@@ -450,12 +451,12 @@
         <property name="propertyName" value="activityOptions"/>
         <property name="bindingInfo.bindToForm" value="true"/>
         <property name="readOnly" value="false"/>
-        <property name="cssClasses" value="registrationActivity__data"/>
+        <property name="cssClasses" value="registrationActivity__data @{forRegistration ? 'registrationActivity__data--noRadio':''}"/>
         <property name="header">
             <bean parent="KSAP-HeaderDiv">
                 <property name="upperGroup">
                     <bean parent="KSAP-HorizontalBoxGroup">
-                        <property name="layoutManager.style" value="margin: 0 0 0 24px;"/>
+                        <property name="layoutManager.style" value="margin: 0 0 0 @{forRegistration ? '0':'24px'};"/>
                         <property name="items">
                             <list>
                                 <bean parent="scheduleRegistrationActivity-Label" p:labelText="Sect" p:width="24px"/>
@@ -577,5 +578,138 @@
                   value="http://www.washington.edu/students/reg/prior@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToRegQtrYrParam(termId)}.html"/>
         <property name="target" value="_blank"/>
     </bean>
+
+
+    <bean id="RegistrationSummary-LookupView" p:viewName="RegistrationSummary-LookupView" parent="MyPlanBaseLookupView">
+        <property name="dataObjectClassName"
+                  value="org.kuali.student.myplan.registration.dataobject.RegistrationTerm"/>
+        <property name="viewHelperServiceClass"
+                  value="org.kuali.student.myplan.registration.service.RegistrationLookupableHelperImpl"/>
+        <property name="entryPageId" value="registration_summary_page"/>
+        <property name="items">
+            <list>
+                <bean parent="KSAP-PageVerticalLayout" id="registration_summary_page">
+                    <property name="items">
+                        <list>
+                            <bean id="registration_summary" parent="registration_summary_list"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="registration_summary_list" parent="Uif-ListCollectionGroup">
+        <property name="collectionObjectClass" value="org.kuali.student.myplan.registration.dataobject.RegistrationTerm"/>
+        <property name="propertyName" value="lookupResults"/>
+        <property name="cssClasses" value="module registrationSummary"/>
+        <property name="onDocumentReadyScript" value="
+            jQuery('#registration_summary').on('PLAN_ITEM_ADDED PLAN_ITEM_DELETED SECTION_ITEM_ADDED SECTION_ITEM_DELETED', function(event, data){
+                if( data.planItemType != 'wishlist' ) {
+                    customRetrieveComponent('registration_summary','registration_summary','search','lookup',{viewId:'RegistrationSummary-LookupView'},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+                }
+            });
+        "/>
+        <property name="layoutManager.lineGroupPrototype.validationMessages">
+            <null/>
+        </property>
+        <property name="layoutManager.lineGroupPrototype.header">
+            <bean parent="KSAP-HeaderThree" p:headerText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.termId)}"/>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="registration_summary_term"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="registration_summary_term" parent="KSAP-VerticalFieldGroup">
+        <property name="items">
+            <list></list>
+        </property>
+        <property name="propertyReplacers">
+            <list>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items" p:condition="!#line.plannedCourses">
+                    <property name="replacement">
+                        <list>
+                            <bean parent="KSAP-Message" p:messageText="Course sections have not been added to your plan. Add courses and select sections to proceed."
+                                  p:cssClasses="block center"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items" p:condition="#line.plannedCourses AND !#line.plannedActivities">
+                    <property name="replacement">
+                        <list>
+                            <bean parent="KSAP-Message" p:messageText="Course sections have not been added to your plan. [0] or use [1] to proceed." p:cssClasses="center">
+                                <property name="inlineComponents">
+                                    <list>
+                                        <bean parent="Uif-Link" p:linkText="Select sections" p:href="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{#line.termId}"/>
+                                        <bean parent="Uif-Link" p:linkText="Schedule Builder" p:href="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;pageId=schedule_build&amp;termId=@{#line.termId}&amp;requestedLearningPlanId=__learningPlanId__"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items" p:condition="#line.plannedCourses AND #line.plannedActivities AND #line.courseRegistrationCount EQ 0">
+                    <property name="replacement">
+                        <list>
+                            <bean parent="registration_summary_num_items"/>
+                            <bean parent="registration_summary_num_ready"/>
+                            <bean parent="Uif-SpaceField" p:cssClasses="block center"/>
+                            <bean parent="registration_summary_disabled_msg" p:messageText="Register @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.termId)}"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items" p:condition="#line.plannedCourses AND #line.plannedActivities AND #line.courseRegistrationCount GT 0 AND !#line.openForRegistration">
+                    <property name="replacement">
+                        <list>
+                            <bean parent="registration_summary_num_items"/>
+                            <bean parent="registration_summary_num_ready"/>
+                            <bean parent="registration_summary_view_link"/>
+                            <bean parent="registration_summary_disabled_msg" p:messageText="Registration is not open"/>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items" p:condition="#line.plannedCourses AND #line.plannedActivities AND #line.courseRegistrationCount GT 0 AND #line.openForRegistration">
+                    <property name="replacement">
+                        <list>
+                            <bean parent="registration_summary_num_items"/>
+                            <bean parent="registration_summary_num_ready"/>
+                            <bean parent="registration_summary_view_link"/>
+                            <bean parent="registration_summary_view_link" p:linkText="Register @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.termId)}"
+                                  p:cssClasses="registrationSummary__button registrationSummary__button--active"
+                                  p:href="registration?methodToCall=registrationDetails&amp;viewId=Registration-FormView&amp;termId=@{#line.termId}&amp;pageId=scheduleSelect&amp;requestedLearningPlanId=@{#line.requestedLearningPlanId}&amp;uniqueId=@{#line.possibleScheduleUniqueId}&amp;forRegistration=true"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="registration_summary_num_items" parent="KSAP-Message"
+          p:messageText="[strong]@{#line.plannedItemsCount}[/strong] course@{#line.plannedItemsCount EQ 1 ? '':'s'}/placeholder@{#line.plannedItemsCount EQ 1 ? '':'s'} in your plan"/>
+
+    <bean id="registration_summary_num_ready" parent="KSAP-Message"
+          p:messageText="[strong]@{#line.courseRegistrationCount}[/strong] course@{#line.courseRegistrationCount EQ 1 ? '':'s'} ready for registration"/>
+
+    <bean id="registration_summary_view_link" parent="Uif-Link" p:linkText="View section details"
+          p:href="registration?methodToCall=registrationDetails&amp;viewId=Registration-FormView&amp;termId=@{#line.termId}&amp;pageId=scheduleView&amp;requestedLearningPlanId=@{#line.requestedLearningPlanId}&amp;uniqueId=@{#line.possibleScheduleUniqueId}&amp;forRegistration=true"
+          p:cssClasses="block center">
+        <property name="lightBox">
+            <bean parent="Uif-LightBox">
+                <property name="templateOptions">
+                    <map merge="true">
+                        <entry key="width" value="914"/>
+                        <entry key="fitToView" value="false"/>
+                        <entry key="autoHeight" value="true"/>
+                    </map>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="registration_summary_disabled_msg" parent="KSAP-Message"
+          p:cssClasses="registrationSummary__button registrationSummary__button--disabled"/>
 
 </beans>
