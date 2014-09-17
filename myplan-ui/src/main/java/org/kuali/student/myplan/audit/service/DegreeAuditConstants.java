@@ -63,5 +63,5 @@ public class DegreeAuditConstants extends DegreeAuditServiceConstants {
     public static final String PLAN_AUDIT_PROGRAM_PARAM_SEATTLE = "planAudit.programParamSeattle";
     public static final int DEFAULT_PLAN_AUDITS_VIEWABLE = 7;
 
-    public static final String BYPASS_DOES_NOT_EXIST_EXCEPTION = "bypassDoesNotExistException";
+    public static final String USE_DOES_NOT_EXIST_EXCEPTION = "useDoesNotExistException";
 }
