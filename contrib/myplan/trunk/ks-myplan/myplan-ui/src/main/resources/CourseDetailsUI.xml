@@ -105,7 +105,7 @@
                 </bean>
                 <bean parent="KSAP-SecondaryActionButton" p:actionLabel="Bookmark Course"
                       p:id="@{dataObject.courseSummaryDetails.courseId}_addSavedCourse"
-                      p:render="@{!dataObject.plannedCourseSummary.inSavedCourseList AND dataObject.plannedCourseSummary.plannedList}">
+                      p:render="@{!dataObject.plannedCourseSummary.inSavedCourseList AND dataObject.plannedCourseSummary.inPlannedCourseList}">
                     <property name="actionScript" value="
                         var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:'@{dataObject.courseSummaryDetails.courseId}', code:'@{dataObject.courseSummaryDetails.code}'};
                         submitHiddenForm('plan', additionalFormData, false, e);
