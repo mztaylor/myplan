@@ -47,7 +47,6 @@ import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.core.organization.service.OrganizationService;
 import org.kuali.student.r2.lum.course.dto.CourseInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
@@ -287,8 +286,7 @@ public class DegreeAuditController extends UifControllerBase {
                 String programId = getDegreeAuditHelper().getFormProgramID(form);
                 if (!programId.equalsIgnoreCase(DegreeAuditConstants.DEFAULT_KEY)) {
                     DegreeAuditService degreeAuditService = getDegreeAuditService();
-                    ContextInfo context = new ContextInfo();
-                    context.setAttributes(Arrays.asList(new AttributeInfo(DegreeAuditConstants.BYPASS_DOES_NOT_EXIST_EXCEPTION, "true")));
+                    ContextInfo context = DegreeAuditConstants.CONTEXT_INFO;
                     String auditType = form.getAuditType();
                     AuditReportInfo info = degreeAuditService.runAudit(regid, programId, auditType, context);
                     String auditID = info.getAuditId();
@@ -348,7 +346,6 @@ public class DegreeAuditController extends UifControllerBase {
                 if (!programId.equals(DegreeAuditConstants.DEFAULT_KEY)) {
                     ContextInfo context = new ContextInfo();
                     context.setPrincipalId(regid);
-                    context.setAttributes(Arrays.asList(new AttributeInfo(DegreeAuditConstants.BYPASS_DOES_NOT_EXIST_EXCEPTION, "true")));
                     DegreeAuditService degreeAuditService = getDegreeAuditService();
                     List<LearningPlanInfo> learningPlanList =
                             getAcademicPlanService().getLearningPlansForStudentByType(regid, LEARNING_PLAN_TYPE_PLAN,

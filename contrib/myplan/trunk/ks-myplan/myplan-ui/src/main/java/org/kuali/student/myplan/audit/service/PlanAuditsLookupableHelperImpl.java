@@ -11,14 +11,13 @@ import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
+import org.kuali.student.r2.common.dto.AttributeInfo;
+import org.kuali.student.r2.common.dto.ContextInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.springframework.stereotype.Component;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
@@ -49,9 +48,12 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
                 if (planAuditsCount > DegreeAuditConstants.DEFAULT_PLAN_AUDITS_VIEWABLE) {
                     break;
                 }
+                ContextInfo contextInfo = DegreeAuditConstants.CONTEXT_INFO;
+                contextInfo.setAttributes(Arrays.asList(new AttributeInfo(DegreeAuditConstants.USE_DOES_NOT_EXIST_EXCEPTION, "true")));
+
                 AuditReportInfo audit = null;
                 try {
-                    audit = getDegreeAuditService().getAuditReport(auditId, DegreeAuditConstants.AUDIT_TYPE_KEY_DEFAULT, DegreeAuditConstants.CONTEXT_INFO);
+                    audit = getDegreeAuditService().getAuditReport(auditId, DegreeAuditConstants.AUDIT_TYPE_KEY_DEFAULT, contextInfo);
                 } catch (DoesNotExistException e) {
                     logger.error("Could not find a plan Audit with auditId: " + auditId);
                     continue;
