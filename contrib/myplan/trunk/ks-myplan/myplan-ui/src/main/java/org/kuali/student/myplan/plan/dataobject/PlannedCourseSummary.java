@@ -1,5 +1,6 @@
 package org.kuali.student.myplan.plan.dataobject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.util.StringUtils;
 
@@ -86,7 +87,7 @@ public class PlannedCourseSummary {
 
     @JsonIgnore
     public boolean getInPlannedCourseList() {
-        return (plannedList != null && plannedList.size() > 1) ? true : false;
+        return (CollectionUtils.isNotEmpty(plannedList)) ? true : false;
     }
 
     @JsonIgnore
