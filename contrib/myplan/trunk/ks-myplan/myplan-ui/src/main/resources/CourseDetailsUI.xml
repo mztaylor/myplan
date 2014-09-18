@@ -897,7 +897,9 @@
                             <property name="templateOptions">
                                 <map merge="true">
                                     <entry key="width" value="800"/>
-                                    <entry key="fitToView" value="true"/>
+                                    <entry key="height" value="auto"/>
+                                    <entry key="fitToView" value="false"/>
+                                    <entry key="autoHeight" value="true"/>
                                 </map>
                             </property>
                         </bean>
