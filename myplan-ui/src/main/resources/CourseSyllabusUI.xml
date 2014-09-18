@@ -29,28 +29,32 @@
                     <property name="headerText"
                               value="Course Syllabus - @{dataObject.subject} @{dataObject.number} @{dataObject.title} (@{dataObject.credit})"/>
                     <property name="header">
-                        <bean parent="KSAP-HeaderThree" p:style="background: #DDD; margin-bottom: 10px;"/>
+                        <bean parent="KSAP-HeaderOne" p:cssClasses="courseSyllabus__header" p:headerTagCssClasses="courseSyllabus__headerText"/>
                     </property>
+                    <property name="validationMessages"><null /></property>
                     <property name="items">
                         <list>
                             <bean id="syllabus_box" parent="KSAP-SimpleDataField" p:id="description">
                                 <property name="propertyName" value="description"/>
                                 <property name="escapeHtmlInPropertyValue" value="false"/>
-                            </bean>
-                            <bean parent="KSAP-VerticalBoxGroup">
-                                <property name="layoutManager.style" value="text-align: center;"/>
-                                <property name="items">
-                                    <list>
-                                        <bean p:id="closeSyllabus" parent="KSAP-PrimaryActionButton" p:actionLabel="Close">
-                                            <property name="actionScript" value="jQuery.fancybox.close(true)"/>
-                                        </bean>
-                                    </list>
-                                </property>
+                                <property name="cssClasses" value="courseSyllabus__description"/>
                             </bean>
                         </list>
                     </property>
                 </bean>
             </list>
+        </property>
+        <property name="footer">
+            <bean parent="KSAP-VerticalBoxGroup">
+                <property name="layoutManager.style" value="text-align: center;"/>
+                <property name="items">
+                    <list>
+                        <bean p:id="closeSyllabus" parent="KSAP-PrimaryActionButton" p:actionLabel="Close">
+                            <property name="actionScript" value="parent.jQuery.fancybox.close(true)"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
 
