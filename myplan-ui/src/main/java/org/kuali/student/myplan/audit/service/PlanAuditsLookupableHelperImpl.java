@@ -13,6 +13,7 @@ import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.utils.UserSessionHelper;
 import org.kuali.student.r2.common.dto.AttributeInfo;
 import org.kuali.student.r2.common.dto.ContextInfo;
+import org.kuali.student.r2.common.dto.StatusInfo;
 import org.kuali.student.r2.common.exceptions.DoesNotExistException;
 import org.springframework.stereotype.Component;
 
@@ -48,12 +49,18 @@ public class PlanAuditsLookupableHelperImpl extends MyPlanLookupableImpl {
                 if (planAuditsCount > DegreeAuditConstants.DEFAULT_PLAN_AUDITS_VIEWABLE) {
                     break;
                 }
-                ContextInfo contextInfo = DegreeAuditConstants.CONTEXT_INFO;
-                contextInfo.setAttributes(Arrays.asList(new AttributeInfo(DegreeAuditConstants.USE_DOES_NOT_EXIST_EXCEPTION, "true")));
+
+
+                StatusInfo statusInfo = getDegreeAuditService().getAuditRunStatus(auditId, DegreeAuditConstants.CONTEXT_INFO);
+
+                if (statusInfo == null || "audit request not found".equals(statusInfo.getMessage())) {
+                    continue;
+                }
+
 
                 AuditReportInfo audit = null;
                 try {
-                    audit = getDegreeAuditService().getAuditReport(auditId, DegreeAuditConstants.AUDIT_TYPE_KEY_DEFAULT, contextInfo);
+                    audit = getDegreeAuditService().getAuditReport(auditId, DegreeAuditConstants.AUDIT_TYPE_KEY_DEFAULT, DegreeAuditConstants.CONTEXT_INFO);
                 } catch (DoesNotExistException e) {
                     logger.error("Could not find a plan Audit with auditId: " + auditId);
                     continue;
