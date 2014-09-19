@@ -1,9 +1,6 @@
 package org.kuali.student.myplan.utils;
 
-import org.kuali.student.myplan.audit.service.DegreeAuditServiceConstants;
 import org.kuali.student.r2.common.dto.ContextInfo;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.stereotype.Component;
 
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
@@ -42,7 +39,7 @@ public interface UserSessionHelper {
 
     public String getStudentNumber();
 
-    public String getStudentExternalIdentifier();
+    public String getStudentExternalIdentifier(String regID);
 
     public String getExternalIdentifier(String regId);
 
