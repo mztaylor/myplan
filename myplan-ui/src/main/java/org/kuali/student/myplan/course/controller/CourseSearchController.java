@@ -105,7 +105,7 @@ public class CourseSearchController extends UifControllerBase {
     private final Logger logger = Logger.getLogger(CourseSearchController.class);
 
     public static final String COURSE_SEARCH_URL = "/" + GlobalConstants.MYPLAN_APP_CODE +
-          "/myplan/course?#searchQuery=%s&searchTerm=any&campusSelect=%s";
+            "/myplan/course?#searchQuery=%s&searchTerm=any&campusSelect=%s";
 
     private static final int MAX_HITS = 1000;
 
@@ -182,7 +182,7 @@ public class CourseSearchController extends UifControllerBase {
             return null;
 
         }
-        String url =  String.format(CourseSearchConstants.COURSE_DETAILS_URL, courseId, urlEscape(String.format("%s %s", subject.trim(), number)));
+        String url = String.format(CourseSearchConstants.COURSE_DETAILS_URL, courseId, urlEscape(String.format("%s %s", subject.trim(), number)));
         response.sendRedirect(url);
         return null;
     }
@@ -467,10 +467,10 @@ public class CourseSearchController extends UifControllerBase {
                 status = String.format("<span id=\\\"%s_status\\\">%s</span>", domId, CourseSearchItem.EMPTY_RESULT_VALUE_KEY);
             } else {
                 status = String.format("<span id=\\\"%s_status\\\">" +
-                        "<input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan %s %s\\\" src=\\\"../themes/ksap/images/pixel.gif\\\" " +
-                        "alt=\\\"Bookmark or Add to Plan %s %s\\\" class=\\\"courseResults__itemAdd\\\" data-courseid= \\\"%s\\\" " +
-                        "data-coursecd= \\\"%s\\\" data-subject= \\\"%s\\\" data-number= \\\"%s\\\" " +
-                        "onclick=\\\"openMenu('%s_add','add_course_items',null,event,null,'popover__menu popover__menu--small',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>",
+                                "<input type=\\\"image\\\" title=\\\"Bookmark or Add to Plan %s %s\\\" src=\\\"../themes/ksap/images/pixel.gif\\\" " +
+                                "alt=\\\"Bookmark or Add to Plan %s %s\\\" class=\\\"courseResults__itemAdd\\\" data-courseid= \\\"%s\\\" " +
+                                "data-coursecd= \\\"%s\\\" data-subject= \\\"%s\\\" data-number= \\\"%s\\\" " +
+                                "onclick=\\\"openMenu('%s_add','add_course_items',null,event,null,'popover__menu popover__menu--small',{tail:{align:'middle'},align:'middle',position:'right'},false);\\\" /></span>",
                         domId, item.getCode().trim(), courseName, item.getCode().trim(), courseName, courseId, item.getCode().trim(), item.getSubject().trim(), item.getNumber().trim(), courseId);
             }
 
@@ -658,6 +658,8 @@ public class CourseSearchController extends UifControllerBase {
     public class ActivitySearchItem {
 
         private Map<String, Set<String>> primaryToSecondaries;
+        private Map<String, Set<String>> primaryToSecondaryTypes;
+        private Map<String, Set<String>> primaryToSecondaryTypesAvailable;
         private Set<String> meetingTimes;
 
         public Set<String> getMeetingTimes() {
@@ -680,6 +682,28 @@ public class CourseSearchController extends UifControllerBase {
 
         public void setPrimaryToSecondaries(Map<String, Set<String>> primaryToSecondaries) {
             this.primaryToSecondaries = primaryToSecondaries;
+        }
+
+        public Map<String, Set<String>> getPrimaryToSecondaryTypes() {
+            if (primaryToSecondaryTypes == null) {
+                primaryToSecondaryTypes = new HashMap<String, Set<String>>();
+            }
+            return primaryToSecondaryTypes;
+        }
+
+        public void setPrimaryToSecondaryTypes(Map<String, Set<String>> primaryToSecondaryTypes) {
+            this.primaryToSecondaryTypes = primaryToSecondaryTypes;
+        }
+
+        public Map<String, Set<String>> getPrimaryToSecondaryTypesAvailable() {
+            if (primaryToSecondaryTypesAvailable == null) {
+                primaryToSecondaryTypesAvailable = new HashMap<String, Set<String>>();
+            }
+            return primaryToSecondaryTypesAvailable;
+        }
+
+        public void setPrimaryToSecondaryTypesAvailable(Map<String, Set<String>> primaryToSecondaryTypesAvailable) {
+            this.primaryToSecondaryTypesAvailable = primaryToSecondaryTypesAvailable;
         }
     }
 
@@ -733,22 +757,47 @@ public class CourseSearchController extends UifControllerBase {
                             boolean primary = Boolean.valueOf(SearchHelper.getCellValue(row, "section.primary"));
                             int secondaryCount = Integer.parseInt(SearchHelper.getCellValue(row, "section.secondary.count"));
                             String primaryId = SearchHelper.getCellValue(row, "section.primary.id");
+                            String secondaryActivityTypes = SearchHelper.getCellValue(row, "section.secondary.types");
+                            String activityType = SearchHelper.getCellValue(row, "section.type");
                             String code = getCourseHelper().joinStringsByDelimiter(' ', subject.trim(), number.trim());
                             ActivitySearchItem activitySearchItem = coursesToActivitySearchItem.get(code) != null ? coursesToActivitySearchItem.get(code) : new ActivitySearchItem();
                             if (primary) {
                                 courseOfferingByTermSet.add(id);
                                 activitySearchItem.getPrimaryToSecondaries().put(id, secondaryCount > 0 ? new LinkedHashSet<String>() : null);
+                                if (secondaryCount > 0) {
+                                    activitySearchItem.getPrimaryToSecondaryTypes().put(id, StringUtils.commaDelimitedListToSet(secondaryActivityTypes));
+                                }
                             } else {
                                 if (activitySearchItem.getPrimaryToSecondaries().get(primaryId) == null) {
                                     continue;
                                 } else {
                                     activitySearchItem.getPrimaryToSecondaries().get(primaryId).add(id);
+                                    Set<String> secondaryTypes = activitySearchItem.getPrimaryToSecondaryTypesAvailable().get(primaryId);
+                                    if (CollectionUtils.isEmpty(secondaryTypes)) {
+                                        secondaryTypes = new HashSet<String>();
+                                    }
+                                    secondaryTypes.add(activityType);
+                                    activitySearchItem.getPrimaryToSecondaryTypesAvailable().put(primaryId, secondaryTypes);
                                 }
                             }
                             activitySearchItem.getMeetingTimes().add(meetingTimes);
                             coursesToActivitySearchItem.put(code, activitySearchItem);
                         }
 
+                    }
+                }
+
+                /*Filtering out the activities from courseOfferingByTermSet which do not have a complete course activity set.*/
+                for (String key : coursesToActivitySearchItem.keySet()) {
+                    ActivitySearchItem activitySearchItem = coursesToActivitySearchItem.get(key);
+                    if (!CollectionUtils.isEmpty(activitySearchItem.getPrimaryToSecondaryTypes())) {
+                        for (String primaryId : activitySearchItem.getPrimaryToSecondaryTypes().keySet()) {
+                            if (activitySearchItem.getPrimaryToSecondaryTypesAvailable().get(primaryId) == null) {
+                                courseOfferingByTermSet.remove(primaryId);
+                            } else if (activitySearchItem.getPrimaryToSecondaryTypesAvailable().get(primaryId).size() != activitySearchItem.getPrimaryToSecondaryTypes().get(primaryId).size()) {
+                                courseOfferingByTermSet.remove(primaryId);
+                            }
+                        }
                     }
                 }
 
