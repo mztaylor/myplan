@@ -66,11 +66,6 @@ public class ScheduleBuildController extends UifControllerBase {
     public ModelAndView start(@ModelAttribute("KualiForm") UifFormBase form,
                               BindingResult result, HttpServletRequest request,
                               HttpServletResponse response) {
-        if (getUserSessionHelper().isAdviser()) {
-            LOG.info("UNAUTHORIZED Access: " + GlobalVariables.getUserSession().getPerson().getPrincipalId());
-            ModelAndView modelAndView = new ModelAndView(UifConstants.REDIRECT_PREFIX + "/myplan/unauthorized");
-            return modelAndView;
-        }
         super.start(form, result, request, response);
 
         ScheduleForm sbform = (ScheduleForm) form;
