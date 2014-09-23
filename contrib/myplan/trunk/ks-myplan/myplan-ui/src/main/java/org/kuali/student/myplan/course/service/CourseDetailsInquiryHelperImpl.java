@@ -856,8 +856,7 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                         logger.info("Not able to load activity offering for courseOffering: " + courseOfferingID + " Term:" + termId);
                         continue;
                     }
-                    boolean dayMatchSuccess = false;
-                    boolean timeMatchSuccess = false;
+
                     boolean primaryAdded = false;
                     for (ActivityOfferingDisplayInfo aodi : aodiList) {
 
@@ -871,69 +870,11 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
                         }
 
                         ActivityOfferingItem activityOfferingItem = getActivityItem(aodi, courseInfo, openForPlanning, termId, planItemId);
-
-                        if (activityOfferingItem.isPrimary()) {
-                            ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
-                            String dayNumber = "";
-                            Set<Integer> dayNumbers = new TreeSet<Integer>();
-                            for (ScheduleComponentDisplay scdi : sdi.getScheduleComponentDisplays()) {
-                                MeetingDetails meeting = new MeetingDetails();
-
-                                for (TimeSlot timeSlot : scdi.getTimeSlots()) {
-
-                                /*TBA sections are included all times*/
-                                    if (CollectionUtils.isEmpty(timeSlot.getWeekdays())) {
-                                        dayMatchSuccess = true;
-                                    }
-
-
-                                    String days = "";
-                                    Collections.sort(timeSlot.getWeekdays());
-                                    for (int weekday : timeSlot.getWeekdays()) {
-                                        if (weekday > 0 && weekday < 8) {
-                                            String letter = getCalendarUtil().getShortName(weekday);
-                                            days += letter;
-                                            /*TODO: The weekday is giving wrong calendar value for days either fix the timeslot weekdays to return Monday as 1 instead of 2 OR change the selected days to have Monday as 2*/
-                                            dayNumbers.add(weekday - 1);
-                                        }
-                                    }
-                                    if (!"".equals(days)) {
-                                        meeting.setDays(days);
-                                    }
-
-                                    TimeOfDayInfo startInfo = timeSlot.getStartTime();
-                                    TimeOfDayInfo endInfo = timeSlot.getEndTime();
-                                    if (startInfo != null && endInfo != null) {
-                                        long startTimeMillis = startInfo.getMilliSeconds();
-                                        String start = TimeStringMillisConverter.millisToMilitaryTime(startTimeMillis).replace(":", "");
-
-                                        long endTimeMillis = endInfo.getMilliSeconds();
-                                        String end = TimeStringMillisConverter.millisToMilitaryTime(endTimeMillis).replace(":", "");
-
-                                        String time = start + end;
-                                        if (exactTimeMatch) {
-                                            timeMatchSuccess = selectedTimes.contains(time);
-                                        } else {
-                                            timeMatchSuccess = Integer.parseInt(start) >= startTime && Integer.parseInt(end) <= endTime;
-                                        }
-                                    } else {
-                                    /*TBA sections are included all times*/
-                                        timeMatchSuccess = true;
-                                    }
-
-                                }
-                            }
-                            if (!CollectionUtils.isEmpty(dayNumbers)) {
-                                dayNumber = org.apache.commons.lang.StringUtils.join(dayNumbers, "");
-                            }
-                            if (daysListCombo.contains(dayNumber)) {
-                                dayMatchSuccess = true;
-                            }
-                            if (dayMatchSuccess && timeMatchSuccess) {
+                        boolean dayAndTimeMatchSuccess = activityMatchesFilteredDaysAndTimes(aodi, daysListCombo, selectedTimes, exactTimeMatch, startTime, endTime);
+                        if (activityOfferingItem.isPrimary() && dayAndTimeMatchSuccess) {
                                 activityOfferingItemList.add(activityOfferingItem);
                                 primaryAdded = true;
-                            }
-                        } else if (primaryAdded) {
+                        } else if (primaryAdded && dayAndTimeMatchSuccess) {
                             activityOfferingItemList.add(activityOfferingItem);
                         }
 
@@ -985,6 +926,79 @@ public class CourseDetailsInquiryHelperImpl extends KualiInquirableImpl {
         return activityOfferingItemList;
     }
 
+
+    /**
+     * Checks to see if the activity is with in the filter range for days and times.
+     *
+     * @param aodi
+     * @param daysListCombo
+     * @param selectedTimes
+     * @param exactTimeMatch
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private boolean activityMatchesFilteredDaysAndTimes(ActivityOfferingDisplayInfo aodi, List<String> daysListCombo, List<String> selectedTimes, boolean exactTimeMatch, int startTime, int endTime) {
+        boolean dayMatchSuccess = false;
+        boolean timeMatchSuccess = false;
+        ScheduleDisplayInfo sdi = aodi.getScheduleDisplay();
+        String dayNumber = "";
+        Set<Integer> dayNumbers = new TreeSet<Integer>();
+        for (ScheduleComponentDisplay scdi : sdi.getScheduleComponentDisplays()) {
+            MeetingDetails meeting = new MeetingDetails();
+
+            for (TimeSlot timeSlot : scdi.getTimeSlots()) {
+
+                                /*TBA sections are included all times*/
+                if (CollectionUtils.isEmpty(timeSlot.getWeekdays())) {
+                    dayMatchSuccess = true;
+                }
+
+
+                String days = "";
+                Collections.sort(timeSlot.getWeekdays());
+                for (int weekday : timeSlot.getWeekdays()) {
+                    if (weekday > 0 && weekday < 8) {
+                        String letter = getCalendarUtil().getShortName(weekday);
+                        days += letter;
+                                            /*TODO: The weekday is giving wrong calendar value for days either fix the timeslot weekdays to return Monday as 1 instead of 2 OR change the selected days to have Monday as 2*/
+                        dayNumbers.add(weekday - 1);
+                    }
+                }
+                if (!"".equals(days)) {
+                    meeting.setDays(days);
+                }
+
+                TimeOfDayInfo startInfo = timeSlot.getStartTime();
+                TimeOfDayInfo endInfo = timeSlot.getEndTime();
+                if (startInfo != null && endInfo != null) {
+                    long startTimeMillis = startInfo.getMilliSeconds();
+                    String start = TimeStringMillisConverter.millisToMilitaryTime(startTimeMillis).replace(":", "");
+
+                    long endTimeMillis = endInfo.getMilliSeconds();
+                    String end = TimeStringMillisConverter.millisToMilitaryTime(endTimeMillis).replace(":", "");
+
+                    String time = start + end;
+                    if (exactTimeMatch) {
+                        timeMatchSuccess = selectedTimes.contains(time);
+                    } else {
+                        timeMatchSuccess = Integer.parseInt(start) >= startTime && Integer.parseInt(end) <= endTime;
+                    }
+                } else {
+                                    /*TBA sections are included all times*/
+                    timeMatchSuccess = true;
+                }
+
+            }
+        }
+        if (!CollectionUtils.isEmpty(dayNumbers)) {
+            dayNumber = org.apache.commons.lang.StringUtils.join(dayNumbers, "");
+        }
+        if (daysListCombo.contains(dayNumber)) {
+            dayMatchSuccess = true;
+        }
+        return dayMatchSuccess && timeMatchSuccess;
+    }
 
     /**
      * Returns activity Offerings for given courseId and term
