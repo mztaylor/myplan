@@ -330,11 +330,11 @@ function searchForCourses(id, parentId) {
         iDisplayStart: (readUrlHash("start") ? parseFloat(readUrlHash("start")) : 0),
         oLanguage: {
             "sEmptyTable": jQuery("#course_search_empty_result").clone().show().wrap('<div/>').parent().html(),
-            "sInfo": (formData.searchTerm === 'any' ? 'Showing _START_-_END_ of _TOTAL_ results' : '<div>Showing _START_-_END_ of _TOTAL_ filtered search results</div><div class="courseResults__note">Courses listed below may include sections that occur outside of your search filters.</div>'),
-            "sInfoEmpty": "0 results found",
+            "sInfo": (formData.searchTerm === 'any' ? '<h2 class="dataTables_info_header">Showing _START_-_END_ of _TOTAL_ results</h2>' : '<h2 class="dataTables_info_header">Showing _START_-_END_ of _TOTAL_ filtered search results</h2><div class="courseResults__note">Courses listed below may include sections that occur outside of your search filters.</div>'),
+            "sInfoEmpty": '<h2 class="dataTables_info_header">0 results found</h2>',
             "sInfoFiltered": "",
             "sLengthMenu": "Show _MENU_",
-            "sZeroRecords": "0 results found"
+            "sZeroRecords": '<h2 class="dataTables_info_header">0 results found</h2>'
         },
         sAjaxSource: "course/search?" + jQuery.param(formData).replace(/\+/g, "%20") + "&formKey=" + jQuery("#formKey").val() + "&time=" + new Date().getTime(),
         sDom: "ilrtSp",

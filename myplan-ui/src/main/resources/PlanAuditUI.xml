@@ -459,13 +459,13 @@
           p:headerText="How to Use Plan Audit for Academic Planning">
         <property name="render" value="@{#form.planAudit.auditHtml EQ null}"/>
         <property name="header">
-            <bean parent="KSAP-HeaderFour"/>
+            <bean parent="KSAP-HeaderTwo" p:headerTagCssClasses="auditRun__emptyHeader"/>
         </property>
         <property name="items">
             <list>
                 <bean parent="KSAP-VerticalBoxGroup" p:headerText="Will your plan meet your program requirements?">
                     <property name="header">
-                        <bean parent="KSAP-HeaderFive" p:cssClasses="auditRun__infoHeader" p:headerTagCssClasses="auditRun__infoHeaderText"/>
+                        <bean parent="KSAP-HeaderThree" p:cssClasses="auditRun__infoHeader" p:headerTagCssClasses="auditRun__infoHeaderText"/>
                     </property>
                     <property name="cssClasses" value="auditRun__info"/>
                     <property name="items">
@@ -479,7 +479,7 @@
                 </bean>
                 <bean parent="KSAP-VerticalBoxGroup" p:headerText="What do you need to do?">
                     <property name="header">
-                        <bean parent="KSAP-HeaderFive" p:cssClasses="auditRun__infoHeader" p:headerTagCssClasses="auditRun__infoHeaderText"/>
+                        <bean parent="KSAP-HeaderThree" p:cssClasses="auditRun__infoHeader" p:headerTagCssClasses="auditRun__infoHeaderText"/>
                     </property>
                     <property name="cssClasses" value="auditRun__info"/>
                     <property name="items">

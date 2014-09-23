@@ -157,7 +157,8 @@ var KsapScheduleBuild = {
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ENROLLSTATE__/gi, popoverContent.activities[i].enrollState);
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ACTIVITYID__/gi, popoverContent.activities[i].activityId);
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_PRIMARY__/gi, popoverContent.activities[i].primary);
-            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ACTIONCLASS__/gi, (planned ? "scheduleDetails__itemDelete" : "scheduleDetails__itemAdd"));
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ACTIONCLASS__/gi, (popoverContent.activities[i].enrollState === "Suspended" && !planned ? "scheduleDetails__itemHide" : (planned ? "scheduleDetails__itemDelete" : "scheduleDetails__itemAdd")));
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ADDALLOWED__/gi, (popoverContent.activities[i].enrollState !== "Suspended"));
 
             popoverHtml.find("table tbody").append(tempActivitiesTemplate);
         }
@@ -262,8 +263,13 @@ var KsapScheduleBuild = {
     removePlannedActivity: function (data) {
         if (KsapScheduleBuild.isPlanned(data.ActivityOfferingId)) {
             delete this.plannedActivities[data.ActivityOfferingId];
-            jQuery("#action-" + data.RegistrationCode).removeClass("scheduleDetails__itemDelete").addClass("scheduleDetails__itemAdd").blur();
-            jQuery("#section-code-" + data.RegistrationCode + "_span").removeClass("scheduleDetails__sectionCd--planned");
+            if (jQuery("#action-" + data.RegistrationCode).data("add-allowed")) {
+                jQuery("#action-" + data.RegistrationCode).removeClass("scheduleDetails__itemDelete").addClass("scheduleDetails__itemAdd").blur();
+                jQuery("#section-code-" + data.RegistrationCode + "_span").removeClass("scheduleDetails__sectionCd--planned");
+            } else {
+                jQuery("#action-" + data.RegistrationCode).removeClass("scheduleDetails__itemDelete").addClass("scheduleDetails__itemHide").blur();
+                jQuery("#section-code-" + data.RegistrationCode + "_span").removeClass("scheduleDetails__sectionCd--planned");
+            }
         }
 
         if (data.ItemsToUpdate) {

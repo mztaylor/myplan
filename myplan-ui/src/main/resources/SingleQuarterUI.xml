@@ -128,8 +128,8 @@
                                                             </list>
                                                         </property>
                                                     </bean>
-                                                    <bean parent="KSAP-HeaderTwo" p:headerText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).formatQuarterLabel(dataObject.atpId)}"
-                                                          p:cssClasses="planNavigation__header"/>
+                                                    <bean parent="KSAP-HeaderOne" p:headerText="@{T(org.kuali.student.myplan.plan.util.AtpHelper).formatQuarterLabel(dataObject.atpId)}"
+                                                          p:cssClasses="planNavigation__header" p:headerTagCssClasses="planNavigation__headerText"/>
                                                     <bean parent="overallPlanLink"/>
                                                 </list>
                                             </property>
@@ -259,7 +259,7 @@
         <property name="cssClasses" value="planTerm"/>
         <property name="layoutManager.cssClasses" value="planTerm__container"/>
         <property name="header">
-            <bean parent="KSAP-HeaderDiv" p:headerText="@{dataObject.qtrYear}" p:headerTagCssClasses="planTerm__headerText">
+            <bean parent="KSAP-HeaderTwo" p:headerText="@{dataObject.qtrYear}" p:headerTagCssClasses="planTerm__headerText">
                 <property name="cssClasses">
                     <list merge="false">
                         <value>planTerm__header</value>
@@ -370,7 +370,7 @@
         <property name="layoutManager.numberOfColumns" value="3"/>
         <property name="layoutManager.id" value="@{dataObject.atpId}"/>
         <property name="header">
-            <bean parent="KSAP-HeaderDiv" p:cssClasses="planContainer__header planTerm--locked"
+            <bean parent="KSAP-HeaderThree" p:cssClasses="planContainer__header planTerm--locked"
                   p:headerTagCssClasses="planContainer__headerText"/>
         </property>
         <property name="header.rightGroup">
@@ -469,7 +469,7 @@
         "/>
         <property name="width" value="708px"/>
         <property name="header">
-            <bean parent="KSAP-HeaderDiv" p:cssClasses="planContainer__header planTerm--unlocked"
+            <bean parent="KSAP-HeaderThree" p:cssClasses="planContainer__header planTerm--unlocked"
                   p:headerTagCssClasses="planContainer__headerText"/>
         </property>
         <property name="header.rightGroup">
@@ -647,7 +647,7 @@
                   value="truncateField('@{dataObject.atpId}_planned', true);"/>
         <property name="cssClasses" value="planContainer--planned"/>
         <property name="header">
-            <bean parent="KSAP-HeaderDiv" p:cssClasses="planContainer__header"
+            <bean parent="KSAP-HeaderThree" p:cssClasses="planContainer__header"
                   p:headerTagCssClasses="planContainer__headerText"/>
         </property>
         <property name="header.rightGroup">
@@ -1066,7 +1066,7 @@
 
     <bean id="termItems_Empty" parent="KSAP-VerticalBoxGroup">
         <property name="header">
-            <bean parent="KSAP-HeaderDiv" p:cssClasses="planContainer__header"
+            <bean parent="KSAP-HeaderThree" p:cssClasses="planContainer__header"
                   p:headerTagCssClasses="planContainer__headerText"/>
         </property>
         <property name="header.rightGroup">

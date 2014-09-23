@@ -158,7 +158,10 @@ li.courseResults__facet--static:hover a {
 }
 
 .courseResults .dataTables_info {
-    font-size: @fontSizeExtraLarge;
+
+    .dataTables_info_header {
+        font-size: @fontSizeExtraLarge;
+    }
 }
 .courseResults__note {
   font-size: 12px;
@@ -179,6 +182,12 @@ li.courseResults__facet--static:hover a {
 
 .courseResults__empty {
     margin: @marginLarge !important;
+
+    .courseResults__emptyHeader {
+        font-size: @fontSizeLarge;
+        margin: 0 0 @marginDefault 0;
+        .bold();
+    }
 }
 
 .courseResults__table {

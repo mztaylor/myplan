@@ -363,13 +363,13 @@
           p:headerText="How to Use the Degree Audit Reporting System (DARS) for Academic Planning">
         <property name="render" value="@{#form.degreeAudit.auditHtml EQ null}"/>
         <property name="header">
-            <bean parent="KSAP-HeaderFour"/>
+            <bean parent="KSAP-HeaderTwo" p:headerTagCssClasses="auditRun__emptyHeader"/>
         </property>
         <property name="items">
             <list>
                 <bean parent="KSAP-VerticalBoxGroup" p:headerText="Track Your Progress">
                     <property name="header">
-                        <bean parent="KSAP-HeaderFive" p:cssClasses="auditRun__infoHeader" p:headerTagCssClasses="auditRun__infoHeaderText"/>
+                        <bean parent="KSAP-HeaderThree" p:cssClasses="auditRun__infoHeader" p:headerTagCssClasses="auditRun__infoHeaderText"/>
                     </property>
                     <property name="cssClasses" value="auditRun__info"/>
                     <property name="items">
@@ -383,7 +383,7 @@
                 </bean>
                 <bean parent="KSAP-VerticalBoxGroup" p:headerText="Explore Programs and Minors">
                     <property name="header">
-                        <bean parent="KSAP-HeaderFive" p:cssClasses="auditRun__infoHeader" p:headerTagCssClasses="auditRun__infoHeaderText"/>
+                        <bean parent="KSAP-HeaderThree" p:cssClasses="auditRun__infoHeader" p:headerTagCssClasses="auditRun__infoHeaderText"/>
                     </property>
                     <property name="cssClasses" value="auditRun__info"/>
                     <property name="items">
