@@ -247,8 +247,8 @@
 
             li.css({width:li.width(), height:li.height()});
             ul.css(sizeCss, ulSize + "px").css(animCss, -(curr * liSize)).attr("aria-live", "polite");
-            li.css("visibility", "hidden");
-            li.slice(curr).slice(0, v).css("visibility", "visible");
+            li.css("visibility", "hidden").attr("aria-hidden", true);
+            li.slice(curr).slice(0, v).css("visibility", "visible").attr("aria-hidden", false);
 
             div.css(sizeCss, divSize + "px");                     // Width of the DIV. length of visible images
 
@@ -303,7 +303,7 @@
             function go(to) {
                 if (!running) {
                     ul.attr("aria-busy", true);
-                    future(to).css("visibility", "visible");
+                    future(to).css("visibility", "visible").attr("aria-hidden", false);
                     var from = curr;
                     if (o.beforeStart) o.beforeStart.call(this, vis(), o);
 
@@ -327,7 +327,7 @@
                     ul.animate(
                         animCss == "left" ? { left:-(curr * liSize) } : { top:-(curr * liSize) }, o.speed, o.easing,
                         function () {
-                            past(from).css("visibility", "hidden");
+                            past(from).css("visibility", "hidden").attr("aria-hidden", true);
                             if (o.afterEnd) o.afterEnd.call(this, vis(), o);
                             ul.attr("aria-busy", false);
                             running = false;

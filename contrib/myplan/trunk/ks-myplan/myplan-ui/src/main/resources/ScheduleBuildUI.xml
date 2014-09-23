@@ -180,9 +180,8 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-HeaderTwo" p:headerText="Schedule Builder: @{term NE null ? term.name : ''}"
-                                  p:cssClasses="planNavigation__header" p:style="left: 70px; width: 470px;"/>
-                            <bean parent="overallPlanLink"/>
+                            <bean parent="KSAP-HeaderOne" p:headerText="Schedule Builder: @{term NE null ? term.name : ''}" p:width="370px"
+                                  p:cssClasses="planNavigation__header" p:headerTagCssClasses="planNavigation__headerText"/>
                         </list>
                     </property>
                 </bean>
@@ -196,7 +195,7 @@
             <bean parent="KSAP-HeaderOne"/>
         </property>
         <property name="instructionalMessage">
-            <bean parent="KSAP-Message">
+            <bean parent="KSAP-Message" p:style="margin: 0 0 10px 0;">
                 <property name="messageText"
                           value="Use the calendar to compare meeting times for the scheduled sections of courses in your plan for this quarter. Prepare for registration by choosing a possible schedule and selecting &quot;View Details&quot;, or pin a schedule for future planning.  To add or change the courses in your plan and create alternate schedules, visit your [0] page or [1]."/>
                 <property name="inlineComponents">
@@ -213,7 +212,7 @@
             <list>
                 <bean parent="KSAP-VerticalBoxGroup" p:headerText="Include sections that..." p:width="300px">
                     <property name="header">
-                        <bean parent="KSAP-HeaderThree" p:cssClasses="scheduleBuilder__filterHeader" p:headerTagCssClasses="scheduleBuilder__filterHeaderText"/>
+                        <bean parent="KSAP-HeaderTwo" p:cssClasses="scheduleBuilder__filterHeader" p:headerTagCssClasses="scheduleBuilder__filterHeaderText"/>
                     </property>
                     <property name="header.rightGroup">
                         <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="scheduleBuilder__filterHeader--right">
@@ -281,7 +280,7 @@
                 <bean parent="KSAP-StackedHorizontalCollectionGroup" p:headerText="Exclude sections that meet on..."
                       p:width="360px">
                     <property name="header">
-                        <bean parent="KSAP-HeaderThree" p:cssClasses="scheduleBuilder__filterHeader" p:headerTagCssClasses="scheduleBuilder__filterHeaderText"/>
+                        <bean parent="KSAP-HeaderTwo" p:cssClasses="scheduleBuilder__filterHeader" p:headerTagCssClasses="scheduleBuilder__filterHeaderText"/>
                     </property>
                     <property name="header.rightGroup">
                         <bean parent="KSAP-HorizontalBoxGroup" p:cssClasses="scheduleBuilder__filterHeader--right">
@@ -423,8 +422,8 @@
                 </property>
             </bean>
         </property>
-        <property name="width" value="384px"/>
-        <property name="layoutManager.style" value="width:384px;"/>
+        <property name="width" value="400px"/>
+        <property name="layoutManager.style" value="width:400px;"/>
         <property name="layoutManager.libraryCssClasses"><list/></property>
         <property name="layoutManager.cssClasses" value=""/>
         <property name="layoutManager.numberOfColumns" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser() ? 9 : 8}"/>
@@ -567,7 +566,7 @@
 
     <bean id="sb_course_enroll_status" parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLSTATUS__" p:width="48px"/>
 
-    <bean id="sb_course_enroll_state" parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLSTATE__" p:width="48px"/>
+    <bean id="sb_course_enroll_state" parent="KSAP-NoSpanMessage" p:messageText="__KSAP_ENROLLSTATE__" p:width="64px"/>
 
     <bean id="sb_course_activity_action" parent="Uif-ActionImage" p:width="16px">
         <property name="render" value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
@@ -584,6 +583,7 @@
                 <entry key="course-code" value="__KSAP_COURSECD__"/>
                 <entry key="section-code" value="__KSAP_SECTIONCD__"/>
                 <entry key="primary" value="__KSAP_PRIMARY__"/>
+                <entry key="add-allowed" value="__KSAP_ADDALLOWED__"/>
             </map>
         </property>
         <property name="cssClasses" value="__KSAP_ACTIONCLASS__"/>

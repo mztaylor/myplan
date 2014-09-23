@@ -449,12 +449,12 @@
                     visible: 4,
                     start: iStart,
                     afterEnd: function(a) {
-                        buildPlanHeader(a, '.planNavigation__header h2');
+                        buildPlanHeader(a, '.planNavigation__headerText');
                         setSecondaryNavigation(a, jQuery.trim(jQuery('#learningPlanId').text()));
                         setUrlHash('planView', jQuery(a[0]).index());
                     },
                     initCallback: function(a) {
-                        buildPlanHeader(a, '.planNavigation__header h2');
+                        buildPlanHeader(a, '.planNavigation__headerText');
                         setSecondaryNavigation(a, jQuery.trim(jQuery('#learningPlanId').text()));
                         jQuery('#planned_courses_detail_list ul:not(.errorLines) li').css('height', 'auto');
                         jQuery.unblockUI();
@@ -497,7 +497,7 @@
                                     </list>
                                 </property>
                             </bean>
-                            <bean parent="KSAP-HeaderTwo" p:headerText="Academic Year" p:cssClasses="planNavigation__header"/>
+                            <bean parent="KSAP-HeaderOne" p:headerText="Academic Year" p:cssClasses="planNavigation__header" p:headerTagCssClasses="planNavigation__headerText"/>
                             <bean id="overallPlanLink" parent="Uif-LinkField">
                                 <property name="linkText" value="Print your plan"/>
                                 <property name="title" value="Print your plan"/>
@@ -535,7 +535,7 @@
                 <property name="lineGroupPrototype">
                     <bean parent="KSAP-VerticalBoxGroup">
                         <property name="header">
-                            <bean parent="KSAP-HeaderBase" p:headerText="@{#line.qtrYear}" p:hidden="true"/>
+                            <bean parent="KSAP-HeaderTwo" p:headerText="@{#line.qtrYear}" p:hidden="true"/>
                         </property>
                         <property name="header.upperGroup">
                             <bean parent="KSAP-VerticalBoxGroup">
@@ -648,7 +648,7 @@
         <property name="id" value="academicRecord-@{#line.atpId}"/>
         <property name="cssClasses" value="planYear__academicRecord"/>
         <property name="header">
-            <bean parent="KSAP-HeaderBase"
+            <bean parent="KSAP-HeaderThree"
                   p:headerText="@{#parentLine.completedTerm ? 'Completed': (#parentLine.academicRecord.size() GT 0 or !#parentLine.openForPlanning)? 'Registered' : ''}"
                   p:cssClasses="planYear__typeHeader" p:headerTagCssClasses="planYear__typeHeaderText"/>
         </property>
@@ -716,7 +716,7 @@
             </map>
         </property>
         <property name="header">
-            <bean parent="KSAP-HeaderBase" p:headerText="Planned"
+            <bean parent="KSAP-HeaderThree" p:headerText="Planned"
                   p:cssClasses="planYear__typeHeader" p:headerTagCssClasses="planYear__typeHeaderText"/>
         </property>
         <property name="header.rightGroup">

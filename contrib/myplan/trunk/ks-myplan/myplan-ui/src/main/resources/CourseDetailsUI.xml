@@ -158,9 +158,7 @@
 
     <bean id="course_details_overview" parent="KSAP-VerticalBoxGroup" p:headerText="Course Overview">
         <property name="header">
-            <bean parent="KSAP-HeaderThree">
-                <property name="cssClasses" value="courseDetails__header"/>
-            </bean>
+            <bean parent="KSAP-HeaderTwo" p:cssClasses="courseDetails__header" p:headerTagCssClasses="courseDetails__headerText"/>
         </property>
         <property name="header.rightGroup">
             <bean parent="KSAP-HorizontalBoxGroup">
@@ -442,9 +440,7 @@
     <bean id="course_details_sections" parent="KSAP-VerticalBoxGroup" p:headerText="@{dataObject.courseSummaryDetails.code} Course Sections">
         <property name="render" value="@{dataObject.courseSummaryDetails.scheduledTerms.size() gt 0}"/>
         <property name="header">
-            <bean parent="Uif-HeaderThree">
-                <property name="cssClasses" value="courseDetails__header"/>
-            </bean>
+            <bean parent="KSAP-HeaderTwo" p:cssClasses="courseDetails__header" p:headerTagCssClasses="courseDetails__headerText"/>
         </property>
         <property name="items">
             <list>
@@ -616,9 +612,7 @@
             });
         "/>
         <property name="header">
-            <bean parent="KSAP-HeaderFour">
-                <property name="cssClasses" value="courseActivities__termHeader @{#line.term.substring(0, 2).toUpperCase()}"/>
-            </bean>
+            <bean parent="KSAP-HeaderThree" p:cssClasses="courseActivities__termHeader @{#line.term.substring(0, 2).toUpperCase()}" p:headerTagCssClasses="courseActivities__termHeaderText"/>
         </property>
         <property name="header.lowerGroup">
             <bean parent="KSAP-VerticalBoxGroup">

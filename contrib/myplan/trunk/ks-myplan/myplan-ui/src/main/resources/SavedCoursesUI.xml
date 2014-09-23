@@ -215,8 +215,8 @@
             });
         "/>
         <property name="header">
-            <bean parent="KSAP-HeaderThree" p:headerText="&lt;strong&gt;@{lookupResults.size()}&lt;/strong&gt; course(s) bookmarked"
-                  p:cssClasses="planBookmarks__header"/>
+            <bean parent="KSAP-HeaderTwo" p:headerText="&lt;strong&gt;@{lookupResults.size()}&lt;/strong&gt; course@{lookupResults.size() EQ 1 ? '':'s'} bookmarked"
+                  p:cssClasses="planBookmarks__header" p:headerTagCssClasses="planBookmarks__headerText"/>
         </property>
         <property name="layoutManager.lineGroupPrototype.id" value="@{#line.planItemDataObject.type}-@{#line.planItemDataObject.id}"/>
         <property name="layoutManager.lineGroupPrototype.cssClasses" value="planBookmarks__item"/>

@@ -9,12 +9,13 @@
 
 .auditRun__radioSet {
     margin: @marginDefault 0 0;
-    & input, & label {
+
+    input, label {
         vertical-align: middle;
         margin: 0;
     }
 
-    & label {
+    label {
         margin: 0 @marginLarge 0 @marginSmall;
     }
 }
@@ -29,6 +30,11 @@
 
 }
 
+.auditRun__emptyHeader {
+    font-size: @fontSizeLarge;
+    .bold();
+}
+
 .auditRun__info {
     width: 313px;
     height: 230px;
@@ -40,7 +46,9 @@
 
 .auditRun__infoHeader {
     margin: 0 0 @marginDefault;
-    & .auditRun__infoHeaderText {
+
+    .auditRun__infoHeaderText {
+        font-size: @baseFontSize;
         .bold();
     }
 }

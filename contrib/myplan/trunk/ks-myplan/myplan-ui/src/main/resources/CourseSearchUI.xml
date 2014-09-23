@@ -626,7 +626,7 @@
     <bean id="course_search_empty_result" parent="Uif-ListGroup" p:hidden="true" p:cssClasses="courseResults__empty">
         <property name="validationMessages"><null /></property>
         <property name="header">
-            <bean parent="KSAP-HeaderFour" p:headerText="We couldn&#39;t find anything matching your search."/>
+            <bean parent="KSAP-HeaderDiv" p:headerText="We couldn&#39;t find anything matching your search." p:headerTagCssClasses="courseResults__emptyHeader"/>
         </property>
         <property name="instructionalText" value="A few suggestions:"/>
         <property name="items">
