@@ -16,16 +16,8 @@ import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.registration.dataobject.RegistrationTerm;
 import org.kuali.student.myplan.registration.util.RegistrationConstants;
-import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
-import org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo;
-import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
-import org.kuali.student.myplan.schedulebuilder.dto.ScheduleBuildFiltersInfo;
-import org.kuali.student.myplan.schedulebuilder.dto.SecondaryActivityOptionsInfo;
-import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
-import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
-import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
-import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
-import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
+import org.kuali.student.myplan.schedulebuilder.dto.*;
+import org.kuali.student.myplan.schedulebuilder.infc.*;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -33,12 +25,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by hemanth on 9/4/14.
@@ -149,8 +136,7 @@ public class RegistrationLookupableHelperImpl extends MyPlanLookupableImpl {
                                 registrationTerm.setPossibleScheduleUniqueId(possibleScheduleOptionInfo.getId());
                                 registrationTerm.setErrorPlannedCourses(new ArrayList(plannedCourseCodes));
                             }
-                        }
-                        else { // no validated course options
+                        } else { // no validated course options
                             registrationTerm.setErrorPlannedCourses(new ArrayList(plannedCourseCodes));
                         }
                     }
@@ -214,7 +200,8 @@ public class RegistrationLookupableHelperImpl extends MyPlanLookupableImpl {
                     registeredCourses.add(courseOptionInfo);
 
                 } else if (StringUtils.isNotEmpty(courseOptionInfo.getActivityOptions().get(0).getPlanItemId()) && getPlannedActivityOptionsCount(courseOptionInfo.getActivityOptions().get(0).getAlternateActivties()) == 0) {
-                    //There is only one planned Activity Option and also there aren't any alternatives that are planned which is as expected behaviour
+                    //A Course Option will have the activity options sorted based on whether they are planned or not. So if there is a activity option which is planned it will always be on top other planned activities which fall with in same time are added as alternated to the activity option.
+                    //There is only one planned Activity Option planned and also there aren't any alternatives that are planned which is as expected behaviour
                     ActivityOptionInfo activityOptionInfo = (ActivityOptionInfo) courseOptionInfo.getActivityOptions().get(0);
                     List<SecondaryActivityOptions> secondaryActivityOptions = new ArrayList<SecondaryActivityOptions>();
 
