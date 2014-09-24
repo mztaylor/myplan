@@ -1727,7 +1727,7 @@ public class PlanController extends UifControllerBase {
                             courseSummaryDetails = getCourseDetailsInquiryService().retrieveCourseSummaryByIdAndCd(courseId, isCrossListedCourse ? form.getCourseCd() : null);
                             String versionId = courseSummaryDetails.getVersionIndependentId();
                             //  Check for duplicates since addPlanItem isn't being called.
-                            if (!versionId.equals(planItemInfo.getRefObjectId()) && isDuplicate(atpId, versionId, planItemInfo.getTypeKey(), isCrossListedCourse ? form.getCourseCd() : null)) {
+                            if ( (isCrossListedCourse || !versionId.equals(planItemInfo.getRefObjectId())) && isDuplicate(atpId, versionId, planItemInfo.getTypeKey(), isCrossListedCourse ? form.getCourseCd() : null)) {
                                 return doDuplicatePlanItem(form, atpId, courseSummaryDetails.getCode());
                             }
                             planItemInfo.setRefObjectId(versionId);
