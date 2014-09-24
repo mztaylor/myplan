@@ -1,5 +1,8 @@
 package org.kuali.student.myplan.registration.dataobject;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by hemanth on 9/4/14.
  */
@@ -13,6 +16,7 @@ public class RegistrationTerm {
     private boolean openForRegistration;
     private boolean plannedCourses;
     private boolean plannedActivities;
+    private List<String> errorPlannedCourses;
 
     public String getTermId() {
         return termId;
@@ -76,5 +80,13 @@ public class RegistrationTerm {
 
     public void setPlannedActivities(boolean plannedActivities) {
         this.plannedActivities = plannedActivities;
+    }
+
+    public List<String> getErrorPlannedCourses() {
+        return (null == errorPlannedCourses ? Collections.<String>emptyList() : errorPlannedCourses);
+    }
+
+    public void setErrorPlannedCourses(List<String> errorPlannedCourses) {
+        this.errorPlannedCourses = errorPlannedCourses;
     }
 }
