@@ -213,8 +213,8 @@ public class RegistrationLookupableHelperImpl extends MyPlanLookupableImpl {
                     //Registered Course option
                     registeredCourses.add(courseOptionInfo);
 
-                } else if (StringUtils.isNotEmpty(courseOptionInfo.getActivityOptions().get(0).getPlanItemId())) {
-                    //There is only one planned Activity Option which is as expected behaviour
+                } else if (StringUtils.isNotEmpty(courseOptionInfo.getActivityOptions().get(0).getPlanItemId()) && getPlannedActivityOptionsCount(courseOptionInfo.getActivityOptions().get(0).getAlternateActivties()) == 0) {
+                    //There is only one planned Activity Option and also there aren't any alternatives that are planned which is as expected behaviour
                     ActivityOptionInfo activityOptionInfo = (ActivityOptionInfo) courseOptionInfo.getActivityOptions().get(0);
                     List<SecondaryActivityOptions> secondaryActivityOptions = new ArrayList<SecondaryActivityOptions>();
 
@@ -225,7 +225,7 @@ public class RegistrationLookupableHelperImpl extends MyPlanLookupableImpl {
 
                     for (SecondaryActivityOptions secondaryActivityOption : activityOptionInfo.getSecondaryOptions()) {
                         SecondaryActivityOptionsInfo secondaryActivityOptionsInfo = (SecondaryActivityOptionsInfo) secondaryActivityOption;
-                        if (CollectionUtils.isNotEmpty(secondaryActivityOptionsInfo.getActivityOptions()) && secondaryActivityOptionsInfo.getActivityOptions().size() == 1 && StringUtils.isNotEmpty(secondaryActivityOptionsInfo.getActivityOptions().get(0).getPlanItemId())) {
+                        if (CollectionUtils.isNotEmpty(secondaryActivityOptionsInfo.getActivityOptions()) && secondaryActivityOptionsInfo.getActivityOptions().size() == 1 && StringUtils.isNotEmpty(secondaryActivityOptionsInfo.getActivityOptions().get(0).getPlanItemId()) && getPlannedActivityOptionsCount(secondaryActivityOptionsInfo.getActivityOptions().get(0).getAlternateActivties()) == 0) {
                             //Need to clear all alternatives as we only need planned activity option
                             ((ActivityOptionInfo) secondaryActivityOptionsInfo.getActivityOptions().get(0)).setAlternateActivities(new ArrayList<ActivityOption>());
                             secondaryActivityOptions.add(secondaryActivityOptionsInfo);
@@ -242,6 +242,22 @@ public class RegistrationLookupableHelperImpl extends MyPlanLookupableImpl {
                 }
             }
         }
+    }
+
+    /**
+     * Counts the number of planned activities in a list of activity options
+     *
+     * @param activityOptions
+     * @return
+     */
+    private int getPlannedActivityOptionsCount(List<ActivityOption> activityOptions) {
+        int count = 0;
+        for (ActivityOption activityOption : activityOptions) {
+            if (StringUtils.isNotBlank(activityOption.getPlanItemId())) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public TermHelper getTermHelper() {
