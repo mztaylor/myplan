@@ -22,7 +22,7 @@
 }
 
 .registrationSummary__button {
-    .border-radius(@baseBorderRadius);
+    .border-radius(@borderRadiusExtraLarge);
     color: @white;
     display: block;
     text-decoration: none;
@@ -36,12 +36,16 @@
     }
 
     &.registrationSummary__button--active {
-        background: @greenDark;
-        border: solid 1px #426e12;
+        background: #fedb71;
+        border: solid 1px #e6ac48;
     }
 
     &.registrationSummary__button--disabled {
         background: #ccc;
         border: solid 1px #aaa;
     }
+}
+
+.registrationSummary__num{
+  margin-left: 10px !important;
 }
