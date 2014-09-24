@@ -13,13 +13,19 @@ import org.kuali.student.myplan.config.UwMyplanServiceLocator;
 import org.kuali.student.myplan.main.service.MyPlanLookupableImpl;
 import org.kuali.student.myplan.plan.PlanConstants;
 import org.kuali.student.myplan.plan.dataobject.PlannedCourseDataObject;
-import org.kuali.student.myplan.plan.service.PlanItemLookupableHelperBase;
-import org.kuali.student.myplan.plan.util.AtpHelper;
 import org.kuali.student.myplan.plan.util.PlanHelper;
 import org.kuali.student.myplan.registration.dataobject.RegistrationTerm;
 import org.kuali.student.myplan.registration.util.RegistrationConstants;
-import org.kuali.student.myplan.schedulebuilder.dto.*;
-import org.kuali.student.myplan.schedulebuilder.infc.*;
+import org.kuali.student.myplan.schedulebuilder.dto.ActivityOptionInfo;
+import org.kuali.student.myplan.schedulebuilder.dto.CourseOptionInfo;
+import org.kuali.student.myplan.schedulebuilder.dto.PossibleScheduleOptionInfo;
+import org.kuali.student.myplan.schedulebuilder.dto.ScheduleBuildFiltersInfo;
+import org.kuali.student.myplan.schedulebuilder.dto.SecondaryActivityOptionsInfo;
+import org.kuali.student.myplan.schedulebuilder.infc.ActivityOption;
+import org.kuali.student.myplan.schedulebuilder.infc.CourseOption;
+import org.kuali.student.myplan.schedulebuilder.infc.PossibleScheduleOption;
+import org.kuali.student.myplan.schedulebuilder.infc.ReservedTime;
+import org.kuali.student.myplan.schedulebuilder.infc.SecondaryActivityOptions;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuildStrategy;
 import org.kuali.student.myplan.schedulebuilder.util.ScheduleBuilder;
 import org.kuali.student.myplan.utils.UserSessionHelper;
@@ -27,7 +33,12 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by hemanth on 9/4/14.
@@ -68,9 +79,15 @@ public class RegistrationLookupableHelperImpl extends MyPlanLookupableImpl {
 
                 /*************PlannedCourseList**************/
                 List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
+                Set<String> plannedCourseCodes = new HashSet<String>();
 
                 try {
                     plannedCoursesList = getPlanHelper().getPlanItemListByTermId(PlanConstants.LEARNING_PLAN_ITEM_TYPE_PLANNED, learningPlan.getStudentId(), term.getId());
+                    for (PlannedCourseDataObject pcdo : plannedCoursesList) {
+                        if (!pcdo.isPlaceHolder()) {
+                            plannedCourseCodes.add(pcdo.getCourseDetails().getCode());
+                        }
+                    }
                 } catch (Exception e) {
                     logger.error("Could not load plannedCourseslist", e);
                 }
@@ -78,7 +95,7 @@ public class RegistrationLookupableHelperImpl extends MyPlanLookupableImpl {
                 registrationTerm.setRequestedLearningPlanId(learningPlan.getId());
 
                 if (CollectionUtils.isNotEmpty(plannedCoursesList)) {
-                    registrationTerm.setPlannedItemsCount(plannedCoursesList.size());
+                    registrationTerm.setPlannedItemsCount(plannedCourseCodes.size());
                     //There are planned courses for this term
                     registrationTerm.setPlannedCourses(true);
 
@@ -125,9 +142,16 @@ public class RegistrationLookupableHelperImpl extends MyPlanLookupableImpl {
                                 //Since we store these possible schedules in session and when registration controller tries to pick up the selected registration quarter this would help.
                                 possibleScheduleOptionInfo.setId(term.getId());
                                 possibleScheduleOptions.add(possibleScheduleOptionInfo);
+                                for (ActivityOption ao : possibleScheduleOptionInfo.getActivityOptions()) {
+                                    plannedCourseCodes.remove(ao.getCourseCd());
+                                }
                                 registrationTerm.setCourseRegistrationCount(timeConflictsValidatedCourseOptions.size());
                                 registrationTerm.setPossibleScheduleUniqueId(possibleScheduleOptionInfo.getId());
+                                registrationTerm.setErrorPlannedCourses(new ArrayList(plannedCourseCodes));
                             }
+                        }
+                        else { // no validated course options
+                            registrationTerm.setErrorPlannedCourses(new ArrayList(plannedCourseCodes));
                         }
                     }
                 }
