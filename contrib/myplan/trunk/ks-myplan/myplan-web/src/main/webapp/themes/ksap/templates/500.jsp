@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Error 500 - Internal Server Error</title>
+    <title>Error 500 - Internal Server Error :: UW MyPlan</title>
     <link href="/${ConfigProperties.app.code}/themes/ksap/templates/css/reset.css" rel="stylesheet" type="text/css">
     <link href="/${ConfigProperties.app.code}/themes/ksap/templates/css/error.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="/${ConfigProperties.app.code}/plugins/jquery/jquery-1.8.3.js"></script>
