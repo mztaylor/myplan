@@ -695,7 +695,7 @@
     </bean>
 
     <bean id="registration_summary_num_items" parent="KSAP-Message"
-          p:messageText="[strong]@{#line.plannedItemsCount}[/strong] course@{#line.plannedItemsCount EQ 1 ? '':'s'} in your plan"/>
+          p:messageText="[strong]@{#line.plannedItemsCount}[/strong] course@{#line.plannedItemsCount EQ 1 ? '':'s'} in your plan:"/>
 
     <bean id="registration_summary_num_ready" parent="KSAP-Message"
           p:messageText="[strong][0][/strong] ready for registration">
@@ -717,13 +717,22 @@
                 </bean>
             </list>
         </property>
+        <property name="propertyReplacers">
+            <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="inlineComponents" p:condition="#line.courseRegistrationCount EQ 0">
+                <property name="replacement">
+                    <list>
+                        <bean parent="KSAP-Message" p:messageText="@{#line.courseRegistrationCount} course@{#line.courseRegistrationCount EQ 1 ? '':'s'}"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
     </bean>
 
     <bean id="registration_summary_num_notready" parent="KSAP-Message"
           p:messageText="[strong]@{#line.errorPlannedCourses.size()} course@{#line.errorPlannedCourses.size() EQ 1 ? '':'s'}[/strong] not yet ready. [0]">
         <property name="inlineComponents">
             <list>
-                <bean id="registration_summary_issue" parent="Uif-ActionLink" p:actionLabel="view issues">
+                <bean id="registration_summary_issue" parent="Uif-ActionLink" p:actionLabel="View issues">
                     <property name="render" value="@{#line.errorPlannedCourses.size() GT 0}"/>
                     <property name="actionScript" value="
                     openDialog(jQuery('#registration_summary_message_@{#line.termId}').html(), e, true);"/>
@@ -732,16 +741,16 @@
         </property>
     </bean>
 
-    <bean id="registration_summary_message" p:id="registration_summary_message" parent="KSAP-VerticalBoxGroup" p:headerText="[b]Courses Not Ready for Registration[/b]" p:hidden="true">
+    <bean id="registration_summary_message" p:id="registration_summary_message" parent="KSAP-VerticalBoxGroup" p:headerText="Courses Not Ready for Registration" p:hidden="true">
         <property name="header">
             <bean parent="KSAP-HeaderFour" p:cssClasses="messagesForm__header"/>
         </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-Message"  p:messageText="One or more of the issues below are blocking registration:[br/][ul][li]Too many/too few sections selected for a course.[/li][li]Time conflict with registered course.[/li][li]Time conflict with selected section.[/li][/ul][0] to enable registration.[br/][color=gray]Courses Affected:[/color] @{#line.errorPlannedCourses}">
+                <bean parent="KSAP-Message"  p:messageText="[p]One or more of the issues below are blocking registration:[/p][ul][li]Too many/too few sections selected for a course.[/li][li]Time conflict with registered course.[/li][li]Time conflict with selected section.[/li][/ul][p][0] to enable registration.[/p][p]Courses Affected: @{#line.errorPlannedCourses}[/p]">
                     <property name="inlineComponents">
                         <list>
-                            <bean parent="Uif-Link" p:linkText="Modify your planned sections" p:href="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{T(org.kuali.student.myplan.plan.util.AtpHelper).getFirstPlanTerm()}"/>
+                            <bean parent="Uif-Link" p:linkText="Modify your planned sections" p:href="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{#line.termId}"/>
                         </list>
                     </property>
                 </bean>
