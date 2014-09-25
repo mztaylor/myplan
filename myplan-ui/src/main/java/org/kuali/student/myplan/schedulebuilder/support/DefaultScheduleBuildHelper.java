@@ -1088,8 +1088,43 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                         possibleScheduleErrors.setErrorMessage(errorMessage.toString());
                     }
                 } else if (invalidatedActivities.size() == activitiesToExclude.size()) {
+                    // we only have one or more of withdrawn, suspended, time changed, time conflicts, unavailable secondaries
+                    // we don't have any closed, enroll error, registered conflicts
                     StringBuffer errorMessage = new StringBuffer();
                     errorMessage = errorMessage.append("<p>").append(String.format(properties.getProperty(ScheduleBuilderConstants.INVALID_PINNED_SCHEDULE))).append("</p>");
+                    // Jira 3220 - low risk, almost last minute fix was to change  INVALID_PINNED_SCHEDULE text to
+                    // mention withdrawn, suspended, time changed, time conflicts, unavailable secondaries
+
+                    // better solution as follows, commented out so it can be implemented when there is more time to test ...
+                    // update INVALID_PINNED_SCHEDULE text, use text below
+                   /* errorMessage = errorMessage.append("<p>").append("Section(s) for this course can't be included.  Check the section details for section(s) that ");
+                    boolean errMsgHasDetails = false;
+                    if (!CollectionUtils.isEmpty(withdrawnErrorActivities)) {
+                        errorMessage.append("are withdrawn");
+                        errMsgHasDetails = true;
+                    }
+                    if (!CollectionUtils.isEmpty(suspendedErrorActivities)) {
+                        errorMessage.append(errMsgHasDetails ? ", " : "");
+                        errorMessage.append("are suspended");
+                        errMsgHasDetails = true;
+                    }
+                    if (!CollectionUtils.isEmpty(timeChangedErrorActivities)) {
+                        errorMessage.append(errMsgHasDetails ? ", " : "");
+                        errorMessage.append("have meeting time changed");
+                        errMsgHasDetails = true;
+                    }
+                    if (!CollectionUtils.isEmpty(conflictedErrorActivities)) {
+                        errorMessage.append(errMsgHasDetails ? ", " : "");
+                        errorMessage.append("have conflicts with your reserved times");
+                        errMsgHasDetails = true;
+                    }
+                    if (!CollectionUtils.isEmpty(unAvailableSecondariesErrorActivities)) {
+                        errorMessage.append(errMsgHasDetails ? ", " : "");
+                        errorMessage.append("no longer have secondary sections available");
+                        //errMsgHasDetails = true;
+                    }
+                    errorMessage.append(".</p>");*/
+
                     if (StringUtils.hasText(errorMessage)) {
                         possibleScheduleErrors.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR);
                         possibleScheduleErrors.setErrorMessage(errorMessage.toString());
