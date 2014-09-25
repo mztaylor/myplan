@@ -1123,7 +1123,13 @@ public class DefaultScheduleBuildHelper implements ScheduleBuildHelper {
                         errorMessage.append("no longer have secondary sections available");
                         //errMsgHasDetails = true;
                     }
-                    errorMessage.append(".</p>");*/
+                    OR, in Java 8, skip the boolean and commas above and...
+                    List<String> errorsText =  new ArrayList<String>();
+                    // then for each error type above
+                    errorsText.add("are withdrawn");  // likewise for each
+                    // then finally...
+                    errorMessage.append(String.join(",", errorsText) + ".</p>");
+                    */
 
                     if (StringUtils.hasText(errorMessage)) {
                         possibleScheduleErrors.setErrorType(ScheduleBuilderConstants.PINNED_SCHEDULES_MODAL_ERROR);
