@@ -51,8 +51,8 @@
         <property name="items">
             <list>
                 <ref bean="course_details_actions"/>
-                <bean parent="KSAP-InfoMessage" p:style="margin-top:20px;"
-                      p:render="@{(dataObject.plannedCourseSummary.backupList.size() gt 0 or dataObject.plannedCourseSummary.plannedList.size() gt 0 or dataObject.plannedCourseSummary.academicTerms.size() gt 0) ? true : false}">
+                <bean parent="KSAP-InfoMessage" p:style="margin-top:20px;" p:id="course_details_messaging"
+                      p:render="@{(dataObject.plannedCourseSummary.backupList.size() gt 0 or dataObject.plannedCourseSummary.plannedList.size() gt 0 or dataObject.plannedCourseSummary.academicTerms.size() gt 0)}">
                     <property name="additionalCssClasses" value="printBanner"/>
                     <property name="cssClasses">
                         <list merge="true">
@@ -66,6 +66,11 @@
                             </bean>
                         </list>
                     </property>
+                    <property name="onDocumentReadyScript" value="
+                        jQuery('#course_details_actions').on('PLAN_ITEM_ADDED PLAN_ITEM_DELETED', function(event, data){
+                            customRetrieveComponent('course_details_messaging','course_details_messaging','start','inquiry',{viewId:'CourseDetails-InquiryView',courseId:'@{dataObject.courseSummaryDetails.courseId}',courseCd:'@{dataObject.courseSummaryDetails.code}'},null,{css:{right:'0px',top:'0px',width:'16px',height:'16px',lineHeight:'16px',border:'none'}});
+                        });
+                    "/>
                 </bean>
                 <ref bean="course_details_overview"/>
                 <ref bean="course_details_sections"/>
@@ -105,7 +110,7 @@
                 </bean>
                 <bean parent="KSAP-SecondaryActionButton" p:actionLabel="Bookmark Course"
                       p:id="@{dataObject.courseSummaryDetails.courseId}_addSavedCourse"
-                      p:render="@{!dataObject.plannedCourseSummary.inSavedCourseList AND dataObject.plannedCourseSummary.inPlannedCourseList}">
+                      p:render="@{!dataObject.plannedCourseSummary.inSavedCourseList}">
                     <property name="actionScript" value="
                         var additionalFormData = {viewId:'PlannedCourse-FormView', methodToCall:'addSavedCourse', courseId:'@{dataObject.courseSummaryDetails.courseId}', code:'@{dataObject.courseSummaryDetails.code}'};
                         submitHiddenForm('plan', additionalFormData, false, e);
@@ -115,7 +120,8 @@
                     <property name="id" value="@{dataObject.courseSummaryDetails.courseId}_bookmarked"/>
                     <property name="messageText" value="[0] on @{dataObject.plannedCourseSummary.savedItemDateCreated}"/>
                     <property name="cssClasses" value="alert alert-success alert-unboxed alert-replace-btn"/>
-                    <property name="render" value="@{dataObject.plannedCourseSummary.savedItemId ne null AND dataObject.plannedCourseSummary.plannedList.size() eq 0 AND dataObject.plannedCourseSummary.backupList.size() eq 0 AND dataObject.plannedCourseSummary.academicTerms.size() eq 0}"/>
+                    <property name="style" value="display: @{dataObject.plannedCourseSummary.savedItemId NE null AND dataObject.plannedCourseSummary.plannedList.size() eq 0 AND dataObject.plannedCourseSummary.backupList.size() eq 0 AND dataObject.plannedCourseSummary.academicTerms.size() eq 0 ? 'block':'none'}"/>
+                    <!--<property name="render" value="@{dataObject.plannedCourseSummary.savedItemId NE null AND dataObject.plannedCourseSummary.plannedList.size() eq 0 AND dataObject.plannedCourseSummary.backupList.size() eq 0 AND dataObject.plannedCourseSummary.academicTerms.size() eq 0}"/>-->
                     <property name="inlineComponents">
                         <list>
                             <bean parent="Uif-Link" p:linkText="Bookmarked" p:title="Bookmarked" p:cssClasses=""
@@ -848,6 +854,7 @@
                     <property name="cssClasses">
                         <list merge="true">
                             <value>alert-unboxed</value>
+                            <value>capitalize</value>
                         </list>
                     </property>
                     <property name="items">

@@ -125,6 +125,7 @@ var KsapScheduleBuild = {
 
         for (var i = 0; i < popoverContent.activities.length; i++) {
             var planned = this.isPlanned(popoverContent.activities[i].activityId);
+            var inactive = (popoverContent.activities[i].enrollState.toLowerCase() === "suspended" || popoverContent.activities[i].enrollState.toLowerCase() === "withdrawn");
             var tempActivitiesTemplate = activitiesTemplate;
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_SECTIONCD__/gi, popoverContent.activities[i].sectionCd);
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_STATUSCLASS__/gi, (planned ? "scheduleDetails__sectionCd--planned" : ""));
@@ -149,7 +150,7 @@ var KsapScheduleBuild = {
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_MEETINGTIME__/gi, tempMeetingTime);
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_MEETINGLOCATION__/gi, tempMeetingLocation);
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_REGISTRATIONCODE__/gi, popoverContent.activities[i].registrationCode);
-            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_TERMLABEL__/gi, "");// Summer A or B label
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_TERMLABEL__/gi, ""); // Summer A or B label
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_INSTITUTECD__/gi, popoverContent.activities[i].instituteCd);
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_INSTITUTECD_DISPLAY__/gi, (popoverContent.activities[i].instituteCd !== "" ? "scheduleBuilder__instituteCd--show" : ""));
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ENROLLRESTRICTION__/gi, (popoverContent.activities[i].enrollRestriction ? "scheduleBuilder__enrollRestriction" : ""));
@@ -157,8 +158,8 @@ var KsapScheduleBuild = {
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ENROLLSTATE__/gi, popoverContent.activities[i].enrollState);
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ACTIVITYID__/gi, popoverContent.activities[i].activityId);
             tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_PRIMARY__/gi, popoverContent.activities[i].primary);
-            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ACTIONCLASS__/gi, (popoverContent.activities[i].enrollState === "Suspended" && !planned ? "scheduleDetails__itemHide" : (planned ? "scheduleDetails__itemDelete" : "scheduleDetails__itemAdd")));
-            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ADDALLOWED__/gi, (popoverContent.activities[i].enrollState !== "Suspended"));
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ACTIONCLASS__/gi, (inactive && !planned ? "scheduleDetails__itemHide" : (planned ? "scheduleDetails__itemDelete" : "scheduleDetails__itemAdd")));
+            tempActivitiesTemplate = tempActivitiesTemplate.replace(/__KSAP_ADDALLOWED__/gi, !inactive);
 
             popoverHtml.find("table tbody").append(tempActivitiesTemplate);
         }
