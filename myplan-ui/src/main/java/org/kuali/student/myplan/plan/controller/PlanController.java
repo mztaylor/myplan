@@ -1714,6 +1714,8 @@ public class PlanController extends UifControllerBase {
                             }
 
                         } else {
+                            CourseInfo planItemCourseInfo = getCourseHelper().getCourseInfoByIdAndCd(planItemInfo.getRefObjectId(), getPlanHelper().getCrossListedCourse(planItemInfo.getAttributes()));
+                            String planItemCourseCode = planItemCourseInfo.getCode();
                             String courseId = getCourseHelper().getCourseId(subject, number);
                             if (!hasText(courseId)) {
                                 return doErrorPage(form, "Course not found", PlanConstants.COURSE_NOT_FOUND, new String[]{form.getCourseCd()}, null);
@@ -1727,7 +1729,7 @@ public class PlanController extends UifControllerBase {
                             courseSummaryDetails = getCourseDetailsInquiryService().retrieveCourseSummaryByIdAndCd(courseId, isCrossListedCourse ? form.getCourseCd() : null);
                             String versionId = courseSummaryDetails.getVersionIndependentId();
                             //  Check for duplicates since addPlanItem isn't being called.
-                            if ( (isCrossListedCourse || !versionId.equals(planItemInfo.getRefObjectId())) && isDuplicate(atpId, versionId, planItemInfo.getTypeKey(), isCrossListedCourse ? form.getCourseCd() : null)) {
+                            if (!planItemCourseCode.equals(courseSummaryDetails.getCode()) && isDuplicate(atpId, versionId, planItemInfo.getTypeKey(), isCrossListedCourse ? form.getCourseCd() : null)) {
                                 return doDuplicatePlanItem(form, atpId, courseSummaryDetails.getCode());
                             }
                             planItemInfo.setRefObjectId(versionId);
