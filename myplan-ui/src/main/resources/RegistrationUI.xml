@@ -632,7 +632,7 @@
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items" p:condition="!#line.plannedCourses">
                     <property name="replacement">
                         <list>
-                            <bean parent="KSAP-Message" p:messageText="Course sections have not been added to your plan. Add courses and select sections to proceed."
+                            <bean parent="KSAP-Message" p:messageText="You have no scheduled courses in your plan for this quarter. Add scheduled courses and select sections to begin."
                                   p:cssClasses="block center"/>
                         </list>
                     </property>
@@ -640,7 +640,7 @@
                 <bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="items" p:condition="#line.plannedCourses AND !#line.plannedActivities">
                     <property name="replacement">
                         <list>
-                            <bean parent="KSAP-Message" p:messageText="Course sections have not been added to your plan. [0] or use [1] to proceed." p:cssClasses="center">
+                            <bean parent="KSAP-Message" p:messageText="There are no sections selected for the courses in your plan. [0] or use [1] to proceed." p:cssClasses="center">
                                 <property name="inlineComponents">
                                     <list>
                                         <bean parent="Uif-Link" p:linkText="Select sections" p:href="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{#line.termId}"/>
@@ -698,7 +698,7 @@
           p:messageText="[strong]@{#line.plannedItemsCount}[/strong] course@{#line.plannedItemsCount EQ 1 ? '':'s'} in your plan:"/>
 
     <bean id="registration_summary_num_ready" parent="KSAP-Message"
-          p:messageText="[strong][0][/strong] ready for registration">
+          p:messageText="[strong][0][/strong] ready for registration.">
         <property name="inlineComponents">
             <list>
                 <bean parent="Uif-Link" p:linkText="@{#line.courseRegistrationCount} course@{#line.courseRegistrationCount EQ 1 ? '':'s'}"
@@ -729,7 +729,7 @@
     </bean>
 
     <bean id="registration_summary_num_notready" parent="KSAP-Message"
-          p:messageText="[strong]@{#line.errorPlannedCourses.size()} course@{#line.errorPlannedCourses.size() EQ 1 ? '':'s'}[/strong] not yet ready. [0]">
+          p:messageText="[strong]@{#line.errorPlannedCourses.size()} course@{#line.errorPlannedCourses.size() EQ 1 ? '':'s'}[/strong] not ready. [0]">
         <property name="inlineComponents">
             <list>
                 <bean id="registration_summary_issue" parent="Uif-ActionLink" p:actionLabel="View issues">
@@ -747,7 +747,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-Message"  p:messageText="[p]One or more of the issues below are blocking registration:[/p][ul][li]Too many/too few sections selected for a course.[/li][li]Time conflict with registered course.[/li][li]Time conflict with selected section.[/li][/ul][p][0] to enable registration.[/p][p]Courses Affected: @{#line.errorPlannedCourses}[/p]">
+                <bean parent="KSAP-Message"  p:messageText="[css='registrationSummary__issue'][p]One or more of the issues below prevent us from sending your planned courses to registration:[/p][/css][ul][li]Too many/too few sections selected for a course.[/li][li]Time conflict with registered course.[/li][li]Time conflict with a selected section.[/li][/ul][p][0] to enable registration.[/p][p][color=grey]Courses Affected:[/color] @{#line.errorPlannedCourses}[/p]">
                     <property name="inlineComponents">
                         <list>
                             <bean parent="Uif-Link" p:linkText="Modify your planned sections" p:href="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{#line.termId}"/>
