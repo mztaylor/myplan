@@ -17,6 +17,15 @@ public class RegistrationTerm {
     private boolean plannedCourses;
     private boolean plannedActivities;
     private List<String> errorPlannedCourses;
+    private String learningPlanId;
+
+    public String getLearningPlanId() {
+        return learningPlanId;
+    }
+
+    public void setLearningPlanId(String learningPlanId) {
+        this.learningPlanId = learningPlanId;
+    }
 
     public String getTermId() {
         return termId;

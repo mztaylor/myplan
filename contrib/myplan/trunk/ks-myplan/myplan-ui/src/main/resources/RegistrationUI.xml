@@ -644,7 +644,7 @@
                                 <property name="inlineComponents">
                                     <list>
                                         <bean parent="Uif-Link" p:linkText="Select sections" p:href="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{#line.termId}"/>
-                                        <bean parent="Uif-Link" p:linkText="Schedule Builder" p:href="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;pageId=schedule_build&amp;termId=@{#line.termId}&amp;requestedLearningPlanId=__learningPlanId__"/>
+                                        <bean parent="Uif-Link" p:linkText="Schedule Builder" p:href="sb?methodToCall=start&amp;viewId=ScheduleBuild-FormView&amp;pageId=schedule_build&amp;termId=@{#line.termId}&amp;requestedLearningPlanId=@{#line.learningPlanId}"/>
                                     </list>
                                 </property>
                             </bean>
