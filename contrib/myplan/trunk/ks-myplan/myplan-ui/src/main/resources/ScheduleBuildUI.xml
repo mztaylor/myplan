@@ -197,7 +197,7 @@
         <property name="instructionalMessage">
             <bean parent="KSAP-Message" p:style="margin: 0 0 10px 0;">
                 <property name="messageText"
-                          value="Use the calendar to compare meeting times for the scheduled sections of courses in your plan for this quarter. Prepare for registration by choosing a possible schedule and selecting &quot;View Details&quot;, or pin a schedule for future planning.  To add or change the courses in your plan and create alternate schedules, visit your [0] page or [1]."/>
+                          value="Use the calendar to compare meeting times for the scheduled sections of courses in your plan for this quarter. Register by choosing a possible schedule and selecting &quot;View/Register&quot;, or pin a schedule for future planning.  To add to or change the courses in your plan and create alternate schedules, visit your [0] page or [1]."/>
                 <property name="inlineComponents">
                     <list>
                         <bean parent="Uif-Link" p:linkText="Plan"
