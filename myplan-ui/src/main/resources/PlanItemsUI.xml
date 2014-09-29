@@ -582,7 +582,7 @@
         <property name="instructionalMessage">
             <bean parent="KSAP-Message" p:cssClasses="">
                 <property name="messageText"
-                          value="Create your academic plan by finding and adding courses to any quarter. Add scheduled course sections in the Quarter view, or choose &quot;Build Your Schedule&quot; to view schedule options in a calendar grid and register."/>
+                          value="Create your academic plan by finding and adding courses to any quarter. Add scheduled course sections in the Quarter view to prepare for registration, or choose &quot;Build Your Schedule&quot; to view schedule options in a calendar grid."/>
                 <!--<property name="inlineComponents">
                     <list>
                         <bean parent="Uif-Link" p:linkText="Quarter view">
