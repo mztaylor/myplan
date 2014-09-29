@@ -37,7 +37,7 @@
                             <bean id="syllabus_box" parent="KSAP-SimpleDataField" p:id="description">
                                 <property name="propertyName" value="description"/>
                                 <property name="escapeHtmlInPropertyValue" value="false"/>
-                                <property name="cssClasses" value="courseSyllabus__description"/>
+                                <!--<property name="cssClasses" value="courseSyllabus__description"/>-->
                             </bean>
                         </list>
                     </property>
@@ -49,9 +49,9 @@
                 <property name="layoutManager.style" value="text-align: center;"/>
                 <property name="items">
                     <list>
-                        <bean p:id="closeSyllabus" parent="KSAP-PrimaryActionButton" p:actionLabel="Close">
+                        <!--<bean p:id="closeSyllabus" parent="KSAP-PrimaryActionButton" p:actionLabel="Close">
                             <property name="actionScript" value="parent.jQuery.fancybox.close(true)"/>
-                        </bean>
+                        </bean>-->
                     </list>
                 </property>
             </bean>
