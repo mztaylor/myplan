@@ -64,6 +64,8 @@ public class RegistrationLookupableHelperImpl extends MyPlanLookupableImpl {
 
             if (learningPlan != null) {
 
+                registrationTerm.setLearningPlanId(learningPlan.getId());
+
                 /*************PlannedCourseList**************/
                 List<PlannedCourseDataObject> plannedCoursesList = new ArrayList<PlannedCourseDataObject>();
                 Set<String> plannedCourseCodes = new HashSet<String>();
