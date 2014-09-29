@@ -668,7 +668,6 @@
                             <bean parent="registration_summary_num_items"/>
                             <bean parent="registration_summary_num_ready" p:cssClasses="registrationSummary__num"/>
                             <bean parent="registration_summary_num_notready" p:cssClasses="registrationSummary__num"/>
-                            <!--<bean parent="registration_summary_view_link"/>-->
                             <bean parent="registration_summary_disabled_msg" p:messageText="Registration is not open"/>
                         </list>
                     </property>
@@ -679,9 +678,8 @@
                             <bean parent="registration_summary_num_items"/>
                             <bean parent="registration_summary_num_ready" p:cssClasses="registrationSummary__num"/>
                             <bean parent="registration_summary_num_notready" p:cssClasses="registrationSummary__num"/>
-                            <!--<bean parent="registration_summary_view_link"/>-->
                             <bean parent="Uif-SpaceField" p:cssClasses="block center"/>
-                            <bean parent="registration_summary_view_link" p:linkText="Register @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.termId)}"
+                            <bean parent="registration_summary_view_link" p:id="openRegistration" p:linkText="Register @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.termId)}"
                                   p:cssClasses="btn btn-primary btn-small block"
                                   p:href="registration?methodToCall=registrationDetails&amp;viewId=Registration-FormView&amp;termId=@{#line.termId}&amp;pageId=scheduleSelect&amp;requestedLearningPlanId=@{#line.requestedLearningPlanId}&amp;uniqueId=@{#line.possibleScheduleUniqueId}&amp;forRegistration=true"/>
                         </list>
