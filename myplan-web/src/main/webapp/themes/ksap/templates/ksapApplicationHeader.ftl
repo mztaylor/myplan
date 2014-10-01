@@ -40,11 +40,11 @@
             <div class="appHeader__user" data-adviser="${isAdviser?string("true","false")}">
                 <div class="appHeader__identity">
                     <#if UserSession.objectMap["identityProvider"]?? && UserSession.objectMap["identityProvider"]?contains("washington.edu")>
-                        <img class="appHeader__loginSource" src="../themes/ksap/images/icon-uwnetid.gif"/>
+                        <img class="appHeader__loginSource" src="../themes/ksap/images/icon_uwnetid@2x.gif"/>
                     <#elseif UserSession.objectMap["identityProvider"]?? && UserSession.objectMap["identityProvider"]?contains("facebook")>
-                        <img class="appHeader__loginSource" src="../themes/ksap/images/icon-facebook.gif"/>
+                        <img class="appHeader__loginSource" src="../themes/ksap/images/icon_facebook@2x.gif"/>
                     <#elseif UserSession.objectMap["identityProvider"]?? && UserSession.objectMap["identityProvider"]?contains("google")>
-                        <img class="appHeader__loginSource" src="../themes/ksap/images/icon-google.gif"/>
+                        <img class="appHeader__loginSource" src="../themes/ksap/images/icon_google@2x.gif"/>
                     </#if>
                     <#if isAdviser>
                         <span class="appHeader__person appHeader__person--adviser">${UserSession.person.firstNameUnmasked?cap_first} ${UserSession.person.lastNameUnmasked?substring(0,1)?capitalize}.</span>

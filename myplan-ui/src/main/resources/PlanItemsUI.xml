@@ -409,21 +409,22 @@
                     var atpId = jQuery(this).data('atpid');
                     var backup = jQuery(this).data('backupflag');
                     var size = jQuery(this).data('size');
-                    var addPlanItem = jQuery('&lt;div /&gt;').addClass('planItem planItem--empty planItem--add').html('Add course or placeholder').click(function(e){
+                    var addPlanItem = jQuery('&lt;a /&gt;').html('Add course or placeholder').attr({
+                        'href': '#',
+                        'class': 'planItem planItem--empty planItem--add',
+                        'aria-haspopup': true,
+                        'tabindex': 0
+                    }).click(function(e){
                         var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', atpId:atpId, backup:backup, pageId:'plan_item_add_page'};
                         openPopup('plan_item_add_page', retrieveData, 'plan', popupStyle, popupOptions, e);
                     });
-                    if (size &lt; 8) {
-                        jQuery(this).find('.planYear__items').append(addPlanItem.show());
-                    } else {
-                        jQuery(this).find('.planYear__items').append(addPlanItem.hide());
-                    }
+                    jQuery(this).find('.planYear__items').append(addPlanItem.css('display', (size &lt; 8 ? 'block':'none')));
                 });
             }
             if ( getConfigParam('adviser') ) {
                 jQuery('.planYear__term.planYear__term--unlocked').find('.planYear__recommended').each(function(){
                     var atpId = jQuery(this).data('atpid');
-                    var addPlanItem = jQuery('&lt;div /&gt;').addClass('planItem planItem--empty planItem--add').html('Recommend').click(function(e){
+                    var addPlanItem = jQuery('&lt;a /&gt;').addClass('planItem planItem--empty planItem--add').html('Recommend').click(function(e){
                         var retrieveData = {action:'plan', viewId:'PlannedCourse-FormView', methodToCall:'startAddPlannedCourseForm', atpId:atpId, pageId:'recommended_add_page'};
                         openPopup('recommended_add_page', retrieveData, 'plan', popupStyle, popupOptions, e);
                     });

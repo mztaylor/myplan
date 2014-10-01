@@ -13,6 +13,8 @@ var popupOptionsDefault = {
     closingSpeed: 5
 };
 
+var lastFocusItem;
+
 /**
  * Open a course item popup by id, mostly used in linking course codes in audit reports and course reqs text (course linkifier)
  *
@@ -47,6 +49,8 @@ function openPopup(getId, retrieveData, formAction, popupStyle, popupOptions, e)
 
     var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
     var popupItem = (typeof popupOptions.selector == "undefined") ? jQuery(target) : jQuery(target).parents(popupOptions.selector);
+
+    lastFocusItem = popupItem;
 
     if (!popupItem.HasPopOver()) popupItem.CreatePopOver({manageMouseEvents: false});
     var popupSettings = jQuery.extend({}, popupOptionsDefault, popupOptions);
@@ -96,6 +100,8 @@ function openPopup(getId, retrieveData, formAction, popupStyle, popupOptions, e)
                 popup.find("a.popover__close").on('click', function () {
                     popupItem.HidePopOver();
                     fnCloseAllPopups();
+                    if (lastFocusItem) lastFocusItem.focus();
+                    lastFocusItem = undefined;
                 });
             }
         }
@@ -130,6 +136,8 @@ function openMenu(id, getId, atpId, e, selector, popupClasses, popupOptions, clo
     }
 
     fnCloseAllPopups();
+
+    lastFocusItem = popupBox;
 
     if (!popupBox.HasPopOver()) popupBox.CreatePopOver({manageMouseEvents: false});
 
@@ -202,6 +210,8 @@ function openDialog(sText, e, close) {
         jQuery("#" + popupBoxId + " a.popover__close").on('click', function () {
             popupBox.HidePopOver();
             fnCloseAllPopups();
+            if (lastFocusItem) lastFocusItem.focus();
+            lastFocusItem = undefined;
         });
     }
 
@@ -247,6 +257,8 @@ function clickOutsidePopOver(popoverId, element) {
         var tempTarget = (e.target) ? e.target : e.srcElement;
         if (jQuery(tempTarget).parents("#" + popoverId).length === 0) {
             fnCloseAllPopups();
+            if (lastFocusItem) lastFocusItem.focus();
+            lastFocusItem = undefined;
             jQuery("body").off("click");
         }
     });
@@ -301,20 +313,11 @@ function setupPopover(id, event) {
         var target = (e.target) ? jQuery(e.target) : jQuery(e.srcElement);
         if (target.parents("#" + id).length === 0) {
             fnCloseAllPopups();
+            if (lastFocusItem) lastFocusItem.focus();
+            lastFocusItem = undefined;
             jQuery("body").off("click");
         }
     });
-    /*
-    document.addEventListener("focus", function(event) {
-
-        event.preventDefault();
-        if (jQuery("#" + id).find(event.target).length === 0) {
-            event.stopPropagation();
-            var focusableItems = jQuery("#" + id).find("a:not(.disabled), :input:not([disabled])").filter(':visible');
-            jQuery(focusableItems[0]).focus();
-        }
-    }, true);
-     */
     jQuery("#" + id).on("keydown", function(e) {
         var event = e || window.event;
         var keyCode = event.which || event.keyCode;
@@ -341,6 +344,8 @@ function setupPopover(id, event) {
             var close = popup.find("a.popover__close");
             close.click();
             fnCloseAllPopups();
+            if (lastFocusItem) lastFocusItem.focus();
+            lastFocusItem = undefined;
             event.preventDefault();
         }
     });
