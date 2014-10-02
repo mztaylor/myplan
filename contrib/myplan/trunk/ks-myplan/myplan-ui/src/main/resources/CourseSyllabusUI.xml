@@ -34,28 +34,32 @@
                     <property name="validationMessages"><null /></property>
                     <property name="items">
                         <list>
-                            <bean id="syllabus_box" parent="KSAP-SimpleDataField" p:id="description">
+                            <bean id="course_syllabus_description" parent="KSAP-SimpleDataField" p:id="course_syllabus_description">
                                 <property name="propertyName" value="description"/>
                                 <property name="escapeHtmlInPropertyValue" value="false"/>
                                 <!--<property name="cssClasses" value="courseSyllabus__description"/>-->
+                                <property name="onDocumentReadyScript" value="
+                                    jQuery('#course_syllabus_description a').attr('target', '_blank');
+                                "/>
                             </bean>
                         </list>
                     </property>
                 </bean>
             </list>
         </property>
-        <property name="footer">
+        <property name="footer.render" value="false"/>
+        <!--<property name="footer">
             <bean parent="KSAP-VerticalBoxGroup">
                 <property name="layoutManager.style" value="text-align: center;"/>
                 <property name="items">
                     <list>
-                        <!--<bean p:id="closeSyllabus" parent="KSAP-PrimaryActionButton" p:actionLabel="Close">
+                        <bean p:id="closeSyllabus" parent="KSAP-PrimaryActionButton" p:actionLabel="Close">
                             <property name="actionScript" value="parent.jQuery.fancybox.close(true)"/>
-                        </bean>-->
+                        </bean>
                     </list>
                 </property>
             </bean>
-        </property>
+        </property>-->
     </bean>
 
 </beans>
