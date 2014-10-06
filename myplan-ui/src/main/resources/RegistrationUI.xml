@@ -112,7 +112,7 @@
                     </property>
                     <property name="header.render" value="true"/>
                     <property name="instructionalMessage">
-                        <bean parent="KSAP-Message" p:cssClasses="uif-boxLayoutVerticalItem" p:messageText="[p]Review the chosen courses and sections below to ensure they are the ones you want to send to registration. When finished, use the &quot;Register&quot; button to submit selected course sections.[/p][p]Period 1 priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on @{registrationDetails.getRegistrationOpenDate()}. [0][/p]">
+                        <bean parent="KSAP-Message" p:cssClasses="uif-boxLayoutVerticalItem" p:messageText="[p]Review the chosen courses and sections below to ensure they are the ones you want to send to registration. When finished, use the &quot;Register&quot; button to submit selected course sections.[/p][p]Period 1 priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on @{registrationDetails.getRegistrationOpenDate()} at 6:00am. [0][/p]">
                             <property name="inlineComponents">
                                 <list>
                                     <bean parent="registrationDateLink"/>
