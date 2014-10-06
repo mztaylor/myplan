@@ -39,7 +39,7 @@
                     </property>
                     <property name="header.render" value="true"/>
                     <property name="instructionalMessage">
-                        <bean parent="KSAP-Message" p:cssClasses="uif-boxLayoutVerticalItem" p:messageText="[p]This list shows the scheduled meeting days and times for courses in your plan for this quarter. If your registration period is open, select the &quot;Register for These Courses&quot; button to choose and submit SLNs.[/p][p]Period 1 priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on @{registrationDetails.getRegistrationOpenDate()}. [0][/p]">
+                        <bean parent="KSAP-Message" p:cssClasses="uif-boxLayoutVerticalItem" p:messageText="[p]This list shows the scheduled meeting days and times for courses in your plan for this quarter. If your registration period is open, select the &quot;Register for These Courses&quot; button to choose and submit SLNs.[/p][p]Period 1 priority registration for @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(termId)} begins on @{registrationDetails.getRegistrationOpenDate()} at 6:00am. [0][/p]">
                             <property name="inlineComponents">
                                 <list>
                                     <bean parent="registrationDateLink"/>
@@ -681,7 +681,7 @@
                             <bean parent="Uif-SpaceField" p:cssClasses="block center"/>
                             <bean parent="registration_summary_view_link" p:id="openRegistration" p:linkText="Register @{T(org.kuali.student.myplan.plan.util.AtpHelper).atpIdToTermName(#line.termId)}"
                                   p:cssClasses="btn btn-primary btn-small block"
-                                  p:href="registration?methodToCall=registrationDetails&amp;viewId=Registration-FormView&amp;termId=@{#line.termId}&amp;pageId=scheduleSelect&amp;requestedLearningPlanId=@{#line.requestedLearningPlanId}&amp;uniqueId=@{#line.possibleScheduleUniqueId}&amp;forRegistration=true"/>
+                                  p:href="registration?methodToCall=registrationDetails&amp;viewId=Registration-FormView&amp;termId=@{#line.termId}&amp;pageId=scheduleView&amp;requestedLearningPlanId=@{#line.requestedLearningPlanId}&amp;uniqueId=@{#line.possibleScheduleUniqueId}&amp;forRegistration=true"/>
                         </list>
                     </property>
                 </bean>
