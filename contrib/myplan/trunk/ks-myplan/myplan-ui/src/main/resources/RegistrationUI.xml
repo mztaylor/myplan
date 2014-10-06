@@ -745,7 +745,7 @@
         </property>
         <property name="items">
             <list>
-                <bean parent="KSAP-Message"  p:messageText="[css='registrationSummary__issue'][p]One or more of the issues below prevent us from sending your planned courses to registration:[/p][/css][ul][li]Too many/too few sections selected for a course.[/li][li]Time conflict with registered course.[/li][li]Time conflict with a selected section.[/li][/ul][p][0] to enable registration.[/p][p][color=grey]Courses Affected:[/color] @{#line.errorPlannedCourses}[/p]">
+                <bean parent="KSAP-Message"  p:messageText="[css='registrationSummary__issue'][p]One or more of the issues below prevent us from sending your planned courses to registration:[/p][/css][ul][li]Too many/too few sections selected for a course.[/li][li]Time conflict with registered course.[/li][li]Time conflict with a selected section.[/li][li]Planned courses are jointly offered versions of one course.[/li][/ul][p][0] to enable registration.[/p][p][color=grey]Courses Affected:[/color] @{#line.errorPlannedCourses}[/p]">
                     <property name="inlineComponents">
                         <list>
                             <bean parent="Uif-Link" p:linkText="Modify your planned sections" p:href="inquiry?methodToCall=start&amp;viewId=SingleTerm-InquiryView&amp;term_atp_id=@{#line.termId}"/>
