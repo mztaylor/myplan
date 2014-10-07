@@ -58,8 +58,7 @@
                         <bean id="scheduleViewFooter" parent="KSAP-HorizontalBoxGroup">
                             <property name="cssClasses" value="registrationForm__footer"/>
                             <property name="layoutManager.style" value="height: 40px;"/>
-                            <property name="render"
-                                      value="@{!T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().isAdviser()}"/>
+
                             <property name="componentSecurity.additionalRoleQualifiers">
                                 <map>
                                     <entry key="authorizedToView" value="STUDENT,NON-STUDENT"/>
@@ -75,8 +74,9 @@
                                     </bean>
                                     <bean parent="KSAP-PrimaryActionButton-Small" p:actionLabel="Register for These Courses"
                                           p:navigateToPageId="scheduleSelect"
-                                          p:style="float: right;"
-                                          p:render="@{registrationDetails.openForRegistration}">
+                                          p:style="float: right;">
+                                        <property name="render"
+                                                  value="@{registrationDetails.openForRegistration AND T(org.kuali.student.myplan.utils.KSAPRoleUtils).principalHasRole(T(org.kuali.student.myplan.plan.util.AtpHelper).getUserSessionHelper().getStudentId(),&quot;STUDENT&quot;)}"/>
                                         <property name="cssClasses">
                                             <list merge="true">
                                                 <value>@{registrationDetails.activitiesAvailable ? '' : 'disabled'}
